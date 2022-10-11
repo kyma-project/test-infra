@@ -43,7 +43,6 @@ func NewCancelableContext(ctx context.Context) CancelableContext {
 
 // Cleaner cleans GCP buckets
 type Cleaner struct {
-	ctx    context.Context
 	client storage.Client
 	cfg    Config
 }
@@ -145,17 +144,11 @@ func (r Cleaner) iterateBucketObjectNames(ctx context.Context, bucketName string
 }
 
 func (r Cleaner) deleteBucketObjects(ctx CancelableContext, bucketObjectChan chan storage.BucketObject, errChan chan error) {
-	for {
-		select {
-		case bo, ok := <-bucketObjectChan:
-			if !ok {
-				return
-			}
-			if err := r.deleteBucketObject(ctx, bo.Bucket(), bo.Name()); err != nil {
-				errChan <- errors.Wrap(err, "while deleting bucket object")
-				ctx.Cancel()
-				return
-			}
+	for bo := range bucketObjectChan {
+		if err := r.deleteBucketObject(ctx, bo.Bucket(), bo.Name()); err != nil {
+			errChan <- errors.Wrap(err, "while deleting bucket object")
+			ctx.Cancel()
+			return
 		}
 	}
 }

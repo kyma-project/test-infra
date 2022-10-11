@@ -1,71 +1,6 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/incubator/api-gateway/api-gateway.yaml
-        jobConfigs:
-          - repoName: "kyma-incubator/api-gateway"
-            jobs:
-              - jobConfig:
-                  name: pre-main-kyma-incubator-api-gateway
-                  always_run: true
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/api-gateway"
-                    - "ci-pr"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang-kubebuilder2
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-              - jobConfig:
-                  name: post-main-kyma-incubator-api-gateway
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/api-gateway"
-                    - "ci-main"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - disable_testgrid
-                    - image_buildpack-golang-kubebuilder2
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-      - to: ../../prow/jobs/incubator/gcp-service-broker/gcp-service-broker.yaml
-        jobConfigs:
-          - repoName: kyma-incubator/gcp-service-broker
-            jobs:
-              - jobConfig:
-                  name: pre-main-gcp-service-broker
-                  always_run: true
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/gcp-service-broker"
-                    - "ci-pr"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-              - jobConfig:
-                  name: post-main-gcp-service-broker
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/gcp-service-broker"
-                    - "ci-master"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - disable_testgrid
-
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
       - to: ../../prow/jobs/incubator/github-slack-connectors/github-slack-connectors.yaml
         jobConfigs:
           - repoName: kyma-incubator/github-slack-connectors
@@ -256,9 +191,9 @@ templates:
               EXECUTION_PROFILE: evaluation
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
           reconciler_component_k3d_integration_jobConfig:
-            command:  "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-component-integration-k3d.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-component-integration-k3d.sh"
           reconciler_component_gardener_integration_jobConfig:
-            command:  "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-component-provision-gardener.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-component-provision-gardener.sh"
           reconciler_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
           reconciler_nightly_e2e_jobConfig:
@@ -459,7 +394,7 @@ templates:
               - jobConfig:
                   name: "pre-main-ory-reconciler-eval-integration"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((pkg/reconciler/instances/ory\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
@@ -484,7 +419,7 @@ templates:
               - jobConfig:
                   name: "pre-main-ory-reconciler-prod-integration"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((pkg/reconciler/instances/ory\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
@@ -762,7 +697,6 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - extra_refs_control-plane
-                    - kyma_major_version_2
                     - disable_testgrid
                     - image_kyma-integration
                     - jobConfig_slack_jellyfish
@@ -777,8 +711,7 @@ templates:
                   command: "/bin/bash"
                   args:
                     - "-c"
-                    - "shopt -s globstar;
-                      hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+                    - "shopt -s globstar; hadolint --config .hadolint.yaml --no-color **/Dockerfile"
                   labels:
                     preset-kyma-guard-bot-github-token: "true"
                 inheritedConfigs:
@@ -787,6 +720,22 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_bootstrap
+                  local:
+                    - reconciler_main_jobConfig
+              - jobConfig:
+                  name: "pre-main-reconciler-validate-go-mod"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: '^go\.mod$'
+                  optional: true
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-validate-go-mod.sh"
+                  labels:
+                    preset-kyma-guard-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
                   local:
                     - reconciler_main_jobConfig
 

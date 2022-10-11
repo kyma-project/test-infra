@@ -28,6 +28,7 @@ prow_components=(
 "horologium_rbac.yaml"
 "horologium_deployment.yaml"
 "horologium_service.yaml"
+"halogen.yaml"
 "pjtester_prowjob-scheduler_rbac.yaml"
 "prow_controller_manager_rbac.yaml"
 "prow_controller_manager_deployment.yaml"
@@ -74,5 +75,5 @@ ensure-context sap-kyma-prow europe-west3-a prow
 
 echo " Deploying Prow..."
 for c in "${prow_components[@]}"; do
-  kubectl apply -f "$SCRIPT_DIR/components/$c"
+  kubectl apply --server-side=true -f "$SCRIPT_DIR/components/$c"
 done

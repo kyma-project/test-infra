@@ -1,0 +1,93 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/module-manager/module-manager.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+            privileged: "false"
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
+            command: /kaniko-build
+            labels:
+              preset-sa-kyma-push-images: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        jobConfigs:
+          - repoName: kyma-project/module-manager
+            jobs:
+              - jobConfig:
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
+                  name: "pull-lint"
+                  annotations:
+                    description: executes the 'make lint' command in the module-manager 'operator' directory before any pull request.
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd operator && golangci-lint run"
+                  branches:
+                    - ^main$
+                  slack_channel: jellyfish-notifications
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-tests
+                  annotations:
+                    description: executes the 'make test' command in the module-manager 'operator' directory before any pull request.
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd operator && make test" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main trig
+                  slack_channel: jellyfish-notifications
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  name: pull-build
+                  always_run: true
+                  args:
+                    - "--name=module-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=operator"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: main-build
+                  always_run: true
+                  args:
+                    - "--name=module-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=operator"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_postsubmit

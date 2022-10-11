@@ -12,7 +12,7 @@ import (
 
 //go:generate mockery -name=ComputeAPI -output=automock -outpkg=automock -case=underscore
 
-//ComputeAPI abstracts over google Compute API
+// ComputeAPI abstracts over google Compute API
 type ComputeAPI interface {
 	LookupIPAddresses(project string, region string) ([]*compute.Address, error)
 	DeleteIPAddress(project string, region string, address string) error
@@ -20,20 +20,20 @@ type ComputeAPI interface {
 
 //go:generate mockery -name=DNSAPI -output=automock -outpkg=automock -case=underscore
 
-//DNSAPI abstracts over google DNS API
+// DNSAPI abstracts over google DNS API
 type DNSAPI interface {
 	LookupDNSRecords(project string, managedZone string) ([]*dns.ResourceRecordSet, error)
 	DeleteDNSRecord(project string, managedZone string, record *dns.ResourceRecordSet) error
 }
 
-//Collector can find and delete IP addresses and DNS records in a GCP project
+// Collector can find and delete IP addresses and DNS records in a GCP project
 type Collector struct {
 	computeAPI   ComputeAPI
 	dnsAPI       DNSAPI
 	shouldRemove IPAddressRemovalPredicate
 }
 
-//IPAddressRemovalPredicate returns true if IP Address matches removal criteria
+// IPAddressRemovalPredicate returns true if IP Address matches removal criteria
 type IPAddressRemovalPredicate func(*compute.Address) (bool, error)
 
 // DefaultIPAddressRemovalPredicate returns the default IPAddressRemovalPredicate
@@ -65,13 +65,13 @@ func DefaultIPAddressRemovalPredicate(addressRegexpList []*regexp.Regexp, minAge
 	}
 }
 
-//Wrapper to carry region info along with compute.Address
+// Wrapper to carry region info along with compute.Address
 type addressWrapper struct {
 	data   *compute.Address
 	region string
 }
 
-//New returns an new instance of the Collector
+// New returns an new instance of the Collector
 func New(computeAPI ComputeAPI, dnsAPI DNSAPI, removalPredicate IPAddressRemovalPredicate) *Collector {
 	return &Collector{computeAPI, dnsAPI, removalPredicate}
 }
@@ -107,7 +107,7 @@ func (gc *Collector) Run(project string, managedZone string, regions []string, m
 
 		associatedRecords := findAssociatedRecords(ipAddress.data.Address, allDNSRecords)
 
-		log.Infof("Processing IP Adress: %s, name: \"%s\", region: \"%s\", %d associated DNS record(s)", ipAddress.data.Address, ipAddress.data.Name, ipAddress.region, len(associatedRecords))
+		log.Infof("Processing IP Adsress: %s, name: \"%s\", region: \"%s\", %d associated DNS record(s)", ipAddress.data.Address, ipAddress.data.Name, ipAddress.region, len(associatedRecords))
 
 		allDNSRecordsRemoved := true
 		for _, dnsRecord := range associatedRecords {
@@ -141,7 +141,7 @@ func (gc *Collector) Run(project string, managedZone string, regions []string, m
 	return allSucceeded, nil
 }
 
-//List IP Addresses in all regions. It's a "best effort" implementation - continues reading in case of errors.
+// List IP Addresses in all regions. It's a "best effort" implementation - continues reading in case of errors.
 func (gc *Collector) listIPs(project string, regions []string) (res []*addressWrapper, allSucceeded bool) {
 	allSucceeded = true
 	res = []*addressWrapper{}
@@ -164,7 +164,7 @@ func (gc *Collector) listIPs(project string, regions []string) (res []*addressWr
 	return res, allSucceeded
 }
 
-//Lists matching IP Addresses in given region
+// Lists matching IP Addresses in given region
 func (gc *Collector) listRegionIPs(project, region string) (res []*addressWrapper, allSucceeded bool, err error) {
 	res = []*addressWrapper{}
 

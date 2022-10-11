@@ -13,7 +13,7 @@ const sleepFactor = 2
 
 //go:generate mockery -name=ComputeAPI -output=automock -outpkg=automock -case=underscore
 
-//ComputeAPI interface logic for Google cloud API
+// ComputeAPI interface logic for Google cloud API
 type ComputeAPI interface {
 	DeleteHTTPProxy(project string, httpProxy string)
 	DeleteURLMap(project string, urlMap string)
@@ -33,7 +33,7 @@ type ComputeAPI interface {
 	CheckInstance(project string, zone string, name string) bool
 }
 
-//Remover Element holding the removal logic
+// Remover Element holding the removal logic
 type Remover struct {
 	computeAPI ComputeAPI
 }
@@ -79,7 +79,7 @@ type globalForwardingRule struct {
 	id   string
 }
 
-//NewRemover Returns a new remover object
+// NewRemover Returns a new remover object
 func NewRemover(computeAPI ComputeAPI) *Remover {
 	return &Remover{computeAPI}
 }
@@ -122,9 +122,9 @@ func filterInstanceGroups(zones []string, computeAPI ComputeAPI, project string)
 	return instanceGroups, nil
 }
 
-//Run the main find&destroy function
+// Run the main find&destroy function
 func (remover *Remover) Run(dryRun bool, project string) {
-	var instanceGroups = []instanceGroup{}
+	var instanceGroups []instanceGroup
 
 	log.Print("Creating mesh of network elements to delete. This takes some time\n")
 	rawTargetPool, err := remover.computeAPI.LookupTargetPools(project)

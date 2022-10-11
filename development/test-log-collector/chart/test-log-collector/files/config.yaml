@@ -9,7 +9,6 @@
   testCases:
     - serverless-long
     - serverless
-    - rafter
     - execute-serverlessupgradetest
     - prepare-serverlessupgradetest
 - channelName: "#framefrog-notifications"

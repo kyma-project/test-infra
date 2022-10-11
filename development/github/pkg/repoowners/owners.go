@@ -2,7 +2,6 @@ package repoowners
 
 import (
 	"fmt"
-	"io/ioutil"
 
 	"os"
 	"path/filepath"
@@ -33,7 +32,7 @@ func (c *OwnersClient) LoadRepoAliases(basedir, filename string) (k8sowners.Repo
 	if _, err := os.Stat(path); err != nil {
 		return nil, err
 	}
-	b, err := ioutil.ReadFile(path)
+	b, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +125,7 @@ func (c *OwnersClient) ResolveSlackNames(allOwners AllOwners, aliases []toolstyp
 				// In such case owners users with enabled pr automerge notification will be search and notified individually.
 				userOwners := repoAliases.ExpandAlias(owner)
 				if userOwners.Len() > 0 {
-					for userOwner, _ := range userOwners {
+					for userOwner := range userOwners {
 						_ = c.checkIfNotifyUser(userOwner, &targets, usersMap)
 					}
 				}

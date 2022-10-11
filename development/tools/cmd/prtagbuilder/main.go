@@ -33,7 +33,7 @@ var (
 			if err != nil {
 				return fmt.Errorf("failed build prtag, got error: %w", err)
 			}
-			fmt.Printf(prNumber)
+			fmt.Print(prNumber)
 			return nil
 		},
 	}

@@ -127,15 +127,6 @@ func BusolaRepo() Option {
 	}
 }
 
-// ConsoleRepo function returns Option type
-func ConsoleRepo() Option {
-	return func(suite *Config) {
-		suite.Repository = "github.com/kyma-project/console"
-		suite.DockerRepositoryPreset = preset.DockerPushRepoKyma
-		suite.BuildPresetMaster = preset.BuildConsoleMaster
-	}
-}
-
 // DockerRepositoryPreset function returns Option type
 func DockerRepositoryPreset(preset preset.Preset) Option {
 	return func(suite *Config) {

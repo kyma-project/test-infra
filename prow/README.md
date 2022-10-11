@@ -27,7 +27,7 @@ Prow replies on this basic set of configurations:
 
 Follow these basic rules when working with Prow in the `kyma-project` organization:
 
-- You cannot test Prow configuration locally on Minikube. Perform all tests on the cluster.
+- You cannot test Prow configuration locally on k3d. Perform all tests on the cluster.
 - Avoid provisioning long-running clusters.
 - Test Prow configuration against your forked `kyma` repository.
 - Disable builds on the internal CI only after all CI functionalities are provided by Prow. This applies not only to the `main` branch but also to release branches.
@@ -120,6 +120,6 @@ If you modify scripts in the `test-infra` repository and you want to test the ch
 extra_refs:
   - org: {username}                 # Your GitHub username in the organisation
     repo: test-infra                # Your GitHub repository
-    base_ref: dex-github              # Branch, tag, and release to use
+    base_ref: main                  # Branch, tag, and release to use
     path_alias: github.com/kyma-project/test-infra  # Path to the location where you want to clone the code
 ```

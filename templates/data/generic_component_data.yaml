@@ -6,489 +6,623 @@ templates:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  path: components/compass-runtime-agent
+                  name: pull-compass-runtime-agent-build
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/compass-runtime-agent"
-                  run_if_changed: "^components/compass-runtime-agent/|^common/makefiles/"
-                  release_since: "1.7"
+                    - "--name=compass-runtime-agent"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/compass-runtime-agent"
+                    - "--dockerfile=Dockerfile"
+                  run_if_changed: "^components/compass-runtime-agent/"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/application-connectivity-validator/application-connectivity-validator-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
               - jobConfig:
-                  path: components/application-connectivity-validator
+                  name: post-compass-runtime-agent-build
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-connectivity-validator"
-                  run_if_changed: "^components/application-connectivity-validator/|^common/makefiles/"
-                  release_since: "1.7"
-                  optional: true
+                    - "--name=compass-runtime-agent"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/compass-runtime-agent"
+                    - "--dockerfile=Dockerfile"
+                  run_if_changed: "^components/compass-runtime-agent/"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/application-gateway/application-gateway-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: components/application-gateway
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-gateway"
-                  run_if_changed: "^components/application-gateway/|^common/makefiles/"
-                  release_since: "1.7"
-                  optional: true
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/application-operator/application-operator-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: components/application-operator
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/application-operator"
-                  run_if_changed: "^components/application-operator/|^common/makefiles/"
-                  release_since: "1.7"
-                  optional: true
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/uaa-activator/uaa-activator-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: components/uaa-activator
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/uaa-activator"
-                  run_if_changed: "^components/uaa-activator/|^common/makefiles/"
-                  release_since: "1.9"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tests/application-gateway-tests
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/application-gateway-tests"
-                  run_if_changed: "^tests/application-gateway-tests/|^common/makefiles/"
-                  release_since: "1.7"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/tests/application-gateway-legacy-tests/application-gateway-legacy-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tests/application-gateway-legacy-tests
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/application-gateway-legacy-tests"
-                  run_if_changed: "^tests/application-gateway-legacy-tests/|^common/makefiles/"
-                  release_since: "1.16"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tools/event-subscriber
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tools/event-subscriber"
-                  run_if_changed: "^tools/event-subscriber/|^common/makefiles/"
-                  release_since: "1.12"
-                  optional : true
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "jobConfig_slack_dev_null"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/tools/gitserver/gitserver-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  path: tools/gitserver
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tools/gitserver"
-                  run_if_changed: "^tools/gitserver/|^common/makefiles/"
-                  release_since: "1.12"
-                  optional : true
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "jobConfig_slack_dev_null"
-                      - "disable_testgrid"
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  path: components/event-publisher-proxy
+                  name: pull-event-publisher-proxy-build
+                  run_if_changed: "^components/event-publisher-proxy/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/event-publisher-proxy"
-                  run_if_changed: "^components/event-publisher-proxy/|^common/makefiles/"
-                  release_since: "1.17"
+                    - "--name=event-publisher-proxy"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/event-publisher-proxy"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-event-publisher-proxy-build
+                  run_if_changed: "^components/event-publisher-proxy/"
+                  args:
+                    - "--name=event-publisher-proxy"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/event-publisher-proxy"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/eventing-controller/eventing-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  path: components/eventing-controller
+                  name: pull-eventing-controller-build
+                  run_if_changed: "^components/eventing-controller/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller"
-                  run_if_changed: "^components/eventing-controller/|^common/makefiles/"
-                  release_since: "1.17"
+                    - "--name=eventing-controller"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/eventing-controller"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-eventing-controller-build
+                  run_if_changed: "^components/eventing-controller/"
+                  args:
+                    - "--name=eventing-controller"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/eventing-controller"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  path: components/function-controller
+                  name: pull-function-controller-build
+                  run_if_changed: "^components/function-controller/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/function-controller"
-                  run_if_changed: "^components/function-controller/|^common/makefiles/"
-                  release_since: "1.9"
+                    - "--name=function-controller"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-controller"
+                    - "--dockerfile=deploy/manager/Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-function-controller-build
+                  run_if_changed: "^components/function-controller/"
+                  args:
+                    - "--name=function-controller"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-controller"
+                    - "--dockerfile=deploy/manager/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+      - to: ../../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  path: tests/function-controller
+                  name: pull-function-webhook-build
+                  run_if_changed: "^components/function-controller/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/function-controller"
-                  run_if_changed: "^tests/function-controller/|^common/makefiles/"
-                  release_since: "1.10"
+                    - "--name=function-webhook"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-controller"
+                    - "--dockerfile=deploy/webhook/Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-function-webhook-build
+                  run_if_changed: "^components/function-controller/"
+                  args:
+                    - "--name=function-webhook"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-controller"
+                    - "--dockerfile=deploy/webhook/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+      - to: ../../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: pull-function-jobinit-build
+                  run_if_changed: "^components/function-controller/"
+                  args:
+                    - "--name=function-build-init"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-controller"
+                    - "--dockerfile=deploy/jobinit/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-function-jobinit-build
+                  run_if_changed: "^components/function-controller/"
+                  args:
+                    - "--name=function-build-init"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-controller"
+                    - "--dockerfile=deploy/jobinit/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  path: components/function-runtimes
+                  name: pull-function-runtimes-nodejs12-build
+                  run_if_changed: "^components/function-runtimes/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/function-runtimes"
-                  run_if_changed: "^components/function-runtimes/|^common/makefiles/"
-                  release_since: "1.13"
+                    - "--name=function-runtime-nodejs12"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-runtimes/nodejs12"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/tests/rafter/rafter-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
               - jobConfig:
-                  path: tests/rafter
+                  name: post-function-controller-nodejs12-build
+                  run_if_changed: "^components/function-runtimes/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/rafter"
-                  run_if_changed: "^tests/rafter/|^common/makefiles/"
-                  release_since: "1.7"
+                    - "--name=function-runtime-nodejs12"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-runtimes/nodejs12"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/busola-migrator/busola-migrator-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
               - jobConfig:
-                  path: components/busola-migrator
+                  name: pull-function-runtimes-nodejs14-build
+                  run_if_changed: "^components/function-runtimes/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/busola-migrator"
-                  run_if_changed: "^components/busola-migrator/|^common/makefiles/"
-                  release_since: "1.22"
-                  optional: true
+                    - "--name=function-runtime-nodejs14"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-runtimes/nodejs14"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "jobConfig_slack_dev_null"
-                      - "disable_testgrid"
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-function-controller-nodejs14-build
+                  run_if_changed: "^components/function-runtimes/"
+                  args:
+                    - "--name=function-runtime-nodejs14"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-runtimes/nodejs14"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+              - jobConfig:
+                  name: pull-function-runtimes-nodejs16-build
+                  run_if_changed: "^components/function-runtimes/"
+                  args:
+                    - "--name=function-runtime-nodejs16"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-runtimes/nodejs16"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-function-controller-nodejs16-build
+                  run_if_changed: "^components/function-runtimes/"
+                  args:
+                    - "--name=function-runtime-nodejs16"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-runtimes/nodejs16"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+              - jobConfig:
+                  name: pull-function-runtimes-python39-build
+                  run_if_changed: "^components/function-runtimes/"
+                  args:
+                    - "--name=function-runtime-python39"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-runtimes/python39"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-function-controller-python39-build
+                  run_if_changed: "^components/function-runtimes/"
+                  args:
+                    - "--name=function-runtime-python39"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-runtimes/python39"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/central-application-gateway/central-application-gateway-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  path: components/central-application-gateway
+                  name: pull-central-application-gateway-build
+                  run_if_changed: "^components/central-application-gateway/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/central-application-gateway"
-                  run_if_changed: "^components/central-application-gateway/|^common/makefiles/"
-                  release_since: "1.23"
+                    - "--name=central-application-gateway"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/central-application-gateway"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "jobConfig_slack_dev_null"
-                      - "disable_testgrid"
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-central-application-gateway-build
+                  run_if_changed: "^components/central-application-gateway/"
+                  args:
+                    - "--name=central-application-gateway"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/central-application-gateway"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/central-application-connectivity-validator/central-application-connectivity-validator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  path: components/central-application-connectivity-validator
+                  name: pull-central-application-connectivity-validator-build
+                  run_if_changed: "^components/central-application-connectivity-validator/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/central-application-connectivity-validator"
-                  run_if_changed: "^components/central-application-connectivity-validator/|^common/makefiles/"
-                  release_since: "1.23"
+                    - "--name=central-application-connectivity-validator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/central-application-connectivity-validator"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "jobConfig_slack_dev_null"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/tests/serverless-bench/serverless-bench-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
               - jobConfig:
-                  path: tests/serverless-bench
+                  name: post-central-application-connectivity-validator-build
+                  run_if_changed: "^components/central-application-connectivity-validator/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/tests/serverless-bench"
-                  run_if_changed: "^tests/serverless-bench/|^common/makefiles/"
-                  release_since: "2.1"
+                    - "--name=central-application-connectivity-validator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/central-application-connectivity-validator"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_bootstrap"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/telemetry-operator/telemetry-operator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
-                  path: components/telemetry-operator
+                  name: pull-telemetry-operator-build
+                  run_if_changed: "^components/telemetry-operator/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/telemetry-operator"
-                  run_if_changed: "^components/telemetry-operator/|^common/makefiles/"
-                  release_since: "2.0"
+                    - "--name=telemetry-operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/telemetry-operator"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-telemetry-operator-build
+                  run_if_changed: "^components/telemetry-operator/"
+                  args:
+                    - "--name=telemetry-operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/telemetry-operator"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+      - to: ../../prow/jobs/kyma/components/directory-size-exporter/directory-size-exporter-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: pull-directory-size-exporter-build
+                  run_if_changed: "^components/directory-size-exporter/"
+                  args:
+                    - "--name=directory-size-exporter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/directory-size-exporter"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-directory-size-exporter-build
+                  run_if_changed: "^components/directory-size-exporter/"
+                  args:
+                    - "--name=directory-size-exporter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/directory-size-exporter"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+
+      - to: ../../prow/jobs/kyma/tests/application-connector-component-tests/application-connector-component-tests-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: pull-application-connector-gateway-test-build
+                  args:
+                    - "--name=gateway-test"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/components/application-connector"
+                    - "--dockerfile=Dockerfile.gateway"
+                  run_if_changed: "^tests/components/application-connector/"
+                  optional: "true"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-application-connector-gateway-test-build
+                  run_if_changed: "^tests/components/application-connector/"
+                  args:
+                    - "--name=gateway-test"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/components/application-connector"
+                    - "--dockerfile=Dockerfile.gateway"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+              - jobConfig:
+                  name: pull-application-connector-connectivity-validator-test-build
+                  args:
+                    - "--name=connectivity-validator-test"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/components/application-connector"
+                    - "--dockerfile=Dockerfile.connectivity-validator"
+                  run_if_changed: "^tests/components/application-connector/"
+                  optional: "true"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-application-connector-connectivity-validator-test-build
+                  run_if_changed: "^tests/components/application-connector/"
+                  args:
+                    - "--name=connectivity-validator-test"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/components/application-connector"
+                    - "--dockerfile=Dockerfile.connectivity-validator"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+              - jobConfig:
+                  name: pull-application-connector-compass-runtime-agent-test-build
+                  args:
+                    - "--name=compass-runtime-agent-test"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/components/application-connector"
+                    - "--dockerfile=Dockerfile.compass-runtime-agent"
+                  run_if_changed: "^tests/components/application-connector/"
+                  optional: "true"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-application-connector-compass-runtime-agent-test-build
+                  run_if_changed: "^tests/components/application-connector/"
+                  args:
+                    - "--name=compass-runtime-agent-test"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/components/application-connector"
+                    - "--dockerfile=Dockerfile.compass-runtime-agent"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+              - jobConfig:
+                  name: pull-application-connector-mock-app-build
+                  args:
+                    - "--name=mock-app"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/components/application-connector"
+                    - "--dockerfile=Dockerfile.mockapp"
+                  run_if_changed: "^tests/components/application-connector/"
+                  optional: "true"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-application-connector-mock-app-build
+                  run_if_changed: "^tests/components/application-connector/"
+                  args:
+                    - "--name=mock-app"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/components/application-connector"
+                    - "--dockerfile=Dockerfile.mockapp"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+
+      - to: ../../prow/jobs/kyma/tests/function-controller/function-controller-tests-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: pull-function-controller-test-build
+                  args:
+                    - "--name=function-controller-test"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/function-controller"
+                    - "--dockerfile=Dockerfile"
+                  run_if_changed: "^tests/function-controller"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-function-controller-test-build
+                  run_if_changed: "^tests/function-controller/"
+                  args:
+                    - "--name=function-controller-test"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/function-controller"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+
+      - to: ../../prow/jobs/kyma/tests/serverless-bench/serverless-bench-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: pull-tests-serverless-bench-build
+                  args:
+                    - "--name=serverless-bench"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/serverless-bench"
+                    - "--dockerfile=Dockerfile"
+                  run_if_changed: "^tests/serverless-bench"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-test-serverless-bench-build
+                  run_if_changed: "^tests/serverless-bench/"
+                  args:
+                    - "--name=serverless-bench"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/serverless-bench"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+
+      - to: ../../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: pull-event-subscriber-tools-build
+                  args:
+                    - "--name=event-subscriber-tools"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tools/event-subscriber-tools"
+                    - "--dockerfile=Dockerfile"
+                  run_if_changed: "^tools/event-subscriber-tools"
+                  optional: "true"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-event-subscriber-tools-build
+                  run_if_changed: "^tools/event-subscriber-tools/"
+                  args:
+                    - "--name=event-subscriber-tools"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tools/event-subscriber-tools"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+
+      - to: ../../prow/jobs/kyma/tools/gitserver/gitserver-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: pull-gitserver-build
+                  args:
+                    - "--name=gitserver"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tools/gitserver"
+                    - "--dockerfile=Dockerfile"
+                  run_if_changed: "^tools/gitserver"
+                  optional: "true"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-gitserver-build
+                  run_if_changed: "^tools/gitserver/"
+                  args:
+                    - "--name=event-subscriber-tools"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tools/gitserver"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"

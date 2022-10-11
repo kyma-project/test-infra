@@ -27,7 +27,7 @@ const (
 
 var (
 	githubClient     *client.GithubClient
-	gitClientFactory *git.GitClient
+	gitClientFactory *git.Client
 	repoOwnersClient *repoowners.OwnersClient
 	sapToolsClient   *toolsclient.SapToolsClient
 	pubsubClient     *pubsub.Client
@@ -175,7 +175,7 @@ func main() {
 	pluginOptions := externalplugin.Opts{}
 	ownersOptions := repoowners.OwnersClientConfig{}
 	pubsubOptions := pubsub.ClientConfig{}
-	gitOptions := git.GitClientConfig{}
+	gitOptions := git.ClientConfig{}
 
 	// Add client and plugin cli flags.
 	fs := pluginOptions.NewFlags()
@@ -217,7 +217,7 @@ func main() {
 	logger.Debug("github client ready")
 
 	// Create git factory for github.com.
-	gitClientFactory, err = gitOptions.NewGitClient(git.WithTokenPath(pluginOptions.Github.TokenPath), git.WithGithubClient(githubClient))
+	gitClientFactory, err = gitOptions.NewClient(git.WithTokenPath(pluginOptions.Github.TokenPath), git.WithGithubClient(githubClient))
 	if err != nil {
 		logger.Fatalw("Failed creating git client", "error", err)
 		panic(err)
@@ -238,6 +238,9 @@ func main() {
 	ctx := context.Background()
 	withCredentialsFile := pubsubOptions.WithGoogleOption(option.WithCredentialsFile(pubsubOptions.CredentialsFilePath))
 	pubsubClient, err = pubsubOptions.NewClient(ctx, withCredentialsFile)
+	if err != nil {
+		logger.Fatalf("An error occurred during pubsub client configuration: %v", err)
+	}
 
 	logger.Debug("ownersclient ready")
 

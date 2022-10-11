@@ -119,7 +119,8 @@ gardener::provision_cluster() {
                 --region "${GARDENER_REGION}" \
                 -z "${GARDENER_ZONES}" \
                 -t "${MACHINE_TYPE}" \
-                --scaler-max 1 --scaler-min 1 \
+                --scaler-max 1 \
+                --scaler-min 1 \
                 --disk-type StandardSSD_LRS \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
                 --attempts 1 \
@@ -137,6 +138,8 @@ gardener::provision_cluster() {
                 -z "${GARDENER_ZONES}" \
                 -t "${MACHINE_TYPE}" \
                 --disk-type StandardSSD_LRS \
+                --scaler-max 4 \
+                --scaler-min 2 \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
                 --attempts 1 \
                 --verbose
@@ -147,42 +150,6 @@ gardener::provision_cluster() {
     # run oom debug pod
         utils::debug_oom
     fi
-}
-
-gardener::install_kyma() {
-    log::info "Installing Kyma"
-
-    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
-    if [[ "$?" -ne 0 ]]; then
-        return 1
-    fi
-
-    set -x
-    if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-        kyma install \
-            --ci \
-            --source "${KYMA_SOURCE}" \
-            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
-            --timeout 60m \
-            --profile evaluation \
-            --verbose
-    elif [[ "$EXECUTION_PROFILE" == "production" ]]; then
-        kyma install \
-            --ci \
-            --source "${KYMA_SOURCE}" \
-            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
-            --timeout 60m \
-            --profile production \
-            --verbose
-    else
-        kyma install \
-            --ci \
-            --source "${KYMA_SOURCE}" \
-            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
-            --timeout 90m \
-            --verbose
-    fi
-    set +x
 }
 
 gardener::hibernate_kyma() {

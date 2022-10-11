@@ -1,0 +1,171 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/runtime-watcher/runtime-watcher.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+            privileged: "false"
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
+            command: /kaniko-build
+            labels:
+              preset-sa-kyma-push-images: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        jobConfigs:
+          - repoName: kyma-project/runtime-watcher
+            jobs:
+              - jobConfig:
+                  run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
+                  name: pull-lint-skr
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd skr && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-tests-skr
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd skr && make test" # run test make target of skr
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
+                  name: pull-lint-kcp
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd kcp && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-tests-kcp
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd kcp && make test" # run test make target of kcp
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
+                  name: "pull-lint-listener"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd listener && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-tests-listener
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd listener && make test" # run test make target of kcp
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  name: pull-build-kcp
+                  run_if_changed: "^kcp/"
+                  args:
+                    - "--name=runtime-watcher-kcp"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kcp"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: main-build-kcp
+                  always_run: true
+                  args:
+                    - "--name=runtime-watcher-kcp"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kcp"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: pull-build-skr
+                  run_if_changed: "^skr/"
+                  args:
+                    - "--name=runtime-watcher-skr"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=skr"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: main-build-skr
+                  always_run: true
+                  args:
+                    - "--name=runtime-watcher-skr"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=skr"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_postsubmit

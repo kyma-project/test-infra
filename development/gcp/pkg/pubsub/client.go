@@ -83,13 +83,13 @@ func NewClient(ctx context.Context, projectID string) (*Client, error) {
 	return &Client{Client: pubSubClient}, nil
 }
 
-// GetJobId will extract prowjob  ID from prowjob URL. Prowjob ID is a last element of prowjob URL.
-func GetJobId(jobUrl *string) (*string, error) {
-	jobURL, err := url.Parse(*jobUrl)
+// GetJobID will extract prowjob  ID from prowjob URL. Prowjob ID is a last element of prowjob URL.
+func GetJobID(jobURL *string) (*string, error) {
+	parsedJobURL, err := url.Parse(*jobURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed parse test URL, error: %w", err)
 	}
-	jobID := path.Base(jobURL.Path)
+	jobID := path.Base(parsedJobURL.Path)
 	return github.String(jobID), nil
 }
 

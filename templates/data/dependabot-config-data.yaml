@@ -46,9 +46,9 @@ templates:
                   local:
                     - "dailyDockerEcosystem"
               - jobConfig:
-                  directory: "/changelog-generator"
+                  directory: "/development/tools/cmd/githubrelease"
                   # commit message can be 15 characters max
-                  commitMsgPrefix: "changelog-gen"
+                  commitMsgPrefix: "githubrelease"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
@@ -136,9 +136,9 @@ templates:
                   local:
                     - "dailyDockerEcosystem"
               - jobConfig:
-                  directory: "/stability-checker/deploy/stability-checker"
+                  directory: "/prow/images/golangci-lint"
                   # commit message can be 15 characters max
-                  commitMsgPrefix: "stability-check"
+                  commitMsgPrefix: "golangci-lint"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"

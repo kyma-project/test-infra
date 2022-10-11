@@ -14,7 +14,6 @@ templates:
               PROVISION_REGIONAL_CLUSTER: "true"
               NODES_PER_ZONE: "1"
               MACHINE_TYPE: "n1-highcpu-16"
-              KYMA_MAJOR_VERSION: "2"
             request_memory: 200Mi
             request_cpu: 80m
             labels:
@@ -26,7 +25,6 @@ templates:
               preset-gc-compute-envs: "true"
               preset-gc-project-env: "true"
               preset-docker-push-repository-gke-integration: "true"
-              preset-dind-enabled: "true"
               preset-kyma-artifacts-bucket: "true"
               preset-gardener-azure-kyma-integration: "true"
               preset-kyma-development-artifacts-bucket: "true"
@@ -49,8 +47,8 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_buildpack-golang"
                     - "extra_refs_test-infra"
+                    - "image_buildpack-golang"
                   local:
                     - "jobConfig_default"
               {{- range .Global.releases }}
@@ -72,8 +70,8 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_buildpack-golang"
                     - "extra_refs_test-infra"
+                    - "image_buildpack-golang"
                   local:
                     - "jobConfig_default"
                 {{- end }}

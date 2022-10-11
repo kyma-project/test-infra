@@ -46,7 +46,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -57,8 +57,6 @@ presubmits: # runs on PRs
               - name: GARDENER_REGION
                 value: "northeurope"
               - name: GARDENER_ZONES
-                value: "1"
-              - name: KYMA_MAJOR_VERSION
                 value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
@@ -121,7 +119,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -133,8 +131,6 @@ presubmits: # runs on PRs
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -196,7 +192,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -208,8 +204,6 @@ presubmits: # runs on PRs
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -244,7 +238,6 @@ presubmits: # runs on PRs
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
@@ -263,7 +256,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -277,8 +270,6 @@ presubmits: # runs on PRs
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
@@ -321,7 +312,7 @@ presubmits: # runs on PRs
         preset-kyma-integration-compass-enabled: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
         preset-kyma-integration-subaccounnt: "true"
-      run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((tests/fast-integration/eventing-test|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
       decorate: true
@@ -341,7 +332,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -351,8 +342,6 @@ presubmits: # runs on PRs
                 value: "/etc/credentials/kyma-tunas-prow-event-mesh"
               - name: KEB_PLAN_ID
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
@@ -391,7 +380,6 @@ presubmits: # runs on PRs
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
       run_if_changed: '^((tests/components/api-gateway\S+|resources/api-gateway\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
@@ -410,7 +398,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -473,7 +461,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -487,8 +475,6 @@ presubmits: # runs on PRs
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
@@ -530,7 +516,6 @@ postsubmits: # runs on main
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
       run_if_changed: '^((tests/components/api-gateway\S+|resources/api-gateway\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
@@ -549,7 +534,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -627,7 +612,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -639,8 +624,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -707,7 +690,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -719,8 +702,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -779,7 +760,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -849,7 +830,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -859,8 +840,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: REGION
@@ -893,7 +872,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-bot-github-token: "true"
-        preset-cluster-version: "true"
+        preset-cluster-version-previous: "true"
         preset-debug-commando-oom: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
@@ -925,7 +904,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
             securityContext:
               privileged: true
             command:
@@ -935,8 +914,6 @@ periodics: # runs on schedule
                 value: "northeurope"
               - name: GARDENER_ZONES
                 value: "1"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: PREVIOUS_MINOR_VERSION_COUNT

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
-	"strings"
 	"testing"
 
 	"github.com/ghodss/yaml"
@@ -31,12 +30,12 @@ func TestBranchProtection(t *testing.T) {
 		{"kyma-project", "community", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-project", "busola", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-project", "console", "main", []string{"license/cla", "tide"}, 1},
+		{"kyma-project", "api-gateway", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-project", "examples", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-project", "addons", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-project", "cli", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "varkes", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "vstudio-extension", "main", []string{"license/cla", "tide"}, 1},
-		{"kyma-incubator", "gcp-service-broker", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "podpreset-crd", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "marketplaces", "main", []string{"license/cla", "tide"}, 1},
 		{"kyma-incubator", "compass", "main", []string{"license/cla", "tide"}, 1},
@@ -77,15 +76,6 @@ func TestBranchProtectionRelease(t *testing.T) {
 			assert.Contains(t, p.RequiredStatusChecks.Contexts, "tide")
 		})
 	}
-
-}
-
-// status check prefix uses shorten version of release branch, because of that we need to generate the name
-func generateStatusCheck(commonJobName, releaseBranch string) string {
-	rel := strings.Replace(releaseBranch, "release", "rel", -1)
-	rel = strings.Replace(rel, ".", "", -1)
-	rel = strings.Replace(rel, "-", "", -1)
-	return "pre-" + rel + "-" + commonJobName
 
 }
 

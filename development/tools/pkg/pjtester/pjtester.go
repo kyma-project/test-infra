@@ -3,9 +3,7 @@ package pjtester
 import (
 	"bytes"
 	"context"
-	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"strconv"
 	"strings"
@@ -119,7 +117,7 @@ func newProwK8sClientset() *prowclient.Clientset {
 // It will set default path for prowjobs and config files if not provided in a file.
 func readTestCfg(testCfgFile string) testCfg {
 	var t testCfg
-	yamlFile, err := ioutil.ReadFile(testCfgFile)
+	yamlFile, err := os.ReadFile(testCfgFile)
 	if err != nil {
 		log.Fatal("Failed read test config file from virtual path KYMA_PROJECT_DIR/test-infra/vpath/pjtester.yaml")
 	}
@@ -191,18 +189,6 @@ func gatherOptions(configPath string, ghOptions prowflagutil.GitHubOptions) opti
 	o.pullSha = os.Getenv("PULL_PULL_SHA")
 	// pullAuthor is an author of github pull request under test
 	o.pullAuthor = gjson.Get(os.Getenv("JOB_SPEC"), "refs.pulls.0.author").String()
-	return o
-}
-
-// withGithubClientOptions will add default flags and values for github client.
-func (o options) withGithubClientOptions() options {
-	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	o.github.AddFlags(fs)
-	o.github.AllowAnonymous = true
-	_ = fs.Parse(os.Args[1:])
-	if err := o.github.Validate(false); err != nil {
-		logrus.WithError(err).Fatalf("github options validation failed")
-	}
 	return o
 }
 
@@ -498,11 +484,8 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 		logrus.WithError(err).Fatal("Failed to get GitHub client")
 	}
 	o.prFinder = prtagbuilder.NewGitHubClient(nil)
-	var testPrCfg *map[string]prOrg
-	//if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil && !o.prFetched {
-	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil {
-		o.getPullRequests(testCfg)
-	}
+	o.getPullRequests(testCfg)
+
 	for _, pjCfg := range testCfg.PjNames {
 		pj := newTestPJ(pjCfg, o)
 		result, err := pjsClient.ProwJobs(metav1.NamespaceDefault).Create(context.Background(), &pj, metav1.CreateOptions{})

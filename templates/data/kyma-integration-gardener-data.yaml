@@ -144,6 +144,27 @@ templates:
               preset-sa-test-gcr-push: "true" # required for pushing images
               preset-sa-gardener-logs: "true" # required for writing logs to Stackdriver
               preset-cluster-version: "true"
+          # remove after kyma-upgrade-gardener-kyma2-minor-versions is compatible with k8s 1.23
+          gardener_azure_job_old_version:
+            annotations:
+              pipeline.platform: gardener_azure
+            env:
+              RS_GROUP: "kyma-gardener-azure"
+              REGION: "northeurope"
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+              GARDENER_REGION: "northeurope"
+              GARDENER_ZONES: "1"
+            labels:
+              preset-gardener-azure-kyma-integration: "true"
+              preset-docker-push-repository-gke-integration: "true"
+              preset-kyma-cli-stable: "true"
+              preset-az-kyma-prow-credentials: "true"
+              preset-dind-enabled: "true" # we need to be able to start docker
+              preset-gc-compute-envs: "true" # prrovides the GCP region
+              preset-gc-project-env: "true" # required to be able to delete images
+              preset-sa-test-gcr-push: "true" # required for pushing images
+              preset-sa-gardener-logs: "true" # required for writing logs to Stackdriver
+              preset-cluster-version-previous: "true"
           installer_2:
             annotations:
               pipeline.installer: kyma deploy
@@ -174,7 +195,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_1
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -194,7 +214,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -215,7 +234,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -226,7 +244,7 @@ templates:
               # postsubmits
               - jobConfig:
                   name: post-main-kyma-gardener-gcp-goats-api-gateway
-                  optional: true
+                  optional: false
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -247,8 +265,7 @@ templates:
                     - command_integration
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing
-                  # temporarily make the job optional, as it's falky and blocking development
-                  optional: true
+                  optional: false
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -269,7 +286,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -283,7 +299,7 @@ templates:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                     # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: '^((tests/fast-integration/eventing-test|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
                   volumes:
                     - name: kyma-tunas-prow-event-mesh
                       secretName: kyma-tunas-prow-event-mesh
@@ -297,7 +313,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -305,7 +320,7 @@ templates:
                     - command_integration_skr_eventing
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-goats-api-gateway
-                  optional: true
+                  optional: false
                   labels:
                     preset-build-pr: "true"
                   decoration_config:
@@ -349,7 +364,6 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -375,7 +389,6 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -401,7 +414,6 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
-                    - kyma_major_version_2
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -450,7 +462,6 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
-                    - kyma_major_version_2
                     - jobConfig_slack_jellyfish
                   local:
                     - jobConfig_default
@@ -474,10 +485,9 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
-                    - kyma_major_version_2
                     - jobConfig_slack_jellyfish
                     - kyma_minor_upgrade
                   local:
                     - jobConfig_default
-                    - gardener_azure_job
+                    - gardener_azure_job_old_version
                     - command_upgrade_gardener_kyma2_minor_versions

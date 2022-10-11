@@ -32,12 +32,10 @@ type Message struct {
 
 // MessagePayload is the pubsub message payload of pubsub message.
 type MessagePayload struct {
-	Attributes   map[string]string `json:"attributes"`
-	Data         []byte            `json:"data"` // This property is base64 encoded
-	MessageId    string            `json:"messageId"`
-	Message_Id   string            `json:"message_id"`
-	PublishTime  string            `json:"publishTime"`
-	Publish_time string            `json:"publish_time"`
+	Attributes  map[string]string `json:"attributes"`
+	Data        []byte            `json:"data"` // This property is base64 encoded
+	MessageID   string            `json:"messageId"`
+	PublishTime string            `json:"publishTime"`
 }
 
 // ProwMessage is the Data field of pubsub message payload, published by Prow.
@@ -63,8 +61,23 @@ type FailingTestMessage struct {
 	GithubIssueNumber     *int64   `json:"githubIssueNumber,omitempty"`
 	GithubIssueRepo       *string  `json:"githubIssueRepo,omitempty"`
 	GithubIssueOrg        *string  `json:"githubIssueOrg,omitempty"`
-	GithubIssueUrl        *string  `json:"githubIssueUrl,omitempty"`
+	GithubIssueURL        *string  `json:"githubIssueUrl,omitempty"`
 	SlackThreadID         *string  `json:"slackThreadId,omitempty"`
 	GithubCommitersLogins []string `json:"githubCommitersLogins,omitempty"`
 	CommitersSlackLogins  []string `json:"slackCommitersLogins,omitempty"`
+}
+
+type Rotation struct {
+	NextRotationTime string `yaml:"nextRotationTime"`
+	RotationPeriod   string `yaml:"rotationPeriod"`
+}
+
+// SecretRotateMessage is the Data field of pubsub message payload, published by secret rotation automation.
+type SecretRotateMessage struct {
+	Name       string              `yaml:"name"`
+	CreateTime string              `yaml:"createTime"`
+	Labels     map[string]string   `yaml:"labels,omitempty"`
+	Topics     []map[string]string `yaml:"topics,omitempty"`
+	Etag       string              `yaml:"etag"`
+	Rotation   Rotation            `yaml:"rotation,omitempty"`
 }

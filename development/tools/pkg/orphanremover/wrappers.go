@@ -7,13 +7,13 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
-//ComputeServiceWrapper A wrapper for compute API service connections.
+// ComputeServiceWrapper A wrapper for compute API service connections.
 type ComputeServiceWrapper struct {
 	Context context.Context
 	Compute *compute.Service
 }
 
-//DeleteHTTPProxy Delete an httpProxy object
+// DeleteHTTPProxy Delete an httpProxy object
 func (csw *ComputeServiceWrapper) DeleteHTTPProxy(project string, httpProxy string) {
 	_, err := csw.Compute.TargetHttpProxies.Delete(project, httpProxy).Do()
 	if err != nil {
@@ -21,7 +21,7 @@ func (csw *ComputeServiceWrapper) DeleteHTTPProxy(project string, httpProxy stri
 	}
 }
 
-//DeleteURLMap Delte an URLMap object
+// DeleteURLMap Delte an URLMap object
 func (csw *ComputeServiceWrapper) DeleteURLMap(project string, urlMap string) {
 	_, err := csw.Compute.UrlMaps.Delete(project, urlMap).Do()
 	if err != nil {
@@ -29,7 +29,7 @@ func (csw *ComputeServiceWrapper) DeleteURLMap(project string, urlMap string) {
 	}
 }
 
-//DeleteBackendService ???
+// DeleteBackendService ???
 func (csw *ComputeServiceWrapper) DeleteBackendService(project string, backendService string) {
 	_, err := csw.Compute.BackendServices.Delete(project, backendService).Do()
 	if err != nil {
@@ -37,7 +37,7 @@ func (csw *ComputeServiceWrapper) DeleteBackendService(project string, backendSe
 	}
 }
 
-//DeleteInstanceGroup ???
+// DeleteInstanceGroup ???
 func (csw *ComputeServiceWrapper) DeleteInstanceGroup(project string, zone string, instanceGroup string) {
 	_, err := csw.Compute.InstanceGroups.Delete(project, zone, instanceGroup).Do()
 	if err != nil {
@@ -45,7 +45,7 @@ func (csw *ComputeServiceWrapper) DeleteInstanceGroup(project string, zone strin
 	}
 }
 
-//DeleteHealthChecks ???
+// DeleteHealthChecks ???
 func (csw *ComputeServiceWrapper) DeleteHealthChecks(project string, names []string) {
 	for _, check := range names {
 		_, err := csw.Compute.HttpHealthChecks.Delete(project, check).Do()
@@ -55,7 +55,7 @@ func (csw *ComputeServiceWrapper) DeleteHealthChecks(project string, names []str
 	}
 }
 
-//DeleteForwardingRule ???
+// DeleteForwardingRule ???
 func (csw *ComputeServiceWrapper) DeleteForwardingRule(project string, name string, region string) {
 	_, err := csw.Compute.ForwardingRules.Delete(project, region, name).Do()
 	if err != nil {
@@ -63,7 +63,7 @@ func (csw *ComputeServiceWrapper) DeleteForwardingRule(project string, name stri
 	}
 }
 
-//DeleteGlobalForwardingRule ???
+// DeleteGlobalForwardingRule ???
 func (csw *ComputeServiceWrapper) DeleteGlobalForwardingRule(project string, name string) {
 	_, err := csw.Compute.GlobalForwardingRules.Delete(project, name).Do()
 	if err != nil {
@@ -71,7 +71,7 @@ func (csw *ComputeServiceWrapper) DeleteGlobalForwardingRule(project string, nam
 	}
 }
 
-//DeleteTargetPool ???
+// DeleteTargetPool ???
 func (csw *ComputeServiceWrapper) DeleteTargetPool(project string, name string, region string) {
 	_, err := csw.Compute.TargetPools.Delete(project, region, name).Do()
 	if err != nil {
@@ -79,14 +79,12 @@ func (csw *ComputeServiceWrapper) DeleteTargetPool(project string, name string, 
 	}
 }
 
-//LookupURLMaps ???
+// LookupURLMaps ???
 func (csw *ComputeServiceWrapper) LookupURLMaps(project string) ([]*compute.UrlMap, error) {
 	call := csw.Compute.UrlMaps.List(project)
 	var items []*compute.UrlMap
 	f := func(page *compute.UrlMapList) error {
-		for _, list := range page.Items {
-			items = append(items, list)
-		}
+		items = append(items, page.Items...)
 		return nil
 	}
 	if err := call.Pages(csw.Context, f); err != nil {
@@ -95,14 +93,12 @@ func (csw *ComputeServiceWrapper) LookupURLMaps(project string) ([]*compute.UrlM
 	return items, nil
 }
 
-//LookupBackendServices ???
+// LookupBackendServices ???
 func (csw *ComputeServiceWrapper) LookupBackendServices(project string) ([]*compute.BackendService, error) {
 	call := csw.Compute.BackendServices.List(project)
 	var items []*compute.BackendService
 	f := func(page *compute.BackendServiceList) error {
-		for _, list := range page.Items {
-			items = append(items, list)
-		}
+		items = append(items, page.Items...)
 		return nil
 	}
 	if err := call.Pages(csw.Context, f); err != nil {
@@ -111,7 +107,7 @@ func (csw *ComputeServiceWrapper) LookupBackendServices(project string) ([]*comp
 	return items, nil
 }
 
-//LookupInstanceGroup ???
+// LookupInstanceGroup ???
 func (csw *ComputeServiceWrapper) LookupInstanceGroup(project string, zone string) ([]string, error) {
 	call := csw.Compute.InstanceGroups.List(project, zone)
 	call = call.Filter("size: 0")
@@ -128,15 +124,13 @@ func (csw *ComputeServiceWrapper) LookupInstanceGroup(project string, zone strin
 	return items, nil
 }
 
-//LookupTargetPools ???
+// LookupTargetPools ???
 func (csw *ComputeServiceWrapper) LookupTargetPools(project string) ([]*compute.TargetPool, error) {
 	call := csw.Compute.TargetPools.AggregatedList(project)
 	var items []*compute.TargetPool
 	f := func(page *compute.TargetPoolAggregatedList) error {
 		for _, list := range page.Items {
-			for _, element := range list.TargetPools {
-				items = append(items, element)
-			}
+			items = append(items, list.TargetPools...)
 		}
 		return nil
 	}
@@ -146,7 +140,7 @@ func (csw *ComputeServiceWrapper) LookupTargetPools(project string) ([]*compute.
 	return items, nil
 }
 
-//LookupZones ???
+// LookupZones ???
 func (csw *ComputeServiceWrapper) LookupZones(project, pattern string) ([]string, error) {
 	call := csw.Compute.Zones.List(project)
 	if pattern != "" {
@@ -167,14 +161,12 @@ func (csw *ComputeServiceWrapper) LookupZones(project, pattern string) ([]string
 	return zones, nil
 }
 
-//LookupHTTPProxy ???
+// LookupHTTPProxy ???
 func (csw *ComputeServiceWrapper) LookupHTTPProxy(project string) ([]*compute.TargetHttpProxy, error) {
 	call := csw.Compute.TargetHttpProxies.List(project)
 	var items []*compute.TargetHttpProxy
 	f := func(page *compute.TargetHttpProxyList) error {
-		for _, list := range page.Items {
-			items = append(items, list)
-		}
+		items = append(items, page.Items...)
 		return nil
 	}
 	if err := call.Pages(csw.Context, f); err != nil {
@@ -183,14 +175,12 @@ func (csw *ComputeServiceWrapper) LookupHTTPProxy(project string) ([]*compute.Ta
 	return items, nil
 }
 
-//LookupGlobalForwardingRule ???
+// LookupGlobalForwardingRule ???
 func (csw *ComputeServiceWrapper) LookupGlobalForwardingRule(project string) ([]*compute.ForwardingRule, error) {
 	call := csw.Compute.GlobalForwardingRules.List(project)
 	var items []*compute.ForwardingRule
 	f := func(page *compute.ForwardingRuleList) error {
-		for _, list := range page.Items {
-			items = append(items, list)
-		}
+		items = append(items, page.Items...)
 		return nil
 	}
 	if err := call.Pages(csw.Context, f); err != nil {
@@ -199,11 +189,8 @@ func (csw *ComputeServiceWrapper) LookupGlobalForwardingRule(project string) ([]
 	return items, nil
 }
 
-//CheckInstance Verify if instance (vm) of given name exists
+// CheckInstance Verify if instance (vm) of given name exists
 func (csw *ComputeServiceWrapper) CheckInstance(project string, zone string, name string) bool {
 	_, err := csw.Compute.Instances.Get(project, zone, name).Do()
-	if err != nil {
-		return false
-	}
-	return true
+	return err == nil
 }

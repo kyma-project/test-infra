@@ -1,0 +1,51 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/api-gateway/api-gateway-validation.yaml
+        localSets:
+          linting:
+            skip_report: "false"
+            max_concurrency: "10"
+            optional: "true"
+            decorate: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 200Mi
+            request_cpu: 80m
+          testing:
+            skip_report: "false"
+            max_concurrency: "10"
+            optional: "true"
+            decorate: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 1Gi
+            request_cpu: 500m
+        jobConfigs:
+          - repoName: "kyma-project/api-gateway"
+            jobs:
+              - jobConfig:
+                  name: pull-api-gateway-lint
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  always_run: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                  local:
+                    - linting
+              - jobConfig:
+                  name: pull-api-gateway-test
+                  always_run: true
+                  command: "make"
+                  args:
+                    - "test"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                  local:
+                    - testing

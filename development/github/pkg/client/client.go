@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 
 	"github.com/google/go-github/v42/github"
@@ -72,9 +72,9 @@ func (o *GithubClientConfig) GetToken() (string, error) {
 	return string(token), nil
 }
 
-// newOauthHttpClient creates HTTP client with oauth authentication.
+// newOauthHTTPClient creates HTTP client with oauth authentication.
 // It authenticates with Bearer token.
-func newOauthHttpClient(ctx context.Context, accessToken string) *http.Client {
+func newOauthHTTPClient(ctx context.Context, accessToken string) *http.Client {
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{
 			AccessToken: accessToken,
@@ -88,7 +88,7 @@ func newOauthHttpClient(ctx context.Context, accessToken string) *http.Client {
 // NewClient creates kyma implementation of github client with oauth authentication.
 // TODO: create client with support for github cache or ghproxy.
 func NewClient(ctx context.Context, accessToken string) (*Client, error) {
-	tc := newOauthHttpClient(ctx, accessToken)
+	tc := newOauthHTTPClient(ctx, accessToken)
 	c := github.NewClient(tc)
 
 	return &Client{c}, nil
@@ -97,7 +97,7 @@ func NewClient(ctx context.Context, accessToken string) (*Client, error) {
 // NewSapToolsClient creates kyma implementation github Client with SapToolsGithubURL as an endpoint.
 // Client uses oauth authentication with bearer token.
 func NewSapToolsClient(ctx context.Context, accessToken string) (*SapToolsClient, error) {
-	tc := newOauthHttpClient(ctx, accessToken)
+	tc := newOauthHTTPClient(ctx, accessToken)
 	c, err := github.NewEnterpriseClient(SapToolsGithubURL, SapToolsGithubURL, tc)
 	if err != nil {
 		return nil, fmt.Errorf("got error when creating sap tools github enterprise client: %w", err)
@@ -116,9 +116,9 @@ func (c *Client) IsStatusOK(resp *github.Response) (bool, error) {
 // On not OK status it will read response body to expose details about error.
 func IsStatusOK(resp *github.Response) (bool, error) {
 	if resp.StatusCode != http.StatusOK {
-		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		bodyBytes, err := io.ReadAll(resp.Body)
 		if err != nil {
-			return false, fmt.Errorf("got error when reading response body for non 200 HTTP reponse code, error: %w", err)
+			return false, fmt.Errorf("got error when reading response body for non 200 HTTP response code, error: %w", err)
 		}
 		bodyString := string(bodyBytes)
 		return false, fmt.Errorf("got non 200 response code in HTTP response, body: %s", bodyString)

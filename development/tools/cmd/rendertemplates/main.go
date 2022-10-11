@@ -6,7 +6,6 @@ import (
 	"flag"
 	"fmt"
 	"io/fs"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -100,7 +99,7 @@ func main() {
 	} else {
 		// read rendertemplate config file from local filesystem
 		// rendertemplate config contains global configsets
-		configFile, err = ioutil.ReadFile(*configFilePath)
+		configFile, err = os.ReadFile(*configFilePath)
 		if err != nil {
 			log.Fatalf("Cannot read config file from local filesystem: %s", err.Error())
 		}
@@ -312,7 +311,7 @@ func loadTemplateFromGithub(templateFileName string, tplCache map[string]*templa
 	}
 	templateString, err := getTemplateFromGithub(ghClient, templateFileName)
 	if err != nil {
-
+		return nil, err
 	}
 	templateInstance, err = template.
 		New(path.Base(templateFileName)).

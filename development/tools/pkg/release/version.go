@@ -44,7 +44,7 @@ func (*kymaVersionReader) ReadFromFile(filePath string) (string, bool, error) {
 
 func parseVersion(releaseVersion string) (bool, error) {
 
-	r, err := regexp.Compile("^(\\d+.){2}\\d+(-rc(\\d+)?)?$")
+	r, err := regexp.Compile(`^(\d+.){2}\d+(-rc(\d+)?)?$`)
 	if err != nil {
 		return false, err
 	}

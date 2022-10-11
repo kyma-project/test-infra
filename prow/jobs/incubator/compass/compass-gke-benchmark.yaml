@@ -12,7 +12,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-version: "true"
-        preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
@@ -41,7 +40,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
             securityContext:
               privileged: true
             command:
@@ -52,8 +51,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
@@ -71,16 +68,15 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel23-compass-gke-benchmark
+    - name: pre-rel27-compass-gke-benchmark
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel23-compass-gke-benchmark"
+        prow.k8s.io/pubsub.runID: "pre-rel27-compass-gke-benchmark"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
-        preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
@@ -99,15 +95,15 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - release-2.3
+        - release-2.7
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.3
+          base_ref: release-2.7
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
             securityContext:
               privileged: true
             command:
@@ -118,8 +114,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
@@ -137,16 +131,15 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel22-compass-gke-benchmark
+    - name: pre-rel26-compass-gke-benchmark
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel22-compass-gke-benchmark"
+        prow.k8s.io/pubsub.runID: "pre-rel26-compass-gke-benchmark"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
-        preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
@@ -165,15 +158,15 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - release-2.2
+        - release-2.6
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.2
+          base_ref: release-2.6
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
             securityContext:
               privileged: true
             command:
@@ -184,8 +177,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE
@@ -203,16 +194,15 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel21-compass-gke-benchmark
+    - name: pre-rel25-compass-gke-benchmark
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel21-compass-gke-benchmark"
+        prow.k8s.io/pubsub.runID: "pre-rel25-compass-gke-benchmark"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-cluster-version: "true"
-        preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
@@ -231,15 +221,15 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - release-2.1
+        - release-2.5
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.1
+          base_ref: release-2.5
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
             securityContext:
               privileged: true
             command:
@@ -250,8 +240,6 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE

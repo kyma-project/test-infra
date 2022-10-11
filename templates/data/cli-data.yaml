@@ -4,9 +4,8 @@ templates:
       - to: ../../prow/jobs/cli/cli.yaml
         localSets:
           job_spec:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            env:
-              GO111MODULE: "on"
+            command: "make"
+            privileged: "false"
         jobConfigs:
           - repoName: kyma-project/cli
             jobs:
@@ -14,7 +13,6 @@ templates:
                   name: pre-kyma-cli
                   always_run: true
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/cli"
                     - "ci-pr"
                   branches:
                     - "^main$"
@@ -23,14 +21,12 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - extra_refs_test-infra
                     - image_buildpack-golang-toolbox
                   local:
                     - job_spec
               - jobConfig:
                   name: post-kyma-cli
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/cli"
                     - "ci-main"
                   branches:
                     - "^main$"
@@ -39,7 +35,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-toolbox
                   local:
@@ -47,7 +42,6 @@ templates:
               - jobConfig:
                   name: rel-kyma-cli
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/cli"
                     - "ci-release"
                   branches:
                     - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$"
@@ -58,7 +52,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-toolbox
                     - jobConfig_slack_jellyfish
@@ -90,7 +83,6 @@ templates:
                   branches:
                     - "^stable$"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/cli"
                     - "ci-main"
                   labels:
                     preset-kyma-cli-stable: "true"
@@ -99,7 +91,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
                     - disable_testgrid
                     - image_buildpack-golang-toolbox
                     - jobConfig_slack_jellyfish
@@ -160,19 +151,6 @@ templates:
                       - "disable_testgrid"
                     local:
                       - "jobConfig_postsubmit"
-              - jobConfig:
-                  name: post-cli-integration-kyma-1
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "jobConfig_submit"
-                    - "jobConfig_postsubmit"
       - to: ../../prow/jobs/cli/cli-compatibility.yaml
         localSets:
           jobConfig_default:
@@ -194,13 +172,12 @@ templates:
             env:
               KUBERNETES_RUNTIME: "k3d"
         jobConfigs:
-          - repoName:  kyma-project/cli
+          - repoName: kyma-project/cli
             jobs:
               - jobConfig:
                   name: "kyma-cli-compatibility-1"
                   cron: "00 00 * * *" # "At 00:00 daily"
                   env:
-                    GO111MODULE: "on"
                     COMPAT_BACKTRACK: "1"
                 inheritedConfigs:
                   global:

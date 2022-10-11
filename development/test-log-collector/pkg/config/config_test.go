@@ -132,7 +132,7 @@ func TestLoadDispatchingConfig(t *testing.T) {
   channelID: "chanID1"
   onlyReportFailure: false
   testCases:
-    - "rafter"
+    - "eventing"
 - channelName: "#serverless-test"
   channelID: "chanID2"
   onlyReportFailure: true
@@ -162,7 +162,7 @@ func TestLoadDispatchingConfig(t *testing.T) {
 				ChannelID:         "chanID1",
 				ChannelName:       "#work",
 				OnlyReportFailure: false,
-				TestCases:         []string{"rafter"},
+				TestCases:         []string{"eventing"},
 			},
 			{
 				ChannelName:       "#serverless-test",

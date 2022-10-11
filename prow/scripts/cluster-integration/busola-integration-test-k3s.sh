@@ -7,17 +7,30 @@ LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
 
-prepare_k3s() {
-    echo "prepare K3s cluster"
-    pushd ${LOCAL_KYMA_DIR}
-    ./create-cluster-k3s.sh
-    echo "k3s cluster created √"
-    kubectl cluster-info
-    popd
+function install_cli() {
+  local install_dir
+  declare -r install_dir="/usr/local/bin"
+  mkdir -p "$install_dir"
+
+  local os
+  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
+    echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
+    exit 1
+  else
+    readonly os
+  fi
+
+  pushd "$install_dir" || exit
+  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
+  chmod +x kyma
+  popd
+
+  kyma version --client
 }
 
 generate_cert(){
-    echo "Generate ssl cerfificate"
+    echo "Generate ssl certificate"
     # $1 is the domain
     mkdir ssl
     pushd ssl
@@ -76,7 +89,7 @@ install_busola(){
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     # helm repo update
     
-    helm install ingress-nginx \
+    helm install ingress-nginx --version 4.1.3 \
     --namespace=kube-system \
     --set controller.extraArgs.default-ssl-certificate=kube-system/default-ssl-certificate \
     ingress-nginx/ingress-nginx > /dev/null
@@ -103,10 +116,12 @@ echo "Node.js version: $(node -v)"
 echo "NPM version: $(npm -v)"
 
 
+echo "STEP: Installing Kyma CLI fore easier cluster setup"
+install_cli
 echo "STEP: Preparing k3s cluster"
-prepare_k3s
+kyma provision k3d --ci
 
-echo "STEP: Generating cerfificate"
+echo "STEP: Generating certificate"
 generate_cert $K3S_DOMAIN
 
 echo "STEP: Installing Busola on the cluster"
@@ -120,8 +135,18 @@ kubectl wait \
 --all \
 --timeout=120s
 
+# copy external cluster kubeconfig
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
+
+# copy local cluster and adjust the server address
+cp "$(k3d kubeconfig write kyma)" "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
+sed -i 's!server: https://0.0.0.0:.*!server: https://kubernetes.default.svc!' "$PWD/busola-tests/fixtures/kubeconfig-k3s.yaml"
+
 mkdir -p "$PWD/busola-tests/cypress/screenshots"
+
+# replace symlink with an actual folder
+rm "$PWD/busola-tests/fixtures/examples"
+mv "$PWD/busola-examples" "$PWD/busola-tests/fixtures/examples"
 
 echo "STEP: Running Cypress tests inside Docker"
 
