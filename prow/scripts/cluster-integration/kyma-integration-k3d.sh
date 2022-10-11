@@ -97,7 +97,7 @@ function deploy_kyma() {
   if [[ -v TELEMETRY_TRACING_ENABLED ]]; then
     kyma_deploy_cmd+=" --value=telemetry.controller.tracing.enabled=true"
   fi
-  
+
   if [[ -v TELEMETRY_ENABLED ]]; then
     kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
