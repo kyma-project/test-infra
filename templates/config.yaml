@@ -94,7 +94,7 @@ globalSets:
     image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220928-3d2ace1b4-buildkit
     command: "/kaniko-build"
     labels:
-      preset-sa-gcr-push: "true"
+      preset-sa-kyma-push-images: "true"
     annotations:
       container.apparmor.security.beta.kubernetes.io/test: unconfined
       container.seccomp.security.alpha.kubernetes.io/test: unconfined
