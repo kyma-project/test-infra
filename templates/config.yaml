@@ -91,8 +91,8 @@ globalSets:
         value: high-cpu
         operator: Equal
         effect: NoSchedule
-    image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220928-3d2ace1b4-buildkit
-    command: "/kaniko-build"
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221011-f36fe4783-buildkit
+    command: "/image-builder"
     labels:
       preset-sa-kyma-push-images: "true"
     annotations:
