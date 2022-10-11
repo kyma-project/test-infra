@@ -91,8 +91,9 @@ cloud.google.com/go/domains v0.6.0/go.mod h1:T9Rz3GasrpYk6mEGHh4rymIhjlnIuB4ofT1
 cloud.google.com/go/edgecontainer v0.1.0/go.mod h1:WgkZ9tp10bFxqO8BLPqv2LlfmQF1X8lZqwW4r1BTajk=
 cloud.google.com/go/firestore v1.1.0/go.mod h1:ulACoGHTpvq5r8rxGJ4ddJZBZqakUQqClKRT5SZwBmk=
 cloud.google.com/go/firestore v1.5.0/go.mod h1:c4nNYR1qdq7eaZ+jSc5fonrQN2k3M7sWATcYTiakjEo=
-cloud.google.com/go/firestore v1.6.1 h1:8rBq3zRjnHx8UtBvaOWqBB1xq9jH6/wltfQLlTMh2Fw=
 cloud.google.com/go/firestore v1.6.1/go.mod h1:asNXNOzBdyVQmEU+ggO8UPodTkEVFW5Qx+rwHnAz+EY=
+cloud.google.com/go/firestore v1.7.0 h1:cNkQyruzd5v7FjmL6eeDqwqgX+FbPCjbHxz7vsMhGoo=
+cloud.google.com/go/firestore v1.7.0/go.mod h1:0b8DxQkXhbg/PmsjhCUAg4EExIuifAvbHj5Z/iX3BYI=
 cloud.google.com/go/functions v1.6.0/go.mod h1:3H1UA3qiIPRWD7PeZKLvHZ9SaQhR26XIJcC0A5GbvAk=
 cloud.google.com/go/functions v1.7.0 h1:s3Snbr2O4j4p7CuwImBas8rNNmkHS1YJANcCpKGqQSE=
 cloud.google.com/go/functions v1.7.0/go.mod h1:+d+QBcWM+RsrgZfV9xo6KfA1GlzJfxcfZcRPEhDDfzg=
