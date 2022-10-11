@@ -26,17 +26,17 @@ chmod +x yq
 # Flag to recycle or recreate VM on each commit execution
 RECYCLE_VM="no"
 # Flag that shows if the mandatory provisioning (kyma installation) was completed
-KYMA_INSTALLED="no"
+IS_KYMA_INSTALLED="no"
 
-get_schema_migrator_label() {
+get_schema_migrator_version() {
     local PATH_TO_VALUES_YAML="/home/prow/go/src/github.com/kyma-incubator/compass/chart/compass/values.yaml"
-    local SCHEMA_MIGRATOR_LABEL=$( yq e '.global.images.schema_migrator.version' < "${PATH_TO_VALUES_YAML}" )
-    echo "${SCHEMA_MIGRATOR_LABEL}"
+    local SCHEMA_MIGRATOR_VERSION=$( yq e '.global.images.schema_migrator.version' < "${PATH_TO_VALUES_YAML}" )
+    echo "${SCHEMA_MIGRATOR_VERSION}"
 }
 
 cleanup() {
     local ARG=$?
-    if [[ "${RECYCLE_VM}" == "yes" && "${KYMA_INSTALLED}" == "yes" ]]; then
+    if [[ "${RECYCLE_VM}" == "yes" && "${IS_KYMA_INSTALLED}" == "yes" ]]; then
         log::info "Triggering the compass uninstallation"
         utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_PREFIX}${SUFFIX}" -c "yes | ~/compass/installation/scripts/prow/uninstall-compass.sh"
     else
@@ -47,7 +47,6 @@ cleanup() {
 }
 
 LABELS=""
-read -r SCHEMA_MIGRATOR_LABEL <<< "$( get_schema_migrator_label )"
 
 if [[ -z "${PULL_NUMBER}" ]]; then
     LABELS=(--labels "branch=${PULL_BASE_REF},job-name=compass-integration")
@@ -57,6 +56,7 @@ else
     SUFFIX="${PULL_NUMBER}"
 fi
 
+read -r SCHEMA_MIGRATOR_VERSION <<< "$( get_schema_migrator_version )"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
     export JOB_NAME_PATTERN="(pre-compass-components-.*)|(^pre-compass-tests$)"
@@ -64,14 +64,14 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 
     CURRENT_PR_LABEL="PR-${PULL_NUMBER}"
-    if [[ "${SCHEMA_MIGRATOR_LABEL}" != "${CURRENT_PR_LABEL}" ]]; then
+    if [[ "${SCHEMA_MIGRATOR_VERSION}" != "${CURRENT_PR_LABEL}" ]]; then
         # Recycle VM only on PR execution and when schema migrator is not changed as part of this PR
         RECYCLE_VM="yes"
     fi
 fi
 
 # Log the VM recycle strategy
-if [[ "${RECYCLE_VM}" == "yes" && "${KYMA_INSTALLED}" == "yes" ]]; then
+if [[ "${RECYCLE_VM}" == "yes" && "${IS_KYMA_INSTALLED}" == "yes" ]]; then
     log::info "VM will be recycled and reused to execute validaiton of next commit in this PR: ${SUFFIX}"
 else
     log::info "VM will be destroyed when execution of validaiton ends."
@@ -183,9 +183,9 @@ if [[ -z "$VM_FOR_PREFIX_AND_SUFFIX" ]]; then
     log::info "Triggering the full installation"
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_PREFIX}${SUFFIX}" -c "yes | ~/compass/installation/scripts/prow/provision.sh ${DUMP_DB}"
     log::info "Full provisioning done"
-    KYMA_INSTALLED="yes"
+    IS_KYMA_INSTALLED="yes"
 else
-    KYMA_INSTALLED="yes"
+    IS_KYMA_INSTALLED="yes"
     trap cleanup exit INT
 
     log::info "The VM with name:  ${VM_FOR_PREFIX_AND_SUFFIX} is available - will be reused..." 

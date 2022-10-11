@@ -1,0 +1,9 @@
+pjNames:
+     - pjName: "pre-main-compass-integration-with-dump"
+     - pjName: "pre-main-compass-integration-no-dump"
+     - pjName: "post-main-compass-vm-clean-with-dump"
+     - pjName: "post-main-compass-vm-clean-no-dump"
+prConfigs:
+     kyma-incubator:
+       compass:
+         prNumber: 2613

@@ -23,7 +23,7 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
 elif [[ "${BUILD_TYPE}" == "master" ]] ; then
     log::info "Main branch - cleanup should be done."
     log::info "Execute Job Guard"
-    export JOB_NAME_PATTERN="(^pre-main-compass-integration$)|(^pre-main-compass-integration-no-dump$)"
+    export JOB_NAME_PATTERN="(pre-main-compass-integration-.*)"
     export JOBGUARD_TIMEOUT="30m"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
@@ -72,10 +72,16 @@ log::info "VM Prefix set to: ${VM_PREFIX}"
 
 VMS_RESPONSE=$(gcloud compute instances list --sort-by "~creationTimestamp" --filter="name~${VM_PREFIX}" --format=json)
 VMS_COUNT=$(echo -E "${VMS_RESPONSE}" | jq length)
+if [ $? -ne 0 ]; then
+    log::error "The Fetch VMs response cannot be parsed: ${VMS_RESPONSE}" && exit 1
+fi
 log::info "VMs Found: ${VMS_COUNT}"
 
 OPEN_PRS_RESPONSE=$(curl -sS "https://api.github.com/repos/kyma-incubator/compass/pulls?state=open")
 OPEN_PRS_COUNT=$(echo -E "${OPEN_PRS_RESPONSE}" | jq length)
+if [ $? -ne 0 ]; then
+    log::error "The Open PRs response cannot be parsed: ${OPEN_PRS_RESPONSE}" && exit 1
+fi
 log::info "Open PRs Found: ${OPEN_PRS_COUNT}"
 
 for i in $(echo -E "${VMS_RESPONSE}" | jq -r '.[].name'); do
