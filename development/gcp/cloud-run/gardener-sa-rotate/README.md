@@ -57,8 +57,8 @@ See the list of labels required for the function:
 | Name                      | Required | Description                                                                                          |
 | :------------------------ | :------: | :--------------------------------------------------------------------------------------------------- |
 | **type** | Yes | The type of secret. It must be set to `gardener-service-account`. |
-| **kubeconfig-secret** | Yes | the name of the Secret Manager secret containing the kubeconfig. |
-| **gardener-secret** | Yes | the name of the Gardener secret containing service account credentials. |
+| **kubeconfig-secret** | Yes | The name of the Secret Manager secret containing the kubeconfig. |
+| **gardener-secret** | Yes | The name of the Gardener secret containing service account credentials. |
 | **gardener-secret-namespace** | Yes | The name of the Gardener secret namespace containing service account credentials. |
 
 
