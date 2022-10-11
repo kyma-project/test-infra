@@ -78,6 +78,59 @@ globalSets:
       - name: config
         mountPath: /config
         readOnly: true
+  image-builder-buildkit:
+    skip_report: "false"
+    max_concurrency: 10
+    decorate: "true"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
+    nodeSelector:
+      dedicated: high-cpu
+    tolerations:
+      - key: dedicated
+        value: high-cpu
+        operator: Equal
+        effect: NoSchedule
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221011-f36fe4783-buildkit
+    command: "/image-builder"
+    labels:
+      preset-sa-kyma-push-images: "true"
+    annotations:
+      container.apparmor.security.beta.kubernetes.io/test: unconfined
+      container.seccomp.security.alpha.kubernetes.io/test: unconfined
+    env:
+      BUILDKITD_FLAGS: "--oci-worker-no-process-sandbox"
+    volumes:
+      - name: share
+        emptyDir: true
+      - name: config
+        configMapName: kaniko-build-config
+    volumeMounts:
+      - mountPath: /home/user/.local/share/buildkit
+        name: share
+      - name: config
+        mountPath: /config
+        readOnly: true
+  linting:
+    skip_report: "false"
+    max_concurrency: "10"
+    optional: "true"
+    decorate: "true"
+    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
+    request_memory: 200Mi
+    request_cpu: 80m
+  testing:
+    skip_report: "false"
+    max_concurrency: "10"
+    optional: "true"
+    decorate: "true"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
+    request_memory: 1Gi
+    request_cpu: 100m
   # Kyma major version sets
   kyma_major_upgrade:
     env:
