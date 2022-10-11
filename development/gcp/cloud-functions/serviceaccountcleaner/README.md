@@ -1,8 +1,8 @@
-# Cleanup service account secrets using Cloud Function
+# Cleanup of service account secrets using Cloud Function
 
 ## Overview
 
-Cloud Function creates a new key for a GCP service account and updates the required secret data. The function is triggered by a  Pub/Sub message sent by a secret stored in Secret Manager.
+Cloud Function deletes old keys for a GCP service account and updates the required secret data. The function is triggered by a Cloud Scheduler job.
 
 1. Cloud Scheduler starts the Cloud Function.
 2. For each secret stored in Secret Manager:
