@@ -1,4 +1,6 @@
-registry: eu.gcr.io/kyma-project
+registry:
+  - eu.gcr.io/kyma-project
+  - europe-docker.pkg.dev/kyma-project/prod
 dev-registry:
   - eu.gcr.io/kyma-project
   - europe-docker.pkg.dev/kyma-project/dev
@@ -6,5 +8,5 @@ reproducible: false
 log-format: json
 cache:
   enabled: true
-  cache-repo: europe-docker.pkg.dev/kyma-project/cache
+  cache-repo: europe-docker.pkg.dev/kyma-project/cache/cache
   cache-run-layers: true
