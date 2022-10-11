@@ -19,7 +19,7 @@ source "$SCRIPT_DIR/lib/gcp.sh"
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
     export JOB_NAME_PATTERN="(pull-.*)"
-    export JOBGUARD_TIMEOUT="30m"
+    export JOBGUARD_TIMEOUT="45m"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
