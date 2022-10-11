@@ -27,9 +27,9 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220928-3d2ace1b4-buildkit"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221011-f36fe4783-buildkit"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=hydrator"
               - "--config=/config/kaniko-build-config.yaml"
@@ -89,9 +89,9 @@ postsubmits: # runs on main
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220928-3d2ace1b4-buildkit"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221011-f36fe4783-buildkit"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=hydrator"
               - "--config=/config/kaniko-build-config.yaml"
