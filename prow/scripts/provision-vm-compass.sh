@@ -23,6 +23,36 @@ wget "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_a
 mv yq_linux_amd64 yq
 chmod +x yq
 
+# Check if the VM need to be recreated
+FIVE_MINUTES_AGO=$(date -u +"%Y-%m-%dT%H:%M:%SZ" --date='5 minutes ago')
+PR_COMMENTS_RESPONSE=$(curl -sS "https://api.github.com/repos/kyma-incubator/compass/issues/2613/comments?since=${FIVE_MINUTES_AGO}")
+COMMENTS_COUNT=$(echo -E "${PR_COMMENTS_RESPONSE}" | jq length)
+if [ $? -ne 0 ]; then
+    log::error "The PRs Comments response cannot be parsed: ${PR_COMMENTS_RESPONSE}" && exit 1
+fi
+
+for i in $(jq '.[] | .body | tostring ' <<< "${PR_COMMENTS_RESPONSE}" ); do
+    COMMENT_BODY="$i"
+    echo "Body:" "${COMMENT_BODY}"
+    # if [ "$SM_INSTANCES_COUNT" != 0 ]; then
+    #   if [[ -n "$2" ]]; then
+    #     echo "------------------------------"
+    #     echo "$SM_INSTANCES_RESP"
+    #     echo "------------------------------"
+    #   fi
+    # fi
+    echo "------------------------------"
+done
+
+
+
+
+
+
+log::info "Open PRs Found: ${OPEN_PRS_COUNT}"
+
+
+
 # Flag to recycle or recreate VM on each commit execution
 RECYCLE_VM="no"
 # Flag that shows if the mandatory provisioning (kyma installation) was completed
