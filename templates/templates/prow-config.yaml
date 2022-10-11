@@ -517,6 +517,19 @@ presets:
         mountPath: /etc/credentials/sa-gcr-push-kyma-project
         readOnly: true
   - labels:
+      preset-sa-kyma-push-images: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-kyma-push-images/service-account.json
+    volumes:
+      - name: sa-kyma-push-images
+        secret:
+          secretName: sa-kyma-push-images
+    volumeMounts:
+      - name: sa-kyma-push-images
+        mountPath: /etc/credentials/sa-kyma-push-images
+        readOnly: true
+  - labels:
       preset-sa-kyma-artifacts: "true"
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
