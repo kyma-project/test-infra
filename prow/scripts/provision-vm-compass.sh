@@ -23,36 +23,6 @@ wget "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_a
 mv yq_linux_amd64 yq
 chmod +x yq
 
-# Check if the VM need to be recreated
-FIVE_MINUTES_AGO=$(date -u +"%Y-%m-%dT%H:%M:%SZ" --date='5 minutes ago')
-PR_COMMENTS_RESPONSE=$(curl -sS "https://api.github.com/repos/kyma-incubator/compass/issues/2613/comments?since=${FIVE_MINUTES_AGO}")
-COMMENTS_COUNT=$(echo -E "${PR_COMMENTS_RESPONSE}" | jq length)
-if [ $? -ne 0 ]; then
-    log::error "The PRs Comments response cannot be parsed: ${PR_COMMENTS_RESPONSE}" && exit 1
-fi
-
-for i in $(jq '.[] | .body | tostring ' <<< "${PR_COMMENTS_RESPONSE}" ); do
-    COMMENT_BODY="$i"
-    echo "Body:" "${COMMENT_BODY}"
-    # if [ "$SM_INSTANCES_COUNT" != 0 ]; then
-    #   if [[ -n "$2" ]]; then
-    #     echo "------------------------------"
-    #     echo "$SM_INSTANCES_RESP"
-    #     echo "------------------------------"
-    #   fi
-    # fi
-    echo "------------------------------"
-done
-
-
-
-
-
-
-log::info "Open PRs Found: ${OPEN_PRS_COUNT}"
-
-
-
 # Flag to recycle or recreate VM on each commit execution
 RECYCLE_VM="no"
 # Flag that shows if the mandatory provisioning (kyma installation) was completed
@@ -145,10 +115,43 @@ if [[ ${DUMP_DB} ]]; then
     VM_PREFIX="compass-integration-test-with-dump-"
 fi
 
+# Check if the VM need to be recreated
+FIVE_MINUTES_AGO=$(date -u +"%Y-%m-%dT%H:%M:%SZ" --date='5 minutes ago')
+PR_COMMENTS_RESPONSE=$(curl -sS "https://api.github.com/repos/kyma-incubator/compass/issues/2613/comments?since=${FIVE_MINUTES_AGO}")
+COMMENTS_COUNT=$(echo -E "${PR_COMMENTS_RESPONSE}" | jq length)
+if [ $? -ne 0 ]; then
+    log::error "The PRs Comments response cannot be parsed: ${PR_COMMENTS_RESPONSE}" && exit 1
+fi
+
+RECREATE_VM_BEFORE_START="no"
+for i in $(echo -E "${PR_COMMENTS_RESPONSE}" | jq -r '.[].url'); do
+    COMMENT_URL="${i}"
+    COMMENT_BODY=$(echo -E "${PR_COMMENTS_RESPONSE}" | jq -r --arg key "${COMMENT_URL}" '.[] | select(.url == $key).body')
+
+    if [[ "${COMMENT_BODY}" =~ "reset-vm" ]]; then
+         RECREATE_VM_BEFORE_START="yes"
+    fi
+done
+
 VMS_RESPONSE=$(gcloud compute instances list --sort-by "~creationTimestamp" --filter="name~${VM_PREFIX}" --format=json)
 VM_FOR_PREFIX_AND_SUFFIX=$(echo -E "${VMS_RESPONSE}" | jq -r --arg vmname "${VM_PREFIX}${SUFFIX}" '.[] | select(.name == $vmname) | .name')
 
-if [[ -z "$VM_FOR_PREFIX_AND_SUFFIX" ]]; then
+if [[ -n "${VM_FOR_PREFIX_AND_SUFFIX}" && "${RECREATE_VM_BEFORE_START}" == "yes" ]]; then
+    VM_ZONE_URL=$(echo -E "${VMS_RESPONSE}" | jq -r --arg key "${VM_FOR_PREFIX_AND_SUFFIX}" '.[] | select(.name == $key).zone')
+    ZONE="${VM_ZONE_URL##*/}"
+
+    log::info "Removing VM ${VM_PREFIX}${SUFFIX} as it was requested to be reset"
+    gcloud compute instances delete --zone="${ZONE}" "${VM_PREFIX}${SUFFIX}" || true ### Workaround: not failing the job regardless of the vm deletion result
+    
+    log::info "Wait 30s VM ${VM_PREFIX}${SUFFIX} to be deleted"
+    sleep 30
+
+    # Refetch the VMs information again
+    VMS_RESPONSE=$(gcloud compute instances list --sort-by "~creationTimestamp" --filter="name~${VM_PREFIX}" --format=json)
+    VM_FOR_PREFIX_AND_SUFFIX=$(echo -E "${VMS_RESPONSE}" | jq -r --arg vmname "${VM_PREFIX}${SUFFIX}" '.[] | select(.name == $vmname) | .name')
+fi
+
+if [[ -z "${VM_FOR_PREFIX_AND_SUFFIX}" ]]; then
     log::info "The VM with name:  ${VM_PREFIX}${SUFFIX} is missing - will be created..." 
 
     if [[ -z "${IMAGE}" ]]; then
