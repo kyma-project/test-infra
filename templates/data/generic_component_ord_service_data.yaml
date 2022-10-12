@@ -8,7 +8,7 @@ templates:
               - jobConfig:
                   name: pull-ord-service-build
                   args:
-                    - "--name=ord-service"
+                    - "--name=incubator/compass-ord-service"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/ord-service"
                     - "--dockerfile=Dockerfile"
@@ -28,7 +28,7 @@ templates:
               - jobConfig:
                   name: post-ord-service-build
                   args:
-                    - "--name=ord-service"
+                    - "--name=incubator/compass-ord-service"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/ord-service"
                     - "--dockerfile=Dockerfile"

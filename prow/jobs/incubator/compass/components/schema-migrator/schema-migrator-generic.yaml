@@ -31,7 +31,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=schema-migrator"
+              - "--name=incubator/compass-schema-migrator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/schema-migrator"
               - "--dockerfile=Dockerfile"
@@ -92,7 +92,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=schema-migrator"
+              - "--name=incubator/compass-schema-migrator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/schema-migrator"
               - "--dockerfile=Dockerfile"

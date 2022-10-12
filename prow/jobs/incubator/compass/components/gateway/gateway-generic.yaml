@@ -31,7 +31,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=gateway"
+              - "--name=incubator/compass-gateway"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/gateway"
               - "--dockerfile=Dockerfile"
@@ -93,7 +93,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=gateway"
+              - "--name=incubator/compass-gateway"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/gateway"
               - "--dockerfile=Dockerfile"
