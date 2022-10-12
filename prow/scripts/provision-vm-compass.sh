@@ -70,13 +70,6 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
     fi
 fi
 
-# Log the VM recycle strategy
-if [[ "${RECYCLE_VM}" == "yes" && "${IS_KYMA_INSTALLED}" == "yes" ]]; then
-    log::info "VM will be recycled and reused to execute validaiton of next commit in this PR: ${SUFFIX}"
-else
-    log::info "VM will be destroyed when execution of validaiton ends."
-fi
-
 gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
