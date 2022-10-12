@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	tagutil "github.com/kyma-project/test-infra/development/gcbuild/tags"
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"io"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"os"
@@ -12,6 +13,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type options struct {
@@ -23,6 +25,7 @@ type options struct {
 	name           string
 	variant        string
 	logDir         string
+	orgRepo        string
 	silent         bool
 	isCI           bool
 	additionalTags Strings
@@ -209,6 +212,11 @@ func runBuildJob(o options, vs Variants) error {
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
 		}
+
+		err := signImages(&o, destinations)
+		if err != nil {
+			return fmt.Errorf("sign encountered error: %w", err)
+		}
 		fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
 	}
 
@@ -224,11 +232,108 @@ func runBuildJob(o options, vs Variants) error {
 			errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
 			fmt.Printf("Job '%s' ended with error: %s.\n", variant, err)
 		} else {
+			err := signImages(&o, destinations)
+			if err != nil {
+				return fmt.Errorf("sign encountered error: %w", err)
+			}
 			fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
 			fmt.Printf("Job '%s' finished successfully.\n", variant)
 		}
 	}
 	return errutil.NewAggregate(errs)
+}
+
+func signImages(o *options, images []string) error {
+	fmt.Println("Start signing images", strings.Join(images, ","))
+	// use o.orgRepo as default value since someone might have loaded is as a flag
+	orgRepo := o.orgRepo
+	if o.isCI {
+		// try to extract orgRepo from Prow-based env variables
+		org := os.Getenv("REPO_OWNER")
+		repo := os.Getenv("REPO_NAME")
+		if len(org) > 0 && len(repo) > 0 {
+			// assume this is our variable since both variables are present
+			orgRepo = org + "/" + repo
+		}
+	}
+
+	if len(orgRepo) == 0 {
+		return fmt.Errorf("'orgRepo' cannot be empty")
+	}
+	sig, err := getSignersForOrgRepo(o, orgRepo)
+	if err != nil {
+		return err
+	}
+	var errs []error
+	for _, s := range sig {
+		err := s.Sign(images)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("sign error: %w", err))
+		}
+	}
+	return errutil.NewAggregate(errs)
+}
+
+// getSignersForOrgRepo fetches all signers for a repository
+// It fetches all signers from '*' and specific org/repo combo.
+func getSignersForOrgRepo(o *options, orgRepo string) ([]sign.Signer, error) {
+	c := o.SignConfig
+	if len(c.EnabledSigners) == 0 {
+		// no signers enabled. no need to gather signers
+		return nil, nil
+	}
+	var enabled StrList
+
+	defaultSigners := c.EnabledSigners["*"]
+	orgRepoSigners := c.EnabledSigners[orgRepo]
+	for _, s := range append(defaultSigners, orgRepoSigners...) {
+		enabled.Add(s)
+	}
+	fmt.Println("sign images using services", strings.Join(enabled.List(), ","))
+	var signers []sign.Signer
+	for _, sc := range c.Signers {
+		if enabled.Has(sc.Name) {
+			s, err := sc.Config.NewSigner()
+			if err != nil {
+				return nil, fmt.Errorf("signer init: %w", err)
+			}
+			signers = append(signers, s)
+		}
+	}
+	return signers, nil
+}
+
+// StrList implements list of strings as a map
+// This implementation allows getting unique values when merging multiple maps into one
+// (@Ressetkk): We should find better place to move that code
+type StrList struct {
+	m map[string]interface{}
+	sync.Mutex
+}
+
+func (l *StrList) Add(value string) {
+	l.Lock()
+	// lazy init map
+	if l.m == nil {
+		l.m = make(map[string]interface{})
+	}
+	if _, ok := l.m[value]; !ok {
+		l.m[value] = new(interface{})
+	}
+	l.Unlock()
+}
+
+func (l *StrList) Has(elem string) bool {
+	_, ok := l.m[elem]
+	return ok
+}
+
+func (l *StrList) List() []string {
+	var n []string
+	for val := range l.m {
+		n = append(n, val)
+	}
+	return n
 }
 
 func getTags(pr, sha, tagTemplate string, additionalTags []string) ([]string, error) {
@@ -295,6 +400,7 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to context")
 	fs.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
+	fs.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, eg. signing configuration.")
 	fs.Var(&o.additionalTags, "tag", "Additional tag that the image will be tagged")
 	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
 	return fs
