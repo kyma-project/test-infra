@@ -129,9 +129,6 @@ if [[ -n "${VM_FOR_PREFIX_AND_SUFFIX}" && "${RECREATE_VM_BEFORE_START}" == "yes"
     log::info "Removing VM ${VM_PREFIX}${SUFFIX} as it was requested to be reset"
     gcloud compute instances delete --zone="${ZONE}" "${VM_PREFIX}${SUFFIX}" || true ### Workaround: not failing the job regardless of the vm deletion result
     
-    log::info "Wait 30s VM ${VM_PREFIX}${SUFFIX} to be deleted"
-    sleep 30
-
     # Refetch the VMs information again
     VMS_RESPONSE=$(gcloud compute instances list --sort-by "~creationTimestamp" --filter="name~${VM_PREFIX}" --format=json)
     VM_FOR_PREFIX_AND_SUFFIX=$(echo -E "${VMS_RESPONSE}" | jq -r --arg vmname "${VM_PREFIX}${SUFFIX}" '.[] | select(.name == $vmname) | .name')
