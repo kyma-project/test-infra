@@ -47,6 +47,26 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-west4-docker.pkg.dev/sap-se-cx-kyma-wookiee/dev-registry/unsigned" 
+                    MODULE_VERSION: "0.0.${PULL_NUMBER}"
+                    IMG: "eu.gcr.io/kyma-project/keda-manager:PR-${PULL_NUMBER}"
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-make-module-build
+                  command: "make"
+                  args:
+                    - "all" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+              - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   name: pre-keda-manager-operator-tests # pre-main-lifecycle-manager-tests
                   command: "bash"
