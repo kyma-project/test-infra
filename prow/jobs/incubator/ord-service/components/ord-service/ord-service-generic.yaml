@@ -31,7 +31,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=ord-service"
+              - "--name=incubator/compass-ord-service"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/ord-service"
               - "--dockerfile=Dockerfile"
@@ -88,7 +88,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=ord-service"
+              - "--name=incubator/compass-ord-service"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/ord-service"
               - "--dockerfile=Dockerfile"
