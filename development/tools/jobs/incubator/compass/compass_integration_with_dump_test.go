@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const compassIntegrationTestJobPath = "./../../../../../prow/jobs/incubator/compass/compass-integration.yaml"
+const compassIntegrationWithDumpTestJobPath = "./../../../../../prow/jobs/incubator/compass/compass-integration-with-dump.yaml"
 
 func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 	tests := map[string]struct {
@@ -19,8 +19,8 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 		expRunIfChangedPaths    []string
 		expNotRunIfChangedPaths []string
 	}{
-		"Should contain the compass-integration job": {
-			givenJobName: "pre-main-compass-integration",
+		"Should contain the compass-integration-with-dump job": {
+			givenJobName: "pre-main-compass-integration-with-dump",
 
 			expPresets: []preset.Preset{
 				preset.GCProjectEnv, preset.KymaGuardBotGithubToken, preset.BuildPr, "preset-sa-vm-kyma-integration",
@@ -44,7 +44,7 @@ func TestCompassIntegrationJobsPresubmit(t *testing.T) {
 	for tn, tc := range tests {
 		t.Run(tn, func(t *testing.T) {
 			// given
-			jobConfig, err := tester.ReadJobConfig(compassIntegrationTestJobPath)
+			jobConfig, err := tester.ReadJobConfig(compassIntegrationWithDumpTestJobPath)
 			require.NoError(t, err)
 
 			// when

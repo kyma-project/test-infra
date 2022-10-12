@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-main-compass-integration
+    - name: pre-main-compass-integration-with-dump
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-compass-integration"
+        prow.k8s.io/pubsub.runID: "pre-main-compass-integration-with-dump"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
