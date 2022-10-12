@@ -94,6 +94,11 @@ function deploy_kyma() {
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-app-connector-components-os.yaml"
   fi
 
+  if [[ -v TELEMETRY_TRACING_ENABLED ]]; then
+    kyma_deploy_cmd+=" --value=telemetry.controller.tracing.enabled=true"
+    mv ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ${KYMA_SOURCES_DIR}/installation/resources/crds/telemetry/telemetry.kyma-project.io_tracepipelines.yaml
+  fi
+
   if [[ -v TELEMETRY_ENABLED ]]; then
     kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
