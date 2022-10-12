@@ -37,6 +37,7 @@ gcloud functions deploy rotate-secrets-service-account-cleaner \
 
 ## GET parameters
 
+The Cloud Function accepts following GET parameters:
 
 | Name                           | Required | Description                                                           |
 | :----------------------------- | :------: | :-------------------------------------------------------------------- |
