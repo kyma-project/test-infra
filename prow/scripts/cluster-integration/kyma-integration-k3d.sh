@@ -96,6 +96,7 @@ function deploy_kyma() {
 
   if [[ -v TELEMETRY_TRACING_ENABLED ]]; then
     kyma_deploy_cmd+=" --value=telemetry.controller.tracing.enabled=true"
+    mv ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ${KYMA_SOURCES_DIR}/installation/resources/crds/telemetry/telemetry.kyma-project.io_tracepipelines.yaml
   fi
 
   if [[ -v TELEMETRY_ENABLED ]]; then

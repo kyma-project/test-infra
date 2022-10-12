@@ -183,12 +183,6 @@ if [[ -v TELEMETRY_ENABLED ]]; then
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml" "~/kyma-integration-k3d-telemetry-components.yaml"
 fi
 
-if [[ -v TELEMETRY_TRACING_ENABLED ]]; then
-  log::info "Copying CRD file for telemetry pipeline"
-  #shellcheck disable=SC2088
-  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml" "~/kyma/installation/resources/crds/telemetry/telemetry.kyma-project.io_tracepipelines.yaml"
-fi
-
 if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
   log::info "Copying components file for istio tests"
   #shellcheck disable=SC2088
