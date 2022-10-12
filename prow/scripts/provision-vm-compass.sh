@@ -16,6 +16,12 @@ source "${SCRIPT_DIR}/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$SCRIPT_DIR/lib/gcp.sh"
 
+ # Download yq
+YQ_VERSION="v4.25.1"
+log::info "Downloading yq version: $YQ_VERSION"
+curl -fsSL "https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_linux_amd64" -o yq
+chmod +x yq
+
 # Flag to recycle or recreate VM on each commit execution
 RECYCLE_VM="no"
 # Flag that shows if the mandatory provisioning (kyma installation) was completed
@@ -191,9 +197,9 @@ if [[ -z "${VM_FOR_PREFIX_AND_SUFFIX}" ]]; then
     cd "$PREV_WD"
     log::info "Successfully installed Kyma CLI version: $KYMA_CLI_VERSION"
 
-    log::info "Installing yq to VM:"
+    log::info "Installing yq version to VM: $YQ_VERSION"
     #shellcheck disable=SC2088
-    utils::send_to_vm "${ZONE}" "${VM_PREFIX}${SUFFIX}" "/usr/bin/yq" "~/bin/yq"
+    utils::send_to_vm "${ZONE}" "${VM_PREFIX}${SUFFIX}" "yq" "~/bin/yq"
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_PREFIX}${SUFFIX}" -c "sudo cp \$HOME/bin/yq /usr/local/bin/yq"
 
     log::info "Triggering the full installation"
