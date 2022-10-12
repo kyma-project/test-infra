@@ -30,7 +30,7 @@ IS_KYMA_INSTALLED="no"
 
 get_schema_migrator_version() {
     local PATH_TO_VALUES_YAML="/home/prow/go/src/github.com/kyma-incubator/compass/chart/compass/values.yaml"
-    local SCHEMA_MIGRATOR_VERSION=$( yq e '.global.images.schema_migrator.version' < "${PATH_TO_VALUES_YAML}" )
+    local SCHEMA_MIGRATOR_VERSION=$( yq '.global.images.schema_migrator.version' "${PATH_TO_VALUES_YAML}")
     echo "${SCHEMA_MIGRATOR_VERSION}"
 }
 
