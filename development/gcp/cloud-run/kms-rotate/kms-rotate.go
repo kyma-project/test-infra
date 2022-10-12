@@ -16,10 +16,12 @@ import (
 )
 
 type Config struct {
-	Project  string `yaml:"project"`
-	Location string `yaml:"location"`
-	Keyring  string `yaml:"keyring"`
-	Key      string `yaml:"key"`
+	Project      string `yaml:"project"`
+	Location     string `yaml:"location"`
+	bucketName   string `yaml:"bucketName"`
+	bucketPrefix string `yaml:"bucketPrefix"`
+	Keyring      string `yaml:"keyring"`
+	Key          string `yaml:"key"`
 }
 
 var (
@@ -71,11 +73,16 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 
 	json.Unmarshal(body, &conf)
 
-	// projects/*/locations/*/keyRings/*/cryptoKeys/*
-
 	keyPath := "projects/" + conf.Project + "/locations/" + conf.Location + "/keyRings/" + conf.Keyring + "/cryptoKeys/" + conf.Key
-	req := &kmspb.ListCryptoKeyVersionsRequest{Parent: keyPath}
-	keyIterator := kmsService.ListCryptoKeyVersions(ctx, req)
+	cryptoKeyRequest := &kmspb.GetCryptoKeyRequest{Name: keyPath}
+	cryptoKey, err := kmsService.GetCryptoKey(ctx, cryptoKeyRequest)
+	if err != nil {
+		log.Fatal(err)
+	}
+	primaryVersion := cryptoKey.GetPrimary()
+
+	keyIteratorRequest := &kmspb.ListCryptoKeyVersionsRequest{Parent: keyPath}
+	keyIterator := kmsService.ListCryptoKeyVersions(ctx, keyIteratorRequest)
 	var keyVersions []*kmspb.CryptoKeyVersion
 	enabledVersions := 0
 	for nextVer, err := keyIterator.Next(); err != iterator.Done; nextVer, err = keyIterator.Next() {
@@ -85,14 +92,73 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		keyVersions = append(keyVersions, nextVer)
-		nextVer.Prima
 		if nextVer.State == kmspb.CryptoKeyVersion_ENABLED {
 			enabledVersions++
 		}
 	}
-	if enabledVersions <= 1 {
+	if enabledVersions < 2 {
 		log.Printf("Nothing to do, quitting")
 		return
 	}
+	// for all files in bucket dir
+	query := &storage.Query{}
+	if conf.bucketPrefix != "" {
+		query.Prefix = conf.bucketPrefix
+	}
 
+	bucket := storageService.Bucket(conf.bucketName)
+	bucketIterator := bucket.Objects(ctx, query)
+
+	for {
+		attrs, err := bucketIterator.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		// decrypt
+		// encrypt with latest
+		reader, err := bucket.Object(attrs.Name).NewReader(ctx)
+		if err != nil {
+			log.Fatal(err)
+		}
+		var encryptedData []byte
+		_, err = reader.Read(encryptedData)
+		if err != nil {
+			log.Fatal(err)
+		}
+		reader.Close()
+
+		decryptRequest := &kmspb.DecryptRequest{Name: keyPath, Ciphertext: encryptedData}
+		decryptResponse, err := kmsService.Decrypt(ctx, decryptRequest)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		encryptRequest := &kmspb.EncryptRequest{Name: keyPath, Plaintext: decryptResponse.Plaintext}
+		encryptResponse, err := kmsService.Encrypt(ctx, encryptRequest)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		writer := bucket.Object(attrs.Name).NewWriter(ctx)
+		_, err = writer.Write(encryptResponse.Ciphertext)
+		if err != nil {
+			log.Fatal(err)
+		}
+		writer.Close()
+	}
+
+	// destroy old keys
+	for _, keyVersion := range keyVersions {
+		if keyVersion.Name != primaryVersion.Name {
+			destructionRequest := &kmspb.DestroyCryptoKeyVersionRequest{Name: keyVersion.Name}
+			_, err := kmsService.DestroyCryptoKeyVersion(ctx, destructionRequest)
+			if err != nil {
+				log.Fatal(err)
+			}
+		}
+	}
 }
