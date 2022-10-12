@@ -33,3 +33,13 @@ gcloud functions deploy rotate-secrets-service-account-cleaner \
 --entry-point ServiceAccountCleaner
 ```
 5. Set up a new job in Cloud Scheduler.
+
+
+## GET parameters
+
+
+| Name                           | Required | Description                                                           |
+| :----------------------------- | :------: | :-------------------------------------------------------------------- |
+| **project**                    |    Yes   | Name of the GCP project with the Secret Manager.|
+| **age**                        |    No    | Age in hours that the latest version of a secret has to exist before old versions can be deleted. It defaults to `5`. |
+| **dry_run**                    |    No    | Value controlling the `dry run` mode. It defaults to `false`.|
