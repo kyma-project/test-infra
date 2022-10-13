@@ -42,4 +42,4 @@ pjNames:
 prConfigs:
   kyma-incubator:
     compass:
-      prNumber:
+      prNumber: 2691
