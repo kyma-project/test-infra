@@ -51,7 +51,17 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-
+              - jobConfig:
+                  name: "pull-operations-controller-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/operations-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/operations-controller/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
       - to: ../../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -102,7 +112,17 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-
+              - jobConfig:
+                  name: "pull-connector-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/connector && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/connector/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
       - to: ../../prow/jobs/incubator/compass/components/director/director-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -153,7 +173,28 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-
+              - jobConfig:
+                  name: "pull-director-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/director && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/director/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - linting
+              - jobConfig:
+                  name: "pull-director-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/director && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/director/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
       - to: ../../prow/jobs/incubator/compass/components/hydrator/hydrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -204,7 +245,17 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-
+              - jobConfig:
+                  name: "pull-hydrator-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/hydrator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/hydrator/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
       - to: ../../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -255,7 +306,17 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-
+              - jobConfig:
+                  name: "pull-system-broker-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/system-broker && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/system-broker/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
       - to: ../../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -306,7 +367,17 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-
+              - jobConfig:
+                  name: "pull-external-services-mock-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/external-services-mock && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/external-services-mock/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
       - to: ../../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -357,7 +428,17 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-
+              - jobConfig:
+                  name: "pull-connectivity-adapter-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/connectivity-adapter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/connectivity-adapter/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
       - to: ../../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -408,7 +489,17 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-
+              - jobConfig:
+                  name: "pull-pairing-adapter-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/pairing-adapter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/pairing-adapter/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
       - to: ../../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -459,7 +550,17 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-
+              - jobConfig:
+                  name: "pull-gateway-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/gateway && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/gateway/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
       - to: ../../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
