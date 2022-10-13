@@ -22,7 +22,7 @@ presubmits: # runs on PRs
             command:
               - "/kaniko-build"
             args:
-              - "--name=api-gateway"
+              - "--name=api-gateway-controller"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
@@ -90,7 +90,7 @@ postsubmits: # runs on main
             command:
               - "/kaniko-build"
             args:
-              - "--name=api-gateway"
+              - "--name=api-gateway-controller"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
