@@ -77,7 +77,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             command:
               - "/bin/sh"
             args:
@@ -87,6 +87,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
+  
 postsubmits: # runs on main
   kyma-incubator/compass:
     - name: post-connectivity-adapter-build
