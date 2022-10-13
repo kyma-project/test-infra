@@ -25,7 +25,7 @@ templates:
                   args:
                     - "-c"
                     - "/kaniko-build"
-                    - "--name=api-gateway"
+                    - "--name=api-gateway-controller"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
