@@ -62,7 +62,7 @@ presubmits: # runs on PRs
           - name: config
             configMap:
               name: kaniko-build-config
-     - name: pull-director-lint
+    - name: pull-director-lint
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
