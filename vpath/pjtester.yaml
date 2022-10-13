@@ -36,7 +36,7 @@ pjNames:
   - pjName: "post-tests-build"
   - pjName: "post-tests-build"
   - pjName: "pre-main-compass-gke-benchmark"
-  - pjName: "pre-main-compass-integration"
+  - pjName: "pre-main-compass-integration-with-dump"
   - pjName: "pre-main-compass-integration-no-dump"
   - pjName: "pre-main-compass-smoke-test"
 prConfigs:
