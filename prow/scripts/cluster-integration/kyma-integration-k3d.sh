@@ -56,7 +56,7 @@ function deploy_kyma() {
   else
     kyma provision k3d --ci
   fi
-  
+
   echo "Printing client and server version info"
 
   kubectl version
@@ -95,8 +95,12 @@ function deploy_kyma() {
   fi
 
   if [[ -v TELEMETRY_TRACING_ENABLED ]]; then
-    kyma_deploy_cmd+=" --value=telemetry.controller.tracing.enabled=true"
-    mv ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ${KYMA_SOURCES_DIR}/installation/resources/crds/telemetry/telemetry.kyma-project.io_tracepipelines.yaml
+    kyma_deploy_cmd+=" --value=telemetry.operator.controllers.tracing.enabled=true"
+    ls ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/
+    if [[ -f ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ]]; then
+        echo "Copy tracepipeline CRD"
+        cp ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ${KYMA_SOURCES_DIR}/installation/resources/crds/telemetry/tracepipelines.crd.yaml
+    fi
   fi
 
   if [[ -v TELEMETRY_ENABLED ]]; then
