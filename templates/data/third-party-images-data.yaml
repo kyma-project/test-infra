@@ -323,6 +323,7 @@ templates:
                   local:
                     - "default"
                     - "image-signing"
+
               - jobConfig:
                   name: "pre-main-tpi-node-exporter"
                   run_if_changed: "^prometheus-node-exporter/"
@@ -384,6 +385,7 @@ templates:
                   local:
                     - "default"
                     - "image-signing"
+
               - jobConfig:
                   name: "pre-main-tpi-kaniko-executer"
                   run_if_changed: "^kaniko-executer/"
@@ -403,6 +405,37 @@ templates:
                   run_if_changed: "^kaniko-executer/"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/third-party-images/kaniko-executer"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
+
+              - jobConfig:
+                  name: "pre-main-tpi-kube-state-metrics"
+                  run_if_changed: "^kube-state-metrics/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kube-state-metrics"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+              - jobConfig:
+                  name: "post-main-tpi-kube-state-metrics"
+                  run_if_changed: "^kube-state-metrics/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kube-state-metrics"
                     - "ci-main"
                 inheritedConfigs:
                   global:
