@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-protecode-guard"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '.*\.go$|.golangci.yaml'
       optional: true
