@@ -37,10 +37,10 @@ gcloud functions deploy rotate-secrets-service-account-cleaner \
 
 ## GET parameters
 
-The Cloud Function accepts following GET parameters:
+The Cloud Function accepts the following GET parameters:
 
 | Name                           | Required | Description                                                           |
 | :----------------------------- | :------: | :-------------------------------------------------------------------- |
-| **project**                    |    Yes   | Name of the GCP project with the Secret Manager.|
-| **age**                        |    No    | Age in hours that the latest version of a secret has to exist before old versions can be deleted. It defaults to `5`. |
-| **dry_run**                    |    No    | Value controlling the `dry run` mode. It defaults to `false`.|
+| **project**                    |    Yes   | The name of the GCP project with Secret Manager.|
+| **age**                        |    No    | The age in hours that the latest version of a secret has to exist before old versions can be deleted. It defaults to `5`. |
+| **dry_run**                    |    No    | The value controlling the `dry run` mode. It defaults to `false`.|
