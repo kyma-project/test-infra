@@ -181,7 +181,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/eventing-controller && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                    - "cd components/eventing-controller && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m  -c .golangci.yaml"
                   run_if_changed: '^components/eventing-controller/(.*\.go$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:
