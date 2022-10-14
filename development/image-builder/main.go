@@ -1,10 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
-	tagutil "github.com/kyma-project/test-infra/development/gcbuild/tags"
+	"github.com/kyma-project/test-infra/development/pkg/sets"
+	"github.com/kyma-project/test-infra/development/pkg/tags"
 	"io"
+	"io/fs"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"os"
 	"os/exec"
@@ -16,17 +19,18 @@ import (
 
 type options struct {
 	Config
-	configPath     string
-	context        string
-	dockerfile     string
-	directory      string
-	name           string
-	variant        string
-	logDir         string
-	silent         bool
-	isCI           bool
-	additionalTags Strings
-	platforms      Strings
+	configPath string
+	context    string
+	dockerfile string
+	directory  string
+	envFile    string
+	name       string
+	variant    string
+	logDir     string
+	silent     bool
+	isCI       bool
+	tags       sets.Strings
+	platforms  sets.Strings
 }
 
 const (
@@ -34,21 +38,10 @@ const (
 	PlatformLinuxArm64 = "linux/arm64"
 )
 
-type Strings []string
-
-func (t *Strings) String() string {
-	return strings.Join(*t, ",")
-}
-
-func (t *Strings) Set(val string) error {
-	*t = append(*t, val)
-	return nil
-}
-
 // parseVariable returns a build-arg.
 // Keys are set to upper-case.
 func parseVariable(key, value string) string {
-	k := strings.TrimSpace(strings.ToUpper(key))
+	k := strings.TrimSpace(key)
 	return k + "=" + strings.TrimSpace(value)
 }
 
@@ -196,16 +189,19 @@ func runBuildJob(o options, vs Variants) error {
 		return fmt.Errorf("'sha' could not be determined")
 	}
 
-	tags, err := getTags(pr, sha, o.TagTemplate, o.additionalTags)
+	parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
 	if err != nil {
 		return err
 	}
-
+	envMap, err := loadEnv(os.DirFS("/"), o.envFile)
+	if err != nil {
+		return fmt.Errorf("load env: %w", err)
+	}
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
-		destinations := gatherDestinations(repo, o.directory, o.name, tags)
+		destinations := gatherDestinations(repo, o.directory, o.name, parsedTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		err = runFunc(o, "build", destinations, o.platforms, make(map[string]string))
+		err = runFunc(o, "build", destinations, o.platforms, envMap)
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
 		}
@@ -215,11 +211,13 @@ func runBuildJob(o options, vs Variants) error {
 	var errs []error
 	for variant, env := range vs {
 		var variantTags []string
-		for _, tag := range tags {
+		for _, tag := range parsedTags {
 			variantTags = append(variantTags, tag+"-"+variant)
 		}
 		destinations := gatherDestinations(repo, o.directory, o.name, variantTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
+		// (@Ressetkk): When variants provided, build doesn't use env files.
+		// Similar logic should be provided once variants are fixed.
 		if err := runFunc(o, variant, destinations, o.platforms, env); err != nil {
 			errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
 			fmt.Printf("Job '%s' ended with error: %s.\n", variant, err)
@@ -231,33 +229,22 @@ func runBuildJob(o options, vs Variants) error {
 	return errutil.NewAggregate(errs)
 }
 
-func getTags(pr, sha, tagTemplate string, additionalTags []string) ([]string, error) {
-	var tags []string
+func getTags(pr, sha string, templates []string) ([]string, error) {
 	// (Ressetkk): PR tag should not be hardcoded, in the future we have to find a way to parametrize it
 	if pr != "" {
 		// assume we are using PR number, build tag as 'PR-XXXX'
-		tags = append(tags, "PR-"+pr)
-	} else {
-		// build a tag from commit SHA
-		t, err := tagutil.NewTag(
-			tagutil.CommitSHA(sha))
-		if err != nil {
-			return nil, fmt.Errorf("could not create tag: %w", err)
-		}
-
-		tagTmpl := `v{{ .Date }}-{{ .ShortSHA }}`
-		if tagTemplate != "" {
-			tagTmpl = tagTemplate
-		}
-		tagger := tagutil.Tagger{TagTemplate: tagTmpl}
-		tag, err := tagger.BuildTag(t)
-		if err != nil {
-			return nil, fmt.Errorf("could not build tag: %w", err)
-		}
-		tags = append(tags, tag)
-		tags = append(tags, additionalTags...)
+		return []string{"PR-" + pr}, nil
 	}
-	return tags, nil
+	// build a tag from commit SHA
+	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha))
+	if err != nil {
+		return nil, fmt.Errorf("get tagger: %w", err)
+	}
+	p, err := tagger.ParseTags()
+	if err != nil {
+		return nil, fmt.Errorf("build tag: %w", err)
+	}
+	return p, nil
 }
 
 func gatherDestinations(repo []string, directory, name string, tags []string) []string {
@@ -286,16 +273,47 @@ func validateOptions(o options) error {
 	return errutil.NewAggregate(errs)
 }
 
+// loadEnv loads environment variables into application runtime from key=value list
+func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
+	f, err := vfs.Open(envFile)
+	if err != nil {
+		return nil, fmt.Errorf("open env file: %w", err)
+	}
+	s := bufio.NewScanner(f)
+	vars := make(map[string]string)
+	for s.Scan() {
+		kv := s.Text()
+		sp := strings.SplitN(kv, "=", 2)
+		key, val := sp[0], sp[1]
+		if len(sp) > 2 {
+			return nil, fmt.Errorf("env var split incorrectly: 2 != %v", len(sp))
+		}
+		if _, ok := os.LookupEnv(key); ok {
+			// do not override env variable if it's already present in the runtime
+			// do not include in vars map since dev should not have access to it anyway
+			continue
+		}
+		err := os.Setenv(key, val)
+		if err != nil {
+			return nil, fmt.Errorf("setenv: %w", err)
+		}
+		// add value to the vars that will be injected as build args
+		vars[key] = val
+	}
+	return vars, nil
+}
+
 func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
 	fs.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
 	fs.StringVar(&o.context, "context", ".", "Path to build directory context")
+	fs.StringVar(&o.envFile, "env-file", "", "Path to file with environment variables to be loaded in build")
 	fs.StringVar(&o.directory, "directory", "", "Destination directory where the image is be pushed. This flag will be ignored if running in presubmit job and devRegistry is provided in config.yaml")
 	fs.StringVar(&o.name, "name", "", "Name of the image to be built")
 	fs.StringVar(&o.dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to context")
 	fs.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
-	fs.Var(&o.additionalTags, "tag", "Additional tag that the image will be tagged")
+	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged")
 	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
 	return fs
 }
