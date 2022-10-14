@@ -1,7 +1,5 @@
 pjNames:
-  - pjName: "kyma-upgrade-k3d-kyma2-to-main"
-    report: true
-  - pjName: "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"
+  - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
     report: true
 prConfigs:
   kyma-project:
