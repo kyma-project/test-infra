@@ -178,7 +178,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/director && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m"
+                    - "cd components/director && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=15m"
                   run_if_changed: '^components/director/(.*\.go$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:
