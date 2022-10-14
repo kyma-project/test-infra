@@ -86,7 +86,7 @@ presubmits: # runs on PRs
             resources:
               requests:
                 memory: 200Mi
-                cpu: 80m
+                cpu: 100m
     - name: pull-director-unit-test
       annotations:
         pipeline.trigger: "pr-submit"
