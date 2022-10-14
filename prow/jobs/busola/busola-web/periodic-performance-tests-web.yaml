@@ -1,0 +1,15 @@
+# Periodic jobs
+
+# Description- This prow job is for running performance Tests on kyma web application. 
+periodics:
+- interval: 24h
+  agent: kubernetes
+  name: jmeter
+  spec:
+    containers:
+    - image: i331641/kyma-perf:v1
+      imagePullPolicy: IfNotPresent
+      command: [ "/bin/bash", "-c"]
+      args: ["jmeter -n -t  kyma-web-pipeline.jmx -Jkubeconfig={Kubeconfig-file-name} -Jdomain={kyma-domain} -e -l results/log -o results/"]
+# example command is below, here kubeconfig--perftests--ngrinder.yaml is mounted as configmap
+# args: ["jmeter -n -t  kyma-web-pipeline.jmx -Jkubeconfig=kubeconfig--perftests--ngrinder.yaml -Jdomain=kyma.tools.perfteam.sapcloud.io -e -l results/log -o results/"]
