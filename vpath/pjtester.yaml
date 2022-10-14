@@ -1,0 +1,7 @@
+pjNames:
+  - pjName: "pull-eventing-controller-lint"
+    report: false
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 15762
