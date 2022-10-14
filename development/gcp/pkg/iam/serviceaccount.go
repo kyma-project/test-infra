@@ -23,7 +23,6 @@ type ServiceAccountJSON struct {
 	AuthProviderCert string `json:"auth_provider_x509_cert_url"`
 	ClientCert       string `json:"client_x509_cert_url"`
 }
-
 type Service struct {
 	*gcpiam.Service
 }

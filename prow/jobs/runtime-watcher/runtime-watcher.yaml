@@ -19,7 +19,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             securityContext:
               privileged: true
             command:
@@ -57,7 +57,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             securityContext:
               privileged: true
             command:
@@ -65,79 +65,6 @@ presubmits: # runs on PRs
             args:
               - "-c"
               - "cd skr && make test"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pull-lint-kcp
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-lint-kcp"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "cd kcp && golangci-lint run"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pull-tests-kcp
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-tests-kcp"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^kcp/(go.mod|go.sum)$|^kcp/*/(.*.go|Makefile|.*.sh)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "cd kcp && make test"
             resources:
               requests:
                 memory: 3Gi
@@ -165,7 +92,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             securityContext:
               privileged: true
             command:
@@ -203,7 +130,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             securityContext:
               privileged: true
             command:
@@ -222,39 +149,6 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-build-kcp
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-build-kcp"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^kcp/'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
-            command:
-              - "/kaniko-build"
-            args:
-              - "--name=runtime-watcher-kcp"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=kcp"
-              - "--dockerfile=Dockerfile"
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
     - name: pull-build-skr
       annotations:
         pipeline.trigger: "pr-submit"
@@ -262,7 +156,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-build-skr"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^skr/'
       skip_report: false
       decorate: true
@@ -291,40 +185,6 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/runtime-watcher:
-    - name: main-build-kcp
-      annotations:
-        pipeline.trigger: "pr-merge"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "main-build-kcp"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
-            command:
-              - "/kaniko-build"
-            args:
-              - "--name=runtime-watcher-kcp"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=kcp"
-              - "--dockerfile=Dockerfile"
-              - "--tag=latest"
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
     - name: main-build-skr
       annotations:
         pipeline.trigger: "pr-merge"
@@ -332,7 +192,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "main-build-skr"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true

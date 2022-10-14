@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             command:
               - "/bin/sh"
             args:
@@ -43,7 +43,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             command:
               - "/bin/sh"
             args:
@@ -68,7 +68,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             command:
               - "/bin/sh"
             args:
@@ -93,7 +93,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             command:
               - "/bin/sh"
             args:
@@ -118,7 +118,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             command:
               - "/bin/sh"
             args:
@@ -143,7 +143,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             command:
               - "/bin/sh"
             args:
@@ -168,7 +168,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             command:
               - "/bin/sh"
             args:
@@ -193,7 +193,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             command:
               - "/bin/sh"
             args:
@@ -218,7 +218,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             command:
               - "/bin/sh"
             args:
@@ -243,7 +243,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             command:
               - "/bin/sh"
             args:
@@ -268,7 +268,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             command:
               - "/bin/sh"
             args:
@@ -293,7 +293,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             command:
               - "/bin/sh"
             args:
@@ -318,7 +318,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             command:
               - "/bin/sh"
             args:
@@ -343,7 +343,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             command:
               - "/bin/sh"
             args:
@@ -368,7 +368,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             command:
               - "/bin/sh"
             args:
@@ -393,7 +393,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             command:
               - "/bin/sh"
             args:
@@ -418,7 +418,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             command:
               - "/bin/sh"
             args:
@@ -443,7 +443,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             command:
               - "/bin/sh"
             args:

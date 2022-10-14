@@ -22,10 +22,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220930-4982ca61ab
-        initupload: gcr.io/k8s-prow/initupload:v20220930-4982ca61ab
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220930-4982ca61ab
-        sidecar: gcr.io/k8s-prow/sidecar:v20220930-4982ca61ab
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20221013-86c528dbe3
+        initupload: gcr.io/k8s-prow/initupload:v20221013-86c528dbe3
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20221013-86c528dbe3
+        sidecar: gcr.io/k8s-prow/sidecar:v20221013-86c528dbe3
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -268,7 +268,7 @@ branch-protection:
 tide:
   sync_period: 2m
   batch_size_limit:
-    kyma-project/kyma: -1 # disable batch merging for Kyma repo
+    '*': -1 # disable batch merging for all repos
   merge_method:
     kyma-project/kyma: squash
     kyma-project/website: squash
@@ -515,6 +515,19 @@ presets:
     volumeMounts:
       - name: sa-gcr-push-kyma-project
         mountPath: /etc/credentials/sa-gcr-push-kyma-project
+        readOnly: true
+  - labels:
+      preset-sa-kyma-push-images: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-kyma-push-images/service-account.json
+    volumes:
+      - name: sa-kyma-push-images
+        secret:
+          secretName: sa-kyma-push-images
+    volumeMounts:
+      - name: sa-kyma-push-images
+        mountPath: /etc/credentials/sa-kyma-push-images
         readOnly: true
   - labels:
       preset-sa-kyma-artifacts: "true"
@@ -1107,6 +1120,11 @@ presets:
       preset-kyma-integration-telemetry-enabled: "true"
     env:
       - name: TELEMETRY_ENABLED
+        value: "true"
+  - labels:
+      preset-kyma-integration-telemetry-tracing-enabled: "true"
+    env:
+      - name: TELEMETRY_TRACING_ENABLED
         value: "true"
   - labels:
       preset-kyma-integration-subaccounnt: "true"
