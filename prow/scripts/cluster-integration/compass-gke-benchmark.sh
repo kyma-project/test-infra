@@ -12,8 +12,6 @@ export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/sc
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/docker.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
@@ -22,7 +20,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 requiredVars=(
     REPO_OWNER
     REPO_NAME
-    DOCKER_PUSH_REPOSITORY
     KYMA_PROJECT_DIR
     CLOUDSDK_CORE_PROJECT
     CLOUDSDK_COMPUTE_REGION
@@ -74,7 +71,6 @@ function createCluster() {
   log::info "Authenticate"
   gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
-  docker::start
   DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
   export DNS_DOMAIN
   DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
@@ -111,7 +107,7 @@ function createCluster() {
   gcp::provision_k8s_cluster \
         -c "$COMMON_NAME" \
         -p "$CLOUDSDK_CORE_PROJECT" \
-        -v "1.21.12" \
+        -v "1.21.14" \
         -j "$JOB_NAME" \
         -J "$PROW_JOB_ID" \
         -z "$CLOUDSDK_COMPUTE_ZONE" \
@@ -127,14 +123,6 @@ function createCluster() {
       -v "$SELF_SIGN_CERT_VALID_DAYS"
   export TLS_CERT="${utils_generate_self_signed_cert_return_tls_cert:?}"
   export TLS_KEY="${utils_generate_self_signed_cert_return_tls_key:?}"
-
-  # TODO
-  # Prepare Docker external registry overrides
-  export DOCKER_PASSWORD=""
-  DOCKER_PASSWORD=$(tr -d '\n' < "${GOOGLE_APPLICATION_CREDENTIALS}")
-
-  export DOCKER_REPOSITORY_ADDRESS=""
-  DOCKER_REPOSITORY_ADDRESS=$(echo "$DOCKER_PUSH_REPOSITORY" | cut -d'/' -f1)
 
   export DNS_DOMAIN_TRAILING=${DNS_DOMAIN%.}
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/compass-gke-overrides.tpl.yaml" > "$PWD/compass_common_overrides.yaml"
@@ -175,6 +163,14 @@ function installCompassOld() {
 
   COMPASS_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
   COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
+
+  echo 'Installing DB'
+  mkdir "$COMPASS_SOURCES_DIR/installation/data"
+  bash "${COMPASS_SCRIPTS_DIR}"/install-db.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
+  STATUS=$(helm status localdb -n compass-system -o json | jq .info.status)
+  echo "DB installation status ${STATUS}"
+
+  echo 'Installing Compass'
   bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status compass -n compass-system -o json | jq .info.status)
   echo "Compass installation status ${STATUS}"
@@ -196,6 +192,13 @@ function installCompassNew() {
 
   COMPASS_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
   COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
+
+  echo 'Installing DB'
+  bash "${COMPASS_SCRIPTS_DIR}"/install-db.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
+  STATUS=$(helm status localdb -n compass-system -o json | jq .info.status)
+  echo "DB installation status ${STATUS}"
+
+  echo 'Installing Compass'
   bash "${COMPASS_SCRIPTS_DIR}"/install-compass.sh --overrides-file "${COMPASS_OVERRIDES}" --overrides-file "${COMPASS_COMMON_OVERRIDES}" --timeout 30m0s
   STATUS=$(helm status compass -n compass-system -o json | jq .info.status)
   echo "Compass installation status ${STATUS}"
@@ -219,8 +222,8 @@ trap 'EXIT_STATUS=$?; set -f; utils::post_hook -n "$COMMON_NAME" -p "$CLOUDSDK_C
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
-    export JOB_NAME_PATTERN="(pre-compass-components-.*)|(pre-compass-tests-.*)"
-    export JOBGUARD_TIMEOUT="30m"
+    export JOB_NAME_PATTERN="(pull-.*)"
+    export JOBGUARD_TIMEOUT="60m"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 

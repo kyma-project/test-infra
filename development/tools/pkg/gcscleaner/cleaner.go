@@ -43,7 +43,6 @@ func NewCancelableContext(ctx context.Context) CancelableContext {
 
 // Cleaner cleans GCP buckets
 type Cleaner struct {
-	ctx    context.Context
 	client storage.Client
 	cfg    Config
 }

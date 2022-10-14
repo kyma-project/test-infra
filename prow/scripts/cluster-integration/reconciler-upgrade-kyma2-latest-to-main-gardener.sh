@@ -122,7 +122,6 @@ reconciler::wait_until_is_ready
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 
 # Exported variables
-export KYMA_MAJOR_VERSION="2"
 export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
 
 # Set up test pod environment
@@ -146,7 +145,6 @@ gardener::pre_upgrade_test_fast_integration_kyma
 ## ---------------------------------------------------------------------------------------
 
 # Exported variables
-export KYMA_MAJOR_VERSION="2"
 export KYMA_UPGRADE_SOURCE="main"
 
 # Set up test pod environment

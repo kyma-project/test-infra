@@ -8,6 +8,8 @@ const (
 	KindVolumesMounts Preset = "preset-kind-volume-mounts"
 	// GcrPush means GCR push service account
 	GcrPush Preset = "preset-sa-gcr-push"
+	// KymaPushImages preset for Kyma push service account
+	KymaPushImages Preset = "preset-sa-kyma-push-images"
 	// DockerPushRepoKyma means Docker repository
 	DockerPushRepoKyma Preset = "preset-docker-push-repository-kyma"
 	// DockerPushRepoTestInfra means Docker repository test-infra images
@@ -58,8 +60,6 @@ const (
 	KymaSlackChannel Preset = "preset-kyma-slack-channel"
 	// SlackBotToken contains the token to use the kyma slack bot
 	SlackBotToken Preset = "preset-sap-slack-bot-token"
-	// StabilityCheckerSlack contains the information for the stability checker slack account
-	StabilityCheckerSlack Preset = "preset-stability-checker-slack-notifications"
 	// NightlyGithubIntegration contains the information for nightly clusters
 	NightlyGithubIntegration Preset = "preset-nightly-github-integration"
 	// KymaKeyring contains the kyma secrets

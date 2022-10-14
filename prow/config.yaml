@@ -24,10 +24,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20220906-65e79f1345
-        initupload: gcr.io/k8s-prow/initupload:v20220906-65e79f1345
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20220906-65e79f1345
-        sidecar: gcr.io/k8s-prow/sidecar:v20220906-65e79f1345
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20221011-5d4db25b24
+        initupload: gcr.io/k8s-prow/initupload:v20221011-5d4db25b24
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20221011-5d4db25b24
+        sidecar: gcr.io/k8s-prow/sidecar:v20221011-5d4db25b24
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -229,6 +229,10 @@ branch-protection:
                   - "netlify/kyma-project-old/deploy-preview"
         private-fn-for-e2e-serverless-tests:
           protect: false
+        organization-and-operations:
+          protect: false
+        btp-manager:
+          protect: false
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
@@ -266,7 +270,7 @@ branch-protection:
 tide:
   sync_period: 2m
   batch_size_limit:
-    kyma-project/kyma: -1 # disable batch merging for Kyma repo
+    '*': -1 # disable batch merging for all repos
   merge_method:
     kyma-project/kyma: squash
     kyma-project/website: squash
@@ -280,11 +284,11 @@ tide:
     kyma-project/console: squash
     kyma-project/examples: squash
     kyma-project/addons: squash
-    kyma-project/busola-migrator: squash
     kyma-project/lifecycle-manager: squash
     kyma-project/runtime-watcher: squash
     kyma-project/module-manager: squash
     kyma-project/api-gateway: squash
+    kyma-project/organization-and-operations: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
@@ -316,6 +320,7 @@ tide:
     kyma-incubator/sc-removal: squash
     kyma-incubator/hydra-login-consent: squash
     kyma-incubator/website-vuepress: squash
+    kyma-incubator/migrate: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
     "*": https://status.build.kyma-project.io/pr
@@ -514,6 +519,19 @@ presets:
         mountPath: /etc/credentials/sa-gcr-push-kyma-project
         readOnly: true
   - labels:
+      preset-sa-kyma-push-images: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-kyma-push-images/service-account.json
+    volumes:
+      - name: sa-kyma-push-images
+        secret:
+          secretName: sa-kyma-push-images
+    volumeMounts:
+      - name: sa-kyma-push-images
+        mountPath: /etc/credentials/sa-kyma-push-images
+        readOnly: true
+  - labels:
       preset-sa-kyma-artifacts: "true"
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -634,6 +652,15 @@ presets:
     volumeMounts:
       - name: gardener-neighbors-kubeconfig
         mountPath: /etc/credentials/gardener-neighbors
+  - labels:
+      preset-gardener-kyma-rotate-kubeconfig: "true"
+    volumes:
+      - name: gardener-kyma-prow-token-rotate-kubeconfig
+        secret:
+          secretName: gardener-kyma-prow-token-rotate-kubeconfig
+    volumeMounts:
+      - name: gardener-kyma-prow-token-rotate-kubeconfig
+        mountPath: /etc/credentials/gardener-kyma-prow-rotate
   - labels:
       preset-az-kyma-prow-credentials: "true"
     env:
@@ -844,16 +871,6 @@ presets:
       - name: UNSTABLE
         value: "true"
   - labels:
-      preset-stability-checker-slack-notifications: "true"
-    env:
-      - name: SLACK_CLIENT_WEBHOOK_URL
-        value: https://sap-btp.slack.com/services/hooks/jenkins-ci
-      - name: SLACK_CLIENT_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: slack-nightly-token
-            key: token
-  - labels:
       preset-nightly-github-integration: "true"
     env:
       - name: GITHUB_INTEGRATION_APP_CLIENT_ID
@@ -1027,6 +1044,19 @@ presets:
         mountPath: /etc/credentials/sa-gke-kyma-integration
         readOnly: true
   - labels:
+      preset-sa-secret-update: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-secret-update/service-account.json
+    volumes:
+      - name: sa-secret-update
+        secret:
+          secretName: sa-secret-update
+    volumeMounts:
+      - name: sa-secret-update
+        mountPath: /etc/credentials/sa-secret-update
+        readOnly: true
+  - labels:
       preset-kyma-integration-compass-dev: "true"
     env:
       - name: COMPASS_TENANT
@@ -1092,6 +1122,11 @@ presets:
       preset-kyma-integration-telemetry-enabled: "true"
     env:
       - name: TELEMETRY_ENABLED
+        value: "true"
+  - labels:
+      preset-kyma-integration-telemetry-tracing-enabled: "true"
+    env:
+      - name: TELEMETRY_TRACING_ENABLED
         value: "true"
   - labels:
       preset-kyma-integration-subaccounnt: "true"

@@ -2,7 +2,6 @@ package yamlmerge
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -22,7 +21,7 @@ func MergeFiles(path, extension, target string, changeFile bool) {
 	files = removeFromArray(files, target)
 
 	for _, f := range files {
-		data, err := ioutil.ReadFile(f)
+		data, err := os.ReadFile(f)
 		if err != nil {
 			log.Fatalf("Couldn't read file (%s) contents: %s\n", f, err.Error())
 		}
@@ -47,13 +46,18 @@ func MergeFiles(path, extension, target string, changeFile bool) {
 func collectFiles(path, extension string) []string {
 	var files []string
 
-	fileInfo, err := ioutil.ReadDir(path)
+	dirInfo, err := os.ReadDir(path)
 	if err != nil {
 		log.Fatalf("Couldn't read files in path: %s", err.Error())
 	}
 
-	for _, f := range fileInfo {
-		if f.Mode().IsRegular() && filepath.Ext(f.Name()) == extension {
+	for _, f := range dirInfo {
+		fileInfo, err := f.Info()
+		if err != nil {
+			log.Fatalf("Couldn't read file info: %s", err.Error())
+		}
+
+		if fileInfo.Mode().IsRegular() && filepath.Ext(fileInfo.Name()) == extension {
 			files = append(files, fmt.Sprintf("%s%s%s", path, string(os.PathSeparator), f.Name()))
 		}
 	}

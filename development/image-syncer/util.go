@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"os"
 	"strings"
 
 	imagesyncer "github.com/kyma-project/test-infra/development/image-syncer/pkg"
@@ -26,7 +26,7 @@ func getTarget(source, targetRepo, targetTag string) (string, error) {
 }
 
 func parseImagesFile(file string) (*imagesyncer.SyncDef, error) {
-	f, err := ioutil.ReadFile(file)
+	f, err := os.ReadFile(file)
 	if err != nil {
 		return nil, err
 	}

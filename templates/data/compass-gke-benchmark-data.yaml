@@ -14,7 +14,6 @@ templates:
               PROVISION_REGIONAL_CLUSTER: "true"
               NODES_PER_ZONE: "1"
               MACHINE_TYPE: "n1-highcpu-16"
-              KYMA_MAJOR_VERSION: "2"
             request_memory: 200Mi
             request_cpu: 80m
             labels:
@@ -26,7 +25,6 @@ templates:
               preset-gc-compute-envs: "true"
               preset-gc-project-env: "true"
               preset-docker-push-repository-gke-integration: "true"
-              preset-dind-enabled: "true"
               preset-kyma-artifacts-bucket: "true"
               preset-gardener-azure-kyma-integration: "true"
               preset-kyma-development-artifacts-bucket: "true"
@@ -38,7 +36,6 @@ templates:
               - jobConfig:
                   name: pre-main-compass-gke-benchmark
                   optional: true
-                  image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((chart\\S+|installation\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -51,13 +48,13 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
+                    - "image_buildpack-golang"
                   local:
                     - "jobConfig_default"
               {{- range .Global.releases }}
               - jobConfig:
                   name: pre-rel{{ . | replace "." "" }}-compass-gke-benchmark
                   optional: true
-                  image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
                   always_run: false
                   labels:
                     preset-build-release: "true"
@@ -74,6 +71,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
+                    - "image_buildpack-golang"
                   local:
                     - "jobConfig_default"
                 {{- end }}

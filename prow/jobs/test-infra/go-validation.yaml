@@ -8,7 +8,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220809-002bc8cf3"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
             command:
               - "go"
             args:
@@ -20,9 +20,9 @@ presubmits: # runs on PRs
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-protecode-guard"
+        prow.k8s.io/pubsub.runID: "pre-main-test-infra-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '.*\.go$'
+      run_if_changed: '.*\.go$|.golangci.yaml'
       optional: true
       skip_report: false
       decorate: true
@@ -32,7 +32,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220804-607830f89"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
             automountServiceAccountToken: true
             securityContext:
               privileged: false

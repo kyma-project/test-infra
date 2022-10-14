@@ -1,7 +1,6 @@
 package list
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -29,7 +28,7 @@ func GetWalkFunc(resourcesDirectory string, images, testImages common.ComponentI
 
 		var parsedFile common.ValueFile
 
-		yamlFile, err := ioutil.ReadFile(path)
+		yamlFile, err := os.ReadFile(path)
 		if err != nil {
 			return err
 		}

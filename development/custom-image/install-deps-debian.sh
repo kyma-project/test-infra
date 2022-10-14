@@ -22,7 +22,7 @@ DOCKER_VERSION=5:20.10.5~3-0~debian-buster
 NODEJS_VERSION="14.x"
 K3D_VERSION="5.0.1"
 PG_MIGRATE_VERSION=v4.15.1
-GO_VERSION=1.18.3
+GO_VERSION=1.19.1
 
 # install docker
 sudo apt-get update
