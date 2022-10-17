@@ -26,7 +26,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221017-23921e4e"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221017-6550b8be"
             securityContext:
               privileged: true
             command:
@@ -68,7 +68,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221017-23921e4e"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221017-6550b8be"
             securityContext:
               privileged: true
             command:
