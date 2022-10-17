@@ -73,8 +73,6 @@ Usage of image-builder:
         Path to application config file (default "/config/image-builder-config.yaml")
   -context string
         Path to build directory context (default ".")
-  -directory string
-        Destination directory where the image is be pushed. This flag will be ignored if running in presubmit job and devRegistry is provided in config.yaml
   -dockerfile string
         Path to Dockerfile file relative to context (default "Dockerfile")
   -log-dir string
