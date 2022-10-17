@@ -10,7 +10,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -22,7 +22,7 @@ presubmits: # runs on PRs
             command:
               - "/kaniko-build"
             args:
-              - "--name=api-gateway"
+              - "--name=api-gateway-controller"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
@@ -41,7 +41,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-webhook-certificates-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -75,7 +75,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-api-gateway-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -90,7 +90,7 @@ postsubmits: # runs on main
             command:
               - "/kaniko-build"
             args:
-              - "--name=api-gateway"
+              - "--name=api-gateway-controller"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
@@ -109,7 +109,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-api-gateway-webhook-certificates-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true

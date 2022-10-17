@@ -28,7 +28,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -72,7 +72,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -116,7 +116,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -160,7 +160,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -204,7 +204,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -248,7 +248,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -292,7 +292,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -336,7 +336,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -380,7 +380,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -424,7 +424,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -468,7 +468,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -512,7 +512,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -556,13 +556,57 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/kaniko-executer"
+              - "ci-pr"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-tpi-kube-state-metrics
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-kube-state-metrics"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-tpi: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^kube-state-metrics/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/kube-state-metrics"
               - "ci-pr"
             resources:
               requests:
@@ -605,7 +649,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -651,7 +695,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -697,7 +741,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -743,7 +787,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -789,7 +833,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -835,7 +879,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -881,7 +925,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -927,7 +971,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -973,7 +1017,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -1019,7 +1063,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -1065,7 +1109,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -1111,7 +1155,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
@@ -1157,13 +1201,59 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "/home/prow/go/src/github.com/kyma-project/third-party-images/kaniko-executer"
+              - "ci-main"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: post-main-tpi-kube-state-metrics
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-kube-state-metrics"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-tpi: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^kube-state-metrics/'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/kube-state-metrics"
               - "ci-main"
             resources:
               requests:

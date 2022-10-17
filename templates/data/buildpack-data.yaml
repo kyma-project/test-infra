@@ -15,7 +15,7 @@ templates:
                 image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
                 command: /kaniko-build
                 labels:
-                  preset-sa-gcr-push: "true"
+                  preset-sa-kyma-push-images: "true"
                 volumes:
                   - name: config
                     configMapName: kaniko-build-config
