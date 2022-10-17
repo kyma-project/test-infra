@@ -42,8 +42,8 @@ RUN curl -fLSs -o go.tar.gz "https://dl.google.com/go/go${GO_VERSION}.linux-${AR
     mkdir -p "${GOPATH}/src" && \
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
-# Install kubebuilder
 ENV PATH /home/prow/go/bin:$PATH
+# Install kubebuilder
 # Do not alter base image tools path with kubebuilder
 ENV PATH=$PATH:/usr/local/kubebuilder/bin
 
