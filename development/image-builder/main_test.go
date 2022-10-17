@@ -169,13 +169,6 @@ func TestFlags(t *testing.T) {
 				dockerfile: "Dockerfile",
 				logDir:     "prow/logs",
 				silent:     true,
-				name:           "test-image",
-				additionalTags: []string{"latest", "cookie"},
-				context:        "prow/build",
-				configPath:     "config.yaml",
-				dockerfile:     "Dockerfile",
-				logDir:         "prow/logs",
-				silent:         true,
 			},
 			args: []string{
 				"--config=config.yaml",

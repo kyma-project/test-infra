@@ -198,7 +198,7 @@ func runBuildJob(o options, vs Variants) error {
 	}
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
-		destinations := gatherDestinations(repo o.name, parsedTags)
+		destinations := gatherDestinations(repo, o.name, parsedTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
 		err = runFunc(o, "build", destinations, o.platforms, envMap)
 		if err != nil {
