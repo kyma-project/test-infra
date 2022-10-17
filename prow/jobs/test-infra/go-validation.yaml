@@ -8,7 +8,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-0e4b706e"
             command:
               - "go"
             args:
