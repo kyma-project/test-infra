@@ -11,7 +11,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 # Versions
 
 ENV ARCH amd64
-ENV GO_VERSION 1.19.1
+ENV GO_VERSION 1.19.2
 ENV DEP_RELEASE_TAG v0.5.4
 ENV KUBEBUILDER_VERSION 2.3.2
 ENV KUSTOMIZE_VERSION 3.8.4
@@ -42,9 +42,10 @@ RUN curl -fLSs -o go.tar.gz "https://dl.google.com/go/go${GO_VERSION}.linux-${AR
     mkdir -p "${GOPATH}/src" && \
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
-# Install kubebuilder
-ENV PATH /usr/local/kubebuilder/bin:$PATH
 ENV PATH /home/prow/go/bin:$PATH
+# Install kubebuilder
+# Do not alter base image tools path with kubebuilder
+ENV PATH=$PATH:/usr/local/kubebuilder/bin
 
 RUN curl -fLSs -o kubebuilder.tar.gz "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH}.tar.gz" && \
     tar -zxvf kubebuilder.tar.gz && \

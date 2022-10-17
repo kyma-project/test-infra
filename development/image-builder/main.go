@@ -22,7 +22,6 @@ type options struct {
 	configPath string
 	context    string
 	dockerfile string
-	directory  string
 	envFile    string
 	name       string
 	variant    string
@@ -199,7 +198,7 @@ func runBuildJob(o options, vs Variants) error {
 	}
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
-		destinations := gatherDestinations(repo, o.directory, o.name, parsedTags)
+		destinations := gatherDestinations(repo o.name, parsedTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
 		err = runFunc(o, "build", destinations, o.platforms, envMap)
 		if err != nil {
@@ -214,7 +213,7 @@ func runBuildJob(o options, vs Variants) error {
 		for _, tag := range parsedTags {
 			variantTags = append(variantTags, tag+"-"+variant)
 		}
-		destinations := gatherDestinations(repo, o.directory, o.name, variantTags)
+		destinations := gatherDestinations(repo, o.name, variantTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
 		// (@Ressetkk): When variants provided, build doesn't use env files.
 		// Similar logic should be provided once variants are fixed.
@@ -247,11 +246,11 @@ func getTags(pr, sha string, templates []string) ([]string, error) {
 	return p, nil
 }
 
-func gatherDestinations(repo []string, directory, name string, tags []string) []string {
+func gatherDestinations(repo []string, name string, tags []string) []string {
 	var dst []string
 	for _, t := range tags {
 		for _, r := range repo {
-			image := path.Join(r, directory, name)
+			image := path.Join(r, name)
 			dst = append(dst, image+":"+strings.ReplaceAll(t, " ", "-"))
 		}
 	}
@@ -308,7 +307,6 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
 	fs.StringVar(&o.context, "context", ".", "Path to build directory context")
 	fs.StringVar(&o.envFile, "env-file", "", "Path to file with environment variables to be loaded in build")
-	fs.StringVar(&o.directory, "directory", "", "Destination directory where the image is be pushed. This flag will be ignored if running in presubmit job and devRegistry is provided in config.yaml")
 	fs.StringVar(&o.name, "name", "", "Name of the image to be built")
 	fs.StringVar(&o.dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to context")
 	fs.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
