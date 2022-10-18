@@ -10,7 +10,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-btp-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^operator'
       skip_report: false
       decorate: true
