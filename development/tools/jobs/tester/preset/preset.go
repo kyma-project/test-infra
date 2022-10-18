@@ -8,6 +8,8 @@ const (
 	KindVolumesMounts Preset = "preset-kind-volume-mounts"
 	// GcrPush means GCR push service account
 	GcrPush Preset = "preset-sa-gcr-push"
+	// KymaPushImages preset for Kyma push service account
+	KymaPushImages Preset = "preset-sa-kyma-push-images"
 	// DockerPushRepoKyma means Docker repository
 	DockerPushRepoKyma Preset = "preset-docker-push-repository-kyma"
 	// DockerPushRepoTestInfra means Docker repository test-infra images

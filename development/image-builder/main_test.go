@@ -9,16 +9,14 @@ import (
 
 func Test_gatherDestinations(t *testing.T) {
 	tc := []struct {
-		name      string
-		directory string
-		repos     []string
-		tags      []string
-		expected  []string
+		name     string
+		repos    []string
+		tags     []string
+		expected []string
 	}{
 		{
-			name:      "test-image",
-			repos:     []string{"dev.kyma.io", "dev2.kyma.io"},
-			directory: "subdirectory",
+			name:  "subdirectory/test-image",
+			repos: []string{"dev.kyma.io", "dev2.kyma.io"},
 			tags: []string{
 				"20222002-abcd1234",
 				"latest",
@@ -42,7 +40,7 @@ func Test_gatherDestinations(t *testing.T) {
 	}
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			got := gatherDestinations(c.repos, c.directory, c.name, c.tags)
+			got := gatherDestinations(c.repos, c.name, c.tags)
 			if len(c.expected) != len(got) {
 				t.Errorf("result length mismatch. wanted %v, got %v", len(c.expected), len(got))
 			}
@@ -95,7 +93,6 @@ func Test_validateOptions(t *testing.T) {
 			name:      "parsed config",
 			expectErr: false,
 			opts: options{
-				directory:  "kyma.dev",
 				context:    "directory/",
 				name:       "test-image",
 				dockerfile: "Dockerfile",
@@ -105,7 +102,6 @@ func Test_validateOptions(t *testing.T) {
 			name:      "context missing",
 			expectErr: true,
 			opts: options{
-				directory:  "kyma.dev",
 				name:       "test-image",
 				dockerfile: "Dockerfile",
 			},
@@ -114,7 +110,6 @@ func Test_validateOptions(t *testing.T) {
 			name:      "name missing",
 			expectErr: true,
 			opts: options{
-				directory:  "kyma.dev",
 				context:    "directory/",
 				dockerfile: "Dockerfile",
 			},
@@ -123,9 +118,8 @@ func Test_validateOptions(t *testing.T) {
 			name:      "dockerfile missing",
 			expectErr: true,
 			opts: options{
-				directory: "kyma.dev",
-				context:   "directory/",
-				name:      "test-image",
+				context: "directory/",
+				name:    "test-image",
 			},
 		},
 	}
@@ -167,7 +161,6 @@ func TestFlags(t *testing.T) {
 			expectedErr: false,
 			expectedOpts: options{
 				name:           "test-image",
-				directory:      "subdirectory",
 				additionalTags: []string{"latest", "cookie"},
 				context:        "prow/build",
 				configPath:     "config.yaml",
@@ -178,7 +171,6 @@ func TestFlags(t *testing.T) {
 			args: []string{
 				"--config=config.yaml",
 				"--dockerfile=Dockerfile",
-				"--directory=subdirectory",
 				"--name=test-image",
 				"--tag=latest",
 				"--tag=cookie",

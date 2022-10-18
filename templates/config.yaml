@@ -70,7 +70,7 @@ globalSets:
     image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
     command: /kaniko-build
     labels:
-      preset-sa-gcr-push: "true"
+      preset-sa-kyma-push-images: "true"
     volumes:
       - name: config
         configMapName: kaniko-build-config
@@ -78,6 +78,59 @@ globalSets:
       - name: config
         mountPath: /config
         readOnly: true
+  image-builder-buildkit:
+    skip_report: "false"
+    max_concurrency: 10
+    decorate: "true"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
+    nodeSelector:
+      dedicated: high-cpu
+    tolerations:
+      - key: dedicated
+        value: high-cpu
+        operator: Equal
+        effect: NoSchedule
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221011-f36fe4783-buildkit
+    command: "/image-builder"
+    labels:
+      preset-sa-kyma-push-images: "true"
+    annotations:
+      container.apparmor.security.beta.kubernetes.io/test: unconfined
+      container.seccomp.security.alpha.kubernetes.io/test: unconfined
+    env:
+      BUILDKITD_FLAGS: "--oci-worker-no-process-sandbox"
+    volumes:
+      - name: share
+        emptyDir: true
+      - name: config
+        configMapName: kaniko-build-config
+    volumeMounts:
+      - mountPath: /home/user/.local/share/buildkit
+        name: share
+      - name: config
+        mountPath: /config
+        readOnly: true
+  linting:
+    skip_report: "false"
+    max_concurrency: "10"
+    optional: "true"
+    decorate: "true"
+    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
+    request_memory: 200Mi
+    request_cpu: 80m
+  testing:
+    skip_report: "false"
+    max_concurrency: "10"
+    optional: "true"
+    decorate: "true"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
+    pubsub_project: "sap-kyma-prow"
+    pubsub_topic: "prowjobs"
+    request_memory: 1Gi
+    request_cpu: 100m
   # Kyma major version sets
   kyma_major_upgrade:
     env:
@@ -91,23 +144,23 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20220808-d24ecd898"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221003-d0889db7"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221017-6550b8be"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221017-0e4b706e"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220809-8b2d4be4f"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221012-8d12a771"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
   image_gardener-rotate:
-    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221003-dd432f00"
+    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221017-0e4b706e"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
