@@ -21,7 +21,7 @@ func (e ErrBackendNotSupported) Error() string {
 
 type SignerConfig struct {
 	// Name contains the custom name of defined signer
-	Name string `yaml:"name" yaml:"name"`
+	Name string `yaml:"name" json:"name"`
 	// Type defines the type of signing backend.
 	// Config will be parsed based on this value.
 	Type string `yaml:"type" json:"type"`

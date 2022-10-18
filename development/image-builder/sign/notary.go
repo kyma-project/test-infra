@@ -97,6 +97,9 @@ func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, e
 
 func (ns NotarySigner) Sign(images []string) error {
 	sr, err := ns.buildSigningRequest(images)
+	if err != nil {
+		return fmt.Errorf("build sign request: %w", err)
+	}
 	b, err := json.Marshal(sr)
 	if err != nil {
 		return fmt.Errorf("marshal signing request: %w", err)
@@ -116,26 +119,26 @@ func (ns NotarySigner) Sign(images []string) error {
 	w := time.NewTicker(ns.retryTimeout)
 	defer w.Stop()
 	for retries > 0 {
-		select {
-		case <-w.C:
-			resp, err := ns.c.Do(req)
-			if err != nil {
-				return fmt.Errorf("notary request: %w", err)
-			}
-			respBody, err = io.ReadAll(resp.Body)
-			statusCode = resp.StatusCode
-			if err != nil {
-				return fmt.Errorf("body read: %w", err)
-			}
-			switch resp.StatusCode {
-			case http.StatusOK:
-				// response was fine. Do not need anything else
-				return nil
-			case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest:
-				return fmt.Errorf("notary response: %v %s", resp.StatusCode, resp.Status)
-			}
-			retries--
+		// wait for ticker to run
+		<-w.C
+		resp, err := ns.c.Do(req)
+		if err != nil {
+			return fmt.Errorf("notary request: %w", err)
 		}
+		respBody, err = io.ReadAll(resp.Body)
+		statusCode = resp.StatusCode
+		if err != nil {
+			return fmt.Errorf("body read: %w", err)
+		}
+		switch resp.StatusCode {
+		case http.StatusOK:
+			// response was fine. Do not need anything else
+			return nil
+		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest:
+			return fmt.Errorf("notary response: %v %s", resp.StatusCode, resp.Status)
+		}
+		retries--
+
 	}
 	fmt.Println("Reached all retries. Stopping.")
 	fmt.Println(respBody)
