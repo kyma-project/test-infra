@@ -1,4 +1,6 @@
 templates:
+  - from: generic.tmpl
+    render:
       - to: ../../prow/jobs/btp-manager/btp-manager-build.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/btp-manager"
