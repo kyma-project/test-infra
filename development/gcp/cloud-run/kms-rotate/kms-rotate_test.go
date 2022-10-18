@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"mime"
 	"mime/multipart"
 	"net"
@@ -195,7 +194,7 @@ func (s *fakeStorageServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 				defer part.Close()
 
-				partData, err := ioutil.ReadAll(part)
+				partData, err := io.ReadAll(part)
 				if err != nil {
 					http.Error(w, "failed to read content of the part", http.StatusBadRequest)
 					return

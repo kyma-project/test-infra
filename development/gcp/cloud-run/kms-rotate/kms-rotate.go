@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -156,7 +155,7 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		encryptedData, err := ioutil.ReadAll(reader)
+		encryptedData, err := io.ReadAll(reader)
 		if err != nil {
 			log.Fatal(err)
 		}
