@@ -8,7 +8,7 @@ templates:
               - jobConfig:
                   name: pull-operations-controller-build
                   args:
-                    - "--name=operations-controller"
+                    - "--name=incubator/compass-operations-controller"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/operations-controller"
                     - "--dockerfile=Dockerfile"
@@ -31,7 +31,7 @@ templates:
               - jobConfig:
                   name: post-operations-controller-build
                   args:
-                    - "--name=operations-controller"
+                    - "--name=incubator/compass-operations-controller"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/operations-controller"
                     - "--dockerfile=Dockerfile"
@@ -59,7 +59,7 @@ templates:
               - jobConfig:
                   name: pull-connector-build
                   args:
-                    - "--name=connector"
+                    - "--name=incubator/compass-connector"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/connector"
                     - "--dockerfile=Dockerfile"
@@ -82,7 +82,7 @@ templates:
               - jobConfig:
                   name: post-connector-build
                   args:
-                    - "--name=connector"
+                    - "--name=incubator/compass-connector"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/connector"
                     - "--dockerfile=Dockerfile"
@@ -110,7 +110,7 @@ templates:
               - jobConfig:
                   name: pull-director-build
                   args:
-                    - "--name=director"
+                    - "--name=incubator/compass-director"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/director"
                     - "--dockerfile=Dockerfile"
@@ -133,7 +133,7 @@ templates:
               - jobConfig:
                   name: post-director-build
                   args:
-                    - "--name=director"
+                    - "--name=incubator/compass-director"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/director"
                     - "--dockerfile=Dockerfile"
@@ -161,7 +161,7 @@ templates:
               - jobConfig:
                   name: pull-hydrator-build
                   args:
-                    - "--name=hydrator"
+                    - "--name=incubator/compass-hydrator"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/hydrator"
                     - "--dockerfile=Dockerfile"
@@ -184,7 +184,7 @@ templates:
               - jobConfig:
                   name: post-hydrator-build
                   args:
-                    - "--name=hydrator"
+                    - "--name=incubator/compass-hydrator"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/hydrator"
                     - "--dockerfile=Dockerfile"
@@ -212,7 +212,7 @@ templates:
               - jobConfig:
                   name: pull-system-broker-build
                   args:
-                    - "--name=system-broker"
+                    - "--name=incubator/compass-system-broker"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/system-broker"
                     - "--dockerfile=Dockerfile"
@@ -235,7 +235,7 @@ templates:
               - jobConfig:
                   name: post-system-broker-build
                   args:
-                    - "--name=system-broker"
+                    - "--name=incubator/compass-system-broker"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/system-broker"
                     - "--dockerfile=Dockerfile"
@@ -263,7 +263,7 @@ templates:
               - jobConfig:
                   name: pull-external-services-mock-build
                   args:
-                    - "--name=external-services-mock"
+                    - "--name=incubator/compass-external-services-mock"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/external-services-mock"
                     - "--dockerfile=Dockerfile"
@@ -286,7 +286,7 @@ templates:
               - jobConfig:
                   name: post-external-services-mock-build
                   args:
-                    - "--name=external-services-mock"
+                    - "--name=incubator/compass-external-services-mock"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/external-services-mock"
                     - "--dockerfile=Dockerfile"
@@ -314,7 +314,7 @@ templates:
               - jobConfig:
                   name: pull-connectivity-adapter-build
                   args:
-                    - "--name=connectivity-adapter"
+                    - "--name=incubator/compass-connectivity-adapter"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/connectivity-adapter"
                     - "--dockerfile=Dockerfile"
@@ -337,7 +337,7 @@ templates:
               - jobConfig:
                   name: post-connectivity-adapter-build
                   args:
-                    - "--name=connectivity-adapter"
+                    - "--name=incubator/compass-connectivity-adapter"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/connectivity-adapter"
                     - "--dockerfile=Dockerfile"
@@ -365,7 +365,7 @@ templates:
               - jobConfig:
                   name: pull-pairing-adapter-build
                   args:
-                    - "--name=pairing-adapter"
+                    - "--name=incubator/compass-pairing-adapter"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/pairing-adapter"
                     - "--dockerfile=Dockerfile"
@@ -388,7 +388,7 @@ templates:
               - jobConfig:
                   name: post-pairing-adapter-build
                   args:
-                    - "--name=pairing-adapter"
+                    - "--name=incubator/compass-pairing-adapter"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/pairing-adapter"
                     - "--dockerfile=Dockerfile"
@@ -416,7 +416,7 @@ templates:
               - jobConfig:
                   name: pull-gateway-build
                   args:
-                    - "--name=gateway"
+                    - "--name=incubator/compass-gateway"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/gateway"
                     - "--dockerfile=Dockerfile"
@@ -439,7 +439,7 @@ templates:
               - jobConfig:
                   name: post-gateway-build
                   args:
-                    - "--name=gateway"
+                    - "--name=incubator/compass-gateway"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/gateway"
                     - "--dockerfile=Dockerfile"
@@ -467,7 +467,7 @@ templates:
               - jobConfig:
                   name: pull-schema-migrator-build
                   args:
-                    - "--name=schema-migrator"
+                    - "--name=incubator/compass-schema-migrator"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/schema-migrator"
                     - "--dockerfile=Dockerfile"
@@ -489,7 +489,7 @@ templates:
               - jobConfig:
                   name: post-schema-migrator-build
                   args:
-                    - "--name=schema-migrator"
+                    - "--name=incubator/compass-schema-migrator"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/schema-migrator"
                     - "--dockerfile=Dockerfile"
@@ -516,7 +516,7 @@ templates:
               - jobConfig:
                   name: pull-tests-build
                   args:
-                    - "--name=tests"
+                    - "--name=incubator/compass-e2e-tests"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=tests"
                     - "--dockerfile=Dockerfile"
@@ -539,7 +539,7 @@ templates:
               - jobConfig:
                   name: post-tests-build
                   args:
-                    - "--name=tests"
+                    - "--name=incubator/compass-e2e-tests"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=tests"
                     - "--dockerfile=Dockerfile"

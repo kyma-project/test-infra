@@ -8,7 +8,7 @@ templates:
               - jobConfig:
                   name: pull-compass-console-build
                   args:
-                    - "--name=compass-console"
+                    - "--name=incubator/compass-console"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=compass/Dockerfile"
@@ -29,7 +29,7 @@ templates:
               - jobConfig:
                   name: post-compass-console-build
                   args:
-                    - "--name=compass-console"
+                    - "--name=incubator/compass-console"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=compass/Dockerfile"
