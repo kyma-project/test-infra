@@ -7,7 +7,7 @@ templates:
                   name: pull-btp-manager-build
                   run_if_changed: "^operator"
                   args:
-                    - --name=btp-manager
+                    - --name=btp-manager/operator
                     - --context=btp-manager/operator
                     - --dockerfile=Dockerfile
                     - --config=/config/kaniko-build-config.yaml
