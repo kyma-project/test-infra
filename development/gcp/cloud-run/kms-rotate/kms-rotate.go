@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -150,12 +151,12 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 
 		// decrypt
 		// encrypt with latest
-		reader, err := bucket.Object(attrs.Name).NewReader(ctx)
+		o := bucket.Object(attrs.Name)
+		reader, err := o.NewReader(ctx)
 		if err != nil {
 			log.Fatal(err)
 		}
-		var encryptedData []byte
-		_, err = reader.Read(encryptedData)
+		encryptedData, err := ioutil.ReadAll(reader)
 		if err != nil {
 			log.Fatal(err)
 		}

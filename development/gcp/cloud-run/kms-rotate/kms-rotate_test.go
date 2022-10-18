@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
+	"mime"
+	"mime/multipart"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -29,6 +32,7 @@ const (
 	testBucketName  = "test-bucket"
 	testKeyringName = "test-keyring"
 	testKeyName     = "test-key"
+	testPrefix      = "certificates/"
 )
 
 type fakeKeyVersion struct {
@@ -39,6 +43,11 @@ type fakeKeyVersion struct {
 type fakeFile struct {
 	// name       string
 	keyVersion string
+}
+
+type BucketUpload struct {
+	Bucket string `yaml:"bucket,omitempty"`
+	Name   string `yaml:"name,omitempty"`
 }
 
 func getSortedKeyVersionNames(keyVersions map[string]*fakeKeyVersion) []string {
@@ -56,7 +65,7 @@ type fakeKMSServer struct {
 }
 
 func (f *fakeKMSServer) GetCryptoKey(ctx context.Context, req *kmspb.GetCryptoKeyRequest) (*kmspb.CryptoKey, error) {
-	fmt.Printf("GetCryptoKey %s\n", req.Name)
+	// fmt.Printf("GetCryptoKey %s\n", req.Name)
 	resp := &kmspb.CryptoKey{}
 	if len(f.keyVersions) > 0 {
 		keyVersionNames := getSortedKeyVersionNames(f.keyVersions)
@@ -74,30 +83,41 @@ func (f *fakeKMSServer) ListCryptoKeyVersions(ctx context.Context, req *kmspb.Li
 		keyVersionNames := getSortedKeyVersionNames(f.keyVersions)
 		for _, keyVersionName := range keyVersionNames {
 			currentKeyVersion := f.keyVersions[keyVersionName]
-			cryptoKeyVersion := &kmspb.CryptoKeyVersion{State: currentKeyVersion.state}
+			currentKeyVersionName := req.Parent + "/cryptoKeyVersions/" + keyVersionName
+			cryptoKeyVersion := &kmspb.CryptoKeyVersion{Name: currentKeyVersionName, State: currentKeyVersion.state}
 			resp.CryptoKeyVersions = append(resp.CryptoKeyVersions, cryptoKeyVersion)
 		}
 	}
-
 	return resp, nil
 }
 
 func (f *fakeKMSServer) Decrypt(ctx context.Context, req *kmspb.DecryptRequest) (*kmspb.DecryptResponse, error) {
 	resp := &kmspb.DecryptResponse{}
+	resp.Plaintext = []byte("decrypted")
 	return resp, nil
 }
 
 func (f *fakeKMSServer) Encrypt(ctx context.Context, req *kmspb.EncryptRequest) (*kmspb.EncryptResponse, error) {
 	resp := &kmspb.EncryptResponse{}
+	fmt.Printf("KMS encrypt  %s, %s\n", req.Name, string(req.Plaintext))
+	keyVersionNames := getSortedKeyVersionNames(f.keyVersions)
+	latestKey := keyVersionNames[len(keyVersionNames)-1]
+	resp.Ciphertext = []byte(latestKey)
 	return resp, nil
 }
 
 func (f *fakeKMSServer) DestroyCryptoKeyVersion(ctx context.Context, req *kmspb.DestroyCryptoKeyVersionRequest) (*kmspb.CryptoKeyVersion, error) {
-	resp := &kmspb.CryptoKeyVersion{}
+	nameList := strings.Split(req.Name, "/")
+	keyVersionName := nameList[9]
+
+	resp := &kmspb.CryptoKeyVersion{Name: req.Name}
+	f.keyVersions[keyVersionName].state = kmspb.CryptoKeyVersion_DESTROY_SCHEDULED
+	resp.State = kmspb.CryptoKeyVersion_DESTROY_SCHEDULED
 	return resp, nil
 }
 
 type fakeStorageServer struct {
+	prefix                   string
 	files                    map[string]*fakeFile
 	unknownEndpointCallCount int
 }
@@ -105,7 +125,7 @@ type fakeStorageServer struct {
 func (s *fakeStorageServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	objectsPathRegex := regexp.MustCompile("^/b/(.*)/o$")
 
-	objectPathRegex := regexp.MustCompile("^/" + testBucketName + "/(.*)$")
+	filePathRegex := regexp.MustCompile("^/" + testBucketName + "/(.*)$")
 	uploadPathRegex := regexp.MustCompile("^/upload/storage/v1/b/" + testBucketName + "/o$")
 
 	switch path := r.URL.Path; {
@@ -116,10 +136,19 @@ func (s *fakeStorageServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				http.Error(w, "failed to parse response body: "+path, 500)
 			}
 
-			var objects storageraw.Objects
+			objects := storageraw.Objects{Kind: "storage#objects"}
 
-			object := &storageraw.Object{Name: "aa"}
-			objects.Items = append(objects.Items, object)
+			for fileName := range s.files {
+				if s.prefix != "" && !strings.HasPrefix(fileName, s.prefix) {
+					continue
+				}
+				object := &storageraw.Object{
+					Kind:   "storage#object",
+					Bucket: testBucketName,
+					Name:   fileName,
+				}
+				objects.Items = append(objects.Items, object)
+			}
 
 			fmt.Printf("BUCKET url: %s ;Query: %s ;Body: %s; %s\n", r.URL.Path, r.URL.Query().Encode(), string(body), r.Method)
 
@@ -130,22 +159,66 @@ func (s *fakeStorageServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			}
 			w.Write(b)
 		}
-	case objectPathRegex.MatchString(path):
+	case filePathRegex.MatchString(path):
 		{
-			body, err := io.ReadAll(r.Body)
-			if err != nil {
-				http.Error(w, "failed to parse response body: "+path, 500)
-			}
-			fmt.Printf("OBJECT url: %s ;Query: %s ;Body: %s; %s\n", r.URL.Path, r.URL.Query().Encode(), string(body), r.Method)
+			// simple file serving
+			nameList := strings.SplitN(path, "/", 3)
+			filename := nameList[2]
+
+			w.Write([]byte(s.files[filename].keyVersion))
+
 		}
 	case uploadPathRegex.MatchString(path):
 		{
+			fmt.Printf("UPLOAD url: %s ;Query: %s ; %s\n", r.URL.Path, r.URL.Query().Encode(), r.Method)
 
-			body, err := io.ReadAll(r.Body)
-			if err != nil {
-				http.Error(w, "failed to parse response body: "+path, 500)
+			contentType, params, err := mime.ParseMediaType(r.Header.Get("Content-Type"))
+			if err != nil || !strings.HasPrefix(contentType, "multipart/") {
+				http.Error(w, "expecting a multipart message", http.StatusBadRequest)
+				return
 			}
-			fmt.Printf("UPLOAD url: %s ;Query: %s ;Body: %s; %s\n", r.URL.Path, r.URL.Query().Encode(), string(body), r.Method)
+
+			multipartReader := multipart.NewReader(r.Body, params["boundary"])
+			defer r.Body.Close()
+
+			var newData string
+			var parsedJSONdata BucketUpload
+
+			for {
+				part, err := multipartReader.NextPart()
+				if err == io.EOF {
+					break
+				}
+				if err != nil {
+					http.Error(w, "couldn't read multipart part", http.StatusBadRequest)
+					return
+				}
+				defer part.Close()
+
+				partData, err := ioutil.ReadAll(part)
+				if err != nil {
+					http.Error(w, "failed to read content of the part", http.StatusBadRequest)
+					return
+				}
+
+				switch part.Header.Get("Content-Type") {
+				case "application/json":
+					err = json.Unmarshal(partData, &parsedJSONdata)
+					if err != nil {
+						fmt.Printf("Cannot unmarshal upload JSON %s", err)
+						http.Error(w, "cannot unmarshal upload JSON", http.StatusBadRequest)
+						return
+					}
+				case "text/plain; charset=utf-8":
+					newData = string(partData)
+				default:
+					fmt.Printf("unknown content type %s", part.Header.Get("Content-Type"))
+					http.Error(w, "unknown part content type", http.StatusBadRequest)
+					return
+				}
+			}
+			s.files[parsedJSONdata.Name].keyVersion = newData
+
 		}
 	default:
 		{
@@ -173,6 +246,15 @@ func TestRotateKMSKey(t *testing.T) {
 		Key:        testKeyName,
 	}
 
+	defaultPrefixedRequestBody := Config{
+		Project:      testProjectName,
+		Location:     testLocation,
+		BucketName:   testBucketName,
+		Keyring:      testKeyringName,
+		Key:          testKeyName,
+		BucketPrefix: testPrefix,
+	}
+
 	tests := []struct {
 		name                string
 		requestBody         Config
@@ -181,10 +263,30 @@ func TestRotateKMSKey(t *testing.T) {
 		files               map[string]*fakeFile
 	}{
 		{
-			name:                "test 1",
+			name:                "One enabled key, no files",
+			requestBody:         defaultRequestBody,
+			keyVersions:         map[string]*fakeKeyVersion{"1": {kmspb.CryptoKeyVersion_ENABLED}},
+			expectedKeyVersions: map[string]*fakeKeyVersion{"1": {kmspb.CryptoKeyVersion_ENABLED}},
+		},
+		{
+			name:                "Two enabled keys, no files",
 			requestBody:         defaultRequestBody,
 			keyVersions:         map[string]*fakeKeyVersion{"1": {kmspb.CryptoKeyVersion_ENABLED}, "2": {kmspb.CryptoKeyVersion_ENABLED}},
-			expectedKeyVersions: map[string]*fakeKeyVersion{"1": {kmspb.CryptoKeyVersion_DISABLED}, "2": {kmspb.CryptoKeyVersion_ENABLED}},
+			expectedKeyVersions: map[string]*fakeKeyVersion{"1": {kmspb.CryptoKeyVersion_DESTROY_SCHEDULED}, "2": {kmspb.CryptoKeyVersion_ENABLED}},
+		},
+		{
+			name:                "Two enabled keys, one file",
+			requestBody:         defaultRequestBody,
+			keyVersions:         map[string]*fakeKeyVersion{"1": {kmspb.CryptoKeyVersion_ENABLED}, "2": {kmspb.CryptoKeyVersion_ENABLED}},
+			expectedKeyVersions: map[string]*fakeKeyVersion{"1": {kmspb.CryptoKeyVersion_DESTROY_SCHEDULED}, "2": {kmspb.CryptoKeyVersion_ENABLED}},
+			files:               map[string]*fakeFile{"cert": {"1"}},
+		},
+		{
+			name:                "Two enabled keys, one file, query with prefix",
+			requestBody:         defaultPrefixedRequestBody,
+			keyVersions:         map[string]*fakeKeyVersion{"1": {kmspb.CryptoKeyVersion_ENABLED}, "2": {kmspb.CryptoKeyVersion_ENABLED}},
+			expectedKeyVersions: map[string]*fakeKeyVersion{"1": {kmspb.CryptoKeyVersion_DESTROY_SCHEDULED}, "2": {kmspb.CryptoKeyVersion_ENABLED}},
+			files:               map[string]*fakeFile{"notcert": {"data"}, "certificates/cert": {"1"}},
 		},
 	}
 
@@ -208,7 +310,7 @@ func TestRotateKMSKey(t *testing.T) {
 				t.Errorf("Couldn't set up fake kms service: %s", err)
 			}
 
-			storageServerStruct := fakeStorageServer{files: test.files}
+			storageServerStruct := fakeStorageServer{files: test.files, prefix: test.requestBody.BucketPrefix}
 			storageServer := httptest.NewServer(&storageServerStruct)
 			storageService, err = storage.NewClient(ctx, option.WithoutAuthentication(), option.WithEndpoint(storageServer.URL))
 			if err != nil {
@@ -239,9 +341,17 @@ func TestRotateKMSKey(t *testing.T) {
 				t.Errorf("List of key versions differs, %v, want %v", test.keyVersions, test.expectedKeyVersions)
 			}
 
+			keyNames := getSortedKeyVersionNames(test.keyVersions)
+			latestKeyVersion := keyNames[len(keyNames)-1]
 			for filePath, f := range test.files {
-				if f.keyVersion != "latest" {
-					t.Errorf("Incorrect version of key used to sign %s file: %s", filePath, f.keyVersion)
+				if strings.HasPrefix(filePath, test.requestBody.BucketPrefix) {
+					if f.keyVersion != latestKeyVersion {
+						t.Errorf("Incorrect version of key used to sign %s file: %s", filePath, f.keyVersion)
+					}
+				} else {
+					if f.keyVersion == latestKeyVersion {
+						t.Errorf("Incorrect file was signed: %s", filePath)
+					}
 				}
 			}
 
