@@ -70,9 +70,12 @@ templates:
               - jobConfig:
                   name: pre-main-hydroform
                   always_run: true
+                  securityContext:
+                    privileged: false
+                  command:
+                    - "make"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/hydroform"
-                    - "ci-pr"
+                    - "build"
                   env:
                     GO111MODULE: "on"
                 inheritedConfigs:
@@ -81,13 +84,12 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                     - image_buildpack-golang-toolbox
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
               - jobConfig:
                   name: post-main-hydroform
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/hydroform"
-                    - "ci-main"
+                  securityContext:
+                    privileged: false
+                  command:
+                    - "make"
                   env:
                     GO111MODULE: "on"
                 inheritedConfigs:
@@ -97,8 +99,6 @@ templates:
                     - extra_refs_test-infra
                     - image_buildpack-golang-toolbox
                     - disable_testgrid
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
       - to: ../../prow/jobs/incubator/milv/milv.yaml
         localSets:
           milv_jobConfig:
