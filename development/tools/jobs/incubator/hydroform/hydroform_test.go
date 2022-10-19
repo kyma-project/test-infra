@@ -33,8 +33,8 @@ func TestHydroformJobsPresubmit(t *testing.T) {
 	assert.Equal(t, tester.ImageGolangToolboxLatest, actualPresubmit.Spec.Containers[0].Image)
 	assert.Equal(t, "GO111MODULE", actualPresubmit.Spec.Containers[0].Env[0].Name)
 	assert.Equal(t, "on", actualPresubmit.Spec.Containers[0].Env[0].Value)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPresubmit.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/hydroform", "ci-pr"}, actualPresubmit.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"make"}, actualPresubmit.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"build"}, actualPresubmit.Spec.Containers[0].Args)
 }
 
 func TestHydroformJobPostsubmit(t *testing.T) {
@@ -60,6 +60,6 @@ func TestHydroformJobPostsubmit(t *testing.T) {
 	assert.Equal(t, "GO111MODULE", actualPost.Spec.Containers[0].Env[0].Name)
 	assert.Equal(t, "on", actualPost.Spec.Containers[0].Env[0].Value)
 	assert.Empty(t, actualPost.RunIfChanged)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/hydroform", "ci-main"}, actualPost.Spec.Containers[0].Args)
+	assert.Equal(t, []string{"make"}, actualPost.Spec.Containers[0].Command)
+	assert.Equal(t, []string{"build"}, actualPost.Spec.Containers[0].Args)
 }
