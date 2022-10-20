@@ -37,6 +37,7 @@ require (
 	github.com/google/go-containerregistry v0.7.1-0.20211203164431-c75901cce627
 	github.com/google/go-github/v40 v40.0.0
 	github.com/google/go-github/v42 v42.0.0
+	github.com/google/go-github/v48 v48.0.0
 	github.com/google/go-querystring v1.1.0
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.13
