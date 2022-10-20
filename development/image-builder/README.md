@@ -65,6 +65,45 @@ To use this feature, make sure that:
 * you have the `variants.yaml` file in the **same directory** as the `Dockerfile`
 * your `Dockerfile` contains `ARG` directives which are named after keys in `variants.yaml`
 
+## Image signing
+
+image-builder supports signing the images with pre-defined set of signing services to verify that image comes from trusted repository and has not been altered in the meantime.
+Every signing service can be enabled on repository and global levels.
+
+Example sign services configuration in config.yaml file:
+```yaml
+sign-config:
+  enabled-signers:
+    '*':
+      - default-signer
+    org/repo:
+      - repo-signer
+  signers:
+    - name: default-signer
+      type: notary
+      config:
+        endpoint: https://notary/sign
+        timeout: 5m
+        retry-timeout: 10s
+        secret:
+          path: /path/to/secret/file
+          type: bearer
+    - name: repo-signer
+      type: notary
+      config:
+        endpoint: https://repo-notary/sign
+        timeout: 5m
+        retry-timeout: 10s
+        secret:
+          path: /path/to/secret/file
+          type: bearer
+```
+
+All enabled signers under `'*'` will be used globally. Additionally, if repository contains another signer configuration in the `org/repo` key, image-builder will also use this service to sign image.
+When the job is running in CI (Prow), it will try to pick up the org/repo name from the default Prow variables. If binary is running outside of CI, `--repo` flag will have to be used. Otherwise, the configuration will not be used.
+
+Currently, image-builder contains basic implementation of notary signer. If you wish to add a new signer, refer to [`sign`](./sign) package, and it's code.
+
 ## Usage
 
 ```
@@ -75,16 +114,21 @@ Usage of image-builder:
         Path to build directory context (default ".")
   -dockerfile string
         Path to Dockerfile file relative to context (default "Dockerfile")
+  -env-file string
+        Path to file with environment variables to be loaded in build
   -log-dir string
         Path to logs directory where GCB logs will be stored (default "/logs/artifacts")
   -name string
         Name of the image to be built
+  -platform value
+        Only supported with BuildKit. Platform of the image that is built
+  -repo string
+        Load repository-specific configuration, eg. signing configuration.
   -silent
         Do not push build logs to stdout
   -tag value
         Additional tag that the image will be tagged
-  -platform value
-        Only supported with BuildKit. Platform of the image that is built
   -variant string
         If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored
+
 ```
