@@ -70,34 +70,26 @@ templates:
               - jobConfig:
                   name: pre-main-hydroform
                   always_run: true
-                  securityContext:
-                    privileged: false
-                  command:
-                    - "make"
+                  privileged: false
+                  command: "make"
                   args:
                     - "build"
-                  env:
-                    GO111MODULE: "on"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang-toolbox
+                    - image_buildpack-golang
               - jobConfig:
                   name: post-main-hydroform
-                  securityContext:
-                    privileged: false
-                  command:
-                    - "make"
-                  env:
-                    GO111MODULE: "on"
+                  privileged: false
+                  command: "make"
+                  args:
+                    - "build"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang-toolbox
+                    - image_buildpack-golang
                     - disable_testgrid
       - to: ../../prow/jobs/incubator/milv/milv.yaml
         localSets:
