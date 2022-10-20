@@ -44,7 +44,7 @@ type fakeFile struct {
 	keyVersion string
 }
 
-type BucketUpload struct {
+type bucketUpload struct {
 	Bucket string `yaml:"bucket,omitempty"`
 	Name   string `yaml:"name,omitempty"`
 }
@@ -181,7 +181,7 @@ func (s *fakeStorageServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			defer r.Body.Close()
 
 			var newData string
-			var parsedJSONdata BucketUpload
+			var parsedJSONdata bucketUpload
 
 			for {
 				part, err := multipartReader.NextPart()
@@ -232,6 +232,7 @@ func (s *fakeStorageServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// TestRotateKMSKey tests RotateKMSKey function
 func TestRotateKMSKey(t *testing.T) {
 
 	//var err error
@@ -301,7 +302,7 @@ func TestRotateKMSKey(t *testing.T) {
 			kmsEndpointURL := l.Addr().String()
 			go func() {
 				if err := gsrv.Serve(l); err != nil {
-					panic(err)
+					t.Errorf("couldn't set up fake KMS server %s", err)
 				}
 			}()
 			kmsService, err = kms.NewKeyManagementClient(ctx, option.WithEndpoint(kmsEndpointURL), option.WithoutAuthentication(), option.WithGRPCDialOption(grpc.WithTransportCredentials(insecure.NewCredentials())))

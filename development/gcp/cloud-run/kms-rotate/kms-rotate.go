@@ -15,6 +15,7 @@ import (
 	kmspb "google.golang.org/genproto/googleapis/cloud/kms/v1"
 )
 
+// Config contains function configuration provided through POST JSON
 type Config struct {
 	Project      string `yaml:"project"`
 	Location     string `yaml:"location"`
@@ -58,6 +59,7 @@ func main() {
 	}
 }
 
+// RotateKMSKey function manages GCP KMS rotation with bucket files re-signing
 func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
