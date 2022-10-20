@@ -19,7 +19,7 @@ replace (
 require (
 	cloud.google.com/go/bigquery v1.42.0
 	cloud.google.com/go/compute v1.10.0
-	cloud.google.com/go/firestore v1.7.0
+	cloud.google.com/go/firestore v1.8.0
 	cloud.google.com/go/functions v1.7.0
 	cloud.google.com/go/logging v1.5.0
 	cloud.google.com/go/pubsub v1.25.1
@@ -31,7 +31,7 @@ require (
 	github.com/containerd/containerd v1.6.6
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsouza/go-dockerclient v1.8.3
+	github.com/fsouza/go-dockerclient v1.9.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-containerregistry v0.7.1-0.20211203164431-c75901cce627
@@ -42,7 +42,7 @@ require (
 	github.com/imdario/mergo v0.3.13
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.5
-	github.com/onsi/gomega v1.21.1
+	github.com/onsi/gomega v1.22.1
 	github.com/pkg/errors v0.9.1
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
 	github.com/sigstore/cosign v1.2.1
@@ -55,9 +55,9 @@ require (
 	github.com/stretchr/testify v1.8.0
 	github.com/tidwall/gjson v1.14.3
 	go.uber.org/zap v1.23.0
-	golang.org/x/net v0.0.0-20220909164309-bea034e7d591
-	golang.org/x/oauth2 v0.0.0-20220909003341-f21342109be1
-	google.golang.org/api v0.98.0
+	golang.org/x/net v0.0.0-20221014081412-f15817d10f9b
+	golang.org/x/oauth2 v0.0.0-20221014153046-6fdb5e3db783
+	google.golang.org/api v0.100.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.22.2
