@@ -13,7 +13,7 @@ func TestOption_CommitSHA(t *testing.T) {
 		sha:      "da39a3ee5e6b4b0d3255bfef95601890afd80709",
 		expected: "da39a3ee5e6b4b0d3255bfef95601890afd80709",
 	}
-	tag := Tag{
+	tag := Tagger{
 		Time:      time.Now(),
 		CommitSHA: "1edd8d99e07c726c2226713312ae9551162b825b",
 	}
@@ -33,7 +33,7 @@ func TestOption_DateFormat(t *testing.T) {
 		dateFormat:   "2006-01-02",
 		expectedDate: now.Format("2006-01-02"),
 	}
-	tag := Tag{
+	tag := Tagger{
 		Time: now,
 	}
 	f := DateFormat(tc.dateFormat)

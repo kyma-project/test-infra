@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/kyma-project/test-infra/development/gcbuild/config"
-	"github.com/kyma-project/test-infra/development/gcbuild/tags"
+	"github.com/kyma-project/test-infra/development/pkg/tags"
 	"io"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"os"
@@ -154,22 +154,21 @@ func runBuildJob(o options, cb *config.CloudBuild, vs config.Variants) error {
 		// assume we are using PR number, build tag as 'PR-XXXX'
 		tag = "PR-" + pr
 	} else {
-		// build a tag from commit SHA
-		t, err := tags.NewTag(
-			tags.CommitSHA(sha))
-		if err != nil {
-			return fmt.Errorf("could not create tag: %w", err)
-		}
-
 		tagTmpl := `v{{ .Date }}-{{ .ShortSHA }}`
 		if o.TagTemplate != "" {
 			tagTmpl = o.TagTemplate
 		}
-		tagger := tags.Tagger{TagTemplate: tagTmpl}
-		tag, err = tagger.BuildTag(t)
+		// build a tag from commit SHA
+		tagger, err := tags.NewTagger([]string{tagTmpl}, tags.CommitSHA(sha))
 		if err != nil {
-			return fmt.Errorf("could not build tag: %w", err)
+			return fmt.Errorf("get tagger: %w", err)
 		}
+		p, err := tagger.ParseTags()
+		if err != nil {
+			return fmt.Errorf("build tag: %w", err)
+		}
+		// we'll always get one tag in this slice
+		tag = p[0]
 	}
 
 	// TODO (@Ressetkk): custom staging bucket implementation and re-using source code in builds
