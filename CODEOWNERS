@@ -29,28 +29,28 @@
 /prow/jobs/incubator/octopus @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio @kyma-project/prow
 /prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @kaloyanspiridonov @alextargov @dzahariev @svetlinzarev-sap @dragobt @kyma-project/prow
 /prow/jobs/incubator/podpreset-crd @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio @kyma-project/prow
-/prow/jobs/incubator/reconciler @pbochynski @varbanv @clebs @dbadura @kwiatekus @m00g3n @moelsayed @jeremyharisch @pprecel @tobiscr @kyma-project/prow
+/prow/jobs/incubator/reconciler @varbanv @clebs @dbadura @kwiatekus @m00g3n @moelsayed @jeremyharisch @pprecel @tobiscr @kyma-project/prow
 /prow/jobs/incubator/varkes @brendandobbs @jcawley5 @lilitgh @a-thaler @kyma-project/prow
-/prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @kyma-project/prow
-/prow/jobs/kyma/components/central-application-connectivity-validator @janmedrek @koala7659 @pbochynski @akgalwas @franpog859 @ralikio @a-thaler @pk85 @kyma-project/prow
-/prow/jobs/kyma/components/central-application-gateway @a-thaler @koala7659 @janmedrek @ralikio @pbochynski @pk85 @akgalwas @franpog859 @kyma-project/prow
-/prow/jobs/kyma/components/compass-runtime-agent @franpog859 @janmedrek @ralikio @pbochynski @a-thaler @pk85 @akgalwas @koala7659 @kyma-project/prow
-/prow/jobs/kyma/components/event-publisher-proxy @friedrichwilken @k15r @pxsalehi @vladislavpaskar @a-thaler @pk85 @pbochynski @lilitgh @marcobebway @mfaizanse @nachtmaar @kyma-project/prow
-/prow/jobs/kyma/components/eventing-controller @pbochynski @k15r @lilitgh @marcobebway @mfaizanse @vladislavpaskar @a-thaler @pk85 @friedrichwilken @nachtmaar @pxsalehi @kyma-project/prow
-/prow/jobs/kyma/components/function-controller @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @kyma-project/prow
-/prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @pbochynski @pk85 @kyma-project/prow
-/prow/jobs/kyma/components/iam-kubeconfig-service @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @kyma-project/prow
-/prow/jobs/kyma/components/istio-installer @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @kyma-project/prow
-/prow/jobs/kyma/components/kyma-operator @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @kyma-project/prow
-/prow/jobs/kyma/components/permission-controller @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
-/prow/jobs/kyma/components/telemetry-operator @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @wozniakjan @pbochynski @piotrmiskiewicz @kyma-project/prow
-/prow/jobs/kyma/components/directory-size-exporter @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @wozniakjan @pbochynski @piotrmiskiewicz @kyma-project/prow
-/prow/jobs/kyma/components/xip-patch @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @kyma-project/prow
-/prow/jobs/kyma/tests/end-to-end @wozniakjan @pbochynski @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @a-thaler @hanngos @k15r @kyma-project/prow
-/prow/jobs/kyma/tests/function-controller @a-thaler @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
-/prow/jobs/kyma/tests/integration @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @kyma-project/prow
-/prow/jobs/kyma/tests/serverless-bench @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @kyma-project/prow
-/prow/jobs/kyma/tools/event-subscriber @a-thaler @friedrichwilken @k15r @mfaizanse @nachtmaar @pxsalehi @vladislavpaskar @pk85 @lilitgh @marcobebway @pbochynski @kyma-project/prow
+/prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @kyma-project/prow
+/prow/jobs/kyma/components/central-application-connectivity-validator @janmedrek @koala7659 @akgalwas @franpog859 @ralikio @a-thaler @pk85 @kyma-project/prow
+/prow/jobs/kyma/components/central-application-gateway @a-thaler @koala7659 @janmedrek @ralikio @pk85 @akgalwas @franpog859 @kyma-project/prow
+/prow/jobs/kyma/components/compass-runtime-agent @franpog859 @janmedrek @ralikio @a-thaler @pk85 @akgalwas @koala7659 @kyma-project/prow
+/prow/jobs/kyma/components/event-publisher-proxy @friedrichwilken @k15r @pxsalehi @vladislavpaskar @a-thaler @pk85 @lilitgh @marcobebway @mfaizanse @nachtmaar @kyma-project/prow
+/prow/jobs/kyma/components/eventing-controller @k15r @lilitgh @marcobebway @mfaizanse @vladislavpaskar @a-thaler @pk85 @friedrichwilken @nachtmaar @pxsalehi @kyma-project/prow
+/prow/jobs/kyma/components/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @kyma-project/prow
+/prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @pk85 @kyma-project/prow
+/prow/jobs/kyma/components/iam-kubeconfig-service @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pk85 @kyma-project/prow
+/prow/jobs/kyma/components/istio-installer @tomasz-smelcerz-sap @werdes72 @a-thaler @pk85 @dariusztutaj @mjakobczyk @strekm @kyma-project/prow
+/prow/jobs/kyma/components/kyma-operator @tomasz-smelcerz-sap @werdes72 @a-thaler @pk85 @dariusztutaj @mjakobczyk @strekm @kyma-project/prow
+/prow/jobs/kyma/components/permission-controller @a-thaler @pk85 @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
+/prow/jobs/kyma/components/telemetry-operator @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @wozniakjan @piotrmiskiewicz @kyma-project/prow
+/prow/jobs/kyma/components/directory-size-exporter @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @wozniakjan @piotrmiskiewicz @kyma-project/prow
+/prow/jobs/kyma/components/xip-patch @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pk85 @dariusztutaj @kyma-project/prow
+/prow/jobs/kyma/tests/end-to-end @wozniakjan @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @a-thaler @hanngos @k15r @kyma-project/prow
+/prow/jobs/kyma/tests/function-controller @a-thaler @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
+/prow/jobs/kyma/tests/integration @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pk85 @dariusztutaj @mjakobczyk @kyma-project/prow
+/prow/jobs/kyma/tests/serverless-bench @pk85 @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @kyma-project/prow
+/prow/jobs/kyma/tools/event-subscriber @a-thaler @friedrichwilken @k15r @mfaizanse @nachtmaar @pxsalehi @vladislavpaskar @pk85 @lilitgh @marcobebway @kyma-project/prow
 
 /prow/scripts @kyma-project/prow @kyma-project/developers
 
