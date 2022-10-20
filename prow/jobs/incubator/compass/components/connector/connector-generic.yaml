@@ -62,6 +62,31 @@ presubmits: # runs on PRs
           - name: config
             configMap:
               name: kaniko-build-config
+    - name: pull-connector-unit-test
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-connector-unit-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^components/connector/.*\.go$'
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "cd components/connector && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 100m
   
 postsubmits: # runs on main
   kyma-incubator/compass:
