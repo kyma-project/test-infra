@@ -18,11 +18,11 @@ import (
 	kmspb "google.golang.org/genproto/googleapis/cloud/kms/v1"
 )
 
-type VersionCountError struct {
+type versionCountError struct {
 	Msg string
 }
 
-func (vce VersionCountError) Error() string {
+func (vce versionCountError) Error() string {
 	return vce.Msg
 }
 
@@ -104,7 +104,7 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 	keyIteratorRequest := &kmspb.ListCryptoKeyVersionsRequest{Parent: keyPath}
 	keyIterator := kmsService.ListCryptoKeyVersions(ctx, keyIteratorRequest)
 	keyVersions, err := getKeyVersions(keyIterator)
-	if errors.As(err, &VersionCountError{}) {
+	if errors.As(err, &versionCountError{}) {
 		log.Printf("Less than two enabled key versions, quitting")
 		return
 	} else if err != nil {
@@ -175,7 +175,7 @@ func getKeyVersions(keyIterator *kms.CryptoKeyVersionIterator) ([]*kmspb.CryptoK
 		}
 	}
 	if enabledVersionsCount < 2 {
-		return keyVersions, VersionCountError{Msg: "less than two secret versions are enabled"}
+		return keyVersions, versionCountError{Msg: "less than two secret versions are enabled"}
 	}
 	return keyVersions, nil
 }
