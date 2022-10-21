@@ -18,12 +18,12 @@ import (
 
 // Config contains function configuration provided through POST JSON
 type Config struct {
-	Project      string `yaml:"project" validate:"required,min=1"`
-	Location     string `yaml:"location" validate:"required,min=1"`
-	BucketName   string `yaml:"bucketName" validate:"required,min=1"`
-	BucketPrefix string `yaml:"bucketPrefix"`
-	Keyring      string `yaml:"keyring" validate:"required,min=1"`
-	Key          string `yaml:"key" validate:"required,min=1"`
+	Project      string `json:"project" validate:"required,min=1"`
+	Location     string `json:"location" validate:"required,min=1"`
+	BucketName   string `json:"bucketName" validate:"required,min=1"`
+	BucketPrefix string `json:"bucketPrefix,omitempty"`
+	Keyring      string `json:"keyring" validate:"required,min=1"`
+	Key          string `json:"key" validate:"required,min=1"`
 }
 
 var (
