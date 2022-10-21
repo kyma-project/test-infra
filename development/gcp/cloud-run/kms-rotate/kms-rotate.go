@@ -4,6 +4,8 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -15,6 +17,14 @@ import (
 	"google.golang.org/api/iterator"
 	kmspb "google.golang.org/genproto/googleapis/cloud/kms/v1"
 )
+
+type VersionCountError struct {
+	Msg string
+}
+
+func (vce VersionCountError) Error() string {
+	return vce.Msg
+}
 
 // Config contains function configuration provided through POST JSON
 type Config struct {
@@ -67,8 +77,7 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 	// get data from POST JSON
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		log.Printf("io.ReadAll: %v", err)
-		http.Error(w, "Couldn't read request body", http.StatusBadRequest)
+		showError(w, http.StatusBadRequest, "Couldn't read request body: %v", err)
 		return
 	}
 
@@ -79,8 +88,7 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 	validate := validator.New()
 	err = validate.Struct(conf)
 	if err != nil {
-		log.Println(err)
-		http.Error(w, "Missing values in config", http.StatusBadRequest)
+		showError(w, http.StatusBadRequest, "Missing values in config: %v", err)
 		return
 	}
 
@@ -88,23 +96,19 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 	cryptoKeyRequest := &kmspb.GetCryptoKeyRequest{Name: keyPath}
 	cryptoKey, err := kmsService.GetCryptoKey(ctx, cryptoKeyRequest)
 	if err != nil {
-		log.Printf("get crypto key: %v", err)
-		http.Error(w, "Couldn't get crypto key", http.StatusBadRequest)
+		showError(w, http.StatusInternalServerError, "Couldn't get %s crypto key: %v", keyPath, err)
 		return
 	}
 	primaryVersion := cryptoKey.GetPrimary()
 
 	keyIteratorRequest := &kmspb.ListCryptoKeyVersionsRequest{Parent: keyPath}
 	keyIterator := kmsService.ListCryptoKeyVersions(ctx, keyIteratorRequest)
-	keyVersions, enabledVersions, err := getKeyVersions(keyIterator)
-	if err != nil {
-		log.Printf("key version iterator: %v", err)
-		http.Error(w, "Couldn't iterate over key versions", http.StatusBadRequest)
-		return
-	}
-
-	if enabledVersions < 2 {
+	keyVersions, err := getKeyVersions(keyIterator)
+	if errors.As(err, &VersionCountError{}) {
 		log.Printf("Less than two enabled key versions, quitting")
+		return
+	} else if err != nil {
+		showError(w, http.StatusInternalServerError, "Couldn't iterate over %s key versions: %v", keyPath, err)
 		return
 	}
 
@@ -124,47 +128,59 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		if err != nil {
-			log.Fatal(err)
+			showError(w, http.StatusInternalServerError, "Couldn't iterate over %s bucket: %v", conf.BucketName, err)
 		}
 
 		o := bucket.Object(attrs.Name)
 		encryptedData, err := getBucketObjectData(ctx, o)
 		if err != nil {
-			log.Fatal(err)
+			showError(w, http.StatusInternalServerError, "Couldn't get %s bucket object data: %v", attrs.Name, err)
 		}
 
 		encryptResponse, err := reencrypt(ctx, keyPath, encryptedData)
 		if err != nil {
-			log.Fatal(err)
+			showError(w, http.StatusInternalServerError, "Couldn't re-encrypt %s bucket object data: %v", attrs.Name, err)
 		}
 
 		err = setBucketObjectData(ctx, o, encryptResponse.Ciphertext)
 		if err != nil {
-			log.Fatal(err)
+			showError(w, http.StatusInternalServerError, "Couldn't update %s bucket object data: %v", attrs.Name, err)
+			return
 		}
 	}
 
 	err = destroyOldKeyVersions(ctx, primaryVersion, keyVersions)
 	if err != nil {
-		log.Fatal(err)
+		showError(w, http.StatusInternalServerError, "Couldn't delete old %s key versions: %v", keyPath, err)
+		return
 	}
 }
 
-func getKeyVersions(keyIterator *kms.CryptoKeyVersionIterator) ([]*kmspb.CryptoKeyVersion, int, error) {
+func showError(w http.ResponseWriter, statusCode int, format string, args ...interface{}) {
+	errorMessage := fmt.Sprintf(format, args...)
+	log.Println(errorMessage)
+	http.Error(w, errorMessage, statusCode)
+}
+
+func getKeyVersions(keyIterator *kms.CryptoKeyVersionIterator) ([]*kmspb.CryptoKeyVersion, error) {
 	var keyVersions []*kmspb.CryptoKeyVersion
 	enabledVersionsCount := 0
 	for nextVer, err := keyIterator.Next(); err != iterator.Done; nextVer, err = keyIterator.Next() {
 		if err != nil && err != iterator.Done {
-			return nil, 0, err
+			return nil, err
 		}
 		keyVersions = append(keyVersions, nextVer)
 		if nextVer.State == kmspb.CryptoKeyVersion_ENABLED {
 			enabledVersionsCount++
 		}
 	}
-	return keyVersions, enabledVersionsCount, nil
+	if enabledVersionsCount < 2 {
+		return keyVersions, VersionCountError{Msg: "less than two secret versions are enabled"}
+	}
+	return keyVersions, nil
 }
 
+// getBucketObjectData reads data from a bucket object
 func getBucketObjectData(ctx context.Context, o *storage.ObjectHandle) ([]byte, error) {
 	reader, err := o.NewReader(ctx)
 	if err != nil {
@@ -179,6 +195,7 @@ func getBucketObjectData(ctx context.Context, o *storage.ObjectHandle) ([]byte, 
 	return encryptedData, nil
 }
 
+// setBucketObjectData writes data to a bucket object
 func setBucketObjectData(ctx context.Context, o *storage.ObjectHandle, data []byte) error {
 	writer := o.NewWriter(ctx)
 	_, err := writer.Write(data)
