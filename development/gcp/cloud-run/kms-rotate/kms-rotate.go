@@ -11,18 +11,19 @@ import (
 
 	kms "cloud.google.com/go/kms/apiv1"
 	"cloud.google.com/go/storage"
+	"github.com/go-playground/validator/v10"
 	"google.golang.org/api/iterator"
 	kmspb "google.golang.org/genproto/googleapis/cloud/kms/v1"
 )
 
 // Config contains function configuration provided through POST JSON
 type Config struct {
-	Project      string `yaml:"project"`
-	Location     string `yaml:"location"`
-	BucketName   string `yaml:"bucketName"`
+	Project      string `yaml:"project" validate:"required,min=1"`
+	Location     string `yaml:"location" validate:"required,min=1"`
+	BucketName   string `yaml:"bucketName" validate:"required,min=1"`
 	BucketPrefix string `yaml:"bucketPrefix"`
-	Keyring      string `yaml:"keyring"`
-	Key          string `yaml:"key"`
+	Keyring      string `yaml:"keyring" validate:"required,min=1"`
+	Key          string `yaml:"key" validate:"required,min=1"`
 }
 
 var (
@@ -75,29 +76,11 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 
 	json.Unmarshal(body, &conf)
 
-	if conf.Project == "" {
-		log.Print("project value is missing")
-		http.Error(w, "project value is not provided", http.StatusBadRequest)
-		return
-	}
-	if conf.Location == "" {
-		log.Print("location value is missing")
-		http.Error(w, "location value is not provided", http.StatusBadRequest)
-		return
-	}
-	if conf.Keyring == "" {
-		log.Print("keyring value is missing")
-		http.Error(w, "keyring value is not provided", http.StatusBadRequest)
-		return
-	}
-	if conf.Key == "" {
-		log.Print("key value is missing")
-		http.Error(w, "key value is not provided", http.StatusBadRequest)
-		return
-	}
-	if conf.BucketName == "" {
-		log.Print("bucket value is missing")
-		http.Error(w, "bucket value is not provided", http.StatusBadRequest)
+	validate := validator.New()
+	err = validate.Struct(conf)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, "Missing values in config", http.StatusBadRequest)
 		return
 	}
 
