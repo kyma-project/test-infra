@@ -56,6 +56,7 @@ templates:
                     IMG: "eu.gcr.io/kyma-project/keda-manager:PR-${PULL_NUMBER}"
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   name: pull-make-module-build
+                  privileged: false
                   command: "make"
                   args:
                     - "all" # run test make target of operator
