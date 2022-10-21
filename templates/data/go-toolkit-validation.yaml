@@ -165,6 +165,7 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-event-publisher-proxy-unit-test"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -190,6 +191,7 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-eventing-controller-unit-test"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"

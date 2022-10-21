@@ -286,7 +286,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-event-publisher-proxy-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/event-publisher-proxy/.*\.go$'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -336,7 +335,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-eventing-controller-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/eventing-controller/.*\.go$'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
