@@ -37,13 +37,13 @@ func main() {
 
 	kmsService, err = kms.NewKeyManagementClient(ctx)
 	if err != nil {
-		panic("failed creating KMS client, error: " + err.Error())
+		log.Fatal("failed creating KMS client, error: " + err.Error())
 	}
 	defer kmsService.Close()
 
 	storageService, err = storage.NewClient(ctx)
 	if err != nil {
-		panic("failed creating KMS client, error: " + err.Error())
+		log.Fatal("failed creating KMS client, error: " + err.Error())
 	}
 
 	http.HandleFunc("/", RotateKMSKey)
