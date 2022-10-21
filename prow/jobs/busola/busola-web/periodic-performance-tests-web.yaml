@@ -4,7 +4,7 @@
 periodics:
 - interval: 24h
   agent: kubernetes
-  name: jmeter
+  name: ci-busola-web-jmeter
   spec:
     containers:
     - image: i331641/kyma-perf:v1
