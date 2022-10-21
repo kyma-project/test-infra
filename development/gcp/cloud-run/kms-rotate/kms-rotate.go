@@ -96,19 +96,13 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 
 	keyIteratorRequest := &kmspb.ListCryptoKeyVersionsRequest{Parent: keyPath}
 	keyIterator := kmsService.ListCryptoKeyVersions(ctx, keyIteratorRequest)
-	var keyVersions []*kmspb.CryptoKeyVersion
-	enabledVersions := 0
-	for nextVer, err := keyIterator.Next(); err != iterator.Done; nextVer, err = keyIterator.Next() {
-		if err != nil && err != iterator.Done {
-			log.Printf("key version iterator: %v", err)
-			http.Error(w, "Couldn't iterate over key versions", http.StatusBadRequest)
-			return
-		}
-		keyVersions = append(keyVersions, nextVer)
-		if nextVer.State == kmspb.CryptoKeyVersion_ENABLED {
-			enabledVersions++
-		}
+	keyVersions, enabledVersions, err := getKeyVersions(keyIterator)
+	if err != nil {
+		log.Printf("key version iterator: %v", err)
+		http.Error(w, "Couldn't iterate over key versions", http.StatusBadRequest)
+		return
 	}
+
 	if enabledVersions < 2 {
 		log.Printf("Less than two enabled key versions, quitting")
 		return
@@ -133,47 +127,91 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 			log.Fatal(err)
 		}
 
-		// decrypt
-		// encrypt with latest
 		o := bucket.Object(attrs.Name)
-		reader, err := o.NewReader(ctx)
-		if err != nil {
-			log.Fatal(err)
-		}
-		encryptedData, err := io.ReadAll(reader)
-		if err != nil {
-			log.Fatal(err)
-		}
-		reader.Close()
-
-		decryptRequest := &kmspb.DecryptRequest{Name: keyPath, Ciphertext: encryptedData}
-		decryptResponse, err := kmsService.Decrypt(ctx, decryptRequest)
+		encryptedData, err := getBucketObjectData(ctx, o)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		encryptRequest := &kmspb.EncryptRequest{Name: keyPath, Plaintext: decryptResponse.Plaintext}
-		encryptResponse, err := kmsService.Encrypt(ctx, encryptRequest)
+		encryptResponse, err := reencrypt(ctx, keyPath, encryptedData)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		writer := bucket.Object(attrs.Name).NewWriter(ctx)
-		_, err = writer.Write(encryptResponse.Ciphertext)
+		err = setBucketObjectData(ctx, o, encryptResponse.Ciphertext)
 		if err != nil {
 			log.Fatal(err)
 		}
-		writer.Close()
 	}
 
-	// destroy old keys
+	err = destroyOldKeyVersions(ctx, primaryVersion, keyVersions)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func getKeyVersions(keyIterator *kms.CryptoKeyVersionIterator) ([]*kmspb.CryptoKeyVersion, int, error) {
+	var keyVersions []*kmspb.CryptoKeyVersion
+	enabledVersionsCount := 0
+	for nextVer, err := keyIterator.Next(); err != iterator.Done; nextVer, err = keyIterator.Next() {
+		if err != nil && err != iterator.Done {
+			return nil, 0, err
+		}
+		keyVersions = append(keyVersions, nextVer)
+		if nextVer.State == kmspb.CryptoKeyVersion_ENABLED {
+			enabledVersionsCount++
+		}
+	}
+	return keyVersions, enabledVersionsCount, nil
+}
+
+func getBucketObjectData(ctx context.Context, o *storage.ObjectHandle) ([]byte, error) {
+	reader, err := o.NewReader(ctx)
+	if err != nil {
+		return nil, err
+	}
+	encryptedData, err := io.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+	reader.Close()
+
+	return encryptedData, nil
+}
+
+func setBucketObjectData(ctx context.Context, o *storage.ObjectHandle, data []byte) error {
+	writer := o.NewWriter(ctx)
+	_, err := writer.Write(data)
+	writer.Close()
+	return err
+}
+
+// reencrypt takes in encrypted data and return the same data encrypted with the primary version of a key
+func reencrypt(ctx context.Context, keyPath string, encryptedData []byte) (*kmspb.EncryptResponse, error) {
+	decryptRequest := &kmspb.DecryptRequest{Name: keyPath, Ciphertext: encryptedData}
+	decryptResponse, err := kmsService.Decrypt(ctx, decryptRequest)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	encryptRequest := &kmspb.EncryptRequest{Name: keyPath, Plaintext: decryptResponse.Plaintext}
+	encryptResponse, err := kmsService.Encrypt(ctx, encryptRequest)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return encryptResponse, nil
+}
+
+// destroyOldKeyVersions destroys all versions of key except the primary version
+func destroyOldKeyVersions(ctx context.Context, primaryVersion *kmspb.CryptoKeyVersion, keyVersions []*kmspb.CryptoKeyVersion) error {
 	for _, keyVersion := range keyVersions {
 		if keyVersion.Name != primaryVersion.Name {
 			destructionRequest := &kmspb.DestroyCryptoKeyVersionRequest{Name: keyVersion.Name}
 			_, err := kmsService.DestroyCryptoKeyVersion(ctx, destructionRequest)
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 		}
 	}
+	return nil
 }
