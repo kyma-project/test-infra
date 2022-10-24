@@ -21,6 +21,7 @@ require (
 	cloud.google.com/go/compute v1.10.0
 	cloud.google.com/go/firestore v1.8.0
 	cloud.google.com/go/functions v1.7.0
+	cloud.google.com/go/kms v1.4.0
 	cloud.google.com/go/logging v1.5.0
 	cloud.google.com/go/pubsub v1.25.1
 	cloud.google.com/go/storage v1.27.0
@@ -33,6 +34,7 @@ require (
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/fsouza/go-dockerclient v1.9.0
 	github.com/ghodss/yaml v1.0.0
+	github.com/go-playground/validator/v10 v10.11.1 // indirect
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-containerregistry v0.11.0
 	github.com/google/go-github/v40 v40.0.0
@@ -58,6 +60,8 @@ require (
 	golang.org/x/net v0.0.0-20221014081412-f15817d10f9b
 	golang.org/x/oauth2 v0.0.0-20221014153046-6fdb5e3db783
 	google.golang.org/api v0.100.0
+	google.golang.org/genproto v0.0.0-20221014213838-99cd37c6964a
+	google.golang.org/grpc v1.50.1
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.22.2

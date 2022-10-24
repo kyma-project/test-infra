@@ -398,6 +398,32 @@ templates:
                         - "default"
                         - "postsubmit"
                   - jobConfig:
+                      name: "pre-test-infra-kms-rotate"
+                      run_if_changed: "^development/gcp/cloud-run/kms-rotate/"
+                      args:
+                        - "--name=kms-rotate"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/gcp/cloud-run/kms-rotate/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-test-infra-kms-rotate"
+                      run_if_changed: "^development/gcp/cloud-run/kms-rotate/"
+                      args:
+                        - "--name=kms-rotate"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/gcp/cloud-run/kms-rotate/Dockerfile"
+                        - "--directory=test-infra"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "postsubmit"
+                  - jobConfig:
                       name: "pull-build-githubrelease"
                       run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
                       args:
