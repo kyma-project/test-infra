@@ -378,6 +378,10 @@ func validateOptions(o options) error {
 
 // loadEnv loads environment variables into application runtime from key=value list
 func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
+	if len(envFile) == 0 {
+		// file is empty - ignore
+		return nil, nil
+	}
 	f, err := vfs.Open(envFile)
 	if err != nil {
 		return nil, fmt.Errorf("open env file: %w", err)
