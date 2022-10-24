@@ -114,39 +114,10 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 
 	bucket := storageService.Bucket(conf.BucketName)
 
-	// for all files in bucket dir
-	query := &storage.Query{}
-	if conf.BucketPrefix != "" {
-		query.Prefix = conf.BucketPrefix
-	}
-
-	bucketIterator := bucket.Objects(ctx, query)
-
-	for {
-		attrs, err := bucketIterator.Next()
-		if err == iterator.Done {
-			break
-		}
-		if err != nil {
-			showError(w, http.StatusInternalServerError, "Couldn't iterate over %s bucket: %v", conf.BucketName, err)
-		}
-
-		o := bucket.Object(attrs.Name)
-		encryptedData, err := getBucketObjectData(ctx, o)
-		if err != nil {
-			showError(w, http.StatusInternalServerError, "Couldn't get %s bucket object data: %v", attrs.Name, err)
-		}
-
-		encryptResponse, err := reencrypt(ctx, keyPath, encryptedData)
-		if err != nil {
-			showError(w, http.StatusInternalServerError, "Couldn't re-encrypt %s bucket object data: %v", attrs.Name, err)
-		}
-
-		err = setBucketObjectData(ctx, o, encryptResponse.Ciphertext)
-		if err != nil {
-			showError(w, http.StatusInternalServerError, "Couldn't update %s bucket object data: %v", attrs.Name, err)
-			return
-		}
+	err = rotateFiles(ctx, bucket, conf.BucketPrefix, keyPath)
+	if err != nil {
+		showError(w, http.StatusInternalServerError, "Couldn't rotate files in the %s bucket: %v", conf.BucketName, err)
+		return
 	}
 
 	err = destroyOldKeyVersions(ctx, primaryVersion, keyVersions)
@@ -160,6 +131,43 @@ func showError(w http.ResponseWriter, statusCode int, format string, args ...int
 	errorMessage := fmt.Sprintf(format, args...)
 	log.Println(errorMessage)
 	http.Error(w, errorMessage, statusCode)
+}
+
+func rotateFiles(ctx context.Context, bucket *storage.BucketHandle, bucketPrefix, keyPath string) error {
+	// for all files in bucket dir
+	query := &storage.Query{}
+	if bucketPrefix != "" {
+		query.Prefix = bucketPrefix
+	}
+
+	bucketIterator := bucket.Objects(ctx, query)
+
+	for {
+		attrs, err := bucketIterator.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return fmt.Errorf("iterator error: %v", err)
+		}
+
+		o := bucket.Object(attrs.Name)
+		encryptedData, err := getBucketObjectData(ctx, o)
+		if err != nil {
+			return fmt.Errorf("couldn't get %s object data: %v", attrs.Name, err)
+		}
+
+		encryptResponse, err := reencrypt(ctx, keyPath, encryptedData)
+		if err != nil {
+			return fmt.Errorf("couldn't re-encrypt %s object data: %v", attrs.Name, err)
+		}
+
+		err = setBucketObjectData(ctx, o, encryptResponse.Ciphertext)
+		if err != nil {
+			return fmt.Errorf("couldn't update %s object data: %v", attrs.Name, err)
+		}
+	}
+	return nil
 }
 
 func getKeyVersions(keyIterator *kms.CryptoKeyVersionIterator) ([]*kmspb.CryptoKeyVersion, error) {
