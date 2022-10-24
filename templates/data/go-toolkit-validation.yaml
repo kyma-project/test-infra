@@ -170,7 +170,7 @@ templates:
                   args:
                     - "-c"
                     - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/event-publisher-proxy/.*\.go$'
+                  run_if_changed: '^components/event-publisher-proxy/.*$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
@@ -196,7 +196,7 @@ templates:
                   args:
                     - "-c"
                     - "cd components/eventing-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/eventing-controller/.*\.go$'
+                  run_if_changed: '^components/eventing-controller/.*$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
