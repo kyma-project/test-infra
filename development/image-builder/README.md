@@ -75,28 +75,28 @@ Example sign services configuration in config.yaml file:
 sign-config:
   enabled-signers:
     '*':
-      - default-signer
+      - default-signify
     org/repo:
-      - repo-signer
+      - repo-token-notary
   signers:
-    - name: default-signer
+    - name: default-signify
       type: notary
       config:
         endpoint: https://notary/sign
         timeout: 5m
         retry-timeout: 10s
         secret:
-          path: /path/to/secret/file
-          type: bearer
-    - name: repo-signer
+          path: /path/to/secret/file/signify.yaml
+          type: signify
+    - name: repo-token-notary
       type: notary
       config:
         endpoint: https://repo-notary/sign
         timeout: 5m
         retry-timeout: 10s
         secret:
-          path: /path/to/secret/file
-          type: bearer
+          path: /path/to/secret/file/token
+          type: token
 ```
 
 All enabled signers under `'*'` will be used globally. Additionally, if repository contains another signer configuration in the `org/repo` key, image-builder will also use this service to sign image.

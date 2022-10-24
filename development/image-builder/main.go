@@ -4,9 +4,9 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"github.com/kyma-project/test-infra/development/pkg/sets"
 	"github.com/kyma-project/test-infra/development/pkg/tags"
-	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"io"
 	"io/fs"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
@@ -28,7 +28,7 @@ type options struct {
 	name       string
 	variant    string
 	logDir     string
-	orgRepo        string
+	orgRepo    string
 	silent     bool
 	isCI       bool
 	tags       sets.Strings
@@ -241,7 +241,6 @@ func runBuildJob(o options, vs Variants) error {
 }
 
 func signImages(o *options, images []string) error {
-	fmt.Println("Start signing images", strings.Join(images, ","))
 	// use o.orgRepo as default value since someone might have loaded is as a flag
 	orgRepo := o.orgRepo
 	if o.isCI {
@@ -253,7 +252,6 @@ func signImages(o *options, images []string) error {
 			orgRepo = org + "/" + repo
 		}
 	}
-
 	if len(orgRepo) == 0 {
 		return fmt.Errorf("'orgRepo' cannot be empty")
 	}
@@ -261,6 +259,7 @@ func signImages(o *options, images []string) error {
 	if err != nil {
 		return err
 	}
+	fmt.Println("Start signing images", strings.Join(images, ","))
 	var errs []error
 	for _, s := range sig {
 		err := s.Sign(images)

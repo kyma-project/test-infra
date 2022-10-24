@@ -43,7 +43,7 @@ func TestNotaryConfig_NewSigner(t *testing.T) {
 		},
 		{
 			name: "signify type",
-			authFile: fmt.Sprintf(`url: %s
+			authFile: fmt.Sprintf(`endpoint: %s
 payload: |
   {
     "role_id":"CD0EA3F3-C86C-4852-8092-87920F56D2D4",
