@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pre-main-control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener"
+    report: true
+  - pjName: "pre-main-control-plane-reconciler-e2e-latest-release"
+    report: true
+
