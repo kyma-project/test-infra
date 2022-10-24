@@ -18,9 +18,9 @@ const (
 	TypeNotaryBackend = "notary"
 )
 
-type ErrAuthServiceBadResponse struct {
-	StatusCode int
-	Status     string
+type ErrBadResponse struct {
+	status  string
+	message string
 }
 
 type ErrAuthServiceNotSupported struct {
@@ -31,8 +31,8 @@ func (e ErrAuthServiceNotSupported) Error() string {
 	return fmt.Sprintf("'%s' auth service not supported", e.Service)
 }
 
-func (e ErrAuthServiceBadResponse) Error() string {
-	return fmt.Sprintf("response from auth service: %v, %s", e.StatusCode, e.Status)
+func (e ErrBadResponse) Error() string {
+	return fmt.Sprintf("bad response from service: %s, %s", e.status, e.message)
 }
 
 type NotaryConfig struct {
@@ -111,10 +111,15 @@ func SignifyAuth(s SignifySecret) (AuthFunc, error) {
 			Token string `json:"token"`
 		} `json:"access_token"`
 	}
-	if resp.StatusCode != http.StatusOK {
-		return nil, ErrAuthServiceBadResponse{StatusCode: resp.StatusCode, Status: resp.Status}
+
+	rBody, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
 	}
-	if err := json.NewDecoder(resp.Body).Decode(&t); err != nil {
+	if resp.StatusCode != http.StatusOK {
+		return nil, ErrBadResponse{status: resp.Status, message: string(rBody)}
+	}
+	if err := json.Unmarshal(rBody, &t); err != nil {
 		return nil, err
 	}
 
@@ -149,7 +154,7 @@ func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, e
 		if err != nil {
 			return nil, fmt.Errorf("image manifest: %w", err)
 		}
-		sha := m.Config.Digest.String()
+		sha := m.Config.Digest.Hex
 		size := m.Config.Size
 		sr = append(sr, SigningRequest{NotaryGun: base, Version: tag, ByteSize: size, SHA256: sha})
 	}
@@ -157,6 +162,7 @@ func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, e
 }
 
 func (ns NotarySigner) Sign(images []string) error {
+	sImg := strings.Join(images, ", ")
 	sr, err := ns.buildSigningRequest(images)
 	if err != nil {
 		return fmt.Errorf("build sign request: %w", err)
@@ -169,41 +175,41 @@ func (ns NotarySigner) Sign(images []string) error {
 	if err != nil {
 		return err
 	}
-
+	req.Header.Add("Content-Type", "application/json")
 	if ns.authFunc != nil {
 		req = ns.authFunc(req)
 	}
 
 	retries := 5
-	var respBody []byte
-	var statusCode int
+	var status string
+	var respMsg []byte
 	w := time.NewTicker(ns.retryTimeout)
 	defer w.Stop()
 	for retries > 0 {
+		fmt.Printf("Trying to sign %s. %v retries remaining...\n", sImg, retries)
 		// wait for ticker to run
 		<-w.C
 		resp, err := ns.c.Do(req)
 		if err != nil {
 			return fmt.Errorf("notary request: %w", err)
 		}
-		respBody, err = io.ReadAll(resp.Body)
-		statusCode = resp.StatusCode
+		status = resp.Status
+		respMsg, err = io.ReadAll(resp.Body)
 		if err != nil {
 			return fmt.Errorf("body read: %w", err)
 		}
 		switch resp.StatusCode {
 		case http.StatusOK:
 			// response was fine. Do not need anything else
+			fmt.Printf("Successfully signed images %s!\n", sImg)
 			return nil
-		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest:
-			return fmt.Errorf("notary response: %v %s", resp.StatusCode, resp.Status)
+		case http.StatusUnauthorized, http.StatusForbidden, http.StatusBadRequest, http.StatusUnsupportedMediaType:
+			return ErrBadResponse{status: status, message: string(respMsg)}
 		}
 		retries--
-
 	}
 	fmt.Println("Reached all retries. Stopping.")
-	fmt.Println(respBody)
-	return fmt.Errorf("other notary error: %v", statusCode)
+	return ErrBadResponse{status: status, message: string(respMsg)}
 }
 
 func (nc NotaryConfig) NewSigner() (Signer, error) {

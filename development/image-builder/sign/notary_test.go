@@ -187,7 +187,7 @@ func TestAuthToken(t *testing.T) {
 	}
 }
 
-func TestJWTAuth(t *testing.T) {
+func TestSignifyAuth(t *testing.T) {
 	srv := httptest.NewServer(fakeAuthService{})
 	expected := "Bearer abcd1234"
 	jwts := SignifySecret{
