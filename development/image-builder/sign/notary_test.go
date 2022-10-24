@@ -3,6 +3,7 @@ package sign
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/google/uuid"
 	"net/http"
 	"net/http/httptest"
 	"os"
@@ -11,32 +12,91 @@ import (
 	"time"
 )
 
+type fakeAuthService struct {
+	http.Handler
+}
+
+func (f fakeAuthService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	resp := `{"access_token":{"claims":{"name":"sign_claim","token_ttl":"24h"},"token":"abcd1234"}}`
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(resp))
+}
+
 func TestNotaryConfig_NewSigner(t *testing.T) {
-	tmpFile := filepath.Join(os.TempDir(), "test-secret")
-	os.WriteFile(tmpFile, []byte("abcd1234"), 0666)
-	nc := NotaryConfig{
-		Endpoint: "http://localhost/sign",
-		Secret: &AuthSecretConfig{
-			Path: tmpFile,
-			Type: "bearer",
+	id := uuid.New()
+	srv := httptest.NewServer(fakeAuthService{})
+	tc := []struct {
+		name      string
+		authType  *AuthSecretConfig
+		authFile  string
+		expectErr bool
+	}{
+		{
+			name:     "token type",
+			authFile: "abcd1234",
+			authType: &AuthSecretConfig{
+				Path: filepath.Join(os.TempDir(), id.String()),
+				Type: "token",
+			},
+			expectErr: false,
 		},
-		Timeout:      5 * time.Minute,
-		RetryTimeout: 1,
+		{
+			name: "signify type",
+			authFile: fmt.Sprintf(`url: %s
+payload: |
+  {
+    "role_id":"CD0EA3F3-C86C-4852-8092-87920F56D2D4",
+    "secret_id":"70ACA8AE-81F4-48D5-BFC6-4693604DD868"
+  }`, srv.URL),
+			authType: &AuthSecretConfig{
+				Path: filepath.Join(os.TempDir(), id.String()),
+				Type: "signify",
+			},
+			expectErr: false,
+		},
+		{
+			name: "backend unsupported",
+			authType: &AuthSecretConfig{
+				Path: filepath.Join(os.TempDir(), id.String()),
+				Type: "unsupported",
+			},
+			expectErr: true,
+		},
+		{
+			name:      "no auth",
+			authType:  nil,
+			expectErr: false,
+		},
 	}
-	s, err := nc.NewSigner()
-	if err != nil {
-		t.Errorf(err.Error())
-		t.FailNow()
-	}
-	ns := s.(NotarySigner)
-	if ns.retryTimeout != 1 {
-		t.Errorf("incorrect retryTimeout")
-	}
-	if ns.url != "http://localhost/sign" {
-		t.Errorf("incorrect url")
-	}
-	if ns.c.Timeout != 5*time.Minute {
-		t.Errorf("incorrect timeout")
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			if c.authType != nil {
+				os.WriteFile(c.authType.Path, []byte(c.authFile), 0666)
+			}
+			nc := NotaryConfig{
+				Endpoint:     "http://localhost/sign",
+				Secret:       c.authType,
+				Timeout:      5 * time.Minute,
+				RetryTimeout: 1,
+			}
+			s, err := nc.NewSigner()
+			if err != nil && !c.expectErr {
+				t.Errorf(err.Error())
+			}
+			if s != nil {
+				ns := s.(NotarySigner)
+				if ns.retryTimeout != 1 {
+					t.Errorf("incorrect retryTimeout")
+				}
+				if ns.url != "http://localhost/sign" {
+					t.Errorf("incorrect url")
+				}
+				if ns.c.Timeout != 5*time.Minute {
+					t.Errorf("incorrect timeout")
+				}
+			}
+		})
 	}
 }
 
@@ -52,7 +112,7 @@ func TestNotarySigner_SignImages(t *testing.T) {
 			name:               "passed signing",
 			expectErr:          false,
 			expectSignedImages: 2,
-			authFunc:           BearerToken("abcd1234"),
+			authFunc:           AuthToken("abcd1234"),
 		},
 		{
 			name:               "unauthorized",
@@ -81,7 +141,7 @@ func TestNotarySigner_SignImages(t *testing.T) {
 					w.WriteHeader(http.StatusInternalServerError)
 					return
 				}
-				if r.Header.Get("Authorization") != "Bearer abcd1234" {
+				if r.Header.Get("Authorization") != "Token abcd1234" {
 					w.WriteHeader(http.StatusUnauthorized)
 					w.Write([]byte("Unauthorized!"))
 					return
@@ -116,12 +176,30 @@ func TestNotarySigner_SignImages(t *testing.T) {
 	}
 }
 
-func TestBearerToken(t *testing.T) {
+func TestAuthToken(t *testing.T) {
 	token := "abcd12345678"
-	expected := "Bearer abcd12345678"
-	fc := BearerToken(token)
+	expected := "Token abcd12345678"
+	fc := AuthToken(token)
 	req := httptest.NewRequest("POST", "http://localhost", nil)
 	fc(req)
+	if got := req.Header.Get("Authorization"); got != expected {
+		t.Errorf("Bearer token did not apply: %s != %s", got, expected)
+	}
+}
+
+func TestJWTAuth(t *testing.T) {
+	srv := httptest.NewServer(fakeAuthService{})
+	expected := "Bearer abcd1234"
+	jwts := SignifySecret{
+		Endpoint: srv.URL,
+		Payload:  `{"role_id":"CD0EA3F3-C86C-4852-8092-87920F56D2D4","secret_id":"70ACA8AE-81F4-48D5-BFC6-4693604DD868"}`,
+	}
+	a, err := SignifyAuth(jwts)
+	if err != nil {
+		t.Fail()
+	}
+	req := httptest.NewRequest("POST", "http://localhost", nil)
+	req = a(req)
 	if got := req.Header.Get("Authorization"); got != expected {
 		t.Errorf("Bearer token did not apply: %s != %s", got, expected)
 	}

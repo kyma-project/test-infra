@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/google/go-containerregistry/pkg/name"
 	"github.com/google/go-containerregistry/pkg/v1/remote"
+	"gopkg.in/yaml.v3"
 	"io"
 	"net/http"
 	"os"
@@ -16,6 +17,23 @@ import (
 const (
 	TypeNotaryBackend = "notary"
 )
+
+type ErrAuthServiceBadResponse struct {
+	StatusCode int
+	Status     string
+}
+
+type ErrAuthServiceNotSupported struct {
+	Service string
+}
+
+func (e ErrAuthServiceNotSupported) Error() string {
+	return fmt.Sprintf("'%s' auth service not supported", e.Service)
+}
+
+func (e ErrAuthServiceBadResponse) Error() string {
+	return fmt.Sprintf("response from auth service: %v, %s", e.StatusCode, e.Status)
+}
 
 type NotaryConfig struct {
 	// Set URL to Notary server signing endpoint
@@ -31,8 +49,18 @@ type NotaryConfig struct {
 
 // AuthSecretConfig contains auth information for notary server
 type AuthSecretConfig struct {
+	// Path if path to file that contains secret credentials
 	Path string `yaml:"path" json:"path"`
+	// Type contains credential type, based on which the service will configure signing
 	Type string `yaml:"type" json:"type"`
+}
+
+// SignifySecret contains configuration of secret that is used to connect to SAP signify service
+type SignifySecret struct {
+	// URL to the SAP signify endpoint
+	Endpoint string `yaml:"endpoint" json:"endpoint"`
+	// Actual secret data that will be pushed on sign request. Assumed its in JSON format
+	Payload string `yaml:"payload" json:"payload"`
 }
 
 // SigningRequest contains information about all images with tags to sign using Notary
@@ -47,8 +75,11 @@ type SigningRequest struct {
 	Version string `json:"version"`
 }
 
+// AuthFunc is a small middleware function that intercepts http.Request with specific authentication method
 type AuthFunc func(r *http.Request) *http.Request
 
+// NotarySigner is a struct that implements sign.Signer interface
+// Takes care of signing requests to Notary server
 type NotarySigner struct {
 	authFunc     AuthFunc
 	c            http.Client
@@ -56,13 +87,43 @@ type NotarySigner struct {
 	retryTimeout time.Duration
 }
 
-// BearerToken mutates created request, so it contains bearer token of authorized user
+// AuthToken mutates created request, so it contains bearer token of authorized user
 // Serves as middleware function before sending request
-func BearerToken(token string) AuthFunc {
+func AuthToken(token string) AuthFunc {
+	return func(r *http.Request) *http.Request {
+		r.Header.Add("Authorization", "Token "+token)
+		return r
+	}
+}
+
+// SignifyAuth fetches the JWT token from provided API endpoint in configuration file
+// then returns a function that populates this JWT token as Bearer in the request
+func SignifyAuth(s SignifySecret) (AuthFunc, error) {
+	endpoint := s.Endpoint
+	payload := s.Payload
+	resp, err := http.Post(endpoint, "application/json", strings.NewReader(payload))
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	var t struct {
+		AccessToken struct {
+			Token string `json:"token"`
+		} `json:"access_token"`
+	}
+	if resp.StatusCode != http.StatusOK {
+		return nil, ErrAuthServiceBadResponse{StatusCode: resp.StatusCode, Status: resp.Status}
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&t); err != nil {
+		return nil, err
+	}
+
+	token := t.AccessToken.Token
+
 	return func(r *http.Request) *http.Request {
 		r.Header.Add("Authorization", "Bearer "+token)
 		return r
-	}
+	}, nil
 }
 
 func (ns NotarySigner) buildSigningRequest(images []string) ([]SigningRequest, error) {
@@ -155,8 +216,21 @@ func (nc NotaryConfig) NewSigner() (Signer, error) {
 			return nil, err
 		}
 		switch nc.Secret.Type {
-		case "bearer":
-			ns.authFunc = BearerToken(string(f))
+		case "token":
+			ns.authFunc = AuthToken(string(f))
+		case "signify":
+			var s SignifySecret
+			err := yaml.Unmarshal(f, &s)
+			if err != nil {
+				return nil, err
+			}
+			auth, err := SignifyAuth(s)
+			if err != nil {
+				return nil, err
+			}
+			ns.authFunc = auth
+		default:
+			return nil, ErrAuthServiceNotSupported{Service: nc.Secret.Type}
 		}
 	}
 	ns.retryTimeout = 10 * time.Second
