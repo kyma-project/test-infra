@@ -22,10 +22,9 @@ gcloud run deploy rotate-kms-key \
 --max-instances 1 \
 --memory 128Mi \
 --service-account sa-kms-update@sap-kyma-prow.iam.gserviceaccount.com \
---ingress internal \
+--ingress all \
 --project sap-kyma-prow \
---allow-unauthenticated \
---image europe-docker.pkg.dev/kyma-project/prod/test-infra/kms-rotate:v20221024-ab3544fd
+--image europe-docker.pkg.dev/kyma-project/prod/test-infra/kms-rotate:v20221025-47772933
 ```
 2. Create a new job in Cloud Scheduler that calls the Cloud Run endpoint with JSON config passed as a POST body.
 
