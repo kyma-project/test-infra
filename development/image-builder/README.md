@@ -68,9 +68,9 @@ To use this feature, make sure that:
 ## Image signing
 
 image-builder supports signing the images with pre-defined set of signing services to verify that image comes from trusted repository and has not been altered in the meantime.
-Every signing service can be enabled on repository and global levels.
+You can enable every signing service on repository and global levels.
 
-Example sign services configuration in config.yaml file:
+See the following example sign services configuration in `config.yaml` file:
 ```yaml
 sign-config:
   enabled-signers:
@@ -99,10 +99,10 @@ sign-config:
           type: token
 ```
 
-All enabled signers under `'*'` will be used globally. Additionally, if repository contains another signer configuration in the `org/repo` key, image-builder will also use this service to sign image.
+All enabled signers under `'*'` are used globally. Additionally, if a repository contains another signer configuration in the `org/repo` key, image-builder also uses this service to sign the image.
 When the job is running in CI (Prow), it will try to pick up the org/repo name from the default Prow variables. If binary is running outside of CI, `--repo` flag will have to be used. Otherwise, the configuration will not be used.
 
-Currently, image-builder contains basic implementation of notary signer. If you wish to add a new signer, refer to [`sign`](./sign) package, and it's code.
+Currently, image-builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to the [`sign`](./sign) package, and its code.
 
 ## Usage
 
