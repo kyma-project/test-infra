@@ -177,8 +177,8 @@ func getKeyVersions(keyIterator *kms.CryptoKeyVersionIterator) ([]*kmspb.CryptoK
 		if err != nil && err != iterator.Done {
 			return nil, err
 		}
-		keyVersions = append(keyVersions, nextVer)
 		if nextVer.State == kmspb.CryptoKeyVersion_ENABLED {
+			keyVersions = append(keyVersions, nextVer)
 			enabledVersionsCount++
 		}
 	}
