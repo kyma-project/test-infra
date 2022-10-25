@@ -67,7 +67,7 @@ To use this feature, make sure that:
 
 ## Image signing
 
-image-builder supports signing the images with pre-defined set of signing services to verify that image comes from trusted repository and has not been altered in the meantime.
+image-builder supports signing the images with a pre-defined set of signing services to verify that image comes from a trusted repository and has not been altered in the meantime.
 You can enable every signing service on repository and global levels.
 
 See the following example sign services configuration in `config.yaml` file:
