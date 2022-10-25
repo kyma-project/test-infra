@@ -5,14 +5,14 @@
 The Cloud Run application decrypts and encrypts files in a bucket with the latest version of a KMS key, and deletes old versions of a key. The function is triggered by a HTTP POST request sent by a Cloud Scheduler.
 
 1. A job in Cloud Scheduler sends a POST request to the Cloud Run application.
-2. The Cloud Run application checks if there is more than one enables key version. If not, it stops running.
+2. The Cloud Run application checks if there is more than one enabled key version. If not, it stops running.
 3. The Cloud Run application decrypts and encrypts files in the bucket with the latest version of the key.
-4. The Cloud Run application marks for destruction old versions of a key in KMS.
+4. The Cloud Run application marks the old versions of a KMS key for destruction.
 
 
 ## Cloud Run deployment
 
-To deploy the Cloud Run application, follow the following steps:
+To deploy the Cloud Run application, follow these steps:
 
 1. Use the following command to deploy the Cloud Run application:
 ```bash
