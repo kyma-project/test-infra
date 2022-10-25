@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.8"
+  nextRelease: "2.9"
   releases:
+    - "2.8"
     - "2.7"
     - "2.6"
-    - "2.5"
   orgs:
     - name: "kyma-project"
       repos:
@@ -116,7 +116,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
+    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 200Mi
@@ -126,7 +126,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -146,21 +146,21 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221012-17479ff2"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221025-a3652e68"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220920-b10d5457"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221017-0e4b706e"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221012-8d12a771"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
   image_gardener-rotate:
-    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221003-dd432f00"
+    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221017-0e4b706e"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"

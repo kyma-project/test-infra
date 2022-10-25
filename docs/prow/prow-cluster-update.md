@@ -6,33 +6,32 @@ Updating a Prow cluster requires an improved Prow version. The Kubernetes Prow i
 
 To update a Prow cluster follow these steps:
 
-1. Follow [this](./prow-installation-on-forks.md) document for details to set up a Prow cluster.
-2. Go to the [`kubernetes/test-infra`](https://github.com/kubernetes/test-infra/) project and select a commit with the desired update for the Prow cluster. For example, use [`2c8e0dbb96b4c1a86d42275dfbed5474a6d05def`](https://github.com/kubernetes/test-infra/commit/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def).
-3. Open [`starter.yaml`](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/cluster/starter.yaml) from the upstream repository in the Kubernetes project and copy new tags for these containers:
+1. Go to the [`kubernetes/test-infra`](https://github.com/kubernetes/test-infra/) project and select a commit with the desired update for the Prow cluster. For example, use [`2c8e0dbb96b4c1a86d42275dfbed5474a6d05def`](https://github.com/kubernetes/test-infra/commit/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def).
+2. Open [`starter.yaml`](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/cluster/starter.yaml) from the upstream repository in the Kubernetes project and copy new tags for these containers:
     * gcr.io/k8s-prow/hook
     * gcr.io/k8s-prow/plank
     * gcr.io/k8s-prow/sinker
     * gcr.io/k8s-prow/deck
     * gcr.io/k8s-prow/horologium
     * gcr.io/k8s-prow/tide
-4. Copy the commit ID into a comment at the top of the file to keep track of the current release used for the deployments.
-5. Use your preferred diff tool to check and copy the stability update in a Prow component and additional configurations on existing components.
-6. Open both [`config.yaml`](../../prow/config.yaml) in the current project and [`config.yaml`](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/config.yaml) in the Kubernetes project and copy new tags for these containers:
+3. Copy the commit ID into a comment at the top of the file to keep track of the current release used for the deployments.
+4. Use your preferred diff tool to check and copy the stability update in a Prow component and additional configurations on existing components.
+5. Open both [`config.yaml`](../../prow/config.yaml) in the current project and [`config.yaml`](https://github.com/kubernetes/test-infra/blob/2c8e0dbb96b4c1a86d42275dfbed5474a6d05def/prow/config.yaml) in the Kubernetes project and copy new tags for these containers:
     * gcr.io/k8s-prow/initupload
     * gcr.io/k8s-prow/entrypoint
     * gcr.io/k8s-prow/sidecar
-7. When the new image is ready, copy its tag and paste it to [`config.yaml`](../../prow/config.yaml) for gcr.io/k8s-prow/clonerefs container.
-8. Use your preferred diff tool to check and copy the stability update in the Prow component and additional configurations for the existing components.
-9. Run this command to update Prow deployments:
+6. When the new image is ready, copy its tag and paste it to [`config.yaml`](../../prow/config.yaml) for gcr.io/k8s-prow/clonerefs container.
+7. Use your preferred diff tool to check and copy the stability update in the Prow component and additional configurations for the existing components.
+8. Run this command to update Prow deployments:
     ```bash
     kubectl apply -f prow/cluster/components
     ```
-10. Use the `update-config.sh {file_path}` script to apply the Prow configuration on a cluster. Run the following command:
+9. Use the `update-config.sh {file_path}` script to apply the Prow configuration on a cluster. Run the following command:
    ```
    ./update-config.sh ../prow/config.yaml
    ```
-11. Make sure that the update was successful. For example, run `kubectl get pods` to check if it doesn't show errors on the updated test cluster and the dashboard is still reachable.
-13. Create a pull request.
+10. Make sure that the update was successful. For example, run `kubectl get pods` to check if it doesn't show errors on the updated test cluster and the dashboard is still reachable.
+11. Create a pull request.
 
 ## Troubleshooting
 

@@ -31,7 +31,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221012-b3fc120c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
             securityContext:
               privileged: true
             command:
