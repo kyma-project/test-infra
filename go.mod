@@ -17,7 +17,7 @@ replace (
 )
 
 require (
-	cloud.google.com/go/bigquery v1.42.0
+	cloud.google.com/go/bigquery v1.43.0
 	cloud.google.com/go/compute v1.10.0
 	cloud.google.com/go/firestore v1.8.0
 	cloud.google.com/go/functions v1.7.0
