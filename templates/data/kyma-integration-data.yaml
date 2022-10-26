@@ -734,7 +734,7 @@ templates:
                   labels:
                     preset-build-main: "true"
                   env:
-                    K8S_VERSION: "1.24.2"
+                    K8S_VERSION: "1.25.3"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

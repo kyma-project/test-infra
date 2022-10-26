@@ -852,7 +852,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             env:
               - name: K8S_VERSION
-                value: "1.24.2"
+                value: "1.25.3"
             resources:
               requests:
                 memory: 100Mi
