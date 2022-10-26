@@ -388,7 +388,7 @@ presets:
         value: "1.23"
   # cluster next version for upgrade checks
   - labels:
-      preset-cluster-next-version: "true"
+      preset-cluster-version-next: "true"
     env:
       - name: AKS_CLUSTER_VERSION
         value: "1.24"
