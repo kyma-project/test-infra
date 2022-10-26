@@ -100,7 +100,7 @@ sign-config:
 ```
 
 All enabled signers under `'*'` are used globally. Additionally, if a repository contains another signer configuration in the `org/repo` key, image-builder also uses this service to sign the image.
-When the job is running in CI (Prow), it will try to pick up the org/repo name from the default Prow variables. If binary is running outside of CI, `--repo` flag will have to be used. Otherwise, the configuration will not be used.
+If the job is running in CI (Prow), it picks up the current `org/repo` value from the default Prow variables. If binary is running outside of CI, `--repo` flag will have to be used. Otherwise, the configuration will not be used.
 
 Currently, image-builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to the [`sign`](./sign) package, and its code.
 
@@ -123,7 +123,7 @@ Usage of image-builder:
   -platform value
         Only supported with BuildKit. Platform of the image that is built
   -repo string
-        Load repository-specific configuration, eg. signing configuration.
+        Load repository-specific configuration, for example, signing configuration
   -silent
         Do not push build logs to stdout
   -tag value
