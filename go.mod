@@ -18,7 +18,7 @@ replace (
 
 require (
 	cloud.google.com/go/bigquery v1.43.0
-	cloud.google.com/go/compute v1.10.0
+	cloud.google.com/go/compute v1.11.0
 	cloud.google.com/go/firestore v1.8.0
 	cloud.google.com/go/functions v1.7.0
 	cloud.google.com/go/kms v1.4.0
@@ -60,7 +60,7 @@ require (
 	golang.org/x/net v0.0.0-20221014081412-f15817d10f9b
 	golang.org/x/oauth2 v0.0.0-20221014153046-6fdb5e3db783
 	google.golang.org/api v0.101.0
-	google.golang.org/genproto v0.0.0-20221018160656-63c7b68cfc55
+	google.golang.org/genproto v0.0.0-20221024183307-1bc688fe9f3e
 	google.golang.org/grpc v1.50.1
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
