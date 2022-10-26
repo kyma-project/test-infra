@@ -41,7 +41,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "npm run lint-check"
+                    - "npm install eslint-plugin-jsdoc@15.12.2 && npm run lint-check"
                   run_if_changed: "^compass/|^components/|^shared/|^package.json"
                 inheritedConfigs:
                   global:
