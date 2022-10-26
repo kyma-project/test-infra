@@ -146,7 +146,7 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221025-a3652e68"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221026-6f76fae0"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221017-0e4b706e"
   image_buildpack-node:
