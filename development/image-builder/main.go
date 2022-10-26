@@ -68,9 +68,12 @@ func runInBuildKit(o options, name string, destinations, platforms []string, bui
 		args = append(args, "--opt", "platform="+strings.Join(platforms, ","))
 	}
 
-	//if o.Config.Cache.Enabled {
-	//	// NYI
-	//}
+	if o.Cache.Enabled {
+		// TODO (@Ressetkk): Implement multiple caches, see https://github.com/moby/buildkit#export-cache
+		args = append(args,
+			"--export-cache", "type=registry,ref="+o.Cache.CacheRepo,
+			"--import-cache", "type=registry,"+o.Cache.CacheRepo)
+	}
 
 	cmd := exec.Command("buildctl-daemonless.sh", args...)
 
