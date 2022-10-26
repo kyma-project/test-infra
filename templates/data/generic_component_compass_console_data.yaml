@@ -2,6 +2,17 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
+        localSets:
+          linting:
+            skip_report: "false"
+            max_concurrency: "10"
+            optional: "true"
+            decorate: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 200Mi
+            request_cpu: 80m
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass-console"
             jobs:
@@ -26,6 +37,30 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+              - jobConfig:
+                  name: pull-compass-console-lint
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "npm run lint-check"
+                  run_if_changed: "^compass/|^components/|^shared/|^package.json"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                  local:
+                    - linting
+              - jobConfig:
+                  name: pull-compass-console-test
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "npm run test-shared-lib"
+                  run_if_changed: "^compass/|^components/|^shared/|^package.json"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                  local:
+                    - linting
               - jobConfig:
                   name: post-compass-console-build
                   args:

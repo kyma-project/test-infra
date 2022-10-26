@@ -58,6 +58,56 @@ presubmits: # runs on PRs
           - name: config
             configMap:
               name: kaniko-build-config
+    - name: pull-compass-console-lint
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-compass-console-lint"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^compass/|^components/|^shared/|^package.json'
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "npm run lint-check"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
+    - name: pull-compass-console-test
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-compass-console-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^compass/|^components/|^shared/|^package.json'
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "npm run test-shared-lib"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
   
 postsubmits: # runs on main
   kyma-incubator/compass-console:
