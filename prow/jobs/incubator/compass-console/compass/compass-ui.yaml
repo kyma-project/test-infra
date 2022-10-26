@@ -73,7 +73,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221012-8d12a771"
             command:
               - "/bin/sh"
             args:
@@ -98,7 +98,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221012-8d12a771"
             command:
               - "/bin/sh"
             args:
