@@ -54,7 +54,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "npm install jest@26.6.3 && npm run test-shared-lib"
+                    - "npm install jest@26.6.3 && npm install react-tippy@1.4.0 && npm run test-shared-lib"
                   run_if_changed: "^compass/|^components/|^shared/|^package.json"
                 inheritedConfigs:
                   global:
