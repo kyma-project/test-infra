@@ -1569,7 +1569,7 @@ periodics: # runs on schedule
         preset-kyma-integration-telemetry-enabled: "true"
         preset-kyma-integration-telemetry-tracing-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      cron: "0 9,15 * * *"
+      cron: "0 7,13 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
