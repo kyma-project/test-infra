@@ -217,7 +217,7 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-prow-tools"
-                      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+                      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^development/markdown-index|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                       args:
                         - "--name=prow-tools"
                         - "--config=/config/kaniko-build-config.yaml"
