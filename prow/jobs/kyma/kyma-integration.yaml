@@ -206,14 +206,11 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221017-0e4b706e"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -797,14 +794,11 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220808-d24ecd898"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221017-0e4b706e"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
