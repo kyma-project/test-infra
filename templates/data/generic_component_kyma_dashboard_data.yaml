@@ -17,7 +17,7 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_busola"
+                    - "jobConfig_generic_component_kyma-dashboard"
                     - "extra_refs_test-infra"
                   preConfigs:
                     global:

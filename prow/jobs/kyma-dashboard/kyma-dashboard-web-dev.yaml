@@ -17,7 +17,7 @@ presubmits: # runs on PRs
       run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/busola
+      path_alias: github.com/kyma-project/kyma-dashboard
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -63,7 +63,7 @@ presubmits: # runs on PRs
       run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/busola
+      path_alias: github.com/kyma-project/kyma-dashboard
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -108,7 +108,7 @@ presubmits: # runs on PRs
       run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/busola
+      path_alias: github.com/kyma-project/kyma-dashboard
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -153,7 +153,7 @@ presubmits: # runs on PRs
       run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/busola
+      path_alias: github.com/kyma-project/kyma-dashboard
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -202,7 +202,7 @@ postsubmits: # runs on main
       run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/busola
+      path_alias: github.com/kyma-project/kyma-dashboard
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -249,7 +249,7 @@ postsubmits: # runs on main
       run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/busola
+      path_alias: github.com/kyma-project/kyma-dashboard
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -295,7 +295,7 @@ postsubmits: # runs on main
       run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/busola
+      path_alias: github.com/kyma-project/kyma-dashboard
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -341,7 +341,7 @@ postsubmits: # runs on main
       run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/busola
+      path_alias: github.com/kyma-project/kyma-dashboard
       cluster: trusted-workload
       max_concurrency: 10
       branches:
