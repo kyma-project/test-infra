@@ -146,7 +146,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=operator"
               - "--dockerfile=Dockerfile"
-              - "--directory=."
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -184,7 +183,6 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=operator"
               - "--dockerfile=Dockerfile"
-              - "--directory=."
             volumeMounts:
               - name: config
                 mountPath: /config

@@ -22,10 +22,9 @@ presubmits: # runs on PRs
             command:
               - "/kaniko-build"
             args:
-              - "--name=schema-migrator"
+              - "--name=control-plane/schema-migrator"
               - "--context=components/schema-migrator"
               - "--dockerfile=Dockerfile"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
@@ -59,10 +58,9 @@ postsubmits: # runs on main
             command:
               - "/kaniko-build"
             args:
-              - "--name=schema-migrator"
+              - "--name=control-plane/schema-migrator"
               - "--context=components/schema-migrator"
               - "--dockerfile=Dockerfile"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config

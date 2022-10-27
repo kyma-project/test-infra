@@ -22,10 +22,9 @@ presubmits: # runs on PRs
             command:
               - "/kaniko-build"
             args:
-              - "--name=provisioner"
+              - "--name=control-plane/provisioner"
               - "--context=components/provisioner"
               - "--dockerfile=Dockerfile"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
@@ -59,10 +58,9 @@ postsubmits: # runs on main
             command:
               - "/kaniko-build"
             args:
-              - "--name=provisioner"
+              - "--name=control-plane/provisioner"
               - "--context=components/provisioner"
               - "--dockerfile=Dockerfile"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
