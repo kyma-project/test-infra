@@ -78,7 +78,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "npm install eslint-plugin-jsdoc@15.12.2 && npm run lint-check"
+              - "./scripts/prow-lint.sh"
             resources:
               requests:
                 memory: 200Mi
@@ -103,7 +103,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "npm install jest@26.6.3 && npm install react-tippy@1.4.0 && npm install jsoneditor@9.6.0 && npm run test-shared-lib"
+              - "./scripts/prow-test.sh"
             resources:
               requests:
                 memory: 200Mi
