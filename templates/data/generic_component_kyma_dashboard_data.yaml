@@ -1,0 +1,28 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-web-dev.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma-dashboard"
+            jobs:
+              - jobConfig:
+                  path: kyma-dashboard-web-dev
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma-dashboard"
+                    - "release:dev"
+                  run_if_changed: "^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile"
+                  release_since: "1.24"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_busola"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"

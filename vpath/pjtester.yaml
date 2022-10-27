@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pre-kyma-dashboard-web-dev"
+prConfigs:
+  kyma-project:
+    kyma-dashboard:
+      prNumber: 1
