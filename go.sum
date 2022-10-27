@@ -122,8 +122,9 @@ cloud.google.com/go/firestore v1.6.1/go.mod h1:asNXNOzBdyVQmEU+ggO8UPodTkEVFW5Qx
 cloud.google.com/go/firestore v1.8.0 h1:HokMB9Io0hAyYzlGFeFVMgE3iaPXNvaIsDx5JzblGLI=
 cloud.google.com/go/firestore v1.8.0/go.mod h1:r3KB8cAdRIe8znzoPWLw8S6gpDVd9treohhn8b09424=
 cloud.google.com/go/functions v1.6.0/go.mod h1:3H1UA3qiIPRWD7PeZKLvHZ9SaQhR26XIJcC0A5GbvAk=
-cloud.google.com/go/functions v1.7.0 h1:s3Snbr2O4j4p7CuwImBas8rNNmkHS1YJANcCpKGqQSE=
 cloud.google.com/go/functions v1.7.0/go.mod h1:+d+QBcWM+RsrgZfV9xo6KfA1GlzJfxcfZcRPEhDDfzg=
+cloud.google.com/go/functions v1.8.0 h1:aMns6pr/uwRSCUO4C4aZRwl3Ii2EVytOz1qb3/+Cl6c=
+cloud.google.com/go/functions v1.8.0/go.mod h1:RTZ4/HsQjIqIYP9a9YPbU+QFoQsAlYgrwOXJWHn1POY=
 cloud.google.com/go/gaming v1.5.0/go.mod h1:ol7rGcxP/qHTRQE/RO4bxkXq+Fix0j6D4LFPzYTIrDM=
 cloud.google.com/go/gaming v1.6.0/go.mod h1:YMU1GEvA39Qt3zWGyAVA9bpYz/yAhTvaQ1t2sK4KPUA=
 cloud.google.com/go/gkeconnect v0.5.0/go.mod h1:c5lsNAg5EwAy7fkqX/+goqFsU1Da/jQFqArp+wGNr/o=
