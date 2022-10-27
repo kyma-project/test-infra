@@ -29,7 +29,7 @@
 /prow/jobs/incubator/octopus @szwedm @tillknuesting @wozniakjan @piotrmiskiewicz @pk85 @ralikio @kyma-project/prow
 /prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @dzahariev @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
 /prow/jobs/incubator/podpreset-crd @szwedm @tillknuesting @wozniakjan @piotrmiskiewicz @pk85 @ralikio @kyma-project/prow
-/prow/jobs/incubator/reconciler @varbanv @clebs @dbadura @kwiatekus @m00g3n @moelsayed @jeremyharisch @pprecel @tobiscr @kyma-project/prow
+/prow/jobs/incubator/reconciler @varbanv @clebs @kwiatekus @m00g3n @moelsayed @jeremyharisch @pprecel @tobiscr @kyma-project/prow
 /prow/jobs/incubator/varkes @lilitgh @a-thaler @kyma-project/prow
 /prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @kyma-project/prow
 /prow/jobs/kyma/components/central-application-connectivity-validator @koala7659 @akgalwas @franpog859 @ralikio @a-thaler @pk85 @kyma-project/prow
