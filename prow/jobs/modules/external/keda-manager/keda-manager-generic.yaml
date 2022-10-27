@@ -138,9 +138,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=keda-manager"
               - "--config=/config/kaniko-build-config.yaml"
@@ -175,9 +175,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=keda-manager"
               - "--config=/config/kaniko-build-config.yaml"
