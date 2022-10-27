@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"os"
 	"reflect"
 	"testing"
@@ -161,18 +162,19 @@ func TestFlags(t *testing.T) {
 			name:        "parsed config, pass",
 			expectedErr: false,
 			expectedOpts: options{
-
 				name:       "test-image",
 				tags:       []string{"latest", "cookie"},
 				context:    "prow/build",
 				configPath: "config.yaml",
 				dockerfile: "Dockerfile",
 				logDir:     "prow/logs",
+				orgRepo:    "kyma-project/test-infra",
 				silent:     true,
 			},
 			args: []string{
 				"--config=config.yaml",
 				"--dockerfile=Dockerfile",
+				"--repo=kyma-project/test-infra",
 				"--name=test-image",
 				"--tag=latest",
 				"--tag=cookie",
@@ -275,5 +277,63 @@ func Test_loadEnv(t *testing.T) {
 			t.Errorf("%v != %v", got, v)
 		}
 		os.Unsetenv(k)
+	}
+}
+
+func Test_getSignersForOrgRepo(t *testing.T) {
+	tc := []struct {
+		name          string
+		expectErr     bool
+		expectSigners int
+		orgRepo       string
+	}{
+		{
+			name:          "1 notary signer org/repo, pass",
+			expectErr:     false,
+			expectSigners: 1,
+			orgRepo:       "org/repo",
+		},
+		{
+			name:          "2 notary signer org/repo2, pass",
+			expectErr:     false,
+			expectSigners: 2,
+			orgRepo:       "org/repo2",
+		},
+		{
+			name:          "only global signer, one notary signer, pass",
+			expectErr:     false,
+			expectSigners: 1,
+			orgRepo:       "org/repo-empty",
+		},
+	}
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			o := &options{Config: Config{SignConfig: SignConfig{
+				EnabledSigners: map[string][]string{
+					"*":         {"test-notary"},
+					"org/repo":  {"test-notary"},
+					"org/repo2": {"test-notary2"},
+				},
+				Signers: []sign.SignerConfig{
+					{
+						Name:   "test-notary",
+						Type:   sign.TypeNotaryBackend,
+						Config: sign.NotaryConfig{},
+					},
+					{
+						Name:   "test-notary2",
+						Type:   sign.TypeNotaryBackend,
+						Config: sign.NotaryConfig{},
+					},
+				},
+			}}}
+			got, err := getSignersForOrgRepo(o, c.orgRepo)
+			if err != nil && !c.expectErr {
+				t.Errorf("got error but didn't want to %v", err)
+			}
+			if len(got) != c.expectSigners {
+				t.Errorf("wrong number of requested signers %v != %v", len(got), c.expectSigners)
+			}
+		})
 	}
 }
