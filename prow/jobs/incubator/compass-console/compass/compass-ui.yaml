@@ -106,8 +106,8 @@ presubmits: # runs on PRs
               - "./scripts/prow-test.sh"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 1Gi
+                cpu: 500m
   
 postsubmits: # runs on main
   kyma-incubator/compass-console:

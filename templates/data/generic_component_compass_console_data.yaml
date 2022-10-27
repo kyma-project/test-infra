@@ -12,6 +12,15 @@ templates:
             pubsub_topic: "prowjobs"
             request_memory: 200Mi
             request_cpu: 80m
+          testing:
+            skip_report: "false"
+            max_concurrency: "10"
+            optional: "false"
+            decorate: "true"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 1Gi
+            request_cpu: 500m
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass-console"
             jobs:
@@ -61,7 +70,7 @@ templates:
                     - jobConfig_presubmit
                     - image_buildpack-node
                   local:
-                    - linting
+                    - testing
               - jobConfig:
                   name: post-compass-console-build
                   args:
