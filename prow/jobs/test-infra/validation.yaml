@@ -17,7 +17,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221027-e0b06787"
             command:
               - "prow/scripts/validate-scripts.sh"
             resources:
@@ -259,7 +259,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221027-e0b06787"
             command:
               - "/bin/bash"
             args:
