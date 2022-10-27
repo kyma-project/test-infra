@@ -1,21 +1,3 @@
-# Code of conduct
-Each contributor and maintainer of this project agrees to follow the [community Code of Conduct](https://github.com/kyma-project/community/blob/main/CODE_OF_CONDUCT.md) that relies on the CNCF Code of Conduct. Read it to learn about the agreed standards of behavior, shared values that govern our community, and details on how to report any suspected Code of Conduct violations.
-
-[/CODE_OF_CONDUCT.md](/CODE_OF_CONDUCT.md)
-
-## Overview
-To contribute to this project, follow the rules from the general [CONTRIBUTING.md](https://github.com/kyma-project/community/blob/main/CONTRIBUTING.md) document in the `community` repository.
-
-[/CONTRIBUTING.md](/CONTRIBUTING.md)
-
-# /NOTICE.md
-[/NOTICE.md](/NOTICE.md)
-
-# Test Infra
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra?ref=badge_shield)
-
-[/README.md](/README.md)
-
 # Changelog Generator
 This project is a Docker image that is used to generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests with specified labels.
 
@@ -320,11 +302,6 @@ Along with the Prow upgrade, we want to introduce Tide for merging the PRs autom
 This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` GCP project. We use two workload clusters for trusted and untrusted Prow jobs.
 
 [/docs/prow/workload-clusters.md](/docs/prow/workload-clusters.md)
-
-# Code of conduct
-Each contributor and maintainer of this project agrees to follow the [community Code of Conduct](https://github.com/kyma-project/community/blob/main/CODE_OF_CONDUCT.md) that relies on the CNCF Code of Conduct. Read it to learn about the agreed standards of behavior, shared values that govern our community, and details on how to report any suspected Code of Conduct violations.
-
-[/index.md](/index.md)
 
 # Prow
 Prow is a Kubernetes-developed system that you can use as a Continuous Integration (CI) tool for validating your GitHub repositories and components, managing automatic validation of pull requests (PRs), applying and removing labels, or opening and closing issues.

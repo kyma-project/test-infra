@@ -20,8 +20,12 @@ func main() {
 
 	startPath, err := os.Getwd()
 	filepath.Walk(startPath, func(path string, info os.FileInfo, e error) error {
-		if strings.Contains(path, ".md") && !strings.Contains(path, ".github") && !strings.Contains(path, ".githooks") {
-			filePath := strings.Split(path, repositoryName)[1]
+		filePath := strings.Split(path, repositoryName)[1]
+		if strings.Contains(path, ".md") && !strings.Contains(path, ".github") &&
+			!strings.Contains(path, ".githooks") && filePath != "/CODE_OF_CONDUCT.md" &&
+			filePath != "/CONTRIBUTING.md" && filePath != "/NOTICE.md" && filePath != "/README.md" &&
+			filePath != "/index.md" {
+
 			mdLine := getDescription(path) + "\n[" + filePath + "](" + filePath + ")\n\n"
 			fmt.Println(mdLine)
 			//write line to file
