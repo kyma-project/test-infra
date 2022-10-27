@@ -893,34 +893,6 @@ presubmits: # runs on PRs
               - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
-  kyma-incubator/octopus:
-    - name: pre-octopus-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-octopus-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221027-c0f9edbb5d"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
   kyma-incubator/kyma-showcase:
     - name: pre-kyma-showcase-validate-inrepo-prow-configs
       annotations:
@@ -956,34 +928,6 @@ presubmits: # runs on PRs
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-hydra-login-consent-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221027-c0f9edbb5d"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/terraform-provider-gardener:
-    - name: pre-terraform-provider-gardener-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-terraform-provider-gardener-validate-inrepo-prow-configs"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
       skip_report: false
