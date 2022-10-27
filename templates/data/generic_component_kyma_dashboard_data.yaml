@@ -6,7 +6,7 @@ templates:
           - repoName: "github.com/kyma-project/kyma-dashboard"
             jobs:
               - jobConfig:
-                  path: kyma-dashboard-web-dev
+                  path: web-dev
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma-dashboard"
                     - "release:dev"
