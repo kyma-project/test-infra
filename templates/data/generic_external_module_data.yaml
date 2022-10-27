@@ -31,7 +31,7 @@ templates:
             jobs:
               - jobConfig:
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-                  name: pre-keda-manager-operator-lint # "pre-main-lifecycle-manager-lint"
+                  name: pre-keda-manager-operator-lint
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   annotations:
                     description: executes the 'golangci-lint lint' command in the keda-manager 'operator' directory before any pull request.
@@ -54,7 +54,7 @@ templates:
                     MODULE_REGISTRY: "europe-west4-docker.pkg.dev/sap-se-cx-kyma-wookiee/dev-registry/unsigned" 
                     MODULE_VERSION: "0.0.${PULL_NUMBER}"
                     IMG: "eu.gcr.io/kyma-project/keda-manager:PR-${PULL_NUMBER}"
-                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)|^operator/PROJECT$|^operator/config/*/.*$"
                   name: pull-make-module-build
                   privileged: false
                   command: "make"
@@ -69,7 +69,7 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-keda-manager-operator-tests # pre-main-lifecycle-manager-tests
+                  name: pre-keda-manager-operator-tests
                   command: "bash"
                   args:
                     - "-c"
@@ -83,7 +83,7 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  name: pre-keda-manager-operator-build # "pre-main-lifecycle-manager-build"
+                  name: pre-keda-manager-operator-build
                   always_run: true
                   args:
                     - "--name=keda-manager"
@@ -97,7 +97,7 @@ templates:
                   global:
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-keda-manager-operator-build # "post-main-lifecycle-manager-build"
+                  name: post-keda-manager-operator-build
                   always_run: true
                   args:
                     - "--name=keda-manager"
