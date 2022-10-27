@@ -66,7 +66,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-compass-console-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^compass/|^components/|^shared/|^package.json'
-      optional: true
+      optional: false
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -91,7 +91,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-compass-console-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^compass/|^components/|^shared/|^package.json'
-      optional: true
+      optional: false
       skip_report: false
       decorate: true
       cluster: untrusted-workload

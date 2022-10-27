@@ -6,7 +6,7 @@ templates:
           linting:
             skip_report: "false"
             max_concurrency: "10"
-            optional: "true"
+            optional: "false"
             decorate: "true"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
