@@ -106,7 +106,7 @@ presubmits: # runs on PRs
               - "./scripts/prow-test.sh"
             resources:
               requests:
-                memory: 1Gi
+                memory: 500Mi
                 cpu: 500m
   
 postsubmits: # runs on main

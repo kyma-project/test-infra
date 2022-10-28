@@ -19,7 +19,7 @@ templates:
             decorate: "true"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            request_memory: 1Gi
+            request_memory: 500Mi
             request_cpu: 500m
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass-console"
