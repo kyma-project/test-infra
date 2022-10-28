@@ -41,10 +41,8 @@ global:
         - name: "github-dashboard"
         - name: "website-vuepress"
         - name: "kitbag"
-        - name: "octopus"
         - name: "kyma-showcase"
         - name: "hydra-login-consent"
-        - name: "terraform-provider-gardener"
         - name: "kymart"
         - name: "examples"
         - name: "vstudio-extension"
@@ -144,13 +142,13 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221027-e0b06787"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221025-a3652e68"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221017-0e4b706e"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221012-8d12a771"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221028-f16e46a1"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
   image_buildpack-golang-kubebuilder2:

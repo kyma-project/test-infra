@@ -2,38 +2,50 @@ package main
 
 import (
 	"fmt"
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"gopkg.in/yaml.v3"
 	"os"
 )
 
 type Config struct {
 	// Registry is URL where clean build should land.
-	Registry Registry `yaml:"registry"`
+	Registry Registry `yaml:"registry" json:"registry"`
 	// DevRegistry is Registry URL where development/dirty images should land.
 	// If not set then the Registry field is used.
 	// This field is only valid when running in CI (CI env variable is set to `true`)
-	DevRegistry Registry `yaml:"dev-registry"`
+	DevRegistry Registry `yaml:"dev-registry" json:"dev-registry"`
 	// Cache options that are directly related to kaniko flags
-	Cache CacheConfig `yaml:"cache"`
+	Cache CacheConfig `yaml:"cache" json:"cache"`
 	// TagTemplate is go-template field that defines the format of the $_TAG substitution.
 	// See tags.Tag struct for more information and available fields
-	TagTemplate string `yaml:"tag-template"`
+	TagTemplate string `yaml:"tag-template" json:"tag-template"`
 	// LogFormat defines the format kaniko logs are projected.
 	// Supported formats are 'color', 'text' and 'json'. Default: 'color'
-	LogFormat string `yaml:"log-format"`
+	LogFormat string `yaml:"log-format" json:"log-format"`
 	// Set this option to strip timestamps out of the built image and make it Reproducible.
-	Reproducible bool `yaml:"reproducible"`
+	Reproducible bool `yaml:"reproducible" json:"reproducible"`
+	// SignConfig contains custom configuration of signers
+	// as well as org/repo mapping of enabled signers in specific repository
+	SignConfig SignConfig `yaml:"sign-config" json:"sign-config"`
+}
+
+type SignConfig struct {
+	// EnabledSigners contains org/repo mapping of enabled signers for each repository
+	// Use * to enable signer for all repositories
+	EnabledSigners map[string][]string `yaml:"enabled-signers" json:"enabled-signers"`
+	// Signers contains configuration for multiple signing backends, which can be used to sign resulting image
+	Signers []sign.SignerConfig `yaml:"signers" json:"signers"`
 }
 
 type CacheConfig struct {
 	// Enabled sets if kaniko cache is enabled or not
-	Enabled bool `yaml:"enabled"`
+	Enabled bool `yaml:"enabled" json:"enabled"`
 	// CacheRunLayers sets if kaniko should cache run layers
-	CacheRunLayers bool `yaml:"cache-run-layers"`
+	CacheRunLayers bool `yaml:"cache-run-layers" json:"cache-run-layers"`
 	// CacheCopyLayers sets if kaniko should cache copy layers
-	CacheCopyLayers bool `yaml:"cache-copy-layers"`
+	CacheCopyLayers bool `yaml:"cache-copy-layers" json:"cache-copy-layers"`
 	// Remote Docker directory used for cache
-	CacheRepo string `yaml:"cache-repo"`
+	CacheRepo string `yaml:"cache-repo" json:"cache-repo"`
 }
 
 // ParseConfig parses yaml configuration into Config

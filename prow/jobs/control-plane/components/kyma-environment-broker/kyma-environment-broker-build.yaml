@@ -22,10 +22,9 @@ presubmits: # runs on PRs
             command:
               - "/kaniko-build"
             args:
-              - "--name=kyma-environment-broker"
+              - "--name=control-plane/kyma-environment-broker"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.keb"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
@@ -54,10 +53,9 @@ presubmits: # runs on PRs
             command:
               - "/kaniko-build"
             args:
-              - "--name=kyma-environments-cleanup-job"
+              - "--name=control-plane/kyma-environments-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.cleanup"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
@@ -86,10 +84,9 @@ presubmits: # runs on PRs
             command:
               - "/kaniko-build"
             args:
-              - "--name=kyma-environment-subaccount-cleanup-job"
+              - "--name=control-plane/kyma-environment-subaccount-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.sac"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
@@ -118,10 +115,9 @@ presubmits: # runs on PRs
             command:
               - "/kaniko-build"
             args:
-              - "--name=kyma-environment-subscription-cleanup-job"
+              - "--name=control-plane/kyma-environment-subscription-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.scj"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
@@ -150,10 +146,9 @@ presubmits: # runs on PRs
             command:
               - "/kaniko-build"
             args:
-              - "--name=kyma-environment-trial-cleanup-job"
+              - "--name=control-plane/kyma-environment-trial-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.tcj"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
@@ -187,10 +182,9 @@ postsubmits: # runs on main
             command:
               - "/kaniko-build"
             args:
-              - "--name=kyma-environment-broker"
+              - "--name=control-plane/kyma-environment-broker"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.keb"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
@@ -221,10 +215,9 @@ postsubmits: # runs on main
             command:
               - "/kaniko-build"
             args:
-              - "--name=kyma-environments-cleanup-job"
+              - "--name=control-plane/kyma-environments-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.cleanup"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
@@ -255,10 +248,9 @@ postsubmits: # runs on main
             command:
               - "/kaniko-build"
             args:
-              - "--name=kyma-environment-subaccount-cleanup-job"
+              - "--name=control-plane/kyma-environment-subaccount-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.sac"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
@@ -289,10 +281,9 @@ postsubmits: # runs on main
             command:
               - "/kaniko-build"
             args:
-              - "--name=kyma-environment-subscription-cleanup-job"
+              - "--name=control-plane/kyma-environment-subscription-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.scj"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
@@ -323,10 +314,9 @@ postsubmits: # runs on main
             command:
               - "/kaniko-build"
             args:
-              - "--name=kyma-environment-trial-cleanup-job"
+              - "--name=control-plane/kyma-environment-trial-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.tcj"
-              - "--directory=control-plane"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
               - name: config
