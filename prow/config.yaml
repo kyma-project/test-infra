@@ -374,9 +374,9 @@ presets:
         value: "1.21"
       - name: GARDENER_CLUSTER_VERSION
         value: "1.21"
-  # cluster version
+  # cluster version for released on k8s 1.23
   - labels:
-      preset-cluster-version: "true"
+      preset-cluster-version-23: "true"
     env:
       - name: AKS_CLUSTER_VERSION
         value: "1.23"
@@ -384,9 +384,9 @@ presets:
         value: "1.23"
       - name: GARDENER_CLUSTER_VERSION
         value: "1.23"
-  # cluster next version for upgrade checks
+  # cluster version
   - labels:
-      preset-cluster-version-next: "true"
+      preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
         value: "1.24"
