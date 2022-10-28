@@ -19,9 +19,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/bootstrap"
               - "--config=/config/kaniko-build-config.yaml"
@@ -51,9 +51,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/kyma-integration"
               - "--config=/config/kaniko-build-config.yaml"
@@ -83,9 +83,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/buildpack-golang"
               - "--config=/config/kaniko-build-config.yaml"
@@ -115,9 +115,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/buildpack-node"
               - "--config=/config/kaniko-build-config.yaml"
@@ -147,9 +147,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/cleaner"
               - "--config=/config/kaniko-build-config.yaml"
@@ -179,9 +179,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/vulnerability-scanner"
               - "--config=/config/kaniko-build-config.yaml"
@@ -211,9 +211,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/whitesource-scanner"
               - "--config=/config/kaniko-build-config.yaml"
@@ -243,9 +243,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/prow-tools"
               - "--config=/config/kaniko-build-config.yaml"
@@ -275,9 +275,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/github-connector-webhook-gateway"
               - "--config=/config/kaniko-build-config.yaml"
@@ -307,9 +307,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/pubsub-connector-gateway"
               - "--config=/config/kaniko-build-config.yaml"
@@ -339,9 +339,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/ci-force-bot"
               - "--config=/config/kaniko-build-config.yaml"
@@ -371,9 +371,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/golangci-lint"
               - "--config=/config/kaniko-build-config.yaml"
@@ -403,9 +403,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/gardener-rotate"
               - "--config=/config/kaniko-build-config.yaml"
@@ -435,9 +435,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/gardener-sa-rotate"
               - "--config=/config/kaniko-build-config.yaml"
@@ -467,9 +467,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/kms-rotate"
               - "--config=/config/kaniko-build-config.yaml"
@@ -499,9 +499,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/githubrelease"
               - "--config=/config/kaniko-build-config.yaml"
@@ -536,9 +536,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/bootstrap"
               - "--context=prow/images/bootstrap"
@@ -569,9 +569,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/kyma-integration"
               - "--config=/config/kaniko-build-config.yaml"
@@ -603,9 +603,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/buildpack-golang"
               - "--config=/config/kaniko-build-config.yaml"
@@ -637,9 +637,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/buildpack-node"
               - "--config=/config/kaniko-build-config.yaml"
@@ -671,9 +671,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/cleaner"
               - "--config=/config/kaniko-build-config.yaml"
@@ -705,9 +705,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/vulnerability-scanner"
               - "--config=/config/kaniko-build-config.yaml"
@@ -739,9 +739,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/whitesource-scanner"
               - "--config=/config/kaniko-build-config.yaml"
@@ -773,9 +773,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/prow-tools"
               - "--config=/config/kaniko-build-config.yaml"
@@ -807,9 +807,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/github-connector-webhook-gateway"
               - "--config=/config/kaniko-build-config.yaml"
@@ -841,9 +841,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/pubsub-connector-gateway"
               - "--config=/config/kaniko-build-config.yaml"
@@ -875,9 +875,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/ci-force-bot"
               - "--config=/config/kaniko-build-config.yaml"
@@ -909,9 +909,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/golangci-lint"
               - "--config=/config/kaniko-build-config.yaml"
@@ -943,9 +943,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/gardener-rotate"
               - "--config=/config/kaniko-build-config.yaml"
@@ -977,9 +977,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/gardener-sa-rotate"
               - "--config=/config/kaniko-build-config.yaml"
@@ -1011,9 +1011,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/kms-rotate"
               - "--config=/config/kaniko-build-config.yaml"
@@ -1045,9 +1045,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=test-infra/githubrelease"
               - "--config=/config/kaniko-build-config.yaml"

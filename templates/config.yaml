@@ -65,8 +65,8 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
-    command: /kaniko-build
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4
+    command: /image-builder
     labels:
       preset-sa-kyma-push-images: "true"
     volumes:
@@ -89,7 +89,7 @@ globalSets:
         value: high-cpu
         operator: Equal
         effect: NoSchedule
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221011-f36fe4783-buildkit
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4-buildkit
     command: "/image-builder"
     labels:
       preset-sa-kyma-push-images: "true"
