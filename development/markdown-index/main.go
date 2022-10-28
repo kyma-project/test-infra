@@ -19,6 +19,7 @@ func main() {
 	defer f.Close()
 
 	startPath, err := os.Getwd()
+	fmt.Println(startPath)
 	filepath.Walk(startPath, func(path string, info os.FileInfo, e error) error {
 		pathFromRepositoryRoot := strings.Split(path, repositoryName)[1]
 		if filterByFileExtension(path) && filterByFolderName(path) && filterByFileName(pathFromRepositoryRoot) {
