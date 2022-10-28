@@ -11,7 +11,7 @@ templates:
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 200Mi
-            request_cpu: 80m
+            request_cpu: 100m
           testing:
             skip_report: "false"
             max_concurrency: "10"
