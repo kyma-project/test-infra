@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pull-operations-controller-unit-test"
+prConfigs:
+     kyma-incubator:
+       compass:
+         prNumber: 2714
