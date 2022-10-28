@@ -28,7 +28,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221012-8d12a771"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221028-f16e46a1"
             securityContext:
               privileged: true
             command:
@@ -296,7 +296,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221012-8d12a771"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221028-f16e46a1"
             securityContext:
               privileged: true
             command:

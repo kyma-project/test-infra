@@ -144,11 +144,11 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221027-e0b06787"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221027-b93e9a2e"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221012-8d12a771"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221028-f16e46a1"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
   image_buildpack-golang-kubebuilder2:
