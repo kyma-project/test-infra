@@ -1,6 +1,6 @@
 pjNames:
   - pjName: skr-aws-integration-dev
-  prConfigs:
-    kyma-project:
-      kyma:
-        prNumber: 15922
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 15922
