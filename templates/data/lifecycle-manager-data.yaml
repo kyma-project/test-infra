@@ -14,8 +14,8 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
-            command: /kaniko-build
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4
+            command: /image-builder
             labels:
               preset-sa-kyma-push-images: "true"
             volumes:
@@ -29,7 +29,7 @@ templates:
           - repoName: kyma-project/lifecycle-manager
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
                   name: pull-lint # "pre-main-lifecycle-manager-lint"
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   annotations:

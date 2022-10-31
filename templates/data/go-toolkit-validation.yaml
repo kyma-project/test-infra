@@ -8,7 +8,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
+            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 200Mi
@@ -18,7 +18,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -165,11 +165,12 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-event-publisher-proxy-unit-test"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
                     - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/event-publisher-proxy/.*\.go$'
+                  run_if_changed: '^components/event-publisher-proxy/.*$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
@@ -190,11 +191,12 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-eventing-controller-unit-test"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
                     - "cd components/eventing-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/eventing-controller/.*\.go$'
+                  run_if_changed: '^components/eventing-controller/.*$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"

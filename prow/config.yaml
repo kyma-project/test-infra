@@ -24,10 +24,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20221016-ee0e1638a8
-        initupload: gcr.io/k8s-prow/initupload:v20221016-ee0e1638a8
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20221016-ee0e1638a8
-        sidecar: gcr.io/k8s-prow/sidecar:v20221016-ee0e1638a8
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20221028-a8625c1f93
+        initupload: gcr.io/k8s-prow/initupload:v20221028-a8625c1f93
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20221028-a8625c1f93
+        sidecar: gcr.io/k8s-prow/sidecar:v20221028-a8625c1f93
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -296,14 +296,12 @@ tide:
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
     kyma-incubator/documentation-component: squash
-    kyma-incubator/terraform-provider-gardener: squash
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
     kyma-incubator/podpreset-crd: squash
     kyma-incubator/kymart: squash
     kyma-incubator/varkes: squash
     #    kyma-incubator/marketplaces: squash
-    kyma-incubator/octopus: squash
     kyma-incubator/knative-kafka: squash
     kyma-incubator/examples: squash
     kyma-incubator/github-dashboard: squash
@@ -386,6 +384,16 @@ presets:
         value: "1.23"
       - name: GARDENER_CLUSTER_VERSION
         value: "1.23"
+  # cluster next version for upgrade checks
+  - labels:
+      preset-cluster-version-next: "true"
+    env:
+      - name: AKS_CLUSTER_VERSION
+        value: "1.24"
+      - name: GKE_CLUSTER_VERSION
+        value: "1.24"
+      - name: GARDENER_CLUSTER_VERSION
+        value: "1.24"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"

@@ -19,7 +19,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
             securityContext:
               privileged: true
             command:
@@ -57,7 +57,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
             securityContext:
               privileged: true
             command:
@@ -92,7 +92,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221010-0d7985f2"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
             securityContext:
               privileged: true
             command:
@@ -130,7 +130,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
             securityContext:
               privileged: true
             command:
@@ -166,9 +166,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=runtime-watcher-skr"
               - "--config=/config/kaniko-build-config.yaml"
@@ -202,9 +202,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=runtime-watcher-skr"
               - "--config=/config/kaniko-build-config.yaml"
