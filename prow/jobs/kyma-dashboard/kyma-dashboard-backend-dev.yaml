@@ -3,18 +3,18 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma-dashboard:
-    - name: pre-kyma-dashboard-web-dev
+    - name: pre-kyma-dashboard-release-backend-dev
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-release-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
+      run_if_changed: '^Dockerfile.backend|^environments/dev/|^Makefile'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-dashboard
@@ -37,7 +37,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-backend"
             resources:
               requests:
                 memory: 3Gi
@@ -49,18 +49,18 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel28-kyma-dashboard-web-dev
+    - name: pre-rel28-kyma-dashboard-release-backend-dev
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel28-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "pre-rel28-kyma-dashboard-release-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
+      run_if_changed: '^Dockerfile.backend|^environments/dev/|^Makefile'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-dashboard
@@ -82,7 +82,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-backend"
             resources:
               requests:
                 memory: 3Gi
@@ -94,18 +94,18 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel27-kyma-dashboard-web-dev
+    - name: pre-rel27-kyma-dashboard-release-backend-dev
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel27-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "pre-rel27-kyma-dashboard-release-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
+      run_if_changed: '^Dockerfile.backend|^environments/dev/|^Makefile'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-dashboard
@@ -127,7 +127,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-backend"
             resources:
               requests:
                 memory: 3Gi
@@ -139,18 +139,18 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel26-kyma-dashboard-web-dev
+    - name: pre-rel26-kyma-dashboard-release-backend-dev
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel26-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "pre-rel26-kyma-dashboard-release-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
+      run_if_changed: '^Dockerfile.backend|^environments/dev/|^Makefile'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-dashboard
@@ -172,7 +172,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-backend"
             resources:
               requests:
                 memory: 3Gi
@@ -187,19 +187,19 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma-dashboard:
-    - name: post-kyma-dashboard-web-dev
+    - name: post-kyma-dashboard-release-backend-dev
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "post-kyma-dashboard-release-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
+      run_if_changed: '^Dockerfile.backend|^environments/dev/|^Makefile'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-dashboard
@@ -222,7 +222,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-backend"
             resources:
               requests:
                 memory: 3Gi
@@ -234,19 +234,19 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel28-kyma-dashboard-web-dev
+    - name: post-rel28-kyma-dashboard-release-backend-dev
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel28-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "post-rel28-kyma-dashboard-release-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
+      run_if_changed: '^Dockerfile.backend|^environments/dev/|^Makefile'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-dashboard
@@ -268,7 +268,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-backend"
             resources:
               requests:
                 memory: 3Gi
@@ -280,19 +280,19 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel27-kyma-dashboard-web-dev
+    - name: post-rel27-kyma-dashboard-release-backend-dev
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel27-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "post-rel27-kyma-dashboard-release-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
+      run_if_changed: '^Dockerfile.backend|^environments/dev/|^Makefile'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-dashboard
@@ -314,7 +314,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-backend"
             resources:
               requests:
                 memory: 3Gi
@@ -326,19 +326,19 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel26-kyma-dashboard-web-dev
+    - name: post-rel26-kyma-dashboard-release-backend-dev
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel26-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "post-rel26-kyma-dashboard-release-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
+      run_if_changed: '^Dockerfile.backend|^environments/dev/|^Makefile'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-dashboard
@@ -360,7 +360,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-backend"
             resources:
               requests:
                 memory: 3Gi
