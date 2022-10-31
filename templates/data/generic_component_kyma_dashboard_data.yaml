@@ -32,7 +32,7 @@ templates:
           - repoName: "kyma-project/kyma-dashboard"
             jobs:
               - jobConfig:
-                  path: release-backend-dev
+                  path: backend-dev
                   args:
                     - "."
                     - "release-backend"

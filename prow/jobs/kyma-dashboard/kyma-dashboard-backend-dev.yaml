@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma-dashboard:
-    - name: pre-kyma-dashboard-release-backend-dev
+    - name: pre-kyma-dashboard-backend-dev
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-release-backend-dev"
+        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -49,12 +49,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel28-kyma-dashboard-release-backend-dev
+    - name: pre-rel28-kyma-dashboard-backend-dev
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel28-kyma-dashboard-release-backend-dev"
+        prow.k8s.io/pubsub.runID: "pre-rel28-kyma-dashboard-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -94,12 +94,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel27-kyma-dashboard-release-backend-dev
+    - name: pre-rel27-kyma-dashboard-backend-dev
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel27-kyma-dashboard-release-backend-dev"
+        prow.k8s.io/pubsub.runID: "pre-rel27-kyma-dashboard-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -139,12 +139,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel26-kyma-dashboard-release-backend-dev
+    - name: pre-rel26-kyma-dashboard-backend-dev
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel26-kyma-dashboard-release-backend-dev"
+        prow.k8s.io/pubsub.runID: "pre-rel26-kyma-dashboard-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -187,13 +187,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma-dashboard:
-    - name: post-kyma-dashboard-release-backend-dev
+    - name: post-kyma-dashboard-backend-dev
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-kyma-dashboard-release-backend-dev"
+        prow.k8s.io/pubsub.runID: "post-kyma-dashboard-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -234,13 +234,13 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel28-kyma-dashboard-release-backend-dev
+    - name: post-rel28-kyma-dashboard-backend-dev
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel28-kyma-dashboard-release-backend-dev"
+        prow.k8s.io/pubsub.runID: "post-rel28-kyma-dashboard-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -280,13 +280,13 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel27-kyma-dashboard-release-backend-dev
+    - name: post-rel27-kyma-dashboard-backend-dev
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel27-kyma-dashboard-release-backend-dev"
+        prow.k8s.io/pubsub.runID: "post-rel27-kyma-dashboard-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -326,13 +326,13 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel26-kyma-dashboard-release-backend-dev
+    - name: post-rel26-kyma-dashboard-backend-dev
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel26-kyma-dashboard-release-backend-dev"
+        prow.k8s.io/pubsub.runID: "post-rel26-kyma-dashboard-backend-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
