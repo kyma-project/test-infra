@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "pull-api-gateway-lint"
+prConfigs:
+  kyma-project:
+    api-gateway:
+      prNumber: 64
