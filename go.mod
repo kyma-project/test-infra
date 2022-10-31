@@ -35,7 +35,6 @@ require (
 	github.com/fsouza/go-dockerclient v1.9.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-playground/validator/v10 v10.11.1
-	github.com/go-playground/validator/v10 v10.2.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-containerregistry v0.12.0
 	github.com/google/go-github/v40 v40.0.0
