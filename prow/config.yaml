@@ -192,7 +192,7 @@ in_repo_config:
   enabled:
     "*": true
   allowed_clusters:
-    "*": ["default", "untrusted-workload", "trusted-workload"]
+    "*": ["untrusted-workload"]
 
 branch-protection:
   enforce_admins: true
