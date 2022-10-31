@@ -34,30 +34,16 @@ var (
 	logger            *cloudfunctions.LogEntry
 )
 
+// TODO: remove secret from yaml key names, this data is redundant. The file itself describe secret.
 // Alias holds mapping between owners file alias and slack groups and channels names.
 // It holds information if automerge notification is enabled.
 type SyncEvent struct {
 	SecretName      string   `yaml:"secret.name,omitempty"`
+	SecretGCPPath   string   `yaml:"gcpPath"`
 	SecretVersion   int      `yaml:"secret.version,omitempty"`
 	SecretEndpoints []string `yaml:"secret.endpoints,omitempty"`
 }
 
-/*
-func init() {
-	// Register an HTTP function with the Functions Framework
-	functions.HTTP("UpdateSecretOverGithubChannel", myHTTPFunction)
-
-	githubAccessToken = os.Getenv("GITHUB_ACCESS_TOKEN")
-	if githubAccessToken == "" {
-		panic("environment variable GITHUB_ACCESS_TOKEN is empty")
-	}
-	// create github client
-	githubClient, err = client.NewSapToolsClient(ctx, githubAccessToken)
-	if err != nil {
-		panic(fmt.Sprintf("Failed creating github client, error: %s", err.Error()))
-	}
-}
-*/
 func main() {
 	var err error
 	ctx := context.Background()
@@ -157,7 +143,6 @@ func myHTTPFunction(w http.ResponseWriter, r *http.Request) {
 	if message.Message.Attributes["eventType"] == "SECRET_VERSION_ADD" {
 
 		var syncEvent SyncEvent
-		// secretName := path.Base(message.Message.Attributes["secretId"])
 		syncEventFilePath := "/" + message.Message.Attributes["secretId"] + ".yaml"
 		// Get file from github.
 		logger.LogInfo("getting sync event file from gtihub.tools.sap%s", syncEventFilePath)
@@ -200,6 +185,7 @@ func myHTTPFunction(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		syncEvent.SecretVersion = versionInt
+		syncEvent.SecretGCPPath = message.Message.Attributes["secretId"]
 		updatedSyncEventFile, err := yaml.Marshal(syncEvent)
 		opts := &github.RepositoryContentFileOptions{
 			Message:   github.String("New secret version added. Synchronization needed."),
