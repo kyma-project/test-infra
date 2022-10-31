@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma-dashboard:
-    - name: pre-kyma-dashboard-web-dev
+    - name: pre-kyma-dashboard-dev-web
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-dev-web"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -37,7 +37,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-dev-web"
             resources:
               requests:
                 memory: 3Gi
@@ -49,12 +49,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel28-kyma-dashboard-web-dev
+    - name: pre-rel28-kyma-dashboard-dev-web
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel28-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "pre-rel28-kyma-dashboard-dev-web"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -82,7 +82,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-dev-web"
             resources:
               requests:
                 memory: 3Gi
@@ -94,12 +94,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel27-kyma-dashboard-web-dev
+    - name: pre-rel27-kyma-dashboard-dev-web
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel27-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "pre-rel27-kyma-dashboard-dev-web"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -127,7 +127,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-dev-web"
             resources:
               requests:
                 memory: 3Gi
@@ -139,12 +139,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel26-kyma-dashboard-web-dev
+    - name: pre-rel26-kyma-dashboard-dev-web
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel26-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "pre-rel26-kyma-dashboard-dev-web"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -172,7 +172,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-dev-web"
             resources:
               requests:
                 memory: 3Gi
@@ -187,13 +187,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma-dashboard:
-    - name: post-kyma-dashboard-web-dev
+    - name: post-kyma-dashboard-dev-web
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "post-kyma-dashboard-dev-web"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -222,7 +222,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-dev-web"
             resources:
               requests:
                 memory: 3Gi
@@ -234,13 +234,13 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel28-kyma-dashboard-web-dev
+    - name: post-rel28-kyma-dashboard-dev-web
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel28-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "post-rel28-kyma-dashboard-dev-web"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -268,7 +268,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-dev-web"
             resources:
               requests:
                 memory: 3Gi
@@ -280,13 +280,13 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel27-kyma-dashboard-web-dev
+    - name: post-rel27-kyma-dashboard-dev-web
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel27-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "post-rel27-kyma-dashboard-dev-web"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -314,7 +314,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-dev-web"
             resources:
               requests:
                 memory: 3Gi
@@ -326,13 +326,13 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel26-kyma-dashboard-web-dev
+    - name: post-rel26-kyma-dashboard-dev-web
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel26-kyma-dashboard-web-dev"
+        prow.k8s.io/pubsub.runID: "post-rel26-kyma-dashboard-dev-web"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -360,7 +360,7 @@ postsubmits: # runs on main
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
               - "."
-              - "release-web-dev"
+              - "release-dev-web"
             resources:
               requests:
                 memory: 3Gi

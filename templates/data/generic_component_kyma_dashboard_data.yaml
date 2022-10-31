@@ -1,15 +1,15 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-web-dev.yaml
+      - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-dev-web.yaml
         jobConfigs:
           - repoName: "kyma-project/kyma-dashboard"
             jobs:
               - jobConfig:
-                  path: web-dev
+                  path: dev-web
                   args:
                     - "."
-                    - "release-web-dev"
+                    - "release-dev-web"
                   run_if_changed: "^Dockerfile.web|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile"
                   release_since: "1.24"
                 inheritedConfigs:
@@ -27,15 +27,15 @@ templates:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
 
-      - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-backend-dev.yaml
+      - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-dev-backend.yaml
         jobConfigs:
           - repoName: "kyma-project/kyma-dashboard"
             jobs:
               - jobConfig:
-                  path: backend-dev
+                  path: dev-backend
                   args:
                     - "."
-                    - "release-backend-dev"
+                    - "release-dev-backend"
                   run_if_changed: "^Dockerfile.backend|^environments/dev/|^Makefile"
                   release_since: "1.24"
                 inheritedConfigs:

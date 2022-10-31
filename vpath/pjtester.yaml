@@ -1,6 +1,6 @@
 pjNames:
-  - pjName: "pre-kyma-dashboard-web-dev"
-  - pjName: "pre-kyma-dashboard-backend-dev"
+  - pjName: "pre-kyma-dashboard-dev-web"
+  - pjName: "pre-kyma-dashboard-dev-backend"
 prConfigs:
   kyma-project:
     kyma-dashboard:
