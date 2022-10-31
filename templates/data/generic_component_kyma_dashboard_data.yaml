@@ -35,7 +35,7 @@ templates:
                   path: backend-dev
                   args:
                     - "."
-                    - "release-backend"
+                    - "release-backend-dev"
                   run_if_changed: "^Dockerfile.backend|^environments/dev/|^Makefile"
                   release_since: "1.24"
                 inheritedConfigs:
