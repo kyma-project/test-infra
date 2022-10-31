@@ -18,8 +18,7 @@ replace (
 
 require (
 	cloud.google.com/go/bigquery v1.43.0
-	cloud.google.com/go/compute v1.12.1 // indirect
-	cloud.google.com/go/compute/metadata v0.1.1
+	cloud.google.com/go/compute/metadata v0.2.1
 	cloud.google.com/go/firestore v1.8.0
 	cloud.google.com/go/functions v1.8.0
 	cloud.google.com/go/kms v1.5.0
