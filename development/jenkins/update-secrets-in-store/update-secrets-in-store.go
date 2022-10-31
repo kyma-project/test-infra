@@ -105,6 +105,7 @@ func main() {
 	changedFiles := os.Getenv("CHANGED_FILES")
 	apiToken := os.Getenv("API_TOKEN")
 	apiUser := os.Getenv("API_USER")
+	// TODO: This is to test jenkins credential value was updated. Remove after POC phase.
 	testVar := os.Getenv("TEST_VAR")
 	credsOption := option.WithCredentialsJSON([]byte(secretManagerCreds))
 	secretManagerService, err = secretmanager.NewService(ctx, credsOption)
@@ -114,6 +115,7 @@ func main() {
 	customTransport := http.DefaultTransport.(*http.Transport).Clone()
 	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	httpClient = &http.Client{Timeout: 15 * time.Second, Transport: customTransport}
+	// TODO: This is to test jenkins credential value was updated. Remove after POC phase.
 	if testVar != "" {
 		fmt.Printf("test_var: %s", testVar[0:100])
 		os.Exit(0)
@@ -145,10 +147,8 @@ func updateSecretsInStore(changedFiles, apiToken, apiUser string) error {
 		if err != nil {
 			return fmt.Errorf("failed get credentials from jenkins store, error: %w", err)
 		}
-		// fmt.Printf("creds: %+v\n", creds)
-		// fmt.Printf("secretData: %+v\n", secretData)
 
-		err = syncSecretEvent.updateCredentialsData(creds, secretData)
+		err = creds.UpdateSecret(secretData)
 		if err != nil {
 			return err
 		}
@@ -232,14 +232,6 @@ func (sse *SyncSecretEvent) newCredential(secretAnnotations map[string]string) (
 		return &SecretTextCredential{}, nil
 	}
 	return &Credential{}, fmt.Errorf("unknown credential type")
-}
-
-func (sse *SyncSecretEvent) updateCredentialsData(credential CredentialInterface, versionData string) error {
-	err := credential.UpdateSecret(versionData)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func (sse *SyncSecretEvent) updateJenkinsCredentials(httpClient *http.Client, secret *gcpsecretmanager.Secret, apiUser, apiToken string, credential CredentialInterface) error {
