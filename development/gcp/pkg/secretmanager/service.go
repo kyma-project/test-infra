@@ -151,3 +151,11 @@ func (sm *Service) GetAllSecrets(projectPath string, filter string) ([]*gcpsecre
 
 	return secrets, nil
 }
+
+func (sm *Service) GetSecret(secretName string) (*gcpsecretmanager.Secret, error) {
+	secret, err := sm.Service.Projects.Secrets.Get(secretName).Do()
+	if err != nil {
+		return nil, fmt.Errorf("failed calling secret get api, error: %w", err)
+	}
+	return secret, nil
+}

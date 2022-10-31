@@ -2,7 +2,9 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"context"
+	"crypto/tls"
 	"encoding/xml"
 	"fmt"
 	"io"
@@ -20,6 +22,8 @@ import (
 )
 
 /*
+secret file
+
 <org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl plugin="plain-credentials@139.ved2b_9cf7587b">
 	<id>secret-manager-kymasecurity-jaas_sap-kyma-prow</id>
 	<description></description>
@@ -28,6 +32,16 @@ import (
 		<secret-redacted/>
 	</secretBytes>
 </org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl>
+
+secret text
+
+<org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl plugin="plain-credentials@139.ved2b_9cf7587b">
+<id>test-secret-service-account-sap-kyma-prow</id>
+<description/>
+<secret>
+<secret-redacted/>
+</secret>
+</org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl>
 */
 
 var (
@@ -36,19 +50,48 @@ var (
 	httpClient           *http.Client
 )
 
-type Credential struct {
-	XMLName     xml.Name    `xml:"org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl"`
-	Plugin      string      `xml:"plugin,attr"`
-	ID          string      `xml:"id"`
-	Description string      `xml:"description"`
-	FileName    string      `xml:"fileName"`
-	SecretBytes SecretBytes `xml:"secretBytes"`
+type CredentialInterface interface {
+	UpdateSecret(string) error
+}
+type SecretTextCredential struct {
+	XMLName xml.Name `xml:"org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl"`
+	Secret  string   `xml:"secret"`
+	Credential
 }
 
-type SecretBytes struct {
-	XMLName        xml.Name `xml:"secretBytes"`
-	SecretRedacted string   `xml:"secret-redacted"`
+func (stc *SecretTextCredential) UpdateSecret(secret string) error {
+	stc.Secret = secret
+	return nil
 }
+
+type SecretFileCredential struct {
+	XMLName     xml.Name `xml:"org.jenkinsci.plugins.plaincredentials.impl.FileCredentialsImpl"`
+	SecretBytes string   `xml:"secretBytes"`
+	Credential
+}
+
+func (sfc *SecretFileCredential) UpdateSecret(secret string) error {
+	sfc.SecretBytes = secret
+	return nil
+}
+
+type Credential struct {
+	Plugin      string `xml:"plugin,attr"`
+	ID          string `xml:"id"`
+	Description string `xml:"description"`
+	FileName    string `xml:"fileName"`
+	// SecretBytes string `xml:"secretBytes"`
+	// Secret string `xml:"secret"`
+}
+
+func (c *Credential) UpdateSecret(_ string) error {
+	return fmt.Errorf("secret update failed, unknown secret type")
+}
+
+// type SecretBytes struct {
+//	XMLName        xml.Name `xml:"secretBytes"`
+//	SecretRedacted string   `xml:"secret-redacted"`
+// }
 
 type SyncSecretEvent struct {
 	SecretName      string   `yaml:"secret.name,omitempty"`
@@ -59,18 +102,26 @@ type SyncSecretEvent struct {
 func main() {
 	ctx := context.Background()
 	secretManagerCreds := os.Getenv("SECRET_MANAGER_JSON")
-	chanedFiles := os.Getenv("CHANGED_FILES")
+	changedFiles := os.Getenv("CHANGED_FILES")
 	apiToken := os.Getenv("API_TOKEN")
 	apiUser := os.Getenv("API_USER")
+	testVar := os.Getenv("TEST_VAR")
 	credsOption := option.WithCredentialsJSON([]byte(secretManagerCreds))
 	secretManagerService, err = secretmanager.NewService(ctx, credsOption)
 	if err != nil {
 		panic("failed creating Secret Manager client, error: " + err.Error())
 	}
-	httpClient = &http.Client{Timeout: 15 * time.Second}
-	err := updateSecretsInStore(chanedFiles, apiToken, apiUser)
+	customTransport := http.DefaultTransport.(*http.Transport).Clone()
+	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+	httpClient = &http.Client{Timeout: 15 * time.Second, Transport: customTransport}
+	if testVar != "" {
+		fmt.Printf("test_var: %s", testVar[len(testVar)-6:])
+		os.Exit(0)
+	}
+	err := updateSecretsInStore(changedFiles, apiToken, apiUser)
 	if err != nil {
 		fmt.Println(err.Error())
+		os.Exit(1)
 	}
 }
 
@@ -79,15 +130,33 @@ func updateSecretsInStore(changedFiles, apiToken, apiUser string) error {
 	for changedFilesScanner.Scan() {
 		syncSecretEvent, err := NewSecretUpdateEventFromFile(changedFilesScanner.Text())
 		if err != nil {
-			return err
+			return fmt.Errorf("failed read sync secret event from file, error: %w", err)
 		}
+
 		secret, secretData, err := syncSecretEvent.getGCPSecret(changedFilesScanner.Text())
+		if err != nil {
+			return fmt.Errorf("failed get secret from GCP secret manager, error: %w", err)
+		}
+
+		fmt.Printf("Annotations: %s\n", secret.Annotations["jenkins-type"])
+
+		creds, err := syncSecretEvent.newCredential(secret.Annotations)
+		err = syncSecretEvent.getJenkinsCredentials(httpClient, secret, apiUser, apiToken, creds)
+		if err != nil {
+			return fmt.Errorf("failed get credentials from jenkins store, error: %w", err)
+		}
+		// fmt.Printf("creds: %+v\n", creds)
+		// fmt.Printf("secretData: %+v\n", secretData)
+
+		err = syncSecretEvent.updateCredentialsData(creds, secretData)
 		if err != nil {
 			return err
 		}
-		creds, err := syncSecretEvent.getCredentialsFromStore(httpClient, secret, apiUser, apiToken)
-		fmt.Printf("%+v", creds)
-		fmt.Printf("%+v", secretData)
+
+		err = syncSecretEvent.updateJenkinsCredentials(httpClient, secret, apiUser, apiToken, creds)
+		if err != nil {
+			return err
+		}
 		return nil
 	}
 	return fmt.Errorf("no changed files provided")
@@ -97,78 +166,105 @@ func NewSecretUpdateEventFromFile(syncSecretEventFilePath string) (SyncSecretEve
 	var syncSecretEvent SyncSecretEvent
 	syncSecretEventFile, err := ioutil.ReadFile(syncSecretEventFilePath)
 	if err != nil {
-		return SyncSecretEvent{}, err
+		return SyncSecretEvent{}, fmt.Errorf("failed read sync secret event file, error: %w", err)
 	}
 	err = yaml.Unmarshal(syncSecretEventFile, &syncSecretEvent)
 	if err != nil {
-		return SyncSecretEvent{}, err
+		return SyncSecretEvent{}, fmt.Errorf("failed unmarshal yaml sync secret event file to struct, error: %w", err)
 	}
 	return syncSecretEvent, nil
 }
 
-// TODO: this should be a method of secretmanagerservice
 func (sse *SyncSecretEvent) getGCPSecret(updateSecretEventFilePath string) (*gcpsecretmanager.Secret, string, error) {
 	// TODO: secret path should be a field of SyncSecretEvent.
 	tmpPath := strings.TrimPrefix(updateSecretEventFilePath, "/")
 	gcpSecretManagerPath := strings.TrimSuffix(tmpPath, ".yaml")
-	secretName := path.Base(gcpSecretManagerPath)
-	// Secrets filtering https://cloud.google.com/secret-manager/docs/filtering
-	// TODO: How to build this filter. Should cloud run function get secret details and propagate some attributes and labels to github?
-	secretsFilter := "name:" + secretName
-	secrets, err := secretManagerService.GetAllSecrets(gcpSecretManagerPath, secretsFilter)
+	secret, err := secretManagerService.GetSecret(gcpSecretManagerPath)
 	if err != nil {
-		fmt.Println("failed get secret from secret manager")
-	}
-	if len(secrets) > 1 {
-		return nil, "", fmt.Errorf("to many secrets found")
+		return nil, "", fmt.Errorf("failed get secret from secret manager, error: %w", err)
 	}
 	// TODO: use path from SyncSecretEvent
 	secretData, err := secretManagerService.GetLatestSecretVersionData(gcpSecretManagerPath)
 	if err != nil {
-		return nil, "", fmt.Errorf("failed get latest version data")
+		return nil, "", fmt.Errorf("failed get latest version data, error: %w", err)
 	}
-	return secrets[0], secretData, nil
-	// authentication: 'dekiel-test-token', responseHandle: 'NONE', url: 'https://kymasecurity.jaas-gcp.cloud.sap.corp/job/administration/credentials/store/folder/domain/_/credential/secret-manager-kymasecurity-jaas_sap-kyma-prow/config.xml
+	return secret, secretData, nil
 
 }
 
 // TODO: enhance sync event with required data for this calls
-func (sse *SyncSecretEvent) getCredentialsFromStore(httpClient *http.Client, secret *gcpsecretmanager.Secret, apiUser, apiToken string) (Credential, error) {
-	var credential Credential
+func (sse *SyncSecretEvent) getJenkinsCredentials(httpClient *http.Client, secret *gcpsecretmanager.Secret, apiUser, apiToken string, credential CredentialInterface) error {
+	fmt.Printf("Secret Name: %s\n", secret.Name)
+	shortSecretName := path.Base(secret.Name)
 	// TODO: construct URL from vars and const
-	req, err := http.NewRequest(http.MethodGet, "https://kymasecurity.jaas-gcp.cloud.sap.corp/job/administration/credentials/store/folder/domain/_/credential/"+secret.Name+"/config.xml", http.NoBody)
+	req, err := http.NewRequest(http.MethodGet, "https://kymasecurity.jaas-gcp.cloud.sap.corp/job/administration/credentials/store/folder/domain/_/credential/"+shortSecretName+"/config.xml", http.NoBody)
 	if err != nil {
-		return Credential{}, err
+		return fmt.Errorf("failed create http request, error: %w", err)
 	}
 
 	req.SetBasicAuth(apiUser, apiToken)
 
-	res, err := httpClient.Do(req)
+	response, err := httpClient.Do(req)
 	if err != nil {
-		return Credential{}, err
+		return fmt.Errorf("failed calling jenkins api, error: %w", err)
 	}
 
-	defer res.Body.Close()
+	if response.StatusCode != http.StatusOK {
+		return fmt.Errorf("calling jenkins api response status NOK, error: %w", err)
+	}
 
-	resBody, err := io.ReadAll(res.Body)
+	defer response.Body.Close()
+
+	resBody, err := io.ReadAll(response.Body)
 	if err != nil {
-		return Credential{}, err
+		return fmt.Errorf("failed read http response body, error: %w", err)
 	}
 
 	err = xml.Unmarshal(resBody, &credential)
 	if err != nil {
-		return Credential{}, err
+		return fmt.Errorf("failed unmarshal xml http response body to struct, error: %w", err)
+	}
+	return nil
+}
+
+func (sse *SyncSecretEvent) newCredential(secretAnnotations map[string]string) (CredentialInterface, error) {
+	if secretAnnotations["jenkins-type"] == "secret-text" {
+		return &SecretTextCredential{}, nil
+	}
+	return &Credential{}, fmt.Errorf("unknown credential type")
+}
+
+func (sse *SyncSecretEvent) updateCredentialsData(credential CredentialInterface, versionData string) error {
+	err := credential.UpdateSecret(versionData)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (sse *SyncSecretEvent) updateJenkinsCredentials(httpClient *http.Client, secret *gcpsecretmanager.Secret, apiUser, apiToken string, credential CredentialInterface) error {
+	bodyBytes, err := xml.Marshal(credential)
+	if err != nil {
+		return err
+	}
+	shortSecretName := path.Base(secret.Name)
+	bodyReader := bytes.NewReader(bodyBytes)
+	req, err := http.NewRequest(http.MethodPost, "https://kymasecurity.jaas-gcp.cloud.sap.corp/job/administration/credentials/store/folder/domain/_/credential/"+shortSecretName+"/config.xml", bodyReader)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", "application/xml")
+	req.SetBasicAuth(apiUser, apiToken)
+
+	response, err := httpClient.Do(req)
+	if err != nil {
+		return err
 	}
 
-	fmt.Printf("Status: %d\n", res.StatusCode)
-	fmt.Printf("Body: %s\n", string(resBody))
+	if response.StatusCode != http.StatusOK {
+		return fmt.Errorf("calling jenkins api response status NOK, error: %w", err)
+	}
 
-	return credential, nil
+	defer response.Body.Close()
+	return nil
 }
-
-/*
-func (sse *SyncSecretEvent) updateCredentialsInStore() error {
-
-}
-
-*/
