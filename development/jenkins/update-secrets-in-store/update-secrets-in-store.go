@@ -115,7 +115,7 @@ func main() {
 	customTransport.TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 	httpClient = &http.Client{Timeout: 15 * time.Second, Transport: customTransport}
 	if testVar != "" {
-		fmt.Printf("test_var: %s", testVar[len(testVar)-6:])
+		fmt.Printf("test_var: %s", testVar[0:100])
 		os.Exit(0)
 	}
 	err := updateSecretsInStore(changedFiles, apiToken, apiUser)
