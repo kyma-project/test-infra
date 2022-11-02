@@ -60,7 +60,7 @@ require (
 	go.uber.org/zap v1.23.0
 	golang.org/x/net v0.1.0
 	golang.org/x/oauth2 v0.1.0
-	google.golang.org/api v0.101.0
+	google.golang.org/api v0.102.0
 	google.golang.org/genproto v0.0.0-20221024183307-1bc688fe9f3e
 	google.golang.org/grpc v1.50.1
 	gopkg.in/yaml.v2 v2.4.0
