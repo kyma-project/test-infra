@@ -125,6 +125,11 @@ func myHTTPFunction(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	if path.Base(message.Message.Attributes["secretId"]) != "test-secret-service-account-sap-kyma-prow" {
+		logger.LogInfo("unsupported secret: %s", path.Base(message.Message.Attributes["secretId"]))
+		io.WriteString(w, "OK")
+	}
+
 	// got valid message
 	logger.LogInfo("received message with id: %s", message.Message.MessageID)
 
@@ -148,14 +153,14 @@ func myHTTPFunction(w http.ResponseWriter, r *http.Request) {
 		logger.LogInfo("getting sync event file from gtihub.tools.sap%s", syncEventFilePath)
 		syncEventFile, _, resp, err := githubClient.Repositories.GetContents(ctx, "kyma", "test-infra", syncEventFilePath, &github.RepositoryContentGetOptions{Ref: "secrets-sync"})
 		if err != nil {
-			logger.LogError("got error when getting sync event file from github.tools.sap, error: %w", err)
+			logger.LogError("got error when getting sync event file from github.tools.sap, error: %s", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = w.Write([]byte("NOK"))
 			return
 		}
 		// Check HTTP response code
 		if ok, err := githubClient.IsStatusOK(resp); !ok {
-			logger.LogError("Response status for getting file content from github is not OK, error: %w", err)
+			logger.LogError("Response status for getting file content from github is not OK, error: %s", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = w.Write([]byte("NOK"))
 			return
@@ -163,14 +168,14 @@ func myHTTPFunction(w http.ResponseWriter, r *http.Request) {
 		// Read file content.
 		syncEventString, err := syncEventFile.GetContent()
 		if err != nil {
-			logger.LogError("got error when getting content of sync event file, error: %w", err)
+			logger.LogError("got error when getting content of sync event file, error: %s", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = w.Write([]byte("NOK"))
 			return
 		}
 		err = yaml.Unmarshal([]byte(syncEventString), &syncEvent)
 		if err != nil {
-			logger.LogError("got error when unmarshaling sync event file content, error: %w", err)
+			logger.LogError("got error when unmarshaling sync event file content, error: %s", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = w.Write([]byte("NOK"))
 			return
@@ -179,7 +184,7 @@ func myHTTPFunction(w http.ResponseWriter, r *http.Request) {
 		logger.LogInfo("secret versionId to update: %s", versionString)
 		versionInt, err := strconv.Atoi(versionString)
 		if err != nil {
-			logger.LogError("Failed convert secret version to sync from string to integer, error: %w", err)
+			logger.LogError("Failed convert secret version to sync from string to integer, error: %s", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = w.Write([]byte("NOK"))
 			return
@@ -200,13 +205,13 @@ func myHTTPFunction(w http.ResponseWriter, r *http.Request) {
 		}
 		reposContentResponse, response, err := githubClient.Repositories.UpdateFile(ctx, "kyma", "test-infra", syncEventFileGitHubPath, opts)
 		if err != nil {
-			logger.LogError("got error when updating sync event file in github.tools.sap, error: %w", err)
+			logger.LogError("got error when updating sync event file in github.tools.sap, error: %s", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = w.Write([]byte("NOK"))
 			return
 		}
 		if ok, err := githubClient.IsStatusOK(response); !ok {
-			logger.LogError("Response status for updating sync event file in github is not OK, error: %w", err)
+			logger.LogError("Response status for updating sync event file in github is not OK, error: %s", err.Error())
 			w.WriteHeader(http.StatusInternalServerError)
 			_, _ = w.Write([]byte("NOK"))
 			return
