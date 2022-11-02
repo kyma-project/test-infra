@@ -23,7 +23,7 @@ presubmits: # runs on PRs
               - "/image-builder"
             args:
               - "--name=btp-manager/operator"
-              - "--context=btp-manager/operator"
+              - "--context=operator"
               - "--dockerfile=Dockerfile"
               - "--config=/config/kaniko-build-config.yaml"
             volumeMounts:
