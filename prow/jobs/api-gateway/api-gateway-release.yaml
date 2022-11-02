@@ -20,7 +20,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
               - "/bin/sh"
             args:
@@ -56,7 +56,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
               - "/bin/sh"
             args:
