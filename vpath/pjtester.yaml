@@ -1,0 +1,9 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      kyma:
+        prNumber: 15975
+  prowJobs:
+    kyma-project:
+      kyma:
+      - pjName: "pull-eventing-controller-unit-test"
