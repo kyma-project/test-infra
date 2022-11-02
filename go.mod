@@ -13,7 +13,7 @@ replace (
 	k8s.io/api => k8s.io/api v0.22.2
 	k8s.io/apimachinery => k8s.io/apimachinery v0.22.2
 	k8s.io/client-go => k8s.io/client-go v0.22.2
-	k8s.io/klog/v2 => k8s.io/klog/v2 v2.9.0
+//k8s.io/klog/v2 => k8s.io/klog/v2 v2.9.0
 )
 
 require (
