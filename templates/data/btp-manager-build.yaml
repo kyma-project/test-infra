@@ -11,7 +11,7 @@ templates:
                   args:
                     - --name=btp-manager/operator
                     - --context=btp-manager/operator
-                    - --dockerfile=Dockerfile
+                    - --dockerfile=operator/Dockerfile
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
