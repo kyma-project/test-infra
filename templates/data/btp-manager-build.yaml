@@ -10,8 +10,8 @@ templates:
                   run_if_changed: "^operator"
                   args:
                     - --name=btp-manager/operator
-                    - --context=btp-manager/operator
-                    - --dockerfile=operator/Dockerfile
+                    - --context=operator
+                    - --dockerfile=Dockerfile
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
