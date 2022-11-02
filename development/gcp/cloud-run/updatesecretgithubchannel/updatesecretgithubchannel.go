@@ -125,11 +125,6 @@ func myHTTPFunction(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if path.Base(message.Message.Attributes["secretId"]) != "test-secret-service-account-sap-kyma-prow" {
-		logger.LogInfo("unsupported secret: %s", path.Base(message.Message.Attributes["secretId"]))
-		io.WriteString(w, "OK")
-	}
-
 	// got valid message
 	logger.LogInfo("received message with id: %s", message.Message.MessageID)
 
@@ -145,7 +140,7 @@ func myHTTPFunction(w http.ResponseWriter, r *http.Request) {
 	logger.LogInfo(string(message.Message.Data))
 	logger.LogInfo("%+v", message.Message.Attributes)
 
-	if message.Message.Attributes["eventType"] == "SECRET_VERSION_ADD" {
+	if message.Message.Attributes["eventType"] == "SECRET_VERSION_ADD" && path.Base(message.Message.Attributes["secretId"]) == "test-secret-service-account-sap-kyma-prow" {
 
 		var syncEvent SyncEvent
 		syncEventFilePath := "/" + message.Message.Attributes["secretId"] + ".yaml"
@@ -217,6 +212,8 @@ func myHTTPFunction(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		logger.LogInfo("Updated sync event file %s in github.tools.sap with commit %s", syncEventFilePath, reposContentResponse.Commit.SHA)
+	} else {
+		logger.LogInfo("unsupported secret: %s", path.Base(message.Message.Attributes["secretId"]))
 	}
 	// Send an HTTP response
 	io.WriteString(w, "OK")
