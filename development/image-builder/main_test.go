@@ -2,23 +2,23 @@ package main
 
 import (
 	"flag"
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"os"
 	"reflect"
 	"testing"
+	"testing/fstest"
 )
 
 func Test_gatherDestinations(t *testing.T) {
 	tc := []struct {
-		name      string
-		directory string
-		repos     []string
-		tags      []string
-		expected  []string
+		name     string
+		repos    []string
+		tags     []string
+		expected []string
 	}{
 		{
-			name:      "test-image",
-			repos:     []string{"dev.kyma.io", "dev2.kyma.io"},
-			directory: "subdirectory",
+			name:  "subdirectory/test-image",
+			repos: []string{"dev.kyma.io", "dev2.kyma.io"},
 			tags: []string{
 				"20222002-abcd1234",
 				"latest",
@@ -42,7 +42,7 @@ func Test_gatherDestinations(t *testing.T) {
 	}
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			got := gatherDestinations(c.repos, c.directory, c.name, c.tags)
+			got := gatherDestinations(c.repos, c.name, c.tags)
 			if len(c.expected) != len(got) {
 				t.Errorf("result length mismatch. wanted %v, got %v", len(c.expected), len(got))
 			}
@@ -60,8 +60,8 @@ func Test_parseVariable(t *testing.T) {
 		test     string
 	}{
 		{
-			name:     "key -> KEY=val",
-			expected: "KEY=val",
+			name:     "key -> key=val",
+			expected: "key=val",
 			test:     "key",
 		},
 		{
@@ -70,8 +70,8 @@ func Test_parseVariable(t *testing.T) {
 			test:     "_KEY",
 		},
 		{
-			name:     "_key -> _KEY=val",
-			expected: "_KEY=val",
+			name:     "_key -> _key=val",
+			expected: "_key=val",
 			test:     "_key",
 		},
 	}
@@ -95,7 +95,6 @@ func Test_validateOptions(t *testing.T) {
 			name:      "parsed config",
 			expectErr: false,
 			opts: options{
-				directory:  "kyma.dev",
 				context:    "directory/",
 				name:       "test-image",
 				dockerfile: "Dockerfile",
@@ -105,7 +104,6 @@ func Test_validateOptions(t *testing.T) {
 			name:      "context missing",
 			expectErr: true,
 			opts: options{
-				directory:  "kyma.dev",
 				name:       "test-image",
 				dockerfile: "Dockerfile",
 			},
@@ -114,7 +112,6 @@ func Test_validateOptions(t *testing.T) {
 			name:      "name missing",
 			expectErr: true,
 			opts: options{
-				directory:  "kyma.dev",
 				context:    "directory/",
 				dockerfile: "Dockerfile",
 			},
@@ -123,9 +120,8 @@ func Test_validateOptions(t *testing.T) {
 			name:      "dockerfile missing",
 			expectErr: true,
 			opts: options{
-				directory: "kyma.dev",
-				context:   "directory/",
-				name:      "test-image",
+				context: "directory/",
+				name:    "test-image",
 			},
 		},
 	}
@@ -166,19 +162,19 @@ func TestFlags(t *testing.T) {
 			name:        "parsed config, pass",
 			expectedErr: false,
 			expectedOpts: options{
-				name:           "test-image",
-				directory:      "subdirectory",
-				additionalTags: []string{"latest", "cookie"},
-				context:        "prow/build",
-				configPath:     "config.yaml",
-				dockerfile:     "Dockerfile",
-				logDir:         "prow/logs",
-				silent:         true,
+				name:       "test-image",
+				tags:       []string{"latest", "cookie"},
+				context:    "prow/build",
+				configPath: "config.yaml",
+				dockerfile: "Dockerfile",
+				logDir:     "prow/logs",
+				orgRepo:    "kyma-project/test-infra",
+				silent:     true,
 			},
 			args: []string{
 				"--config=config.yaml",
 				"--dockerfile=Dockerfile",
-				"--directory=subdirectory",
+				"--repo=kyma-project/test-infra",
 				"--name=test-image",
 				"--tag=latest",
 				"--tag=cookie",
@@ -209,6 +205,7 @@ func Test_gatTags(t *testing.T) {
 		pr             string
 		sha            string
 		tagTemplate    string
+		env            map[string]string
 		additionalTags []string
 		expectErr      bool
 		expectResult   []string
@@ -229,17 +226,21 @@ func Test_gatTags(t *testing.T) {
 			tagTemplate: `v{{ .ASD }}`,
 		},
 		{
-			name:           "custom template, additional fields",
+			name:           "custom template, additional fields, env variable",
 			expectErr:      false,
-			sha:            "abcd1234",
+			sha:            "da39a3ee5e6b4b0d3255bfef95601890afd80709",
 			tagTemplate:    `{{ .ShortSHA }}`,
-			additionalTags: []string{"latest", "cookie"},
-			expectResult:   []string{"abcd1234", "latest", "cookie"},
+			env:            map[string]string{"CUSTOM_ENV": "customEnvValue"},
+			additionalTags: []string{"latest", "cookie", `{{ .CommitSHA }}`, `{{ .Env "CUSTOM_ENV" }}`},
+			expectResult:   []string{"latest", "cookie", "da39a3ee5e6b4b0d3255bfef95601890afd80709", "customEnvValue", "da39a3ee"},
 		},
 	}
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			got, err := getTags(c.pr, c.sha, c.tagTemplate, c.additionalTags)
+			for k, v := range c.env {
+				t.Setenv(k, v)
+			}
+			got, err := getTags(c.pr, c.sha, append(c.additionalTags, c.tagTemplate))
 			if err != nil && !c.expectErr {
 				t.Errorf("got error but didn't want to: %s", err)
 			}
@@ -248,6 +249,90 @@ func Test_gatTags(t *testing.T) {
 			}
 			if !reflect.DeepEqual(c.expectResult, got) {
 				t.Errorf("%v != %v", got, c.expectResult)
+			}
+		})
+	}
+}
+
+func Test_loadEnv(t *testing.T) {
+	// static value that should not be overridden
+	t.Setenv("key3", "static-value")
+	vfs := fstest.MapFS{
+		".env": &fstest.MapFile{Data: []byte("KEY=VAL\nkey2=val2\nkey3=val3\nkey4=val4=asf"), Mode: 0666},
+	}
+	expected := map[string]string{
+		"KEY":  "VAL",
+		"key2": "val2",
+		"key3": "static-value",
+		"key4": "val4=asf",
+	}
+	_, err := loadEnv(vfs, ".env")
+	if err != nil {
+		t.Errorf("%v", err)
+	}
+
+	for k, v := range expected {
+		got := os.Getenv(k)
+		if got != v {
+			t.Errorf("%v != %v", got, v)
+		}
+		os.Unsetenv(k)
+	}
+}
+
+func Test_getSignersForOrgRepo(t *testing.T) {
+	tc := []struct {
+		name          string
+		expectErr     bool
+		expectSigners int
+		orgRepo       string
+	}{
+		{
+			name:          "1 notary signer org/repo, pass",
+			expectErr:     false,
+			expectSigners: 1,
+			orgRepo:       "org/repo",
+		},
+		{
+			name:          "2 notary signer org/repo2, pass",
+			expectErr:     false,
+			expectSigners: 2,
+			orgRepo:       "org/repo2",
+		},
+		{
+			name:          "only global signer, one notary signer, pass",
+			expectErr:     false,
+			expectSigners: 1,
+			orgRepo:       "org/repo-empty",
+		},
+	}
+	for _, c := range tc {
+		t.Run(c.name, func(t *testing.T) {
+			o := &options{Config: Config{SignConfig: SignConfig{
+				EnabledSigners: map[string][]string{
+					"*":         {"test-notary"},
+					"org/repo":  {"test-notary"},
+					"org/repo2": {"test-notary2"},
+				},
+				Signers: []sign.SignerConfig{
+					{
+						Name:   "test-notary",
+						Type:   sign.TypeNotaryBackend,
+						Config: sign.NotaryConfig{},
+					},
+					{
+						Name:   "test-notary2",
+						Type:   sign.TypeNotaryBackend,
+						Config: sign.NotaryConfig{},
+					},
+				},
+			}}}
+			got, err := getSignersForOrgRepo(o, c.orgRepo)
+			if err != nil && !c.expectErr {
+				t.Errorf("got error but didn't want to %v", err)
+			}
+			if len(got) != c.expectSigners {
+				t.Errorf("wrong number of requested signers %v != %v", len(got), c.expectSigners)
 			}
 		})
 	}

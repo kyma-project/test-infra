@@ -13,7 +13,6 @@ Use the following tools and configuration:
 - [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to communicate with Kubernetes
 - [gcloud](https://cloud.google.com/sdk/gcloud/) to communicate with Google Cloud Platform (GCP)
 - The `kyma-bot` GitHub account
-- [Kubernetes cluster](./prow-installation-on-forks.md#provision-a-main-prow-cluster)
 - Secrets in the Kubernetes cluster:
   - `hmac-token` which is a Prow HMAC token used to validate GitHub webhooks
   - `oauth-token` which is a GitHub token with read and write access to the `kyma-bot` account
@@ -114,19 +113,19 @@ When you use the [`install-prow.sh`](../../prow/scripts/install-prow.sh) script 
 
 The `config.yaml` file contains the basic Prow configuration. When you create a particular Prow job, it uses the Preset definitions from this file. See the example of such a file [here](../../prow/config.yaml).
 
-For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#adding-more-jobs).
+For more details, see the [Kubernetes documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/Legacy%20Snapshot/prow/getting_started_deploy.md#adding-more-jobs).
 
 ### The plugins.yaml file
 
 The `plugins.yaml` file contains the list of [plugins](https://status.build.kyma-project.io/plugins) you enable on a given repository. See the example of such a file [here](../../prow/plugins.yaml).
 
-For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/tree/master/prow/plugins#plugins).
+For more details, see the [Kubernetes documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/Legacy%20Snapshot/prow/plugins/README.md#plugins).
 
 ### The jobs directory
 
 The `jobs` directory contains the Prow jobs configuration. See the example of such a file [here](../../prow/jobs).
 
-For more details, see the [Kubernetes documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#adding-more-jobs).
+For more details, see the [Kubernetes documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/Legacy%20Snapshot/prow/getting_started_deploy.md#adding-more-jobs).
 
 ### Verify the configuration
 

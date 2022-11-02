@@ -29,7 +29,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20220809-8b2d4be4f"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221028-f16e46a1"
             securityContext:
               privileged: true
             command:

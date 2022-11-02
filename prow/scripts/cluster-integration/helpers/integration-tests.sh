@@ -63,7 +63,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ory-hydra-login-consent
-  namespace: istio-system
+  namespace: kyma-system
 spec:
   selector:
     matchLabels:
@@ -92,7 +92,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: ory-hydra-login-consent
-  namespace: istio-system
+  namespace: kyma-system
 spec:
   selector:
     app: ory-hydra-login-consent
@@ -107,7 +107,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: ory-hydra-login-consent
-  namespace: istio-system
+  namespace: kyma-system
   labels:
     app: ory-hydra-login-consent
 spec:
@@ -123,11 +123,13 @@ spec:
         exact: /consent
     route:
     - destination:
-        host: ory-hydra-login-consent.istio-system.svc.cluster.local
+        host: ory-hydra-login-consent.kyma-system.svc.cluster.local
         port:
           number: 80
 EOF
+  kubectl wait deployment/istiod -n istio-system --timeout=60s --for condition=available
   kubectl apply -f "$PWD/ory-hydra-login-consent.yaml"
+  kubectl wait deployment ory-hydra-login-consent -n kyma-system --timeout=60s --for condition=available
   log::success "App deployed"
 }
 

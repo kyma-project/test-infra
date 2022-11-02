@@ -1,10 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
-	tagutil "github.com/kyma-project/test-infra/development/gcbuild/tags"
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
+	"github.com/kyma-project/test-infra/development/pkg/sets"
+	"github.com/kyma-project/test-infra/development/pkg/tags"
 	"io"
+	"io/fs"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"os"
 	"os/exec"
@@ -12,21 +16,23 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type options struct {
 	Config
-	configPath     string
-	context        string
-	dockerfile     string
-	directory      string
-	name           string
-	variant        string
-	logDir         string
-	silent         bool
-	isCI           bool
-	additionalTags Strings
-	platforms      Strings
+	configPath string
+	context    string
+	dockerfile string
+	envFile    string
+	name       string
+	variant    string
+	logDir     string
+	orgRepo    string
+	silent     bool
+	isCI       bool
+	tags       sets.Strings
+	platforms  sets.Strings
 }
 
 const (
@@ -34,21 +40,10 @@ const (
 	PlatformLinuxArm64 = "linux/arm64"
 )
 
-type Strings []string
-
-func (t *Strings) String() string {
-	return strings.Join(*t, ",")
-}
-
-func (t *Strings) Set(val string) error {
-	*t = append(*t, val)
-	return nil
-}
-
 // parseVariable returns a build-arg.
 // Keys are set to upper-case.
 func parseVariable(key, value string) string {
-	k := strings.TrimSpace(strings.ToUpper(key))
+	k := strings.TrimSpace(key)
 	return k + "=" + strings.TrimSpace(value)
 }
 
@@ -76,9 +71,12 @@ func runInBuildKit(o options, name string, destinations, platforms []string, bui
 		args = append(args, "--opt", "platform="+strings.Join(platforms, ","))
 	}
 
-	//if o.Config.Cache.Enabled {
-	//	// NYI
-	//}
+	if o.Cache.Enabled {
+		// TODO (@Ressetkk): Implement multiple caches, see https://github.com/moby/buildkit#export-cache
+		args = append(args,
+			"--export-cache", "type=registry,ref="+o.Cache.CacheRepo,
+			"--import-cache", "type=registry,ref="+o.Cache.CacheRepo)
+	}
 
 	cmd := exec.Command("buildctl-daemonless.sh", args...)
 
@@ -196,18 +194,26 @@ func runBuildJob(o options, vs Variants) error {
 		return fmt.Errorf("'sha' could not be determined")
 	}
 
-	tags, err := getTags(pr, sha, o.TagTemplate, o.additionalTags)
+	parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
 	if err != nil {
 		return err
 	}
-
+	envMap, err := loadEnv(os.DirFS("/"), o.envFile)
+	if err != nil {
+		return fmt.Errorf("load env: %w", err)
+	}
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
-		destinations := gatherDestinations(repo, o.directory, o.name, tags)
+		destinations := gatherDestinations(repo, o.name, parsedTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		err = runFunc(o, "build", destinations, o.platforms, make(map[string]string))
+		err = runFunc(o, "build", destinations, o.platforms, envMap)
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
+		}
+
+		err := signImages(&o, destinations)
+		if err != nil {
+			return fmt.Errorf("sign encountered error: %w", err)
 		}
 		fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
 	}
@@ -215,15 +221,21 @@ func runBuildJob(o options, vs Variants) error {
 	var errs []error
 	for variant, env := range vs {
 		var variantTags []string
-		for _, tag := range tags {
+		for _, tag := range parsedTags {
 			variantTags = append(variantTags, tag+"-"+variant)
 		}
-		destinations := gatherDestinations(repo, o.directory, o.name, variantTags)
+		destinations := gatherDestinations(repo, o.name, variantTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
+		// (@Ressetkk): When variants provided, build doesn't use env files.
+		// Similar logic should be provided once variants are fixed.
 		if err := runFunc(o, variant, destinations, o.platforms, env); err != nil {
 			errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
 			fmt.Printf("Job '%s' ended with error: %s.\n", variant, err)
 		} else {
+			err := signImages(&o, destinations)
+			if err != nil {
+				return fmt.Errorf("sign encountered error: %w", err)
+			}
 			fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
 			fmt.Printf("Job '%s' finished successfully.\n", variant)
 		}
@@ -231,40 +243,121 @@ func runBuildJob(o options, vs Variants) error {
 	return errutil.NewAggregate(errs)
 }
 
-func getTags(pr, sha, tagTemplate string, additionalTags []string) ([]string, error) {
-	var tags []string
+func signImages(o *options, images []string) error {
+	// use o.orgRepo as default value since someone might have loaded is as a flag
+	orgRepo := o.orgRepo
+	if o.isCI {
+		// try to extract orgRepo from Prow-based env variables
+		org := os.Getenv("REPO_OWNER")
+		repo := os.Getenv("REPO_NAME")
+		if len(org) > 0 && len(repo) > 0 {
+			// assume this is our variable since both variables are present
+			orgRepo = org + "/" + repo
+		}
+	}
+	if len(orgRepo) == 0 {
+		return fmt.Errorf("'orgRepo' cannot be empty")
+	}
+	sig, err := getSignersForOrgRepo(o, orgRepo)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Start signing images", strings.Join(images, ","))
+	var errs []error
+	for _, s := range sig {
+		err := s.Sign(images)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("sign error: %w", err))
+		}
+	}
+	return errutil.NewAggregate(errs)
+}
+
+// getSignersForOrgRepo fetches all signers for a repository
+// It fetches all signers from '*' and specific org/repo combo.
+func getSignersForOrgRepo(o *options, orgRepo string) ([]sign.Signer, error) {
+	c := o.SignConfig
+	if len(c.EnabledSigners) == 0 {
+		// no signers enabled. no need to gather signers
+		return nil, nil
+	}
+	var enabled StrList
+
+	defaultSigners := c.EnabledSigners["*"]
+	orgRepoSigners := c.EnabledSigners[orgRepo]
+	for _, s := range append(defaultSigners, orgRepoSigners...) {
+		enabled.Add(s)
+	}
+	fmt.Println("sign images using services", strings.Join(enabled.List(), ","))
+	var signers []sign.Signer
+	for _, sc := range c.Signers {
+		if enabled.Has(sc.Name) {
+			s, err := sc.Config.NewSigner()
+			if err != nil {
+				return nil, fmt.Errorf("signer init: %w", err)
+			}
+			signers = append(signers, s)
+		}
+	}
+	return signers, nil
+}
+
+// StrList implements list of strings as a map
+// This implementation allows getting unique values when merging multiple maps into one
+// (@Ressetkk): We should find better place to move that code
+type StrList struct {
+	m map[string]interface{}
+	sync.Mutex
+}
+
+func (l *StrList) Add(value string) {
+	l.Lock()
+	// lazy init map
+	if l.m == nil {
+		l.m = make(map[string]interface{})
+	}
+	if _, ok := l.m[value]; !ok {
+		l.m[value] = new(interface{})
+	}
+	l.Unlock()
+}
+
+func (l *StrList) Has(elem string) bool {
+	_, ok := l.m[elem]
+	return ok
+}
+
+func (l *StrList) List() []string {
+	var n []string
+	for val := range l.m {
+		n = append(n, val)
+	}
+	return n
+}
+
+func getTags(pr, sha string, templates []string) ([]string, error) {
 	// (Ressetkk): PR tag should not be hardcoded, in the future we have to find a way to parametrize it
 	if pr != "" {
 		// assume we are using PR number, build tag as 'PR-XXXX'
-		tags = append(tags, "PR-"+pr)
-	} else {
-		// build a tag from commit SHA
-		t, err := tagutil.NewTag(
-			tagutil.CommitSHA(sha))
-		if err != nil {
-			return nil, fmt.Errorf("could not create tag: %w", err)
-		}
-
-		tagTmpl := `v{{ .Date }}-{{ .ShortSHA }}`
-		if tagTemplate != "" {
-			tagTmpl = tagTemplate
-		}
-		tagger := tagutil.Tagger{TagTemplate: tagTmpl}
-		tag, err := tagger.BuildTag(t)
-		if err != nil {
-			return nil, fmt.Errorf("could not build tag: %w", err)
-		}
-		tags = append(tags, tag)
-		tags = append(tags, additionalTags...)
+		return []string{"PR-" + pr}, nil
 	}
-	return tags, nil
+	// build a tag from commit SHA
+	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha))
+	if err != nil {
+		return nil, fmt.Errorf("get tagger: %w", err)
+	}
+	p, err := tagger.ParseTags()
+	if err != nil {
+		return nil, fmt.Errorf("build tag: %w", err)
+	}
+	return p, nil
 }
 
-func gatherDestinations(repo []string, directory, name string, tags []string) []string {
+func gatherDestinations(repo []string, name string, tags []string) []string {
 	var dst []string
 	for _, t := range tags {
 		for _, r := range repo {
-			image := path.Join(r, directory, name)
+			image := path.Join(r, name)
 			dst = append(dst, image+":"+strings.ReplaceAll(t, " ", "-"))
 		}
 	}
@@ -286,16 +379,51 @@ func validateOptions(o options) error {
 	return errutil.NewAggregate(errs)
 }
 
+// loadEnv loads environment variables into application runtime from key=value list
+func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
+	if len(envFile) == 0 {
+		// file is empty - ignore
+		return nil, nil
+	}
+	f, err := vfs.Open(envFile)
+	if err != nil {
+		return nil, fmt.Errorf("open env file: %w", err)
+	}
+	s := bufio.NewScanner(f)
+	vars := make(map[string]string)
+	for s.Scan() {
+		kv := s.Text()
+		sp := strings.SplitN(kv, "=", 2)
+		key, val := sp[0], sp[1]
+		if len(sp) > 2 {
+			return nil, fmt.Errorf("env var split incorrectly: 2 != %v", len(sp))
+		}
+		if _, ok := os.LookupEnv(key); ok {
+			// do not override env variable if it's already present in the runtime
+			// do not include in vars map since dev should not have access to it anyway
+			continue
+		}
+		err := os.Setenv(key, val)
+		if err != nil {
+			return nil, fmt.Errorf("setenv: %w", err)
+		}
+		// add value to the vars that will be injected as build args
+		vars[key] = val
+	}
+	return vars, nil
+}
+
 func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
 	fs.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
 	fs.StringVar(&o.context, "context", ".", "Path to build directory context")
-	fs.StringVar(&o.directory, "directory", "", "Destination directory where the image is be pushed. This flag will be ignored if running in presubmit job and devRegistry is provided in config.yaml")
+	fs.StringVar(&o.envFile, "env-file", "", "Path to file with environment variables to be loaded in build")
 	fs.StringVar(&o.name, "name", "", "Name of the image to be built")
 	fs.StringVar(&o.dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to context")
 	fs.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
-	fs.Var(&o.additionalTags, "tag", "Additional tag that the image will be tagged")
+	fs.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
+	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged")
 	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
 	return fs
 }

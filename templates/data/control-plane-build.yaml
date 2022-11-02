@@ -9,10 +9,9 @@ templates:
                   name: pull-provisioner-build
                   run_if_changed: "^components/provisioner"
                   args:
-                    - --name=provisioner
+                    - --name=control-plane/provisioner
                     - --context=components/provisioner
                     - --dockerfile=Dockerfile
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -24,10 +23,9 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=provisioner
+                    - --name=control-plane/provisioner
                     - --context=components/provisioner
                     - --dockerfile=Dockerfile
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -42,10 +40,9 @@ templates:
                   name: pull-schema-migrator-build
                   run_if_changed: "^components/schema-migrator"
                   args:
-                    - --name=schema-migrator
+                    - --name=control-plane/schema-migrator
                     - --context=components/schema-migrator
                     - --dockerfile=Dockerfile
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -57,10 +54,9 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=schema-migrator
+                    - --name=control-plane/schema-migrator
                     - --context=components/schema-migrator
                     - --dockerfile=Dockerfile
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -75,10 +71,9 @@ templates:
                   name: pull-kyma-metrics-collector-build
                   run_if_changed: "^components/kyma-metrics-collector"
                   args:
-                    - --name=kyma-metrics-collector
+                    - --name=control-plane/kyma-metrics-collector
                     - --context=components/kyma-metrics-collector
                     - --dockerfile=Dockerfile
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -90,10 +85,9 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=kyma-metrics-collector
+                    - --name=control-plane/kyma-metrics-collector
                     - --context=components/kyma-metrics-collector
                     - --dockerfile=Dockerfile
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -108,10 +102,9 @@ templates:
                   name: pull-kubeconfig-service-build
                   run_if_changed: "^components/kubeconfig-service"
                   args:
-                    - --name=kubeconfig-service
+                    - --name=control-plane/kubeconfig-service
                     - --context=components/kubeconfig-service
                     - --dockerfile=Dockerfile
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -123,10 +116,9 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=kubeconfig-service
+                    - --name=control-plane/kubeconfig-service
                     - --context=components/kubeconfig-service
                     - --dockerfile=Dockerfile
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -141,10 +133,9 @@ templates:
                   name: pull-keb-build
                   run_if_changed: "^components/kyma-environment-broker"
                   args:
-                    - --name=kyma-environment-broker
+                    - --name=control-plane/kyma-environment-broker
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.keb
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -156,10 +147,9 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=kyma-environment-broker
+                    - --name=control-plane/kyma-environment-broker
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.keb
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -169,10 +159,9 @@ templates:
                   name: pull-keb-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
                   args:
-                    - --name=kyma-environments-cleanup-job
+                    - --name=control-plane/kyma-environments-cleanup-job
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.cleanup
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -184,10 +173,9 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=kyma-environments-cleanup-job
+                    - --name=control-plane/kyma-environments-cleanup-job
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.cleanup
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -197,10 +185,9 @@ templates:
                   name: pull-keb-subaccount-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
                   args:
-                    - --name=kyma-environment-subaccount-cleanup-job
+                    - --name=control-plane/kyma-environment-subaccount-cleanup-job
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.sac
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -212,10 +199,9 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=kyma-environment-subaccount-cleanup-job
+                    - --name=control-plane/kyma-environment-subaccount-cleanup-job
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.sac
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -225,10 +211,9 @@ templates:
                   name: pull-keb-subscription-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
                   args:
-                    - --name=kyma-environment-subscription-cleanup-job
+                    - --name=control-plane/kyma-environment-subscription-cleanup-job
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.scj
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -240,10 +225,9 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=kyma-environment-subscription-cleanup-job
+                    - --name=control-plane/kyma-environment-subscription-cleanup-job
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.scj
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -253,10 +237,9 @@ templates:
                   name: pull-keb-trial-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
                   args:
-                    - --name=kyma-environment-trial-cleanup-job
+                    - --name=control-plane/kyma-environment-trial-cleanup-job
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.tcj
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -268,10 +251,9 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=kyma-environment-trial-cleanup-job
+                    - --name=control-plane/kyma-environment-trial-cleanup-job
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.tcj
-                    - --directory=control-plane
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:

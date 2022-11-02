@@ -65,6 +65,45 @@ To use this feature, make sure that:
 * you have the `variants.yaml` file in the **same directory** as the `Dockerfile`
 * your `Dockerfile` contains `ARG` directives which are named after keys in `variants.yaml`
 
+## Image signing
+
+image-builder supports signing the images with a pre-defined set of signing services to verify that image comes from a trusted repository and has not been altered in the meantime.
+You can enable every signing service on repository and global levels.
+
+See the following example sign services configuration in `config.yaml` file:
+```yaml
+sign-config:
+  enabled-signers:
+    '*':
+      - default-signify
+    org/repo:
+      - repo-token-notary
+  signers:
+    - name: default-signify
+      type: notary
+      config:
+        endpoint: https://notary/sign
+        timeout: 5m
+        retry-timeout: 10s
+        secret:
+          path: /path/to/secret/file/signify.yaml
+          type: signify
+    - name: repo-token-notary
+      type: notary
+      config:
+        endpoint: https://repo-notary/sign
+        timeout: 5m
+        retry-timeout: 10s
+        secret:
+          path: /path/to/secret/file/token
+          type: token
+```
+
+All enabled signers under `'*'` are used globally. Additionally, if a repository contains another signer configuration in the `org/repo` key, image-builder also uses this service to sign the image.
+If the job is running in CI (Prow), it picks up the current `org/repo` value from the default Prow variables. If binary is running outside of CI, `--repo` flag will have to be used. Otherwise, the configuration will not be used.
+
+Currently, image-builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to the [`sign`](./sign) package, and its code.
+
 ## Usage
 
 ```
@@ -73,20 +112,23 @@ Usage of image-builder:
         Path to application config file (default "/config/image-builder-config.yaml")
   -context string
         Path to build directory context (default ".")
-  -directory string
-        Destination directory where the image is be pushed. This flag will be ignored if running in presubmit job and devRegistry is provided in config.yaml
   -dockerfile string
         Path to Dockerfile file relative to context (default "Dockerfile")
+  -env-file string
+        Path to file with environment variables to be loaded in build
   -log-dir string
         Path to logs directory where GCB logs will be stored (default "/logs/artifacts")
   -name string
         Name of the image to be built
+  -platform value
+        Only supported with BuildKit. Platform of the image that is built
+  -repo string
+        Load repository-specific configuration, for example, signing configuration
   -silent
         Do not push build logs to stdout
   -tag value
         Additional tag that the image will be tagged
-  -platform value
-        Only supported with BuildKit. Platform of the image that is built
   -variant string
         If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored
+
 ```

@@ -18,12 +18,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20220830-7bf905118"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
             command:
               - "/bin/sh"
             args:
               - "-c"
-              - "golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+              - "golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
             resources:
               requests:
                 memory: 200Mi
@@ -43,7 +43,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220926-fbffe961"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
             command:
               - "make"
             args:

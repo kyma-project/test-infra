@@ -10,7 +10,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -18,11 +18,11 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=api-gateway"
+              - "--name=api-gateway-controller"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
@@ -41,7 +41,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-webhook-certificates-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -49,9 +49,9 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=api-gateway-webhook-certificates"
               - "--config=/config/kaniko-build-config.yaml"
@@ -75,7 +75,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-api-gateway-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -86,11 +86,11 @@ postsubmits: # runs on main
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=api-gateway"
+              - "--name=api-gateway-controller"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
@@ -109,7 +109,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-api-gateway-webhook-certificates-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -120,9 +120,9 @@ postsubmits: # runs on main
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=api-gateway-webhook-certificates"
               - "--config=/config/kaniko-build-config.yaml"

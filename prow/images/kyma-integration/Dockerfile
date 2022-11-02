@@ -11,7 +11,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
-ARG K8S_VERSION=1.23
+ARG K8S_VERSION=1.24
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
@@ -73,7 +73,7 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 
 # Versions
 
-ENV GO_VERSION 1.19.1
+ENV GO_VERSION 1.19.2
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go

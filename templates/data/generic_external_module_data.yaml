@@ -15,10 +15,10 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220907-566f916e6
-            command: /kaniko-build
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e
+            command: /image-builder
             labels:
-              preset-sa-gcr-push: "true"
+              preset-sa-kyma-push-images: "true"
             volumes:
               - name: config
                 configMapName: kaniko-build-config
@@ -30,8 +30,8 @@ templates:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221005-ae1d38f9"
-                  name: pre-keda-manager-operator-lint # "pre-main-lifecycle-manager-lint"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+                  name: pre-keda-manager-operator-lint
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   annotations:
                     description: executes the 'golangci-lint lint' command in the keda-manager 'operator' directory before any pull request.
@@ -47,8 +47,29 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-west4-docker.pkg.dev/sap-se-cx-kyma-wookiee/dev-registry/unsigned" 
+                    MODULE_VERSION: "0.0.${PULL_NUMBER}"
+                    IMG: "eu.gcr.io/kyma-project/keda-manager:PR-${PULL_NUMBER}"
+                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)|^operator/PROJECT$|^operator/config/*/.*$"
+                  name: pull-make-module-build
+                  privileged: false
+                  command: "make"
+                  args:
+                    - "all" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+              - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  name: pre-keda-manager-operator-tests # pre-main-lifecycle-manager-tests
+                  name: pre-keda-manager-operator-tests
                   command: "bash"
                   args:
                     - "-c"
@@ -62,28 +83,26 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  name: pre-keda-manager-operator-build # "pre-main-lifecycle-manager-build"
+                  name: pre-keda-manager-operator-build
                   always_run: true
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=operator"
                     - "--dockerfile=Dockerfile"
-                    - "--directory=."
                 inheritedConfigs:
                   local:
                     - default
                   global:
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-keda-manager-operator-build # "post-main-lifecycle-manager-build"
+                  name: post-keda-manager-operator-build
                   always_run: true
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=operator"
                     - "--dockerfile=Dockerfile"
-                    - "--directory=."
                 inheritedConfigs:
                   local:
                     - default
