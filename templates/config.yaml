@@ -24,6 +24,13 @@ global:
         - name: "charts"
         - name: "examples"
         - name: "api-gateway"
+        - name: "istio"
+        - name: "runtime-watcher"
+        - name: "keda-manager"
+        - name: "kyma-dashboard"
+        - name: "application-connector-manager"
+        - name: "template-repository"
+        - name: "rafter"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
@@ -50,6 +57,10 @@ global:
         - name: "connector-tools"
         - name: "artwork"
         - name: "opensap"
+        - name: "testdrape"
+        - name: "sc-removal"
+        - name: "service-catalog-tester"
+        - name: "service-catalog"
         
 
 

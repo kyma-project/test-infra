@@ -1425,6 +1425,510 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
   
+  kyma-project/istio:
+    - name: pull-istio-pjtester
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-istio-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+    - name: pull-istio-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-istio-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+  kyma-project/runtime-watcher:
+    - name: pull-runtime-watcher-pjtester
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-runtime-watcher-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+    - name: pull-runtime-watcher-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-runtime-watcher-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+  kyma-project/keda-manager:
+    - name: pull-keda-manager-pjtester
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-keda-manager-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+    - name: pull-keda-manager-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-keda-manager-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+  kyma-project/kyma-dashboard:
+    - name: pull-kyma-dashboard-pjtester
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+    - name: pull-kyma-dashboard-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+  kyma-project/application-connector-manager:
+    - name: pull-application-connector-manager-pjtester
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-application-connector-manager-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+    - name: pull-application-connector-manager-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-application-connector-manager-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+  kyma-project/rafter:
+    - name: pull-rafter-pjtester
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-rafter-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+    - name: pull-rafter-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-rafter-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
   kyma-incubator/compass:
     - name: pull-compass-pjtester
       labels:
@@ -3409,6 +3913,342 @@ presubmits: # runs on PRs
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-opensap-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+  kyma-incubator/testdrape:
+    - name: pull-testdrape-pjtester
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-testdrape-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+    - name: pull-testdrape-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-testdrape-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+  kyma-incubator/sc-removal:
+    - name: pull-sc-removal-pjtester
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-sc-removal-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+    - name: pull-sc-removal-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-sc-removal-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+  kyma-incubator/service-catalog-tester:
+    - name: pull-service-catalog-tester-pjtester
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+    - name: pull-service-catalog-tester-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+  kyma-incubator/service-catalog:
+    - name: pull-service-catalog-pjtester
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-service-catalog-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221028-9aca960d"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+    - name: pull-service-catalog-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-service-catalog-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
