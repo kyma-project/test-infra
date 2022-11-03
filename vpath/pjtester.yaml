@@ -4,4 +4,4 @@ pjNames:
 prConfigs:
   kyma-incubator:
     compass-console:
-      prNumber: 74
+      prNumber: 76
