@@ -1,8 +1,0 @@
-pjNames:
-  - pjName: "pre-keda-manager-operator-build"
-  - pjName: "pre-keda-manager-operator-lint"
-  - pjName: "pre-keda-manager-operator-tests"
-prConfigs:
-  kyma-project:
-    keda-manager:
-      prNumber: 48
