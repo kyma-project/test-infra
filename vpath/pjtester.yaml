@@ -1,7 +1,0 @@
-pjNames:
-  - pjName: "pull-compass-console-lint"
-  - pjName: "pull-compass-console-test"
-prConfigs:
-  kyma-incubator:
-    compass-console:
-      prNumber: 76
