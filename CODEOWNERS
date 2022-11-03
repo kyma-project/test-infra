@@ -58,4 +58,7 @@
 /templates/templates @kyma-project/prow
 
 # All .md files
-*.md @mmitoraj @majakurcius @NHingerl @grego952 @IwonaLanger  
+*.md @mmitoraj @majakurcius @NHingerl @grego952 @IwonaLanger
+
+# Don't require review for auto generated files
+/test-inventory-integration.md
