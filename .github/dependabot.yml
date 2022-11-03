@@ -16,6 +16,9 @@ updates:
       prefix: "gomod"
       include: "scope"
     ignore:
+      - dependency-name: "github.com/onsi/gomega"
+        versions:
+          - "1.2x"
       - dependency-name: "github.com/go-logr/logr"
         versions:
           - "1.2.2"
@@ -202,4 +205,3 @@ updates:
     commit-message:
       prefix: "golangci-lint"
       include: "scope"
-
