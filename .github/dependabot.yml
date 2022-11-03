@@ -205,3 +205,4 @@ updates:
     commit-message:
       prefix: "golangci-lint"
       include: "scope"
+
