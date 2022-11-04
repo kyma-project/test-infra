@@ -92,6 +92,7 @@ func init() {
 	// pubsub client to publish messages to pubsub
 	pubsubClient, err := pubsub.NewClient(ctx, projectID)
 	if err != nil {
+		fmt.Println(err)
 		log.Fatal(err)
 	}
 	// topic to publish messages when oom event was found
