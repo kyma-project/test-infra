@@ -15,7 +15,7 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221027-dce4769a4
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e
             command: /image-builder
             labels:
               preset-sa-kyma-push-images: "true"
@@ -32,14 +32,14 @@ templates:
               - jobConfig:
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
                   name: pre-keda-manager-operator-lint
-                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum|main.go)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
-                    description: executes the 'golangci-lint lint' command in the keda-manager 'operator' directory before any pull request.
+                    description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
                   command: "bash"
                   optional: "true"
                   args:
                     - "-c"
-                    - "cd operator && golangci-lint run --timeout=2m && echo 'OK!'"
+                    - "golangci-lint run --timeout=2m && echo 'OK!'"
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -54,7 +54,7 @@ templates:
                     MODULE_REGISTRY: "europe-west4-docker.pkg.dev/sap-se-cx-kyma-wookiee/dev-registry/unsigned" 
                     MODULE_VERSION: "0.0.${PULL_NUMBER}"
                     IMG: "eu.gcr.io/kyma-project/keda-manager:PR-${PULL_NUMBER}"
-                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)|^operator/PROJECT$|^operator/config/*/.*$"
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   name: pull-make-module-build
                   privileged: false
                   command: "make"
@@ -68,12 +68,12 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
                   name: pre-keda-manager-operator-tests
                   command: "bash"
                   args:
                     - "-c"
-                    - "cd operator && make test" # run test make target of operator
+                    - "make test" # run test make target of operator
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
@@ -88,7 +88,7 @@ templates:
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=operator"
+                    - "--context=."
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   local:
@@ -101,7 +101,7 @@ templates:
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=operator"
+                    - "--context=."
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   local:

@@ -17,7 +17,7 @@ templates:
               preset-dind-enabled: "true"
               preset-kyma-artifacts-bucket: "true"
               preset-cluster-use-ssd: "true"
-              preset-cluster-version-next: "true"
+              preset-cluster-version: "true"
             request_memory: 200Mi
             request_cpu: 80m
           test-infra:
@@ -105,7 +105,7 @@ templates:
                     preset-gc-project-env: "true"
                     preset-gke-kyma-developers-group: "true"
                     preset-docker-push-repository-kyma: "true"
-                    preset-cluster-version-next: "true"
+                    preset-cluster-version: "true"
                     preset-gc-compute-envs: "true"
                     preset-certificates-bucket: "true"
                     preset-kyma-keyring: "true"

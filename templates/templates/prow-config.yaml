@@ -22,10 +22,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20221027-c0f9edbb5d
-        initupload: gcr.io/k8s-prow/initupload:v20221027-c0f9edbb5d
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20221027-c0f9edbb5d
-        sidecar: gcr.io/k8s-prow/sidecar:v20221027-c0f9edbb5d
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20221103-4bdeafeef2
+        initupload: gcr.io/k8s-prow/initupload:v20221103-4bdeafeef2
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20221103-4bdeafeef2
+        sidecar: gcr.io/k8s-prow/sidecar:v20221103-4bdeafeef2
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -190,7 +190,7 @@ in_repo_config:
   enabled:
     "*": true
   allowed_clusters:
-    "*": ["default", "untrusted-workload", "trusted-workload"]
+    "*": ["untrusted-workload"]
 
 branch-protection:
   enforce_admins: true
@@ -362,7 +362,7 @@ presets:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#kyma-ci-force"
-  # remove when control plane jobs will wirk with the new version of k8s
+  # remove when control plane jobs will work with the new version of k8s
   - labels:
       preset-cluster-version-previous: "true"
     env:
@@ -372,9 +372,9 @@ presets:
         value: "1.21"
       - name: GARDENER_CLUSTER_VERSION
         value: "1.21"
-  # cluster version
+  # previous cluster version which is still supported
   - labels:
-      preset-cluster-version: "true"
+      preset-cluster-version-old: "true"
     env:
       - name: AKS_CLUSTER_VERSION
         value: "1.23"
@@ -382,9 +382,9 @@ presets:
         value: "1.23"
       - name: GARDENER_CLUSTER_VERSION
         value: "1.23"
-  # cluster next version for upgrade checks
+  # cluster version
   - labels:
-      preset-cluster-version-next: "true"
+      preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
         value: "1.24"
