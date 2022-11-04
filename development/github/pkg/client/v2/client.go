@@ -40,11 +40,6 @@ func (o *GithubClientConfig) NewGithubClient(options ...GithubClientOption) (Git
 	if err != nil {
 		return nil, err
 	}
-	/*
-		return &GithubClient{
-			Client: client,
-		}, nil
-	*/
 	return &githubClient{Client: client}, nil
 }
 

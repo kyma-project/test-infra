@@ -164,14 +164,6 @@ func readTestCfg(testCfgFile string) (testCfg, error) {
 	// returns nil or ValidationErrors ( []FieldError )
 	err = validate.Struct(t)
 	if err != nil {
-		// this check is only needed when your code could produce
-		// an invalid value for validation such as interface with nil
-		// value most including myself do not usually have code like this.
-		if _, ok := err.(*validator.InvalidValidationError); ok {
-			fmt.Println(err)
-			return testCfg{}, err
-		}
-		// from here you can create your own error messages in whatever language you wish
 		return testCfg{}, err
 	}
 	return t, nil
@@ -567,7 +559,7 @@ func (pjopts *testProwJobOptions) newTestPJ(pjCfg pjConfig, opt options) (prowap
 	return pj, nil
 }
 
-// SchedulePJ will generate ProwJob for testing and crate it on prow k8s cluster for execution.
+// SchedulePJ will generate ProwJob for testing and create it on prow k8s cluster for execution.
 func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	logrus.SetLevel(logrus.DebugLevel)
 	logrus.SetOutput(os.Stdout)
