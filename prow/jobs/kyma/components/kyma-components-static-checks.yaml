@@ -346,7 +346,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/eventing-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "cd components/eventing-controller && KUBEBUILDER_CONTROLPLANE_START_TIMEOUT=50s go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
                 memory: 1Gi
