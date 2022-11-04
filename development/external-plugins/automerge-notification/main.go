@@ -26,8 +26,8 @@ const (
 )
 
 var (
-	githubClient     *client.GithubClient
-	gitClientFactory *git.Client
+	githubClient     client.GithubClient
+	gitClientFactory git.Client
 	repoOwnersClient *repoowners.OwnersClient
 	sapToolsClient   *toolsclient.SapToolsClient
 	pubsubClient     *pubsub.Client
@@ -227,7 +227,7 @@ func main() {
 	// Create repository owners client.
 	repoOwnersClient, err = ownersOptions.NewRepoOwnersClient(
 		repoowners.WithLogger(logger),
-		repoowners.WithGithubClient(githubClient),
+		repoowners.WithGithubClient(&githubClient),
 		repoowners.WithGitClient(gitClientFactory))
 	if err != nil {
 		logger.Fatalw("Failed creating repoOwners client", "error", err)

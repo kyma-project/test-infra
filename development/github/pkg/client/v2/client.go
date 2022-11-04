@@ -14,7 +14,12 @@ type GithubClientConfig struct {
 }
 
 // GithubClient is an implementation of GitHub client wrapping k8s test-infra GitHub Client.
-type GithubClient struct {
+type GithubClient interface {
+	github.Client
+}
+
+// githubClient is an implementation of GitHub client wrapping k8s test-infra GitHub Client.
+type githubClient struct {
 	github.Client
 }
 
@@ -23,7 +28,7 @@ type GithubClientOption func(*GithubClientConfig) error
 
 // NewGithubClient is a constructor function for GithubClient.
 // A constructed client can be configured by providing GithubClientOptions.
-func (o *GithubClientConfig) NewGithubClient(options ...GithubClientOption) (*GithubClient, error) {
+func (o *GithubClientConfig) NewGithubClient(options ...GithubClientOption) (GithubClient, error) {
 	// Run provided configuration option functions.
 	for _, opt := range options {
 		err := opt(o)
@@ -35,9 +40,7 @@ func (o *GithubClientConfig) NewGithubClient(options ...GithubClientOption) (*Gi
 	if err != nil {
 		return nil, err
 	}
-	return &GithubClient{
-		Client: client,
-	}, nil
+	return &githubClient{Client: client}, nil
 }
 
 // WithTokenPath is a client constructor configuration option passing path to a file with GitHub token.
