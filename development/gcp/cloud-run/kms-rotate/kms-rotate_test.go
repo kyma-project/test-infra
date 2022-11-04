@@ -17,10 +17,10 @@ import (
 	"testing"
 
 	kms "cloud.google.com/go/kms/apiv1"
+	kmspb "cloud.google.com/go/kms/apiv1/kmspb"
 	"cloud.google.com/go/storage"
 	"google.golang.org/api/option"
 	storageraw "google.golang.org/api/storage/v1"
-	kmspb "google.golang.org/genproto/googleapis/cloud/kms/v1"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
