@@ -4,6 +4,6 @@ pjConfigs:
         compass:
           prNumber: 2714
   prowJobs:
-      kyma-incubator:
-        compass:
+      kyma-project:
+        kyma:
         - pjName: "pull-operations-controller-unit-test"
