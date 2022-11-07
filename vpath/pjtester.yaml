@@ -3,4 +3,4 @@ pjConfigs:
     kyma-project:
       application-connector-manager:
         - pjName: "pre-application-connector-manager-operator-lint"
-          report: true.
+          report: true
