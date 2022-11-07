@@ -1,0 +1,110 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/modules/application-connector-manager/application-connector-manager-generic.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+            privileged: "false"
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^master$"
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e
+            command: /image-builder
+            labels:
+              preset-sa-kyma-push-images: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        jobConfigs:
+          - repoName: github.com/kyma-project/application-connector-manager
+            jobs:
+              - jobConfig:
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+                  name: pre-application-connector-manager-operator-lint
+                  run_if_changed: "^(go.mod|go.sum|main.go)$|^*/(.*.go|Makefile|.*.sh)"
+                  annotations:
+                    description: executes the 'golangci-lint lint' command on application-connector-manager before any pull request.
+                  command: "bash"
+                  optional: "true"
+                  args:
+                    - "-c"
+                    - "golangci-lint run --timeout=2m && echo 'OK!'"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-west4-docker.pkg.dev/sap-kyma-framefrog-dev/dev-registry/unsigned"
+                    MODULE_VERSION: "0.0.${PULL_NUMBER}"
+                    IMG: "eu.gcr.io/kyma-project/application-connector-manager:PR-${PULL_NUMBER}"
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  name: pull-make-module-build
+                  privileged: false
+                  command: "make"
+                  args:
+                    - "all" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+              - jobConfig:
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  name: pre-application-connector-manager-operator-tests
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "make test" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  name: pre-application-connector-manager-operator-build
+                  always_run: true
+                  args:
+                    - "--name=application-connector-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-application-connector-manager-operator-build
+                  always_run: true
+                  args:
+                    - "--name=application-connector-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_postsubmit
