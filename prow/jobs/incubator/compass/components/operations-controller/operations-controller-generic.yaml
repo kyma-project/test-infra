@@ -82,7 +82,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/operations-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "cd components/operations-controller && make test-local"
             resources:
               requests:
                 memory: 1Gi
