@@ -4,7 +4,7 @@ pjConfigs:
       lifecycle-manager:
         - pjName: "pull-build"
         - pjName: "pull-lint"
-        - pjName: "pull-test"
+        - pjName: "pull-tests"
 prConfigs:
   kyma-project:
     lifecycle-manager:
