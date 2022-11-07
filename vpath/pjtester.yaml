@@ -1,3 +1,6 @@
-pjNames:
-  - pjName: "pre-main-control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener"
-    report: true
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "pre-main-control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener"
+          report: true
