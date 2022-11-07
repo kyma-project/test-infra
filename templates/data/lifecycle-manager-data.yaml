@@ -33,11 +33,11 @@ templates:
                   name: pull-lint # "pre-main-lifecycle-manager-lint"
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   annotations:
-                    description: executes the 'golangci-lint lint' command in the lifecycle-manager 'operator' directory before any pull request.
+                    description: executes the 'golangci-lint lint' command before any pull request.
                   command: "bash"
                   args:
                     - "-c"
-                    - "cd operator && golangci-lint run"
+                    - "golangci-lint run"
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -50,7 +50,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "cd operator && make test" # run test make target of operator
+                    - "make test" # run test make target of operator
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
@@ -65,7 +65,6 @@ templates:
                   args:
                     - "--name=lifecycle-manager"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=operator"
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   local:
@@ -78,7 +77,6 @@ templates:
                   args:
                     - "--name=lifecycle-manager"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=operator"
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
                 inheritedConfigs:
