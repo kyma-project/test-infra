@@ -1,7 +1,10 @@
-pjNames:
-  - pjName: "pull-build"
-  - pjName: "pull-lint"
-  - pjName: "pull-test"
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      lifecycle-manager:
+        - pjName: "pull-build"
+        - pjName: "pull-lint"
+        - pjName: "pull-test"
 prConfigs:
   kyma-project:
     lifecycle-manager:
