@@ -31,7 +31,7 @@ templates:
               - jobConfig:
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
                   name: pull-lint # "pre-main-lifecycle-manager-lint"
-                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
                     description: executes the 'golangci-lint lint' command before any pull request.
                   command: "bash"
@@ -45,7 +45,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
-                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
                   name: pull-tests # pre-main-lifecycle-manager-tests
                   command: "bash"
                   args:
