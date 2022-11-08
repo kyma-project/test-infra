@@ -8,7 +8,7 @@ env:
   #AWS_DEFAULT_REGION: us-west-2
   POLLER_INTERVAL_MILLISECONDS: 600000  # Caution, setting this frequency may incur additional charges on some platforms
   WATCH_TIMEOUT: 60000
-  WATCHED_NAMESPACES: "default,external-secrets"  # Comma separated list of namespaces, empty or unset means ALL namespaces.
+  WATCHED_NAMESPACES: "default"  # Comma separated list of namespaces, empty or unset means ALL namespaces.
   LOG_LEVEL: info
   LOG_MESSAGE_KEY: "msg"
 
