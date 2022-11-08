@@ -1,5 +1,12 @@
-pjNames:
-  - pjName: "pre-kyma-dashboard-dev"
+pjConfigs:
+  prConfig:
+    kyma-project:
+      kyma-dashboard:
+        prNumber: 1
+  prowJobs:
+    kyma-project:
+      kyma-dashboard:
+        - pjName: "pre-kyma-dashboard-dev"
 prConfigs:
   kyma-project:
     kyma-dashboard:
