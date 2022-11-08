@@ -94,8 +94,7 @@ export INPUT_CLUSTER_NAME="${utils_generate_commonName_return_commonName:?}"
 export CLUSTER_NAME="${INPUT_CLUSTER_NAME}"
 
 log::banner "Provision Gardener cluster"
-# temporarily disabled to provide Gardener test-cluster - https://github.com/kyma-project/kyma/issues/14992
-#trap gardener::cleanup EXIT INT
+trap gardener::cleanup EXIT INT
 reconciler::provision_cluster
 reconciler::export_shoot_cluster_kubeconfig
 
