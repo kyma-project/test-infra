@@ -290,11 +290,11 @@ func (pjopts *testProwJobOptions) genJobSpec(o options, conf *config.Config, pjC
 			})
 			pjs, err = pjopts.setProwJobSpecRefs(pjs, o)
 			if err != nil {
-				return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("failed generate presubmit refs")
+				return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("failed generate presubmit refs, error: %w", err)
 			}
 			pjs, err = pjopts.setProwJobSpecExtraRefs(pjs, o)
 			if err != nil {
-				return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("failed generate presubmit extrarefs")
+				return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("failed generate presubmit extrarefs, error: %w", err)
 			}
 			return p.JobBase, pjs, nil
 		}
@@ -311,11 +311,11 @@ func (pjopts *testProwJobOptions) genJobSpec(o options, conf *config.Config, pjC
 			})
 			pjs, err = pjopts.setProwJobSpecRefs(pjs, o)
 			if err != nil {
-				return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("failed generate presubmit refs")
+				return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("failed generate postsubmit refs, error: %w", err)
 			}
 			pjs, err = pjopts.setProwJobSpecExtraRefs(pjs, o)
 			if err != nil {
-				return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("failed generate presubmit extrarefs")
+				return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("failed generate postsubmit extrarefs, error: %w", err)
 			}
 			return p.JobBase, pjs, nil
 		}
@@ -329,7 +329,7 @@ func (pjopts *testProwJobOptions) genJobSpec(o options, conf *config.Config, pjC
 			pjs := pjutil.PeriodicSpec(p)
 			pjs, err = pjopts.setProwJobSpecExtraRefs(pjs, o)
 			if err != nil {
-				return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("failed generate presubmit extrarefs")
+				return config.JobBase{}, prowapi.ProwJobSpec{}, fmt.Errorf("failed generate periodic extrarefs, error: %w", err)
 			}
 			return p.JobBase, pjs, nil
 		}

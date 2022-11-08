@@ -20,7 +20,7 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 # Copy all needed files
-RUN npm install -g lerna-changelog@0.8.0 && \
+RUN npm install -g lerna-changelog@2.2.0 && \
     npm install -g markdown-toc@1.2.0
 
 ENV APP_PATH=/app
