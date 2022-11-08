@@ -158,7 +158,8 @@ resources:
   #   cpu: 100m
   #   memory: 128Mi
 
-nodeSelector: {}
+nodeSelector:
+  iam.gke.io/gke-metadata-server-enabled: "true"
 
 tolerations: []
 
