@@ -1,10 +1,11 @@
 pjConfigs:
-  prConfig:
-    kyma-project:
-      keda-manager:
-        prNumber: 51
   prowJobs:
     kyma-project:
       keda-manager:
       - pjName: "pull-make-module-build"
         report: true
+prConfigs:
+  kyma-project:
+    keda-manager:
+      prNumber: 51
+   
