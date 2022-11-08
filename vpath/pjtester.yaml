@@ -2,7 +2,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       application-connector-manager:
-        - pjName: "pre-application-connector-manager-operator-tests"
+        - pjName: "pull-make-module-build"
           report: true
 prConfigs:
   kyma-project:
