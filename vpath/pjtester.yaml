@@ -4,6 +4,10 @@ pjConfigs:
       application-connector-manager:
         - pjName: "pre-application-connector-manager-operator-lint"
           report: true
+        - pjName: "pre-application-connector-manager-operator-tests"
+          report: true
+        - pjName: "pre-application-connector-manager-operator-build"
+          report: true
 prConfigs:
   kyma-project:
     application-connector-manager:
