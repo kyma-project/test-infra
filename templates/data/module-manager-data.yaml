@@ -47,6 +47,10 @@ templates:
                     - jobConfig_presubmit
                     - "build_labels" # default labels
               - jobConfig:
+                  privileged: "false"
+                  fsGroup: 2000
+                  runAsNonRoot: true
+                  runAsUser: 1000
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   name: pull-tests
                   annotations:

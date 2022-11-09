@@ -1,0 +1,11 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      module-manager:
+        - pjName: "pull-build"
+        - pjName: "pull-lint"
+        - pjName: "pull-tests"
+prConfigs:
+  kyma-project:
+    module-manager:
+      prNumber: 163
