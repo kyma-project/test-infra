@@ -104,7 +104,7 @@ func (o *OwnersClientConfig) NewRepoOwnersClient(options ...ClientOption) (*Owne
 
 	// Create client
 	repoOwnersClient.Client = repoowners.NewClient(o.gitClient,
-		o.githubClient,
+		*o.githubClient,
 		repoOwnersClient.PluginsConfigAgent.Config().MDYAMLEnabled,
 		repoOwnersClient.PluginsConfigAgent.Config().SkipCollaborators,
 		ownersDirDenylist,

@@ -19,15 +19,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=bootstrap"
+              - "--name=test-infra/bootstrap"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/bootstrap"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -52,15 +51,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=kyma-integration"
+              - "--name=test-infra/kyma-integration"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/kyma-integration"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -85,15 +83,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=buildpack-golang"
+              - "--name=test-infra/buildpack-golang"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/buildpack-golang"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -118,15 +115,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=buildpack-node"
+              - "--name=test-infra/buildpack-node"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/buildpack-node"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -151,15 +147,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=cleaner"
+              - "--name=test-infra/cleaner"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/cleaner"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -184,15 +179,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=vulnerability-scanner"
+              - "--name=test-infra/vulnerability-scanner"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/vulnerability-scanner"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -217,15 +211,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=whitesource-scanner"
+              - "--name=test-infra/whitesource-scanner"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/whitesource-scanner"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -250,15 +243,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=prow-tools"
+              - "--name=test-infra/prow-tools"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=prow/images/prow-tools/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -283,15 +275,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=github-connector-webhook-gateway"
+              - "--name=test-infra/github-connector-webhook-gateway"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=development/kyma-github-connector/githubWebhookGateway"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -316,15 +307,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=pubsub-connector-gateway"
+              - "--name=test-infra/pubsub-connector-gateway"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=development/kyma-pubsub-connector/pubSubGateway"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -349,15 +339,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=ci-force-bot"
+              - "--name=test-infra/ci-force-bot"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=development/kyma-ci-force-bot/ciforcebot"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -382,15 +371,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=golangci-lint"
+              - "--name=test-infra/golangci-lint"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/golangci-lint"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -415,15 +403,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=gardener-rotate"
+              - "--name=test-infra/gardener-rotate"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=prow/images/gardener-rotate/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -448,15 +435,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=gardener-sa-rotate"
+              - "--name=test-infra/gardener-sa-rotate"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/gcp/cloud-run/gardener-sa-rotate/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -481,15 +467,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=kms-rotate"
+              - "--name=test-infra/kms-rotate"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/gcp/cloud-run/kms-rotate/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -514,15 +499,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=githubrelease"
+              - "--name=test-infra/githubrelease"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -552,14 +536,13 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=bootstrap"
+              - "--name=test-infra/bootstrap"
               - "--context=prow/images/bootstrap"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -586,15 +569,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=kyma-integration"
+              - "--name=test-infra/kyma-integration"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/kyma-integration"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -621,15 +603,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=buildpack-golang"
+              - "--name=test-infra/buildpack-golang"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/buildpack-golang"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -656,15 +637,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=buildpack-node"
+              - "--name=test-infra/buildpack-node"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/buildpack-node"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -691,15 +671,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=cleaner"
+              - "--name=test-infra/cleaner"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/cleaner"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -726,15 +705,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=vulnerability-scanner"
+              - "--name=test-infra/vulnerability-scanner"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/vulnerability-scanner"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -761,15 +739,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=whitesource-scanner"
+              - "--name=test-infra/whitesource-scanner"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/whitesource-scanner"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -796,15 +773,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=prow-tools"
+              - "--name=test-infra/prow-tools"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=prow/images/prow-tools/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -831,15 +807,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=github-connector-webhook-gateway"
+              - "--name=test-infra/github-connector-webhook-gateway"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=development/kyma-github-connector/githubWebhookGateway"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -866,15 +841,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=pubsub-connector-gateway"
+              - "--name=test-infra/pubsub-connector-gateway"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=development/kyma-pubsub-connector/pubSubGateway"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -901,15 +875,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=ci-force-bot"
+              - "--name=test-infra/ci-force-bot"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=development/kyma-ci-force-bot/ciforcebot"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -936,15 +909,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=golangci-lint"
+              - "--name=test-infra/golangci-lint"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/golangci-lint"
               - "--dockerfile=Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -971,15 +943,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=gardener-rotate"
+              - "--name=test-infra/gardener-rotate"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=prow/images/gardener-rotate/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -1006,15 +977,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=gardener-sa-rotate"
+              - "--name=test-infra/gardener-sa-rotate"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/gcp/cloud-run/gardener-sa-rotate/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -1041,15 +1011,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=kms-rotate"
+              - "--name=test-infra/kms-rotate"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/gcp/cloud-run/kms-rotate/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -1076,15 +1045,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=githubrelease"
+              - "--name=test-infra/githubrelease"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config

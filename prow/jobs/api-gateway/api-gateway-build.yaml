@@ -18,9 +18,9 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=api-gateway-controller"
               - "--config=/config/kaniko-build-config.yaml"
@@ -49,9 +49,9 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=api-gateway-webhook-certificates"
               - "--config=/config/kaniko-build-config.yaml"
@@ -86,9 +86,9 @@ postsubmits: # runs on main
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=api-gateway-controller"
               - "--config=/config/kaniko-build-config.yaml"
@@ -120,9 +120,9 @@ postsubmits: # runs on main
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=api-gateway-webhook-certificates"
               - "--config=/config/kaniko-build-config.yaml"

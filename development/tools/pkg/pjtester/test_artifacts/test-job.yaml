@@ -31,7 +31,7 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          base_ref: master
+          base_ref: main
   kyma-project/fake-repo:
     - name: fake-repo-presubmit-test-job
       run_if_changed: "^(development/image-syncer)"
@@ -58,7 +58,7 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          base_ref: master
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           base_ref: main

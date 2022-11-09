@@ -18,7 +18,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -170,7 +170,7 @@ templates:
                   args:
                     - "-c"
                     - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/event-publisher-proxy/.*\.go$'
+                  run_if_changed: '^components/event-publisher-proxy/.*$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
@@ -195,8 +195,8 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/eventing-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/eventing-controller/.*\.go$'
+                    - "cd components/eventing-controller && KUBEBUILDER_CONTROLPLANE_START_TIMEOUT=50s go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/eventing-controller/.*$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"

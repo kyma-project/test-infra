@@ -56,7 +56,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/operations-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "cd components/operations-controller && make test-local"
                   run_if_changed: '^components/operations-controller/.*\.go$'
                 inheritedConfigs:
                   global:

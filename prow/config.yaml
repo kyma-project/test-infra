@@ -24,10 +24,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20221024-d0c013ee2d
-        initupload: gcr.io/k8s-prow/initupload:v20221024-d0c013ee2d
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20221024-d0c013ee2d
-        sidecar: gcr.io/k8s-prow/sidecar:v20221024-d0c013ee2d
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20221109-fc7608f5ec
+        initupload: gcr.io/k8s-prow/initupload:v20221109-fc7608f5ec
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20221109-fc7608f5ec
+        sidecar: gcr.io/k8s-prow/sidecar:v20221109-fc7608f5ec
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -192,7 +192,7 @@ in_repo_config:
   enabled:
     "*": true
   allowed_clusters:
-    "*": ["default", "untrusted-workload", "trusted-workload"]
+    "*": ["untrusted-workload"]
 
 branch-protection:
   enforce_admins: true
@@ -296,14 +296,12 @@ tide:
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
     kyma-incubator/documentation-component: squash
-    kyma-incubator/terraform-provider-gardener: squash
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
     kyma-incubator/podpreset-crd: squash
     kyma-incubator/kymart: squash
     kyma-incubator/varkes: squash
     #    kyma-incubator/marketplaces: squash
-    kyma-incubator/octopus: squash
     kyma-incubator/knative-kafka: squash
     kyma-incubator/examples: squash
     kyma-incubator/github-dashboard: squash
@@ -366,7 +364,7 @@ presets:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#kyma-ci-force"
-  # remove when control plane jobs will wirk with the new version of k8s
+  # remove when control plane jobs will work with the new version of k8s
   - labels:
       preset-cluster-version-previous: "true"
     env:
@@ -376,9 +374,9 @@ presets:
         value: "1.21"
       - name: GARDENER_CLUSTER_VERSION
         value: "1.21"
-  # cluster version
+  # previous cluster version which is still supported
   - labels:
-      preset-cluster-version: "true"
+      preset-cluster-version-old: "true"
     env:
       - name: AKS_CLUSTER_VERSION
         value: "1.23"
@@ -386,6 +384,16 @@ presets:
         value: "1.23"
       - name: GARDENER_CLUSTER_VERSION
         value: "1.23"
+  # cluster version
+  - labels:
+      preset-cluster-version: "true"
+    env:
+      - name: AKS_CLUSTER_VERSION
+        value: "1.24"
+      - name: GKE_CLUSTER_VERSION
+        value: "1.24"
+      - name: GARDENER_CLUSTER_VERSION
+        value: "1.24"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"

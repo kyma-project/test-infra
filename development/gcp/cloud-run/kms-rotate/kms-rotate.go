@@ -4,7 +4,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -12,19 +11,11 @@ import (
 	"os"
 
 	kms "cloud.google.com/go/kms/apiv1"
+	kmspb "cloud.google.com/go/kms/apiv1/kmspb"
 	"cloud.google.com/go/storage"
 	"github.com/go-playground/validator/v10"
 	"google.golang.org/api/iterator"
-	kmspb "google.golang.org/genproto/googleapis/cloud/kms/v1"
 )
-
-type versionCountError struct {
-	Msg string
-}
-
-func (vce versionCountError) Error() string {
-	return vce.Msg
-}
 
 // Config contains function configuration provided through POST JSON
 type Config struct {
@@ -104,11 +95,12 @@ func RotateKMSKey(w http.ResponseWriter, r *http.Request) {
 	keyIteratorRequest := &kmspb.ListCryptoKeyVersionsRequest{Parent: keyPath}
 	keyIterator := kmsService.ListCryptoKeyVersions(ctx, keyIteratorRequest)
 	keyVersions, err := getKeyVersions(keyIterator)
-	if errors.As(err, &versionCountError{}) {
-		log.Printf("Less than two enabled key versions, quitting")
-		return
-	} else if err != nil {
+	if err != nil {
 		showError(w, http.StatusInternalServerError, "Couldn't iterate over %s key versions: %v", keyPath, err)
+		return
+	}
+	if len(keyVersions) < 2 {
+		log.Printf("Less than two enabled key versions, quitting")
 		return
 	}
 
@@ -172,18 +164,13 @@ func rotateFiles(ctx context.Context, bucket *storage.BucketHandle, bucketPrefix
 
 func getKeyVersions(keyIterator *kms.CryptoKeyVersionIterator) ([]*kmspb.CryptoKeyVersion, error) {
 	var keyVersions []*kmspb.CryptoKeyVersion
-	enabledVersionsCount := 0
 	for nextVer, err := keyIterator.Next(); err != iterator.Done; nextVer, err = keyIterator.Next() {
 		if err != nil && err != iterator.Done {
 			return nil, err
 		}
-		keyVersions = append(keyVersions, nextVer)
 		if nextVer.State == kmspb.CryptoKeyVersion_ENABLED {
-			enabledVersionsCount++
+			keyVersions = append(keyVersions, nextVer)
 		}
-	}
-	if enabledVersionsCount < 2 {
-		return keyVersions, versionCountError{Msg: "less than two secret versions are enabled"}
 	}
 	return keyVersions, nil
 }

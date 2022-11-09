@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"github.com/kyma-project/test-infra/development/pkg/sets"
 	"github.com/kyma-project/test-infra/development/pkg/tags"
 	"io"
@@ -15,6 +16,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 type options struct {
@@ -26,6 +28,7 @@ type options struct {
 	name       string
 	variant    string
 	logDir     string
+	orgRepo    string
 	silent     bool
 	isCI       bool
 	tags       sets.Strings
@@ -68,9 +71,12 @@ func runInBuildKit(o options, name string, destinations, platforms []string, bui
 		args = append(args, "--opt", "platform="+strings.Join(platforms, ","))
 	}
 
-	//if o.Config.Cache.Enabled {
-	//	// NYI
-	//}
+	if o.Cache.Enabled {
+		// TODO (@Ressetkk): Implement multiple caches, see https://github.com/moby/buildkit#export-cache
+		args = append(args,
+			"--export-cache", "type=registry,ref="+o.Cache.CacheRepo,
+			"--import-cache", "type=registry,ref="+o.Cache.CacheRepo)
+	}
 
 	cmd := exec.Command("buildctl-daemonless.sh", args...)
 
@@ -159,7 +165,7 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 	return nil
 }
 
-func runBuildJob(o options, vs Variants) error {
+func runBuildJob(o options, vs Variants, envs map[string]string) error {
 	runFunc := runInKaniko
 	if os.Getenv("USE_BUILDKIT") == "true" {
 		runFunc = runInBuildKit
@@ -192,40 +198,115 @@ func runBuildJob(o options, vs Variants) error {
 	if err != nil {
 		return err
 	}
-	envMap, err := loadEnv(os.DirFS("/"), o.envFile)
-	if err != nil {
-		return fmt.Errorf("load env: %w", err)
-	}
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
 		destinations := gatherDestinations(repo, o.name, parsedTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		err = runFunc(o, "build", destinations, o.platforms, envMap)
+		err = runFunc(o, "build", destinations, o.platforms, envs)
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
 		}
-		fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
-	}
 
-	var errs []error
-	for variant, env := range vs {
-		var variantTags []string
-		for _, tag := range parsedTags {
-			variantTags = append(variantTags, tag+"-"+variant)
+		err := signImages(&o, destinations)
+		if err != nil {
+			return fmt.Errorf("sign encountered error: %w", err)
 		}
-		destinations := gatherDestinations(repo, o.name, variantTags)
-		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		// (@Ressetkk): When variants provided, build doesn't use env files.
-		// Similar logic should be provided once variants are fixed.
-		if err := runFunc(o, variant, destinations, o.platforms, env); err != nil {
-			errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
-			fmt.Printf("Job '%s' ended with error: %s.\n", variant, err)
-		} else {
-			fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
-			fmt.Printf("Job '%s' finished successfully.\n", variant)
+		fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
+		return nil
+	}
+	return fmt.Errorf("building variants is not supported at this moment")
+}
+
+func signImages(o *options, images []string) error {
+	// use o.orgRepo as default value since someone might have loaded is as a flag
+	orgRepo := o.orgRepo
+	if o.isCI {
+		// try to extract orgRepo from Prow-based env variables
+		org := os.Getenv("REPO_OWNER")
+		repo := os.Getenv("REPO_NAME")
+		if len(org) > 0 && len(repo) > 0 {
+			// assume this is our variable since both variables are present
+			orgRepo = org + "/" + repo
+		}
+	}
+	if len(orgRepo) == 0 {
+		return fmt.Errorf("'orgRepo' cannot be empty")
+	}
+	sig, err := getSignersForOrgRepo(o, orgRepo)
+	if err != nil {
+		return err
+	}
+	fmt.Println("Start signing images", strings.Join(images, ","))
+	var errs []error
+	for _, s := range sig {
+		err := s.Sign(images)
+		if err != nil {
+			errs = append(errs, fmt.Errorf("sign error: %w", err))
 		}
 	}
 	return errutil.NewAggregate(errs)
+}
+
+// getSignersForOrgRepo fetches all signers for a repository
+// It fetches all signers from '*' and specific org/repo combo.
+func getSignersForOrgRepo(o *options, orgRepo string) ([]sign.Signer, error) {
+	c := o.SignConfig
+	if len(c.EnabledSigners) == 0 {
+		// no signers enabled. no need to gather signers
+		return nil, nil
+	}
+	var enabled StrList
+
+	defaultSigners := c.EnabledSigners["*"]
+	orgRepoSigners := c.EnabledSigners[orgRepo]
+	for _, s := range append(defaultSigners, orgRepoSigners...) {
+		enabled.Add(s)
+	}
+	fmt.Println("sign images using services", strings.Join(enabled.List(), ","))
+	var signers []sign.Signer
+	for _, sc := range c.Signers {
+		if enabled.Has(sc.Name) {
+			s, err := sc.Config.NewSigner()
+			if err != nil {
+				return nil, fmt.Errorf("signer init: %w", err)
+			}
+			signers = append(signers, s)
+		}
+	}
+	return signers, nil
+}
+
+// StrList implements list of strings as a map
+// This implementation allows getting unique values when merging multiple maps into one
+// (@Ressetkk): We should find better place to move that code
+type StrList struct {
+	m map[string]interface{}
+	sync.Mutex
+}
+
+func (l *StrList) Add(value string) {
+	l.Lock()
+	// lazy init map
+	if l.m == nil {
+		l.m = make(map[string]interface{})
+	}
+	if _, ok := l.m[value]; !ok {
+		l.m[value] = new(interface{})
+	}
+	l.Unlock()
+}
+
+func (l *StrList) Has(elem string) bool {
+	_, ok := l.m[elem]
+	return ok
+}
+
+func (l *StrList) List() []string {
+	var n []string
+	for val := range l.m {
+		n = append(n, val)
+	}
+	return n
 }
 
 func getTags(pr, sha string, templates []string) ([]string, error) {
@@ -274,6 +355,10 @@ func validateOptions(o options) error {
 
 // loadEnv loads environment variables into application runtime from key=value list
 func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
+	if len(envFile) == 0 {
+		// file is empty - ignore
+		return nil, nil
+	}
 	f, err := vfs.Open(envFile)
 	if err != nil {
 		return nil, fmt.Errorf("open env file: %w", err)
@@ -311,6 +396,7 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to context")
 	fs.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
+	fs.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
 	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged")
 	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
 	return fs
@@ -350,16 +436,29 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	dockerfilePath := filepath.Join(context, filepath.Dir(o.dockerfile))
 
-	variantsFile := filepath.Join(context, filepath.Dir(o.dockerfile), "variants.yaml")
-	variant, err := GetVariants(o.variant, variantsFile, os.ReadFile)
-	if err != nil {
-		if !os.IsNotExist(err) {
+	var variant Variants
+	var envs map[string]string
+	if len(o.envFile) > 0 {
+		envs, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
+		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
+
+	} else {
+		variantsFile := filepath.Join(dockerfilePath, "variants.yaml")
+		variant, err = GetVariants(o.variant, variantsFile, os.ReadFile)
+		if err != nil {
+			if !os.IsNotExist(err) {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
 	}
-	err = runBuildJob(o, variant)
+
+	err = runBuildJob(o, variant, envs)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
