@@ -212,6 +212,7 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 			return fmt.Errorf("sign encountered error: %w", err)
 		}
 		fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
+		return nil
 	}
 	return fmt.Errorf("building variants is not supported at this moment")
 }
