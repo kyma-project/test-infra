@@ -26,7 +26,7 @@ Follow these steps to install `kubernetes-external-secrets` on an untrusted clus
    helm install -f prow/cluster/resources/external-secrets/values_untrusted.yaml -n external-secrets kubernetes-external-secrets external-secrets/kubernetes-external-secrets
    ```
 
-4. Map `external-secrets/secret-manager-untrusted` Kubernetes service account to a GCP service account with permission to access Secrets. Run:
+4. Map the `external-secrets/secret-manager-untrusted` Kubernetes service account to a GCP service account with permission to access Secrets. Run:
 
   ```bash
   gcloud iam service-accounts add-iam-policy-binding --role roles/iam.workloadIdentityUser --member "serviceAccount:sap-kyma-prow.svc.id.goog[external-secrets/secret-manager-untrusted]" secret-manager-untrusted@sap-kyma-prow.iam.gserviceaccount.com
