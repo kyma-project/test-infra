@@ -23,12 +23,12 @@ templates:
           included_paths:
             - resources
           excluded_paths:
-            - resources/rafter
+            - resources/api-gateway
           extra_files:
            - "non_yaml_file.go"
 ```
 
-The previous template updates images in YAML files, stored in `resources`, except for`resources/rafter`. Additional non-YAML files have to be specified in the `extra_files` list.
+The previous template updates images in YAML files, stored in `resources`, except for`resources/api-gateway`. Additional non-YAML files have to be specified in the `extra_files` list.
 
 # Autobumper job template
 

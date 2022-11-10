@@ -240,7 +240,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-test-infra-prow-tools"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^development/markdown-index|^prow/images/prow-tools/(Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -522,6 +522,38 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: pre-test-infra-markdown-index
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-markdown-index"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^development/markdown-index/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name=markdown-index"
+              - "--context=."
+              - "--dockerfile=development/markdown-index/Dockerfile"
               - "--directory=test-infra"
             volumeMounts:
               - name: config
@@ -1084,6 +1116,40 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+              - "--directory=test-infra"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: post-test-infra-markdown-index
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-markdown-index"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^development/markdown-index/'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+            command:
+              - "/kaniko-build"
+            args:
+              - "--name=markdown-index"
+              - "--context=."
+              - "--dockerfile=development/markdown-index/Dockerfile"
               - "--directory=test-infra"
             volumeMounts:
               - name: config
