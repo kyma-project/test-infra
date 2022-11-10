@@ -198,7 +198,7 @@ The folder contains documents that provide an insight into Prow configuration, d
 
 [/docs/prow/README.md](/docs/prow/README.md)
 
-# Authorization 1232324
+# Authorization
 To deploy a Prow cluster, configure the following service accounts in the GCP project you own.
 
 [/docs/prow/authorization.md](/docs/prow/authorization.md)
