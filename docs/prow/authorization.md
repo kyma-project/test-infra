@@ -1,4 +1,4 @@
-# Authorization 1232324
+# Authorization
 
 ## Required GCP Permissions
 
