@@ -1,4 +1,4 @@
-# Authorization Test 123
+# Authorization
 
 ## Required GCP Permissions
 
