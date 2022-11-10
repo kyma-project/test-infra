@@ -9,7 +9,7 @@ gitHubOrg: "Sawthis"
 gitHubRepo: "test-infra"
 remoteName: "test-infra"
 upstreamURLBase: "https://raw.githubusercontent.com/Sawthis/test-infra/main"
-headBranchName: "test-infra-autobump"
+headBranchName: "test-infra-index-md-autobump"
 includedConfigPaths:
   - "." # test-infra root directory
 excludedConfigPaths:
