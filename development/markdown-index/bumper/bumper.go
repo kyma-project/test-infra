@@ -130,6 +130,20 @@ func getTreeRef(stderr io.Writer, refname string) (string, error) {
 	return fields[0], nil
 }
 
+func gitCommit(name, email, message string, stdout, stderr io.Writer) error {
+	if err := Call(stdout, stderr, gitCmd, "add", "index.md"); err != nil {
+		return fmt.Errorf("git add: %w", err)
+	}
+	commitArgs := []string{"commit", "-m", message}
+	if name != "" && email != "" {
+		commitArgs = append(commitArgs, "--author", fmt.Sprintf("%s <%s>", name, email))
+	}
+	if err := Call(stdout, stderr, gitCmd, commitArgs...); err != nil {
+		return fmt.Errorf("git commit: %w", err)
+	}
+	return nil
+}
+
 func gitPush(remote, remoteBranch string, stdout, stderr io.Writer, dryrun bool) error {
 	if err := Call(stdout, stderr, gitCmd, "remote", "add", forkRemoteName, remote); err != nil {
 		return fmt.Errorf("add remote: %w", err)
@@ -240,10 +254,7 @@ func validateOptions(o *Options) error {
 	return nil
 }
 
-// Run is the entrypoint which will update Prow config files based on the
-// provided options.
-//
-// updateFunc: a function that returns commit message and error
+// Run is the entrypoint which will update index.md file based on the provided options.
 func Run(ctx context.Context, o *Options, prh PRHandler) error {
 	if err := validateOptions(o); err != nil {
 		return fmt.Errorf("validating options: %w", err)
@@ -281,7 +292,12 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		}
 	}
 
-	if err := gitPush(fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), o.GitHubLogin, o.RemoteName), o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
+	if err := gitCommit(o.GitName, o.GitEmail, "Bumping index.md", stdout, stderr); err != nil {
+		return fmt.Errorf("commit changes to the remote branch: %w", err)
+	}
+
+	remote := fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), o.GitHubLogin, o.RemoteName)
+	if err := gitPush(remote, o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("push changes to the remote branch: %w", err)
 	}
 
