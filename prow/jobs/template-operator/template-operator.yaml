@@ -2,16 +2,16 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/lifecycle-manager:
-    - name: pull-lifecycle-mgr-lint
+  kyma-project/template-operator:
+    - name: pull-template-op-lint
       annotations:
-        description: "executes the 'golangci-lint lint' command in the lifecycle-manager 'operator' directory before any pull request."
+        description: "executes the 'golangci-lint lint' command in the template-operator repository before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-lifecycle-mgr-lint"
+        prow.k8s.io/pubsub.runID: "pull-template-op-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -39,17 +39,17 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-lifecycle-mgr-tests
+    - name: pull-template-op-tests
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-lifecycle-mgr-tests"
+        prow.k8s.io/pubsub.runID: "pull-template-op-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -77,12 +77,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-lifecycle-mgr-build
+    - name: pull-build-template-operator
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-lifecycle-mgr-build"
+        prow.k8s.io/pubsub.runID: "pull-build-template-operator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       always_run: true
@@ -98,7 +98,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=lifecycle-manager"
+              - "--name=template-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=operator"
               - "--dockerfile=Dockerfile"
@@ -112,13 +112,13 @@ presubmits: # runs on PRs
               name: kaniko-build-config
   
 postsubmits: # runs on main
-  kyma-project/lifecycle-manager:
-    - name: main-lifecycle-build
+  kyma-project/template-operator:
+    - name: main-template-op-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "main-lifecycle-build"
+        prow.k8s.io/pubsub.runID: "main-template-op-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       always_run: true
@@ -134,7 +134,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=lifecycle-manager"
+              - "--name=template-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=operator"
               - "--dockerfile=Dockerfile"
