@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/lifecycle-manager/lifecycle-manager.yaml
+      - to: ../../prow/jobs/template-operator/template-operator.yaml
         localSets:
           jobConfig_default:
             imagePullPolicy: "Always"
@@ -26,18 +26,18 @@ templates:
                 mountPath: /config
                 readOnly: true
         jobConfigs:
-          - repoName: kyma-project/lifecycle-manager
+          - repoName: kyma-project/template-operator
             jobs:
               - jobConfig:
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-                  name: pull-lifecycle-mgr-lint # "pre-main-lifecycle-manager-lint"
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  name: pull-template-op-lint
+                  run_if_changed: "^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile"
                   annotations:
-                    description: executes the 'golangci-lint lint' command before any pull request.
+                    description: executes the 'golangci-lint lint' command in the template-operator repository before any pull request.
                   command: "bash"
                   args:
                     - "-c"
-                    - "golangci-lint run"
+                    - "make lint"
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -45,8 +45,8 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
-                  name: pull-lifecycle-mgr-tests # pre-main-lifecycle-manager-tests
+                  run_if_changed: "^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile"
+                  name: pull-template-op-tests
                   command: "bash"
                   args:
                     - "-c"
@@ -60,11 +60,12 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  name: pull-lifecycle-mgr-build
+                  name: pull-build-template-operator
                   always_run: true
                   args:
-                    - "--name=lifecycle-manager"
+                    - "--name=template-operator"
                     - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=operator"
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   local:
@@ -72,11 +73,12 @@ templates:
                   global:
                     - jobConfig_presubmit
               - jobConfig:
-                  name: main-lifecycle-mgr-build
+                  name: main-template-op-build
                   always_run: true
                   args:
-                    - "--name=lifecycle-manager"
+                    - "--name=template-operator"
                     - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=operator"
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
                 inheritedConfigs:
