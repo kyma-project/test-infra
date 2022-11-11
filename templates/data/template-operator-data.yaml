@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/module-manager/module-manager.yaml
+      - to: ../../prow/jobs/template-operator/template-operator.yaml
         localSets:
           jobConfig_default:
             imagePullPolicy: "Always"
@@ -26,38 +26,33 @@ templates:
                 mountPath: /config
                 readOnly: true
         jobConfigs:
-          - repoName: kyma-project/module-manager
+          - repoName: kyma-project/template-operator
             jobs:
               - jobConfig:
-                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-                  name: "pull-module-mgr-lint"
+                  name: pull-template-op-lint
+                  run_if_changed: "^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile"
                   annotations:
-                    description: executes the 'make lint' command in the module-manager 'operator' directory before any pull request.
+                    description: executes the 'golangci-lint lint' command in the template-operator repository before any pull request.
                   command: "bash"
                   args:
                     - "-c"
-                    - "cd operator && golangci-lint run"
+                    - "make lint"
                   branches:
                     - ^main$
-                  slack_channel: jellyfish-notifications
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - "build_labels" # default labels
               - jobConfig:
-                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  name: pull-module-mgr-tests
-                  annotations:
-                    description: executes the 'make test' command in the module-manager 'operator' directory before any pull request.
+                  run_if_changed: "^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile"
+                  name: pull-template-op-tests
                   command: "bash"
                   args:
                     - "-c"
-                    - "cd operator && make test" # run test make target of operator
+                    - "make test" # run test make target of operator
                   branches:
-                    - ^main$ # any pr against main trig
-                  slack_channel: jellyfish-notifications
+                    - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang" # takes latest golang image
@@ -65,10 +60,10 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  name: pull-module-mgr-build
+                  name: pull-build-template-operator
                   always_run: true
                   args:
-                    - "--name=module-manager"
+                    - "--name=template-operator"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=operator"
                     - "--dockerfile=Dockerfile"
@@ -78,10 +73,10 @@ templates:
                   global:
                     - jobConfig_presubmit
               - jobConfig:
-                  name: main-module-mgr-build
+                  name: main-template-op-build
                   always_run: true
                   args:
-                    - "--name=module-manager"
+                    - "--name=template-operator"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=operator"
                     - "--dockerfile=Dockerfile"
