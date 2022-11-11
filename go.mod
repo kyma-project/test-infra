@@ -36,11 +36,12 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-playground/validator/v10 v10.11.1
 	github.com/go-yaml/yaml v2.1.0+incompatible
-	github.com/google/go-containerregistry v0.12.0
+	github.com/google/go-containerregistry v0.12.1
 	github.com/google/go-github/v40 v40.0.0
 	github.com/google/go-github/v42 v42.0.0
 	github.com/google/go-querystring v1.1.0
 	github.com/google/uuid v1.3.0
+	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.13
 	github.com/jamiealquiza/envy v1.1.0
@@ -58,10 +59,10 @@ require (
 	github.com/spf13/viper v1.10.0 // indirect
 	github.com/stretchr/testify v1.8.1
 	github.com/tidwall/gjson v1.14.3
+	go.opencensus.io v0.24.0 // indirect
 	go.uber.org/zap v1.23.0
 	golang.org/x/net v0.2.0
 	golang.org/x/oauth2 v0.2.0
-	google.golang.org/api v0.103.0
 	google.golang.org/grpc v1.50.1
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
