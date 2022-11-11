@@ -84,6 +84,7 @@ postsubmits: # runs on main
       branches:
         - ^main$
         - ^release-\d+\.\d+$
+        - ^istio-jwt-handler$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
@@ -118,6 +119,7 @@ postsubmits: # runs on main
       branches:
         - ^main$
         - ^release-\d+\.\d+$
+        - ^istio-jwt-handler$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"

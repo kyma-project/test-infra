@@ -59,7 +59,7 @@ templates:
                   labels:
                     preset-bot-github-token: "true"
                   command: "goreleaser"
-                  args: 
+                  args:
                     - "release"
                 inheritedConfigs:
                   global:

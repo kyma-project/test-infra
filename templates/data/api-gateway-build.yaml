@@ -23,6 +23,7 @@ templates:
                   branches:
                     - ^main$
                     - "^release-\\d+\\.\\d+$"
+                    - ^istio-jwt-handler$
                   args:
                     - "--name=api-gateway-controller"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -50,6 +51,7 @@ templates:
                   branches:
                     - ^main$
                     - "^release-\\d+\\.\\d+$"
+                    - ^istio-jwt-handler$
                   args:
                     - "--name=api-gateway-webhook-certificates"
                     - "--config=/config/kaniko-build-config.yaml"
