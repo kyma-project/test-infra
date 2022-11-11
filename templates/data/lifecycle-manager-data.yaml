@@ -73,7 +73,7 @@ templates:
                   global:
                     - jobConfig_presubmit
               - jobConfig:
-                  name: main-lifecycle-build
+                  name: main-lifecycle-mgr-build
                   always_run: true
                   args:
                     - "--name=lifecycle-manager"

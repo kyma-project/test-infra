@@ -37,7 +37,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "cd operator && golangci-lint run"
+                    - "make lint"
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -50,7 +50,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "cd operator && make test" # run test make target of operator
+                    - "make test" # run test make target of operator
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:

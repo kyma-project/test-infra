@@ -113,12 +113,12 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/lifecycle-manager:
-    - name: main-lifecycle-build
+    - name: main-lifecycle-mgr-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "main-lifecycle-build"
+        prow.k8s.io/pubsub.runID: "main-lifecycle-mgr-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       always_run: true

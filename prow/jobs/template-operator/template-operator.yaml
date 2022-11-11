@@ -27,7 +27,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "cd operator && golangci-lint run"
+              - "make lint"
             resources:
               requests:
                 memory: 3Gi
@@ -65,7 +65,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "cd operator && make test"
+              - "make test"
             resources:
               requests:
                 memory: 3Gi
