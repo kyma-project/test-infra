@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pre-test-infra-validate-scripts
+    - name: pre-test-infra-validate-scripts-demo
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
@@ -19,7 +19,10 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221027-e0b06787"
             command:
-              - "prow/scripts/validate-scripts.sh"
+              - "/bin/bash"
+            args:
+              - "-c"
+              - "exit 1"
             resources:
               requests:
                 memory: 1.5Gi
@@ -269,4 +272,3 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-  
