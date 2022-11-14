@@ -202,7 +202,7 @@ periodics: # runs on schedule
             command:
               - "markdown-index"
             args:
-              - "--config=prow/markdown-index/test-infra-autobump-config.yaml"
+              - "--config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml"
     - name: ci-prow-autobump-jobs
       annotations:
         testgrid-create-test-group: "false"

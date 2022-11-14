@@ -68,7 +68,7 @@ templates:
                   image: gcr.io/k8s-prow/markdown-index:v20221024-d0c013ee2d
                   command: markdown-index
                   args:
-                    - --config=prow/markdown-index/test-infra-autobump-config.yaml
+                    - --config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml
                 inheritedConfigs:
                   local:
                     - periodic_config
