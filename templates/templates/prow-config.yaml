@@ -34,11 +34,11 @@ plank:
   - cluster: "untrusted-workload"
     config:
       gcs_credentials_secret: ""
-      default_service_account_name: prow-controller-manager
+      default_service_account_name: prowjob-default-sa
   - cluster: "trusted-workload"
     config:
       gcs_credentials_secret: ""
-      default_service_account_name: prow-controller-manager
+      default_service_account_name: prowjob-default-sa
 
 deck:
   spyglass:
