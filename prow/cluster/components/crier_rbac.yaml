@@ -17,7 +17,7 @@ kind: ServiceAccount
 apiVersion: v1
 metadata:
   annotations:
-    iam.gke.io/gcp-service-account: control-plane@k8s-prow.iam.gserviceaccount.com
+    iam.gke.io/gcp-service-account: sa-crier@sap-kyma-prow.iam.gserviceaccount.com 
   name: crier
   namespace: default
 ---
