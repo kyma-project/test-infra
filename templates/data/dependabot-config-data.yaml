@@ -13,7 +13,7 @@ templates:
               - "skip-review"
               - "area/dependency"
             ignore:
-              - dependency-name: "github.com/onsi/ginkgo/v2"
+              - dependencyName: "github.com/onsi/ginkgo/v2"
                 versions:
                   - "2.x"
               - dependencyName: "github.com/onsi/gomega"
