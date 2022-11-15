@@ -6,6 +6,7 @@
 | pre-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-app-gateway | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-app-conn-validator | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
+| pre-main-kyma-integration-k3d-runtime-agent | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-serverless-integration-k3s | k3s | k3s | kyma deploy |  | pr-submit |  helm serverless-test  |
 | serverless-function-benchmark | gke |  |  |  | nightly |  Serverless function benchmarks  |
@@ -19,6 +20,7 @@
 | post-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-app-gateway | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-app-conn-validator | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
+| post-main-kyma-integration-k3d-runtime-agent | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-central-app-connectivity-compass | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-k3d-k8s-preview | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
@@ -26,7 +28,6 @@
 | kyma-integration-k3d | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-gke-nightly | gke | gcloud cli | kyma deploy |  | periodic |    |
-| kyma-gke-nightly-fast-integration | gke |  |  |  | nightly |  fast-integration  |
 | pre-main-kyma-gardener-azure-fast-integration | gardener_azure | kyma cli | kyma install | evaluation | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-azure-alpha-prod | gardener_azure | kyma cli | kyma deploy | production | pr-submit |  fast-integration  |

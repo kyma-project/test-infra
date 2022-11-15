@@ -18,9 +18,9 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=central-application-connectivity-validator"
               - "--config=/config/kaniko-build-config.yaml"
@@ -53,9 +53,9 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
               - "--name=central-application-connectivity-validator"
               - "--config=/config/kaniko-build-config.yaml"

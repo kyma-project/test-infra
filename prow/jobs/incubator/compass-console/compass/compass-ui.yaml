@@ -27,7 +27,7 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221011-f36fe4783-buildkit"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e-buildkit"
             command:
               - "/image-builder"
             args:
@@ -58,6 +58,56 @@ presubmits: # runs on PRs
           - name: config
             configMap:
               name: kaniko-build-config
+    - name: pull-compass-console-lint
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-compass-console-lint"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^compass/|^components/|^shared/|^package.json'
+      optional: false
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221028-f16e46a1"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "./scripts/prow-lint.sh"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 100m
+    - name: pull-compass-console-test
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-compass-console-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^compass/|^components/|^shared/|^package.json'
+      optional: false
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221028-f16e46a1"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "./scripts/prow-test.sh"
+            resources:
+              requests:
+                memory: 500Mi
+                cpu: 500m
   
 postsubmits: # runs on main
   kyma-incubator/compass-console:
@@ -85,7 +135,7 @@ postsubmits: # runs on main
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221011-f36fe4783-buildkit"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e-buildkit"
             command:
               - "/image-builder"
             args:

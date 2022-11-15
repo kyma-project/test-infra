@@ -14,8 +14,8 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
-            command: /kaniko-build
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e
+            command: /image-builder
             labels:
               preset-sa-kyma-push-images: "true"
             volumes:
@@ -30,7 +30,7 @@ templates:
             jobs:
               - jobConfig:
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-                  name: pull-lint # "pre-main-lifecycle-manager-lint"
+                  name: pull-lifecycle-mgr-lint
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   annotations:
                     description: executes the 'golangci-lint lint' command in the lifecycle-manager 'operator' directory before any pull request.
@@ -46,7 +46,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  name: pull-tests # pre-main-lifecycle-manager-tests
+                  name: pull-lifecycle-mgr-tests # pre-main-lifecycle-manager-tests
                   command: "bash"
                   args:
                     - "-c"
@@ -60,7 +60,7 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  name: pull-build
+                  name: pull-lifecycle-mgr-build
                   always_run: true
                   args:
                     - "--name=lifecycle-manager"
@@ -73,7 +73,7 @@ templates:
                   global:
                     - jobConfig_presubmit
               - jobConfig:
-                  name: main-build
+                  name: main-lifecycle-mgr-build
                   always_run: true
                   args:
                     - "--name=lifecycle-manager"

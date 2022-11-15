@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.9"
+  nextRelease: "2.10"
   releases:
+    - "2.9"
     - "2.8"
     - "2.7"
-    - "2.6"
   orgs:
     - name: "kyma-project"
       repos:
@@ -24,6 +24,13 @@ global:
         - name: "charts"
         - name: "examples"
         - name: "api-gateway"
+        - name: "istio"
+        - name: "runtime-watcher"
+        - name: "keda-manager"
+        - name: "kyma-dashboard"
+        - name: "application-connector-manager"
+        - name: "template-repository"
+        - name: "rafter"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
@@ -41,10 +48,8 @@ global:
         - name: "github-dashboard"
         - name: "website-vuepress"
         - name: "kitbag"
-        - name: "octopus"
         - name: "kyma-showcase"
         - name: "hydra-login-consent"
-        - name: "terraform-provider-gardener"
         - name: "kymart"
         - name: "examples"
         - name: "vstudio-extension"
@@ -52,6 +57,10 @@ global:
         - name: "connector-tools"
         - name: "artwork"
         - name: "opensap"
+        - name: "testdrape"
+        - name: "sc-removal"
+        - name: "service-catalog-tester"
+        - name: "service-catalog"
         
 
 
@@ -67,8 +76,8 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0
-    command: /kaniko-build
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e
+    command: /image-builder
     labels:
       preset-sa-kyma-push-images: "true"
     volumes:
@@ -91,7 +100,7 @@ globalSets:
         value: high-cpu
         operator: Equal
         effect: NoSchedule
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221011-f36fe4783-buildkit
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e-buildkit
     command: "/image-builder"
     labels:
       preset-sa-kyma-push-images: "true"
@@ -126,7 +135,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -144,19 +153,19 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221011-310d4b98"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221027-e0b06787"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221026-ad43b7b3"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221110-7b01b206"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221017-0e4b706e"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221012-8d12a771"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221028-f16e46a1"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221017-733bfd36"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
   image_gardener-rotate:
@@ -256,6 +265,10 @@ globalSets:
     labels:
       preset-docker-push-repository-kyma: "true"
     path_alias: "github.com/kyma-project/busola"
+  jobConfig_generic_component_kyma-dashboard:
+    labels:
+      preset-docker-push-repository-kyma: "true"
+    path_alias: "github.com/kyma-project/kyma-dashboard"
   jobConfig_generic_component_compass:
     labels:
       preset-docker-push-repository-incubator: "true"
