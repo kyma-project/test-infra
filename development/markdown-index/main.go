@@ -19,9 +19,7 @@ const repositoryName = "test-infra"
 var _ bumper.PRHandler = (*client)(nil)
 
 type client struct {
-	o        *options
-	images   map[string]string
-	versions map[string][]string
+	o *options
 }
 
 // Changes returns a slice of functions, each one does some stuff, and
@@ -29,7 +27,7 @@ type client struct {
 func (c *client) Changes() []func(context.Context) (string, error) {
 	return []func(context.Context) (string, error){
 		func(ctx context.Context) (string, error) {
-			return fmt.Sprintf("Bumping index.md"), nil
+			return "Bumping index.md", nil
 		},
 	}
 }
