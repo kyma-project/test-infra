@@ -34,9 +34,6 @@ spec:
       containers:
       - name: crier
         image: gcr.io/k8s-prow/crier:v20221111-fe4f3e2158
-        env:
-          - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: "/etc/credentials/service-account.json"
         args:
         - --blob-storage-workers=1
         - --config-path=/etc/config/config.yaml
@@ -50,7 +47,6 @@ spec:
         - --pubsub-workers=5
         - --slack-token-file=/etc/slack/token
         - --slack-workers=1
-        - --gcs-credentials-file=/etc/credentials/service-account.json
         volumeMounts:
         - mountPath: /etc/kubeconfig
           name: kubeconfig
@@ -66,9 +62,6 @@ spec:
           readOnly: true
         - name: slack
           mountPath: /etc/slack
-          readOnly: true
-        - name: gcs-service-account
-          mountPath: /etc/credentials
           readOnly: true
       volumes:
       - name: config
@@ -87,6 +80,3 @@ spec:
         secret:
           defaultMode: 420
           secretName: workload-clusters-kubeconfig
-      - name: gcs-service-account
-        secret:
-          secretName: sa-crier

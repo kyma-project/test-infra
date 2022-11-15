@@ -15,8 +15,8 @@ plank:
   allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
   max_concurrency: 100 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
   pod_pending_timeout: 60m
-  default_decoration_configs:
-    "*":
+  default_decoration_config_entries:
+  - config:
       timeout: 3h
       grace_period: 10m
       censor_secrets: true
@@ -31,7 +31,16 @@ plank:
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
-      gcs_credentials_secret: "sa-gcs-plank" # Service account with "Object Admin" role
+      gcs_credentials_secret: ""
+      default_service_account_name: prowjob-default-sa
+  - cluster: "untrusted-workload"
+    config:
+      gcs_credentials_secret: ""
+      default_service_account_name: prowjob-default-sa
+  - cluster: "trusted-workload"
+    config:
+      gcs_credentials_secret: ""
+      default_service_account_name: prowjob-default-sa
 
 deck:
   spyglass:

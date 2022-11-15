@@ -39,8 +39,8 @@ spec:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-#  annotations:
-#    iam.gke.io/gcp-service-account: control-plane@k8s-prow.iam.gserviceaccount.com
+  annotations:
+    iam.gke.io/gcp-service-account: control-plane@sap-kyma-prow.iam.gserviceaccount.com
   namespace: default
   name: halogen
 ---
