@@ -7,7 +7,7 @@ COPY . .
 RUN CGO_ENABLED=0 go build -o ./githubrelease ./development/tools/cmd/githubrelease && \
     chmod +x ./githubrelease
 
-FROM node:19.0.0-alpine
+FROM node:19.1.0-alpine
 
 LABEL source git@github.com:kyma-project/test-infra.git
 
@@ -20,7 +20,7 @@ RUN apk update && \
     rm -rf /var/cache/apk/*
 
 # Copy all needed files
-RUN npm install -g lerna-changelog@0.8.0 && \
+RUN npm install -g lerna-changelog@2.2.0 && \
     npm install -g markdown-toc@1.2.0
 
 ENV APP_PATH=/app

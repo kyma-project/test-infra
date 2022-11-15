@@ -231,12 +231,12 @@ function reconciler::wait_until_kyma_reconciled() {
   log::info "Wait until reconciliation is complete"
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
-    status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
+    status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs || true)
 
     if [ -z "${status}" ]; then
       log::info "Failed to retrieve reconciliation status. Retrying previous call in debug mode"
-      kubectl exec -v=8 -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh"
-      status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
+      kubectl exec -v=8 -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" || true
+      status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs || true)
     fi
 
     if [ "${status}" = "ready" ]; then

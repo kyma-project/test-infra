@@ -17,7 +17,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -45,7 +45,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -73,7 +73,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -101,7 +101,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -129,7 +129,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -157,7 +157,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -185,7 +185,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -213,7 +213,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -241,7 +241,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -269,7 +269,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -297,7 +297,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -325,7 +325,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -353,7 +353,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -381,7 +381,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -409,7 +409,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -437,7 +437,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -465,7 +465,175 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/istio:
+    - name: pre-istio-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-istio-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/runtime-watcher:
+    - name: pre-runtime-watcher-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-runtime-watcher-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/keda-manager:
+    - name: pre-keda-manager-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-keda-manager-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/kyma-dashboard:
+    - name: pre-kyma-dashboard-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/application-connector-manager:
+    - name: pre-application-connector-manager-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-application-connector-manager-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/rafter:
+    - name: pre-rafter-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rafter-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -493,7 +661,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -521,7 +689,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -549,7 +717,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -577,7 +745,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -605,7 +773,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -633,7 +801,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -661,7 +829,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -689,7 +857,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -717,7 +885,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -745,7 +913,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -773,7 +941,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -801,7 +969,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -829,7 +997,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -857,7 +1025,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -885,35 +1053,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/octopus:
-    - name: pre-octopus-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-octopus-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -941,7 +1081,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -969,35 +1109,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/terraform-provider-gardener:
-    - name: pre-terraform-provider-gardener-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-terraform-provider-gardener-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -1025,7 +1137,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -1053,7 +1165,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -1081,7 +1193,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -1109,7 +1221,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -1137,7 +1249,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -1165,7 +1277,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:
@@ -1193,7 +1305,119 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221024-d0c013ee2d"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/testdrape:
+    - name: pre-testdrape-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-testdrape-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/sc-removal:
+    - name: pre-sc-removal-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-sc-removal-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/service-catalog-tester:
+    - name: pre-service-catalog-tester-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-service-catalog-tester-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/service-catalog:
+    - name: pre-service-catalog-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-service-catalog-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20221111-fe4f3e2158"
             command:
               - "checkconfig"
             args:

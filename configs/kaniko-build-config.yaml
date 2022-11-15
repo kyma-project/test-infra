@@ -1,3 +1,4 @@
+tag-template: 'v{{ .Date }}-{{ .ShortSHA }}'
 registry:
   - eu.gcr.io/kyma-project
   - europe-docker.pkg.dev/kyma-project/prod

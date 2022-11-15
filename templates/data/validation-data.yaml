@@ -75,25 +75,8 @@ templates:
                     - "jobConfig_presubmit"
                     - "pubsub_labels"
               - jobConfig:
-                  name: "pre-main-test-infra-validate-prow-jobs"
-                  privileged: "false"
-                  run_if_changed: "^(development/tools/jobs|prow)" # Also for any changes in prow directory
-                  labels:
-                    preset-build-pr: "true"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "development/tools"
-                    - "jobs-tests"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_presubmit"
-                    - "pubsub_labels"
-              - jobConfig:
                   name: "pre-main-test-infra-validate-generated-files"
-                  run_if_changed: "^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|pkg/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml"
+                  run_if_changed: "^.github/dependabot.yml$|^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|pkg/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml"
                   labels:
                     preset-build-pr: "true"
                     preset-dind-enabled: "true"
