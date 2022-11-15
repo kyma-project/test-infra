@@ -169,7 +169,7 @@ oomfinder is a small tool designed to run in a Pod on each k8s worker node as a 
 [/development/tools/cmd/oomfinder/README.md](/development/tools/cmd/oomfinder/README.md)
 
 # Prow Job tester
-Prow Job tester is a tool for testing changes to Prow Jobs and scripts in the `test-infra` repository which are under development. It uses the production Prow instance to run chosen Prow Jobs with code from pull requests (PRs) without going through multiple cycles of new PRs, reviews, and merges. The whole development is done within one PR.
+Prow Job tester is a tool for testing changes to the Prow Jobs' definitions and code running in Prow Jobs. It uses the production Prow instance to run chosen Prow Jobs with changes from pull requests (PRs) without going through multiple cycles of new PRs, reviews, and merges. The whole development can be done within one cycle.
 
 [/development/tools/cmd/pjtester/README.md](/development/tools/cmd/pjtester/README.md)
 
@@ -193,12 +193,17 @@ PR Tag Builder is a tool that finds a pull request number for a commit.
 
 [/development/tools/pkg/prtagbuilder/README.md](/development/tools/pkg/prtagbuilder/README.md)
 
+# Documentation guidelines
+1. Each repository must contain an automatically updated index page in `docs` directory.
+
+[/docs/documentation_guidelines.md](/docs/documentation_guidelines.md)
+
 # Docs
 The folder contains documents that provide an insight into Prow configuration, development, and testing.
 
 [/docs/prow/README.md](/docs/prow/README.md)
 
-# Authorization Test 1234
+# Authorization
 To deploy a Prow cluster, configure the following service accounts in the GCP project you own.
 
 [/docs/prow/authorization.md](/docs/prow/authorization.md)
