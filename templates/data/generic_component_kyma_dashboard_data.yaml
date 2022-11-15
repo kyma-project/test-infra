@@ -11,6 +11,7 @@ templates:
                     - "."
                     - "release-dev"
                   run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile"
+                  skipReleaseJobs: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -35,6 +36,7 @@ templates:
                     - "."
                     - "release-stage"
                   run_if_changed: "^Dockerfile.*|^package.json|^environments/stage/|^extensions|^gulpfile.js|^Makefile"
+                  skipReleaseJobs: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -59,6 +61,7 @@ templates:
                     - "."
                     - "release-prod"
                   run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile"
+                  skipReleaseJobs: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
