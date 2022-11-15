@@ -7,7 +7,7 @@ periodics:
   name: ci-busola-web-jmeter
   spec:
     containers:
-    - image: i331641/kyma-perf:v1
+    - image: eu.gcr.io/kyma-project/external/i331641/kyma-perf:v1
       imagePullPolicy: IfNotPresent
       command: [ "/bin/bash", "-c"]
       args: ["jmeter -n -t  kyma-web-pipeline.jmx -Jkubeconfig={Kubeconfig-file-name} -Jdomain={kyma-domain} -e -l $ARTIFACTS/log -o ARTIFACTS/"]
