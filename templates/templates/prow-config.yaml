@@ -30,7 +30,7 @@ plank:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
       gcs_credentials_secret: ""
-      default_service_account_name: prow-controller-manager
+      default_service_account_name: prowjob-default-sa
   - cluster: "untrusted-workload"
     config:
       gcs_credentials_secret: ""
