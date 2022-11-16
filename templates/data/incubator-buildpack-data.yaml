@@ -551,7 +551,7 @@ templates:
                     preset-sa-kyma-push-images: "false"
                 inheritedConfigs:
                   global:
-                    - jobConfig_presubmit
+                    - jobConfig_postsubmit
                     - kaniko_buildpack
               - jobConfig:
                   name: post-main-kyma-incubator-component-reconciler
@@ -565,7 +565,7 @@ templates:
                     - ^main$
                 inheritedConfigs:
                   global:
-                    - jobConfig_presubmit
+                    - jobConfig_postsubmit
                     - kaniko_buildpack
               - jobConfig:
                   name: post-load-test-mock-kyma-incubator-reconciler
