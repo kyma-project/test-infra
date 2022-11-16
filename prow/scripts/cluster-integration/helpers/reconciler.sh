@@ -5,7 +5,7 @@ readonly RECONCILER_NAMESPACE=reconciler
 readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
-readonly MOTHERSHIP_RECONCILER_VALUES_FILE="../../resources/kcp/charts/mothership-reconciler/values.yamll"
+readonly MOTHERSHIP_RECONCILER_VALUES_FILE="../../resources/kcp/charts/mothership-reconciler/values.yaml"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
