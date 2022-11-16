@@ -541,6 +541,7 @@ templates:
                   args:
                     - "--name=incubator/mothership-reconciler"
                     - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
                     - "--dockerfile=Dockerfile.mr"
                     - "--tag=latest"
                   branches:
@@ -548,12 +549,13 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
-                    - image-builder-buildkit
+                    - kaniko_buildpack
               - jobConfig:
                   name: post-main-kyma-incubator-component-reconciler
                   args:
                     - "--name=incubator/component-reconciler"
                     - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
                     - "--dockerfile=Dockerfile.cr"
                     - "--tag=latest"
                   branches:
@@ -561,7 +563,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
-                    - image-builder-buildkit
+                    - kaniko_buildpack
               - jobConfig:
                   name: post-load-test-mock-kyma-incubator-reconciler
                 inheritedConfigs:
