@@ -148,14 +148,6 @@ templates:
                   repo: "cli"
                   path_alias: "github.com/kyma-project/cli"
                   base_ref: "main"
-          extra_refs_k8s-test-infra:
-            extra_refs:
-              k8s-test-infra:
-                - org: kubernetes
-                  repo: test-infra
-                  base_ref: master
-                  base_sha: "3fba7110c39a7a0e7fb087dbb4af0674cafd341c"
-                  path_alias: github.com/kubernetes/test-infra
           reconciler_main_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             env:
@@ -624,7 +616,7 @@ templates:
                   image: gcr.io/k8s-prow/generic-autobumper:v20221111-fe4f3e2158
                   command: generic-autobumper
                   args:
-                    - --config=prow/autobump-config/control-plane-autobump-reconciler-config.yaml
+                    - --config=/home/prow/go/src/github.com/kyma-project/test-infra/prow/autobump-config/control-plane-autobump-reconciler-config.yaml
                   cron: "0 1-22/4 * * 1-5" # "At minute 0 past every 2nd hour from 1 through 22 on every day-of-week from Monday through Friday."
                   labels:
                     preset-log-collector-slack-token: "true"

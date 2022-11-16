@@ -1109,7 +1109,7 @@ periodics: # runs on schedule
             command:
               - "generic-autobumper"
             args:
-              - "--config=prow/autobump-config/control-plane-autobump-reconciler-config.yaml"
+              - "--config=/home/prow/go/src/github.com/kyma-project/test-infra/prow/autobump-config/control-plane-autobump-reconciler-config.yaml"
             resources:
               requests:
                 memory: 3Gi
