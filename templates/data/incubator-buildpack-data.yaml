@@ -148,25 +148,6 @@ templates:
                   repo: "cli"
                   path_alias: "github.com/kyma-project/cli"
                   base_ref: "main"
-          reconciler_image_builder:
-            skip_report: "false"
-            max_concurrency: "10"
-            decorate: "true"
-            branches:
-              - "^main$"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b
-            command: /image-builder
-            labels:
-              preset-sa-kyma-push-images: "true"
-            volumes:
-              - name: config
-                configMapName: kaniko-build-config
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
           reconciler_main_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             env:
@@ -562,11 +543,12 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--dockerfile=Dockerfile.mr"
                     - "--tag=latest"
+                  branches:
+                    - ^main$
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
-                  local:
-                    - reconciler_image_builder
+                    - image-builder-buildkit
               - jobConfig:
                   name: post-main-kyma-incubator-component-reconciler
                   args:
@@ -574,11 +556,12 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--dockerfile=Dockerfile.cr"
                     - "--tag=latest"
+                  branches:
+                    - ^main$
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
-                  local:
-                    - reconciler_image_builder
+                    - image-builder-buildkit
               - jobConfig:
                   name: post-load-test-mock-kyma-incubator-reconciler
                 inheritedConfigs:
