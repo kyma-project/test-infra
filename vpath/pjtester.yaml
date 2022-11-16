@@ -1,5 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-project:
-      kyma:
-      - pjName: "nightly-main-reconciler-e2e"
