@@ -539,7 +539,7 @@ templates:
               - jobConfig:
                   name: post-main-kyma-incubator-mothership-reconciler
                   args:
-                    - "--name=mothership-reconciler"
+                    - "--name=incubator/mothership-reconciler"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile.mr"
@@ -549,11 +549,11 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
-                    - kaniko_buildpack
+                    - image-builder-buildkit
               - jobConfig:
                   name: post-main-kyma-incubator-component-reconciler
                   args:
-                    - "--name=component-reconciler"
+                    - "--name=incubator/component-reconciler"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile.cr"

@@ -865,6 +865,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-kyma-incubator-mothership-reconciler
       annotations:
+        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
+        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -879,20 +881,33 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e-buildkit"
             command:
               - "/image-builder"
             args:
-              - "--name=mothership-reconciler"
+              - "--name=incubator/mothership-reconciler"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile.mr"
               - "--tag=latest"
+            env:
+              - name: BUILDKITD_FLAGS
+                value: "--oci-worker-no-process-sandbox"
             volumeMounts:
+              - name: share
+                mountPath: /home/user/.local/share/buildkit
               - name: config
                 mountPath: /config
                 readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
         volumes:
+          - name: share
           - name: config
             configMap:
               name: kaniko-build-config
@@ -916,7 +931,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=component-reconciler"
+              - "--name=incubator/component-reconciler"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile.cr"
