@@ -148,6 +148,25 @@ templates:
                   repo: "cli"
                   path_alias: "github.com/kyma-project/cli"
                   base_ref: "main"
+          reconciler_image_builder:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b
+            command: /image-builder
+            labels:
+              preset-sa-kyma-push-images: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
           reconciler_main_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             env:
@@ -537,20 +556,29 @@ templates:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
-                  name: post-main-kyma-incubator-reconciler
+                  name: post-main-kyma-incubator-mothership-reconciler
+                  args:
+                    - "--name=incubator/reconciler/mothership"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--dockerfile=Dockerfile.cr"
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
                     - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - disable_testgrid
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-                    - extra_refs_kyma
                   local:
-                    - reconciler_main_jobConfig
-                    - reconciler_jobConfig_args
+                    - reconciler_image_builder
+              - jobConfig:
+                  name: post-main-kyma-incubator-component-reconciler
+                  args:
+                    - "--name=incubator/reconciler/mothership"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--dockerfile=Dockerfile.mr"
+                    - "--tag=latest"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                  local:
+                    - reconciler_image_builder
               - jobConfig:
                   name: post-load-test-mock-kyma-incubator-reconciler
                 inheritedConfigs:

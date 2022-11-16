@@ -863,56 +863,70 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-main-kyma-incubator-reconciler
+    - name: post-main-kyma-incubator-mothership-reconciler
       annotations:
         pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-incubator-reconciler"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-incubator-mothership-reconciler"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
-            securityContext:
-              privileged: true
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - "/image-builder"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
-            env:
-              - name: GO11MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              - "--name=incubator/reconciler/mothership"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--dockerfile=Dockerfile.cr"
+              - "--tag=latest"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: post-main-kyma-incubator-component-reconciler
+      annotations:
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-incubator-component-reconciler"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=incubator/reconciler/mothership"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--dockerfile=Dockerfile.mr"
+              - "--tag=latest"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: post-load-test-mock-kyma-incubator-reconciler
       annotations:
         pipeline.trigger: "pr-merge"
