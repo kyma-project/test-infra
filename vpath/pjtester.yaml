@@ -1,0 +1,5 @@
+pjConfigs:
+  prowJobs:
+    kyma-incubator:
+      reconciler:
+        - pjName: "reconciler-control-plane-image-bump"

@@ -26,7 +26,8 @@ export RECONCILER_DIR="/home/prow/go/src/github.com/kyma-incubator/reconciler"
 export CONTROL_PLANE_DIR="/home/prow/go/src/github.com/kyma-project/control-plane"
 export KYMA_TEST_INFRA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/test-infra"
 export BUMP_TOOL_CONFIG_FILE="${KYMA_TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/control-plane-autobump-reconciler-config.yaml"
-export KCP_VALUE_PATH="./resources/kcp/values.yaml"
+export KCP_VALUE_MOTHERSHIP_PATH="./resources/kcp/charts/mothership-reconciler/values.yaml"
+export KCP_VALUE_COMPONENT_PATH="./resources/kcp/charts/component-reconcilers/values.yaml"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -88,18 +89,12 @@ function autobump::update_reconciler_image_tag(){
   cd "${CONTROL_PLANE_DIR}"
   # support old image tag update, should be removed after PR https://github.com/kyma-project/control-plane/pull/1601 merged.
   # shellcheck disable=SC2091
-  if $(yq eval '.global.images | has("mothership_reconciler")' "${KCP_VALUE_PATH}"); then
-    yq e -i '.global.images.mothership_reconciler = "eu.gcr.io/kyma-project/incubator/reconciler/mothership:'"${RECONCILER_IMAGE_TAG}"'"' "${KCP_VALUE_PATH}"
-    yq e -i '.global.images.component_reconciler = "eu.gcr.io/kyma-project/incubator/reconciler/component:'"${RECONCILER_IMAGE_TAG}"'"' "${KCP_VALUE_PATH}"
+  if $(yq eval '.global.images | has("mothership_reconciler")' "${KCP_VALUE_MOTHERSHIP_PATH}"); then
+    yq e -i '.global.images.mothership_reconciler = "eu.gcr.io/kyma-project/incubator/reconciler/mothership:'"${RECONCILER_IMAGE_TAG}"'"' "${KCP_VALUE_MOTHERSHIP_PATH}"
   fi
 
-  # shellcheck disable=SC2091
-  if $(yq eval '.global.images | has("mothership_reconciler_version")' "${KCP_VALUE_PATH}"); then
-    yq e -i '(.global.images.mothership_reconciler_version ) = "'"${RECONCILER_IMAGE_TAG}"'"' "${KCP_VALUE_PATH}"
-  fi
-  # shellcheck disable=SC2091
-  if $(yq eval '.global.images | has("components")' "${KCP_VALUE_PATH}"); then
-    yq e -i '(.global.images.components.[] | select(has("version")).["version"] ) = "'"${RECONCILER_IMAGE_TAG}"'"' "${KCP_VALUE_PATH}"
+  if $(yq eval '.global.images | has("component_reconciler")' "${KCP_VALUE_COMPONENT_PATH}"); then
+    yq e -i '.global.images.component_reconciler = "eu.gcr.io/kyma-project/incubator/reconciler/component:'"${RECONCILER_IMAGE_TAG}"'"' "${KCP_VALUE_COMPONENT_PATH}"
   fi
 }
 

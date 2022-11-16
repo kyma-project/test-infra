@@ -629,7 +629,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_periodic
+                    - jobConfig_presubmit
                     - image_kyma-integration
                     - extra_refs_reconciler
                     - extra_refs_test-infra
