@@ -3,5 +3,3 @@ pjConfigs:
     kyma-incubator:
       reconciler:
         - pjName: "reconciler-control-plane-image-bump"
-        - pjName: "post-main-kyma-incubator-component-reconciler"
-        - pjName: "post-main-kyma-incubator-mothership-reconciler"
