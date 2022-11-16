@@ -1090,11 +1090,6 @@ periodics: # runs on schedule
           repo: control-plane
           path_alias: github.com/kyma-project/control-plane
           base_ref: main
-        - org: kubernetes
-          repo: test-infra
-          path_alias: github.com/kubernetes/test-infra
-          base_ref: master
-          base_sha: 3fba7110c39a7a0e7fb087dbb4af0674cafd341c
         - org: kyma-incubator
           repo: reconciler
           path_alias: github.com/kyma-incubator/reconciler
@@ -1108,11 +1103,13 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20221111-fe4f3e2158"
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-image-autobump.sh"
+              - "generic-autobumper"
+            args:
+              - "--config=prow/autobump-config/control-plane-autobump-reconciler-config.yaml"
             resources:
               requests:
                 memory: 3Gi
