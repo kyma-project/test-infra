@@ -10,7 +10,7 @@ upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/control-plane/m
 includedConfigPaths:
   - "resources/kcp/charts/component-reconcilers/values.yaml"
   - "resources/kcp/charts/mothership-reconciler/values.yaml"
-targetVersion: "PR-1240" #TODO THIS NEEDS TO BE REVERTED
+targetVersion: "latest" #TODO THIS NEEDS TO BE REVERTED
 prefixes:
   - name: "Reconciler"
     prefix: "eu.gcr.io/kyma-project/incubator/reconciler/"

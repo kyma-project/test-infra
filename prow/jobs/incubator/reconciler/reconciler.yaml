@@ -666,6 +666,71 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pre-main-kyma-incubator-mothership-reconciler
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-incubator-mothership-reconciler"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "false"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=incubator/mothership-reconciler"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=Dockerfile.mr"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: pre-main-kyma-incubator-component-reconciler
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-incubator-component-reconciler"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=incubator/component-reconciler"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=Dockerfile.cr"
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
     - name: pre-main-reconciler-validate-dockerfiles
       annotations:
         pipeline.trigger: "pr-submit"
