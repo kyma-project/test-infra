@@ -545,9 +545,6 @@ templates:
                     - "--dockerfile=Dockerfile.mr"
                   branches:
                     - ^main$
-                  labels:
-                    preset-sa-gcr-push: "true"
-                    preset-sa-kyma-push-images: "false"
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
@@ -562,9 +559,6 @@ templates:
                     - "--tag=latest"
                   branches:
                     - ^main$
-                  labels:
-                    preset-sa-gcr-push: "true"
-                    preset-sa-kyma-push-images: "false"
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
