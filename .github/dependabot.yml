@@ -16,6 +16,9 @@ updates:
       prefix: "gomod"
       include: "scope"
     ignore:
+      - dependency-name: "github.com/onsi/ginkgo/v2"
+        versions:
+          - "2.x"
       - dependency-name: "github.com/onsi/gomega"
         versions:
           - "1.2x"

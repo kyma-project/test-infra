@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.9"
+  nextRelease: "2.10"
   releases:
+    - "2.9"
     - "2.8"
     - "2.7"
-    - "2.6"
   orgs:
     - name: "kyma-project"
       repos:
@@ -155,7 +155,7 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221027-e0b06787"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221110-7b01b206"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221115-b795f2bd"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
   image_buildpack-node:

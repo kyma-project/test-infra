@@ -49,3 +49,4 @@ images:
 - source: "natsio/nats-server-config-reloader:0.7.4"
 - source: "natsio/prometheus-nats-exporter:0.10.1"
 - source: "mockserver/mockserver:mockserver-5.11.2"
+- source: "i331641/kyma-perf:v1"
