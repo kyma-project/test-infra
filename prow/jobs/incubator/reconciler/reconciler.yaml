@@ -686,7 +686,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=incubator/mothership-reconciler"
+              - "--name=incubator/reconciler/mothership"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile.mr"
@@ -718,7 +718,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=incubator/component-reconciler"
+              - "--name=incubator/reconciler/component"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile.cr"
@@ -947,7 +947,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=incubator/mothership-reconciler"
+              - "--name=incubator/reconciler/mothership"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile.mr"
@@ -980,7 +980,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=incubator/component-reconciler"
+              - "--name=incubator/reconciler/component"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile.cr"
