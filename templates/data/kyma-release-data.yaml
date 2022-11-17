@@ -110,7 +110,6 @@ templates:
                     preset-certificates-bucket: "true"
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
-                    preset-gke-pod-security-policy: "true"
                     preset-kms-gc-project-env: "true"
                     preset-cluster-use-ssd: "true"
                   env:
