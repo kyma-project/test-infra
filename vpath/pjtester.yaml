@@ -1,6 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-incubator:
-      reconciler:
-        - pjName: "pre-main-kyma-incubator-component-reconciler"
-        - pjName: "pre-main-kyma-incubator-mothership-reconciler"
