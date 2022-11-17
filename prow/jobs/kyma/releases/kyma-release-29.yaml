@@ -198,7 +198,6 @@ periodics: # runs on schedule
         preset-docker-push-repository-gke-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-gke-pod-security-policy: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-artifacts-bucket: "true"
         preset-kyma-encryption-key: "true"

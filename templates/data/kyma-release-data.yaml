@@ -161,7 +161,6 @@ templates:
                     preset-nightly-github-integration: "true"
                     preset-kms-gc-project-env: "true"
                     preset-certificates-bucket: "true"
-                    preset-gke-pod-security-policy: "true"
                     preset-slack-alerts: "true"
                   volumes:
                   - name: sa-stability-fluentd-storage-writer
