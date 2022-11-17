@@ -543,6 +543,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile.mr"
+                  always_run: true
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -557,6 +558,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile.mr"
                     - "--tag=latest"
+                  always_run: true
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -570,6 +572,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile.cr"
+                  always_run: true
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -584,6 +587,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile.cr"
                     - "--tag=latest"
+                  always_run: true
                   branches:
                     - ^main$
                 inheritedConfigs:
