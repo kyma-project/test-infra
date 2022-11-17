@@ -5,6 +5,7 @@ readonly RECONCILER_NAMESPACE=reconciler
 readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
+readonly MOTHERSHIP_RECONCILER_VALUES_FILE="../../resources/kcp/charts/mothership-reconciler/values.yaml"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -183,8 +184,12 @@ function reconciler::initialize_test_pod() {
 
   # move to reconciler directory
   cd "${CONTROL_PLANE_RECONCILER_DIR}"  || { echo "Failed to change dir to: ${CONTROL_PLANE_RECONCILER_DIR}"; exit 1; }
+  if [ ! -f "$MOTHERSHIP_RECONCILER_VALUES_FILE" ]; then
+    log::error "Mothership reconciler values file not found! ($MOTHERSHIP_RECONCILER_VALUES_FILE)"
+    exit 1
+  fi
   echo "************* Current Reconciler Image To Be Used **************"
-  cat < ../../resources/kcp/values.yaml | grep -o 'mothership_reconciler.*\"'
+  cat < "$MOTHERSHIP_RECONCILER_VALUES_FILE" | grep -o 'mothership_reconciler.*\"'
   echo "****************************************************************"
   # Create reconcile request payload with kubeconfig, domain, and version to the test-pod
   domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
