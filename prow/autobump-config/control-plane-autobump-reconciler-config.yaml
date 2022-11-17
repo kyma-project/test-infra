@@ -8,8 +8,7 @@ gitHubRepo: "control-plane"
 remoteName: "control-plane"
 upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/control-plane/main"
 includedConfigPaths:
-  - "resources/kcp/charts/component-reconcilers/values.yaml"
-  - "resources/kcp/charts/mothership-reconciler/values.yaml"
+  - "resources/kcp/charts"
 targetVersion: "latest" #TODO THIS NEEDS TO BE REVERTED
 prefixes:
   - name: "Reconciler"
