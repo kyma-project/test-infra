@@ -6,7 +6,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       test-infra:
-        - pjName: "post-test-infra-markdown-index"
+        - pjName: "post-test-infra-markdown-index-autobump"
           report: true
 prConfigs: #
   kyma-project:
