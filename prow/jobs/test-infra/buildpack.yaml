@@ -536,6 +536,7 @@ presubmits: # runs on PRs
               - "/image-builder"
             args:
               - "--name=test-infra/markdown-index"
+              - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/markdown-index/Dockerfile"
             volumeMounts:

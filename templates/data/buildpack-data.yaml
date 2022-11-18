@@ -422,6 +422,7 @@ templates:
                       run_if_changed: "^development/markdown-index/"
                       args:
                         - "--name=test-infra/markdown-index"
+                        - "--config=/config/kaniko-build-config.yaml"
                         - "--context=."
                         - "--dockerfile=development/markdown-index/Dockerfile"
                     inheritedConfigs:
