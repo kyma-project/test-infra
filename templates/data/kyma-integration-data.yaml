@@ -323,7 +323,6 @@ templates:
               preset-kyma-artifacts-bucket: "true"
               preset-cluster-use-ssd: "true"
               preset-cluster-version: "true"
-              preset-gke-pod-security-policy: "true"
           fast_integration_template:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
             annotations:
@@ -857,7 +856,6 @@ templates:
                     preset-nightly-github-integration: "true"
                     preset-kms-gc-project-env: "true"
                     preset-certificates-bucket: "true"
-                    preset-gke-pod-security-policy: "true"
                     preset-slack-alerts: "true"
                   volumes:
                     - name: sa-stability-fluentd-storage-writer

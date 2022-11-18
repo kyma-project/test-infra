@@ -132,17 +132,17 @@ func TestMainReconcilerJobPostsubmit(t *testing.T) {
 	require.NoError(t, err)
 
 	kymaPost := jobConfig.AllStaticPostsubmits([]string{"kyma-incubator/reconciler"})
-	expName := "post-main-kyma-incubator-reconciler"
-	actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
-	assert.Equal(t, expName, actualPost.Name)
-	assert.Equal(t, []string{"^main$"}, actualPost.Branches)
-	assert.Equal(t, 10, actualPost.MaxConcurrency)
-	tester.AssertThatHasExtraRefTestInfra(t, actualPost.JobBase.UtilityConfig, "main")
-	tester.AssertThatHasPresets(t, actualPost.JobBase, preset.DindEnabled, preset.DockerPushRepoIncubator, preset.GcrPush)
-	assert.Equal(t, tester.ImageGolangBuildpack1_16, actualPost.Spec.Containers[0].Image)
-	assert.Empty(t, actualPost.RunIfChanged)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"}, actualPost.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-incubator/reconciler"}, actualPost.Spec.Containers[0].Args)
+	expNames := []string{
+		"post-main-kyma-incubator-mothership-reconciler",
+		"post-main-kyma-incubator-component-reconciler",
+	}
+	for _, expName := range expNames {
+		actualPost := tester.FindPostsubmitJobByName(kymaPost, expName)
+		assert.Equal(t, expName, actualPost.Name)
+		assert.Equal(t, []string{"^main$"}, actualPost.Branches)
+		assert.Equal(t, 10, actualPost.MaxConcurrency)
+		assert.Empty(t, actualPost.RunIfChanged)
+	}
 }
 
 func TestDevReconcilerJobPostsubmit(t *testing.T) {
