@@ -1,5 +1,5 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      test-infra:
+      template-operator:
         - pjName: "pull-build-template-operator"
