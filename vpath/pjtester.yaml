@@ -1,4 +1,8 @@
 pjConfigs:
+  prConfig:
+    kyma-project:
+      template-operator:
+        prNumber: 6
   prowJobs:
     kyma-project:
       template-operator:
