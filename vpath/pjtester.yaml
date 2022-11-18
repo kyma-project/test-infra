@@ -1,0 +1,14 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      test-infra:
+        prNumber: 6386
+  prowJobs:
+    kyma-project:
+      test-infra:
+        - pjName: "pre-test-infra-markdown-index"
+          report: true
+prConfigs: #
+  kyma-project:
+    test-infra:
+      prNumber: 6386
