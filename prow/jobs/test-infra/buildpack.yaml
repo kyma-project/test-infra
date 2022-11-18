@@ -1115,10 +1115,9 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=markdown-index"
+              - "--name=test-infra/arkdown-index"
               - "--context=."
               - "--dockerfile=development/markdown-index/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
