@@ -1257,8 +1257,8 @@
     "list": []
   },
   "time": {
-    "from": "now-1w/w",
-    "to": "now-1w/w"
+    "from": "now-7d",
+    "to": "now"
   },
   "timepicker": {},
   "timezone": "",
