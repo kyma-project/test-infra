@@ -200,7 +200,7 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:PR-6386"
             command:
-              - "markdown-index"
+              - "/markdown-index"
             args:
               - "--config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml"
     - name: ci-prow-autobump-jobs
