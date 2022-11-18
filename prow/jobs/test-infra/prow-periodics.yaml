@@ -43,6 +43,36 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/test-infra:
+    - name: post-test-infra-markdown-index
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-markdown-index"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
+      run_if_changed: '.md$'
+      skip_report: false
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-alerts
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:PR-6386"
+            command:
+              - "/markdown-index"
+            args:
+              - "--config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml"
     - name: post-test-infra-deploy-prow
       annotations:
         pipeline.trigger: "pr-merge"
@@ -176,33 +206,6 @@ periodics: # runs on schedule
               - "generic-autobumper"
             args:
               - "--config=prow/autobump-config/prow-cluster-autobump-config.yaml"
-    - name: ci-prow-markdown-index
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "ci-prow-markdown-index"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-autobump-bot-github-token: "true"
-      cron: "30 * * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      reporter_config:
-        slack:
-          channel: kyma-prow-alerts
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:PR-6386"
-            command:
-              - "/markdown-index"
-            args:
-              - "--config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml"
     - name: ci-prow-autobump-jobs
       annotations:
         testgrid-create-test-group: "false"

@@ -46,12 +46,6 @@ func main() {
 		log.Fatal(err)
 	}
 	defer f.Close()
-	fmt.Println(os.Getwd())
-	path, err := os.Executable()
-	if err != nil {
-		log.Println(err)
-	}
-	fmt.Println(path)
 
 	startPath, err := os.Getwd()
 	fmt.Println(startPath)
