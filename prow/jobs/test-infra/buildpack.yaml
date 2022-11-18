@@ -535,10 +535,9 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=markdown-index"
+              - "--name=test-infra/markdown-index"
               - "--context=."
               - "--dockerfile=development/markdown-index/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
