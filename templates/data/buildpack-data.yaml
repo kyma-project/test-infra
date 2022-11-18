@@ -203,7 +203,7 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-prow-tools"
-                      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+                      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^development/markdown-index|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                       args:
                         - "--name=test-infra/prow-tools"
                         - "--config=/config/kaniko-build-config.yaml"
@@ -413,6 +413,30 @@ templates:
                         - "--config=/config/kaniko-build-config.yaml"
                         - "--context=."
                         - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "postsubmit"
+                  - jobConfig:
+                      name: "pre-test-infra-markdown-index"
+                      run_if_changed: "^development/markdown-index/"
+                      args:
+                        - "--name=test-infra/markdown-index"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/markdown-index/Dockerfile"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-test-infra-markdown-index"
+                      run_if_changed: "^development/markdown-index/"
+                      args:
+                        - "--name=markdown-index"
+                        - "--context=."
+                        - "--dockerfile=development/markdown-index/Dockerfile"
+                        - "--directory=test-infra"
                     inheritedConfigs:
                       local:
                         - "default"

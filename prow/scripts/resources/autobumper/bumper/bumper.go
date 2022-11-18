@@ -246,34 +246,6 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		}
 	}
 
-	// Make change, commit and push
-	//var anyChange bool
-	//for i, changeFunc := range prh.Changes() {
-	//	msg, err := changeFunc(ctx)
-	//	if err != nil {
-	//		return fmt.Errorf("process function %d: %w", i, err)
-	//	}
-	//
-	//	changed, err := HasChanges()
-	//	if err != nil {
-	//		return fmt.Errorf("checking changes: %w", err)
-	//	}
-	//
-	//	if !changed {
-	//		logrus.WithField("function", i).Info("Nothing changed, skip commit ...")
-	//		continue
-	//	}
-	//
-	//	anyChange = true
-	//	if err := gitCommit(o.GitName, o.GitEmail, msg, stdout, stderr, false); err != nil {
-	//		return fmt.Errorf("git commit: %w", err)
-	//	}
-	//}
-	//if !anyChange {
-	//	logrus.Info("Nothing changed from all functions, skip PR ...")
-	//	return nil
-	//}
-
 	if err := gitPush(fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), o.GitHubLogin, o.RemoteName), o.HeadBranchName, stdout, stderr, o.SkipPullRequest); err != nil {
 		return fmt.Errorf("push changes to the remote branch: %w", err)
 	}

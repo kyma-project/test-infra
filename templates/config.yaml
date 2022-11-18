@@ -350,3 +350,6 @@ templates:
   - from : test-infra-autobump-config.yaml
     render:
       - to: ../../prow/autobump-config/test-infra-autobump-config.yaml
+  - from: test-infra-markdown-index-autobump-config.yaml
+    render:
+      - to: ../../prow/markdown-index/test-infra-markdown-index-autobump-config.yaml

@@ -1,0 +1,12 @@
+gitHubLogin: "kyma-bot"
+gitHubToken: "/etc/github/token"
+gitName: "Kyma Bot"
+gitEmail: "kyma.bot@sap.com"
+skipPullRequest: false
+gitHubOrg: "kyma-project"
+gitHubRepo: "test-infra"
+remoteName: "test-infra-1"
+upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/test-infra/main"
+headBranchName: "test-infra-markdwon-index-autobump"
+extraFiles:
+  - "development/tools/jobs/tester/tester.go"
