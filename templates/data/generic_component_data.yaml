@@ -601,3 +601,28 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - "disable_testgrid"
+
+      - to: ../../prow/jobs/kyma/components/webhook-cert-init/webhook-cert-init-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  path: components/webhook-cert-init
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/kyma/components/webhook-cert-init"
+                  run_if_changed: "^components/webhook-cert-init/|^common/makefiles/"
+                  release_since: "2.6"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_kyma"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
