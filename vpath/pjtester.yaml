@@ -7,3 +7,7 @@ pjConfigs:
     kyma-project:
       template-operator:
         - pjName: "pull-build-template-operator"
+prConfigs: #
+  kyma-project:
+    template-operator:
+      prNumber: 6
