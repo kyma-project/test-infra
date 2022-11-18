@@ -53,7 +53,6 @@ func main() {
 		pathFromRepositoryRoot := strings.Split(path, repositoryName)[1]
 		if filterByFileExtension(path) && filterByFolderName(path) && filterByFileName(pathFromRepositoryRoot) {
 			mdLine := getDescription(path) + "\n[" + pathFromRepositoryRoot + "](" + pathFromRepositoryRoot + ")\n\n"
-			fmt.Println(mdLine)
 			//write line to file
 			_, err = f.WriteString(mdLine)
 			if err != nil {
