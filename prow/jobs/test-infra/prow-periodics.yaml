@@ -198,7 +198,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/markdown-index:v20221024-d0c013ee2d"
+          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:PR-6386"
             command:
               - "markdown-index"
             args:

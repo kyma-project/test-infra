@@ -6,7 +6,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       test-infra:
-        - pjName: "pre-test-infra-markdown-index"
+        - pjName: "ci-prow-markdown-index"
           report: true
 prConfigs: #
   kyma-project:
