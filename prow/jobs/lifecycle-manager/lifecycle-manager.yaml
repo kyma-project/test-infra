@@ -5,13 +5,13 @@ presubmits: # runs on PRs
   kyma-project/lifecycle-manager:
     - name: pull-lifecycle-mgr-lint
       annotations:
-        description: "executes the 'golangci-lint lint' command in the lifecycle-manager 'operator' directory before any pull request."
+        description: "executes the 'golangci-lint lint' command before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-lifecycle-mgr-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -27,7 +27,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "cd operator && golangci-lint run"
+              - "golangci-lint run"
             resources:
               requests:
                 memory: 3Gi
@@ -49,7 +49,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -65,7 +65,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "cd operator && make test"
+              - "make test"
             resources:
               requests:
                 memory: 3Gi
@@ -94,13 +94,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
             command:
               - "/image-builder"
             args:
               - "--name=lifecycle-manager"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=operator"
               - "--dockerfile=Dockerfile"
             volumeMounts:
               - name: config
@@ -130,13 +129,12 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
             command:
               - "/image-builder"
             args:
               - "--name=lifecycle-manager"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=operator"
               - "--dockerfile=Dockerfile"
               - "--tag=latest"
             volumeMounts:
