@@ -43,13 +43,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/test-infra:
-    - name: post-test-infra-markdown-index
+    - name: post-test-infra-markdown-index-autobump
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-test-infra-markdown-index"
+        prow.k8s.io/pubsub.runID: "post-test-infra-markdown-index-autobump"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-autobump-bot-github-token: "true"
       run_if_changed: '.md$'

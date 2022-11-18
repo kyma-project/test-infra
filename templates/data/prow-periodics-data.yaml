@@ -61,7 +61,7 @@ templates:
                     - "disable_testgrid"
                     - extra_refs_test-infra
               - jobConfig:
-                  name: post-test-infra-markdown-index
+                  name: post-test-infra-markdown-index-autobump
                   slack_channel: kyma-prow-alerts
                   branches:
                     - ^main$
