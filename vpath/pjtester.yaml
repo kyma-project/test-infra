@@ -1,0 +1,11 @@
+pjNames:
+  - pjName: "telemetry-operator"
+    pjPath: "test-infra/prow/jobs/kyma/components/telemetry-operator"
+    report: true
+  - pjName: "orphaned-disks-cleaner"
+  - pjName: "post-main-kyma-gke-integration"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 16132
+configPath: "test-infra/prow/config.yaml"

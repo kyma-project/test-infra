@@ -182,6 +182,10 @@ if [[ -v TELEMETRY_ENABLED ]]; then
   log::info "Copying components file for telemetry tests"
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml" "~/kyma-integration-k3d-telemetry-components.yaml"
+  log::info "Triggering the installation"
+  utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry.sh"
+  log::success "all done"
+  exit 0
 fi
 
 if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
