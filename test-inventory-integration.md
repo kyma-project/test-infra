@@ -46,3 +46,4 @@
 | skr-aws-integration-dev | gardener_aws | keb | keb |  | periodic |  fast-integration  |
 | skr-trial-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |
 | skr-free-aws-integration-dev | gardener_aws | keb | keb | evaluation | periodic |  fast-integration  |
+| skr-preview-dev | gardener_aws | keb | keb |  | periodic |  fast-integration  |
