@@ -159,7 +159,7 @@ This command finds and removes orphaned IP addresses created by jobs in the Goog
 [/development/tools/cmd/ipcleaner/README.md](/development/tools/cmd/ipcleaner/README.md)
 
 # Job Guard
-Job Guard was moved [here](../../../jobguard).
+Job Guard was moved [here](/development/jobguard).
 
 [/development/tools/cmd/jobguard/README.md](/development/tools/cmd/jobguard/README.md)
 
