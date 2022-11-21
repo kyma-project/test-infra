@@ -198,6 +198,11 @@ PR Tag Builder is a tool that finds a pull request number for a commit.
 
 [/docs/documentation_guidelines.md](/docs/documentation_guidelines.md)
 
+# Changelog Generator
+This project is a Docker image that is used to generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests with specified labels.
+
+[/docs/index.md](/docs/index.md)
+
 # Docs
 The folder contains documents that provide an insight into Prow configuration, development, and testing.
 

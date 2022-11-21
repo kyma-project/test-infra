@@ -41,7 +41,7 @@ func (c *client) PRTitleBody() (string, string, error) {
 type options struct{}
 
 func main() {
-	f, err := os.Create("index.md")
+	f, err := os.Create("docs/index.md")
 	if err != nil {
 		log.Fatal(err)
 	}
