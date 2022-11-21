@@ -1,6 +1,6 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20221027-e0b06787
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32
 
 # Commit details
 
@@ -81,6 +81,6 @@ ENV LICENSE_PULLER_PATH=/license-puller.sh
 
 # Prow Tools
 # hadolint ignore=DL3022
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210804-d55639f9 /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20221118-5c35cc55 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
