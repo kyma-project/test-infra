@@ -174,7 +174,7 @@ Prow Job tester is a tool for testing changes to the Prow Jobs' definitions and 
 [/development/tools/cmd/pjtester/README.md](/development/tools/cmd/pjtester/README.md)
 
 # Render Templates
-The Render Templates is a tool that reads the configuration from a [`config.yaml`](../../../../templates/config.yaml) file and [`data`](../../../../templates/data) files to generate output files, such as Prow component jobs. While the `config.yaml` file can hold configuration for an output file, you can place such data within the data files that hold configuration for related output files. Having separate files with grouped data is cleaner and easier to maintain than one huge config file.
+The Render Templates is a tool that reads the configuration from a [`config.yaml`](/templates/config.yaml) file and [`data`](/templates/data) files to generate output files, such as Prow component jobs. While the `config.yaml` file can hold configuration for an output file, you can place such data within the data files that hold configuration for related output files. Having separate files with grouped data is cleaner and easier to maintain than one huge config file.
 
 [/development/tools/cmd/rendertemplates/README.md](/development/tools/cmd/rendertemplates/README.md)
 
@@ -229,7 +229,7 @@ Read about the obligatory security measures to take on a regular basis and when 
 [/docs/prow/obligatory-security-measures.md](/docs/prow/obligatory-security-measures.md)
 
 # Presets
-This document contains the list of all Presets available in the [`config.yaml`](../../prow/config.yaml) file. Use them to define Prow Jobs for your components.
+This document contains the list of all Presets available in the [`config.yaml`](/prow/config.yaml) file. Use them to define Prow Jobs for your components.
 
 [/docs/prow/presets.md](/docs/prow/presets.md)
 
