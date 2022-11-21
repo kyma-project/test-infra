@@ -385,8 +385,6 @@ periodics: # runs on schedule
                 value: "5cb3d976-b85c-42ea-a636-79cadda109a9"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
-              - name: KYMA_MAJOR_VERSION
-                value: "1"
             resources:
               requests:
                 memory: 100Mi
