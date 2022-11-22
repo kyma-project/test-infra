@@ -52,7 +52,7 @@ func main() {
 	filepath.Walk(startPath, func(path string, info os.FileInfo, e error) error {
 		pathFromRepositoryRoot := strings.Split(path, repositoryName)[1]
 		if filterByFileExtension(path) && filterByFolderName(path) && filterByFileName(pathFromRepositoryRoot) {
-			mdLine := getDescription(path) + "\n[" + pathFromRepositoryRoot + "](" + pathFromRepositoryRoot + ")\n\n"
+			mdLine := getDescription(path, pathFromRepositoryRoot)
 			//write line to file
 			_, err = f.WriteString(mdLine)
 			if err != nil {
@@ -119,10 +119,11 @@ func filterByFolderName(path string) bool {
 }
 
 func filterByFileName(path string) bool {
-	return path != "/CODE_OF_CONDUCT.md" && path != "/CONTRIBUTING.md" && path != "/NOTICE.md" && path != "/README.md" && path != "/index.md"
+	return path != "/CODE_OF_CONDUCT.md" && path != "/CONTRIBUTING.md" && path != "/NOTICE.md" && path != "/README.md" &&
+		path != "/index.md" && path != "/docs/index.md" && path != "/test-inventory-integration.md"
 }
 
-func getDescription(path string) string {
+func getDescription(path string, pathFromRepositoryRoot string) string {
 	file, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
@@ -137,9 +138,9 @@ func getDescription(path string) string {
 	var description = ""
 	for fileScanner.Scan() {
 		if len(description) == 0 && strings.Contains(fileScanner.Text(), "#") {
-			description = fileScanner.Text() + "\n"
+			description = "[" + strings.Replace(fileScanner.Text(), "# ", "", 1) + "](" + pathFromRepositoryRoot + ") - "
 		} else if len(description) > 0 && !strings.Contains(fileScanner.Text(), "#") && len(fileScanner.Text()) > 0 {
-			description += fileScanner.Text() + "\n"
+			description += fileScanner.Text() + "\n\n"
 			break
 		}
 	}
