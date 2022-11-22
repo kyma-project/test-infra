@@ -1,7 +1,3 @@
 pjNames:
-  - pjName: "kyma-integration-k3d-telemetry"
-    pjPath: "test-infra/prow/jobs/kyma/components/telemetry-operator"
-    report: true
-  - pjName: "orphaned-disks-cleaner"
-  - pjName: "post-main-kyma-gke-integration"
-configPath: "test-infra/prow/config.yaml"
+  - pjName: "pre-kyma-integration-k3d-telemetry"
+
