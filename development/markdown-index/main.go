@@ -38,7 +38,10 @@ func (c *client) PRTitleBody() (string, string, error) {
 }
 
 // options is the options for autobumper operations.
-type options struct{}
+type options struct {
+	FoldersToFilter []string `yaml:"foldersToFilter"`
+	FilesToFilter   []string `yaml:"filesToFilter"`
+}
 
 func main() {
 	f, err := os.Create("docs/index.md")
@@ -120,7 +123,7 @@ func filterByFolderName(path string) bool {
 
 func filterByFileName(path string) bool {
 	return path != "/CODE_OF_CONDUCT.md" && path != "/CONTRIBUTING.md" && path != "/NOTICE.md" && path != "/README.md" &&
-		path != "/index.md" && path != "/docs/index.md" && path != "/test-inventory-integration.md"
+		path != "/docs/index.md" && path != "/test-inventory-integration.md"
 }
 
 func getDescription(path string, pathFromRepositoryRoot string) string {
