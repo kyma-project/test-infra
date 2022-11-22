@@ -1,6 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-project:
-      kyma:
-      - pjName: "pull-webhook-cert-init-build"
-      - pjName: "post-webhook-cert-init-build"
