@@ -50,11 +50,16 @@ func main() {
 	}
 	defer f.Close()
 
+	o, pro, err := parseOptions()
+	if err != nil {
+		logrus.WithError(err).Fatalf("Failed to parse options")
+	}
+
 	startPath, err := os.Getwd()
 	fmt.Println(startPath)
 	filepath.Walk(startPath, func(path string, info os.FileInfo, e error) error {
 		pathFromRepositoryRoot := strings.Split(path, repositoryName)[1]
-		if filterByFileExtension(path) && filterByFolderName(path) && filterByFileName(pathFromRepositoryRoot) {
+		if filterByFileExtension(path) && filterByFolderName(path, o) && filterByFileName(pathFromRepositoryRoot, o) {
 			mdLine := getDescription(path, pathFromRepositoryRoot)
 			//write line to file
 			_, err = f.WriteString(mdLine)
@@ -68,14 +73,8 @@ func main() {
 		fmt.Println("ERROR:", err)
 	}
 
-	//bumper transplant
 	ctx := context.Background()
 	logrus.SetLevel(logrus.DebugLevel)
-	o, pro, err := parseOptions()
-	if err != nil {
-		logrus.WithError(err).Fatalf("Failed to run the bumper tool")
-	}
-
 	if err := bumper.Run(ctx, pro, &client{o: o}); err != nil {
 		logrus.WithError(err).Fatalf("failed to run the bumper tool")
 	}
@@ -117,13 +116,22 @@ func filterByFileExtension(path string) bool {
 	return strings.Contains(path, ".md")
 }
 
-func filterByFolderName(path string) bool {
-	return !strings.Contains(path, ".github") && !strings.Contains(path, ".githooks")
+func filterByFolderName(path string, o *options) bool {
+	for _, folderName := range o.FoldersToFilter {
+		if strings.Contains(path, folderName) {
+			return false
+		}
+	}
+	return true
 }
 
-func filterByFileName(path string) bool {
-	return path != "/CODE_OF_CONDUCT.md" && path != "/CONTRIBUTING.md" && path != "/NOTICE.md" && path != "/README.md" &&
-		path != "/docs/index.md" && path != "/test-inventory-integration.md"
+func filterByFileName(path string, o *options) bool {
+	for _, fileName := range o.FilesToFilter {
+		if path == fileName {
+			return false
+		}
+	}
+	return true
 }
 
 func getDescription(path string, pathFromRepositoryRoot string) string {
