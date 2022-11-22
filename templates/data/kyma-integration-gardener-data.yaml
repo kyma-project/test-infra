@@ -265,7 +265,7 @@ templates:
                     - command_integration
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing
-                  optional: false
+                  optional: true
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -342,7 +342,7 @@ templates:
                     - command_integration
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing-upgrade
-                  optional: false
+                  optional: true
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
