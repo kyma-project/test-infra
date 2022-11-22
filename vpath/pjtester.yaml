@@ -2,4 +2,4 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma:
-      - pjName: "pre-kyma-integration-k3d-telemetry"
+      - pjName: "pre-main-kyma-integration-k3d-telemetry"
