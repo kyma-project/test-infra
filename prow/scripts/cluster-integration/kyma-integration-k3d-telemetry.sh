@@ -74,7 +74,7 @@ function deploy_kyma() {
   fi
   
 
-  kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
+  # kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
   # kyma_deploy_cmd_dryrun+=" --value=global.telemetry.enabled=true"
   kyma_deploy_cmd+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
   # kyma_deploy_cmd_dryrun+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
