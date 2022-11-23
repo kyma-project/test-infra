@@ -606,7 +606,7 @@ presubmits: # runs on PRs
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/third-party-images/ote-collector"
+              - "/home/prow/go/src/github.com/kyma-project/third-party-images/otel-collector"
               - "ci-pr"
             resources:
               requests:

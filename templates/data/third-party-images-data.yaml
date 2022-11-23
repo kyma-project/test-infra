@@ -421,7 +421,7 @@ templates:
                   name: "pre-main-tpi-otel-collector"
                   run_if_changed: "^otel-collector/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/ote-collector"
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/otel-collector"
                     - "ci-pr"
                 inheritedConfigs:
                   global:
