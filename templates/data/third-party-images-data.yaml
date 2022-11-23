@@ -417,3 +417,34 @@ templates:
                   local:
                     - "default"
                     - "image-signing"
+              - jobConfig:
+                  name: "pre-main-tpi-otel-collector"
+                  run_if_changed: "^otel-collector/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/ote-collector"
+                    - "ci-pr"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "default"
+
+              - jobConfig:
+                  name: "post-main-tpi-otel-collector"
+                  run_if_changed: "^otel-collector/"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/otel-collector"
+                    - "ci-main"
+                inheritedConfigs:
+                  global:
+                    - "image_bootstrap"
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "default"
+                    - "image-signing"
