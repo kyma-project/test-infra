@@ -9,7 +9,6 @@ function prereq_test() {
   command -v node >/dev/null 2>&1 || { echo >&2 "node not found"; exit 1; }
   command -v npm >/dev/null 2>&1 || { echo >&2 "npm not found"; exit 1; }
   command -v jq >/dev/null 2>&1 || { echo >&2 "jq not found"; exit 1; }
-  command -v helm >/dev/null 2>&1 || { echo >&2 "helm not found"; exit 1; }
   command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
   command -v go >/dev/null 2>&1 || { echo >&2 "go not found"; exit 1; }
@@ -62,23 +61,26 @@ function deploy_kyma() {
   kubectl version
 
   local kyma_deploy_cmd
+  # local kyma_deploy_cmd_dryrun
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
-  if [[ -v TELEMETRY_TRACING_ENABLED ]]; then
-    kyma_deploy_cmd+=" --value=telemetry.operator.controllers.tracing.enabled=true"
-    ls ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/
-    if [[ -f ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ]]; then
-        echo "Copy tracepipeline CRD"
-        cp ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ${KYMA_SOURCES_DIR}/installation/resources/crds/telemetry/tracepipelines.crd.yaml
-    fi
-  fi
+  kyma_deploy_cmd+=" --value=telemetry.operator.controllers.tracing.enabled=true"
+  # kyma_deploy_cmd_dryrun="kyma deploy --dry-run -p production --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
-  if [[ -v TELEMETRY_ENABLED ]]; then
-    kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
-    kyma_deploy_cmd+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
+  ls ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/
+  if [[ -f ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ]]; then
+      echo "Copy tracepipeline CRD"
+      cp ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ${KYMA_SOURCES_DIR}/installation/resources/crds/telemetry/tracepipelines.crd.yaml
   fi
+  
+
+  kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
+  # kyma_deploy_cmd_dryrun+=" --value=global.telemetry.enabled=true"
+  kyma_deploy_cmd+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
+  # kyma_deploy_cmd_dryrun+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
 
   $kyma_deploy_cmd
+  # $kyma_deploy_cmd_dryrun
 
   kubectl get pods -A
 }
