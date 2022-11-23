@@ -63,9 +63,11 @@ function deploy_kyma() {
   local kyma_deploy_cmd
   # local kyma_deploy_cmd_dryrun
   kyma_deploy_cmd="kyma deploy -p evaluation --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
+  kyma_deploy_cmd_dryrun="kyma deploy --dry-run -p production --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
 
   kyma_deploy_cmd+=" --value=telemetry.operator.controllers.tracing.enabled=true"
-  # kyma_deploy_cmd_dryrun="kyma deploy --dry-run -p production --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
+  kyma_deploy_cmd_dryrun+=" --value=telemetry.operator.controllers.tracing.enabled=true"
+  
 
   ls ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/
   if [[ -f ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ]]; then
@@ -73,14 +75,11 @@ function deploy_kyma() {
       cp ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ${KYMA_SOURCES_DIR}/installation/resources/crds/telemetry/tracepipelines.crd.yaml
   fi
   
-
-  # kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
-  # kyma_deploy_cmd_dryrun+=" --value=global.telemetry.enabled=true"
   kyma_deploy_cmd+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
-  # kyma_deploy_cmd_dryrun+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
+  kyma_deploy_cmd_dryrun+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
 
   $kyma_deploy_cmd
-  # $kyma_deploy_cmd_dryrun
+  $kyma_deploy_cmd_dryrun
 
   kubectl get pods -A
 }
