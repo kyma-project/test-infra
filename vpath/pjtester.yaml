@@ -1,0 +1,4 @@
+prConfigs: 
+  kyma-project:
+    third-party-images:
+      prNumber: 281
