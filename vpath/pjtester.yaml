@@ -1,4 +1,5 @@
-prConfigs: 
-  kyma-project:
-    third-party-images:
-      prNumber: 281
+pjConfigs:
+  prConfig: 
+    kyma-project:
+      third-party-images:
+        prNumber: 281
