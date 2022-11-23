@@ -1,0 +1,69 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tekton-hub-ui
+  labels:
+    app: tekton-hub-ui
+spec:
+  selector:
+    matchLabels:
+      app: tekton-hub-ui
+  template:
+    metadata:
+      name: tekton-hub-ui
+      labels:
+        app: tekton-hub-ui
+    spec:
+      containers:
+        - name: tekton-hub-ui
+          image: quay.io/tekton-hub/ui:v1.11.0
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 500m
+              memory: 500Mi
+          env:
+            - name: API_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: tekton-hub-ui
+                  key: API_URL
+            - name: API_VERSION
+              valueFrom:
+                configMapKeyRef:
+                  name: tekton-hub-ui
+                  key: API_VERSION
+            - name: AUTH_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: tekton-hub-ui
+                  key: AUTH_BASE_URL
+            - name: REDIRECT_URI
+              valueFrom:
+                configMapKeyRef:
+                  name: tekton-hub-ui
+                  key: REDIRECT_URI
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            periodSeconds: 5
+            successThreshold: 1
+            timeoutSeconds: 1

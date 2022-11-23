@@ -1,0 +1,10 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: tekton-poc-hub-cert
+  namespace: tekton-hub
+spec:
+  domains:
+    - poc-tekton-hub.prow.build.kyma-project.io
+    - poc-tekton-auth.prow.build.kyma-project.io
+    - poc-tekton-api.prow.build.kyma-project.io

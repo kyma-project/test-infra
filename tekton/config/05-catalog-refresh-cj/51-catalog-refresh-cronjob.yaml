@@ -1,0 +1,28 @@
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: catalog-refresh
+  labels:
+    app: tekton-hub-api
+spec:
+  schedule: "*/30 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: catalog-refresh
+              image: curlimages/curl:7.71.1
+              env:
+                - name: HUB_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: catalog-refresh
+                      key: HUB_TOKEN
+              args: [
+                "-i", "-X", "POST",
+                "-H", "Authorization:$(HUB_TOKEN)",
+                "tekton-hub-api:8000/catalog/tekton/refresh"
+              ]
+          restartPolicy: OnFailure

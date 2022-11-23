@@ -1,0 +1,9 @@
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: tekton-board-frontend-config
+  namespace: tekton-pipelines
+spec:
+  sslPolicy: tls-ssl-policy
+  redirectToHttps:
+    enabled: true

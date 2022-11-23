@@ -1,0 +1,7 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: tekton-poc-board-cert
+spec:
+  domains:
+    - poc-tekton-board.prow.build.kyma-project.io

@@ -1,0 +1,16 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: goodbye
+  namespace: default
+spec:
+  params:
+    - name: username
+      type: string
+  steps:
+    - image: ubuntu
+      name: goodbye
+      resources: {}
+      script: |
+        #!/bin/bash
+        echo "Goodbye $(params.username)!"
