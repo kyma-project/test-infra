@@ -1,10 +1,10 @@
 pjConfigs:
-  prConfig: 
-    kyma-project:
-      third-party-images:
-        prNumber: 281
   prowJobs:
     kyma-project:
       third-party-images:
         - pjName: "pre-main-tpi-otel-collector"
           report: true
+ prConfigs:
+    kyma-project:
+      third-party-images:
+        prNumber: 281
