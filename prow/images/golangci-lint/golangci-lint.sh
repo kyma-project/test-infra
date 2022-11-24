@@ -15,7 +15,7 @@ function scanFolder() { # expects to get the fqdn of folder passed to scan
     FOLDER=$1
     pushd "${FOLDER}" > /dev/null # change to passed parameter
 
-    golangci-lint  run ./... -v
+    golangci-lint  run ./... -v --timeout=10m
     scan_result="$?"
 
     popd > /dev/null
