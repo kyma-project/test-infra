@@ -323,7 +323,6 @@ templates:
               preset-kyma-artifacts-bucket: "true"
               preset-cluster-use-ssd: "true"
               preset-cluster-version: "true"
-              preset-gke-pod-security-policy: "true"
           fast_integration_template:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
             annotations:
@@ -732,29 +731,6 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3d-central-app-connectivity-compass"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d with central Application Gateway and Compass dev.
-                    testgrid-days-of-results: "60"
-                  labels:
-                    preset-build-main: "true"
-                    preset-kyma-integration-compass-dev: "true"
-                    preset-kyma-integration-compass-enabled: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
                   name: "post-main-kyma-integration-k3d-telemetry"
                   run_if_changed: "^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/"
                   labels:
@@ -847,7 +823,7 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "kyma-integration-k3d-telemetry"
-                  cron: "0 7,13 * * *"
+                  cron: "0 */2 * * *"
                   labels:
                     preset-build-main: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
@@ -880,7 +856,6 @@ templates:
                     preset-nightly-github-integration: "true"
                     preset-kms-gc-project-env: "true"
                     preset-certificates-bucket: "true"
-                    preset-gke-pod-security-policy: "true"
                     preset-slack-alerts: "true"
                   volumes:
                     - name: sa-stability-fluentd-storage-writer

@@ -107,23 +107,30 @@ if [[ ${DUMP_DB} ]]; then
     VM_PREFIX="compass-integration-test-with-dump-"
 fi
 
-# Check if the VM need to be recreated
-FIVE_MINUTES_AGO=$(date -u +"%Y-%m-%dT%H:%M:%SZ" --date='5 minutes ago')
-PR_COMMENTS_RESPONSE=$(curl -sS "https://api.github.com/repos/kyma-incubator/compass/issues/2613/comments?since=${FIVE_MINUTES_AGO}")
-COMMENTS_COUNT=$(echo -E "${PR_COMMENTS_RESPONSE}" | jq length)
-if [ $? -ne 0 ]; then
-    log::error "The PRs Comments response cannot be parsed: ${PR_COMMENTS_RESPONSE}" && exit 1
+# Check if the VM need to be recreated - default is no
+RECREATE_VM_BEFORE_START="no"
+if [[ -z "${PULL_NUMBER}" ]]; then
+    # VM is recreated always when job is executed on main branch
+    RECREATE_VM_BEFORE_START="yes"
+else
+    # On PR VM is recreated only when requested with comment
+    FIVE_MINUTES_AGO=$(date -u +"%Y-%m-%dT%H:%M:%SZ" --date='5 minutes ago')
+    PR_COMMENTS_RESPONSE=$(curl -sS "https://api.github.com/repos/kyma-incubator/compass/issues/${PULL_NUMBER}/comments?since=${FIVE_MINUTES_AGO}")
+    COMMENTS_COUNT=$(echo -E "${PR_COMMENTS_RESPONSE}" | jq length)
+    if [ $? -ne 0 ]; then
+        log::error "The PRs Comments response cannot be parsed: ${PR_COMMENTS_RESPONSE}" && exit 1
+    fi
+
+    for i in $(echo -E "${PR_COMMENTS_RESPONSE}" | jq -r '.[].url'); do
+        COMMENT_URL="${i}"
+        COMMENT_BODY=$(echo -E "${PR_COMMENTS_RESPONSE}" | jq -r --arg key "${COMMENT_URL}" '.[] | select(.url == $key).body')
+
+        if [[ "${COMMENT_BODY}" =~ "reset-vm" ]]; then
+            RECREATE_VM_BEFORE_START="yes"
+        fi
+    done
 fi
 
-RECREATE_VM_BEFORE_START="no"
-for i in $(echo -E "${PR_COMMENTS_RESPONSE}" | jq -r '.[].url'); do
-    COMMENT_URL="${i}"
-    COMMENT_BODY=$(echo -E "${PR_COMMENTS_RESPONSE}" | jq -r --arg key "${COMMENT_URL}" '.[] | select(.url == $key).body')
-
-    if [[ "${COMMENT_BODY}" =~ "reset-vm" ]]; then
-         RECREATE_VM_BEFORE_START="yes"
-    fi
-done
 
 VMS_RESPONSE=$(gcloud compute instances list --sort-by "~creationTimestamp" --filter="name~${VM_PREFIX}" --format=json)
 VM_FOR_PREFIX_AND_SUFFIX=$(echo -E "${VMS_RESPONSE}" | jq -r --arg vmname "${VM_PREFIX}${SUFFIX}" '.[] | select(.name == $vmname) | .name')

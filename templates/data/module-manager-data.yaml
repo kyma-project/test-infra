@@ -31,7 +31,7 @@ templates:
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-                  name: "pull-lint"
+                  name: "pull-module-mgr-lint"
                   annotations:
                     description: executes the 'make lint' command in the module-manager 'operator' directory before any pull request.
                   command: "bash"
@@ -48,7 +48,7 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  name: pull-tests
+                  name: pull-module-mgr-tests
                   annotations:
                     description: executes the 'make test' command in the module-manager 'operator' directory before any pull request.
                   command: "bash"
@@ -65,7 +65,7 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  name: pull-build
+                  name: pull-module-mgr-build
                   always_run: true
                   args:
                     - "--name=module-manager"
@@ -78,7 +78,7 @@ templates:
                   global:
                     - jobConfig_presubmit
               - jobConfig:
-                  name: main-build
+                  name: main-module-mgr-build
                   always_run: true
                   args:
                     - "--name=module-manager"

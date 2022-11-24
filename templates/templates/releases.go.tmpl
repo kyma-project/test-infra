@@ -4,7 +4,7 @@ package releases
 var (
 	Release{{ .Global.nextRelease | replace "." "" }} = mustParse("{{ .Global.nextRelease }}")
 {{- range $r := .Global.releases }}
-	Release{{ printf "%-3v" $r | replace "." "" }} = mustParse("{{ $r }}")
+	Release{{ printf "%-4v" $r | replace "." "" }} = mustParse("{{ $r }}")
 {{- end }}
 )
 

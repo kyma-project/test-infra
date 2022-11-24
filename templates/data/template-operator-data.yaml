@@ -1,0 +1,86 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/template-operator/template-operator.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+            privileged: "false"
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e
+            command: /image-builder
+            labels:
+              preset-sa-kyma-push-images: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        jobConfigs:
+          - repoName: kyma-project/template-operator
+            jobs:
+              - jobConfig:
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+                  name: pull-template-op-lint
+                  run_if_changed: "^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile"
+                  annotations:
+                    description: executes the 'golangci-lint lint' command in the template-operator repository before any pull request.
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "make lint"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile"
+                  name: pull-template-op-tests
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "make test" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  name: pull-build-template-operator
+                  always_run: true
+                  args:
+                    - "--name=template-operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: main-template-op-build
+                  always_run: true
+                  args:
+                    - "--name=template-operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_postsubmit

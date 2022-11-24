@@ -27,7 +27,6 @@ env:
   #VAULT_ADDR: http://127.0.0.1:8200
   # Set a role to be used when assuming roles specified in external secret (AWS only)
   # AWS_INTERMEDIATE_ROLE_ARN:
-  GOOGLE_APPLICATION_CREDENTIALS: /etc/credentials/sa-secret-manager-prow/service-account.json
   # Use custom endpoints for FIPS compliance
   # AWS_STS_ENDPOINT: https://sts-fips.us-east-1.amazonaws.com
   # AWS_SSM_ENDPOINT: http://ssm-fips.us-east-1.amazonaws.com
@@ -100,13 +99,6 @@ envFrom: {}
 # - secretRef:
 #     name: special-config
 
-
-# Create files from existing k8s secrets
-filesFromSecret:
-  sa-secret-manager-prow:
-    secret: sa-secret-manager-prow
-    mountPath: /etc/credentials/sa-secret-manager-prow
-
 rbac:
   # Specifies whether RBAC resources should be created
   create: true
@@ -115,10 +107,11 @@ serviceAccount:
   # Specifies whether a service account should be created
   create: true
   # Specifies annotations for this service account
-  annotations: {}
+  annotations:
+    iam.gke.io/gcp-service-account: secret-manager-prow@sap-kyma-prow.iam.gserviceaccount.com
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
+  name: secret-manager-prow
 
 # Using multiple replicas is not recommended as there is no coordination between replicas.
 # Replicas will try to create and update secrets concurrently which might lead to race conditions.
@@ -165,7 +158,8 @@ resources:
   #   cpu: 100m
   #   memory: 128Mi
 
-nodeSelector: {}
+nodeSelector:
+  iam.gke.io/gke-metadata-server-enabled: "true"
 
 tolerations: []
 

@@ -165,7 +165,7 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 	return nil
 }
 
-func runBuildJob(o options, vs Variants) error {
+func runBuildJob(o options, vs Variants, envs map[string]string) error {
 	runFunc := runInKaniko
 	if os.Getenv("USE_BUILDKIT") == "true" {
 		runFunc = runInBuildKit
@@ -198,15 +198,11 @@ func runBuildJob(o options, vs Variants) error {
 	if err != nil {
 		return err
 	}
-	envMap, err := loadEnv(os.DirFS("/"), o.envFile)
-	if err != nil {
-		return fmt.Errorf("load env: %w", err)
-	}
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
 		destinations := gatherDestinations(repo, o.name, parsedTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		err = runFunc(o, "build", destinations, o.platforms, envMap)
+		err = runFunc(o, "build", destinations, o.platforms, envs)
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
 		}
@@ -216,31 +212,9 @@ func runBuildJob(o options, vs Variants) error {
 			return fmt.Errorf("sign encountered error: %w", err)
 		}
 		fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
+		return nil
 	}
-
-	var errs []error
-	for variant, env := range vs {
-		var variantTags []string
-		for _, tag := range parsedTags {
-			variantTags = append(variantTags, tag+"-"+variant)
-		}
-		destinations := gatherDestinations(repo, o.name, variantTags)
-		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		// (@Ressetkk): When variants provided, build doesn't use env files.
-		// Similar logic should be provided once variants are fixed.
-		if err := runFunc(o, variant, destinations, o.platforms, env); err != nil {
-			errs = append(errs, fmt.Errorf("job %s ended with error: %w", variant, err))
-			fmt.Printf("Job '%s' ended with error: %s.\n", variant, err)
-		} else {
-			err := signImages(&o, destinations)
-			if err != nil {
-				return fmt.Errorf("sign encountered error: %w", err)
-			}
-			fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
-			fmt.Printf("Job '%s' finished successfully.\n", variant)
-		}
-	}
-	return errutil.NewAggregate(errs)
+	return fmt.Errorf("building variants is not supported at this moment")
 }
 
 func signImages(o *options, images []string) error {
@@ -462,16 +436,29 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	dockerfilePath := filepath.Join(context, filepath.Dir(o.dockerfile))
 
-	variantsFile := filepath.Join(context, filepath.Dir(o.dockerfile), "variants.yaml")
-	variant, err := GetVariants(o.variant, variantsFile, os.ReadFile)
-	if err != nil {
-		if !os.IsNotExist(err) {
+	var variant Variants
+	var envs map[string]string
+	if len(o.envFile) > 0 {
+		envs, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
+		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
+
+	} else {
+		variantsFile := filepath.Join(dockerfilePath, "variants.yaml")
+		variant, err = GetVariants(o.variant, variantsFile, os.ReadFile)
+		if err != nil {
+			if !os.IsNotExist(err) {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+		}
 	}
-	err = runBuildJob(o, variant)
+
+	err = runBuildJob(o, variant, envs)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

@@ -54,7 +54,7 @@ templates:
                     MODULE_REGISTRY: "europe-west4-docker.pkg.dev/sap-se-cx-kyma-wookiee/dev-registry/unsigned" 
                     MODULE_VERSION: "0.0.${PULL_NUMBER}"
                     IMG: "eu.gcr.io/kyma-project/keda-manager:PR-${PULL_NUMBER}"
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)|^PROJECT$|^config/*/.*$"
                   name: pull-make-module-build
                   privileged: false
                   command: "make"
@@ -68,7 +68,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
                   name: pre-keda-manager-operator-tests
                   command: "bash"
                   args:

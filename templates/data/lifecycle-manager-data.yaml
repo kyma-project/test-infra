@@ -30,14 +30,14 @@ templates:
             jobs:
               - jobConfig:
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-                  name: pull-lint # "pre-main-lifecycle-manager-lint"
-                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-lifecycle-mgr-lint # "pre-main-lifecycle-manager-lint"
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
-                    description: executes the 'golangci-lint lint' command in the lifecycle-manager 'operator' directory before any pull request.
+                    description: executes the 'golangci-lint lint' command before any pull request.
                   command: "bash"
                   args:
                     - "-c"
-                    - "cd operator && golangci-lint run"
+                    - "golangci-lint run"
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -45,12 +45,12 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
-                  run_if_changed: "^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)"
-                  name: pull-tests # pre-main-lifecycle-manager-tests
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  name: pull-lifecycle-mgr-tests # pre-main-lifecycle-manager-tests
                   command: "bash"
                   args:
                     - "-c"
-                    - "cd operator && make test" # run test make target of operator
+                    - "make test" # run test make target of operator
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
@@ -60,12 +60,11 @@ templates:
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
               - jobConfig:
-                  name: pull-build
+                  name: pull-lifecycle-mgr-build
                   always_run: true
                   args:
                     - "--name=lifecycle-manager"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=operator"
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   local:
@@ -73,12 +72,11 @@ templates:
                   global:
                     - jobConfig_presubmit
               - jobConfig:
-                  name: main-build
+                  name: main-lifecycle-mgr-build
                   always_run: true
                   args:
                     - "--name=lifecycle-manager"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=operator"
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
                 inheritedConfigs:

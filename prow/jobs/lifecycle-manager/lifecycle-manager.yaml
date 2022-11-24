@@ -3,15 +3,15 @@
 
 presubmits: # runs on PRs
   kyma-project/lifecycle-manager:
-    - name: pull-lint
+    - name: pull-lifecycle-mgr-lint
       annotations:
-        description: "executes the 'golangci-lint lint' command in the lifecycle-manager 'operator' directory before any pull request."
+        description: "executes the 'golangci-lint lint' command before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-lint"
+        prow.k8s.io/pubsub.runID: "pull-lifecycle-mgr-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -27,7 +27,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "cd operator && golangci-lint run"
+              - "golangci-lint run"
             resources:
               requests:
                 memory: 3Gi
@@ -39,17 +39,17 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-tests
+    - name: pull-lifecycle-mgr-tests
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-tests"
+        prow.k8s.io/pubsub.runID: "pull-lifecycle-mgr-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -58,14 +58,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
             securityContext:
               privileged: true
             command:
               - "bash"
             args:
               - "-c"
-              - "cd operator && make test"
+              - "make test"
             resources:
               requests:
                 memory: 3Gi
@@ -77,12 +77,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-build
+    - name: pull-lifecycle-mgr-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-build"
+        prow.k8s.io/pubsub.runID: "pull-lifecycle-mgr-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       always_run: true
@@ -100,7 +100,6 @@ presubmits: # runs on PRs
             args:
               - "--name=lifecycle-manager"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=operator"
               - "--dockerfile=Dockerfile"
             volumeMounts:
               - name: config
@@ -113,12 +112,12 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/lifecycle-manager:
-    - name: main-build
+    - name: main-lifecycle-mgr-build
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "main-build"
+        prow.k8s.io/pubsub.runID: "main-lifecycle-mgr-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       always_run: true
@@ -136,7 +135,6 @@ postsubmits: # runs on main
             args:
               - "--name=lifecycle-manager"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=operator"
               - "--dockerfile=Dockerfile"
               - "--tag=latest"
             volumeMounts:

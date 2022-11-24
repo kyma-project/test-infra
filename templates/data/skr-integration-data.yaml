@@ -75,6 +75,11 @@ templates:
             env:
               KEB_PLAN_ID: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
               KEB_REGION: "cf-eu20"
+          keb_plan_preview:
+            annotations:
+              pipeline.platform: gardener_aws
+            env:
+              KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9"
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -174,4 +179,19 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "keb_plan_free_aws"
+                    - "kyma_integration_subaccount"
+              - jobConfig:
+                  name: "skr-preview-dev"
+                  cron: "5 1 * * *" # "At 01:05"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_preview"
                     - "kyma_integration_subaccount"

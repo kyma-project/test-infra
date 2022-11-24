@@ -18,7 +18,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi

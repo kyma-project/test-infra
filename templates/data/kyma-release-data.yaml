@@ -110,7 +110,6 @@ templates:
                     preset-certificates-bucket: "true"
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
-                    preset-gke-pod-security-policy: "true"
                     preset-kms-gc-project-env: "true"
                     preset-cluster-use-ssd: "true"
                   env:
@@ -162,7 +161,6 @@ templates:
                     preset-nightly-github-integration: "true"
                     preset-kms-gc-project-env: "true"
                     preset-certificates-bucket: "true"
-                    preset-gke-pod-security-policy: "true"
                     preset-slack-alerts: "true"
                   volumes:
                   - name: sa-stability-fluentd-storage-writer
