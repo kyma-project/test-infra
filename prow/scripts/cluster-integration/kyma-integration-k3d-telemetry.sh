@@ -56,7 +56,7 @@ function deploy_kyma() {
     kyma provision k3d --ci
   fi
 
-  echo "Printing client and server version info"
+  echo "Kubernetes client and server version:"
 
   kubectl version --output=yaml
 
