@@ -98,7 +98,7 @@ function deploy_kyma() {
 function run_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
   make telemetry
-
+kubectl logs --tail=-1 -l control-plane=telemetry-operator -n kyma-system -c manager
   popd
 }
 
