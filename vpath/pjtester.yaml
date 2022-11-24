@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+      kyma-incubator:
+        compass-console:
+        - pjName: "pull-compass-console-build"
+prConfigs:
+    kyma-incubator:
+      compass-console:
+        prNumber: 79
