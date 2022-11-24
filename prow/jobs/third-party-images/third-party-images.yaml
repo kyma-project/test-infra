@@ -904,7 +904,7 @@ postsubmits: # runs on main
               - "--context=otel-collector"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
-              - "--tag={{ .Env \"KSM_VERSION\" }}-{{ .ShortSHA }}"
+              - "--tag={{ .Env \"OTEL_VERSION\" }}-{{ .ShortSHA }}"
             volumeMounts:
               - name: config
                 mountPath: /config
