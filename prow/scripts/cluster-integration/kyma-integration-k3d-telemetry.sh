@@ -83,7 +83,7 @@ function deploy_kyma() {
   deploy_dryrun+=deploy_commands
 
   $deploy
-  $deploy_dryrun
+  # $deploy_dryrun
 
   kubectl get pods -A
 }
