@@ -1,10 +1,10 @@
 pjConfigs:
-prConfig:
-  kyma-project:
-    kyma:
-      prNumber: 16113
-prowJobs:
-  kyma-project:
-    kyma:
-      - pjName: "pull-eventing-controller-lint"
-        report: false
+  prConfig:
+    kyma-project:
+      kyma:
+        prNumber: 16113
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "pull-eventing-controller-lint"
+          report: false
