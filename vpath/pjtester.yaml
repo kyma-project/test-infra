@@ -6,3 +6,4 @@ pjConfigs:
       - pjName: "pull-telemetry-operator-unit-test"
       - pjName: "pull-telemetry-operator-build"
       - pjName: "pull-webhook-cert-init-build"
+      - pjName: "pull-directory-size-exporter-build"

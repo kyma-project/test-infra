@@ -230,7 +230,7 @@ templates:
 
               - jobConfig:
                   name: "pull-telemetry-operator-lint"
-                  optional: "false"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -243,7 +243,7 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-telemetry-operator-unit-test"
-                  optional: "false"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"

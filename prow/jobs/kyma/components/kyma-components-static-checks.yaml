@@ -409,7 +409,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-telemetry-operator-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/telemetry-operator/(.*\.go$|.golangcilint.yaml)'
-      optional: false
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -434,7 +433,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-telemetry-operator-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/telemetry-operator/.*\.go$'
-      optional: false
       skip_report: false
       decorate: true
       cluster: untrusted-workload
