@@ -318,6 +318,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-telemetry-operator-build
+                  optional: "false"
                   run_if_changed: "^components/telemetry-operator/"
                   args:
                     - "--name=telemetry-operator"
@@ -608,6 +609,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-webhook-cert-init-build
+                  optional: "false"
                   run_if_changed: "^components/webhook-cert-init/"
                   args:
                     - "--name=webhook-cert-init"
