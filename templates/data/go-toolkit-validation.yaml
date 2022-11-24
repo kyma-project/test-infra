@@ -156,7 +156,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/event-publisher-proxy && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                    - "cd components/event-publisher-proxy && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m -v"
                   run_if_changed: '^components/event-publisher-proxy/(.*\.go$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:
