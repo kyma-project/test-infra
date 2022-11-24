@@ -79,8 +79,8 @@ function deploy_kyma() {
   
   deploy_commands+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
 
-  deploy+=deploy_commands
-  deploy_dryrun+=deploy_commands
+  deploy+="$deploy_commands"
+  deploy_dryrun+="$deploy_commands"
 
   $deploy
   $deploy_dryrun
