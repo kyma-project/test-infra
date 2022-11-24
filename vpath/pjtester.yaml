@@ -4,7 +4,7 @@ pjConfigs:
       kyma:
         - pjName: "pull-eventing-controller-lint"
           report: false
-        - pjName: "pull-event-publisher-proxy-unit-test"
+        - pjName: "pull-event-publisher-proxy-lint"
           report: false
 prConfigs:
   kyma-project:

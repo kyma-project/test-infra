@@ -273,7 +273,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/event-publisher-proxy && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+              - "cd components/event-publisher-proxy && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m -v"
             resources:
               requests:
                 memory: 200Mi
@@ -297,7 +297,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./... -v"
+              - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
                 memory: 1Gi
