@@ -42,7 +42,7 @@ templates:
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - image-builder-buildkit
+                    - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
                   name: pull-compass-console-lint
@@ -88,7 +88,7 @@ templates:
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - image-builder-buildkit
+                    - kaniko_buildpack
                     - jobConfig_postsubmit
 
 
