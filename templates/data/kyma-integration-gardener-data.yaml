@@ -271,33 +271,6 @@ templates:
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
               - jobConfig:
-                  name: pre-main-kyma-skr-eventing
-                  # temporarily make the job optional
-                  optional: true
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                    # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: '^((tests/fast-integration/eventing-test|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-                  volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
-                  volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
-                      readOnly: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - skr_aws_job_eventing
-                    - command_integration_skr_eventing
-              - jobConfig:
                   name: pre-main-kyma-gardener-gcp-goats-api-gateway
                   optional: false
                   labels:

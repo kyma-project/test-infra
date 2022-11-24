@@ -50,19 +50,6 @@ templates:
                     - "jobConfig_presubmit"
                   local:
                     - testing
-
-              - jobConfig:
-                  name: "pull-central-application-connectivity-validator-lint"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/central-application-connectivity-validator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-                  run_if_changed: '^components/central-application-connectivity-validator/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                  local:
-                    - linting
               - jobConfig:
                   name: "pull-central-application-connectivity-validator-unit-test"
                   command: "/bin/sh"
@@ -241,16 +228,3 @@ templates:
                     - "jobConfig_presubmit"
                   local:
                     - linting
-              - jobConfig:
-                  name: "pull-telemetry-operator-unit-test"
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/telemetry-operator && make test-local"
-                  run_if_changed: '^components/telemetry-operator/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                  local:
-                    - testing
