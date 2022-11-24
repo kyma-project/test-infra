@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221121-3622f3a5"
             securityContext:
               privileged: true
             command:
@@ -63,7 +63,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221121-3622f3a5"
             command:
               - "prow/cluster/deploy.sh"
             env:
@@ -95,7 +95,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221121-3622f3a5"
             securityContext:
               privileged: true
             command:
@@ -130,7 +130,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20221117-3815e13b72"
+          - image: "gcr.io/k8s-prow/label_sync:v20221123-4b1eb2a191"
             command:
               - "label_sync"
             args:
@@ -171,7 +171,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20221117-3815e13b72"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20221123-4b1eb2a191"
             command:
               - "generic-autobumper"
             args:
@@ -225,7 +225,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20221117-3815e13b72"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20221123-4b1eb2a191"
             command:
               - "generic-autobumper"
             args:

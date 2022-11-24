@@ -73,7 +73,7 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 
 # Versions
 
-ENV GO_VERSION 1.19.2
+ENV GO_VERSION 1.19.3
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go
@@ -105,7 +105,7 @@ RUN apt-get -y --no-install-recommends install nodejs
 
 #Install helm
 
-ENV HELM_VERSION="v3.7.1"
+ENV HELM_VERSION="v3.7.2"
 
 RUN curl -fLSs https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -xzO linux-amd64/helm > /usr/local/bin/helm && \
 	  chmod +x /usr/local/bin/helm && \
@@ -139,7 +139,7 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor |
 #################################################################
 
 # hadolint ignore=DL3022
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20220105-4e0c3c9e /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20221118-5c35cc55 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
 
@@ -148,7 +148,7 @@ ENV PATH=$PATH:/prow-tools
 ######################## Install gcloud #########################
 #################################################################
 
-ENV CLOUD_SDK_VERSION=389.0.0 \
+ENV CLOUD_SDK_VERSION=410.0.0 \
     PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
     CLUSTER_VERSION=$K8S_VERSION

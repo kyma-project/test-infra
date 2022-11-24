@@ -2,16 +2,6 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/third-party-images/third-party-images.yaml
-        localSets:
-          default:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            labels:
-              preset-dind-enabled: "true"
-              preset-sa-gcr-push: "true"
-              preset-docker-push-repository-tpi: "true"
-          image-signing:
-            labels:
-              preset-kyma-kms-sign-key: "true"
         jobConfigs:
           - repoName: "kyma-project/third-party-images"
             jobs:
@@ -19,401 +9,359 @@ templates:
                   name: "pre-main-tpi-cloudsql-proxy"
                   run_if_changed: "^cloudsql-proxy/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
-                    - "ci-pr"
+                    - "--name=tpi/cloudsql-docker/gce-proxy"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=cloudsql-proxy"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-cloudsql-proxy"
                   run_if_changed: "^cloudsql-proxy/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/cloudsql-proxy"
-                    - "ci-main"
+                    - "--name=tpi/cloudsql-docker/gce-proxy"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=cloudsql-proxy"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "pre-main-tpi-docker-registry"
                   run_if_changed: "^docker-registry/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
-                    - "ci-pr"
+                    - "--name=tpi/registry"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=registry"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-docker-registry"
                   run_if_changed: "^docker-registry/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/docker-registry"
-                    - "ci-main"
+                    - "--name=tpi/registry"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=docker-registry"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"REGISTRY_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"
 
               - jobConfig:
                   name: "pre-main-tpi-fluent-bit"
                   run_if_changed: "^fluent-bit/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
-                    - "ci-pr"
+                    - "--name=tpi/fluent-bit"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=fluent-bit"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
 
               - jobConfig:
                   name: "post-main-tpi-fluent-bit"
                   run_if_changed: "^fluent-bit/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/fluent-bit"
-                    - "ci-main"
+                    - "--name=tpi/fluent-bit"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=fluent-bit"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"FLB_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"
 
               - jobConfig:
                   name: "pre-main-tpi-jaeger-operator"
                   run_if_changed: "^jaeger-operator/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
-                    - "ci-pr"
+                    - "--name=tpi/jaeger-operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=jaeger-operator"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-jaeger-operator"
                   run_if_changed: "^jaeger-operator/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/jaeger-operator"
-                    - "ci-main"
+                    - "--name=tpi/jaeger-operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=jaeger-operator"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"JAEGER_OPERATOR_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"
 
               - jobConfig:
                   name: "pre-main-tpi-k8s-tools"
                   run_if_changed: "^k8s-tools/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
-                    - "ci-pr"
+                    - "--name=tpi/k8s-tools"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=k8s-tools"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-k8s-tools"
                   run_if_changed: "^k8s-tools/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/k8s-tools"
-                    - "ci-main"
+                    - "--name=tpi/k8s-tools"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=k8s-tools"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"
 
               - jobConfig:
                   name: "pre-main-tpi-kiali"
                   run_if_changed: "^kiali/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
-                    - "ci-pr"
+                    - "--name=tpi/kiali"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kiali"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-kiali"
                   run_if_changed: "^kiali/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiali"
-                    - "ci-main"
+                    - "--name=tpi/kiali"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kiali"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"KIALI_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"
 
               - jobConfig:
                   name: "pre-main-tpi-loki"
                   run_if_changed: "^loki/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/loki"
-                    - "ci-pr"
+                    - "--name=tpi/loki"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=loki"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-loki"
                   run_if_changed: "^loki/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/loki"
-                    - "ci-main"
+                    - "--name=tpi/loki"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=loki"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"LOKI_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
-              
+                    - "kaniko_buildpack"
+
               - jobConfig:
                   name: "pre-main-tpi-oauth2-proxy"
                   run_if_changed: "^oauth2-proxy/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/oauth2-proxy"
-                    - "ci-pr"
+                    - "--name=tpi/oauth2-proxy"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=oauth2-proxy"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-oauth2-proxy"
                   run_if_changed: "^oauth2-proxy/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/oauth2-proxy"
-                    - "ci-main"
+                    - "--name=tpi/oauth2-proxy"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=oauth2-proxy"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"OAUTH2_PROXY_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"
 
               - jobConfig:
                   name: "pre-main-tpi-kiwigrid-sidecar"
                   run_if_changed: "^kiwigrid-sidecar/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
-                    - "ci-pr"
+                    - "--name=tpi/k8s-sidecar"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kiwigrid-sidecar"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-kiwigrid-sidecar"
                   run_if_changed: "^kiwigrid-sidecar/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kiwigrid-sidecar"
-                    - "ci-main"
+                    - "--name=tpi/k8s-sidecar"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kiwigrid-sidecar"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"KIWIGRID_SIDECAR_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"
 
               - jobConfig:
                   name: "pre-main-tpi-node-exporter"
                   run_if_changed: "^prometheus-node-exporter/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
-                    - "ci-pr"
+                    - "--name=tpi/node-exporter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prometheus-node-exporter"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-node-exporter"
                   run_if_changed: "^prometheus-node-exporter/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/prometheus-node-exporter"
-                    - "ci-main"
+                    - "--name=tpi/node-exporter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prometheus-node-exporter"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"NODE_EXPORTER_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"
 
               - jobConfig:
                   name: "pre-main-tpi-grafana"
                   run_if_changed: "^grafana/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"
-                    - "ci-pr"
+                    - "--name=tpi/grafana"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=grafana"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-grafana"
                   run_if_changed: "^grafana/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/grafana"
-                    - "ci-main"
+                    - "--name=tpi/grafana"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=grafana"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"GRAFANA_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"
 
               - jobConfig:
                   name: "pre-main-tpi-kaniko-executer"
                   run_if_changed: "^kaniko-executer/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kaniko-executer"
-                    - "ci-pr"
+                    - "--name=tpi/kaniko-executor"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kaniko-executer"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-kaniko-executer"
                   run_if_changed: "^kaniko-executer/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kaniko-executer"
-                    - "ci-main"
+                    - "--name=tpi/kaniko-executor"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kaniko-executer"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"KANIKO_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"
 
               - jobConfig:
                   name: "pre-main-tpi-kube-state-metrics"
                   run_if_changed: "^kube-state-metrics/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kube-state-metrics"
-                    - "ci-pr"
+                    - "--name=tpi/kube-state-metrics"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kube-state-metrics"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "default"
+                    - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-kube-state-metrics"
                   run_if_changed: "^kube-state-metrics/"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/third-party-images/kube-state-metrics"
-                    - "ci-main"
+                    - "--name=tpi/kube-state-metrics"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=kube-state-metrics"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag={{`{{ .Env \"KSM_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
-                    - "image_bootstrap"
-                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "default"
-                    - "image-signing"
+                    - "kaniko_buildpack"

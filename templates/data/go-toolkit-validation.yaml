@@ -18,7 +18,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221028-60f0f5a2"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -230,10 +230,11 @@ templates:
 
               - jobConfig:
                   name: "pull-telemetry-operator-lint"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/telemetry-operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                    - "cd components/telemetry-operator && make lint"
                   run_if_changed: '^components/telemetry-operator/(.*\.go$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:
@@ -242,10 +243,11 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-telemetry-operator-unit-test"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/telemetry-operator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "cd components/telemetry-operator && make test-local"
                   run_if_changed: '^components/telemetry-operator/.*\.go$'
                 inheritedConfigs:
                   global:
