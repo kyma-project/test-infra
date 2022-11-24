@@ -76,7 +76,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b
     command: /image-builder
     labels:
       preset-sa-kyma-push-images: "true"
@@ -100,7 +100,7 @@ globalSets:
         value: high-cpu
         operator: Equal
         effect: NoSchedule
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e-buildkit
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b-buildkit
     command: "/image-builder"
     labels:
       preset-sa-kyma-push-images: "true"
@@ -155,7 +155,7 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221118-5c35cc55"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221124-ce0a9db7"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221121-3622f3a5"
   image_buildpack-node:
