@@ -58,9 +58,9 @@ function deploy_kyma() {
 
   echo "Kubernetes client and server version:"
 
-  kubectl version
+  kubectl version --output=yaml
 
-  local deploy_commands
+  local deploy
   local deploy_commands
   local deploy_dryrun
   
@@ -83,7 +83,7 @@ function deploy_kyma() {
   deploy_dryrun+=deploy_commands
 
   $deploy
-  # $deploy_dryrun
+  $deploy_dryrun
 
   kubectl get pods -A
 }
@@ -91,8 +91,7 @@ function deploy_kyma() {
 
 function run_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-  npm install
-  npm run test-telemetry
+  make telemetry
 
   popd
 }
