@@ -70,11 +70,11 @@ function deploy_kyma() {
   local deploy_commands
   local deploy_dryrun
   
-  deploy_commands=" --ci"
-  \ " --source=local"
-  \ " --workspace ${KYMA_SOURCES_DIR}" 
-  \ " --value=telemetry.operator.controllers.tracing.enabled=true"
-  \ " --components-file kyma-integration-k3d-telemetry-components.yaml"
+  deploy_commands=" --ci
+   --source=local
+   --workspace ${KYMA_SOURCES_DIR}
+   --value=telemetry.operator.controllers.tracing.enabled=true
+   --components-file kyma-integration-k3d-telemetry-components.yaml"
   deploy="kyma deploy -p evaluation"
   deploy_dryrun="kyma deploy --dry-run  -p production"
 
