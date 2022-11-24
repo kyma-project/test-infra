@@ -91,8 +91,7 @@ function deploy_kyma() {
 
 function run_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
-  npm install
-  npm run test-telemetry
+  make telemetry
 
   popd
 }
