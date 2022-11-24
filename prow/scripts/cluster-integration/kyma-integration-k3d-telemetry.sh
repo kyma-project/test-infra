@@ -14,6 +14,12 @@ function prereq_test() {
   command -v go >/dev/null 2>&1 || { echo >&2 "go not found"; exit 1; }
 }
 
+cleanup() {
+  rm "teltest.yaml" || true
+}
+
+trap cleanup EXIT SIGINT
+
 function load_env() {
   ENV_FILE=".env"
   if [ -f "${ENV_FILE}" ]; then
@@ -66,7 +72,7 @@ function deploy_kyma() {
   
   deploy_commands=" --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
   deploy="kyma deploy -p evaluation"
-  deploy_dryrun="kyma deploy --dry-run --quiet -p production"
+  deploy_dryrun="kyma deploy --dry-run  -p production  -o yaml > teltest.yaml"
 
   deploy_commands+=" --value=telemetry.operator.controllers.tracing.enabled=true"
   
