@@ -66,7 +66,7 @@ function deploy_kyma() {
   
   deploy_commands=" --ci --source=local --workspace ${KYMA_SOURCES_DIR}"
   deploy="kyma deploy -p evaluation"
-  deploy_dryrun="kyma deploy --dry-run -p production"
+  deploy_dryrun="kyma deploy --dry-run --quiet -p production"
 
   deploy_commands+=" --value=telemetry.operator.controllers.tracing.enabled=true"
   
