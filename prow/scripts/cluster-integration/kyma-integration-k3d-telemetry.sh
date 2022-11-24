@@ -58,7 +58,7 @@ function deploy_kyma() {
 
   echo "Printing client and server version info"
 
-  kubectl version
+  kubectl version --output=yaml
 
   local kyma_deploy_cmd
   # local kyma_deploy_cmd_dryrun
