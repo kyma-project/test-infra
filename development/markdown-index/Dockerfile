@@ -5,7 +5,7 @@ COPY . .
 
 RUN  CGO_ENABLED=0 go build -o /markdown-index -ldflags="-s -w" ./development/markdown-index
 
-FROM alpine:3.16.3
+FROM alpine:3.17.0
 
 COPY --from=builder /markdown-index /markdown-index
 RUN apk add --no-cache ca-certificates git && \
