@@ -208,4 +208,15 @@ updates:
     commit-message:
       prefix: "golangci-lint"
       include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/development/markdown-index"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "markdown-indext"
+      include: "scope"
 

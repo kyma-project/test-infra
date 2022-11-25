@@ -148,3 +148,10 @@ templates:
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/markdown-index"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "markdown-indext"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
