@@ -61,22 +61,25 @@ templates:
                     - "disable_testgrid"
                     - extra_refs_test-infra
               - jobConfig:
-                  name: ci-prow-markdown-index
-                  cron: "30 * * * 1-5"
+                  name: post-test-infra-markdown-index-autobump
                   slack_channel: kyma-prow-alerts
-                  #TODO: update image tag
-                  image: gcr.io/k8s-prow/markdown-index:v20221024-d0c013ee2d
-                  command: markdown-index
+                  branches:
+                    - ^main$
+                  run_if_changed: '.md$'
+                  skip_report: "false"
+                  max_concurrency: "10"
+                  type_postsubmit: "true"
+                  command: /markdown-index
                   args:
                     - --config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml
                 inheritedConfigs:
                   local:
-                    - periodic_config
                     - github_token_mounts
                   global:
-                    - "pubsub_labels"
-                    - "disable_testgrid"
-                    - extra_refs_test-infra
+                    - jobConfig_postsubmit
+                    - pubsub_labels
+                    - disable_testgrid
+                    - image_markdown_index
               - jobConfig:
                   name: post-test-infra-deploy-prow
                   slack_channel: kyma-prow-alerts

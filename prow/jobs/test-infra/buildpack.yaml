@@ -233,7 +233,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-test-infra-prow-tools"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^development/markdown-index|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -531,14 +531,14 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=markdown-index"
+              - "--name=test-infra/markdown-index"
+              - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/markdown-index/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -1112,14 +1112,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/kaniko-build:v20220926-52bb5a7f0"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
             command:
-              - "/kaniko-build"
+              - "/image-builder"
             args:
-              - "--name=markdown-index"
+              - "--name=test-infra/markdown-index"
+              - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/markdown-index/Dockerfile"
-              - "--directory=test-infra"
             volumeMounts:
               - name: config
                 mountPath: /config

@@ -14,14 +14,10 @@ import (
 	"strings"
 )
 
-const repositoryName = "test-infra"
-
 var _ bumper.PRHandler = (*client)(nil)
 
 type client struct {
-	o        *options
-	images   map[string]string
-	versions map[string][]string
+	o *options
 }
 
 // Changes returns a slice of functions, each one does some stuff, and
@@ -29,7 +25,7 @@ type client struct {
 func (c *client) Changes() []func(context.Context) (string, error) {
 	return []func(context.Context) (string, error){
 		func(ctx context.Context) (string, error) {
-			return fmt.Sprintf("Bumping index.md"), nil
+			return "Bumping index.md", nil
 		},
 	}
 }
@@ -40,22 +36,28 @@ func (c *client) PRTitleBody() (string, string, error) {
 }
 
 // options is the options for autobumper operations.
-type options struct{}
+type options struct {
+	GitHubRepo      string   `yaml:"gitHubRepo"`
+	FoldersToFilter []string `yaml:"foldersToFilter"`
+	FilesToFilter   []string `yaml:"filesToFilter"`
+}
 
 func main() {
-	f, err := os.Create("index.md")
+	f, err := os.Create("docs/index.md")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer f.Close()
 
+	o, pro, err := parseOptions()
+	if err != nil {
+		logrus.WithError(err).Fatalf("Failed to parse options")
+	}
+
 	startPath, err := os.Getwd()
-	fmt.Println(startPath)
 	filepath.Walk(startPath, func(path string, info os.FileInfo, e error) error {
-		pathFromRepositoryRoot := strings.Split(path, repositoryName)[1]
-		if filterByFileExtension(path) && filterByFolderName(path) && filterByFileName(pathFromRepositoryRoot) {
-			mdLine := getDescription(path) + "\n[" + pathFromRepositoryRoot + "](" + pathFromRepositoryRoot + ")\n\n"
-			fmt.Println(mdLine)
+		if filterByFileExtension(path) && filterByFolderName(path, o) && filterByFileName(path, o) {
+			mdLine := getDescription(path, o)
 			//write line to file
 			_, err = f.WriteString(mdLine)
 			if err != nil {
@@ -68,17 +70,15 @@ func main() {
 		fmt.Println("ERROR:", err)
 	}
 
-	//bumper transplant
 	ctx := context.Background()
 	logrus.SetLevel(logrus.DebugLevel)
-	o, pro, err := parseOptions()
-	if err != nil {
-		logrus.WithError(err).Fatalf("Failed to run the bumper tool")
-	}
-
 	if err := bumper.Run(ctx, pro, &client{o: o}); err != nil {
 		logrus.WithError(err).Fatalf("failed to run the bumper tool")
 	}
+}
+
+func getPathFromRepositoryRoot(path string, o *options) string {
+	return strings.Split(path, o.GitHubRepo)[1]
 }
 
 func parseOptions() (*options, *bumper.Options, error) {
@@ -117,32 +117,44 @@ func filterByFileExtension(path string) bool {
 	return strings.Contains(path, ".md")
 }
 
-func filterByFolderName(path string) bool {
-	return !strings.Contains(path, ".github") && !strings.Contains(path, ".githooks")
+func filterByFolderName(path string, o *options) bool {
+	pathFromRoot := getPathFromRepositoryRoot(path, o)
+	for _, folderName := range o.FoldersToFilter {
+		if strings.Contains(pathFromRoot, folderName) {
+			return false
+		}
+	}
+	return true
 }
 
-func filterByFileName(path string) bool {
-	return path != "/CODE_OF_CONDUCT.md" && path != "/CONTRIBUTING.md" && path != "/NOTICE.md" && path != "/README.md" && path != "/index.md"
+func filterByFileName(path string, o *options) bool {
+	pathFromRoot := getPathFromRepositoryRoot(path, o)
+	for _, fileName := range o.FilesToFilter {
+		if pathFromRoot == fileName {
+			return false
+		}
+	}
+	return true
 }
 
-func getDescription(path string) string {
+func getDescription(path string, o *options) string {
 	file, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
-		return "# " + strings.Split(path, repositoryName)[1]
+		return getPathFromRepositoryRoot(path, o)
 	}
 	defer file.Close()
 
 	fileScanner := bufio.NewScanner(file)
-
 	fileScanner.Split(bufio.ScanLines)
 
+	pathFromRoot := getPathFromRepositoryRoot(path, o)
 	var description = ""
 	for fileScanner.Scan() {
 		if len(description) == 0 && strings.Contains(fileScanner.Text(), "#") {
-			description = fileScanner.Text() + "\n"
+			description = "[" + strings.Replace(fileScanner.Text(), "# ", "", 1) + "](" + pathFromRoot + ") - "
 		} else if len(description) > 0 && !strings.Contains(fileScanner.Text(), "#") && len(fileScanner.Text()) > 0 {
-			description += fileScanner.Text() + "\n"
+			description += fileScanner.Text() + "\n\n"
 			break
 		}
 	}
@@ -150,5 +162,5 @@ func getDescription(path string) string {
 	if len(description) > 0 {
 		return description
 	}
-	return "# " + strings.Split(path, repositoryName)[1]
+	return getPathFromRepositoryRoot(path, o)
 }
