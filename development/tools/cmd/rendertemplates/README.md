@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Render Templates is a tool that reads the configuration from a [`config.yaml`](../../../../templates/config.yaml) file and [`data`](../../../../templates/data) files to generate output files, such as Prow component jobs. While the `config.yaml` file can hold configuration for an output file, you can place such data within the data files that hold configuration for related output files. Having separate files with grouped data is cleaner and easier to maintain than one huge config file.
+The Render Templates is a tool that reads the configuration from a [`config.yaml`](/templates/config.yaml) file and [`data`](/templates/data) files to generate output files, such as Prow component jobs. While the `config.yaml` file can hold configuration for an output file, you can place such data within the data files that hold configuration for related output files. Having separate files with grouped data is cleaner and easier to maintain than one huge config file.
 
 The `config.yaml` file and the data files specify the following for the Render Templates:
 - Templates it must use to generate the output files
