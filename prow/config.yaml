@@ -242,6 +242,10 @@ branch-protection:
           protect: false
         btp-manager:
           protect: false
+        busola:
+          branches:
+            luigiless-busola:
+              protect: false
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
