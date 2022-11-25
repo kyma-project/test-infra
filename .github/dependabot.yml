@@ -208,12 +208,6 @@ updates:
     commit-message:
       prefix: "golangci-lint"
       include: "scope"
-  - package-ecosystem: 
-    directory: "/prow/images/cla-assistant-external-plugin/Dockerfile"
-    schedule:
-      interval: 
-    commit-message:
-      prefix: "cla-plugin"
   - package-ecosystem: "docker"
     directory: "/prow/images/needs-tws-external-plugin/Dockerfile"
     labels:
@@ -224,6 +218,17 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "tws-plugin"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/prow/images/cla-assistant-external-plugin/Dockerfile"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "cla-plugin"
       include: "scope"
   - package-ecosystem: "docker"
     directory: 

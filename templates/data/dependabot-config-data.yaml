@@ -149,13 +149,16 @@ templates:
                   local:
                     - "dailyDockerEcosystem"
               - jobConfig:
-                  directory: "/prow/images/cla-assistant-external-plugin/Dockerfile"
-                  # commit message can be 15 characters max
-                  commitMsgPrefix: "cla-plugin"
-              - jobConfig:
                   directory: "/prow/images/needs-tws-external-plugin/Dockerfile"
                   # commit message can be 15 characters max
                   commitMsgPrefix: "tws-plugin"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/cla-assistant-external-plugin/Dockerfile"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "cla-plugin"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
