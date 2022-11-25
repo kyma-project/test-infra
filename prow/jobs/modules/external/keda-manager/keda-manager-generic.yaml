@@ -146,14 +146,24 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/keda-manager:
@@ -183,12 +193,22 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   

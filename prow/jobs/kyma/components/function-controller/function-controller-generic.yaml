@@ -26,14 +26,24 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-controller"
               - "--dockerfile=deploy/manager/Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pull-function-webhook-build
       annotations:
         pipeline.trigger: "pr-submit"
@@ -57,14 +67,24 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-controller"
               - "--dockerfile=deploy/webhook/Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pull-function-jobinit-build
       annotations:
         pipeline.trigger: "pr-submit"
@@ -88,14 +108,24 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-controller"
               - "--dockerfile=deploy/jobinit/Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/kyma:
@@ -123,14 +153,24 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-controller"
               - "--dockerfile=deploy/manager/Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-function-webhook-build
       annotations:
         pipeline.trigger: "pr-merge"
@@ -155,14 +195,24 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-controller"
               - "--dockerfile=deploy/webhook/Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-function-jobinit-build
       annotations:
         pipeline.trigger: "pr-merge"
@@ -187,12 +237,22 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-controller"
               - "--dockerfile=deploy/jobinit/Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   

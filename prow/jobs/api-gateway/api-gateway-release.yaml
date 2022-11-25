@@ -31,14 +31,24 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=Dockerfile"
               - "--tag=$(git describe --abbrev=0 --tags)"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: rel-api-gateway-webhook-certificates-build
       annotations:
         pipeline.trigger: "pr-merge"
@@ -67,14 +77,24 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=Dockerfile-certificates"
               - "--tag=$(git describe --abbrev=0 --tags)"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: rel-api-gateway-goreleaser
       annotations:
         pipeline.trigger: "pr-merge"

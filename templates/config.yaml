@@ -78,14 +78,21 @@ globalSets:
     pubsub_topic: "prowjobs"
     image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e
     command: /image-builder
+    request_memory: "1.5Gi"
+    request_cpu: "1"
     labels:
       preset-sa-kyma-push-images: "true"
     volumes:
       - name: config
         configMapName: kaniko-build-config
+      - name: signify-secret
+        secretName: signify-dev-secret
     volumeMounts:
       - name: config
         mountPath: /config
+        readOnly: true
+      - name: signify-secret
+        mountPath: /secret
         readOnly: true
   image-builder-buildkit:
     skip_report: "false"
@@ -102,6 +109,8 @@ globalSets:
         effect: NoSchedule
     image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e-buildkit
     command: "/image-builder"
+    request_memory: "1.5Gi"
+    request_cpu: "1"
     labels:
       preset-sa-kyma-push-images: "true"
     annotations:
@@ -114,11 +123,16 @@ globalSets:
         emptyDir: true
       - name: config
         configMapName: kaniko-build-config
+      - name: signify-secret
+        secretName: signify-dev-secret
     volumeMounts:
       - mountPath: /home/user/.local/share/buildkit
         name: share
       - name: config
         mountPath: /config
+        readOnly: true
+      - name: signify-secret
+        mountPath: /secret
         readOnly: true
   linting:
     skip_report: "false"

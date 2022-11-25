@@ -50,6 +50,9 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         tolerations:
           - key: dedicated
             operator: Equal
@@ -62,6 +65,9 @@ presubmits: # runs on PRs
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pull-hydrator-unit-test
       annotations:
         pipeline.trigger: "pr-submit"
@@ -137,6 +143,9 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         tolerations:
           - key: dedicated
             operator: Equal
@@ -149,4 +158,7 @@ postsubmits: # runs on main
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
