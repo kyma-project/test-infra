@@ -170,6 +170,8 @@ globalSets:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
   image_gardener-rotate:
     image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221121-4ded4f32"
+  image_markdown_index:
+    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:PR-6386"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -350,6 +352,3 @@ templates:
   - from : test-infra-autobump-config.yaml
     render:
       - to: ../../prow/autobump-config/test-infra-autobump-config.yaml
-  - from: test-infra-markdown-index-autobump-config.yaml
-    render:
-      - to: ../../prow/markdown-index/test-infra-markdown-index-autobump-config.yaml

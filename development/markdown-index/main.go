@@ -14,8 +14,6 @@ import (
 	"strings"
 )
 
-const repositoryName = "test-infra"
-
 var _ bumper.PRHandler = (*client)(nil)
 
 type client struct {
@@ -39,6 +37,7 @@ func (c *client) PRTitleBody() (string, string, error) {
 
 // options is the options for autobumper operations.
 type options struct {
+	gitHubRepo      string   `yaml:"gitHubRepo"`
 	FoldersToFilter []string `yaml:"foldersToFilter"`
 	FilesToFilter   []string `yaml:"filesToFilter"`
 }
@@ -58,9 +57,9 @@ func main() {
 	startPath, err := os.Getwd()
 	fmt.Println(startPath)
 	filepath.Walk(startPath, func(path string, info os.FileInfo, e error) error {
-		pathFromRepositoryRoot := strings.Split(path, repositoryName)[1]
+		pathFromRepositoryRoot := strings.Split(path, o.gitHubRepo)[1]
 		if filterByFileExtension(path) && filterByFolderName(path, o) && filterByFileName(pathFromRepositoryRoot, o) {
-			mdLine := getDescription(path, pathFromRepositoryRoot)
+			mdLine := getDescription(path, pathFromRepositoryRoot, o)
 			//write line to file
 			_, err = f.WriteString(mdLine)
 			if err != nil {
@@ -134,11 +133,11 @@ func filterByFileName(path string, o *options) bool {
 	return true
 }
 
-func getDescription(path string, pathFromRepositoryRoot string) string {
+func getDescription(path string, pathFromRepositoryRoot string, o *options) string {
 	file, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
-		return "# " + strings.Split(path, repositoryName)[1]
+		return "# " + strings.Split(path, o.gitHubRepo)[1]
 	}
 	defer file.Close()
 
@@ -159,5 +158,5 @@ func getDescription(path string, pathFromRepositoryRoot string) string {
 	if len(description) > 0 {
 		return description
 	}
-	return "# " + strings.Split(path, repositoryName)[1]
+	return "# " + strings.Split(path, o.gitHubRepo)[1]
 }
