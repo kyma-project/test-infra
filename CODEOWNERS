@@ -62,3 +62,4 @@
 
 # Don't require review for auto generated files
 /test-inventory-integration.md
+/docs/index.md
