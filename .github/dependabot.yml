@@ -209,7 +209,7 @@ updates:
       prefix: "golangci-lint"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/prow/images/needs-tws-external-plugin/Dockerfile"
+    directory: "/prow/images/needs-tws-external-plugin"
     labels:
       - "docker"
       - "skip-review"
@@ -220,7 +220,7 @@ updates:
       prefix: "tws-plugin"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/prow/images/cla-assistant-external-plugin/Dockerfile"
+    directory: "/prow/images/cla-assistant-external-plugin"
     labels:
       - "docker"
       - "skip-review"
