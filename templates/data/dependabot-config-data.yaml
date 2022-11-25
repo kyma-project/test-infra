@@ -148,3 +148,24 @@ templates:
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/needs-tws-external-plugin"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "tws-plugin"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/cla-assistant-external-plugin"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "cla-plugin"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/markdown-index"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "markdown-index"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"

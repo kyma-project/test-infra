@@ -243,29 +243,8 @@ templates:
                     - installer_2
               # postsubmits
               - jobConfig:
-                  name: post-main-kyma-gardener-gcp-goats-api-gateway
-                  optional: false
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  run_if_changed: "^((tests/components/api-gateway\\S+|resources/api-gateway\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    API_GATEWAY_INTEGRATION: "true"
-                    TEST_ORY_IMAGE: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                    - disable_testgrid
-                  local:
-                    - jobConfig_default
-                    - gardener_gcp_job
-                    - command_integration
-              - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing
-                  optional: false
+                  optional: true
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -292,33 +271,6 @@ templates:
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
               - jobConfig:
-                  name: pre-main-kyma-skr-eventing
-                  # temporarily make the job optional
-                  optional: true
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                    # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: '^((tests/fast-integration/eventing-test|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-                  volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
-                  volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
-                      readOnly: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - skr_aws_job_eventing
-                    - command_integration_skr_eventing
-              - jobConfig:
                   name: pre-main-kyma-gardener-gcp-goats-api-gateway
                   optional: false
                   labels:
@@ -342,7 +294,7 @@ templates:
                     - command_integration
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing-upgrade
-                  optional: false
+                  optional: true
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -467,27 +419,3 @@ templates:
                     - jobConfig_default
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma2_to_main
-              - jobConfig:
-                  name: kyma-upgrade-gardener-kyma2-minor-versions
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Azure Kyma 2 previous minor versions.
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 8 * * 1-5"
-                  labels:
-                    preset-bot-github-token: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - image_kyma-integration
-                    - jobConfig_slack_jellyfish
-                    - kyma_minor_upgrade
-                  local:
-                    - jobConfig_default
-                    - gardener_azure_job_old_version
-                    - command_upgrade_gardener_kyma2_minor_versions

@@ -1,0 +1,19 @@
+presubmits:
+  kyma-project/test-infra:
+    - name: pull-poc-tekton-pipeline
+      max_concurrency: 10
+      agent: tekton-pipeline
+      always_run: false
+      skip_report: false
+      decorate: false
+      cluster: tekton
+      pipeline_run_spec:
+        pipelineRef:
+          name: prototype-pipeline
+        workspaces:
+          - name: artifacts
+            emptyDir: {}
+        resources:
+          - name: git
+            resourceRef:
+              name: PROW_IMPLICIT_GIT_REF

@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221121-3622f3a5"
             securityContext:
               privileged: true
             command:
@@ -43,6 +43,31 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/test-infra:
+    - name: post-test-infra-markdown-index-autobump
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-markdown-index-autobump"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
+      run_if_changed: '.md$'
+      skip_report: false
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      reporter_config:
+        slack:
+          channel: kyma-prow-alerts
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20221125-ea47d7c8"
+            command:
+              - "/markdown-index"
+            args:
+              - "--config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml"
     - name: post-test-infra-deploy-prow
       annotations:
         pipeline.trigger: "pr-merge"
@@ -63,7 +88,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221121-3622f3a5"
             command:
               - "prow/cluster/deploy.sh"
             env:
@@ -95,7 +120,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221027-e0b06787"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221121-3622f3a5"
             securityContext:
               privileged: true
             command:
@@ -130,7 +155,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20221117-3815e13b72"
+          - image: "gcr.io/k8s-prow/label_sync:v20221123-4b1eb2a191"
             command:
               - "label_sync"
             args:
@@ -171,7 +196,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20221117-3815e13b72"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20221123-4b1eb2a191"
             command:
               - "generic-autobumper"
             args:
@@ -198,7 +223,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20221117-3815e13b72"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20221123-4b1eb2a191"
             command:
               - "generic-autobumper"
             args:

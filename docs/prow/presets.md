@@ -1,6 +1,6 @@
 # Presets
 
-This document contains the list of all Presets available in the [`config.yaml`](../../prow/config.yaml) file. Use them to define Prow Jobs for your components.
+This document contains the list of all Presets available in the [`config.yaml`](/prow/config.yaml) file. Use them to define Prow Jobs for your components.
 
 | Name                                                      | Description                                                                                                                                                                               |
 | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

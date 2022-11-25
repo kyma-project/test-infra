@@ -3,71 +3,6 @@
 
 presubmits: # runs on PRs
   kyma-incubator/compass-console:
-    - name: pull-compass-console-build
-      annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-compass-console-build"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      run_if_changed: '^compass/|^components/|^shared/|^package.json'
-      skip_report: false
-      decorate: true
-      decoration_config:
-        grace_period: 1m
-        timeout: 60m
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-        - ^master$
-        - ^hotfix-.*$
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e-buildkit"
-            command:
-              - "/image-builder"
-            args:
-              - "--name=incubator/compass-console"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=."
-              - "--dockerfile=compass/Dockerfile"
-              - "--platform=linux/amd64"
-              - "--platform=linux/arm64"
-            env:
-              - name: BUILDKITD_FLAGS
-                value: "--oci-worker-no-process-sandbox"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: share
-                mountPath: /home/user/.local/share/buildkit
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-        volumes:
-          - name: share
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: pull-compass-console-lint
       annotations:
         pipeline.trigger: "pr-submit"
@@ -83,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221028-f16e46a1"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
             command:
               - "/bin/sh"
             args:
@@ -108,7 +43,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221028-f16e46a1"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
             command:
               - "/bin/sh"
             args:
@@ -145,7 +80,7 @@ postsubmits: # runs on main
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221031-cc716911e-buildkit"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b-buildkit"
             command:
               - "/image-builder"
             args:
@@ -186,4 +121,3 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-  

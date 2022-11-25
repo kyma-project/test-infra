@@ -1,4 +1,4 @@
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20221027-e0b06787
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32
 
 # Commit details
 ARG commit

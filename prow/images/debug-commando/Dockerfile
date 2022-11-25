@@ -1,6 +1,6 @@
 # Image with tools for troubleshooting and debugging.
 
-FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:go1.18
+FROM eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5
 
 # Commit details
 
