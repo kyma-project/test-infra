@@ -50,6 +50,9 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         tolerations:
           - key: dedicated
             operator: Equal
@@ -62,6 +65,9 @@ presubmits: # runs on PRs
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-incubator/compass:
@@ -112,6 +118,9 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         tolerations:
           - key: dedicated
             operator: Equal
@@ -124,4 +133,7 @@ postsubmits: # runs on main
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
