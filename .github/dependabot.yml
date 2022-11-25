@@ -231,7 +231,7 @@ updates:
       prefix: "cla-plugin"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: 
+    directory: "/development/markdown-index"
     labels:
       - "docker"
       - "skip-review"
@@ -239,6 +239,6 @@ updates:
     schedule:
       interval: "daily"
     commit-message:
-      prefix: 
+      prefix: "markdown-indext"
       include: "scope"
 
