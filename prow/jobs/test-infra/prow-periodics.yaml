@@ -63,7 +63,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:PR-6386"
+          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20221125-ea47d7c8"
             command:
               - "/markdown-index"
             args:
