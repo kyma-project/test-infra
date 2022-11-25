@@ -37,7 +37,7 @@ func (c *client) PRTitleBody() (string, string, error) {
 
 // options is the options for autobumper operations.
 type options struct {
-	gitHubRepo      string   `yaml:"gitHubRepo"`
+	GitHubRepo      string   `yaml:"gitHubRepo"`
 	FoldersToFilter []string `yaml:"foldersToFilter"`
 	FilesToFilter   []string `yaml:"filesToFilter"`
 }
@@ -55,11 +55,9 @@ func main() {
 	}
 
 	startPath, err := os.Getwd()
-	fmt.Println(startPath)
 	filepath.Walk(startPath, func(path string, info os.FileInfo, e error) error {
-		pathFromRepositoryRoot := strings.Split(path, o.gitHubRepo)[1]
-		if filterByFileExtension(path) && filterByFolderName(path, o) && filterByFileName(pathFromRepositoryRoot, o) {
-			mdLine := getDescription(path, pathFromRepositoryRoot, o)
+		if filterByFileExtension(path) && filterByFolderName(path, o) && filterByFileName(path, o) {
+			mdLine := getDescription(path, o)
 			//write line to file
 			_, err = f.WriteString(mdLine)
 			if err != nil {
@@ -77,6 +75,10 @@ func main() {
 	if err := bumper.Run(ctx, pro, &client{o: o}); err != nil {
 		logrus.WithError(err).Fatalf("failed to run the bumper tool")
 	}
+}
+
+func getPathFromRepositoryRoot(path string, o *options) string {
+	return strings.Split(path, o.GitHubRepo)[1]
 }
 
 func parseOptions() (*options, *bumper.Options, error) {
@@ -116,8 +118,9 @@ func filterByFileExtension(path string) bool {
 }
 
 func filterByFolderName(path string, o *options) bool {
+	pathFromRoot := getPathFromRepositoryRoot(path, o)
 	for _, folderName := range o.FoldersToFilter {
-		if strings.Contains(path, folderName) {
+		if strings.Contains(pathFromRoot, folderName) {
 			return false
 		}
 	}
@@ -125,30 +128,31 @@ func filterByFolderName(path string, o *options) bool {
 }
 
 func filterByFileName(path string, o *options) bool {
+	pathFromRoot := getPathFromRepositoryRoot(path, o)
 	for _, fileName := range o.FilesToFilter {
-		if path == fileName {
+		if pathFromRoot == fileName {
 			return false
 		}
 	}
 	return true
 }
 
-func getDescription(path string, pathFromRepositoryRoot string, o *options) string {
+func getDescription(path string, o *options) string {
 	file, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
-		return "# " + strings.Split(path, o.gitHubRepo)[1]
+		return getPathFromRepositoryRoot(path, o)
 	}
 	defer file.Close()
 
 	fileScanner := bufio.NewScanner(file)
-
 	fileScanner.Split(bufio.ScanLines)
 
+	pathFromRoot := getPathFromRepositoryRoot(path, o)
 	var description = ""
 	for fileScanner.Scan() {
 		if len(description) == 0 && strings.Contains(fileScanner.Text(), "#") {
-			description = "[" + strings.Replace(fileScanner.Text(), "# ", "", 1) + "](" + pathFromRepositoryRoot + ") - "
+			description = "[" + strings.Replace(fileScanner.Text(), "# ", "", 1) + "](" + pathFromRoot + ") - "
 		} else if len(description) > 0 && !strings.Contains(fileScanner.Text(), "#") && len(fileScanner.Text()) > 0 {
 			description += fileScanner.Text() + "\n\n"
 			break
@@ -158,5 +162,5 @@ func getDescription(path string, pathFromRepositoryRoot string, o *options) stri
 	if len(description) > 0 {
 		return description
 	}
-	return "# " + strings.Split(path, o.gitHubRepo)[1]
+	return getPathFromRepositoryRoot(path, o)
 }
