@@ -23,5 +23,5 @@ sign-config:
         timeout: 5m
         retry-timeout: 10s
         secret:
-          path: /secret/signify.yaml
+          path: /secret/secret.yaml
           type: signify
