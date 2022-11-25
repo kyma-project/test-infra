@@ -65,7 +65,6 @@ templates:
                   args:
                     - "--name=template-operator"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=operator"
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   local:
@@ -78,7 +77,6 @@ templates:
                   args:
                     - "--name=template-operator"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=operator"
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
                 inheritedConfigs:

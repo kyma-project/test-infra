@@ -8,7 +8,7 @@
 
 * @kyma-project/prow
 /development @kyma-project/prow
-/docs @kyma-project/prow @majakurcius @mmitoraj @grego952 @NHingerl @IwonaLanger  
+/docs @kyma-project/prow @mmitoraj @grego952 @NHingerl @IwonaLanger  
 /prow @kyma-project/prow
 /prow/cluster @kyma-project/prow
 /prow/images @kyma-project/prow
@@ -58,7 +58,7 @@
 /templates/templates @kyma-project/prow
 
 # All .md files
-*.md @mmitoraj @majakurcius @NHingerl @grego952 @IwonaLanger
+*.md @mmitoraj @NHingerl @grego952 @IwonaLanger
 
 # Don't require review for auto generated files
 /test-inventory-integration.md

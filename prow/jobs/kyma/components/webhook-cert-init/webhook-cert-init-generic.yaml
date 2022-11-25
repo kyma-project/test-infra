@@ -3,15 +3,15 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pull-eventing-controller-build
+    - name: pull-webhook-cert-init-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-eventing-controller-build"
+        prow.k8s.io/pubsub.runID: "pull-webhook-cert-init-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/eventing-controller/'
+      run_if_changed: '^components/webhook-cert-init/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -22,9 +22,9 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=eventing-controller"
+              - "--name=webhook-cert-init"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/eventing-controller"
+              - "--context=components/webhook-cert-init"
               - "--dockerfile=Dockerfile"
             volumeMounts:
               - name: config
@@ -37,16 +37,16 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-eventing-controller-build
+    - name: post-webhook-cert-init-build
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-eventing-controller-build"
+        prow.k8s.io/pubsub.runID: "post-webhook-cert-init-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/eventing-controller/'
+      run_if_changed: '^components/webhook-cert-init/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -57,9 +57,9 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=eventing-controller"
+              - "--name=webhook-cert-init"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/eventing-controller"
+              - "--context=components/webhook-cert-init"
               - "--dockerfile=Dockerfile"
             volumeMounts:
               - name: config
