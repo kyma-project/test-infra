@@ -39,11 +39,18 @@ presubmits: # runs on PRs
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -57,6 +64,9 @@ presubmits: # runs on PRs
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-incubator/ord-service:
@@ -96,11 +106,18 @@ postsubmits: # runs on main
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -114,4 +131,7 @@ postsubmits: # runs on main
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   

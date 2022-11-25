@@ -27,14 +27,24 @@ presubmits: # runs on PRs
               - "--context=cloudsql-proxy"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-docker-registry
       annotations:
         pipeline.trigger: "pr-submit"
@@ -59,14 +69,24 @@ presubmits: # runs on PRs
               - "--context=registry"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-fluent-bit
       annotations:
         pipeline.trigger: "pr-submit"
@@ -91,14 +111,24 @@ presubmits: # runs on PRs
               - "--context=fluent-bit"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-jaeger-operator
       annotations:
         pipeline.trigger: "pr-submit"
@@ -123,14 +153,24 @@ presubmits: # runs on PRs
               - "--context=jaeger-operator"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-k8s-tools
       annotations:
         pipeline.trigger: "pr-submit"
@@ -154,14 +194,24 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=k8s-tools"
               - "--dockerfile=Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-kiali
       annotations:
         pipeline.trigger: "pr-submit"
@@ -186,14 +236,24 @@ presubmits: # runs on PRs
               - "--context=kiali"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-loki
       annotations:
         pipeline.trigger: "pr-submit"
@@ -218,14 +278,24 @@ presubmits: # runs on PRs
               - "--context=loki"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-oauth2-proxy
       annotations:
         pipeline.trigger: "pr-submit"
@@ -250,14 +320,24 @@ presubmits: # runs on PRs
               - "--context=oauth2-proxy"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-kiwigrid-sidecar
       annotations:
         pipeline.trigger: "pr-submit"
@@ -282,14 +362,24 @@ presubmits: # runs on PRs
               - "--context=kiwigrid-sidecar"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-node-exporter
       annotations:
         pipeline.trigger: "pr-submit"
@@ -314,14 +404,24 @@ presubmits: # runs on PRs
               - "--context=prometheus-node-exporter"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-grafana
       annotations:
         pipeline.trigger: "pr-submit"
@@ -346,14 +446,24 @@ presubmits: # runs on PRs
               - "--context=grafana"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-kaniko-executer
       annotations:
         pipeline.trigger: "pr-submit"
@@ -378,14 +488,24 @@ presubmits: # runs on PRs
               - "--context=kaniko-executer"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-kube-state-metrics
       annotations:
         pipeline.trigger: "pr-submit"
@@ -410,14 +530,24 @@ presubmits: # runs on PRs
               - "--context=kube-state-metrics"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-otel-collector
       annotations:
         pipeline.trigger: "pr-submit"
@@ -442,14 +572,24 @@ presubmits: # runs on PRs
               - "--context=otel-collector"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/third-party-images:
@@ -478,14 +618,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-docker-registry
       annotations:
         pipeline.trigger: "pr-merge"
@@ -511,14 +661,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"REGISTRY_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-fluent-bit
       annotations:
         pipeline.trigger: "pr-merge"
@@ -544,14 +704,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"FLB_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-jaeger-operator
       annotations:
         pipeline.trigger: "pr-merge"
@@ -577,14 +747,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"JAEGER_OPERATOR_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-k8s-tools
       annotations:
         pipeline.trigger: "pr-merge"
@@ -608,14 +788,24 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=k8s-tools"
               - "--dockerfile=Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-kiali
       annotations:
         pipeline.trigger: "pr-merge"
@@ -641,14 +831,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"KIALI_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-loki
       annotations:
         pipeline.trigger: "pr-merge"
@@ -674,14 +874,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"LOKI_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-oauth2-proxy
       annotations:
         pipeline.trigger: "pr-merge"
@@ -707,14 +917,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"OAUTH2_PROXY_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-kiwigrid-sidecar
       annotations:
         pipeline.trigger: "pr-merge"
@@ -740,14 +960,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"KIWIGRID_SIDECAR_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-node-exporter
       annotations:
         pipeline.trigger: "pr-merge"
@@ -773,14 +1003,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"NODE_EXPORTER_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-grafana
       annotations:
         pipeline.trigger: "pr-merge"
@@ -806,14 +1046,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"GRAFANA_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-kaniko-executer
       annotations:
         pipeline.trigger: "pr-merge"
@@ -839,14 +1089,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"KANIKO_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-kube-state-metrics
       annotations:
         pipeline.trigger: "pr-merge"
@@ -872,14 +1132,24 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"KSM_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-otel-collector
       annotations:
         pipeline.trigger: "pr-merge"
@@ -905,12 +1175,22 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"OTEL_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
