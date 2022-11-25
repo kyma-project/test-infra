@@ -10,6 +10,9 @@ presubmits:
       pipeline_run_spec:
         pipelineRef:
           name: prototype-pipeline
+        workspaces:
+          - name: artifacts
+            emptyDir: {}
         resources:
           - name: git
             resourceRef:
