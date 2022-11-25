@@ -154,7 +154,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 17)
+	assert.Len(t, periodics, 16)
 
 	expName := "kyma-upgrade-k3d-kyma2-to-main"
 	kymaUpgradePeriodic := tester.FindPeriodicJobByName(periodics, expName)
@@ -247,19 +247,6 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	assert.Equal(t, []string{"-c", "/prow-tools/orphanremover -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Args)
 	tester.AssertThatSpecifiesResourceRequests(t, loadbalancerCleanerPeriodic.JobBase)
 
-	// expName = "firewall-cleaner"
-	// firewallCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	// require.NotNil(t, firewallCleanerPeriodic)
-	// assert.Equal(t, expName, firewallCleanerPeriodic.Name)
-	//
-	// assert.Equal(t, "45 */4 * * 1-5", firewallCleanerPeriodic.Cron)
-	// tester.AssertThatHasPresets(t, firewallCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
-	// tester.AssertThatHasExtraRepoRefCustom(t, firewallCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
-	// assert.Equal(t, tester.ImageProwToolsLatest, firewallCleanerPeriodic.Spec.Containers[0].Image)
-	// assert.Equal(t, []string{"bash"}, firewallCleanerPeriodic.Spec.Containers[0].Command)
-	// assert.Equal(t, []string{"-c", "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, firewallCleanerPeriodic.Spec.Containers[0].Args)
-	// tester.AssertThatSpecifiesResourceRequests(t, firewallCleanerPeriodic.JobBase)
-
 	expName = "orphaned-dns-cleaner"
 	dnsCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, dnsCleanerPeriodic)
@@ -306,49 +293,4 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 		functionsMetricsPeriodic.Spec.Containers[0].Command)
 	tester.AssertThatContainerHasEnv(t, functionsMetricsPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
 	tester.AssertThatContainerHasEnv(t, functionsMetricsPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
-
-	expName = "serverless-function-benchmark"
-	functionsBenchmarksPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	require.NotNil(t, functionsBenchmarksPeriodic)
-	assert.Equal(t, expName, functionsBenchmarksPeriodic.Name)
-
-	assert.Equal(t, "0 1,13 * * *", functionsBenchmarksPeriodic.Cron)
-	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-benchmarks-nightly.sh"},
-		functionsBenchmarksPeriodic.Spec.Containers[0].Command)
-	tester.AssertThatContainerHasEnv(t, functionsBenchmarksPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly")
-	tester.AssertThatContainerHasEnv(t, functionsBenchmarksPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
-
-	// these jobs are disabled due to failing tests, until Kyma 2.0 long lasting clusters are introduced
-	// expName = "kyma-gke-weekly-fast-integration"
-	// weeklyFastIntegrationPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	// require.NotNil(t, weeklyFastIntegrationPeriodic)
-	// assert.Equal(t, expName, weeklyFastIntegrationPeriodic.Name)
-
-	// assert.Equal(t, "0 0-4,6-23 * * 1-5", weeklyFastIntegrationPeriodic.Cron)
-	// tester.AssertThatHasPresets(t, weeklyFastIntegrationPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration, "preset-gc-compute-envs")
-	// tester.AssertThatHasExtraRepoRefCustom(t, weeklyFastIntegrationPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
-	// assert.Equal(t, tester.ImageKymaIntegrationLatest, weeklyFastIntegrationPeriodic.Spec.Containers[0].Image)
-	// assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"}, weeklyFastIntegrationPeriodic.Spec.Containers[0].Command)
-	// tester.AssertThatSpecifiesResourceRequests(t, weeklyFastIntegrationPeriodic.JobBase)
-	// assert.Len(t, weeklyFastIntegrationPeriodic.Spec.Containers[0].Env, 5)
-	// tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "PROVISION_REGIONAL_CLUSTER", "true")
-	// tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "weekly-124")
-	// tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "gcp")
-	// tester.AssertThatContainerHasEnv(t, weeklyFastIntegrationPeriodic.Spec.Containers[0], "CLOUDSDK_COMPUTE_ZONE", "europe-west4-b")
-
-	// expName = "kyma-aks-nightly-fast-integration"
-	// nightlyAksFastIntegrationPeriodic := tester.FindPeriodicJobByName(periodics, expName)
-	// require.NotNil(t, nightlyAksFastIntegrationPeriodic)
-	// assert.Equal(t, expName, nightlyAksFastIntegrationPeriodic.Name)
-
-	// assert.Equal(t, "0 0-2,4-23 * * 1-5", nightlyAksFastIntegrationPeriodic.Cron)
-	// tester.AssertThatHasPresets(t, nightlyAksFastIntegrationPeriodic.JobBase, preset.SaGKEKymaIntegration, "preset-az-kyma-prow-credentials")
-	// tester.AssertThatHasExtraRepoRefCustom(t, nightlyAksFastIntegrationPeriodic.JobBase.UtilityConfig, []string{"test-infra", "kyma"}, []string{"main", "main"})
-	// assert.Equal(t, tester.ImageKymaIntegrationLatest, nightlyAksFastIntegrationPeriodic.Spec.Containers[0].Image)
-	// assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"}, nightlyAksFastIntegrationPeriodic.Spec.Containers[0].Command)
-	// tester.AssertThatSpecifiesResourceRequests(t, nightlyAksFastIntegrationPeriodic.JobBase)
-	// assert.Len(t, nightlyAksFastIntegrationPeriodic.Spec.Containers[0].Env, 4)
-	// tester.AssertThatContainerHasEnv(t, nightlyAksFastIntegrationPeriodic.Spec.Containers[0], "RS_GROUP", "kyma-nightly-aks")
-	// tester.AssertThatContainerHasEnv(t, nightlyAksFastIntegrationPeriodic.Spec.Containers[0], "INPUT_CLUSTER_NAME", "nightly-aks-124")
-	// tester.AssertThatContainerHasEnv(t, nightlyAksFastIntegrationPeriodic.Spec.Containers[0], "CLUSTER_PROVIDER", "azure")
 }
