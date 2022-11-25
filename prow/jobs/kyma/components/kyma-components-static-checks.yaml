@@ -53,31 +53,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
-    - name: pull-central-application-connectivity-validator-lint
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-central-application-connectivity-validator-lint"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/central-application-connectivity-validator/(.*\.go$|.golangcilint.yaml)'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/central-application-connectivity-validator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
     - name: pull-central-application-connectivity-validator-unit-test
       annotations:
         pipeline.trigger: "pr-submit"
