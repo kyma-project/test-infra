@@ -301,7 +301,6 @@ templates:
                     - reconciler_cli_integration_jobConfig
               - jobConfig:
                   name: "pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d"
-                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
