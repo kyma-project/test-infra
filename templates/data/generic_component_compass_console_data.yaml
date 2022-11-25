@@ -31,7 +31,6 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=compass/Dockerfile"
-                    - "--platform=linux/amd64"
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
@@ -77,7 +76,6 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=compass/Dockerfile"
-                    - "--platform=linux/amd64"
                   decoration_config:
                     timeout: 60m
                     grace_period: 1m
