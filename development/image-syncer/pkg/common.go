@@ -3,7 +3,6 @@ package pkg
 // SyncDef stores synchronisation definition
 type SyncDef struct {
 	TargetRepoPrefix string `yaml:"targetRepoPrefix"`
-	Sign             bool   `yaml:"sign"`
 	Images           []Image
 }
 
@@ -11,5 +10,4 @@ type SyncDef struct {
 type Image struct {
 	Source string
 	Tag    string `yaml:"tag,omitempty"`
-	Sign   *bool  `yaml:"sign,omitempty"`
 }
