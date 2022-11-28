@@ -293,6 +293,10 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 	}
 
 	if err := gitCommit(o.GitName, o.GitEmail, "Bumping index.md", stdout, stderr); err != nil {
+		if err.Error() == "git commit: exit status 1" {
+			fmt.Println("commit changes to the remote branch: ", err)
+			return nil
+		}
 		return fmt.Errorf("commit changes to the remote branch: %w", err)
 	}
 
