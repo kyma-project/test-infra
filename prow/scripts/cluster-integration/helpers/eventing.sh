@@ -257,6 +257,8 @@ function eventing::run_copy_crds() {
     log::info "Running eventing copy-crd make target"
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
+    make gomod-vendor-local
+    make gomod-tidy-local
     make copy-crds
     popd
 
