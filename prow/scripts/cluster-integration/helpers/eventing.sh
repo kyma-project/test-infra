@@ -251,3 +251,14 @@ function eventing::fast_integration_test_cleanup() {
 
     log::success "Fast integration tests cleanup completed"
 }
+
+# Runs eventing copy-crd make target
+function eventing::run_copy_crds() {
+    log::info "Running eventing copy-crd make target"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
+    make copy-crds
+    popd
+
+    log::success "Eventing copy-crds make target completed"
+}
