@@ -78,6 +78,8 @@
 
 [Documentation guidelines](/docs/documentation_guidelines.md) - 1. Each repository must contain an automatically updated index page in `docs` directory.
 
+[[#Overview](/prow/scripts/resources/README.md) - The folder contains files that are directly used by Prow pipeline scripts.](/docs/index-1.md) - [Cluster](/prow/workload-cluster/README.md) - This folder contains configuration files for the Prow workload. This configuration is used during cluster provisioning.
+
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
 
 [Authorization](/docs/prow/authorization.md) - To deploy a Prow cluster, configure the following service accounts in the GCP project you own.
