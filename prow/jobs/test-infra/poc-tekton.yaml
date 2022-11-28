@@ -3,7 +3,7 @@ presubmits:
     - name: pull-poc-tekton-pipeline
       max_concurrency: 10
       agent: tekton-pipeline
-      always_run: false
+      run_if_changed: '^(vpath/poc-tekton-test)'
       skip_report: false
       decorate: false
       cluster: tekton
