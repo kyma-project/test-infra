@@ -11,3 +11,17 @@ cache:
   enabled: true
   cache-repo: europe-docker.pkg.dev/kyma-project/cache/cache
   cache-run-layers: true
+sign-config:
+  enabled-signers:
+    '*':
+      - signify-dev
+  signers:
+    - name: signify-dev
+      type: notary
+      config:
+        endpoint: https://signing-dev.repositories.cloud.sap/signingsvc/sign
+        timeout: 5m
+        retry-timeout: 10s
+        secret:
+          path: /secret/secret.yaml
+          type: signify

@@ -690,14 +690,24 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile.mr"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-kyma-incubator-component-reconciler
       annotations:
         pipeline.trigger: "pr-submit"
@@ -723,14 +733,24 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile.cr"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-reconciler-validate-dockerfiles
       annotations:
         pipeline.trigger: "pr-submit"
@@ -954,14 +974,24 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=Dockerfile.mr"
               - "--tag=latest"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-kyma-incubator-component-reconciler
       annotations:
         pipeline.trigger: "pr-merge"
@@ -988,14 +1018,24 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=Dockerfile.cr"
               - "--tag=latest"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-load-test-mock-kyma-incubator-reconciler
       annotations:
         pipeline.trigger: "pr-merge"

@@ -5,7 +5,7 @@ presubmits: # runs on PRs
   kyma-project/module-manager:
     - name: pull-module-mgr-lint
       annotations:
-        description: "executes the 'make lint' command in the module-manager 'operator' directory before any pull request."
+        description: "executes the 'golangci-lint lint' command before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -33,7 +33,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "cd operator && golangci-lint run"
+              - "golangci-lint run"
             resources:
               requests:
                 memory: 3Gi
@@ -47,7 +47,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pull-module-mgr-tests
       annotations:
-        description: "executes the 'make test' command in the module-manager 'operator' directory before any pull request."
+        description: "executes the 'make test' command in the module-manager before any pull request."
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -56,7 +56,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^operator/(go.mod|go.sum)$|^operator/*/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -75,7 +75,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "cd operator && make test"
+              - "make test"
             resources:
               requests:
                 memory: 3Gi
@@ -110,16 +110,25 @@ presubmits: # runs on PRs
             args:
               - "--name=module-manager"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=operator"
               - "--dockerfile=Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/module-manager:
@@ -146,15 +155,24 @@ postsubmits: # runs on main
             args:
               - "--name=module-manager"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=operator"
               - "--dockerfile=Dockerfile"
               - "--tag=latest"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   

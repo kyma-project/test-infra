@@ -14,14 +14,21 @@ templates:
                 pubsub_topic: "prowjobs"
                 image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b
                 command: /image-builder
+                request_memory: "1.5Gi"
+                request_cpu: "1"
                 labels:
                   preset-sa-kyma-push-images: "true"
                 volumes:
                   - name: config
                     configMapName: kaniko-build-config
+                  - name: signify-secret
+                    secretName: signify-dev-secret
                 volumeMounts:
                   - name: config
                     mountPath: /config
+                    readOnly: true
+                  - name: signify-secret
+                    mountPath: /secret
                     readOnly: true
               presubmit:
                 type_presubmit: "true"
@@ -414,6 +421,30 @@ templates:
                         - "--config=/config/kaniko-build-config.yaml"
                         - "--context=."
                         - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "postsubmit"
+                  - jobConfig:
+                      name: "pre-test-infra-markdown-index"
+                      run_if_changed: "^development/markdown-index/"
+                      args:
+                        - "--name=test-infra/markdown-index"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/markdown-index/Dockerfile"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-test-infra-markdown-index"
+                      run_if_changed: "^development/markdown-index/"
+                      args:
+                        - "--name=test-infra/markdown-index"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=development/markdown-index/Dockerfile"
                     inheritedConfigs:
                       local:
                         - "default"

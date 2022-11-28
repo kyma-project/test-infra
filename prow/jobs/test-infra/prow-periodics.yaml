@@ -43,6 +43,31 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/test-infra:
+    - name: post-test-infra-markdown-index-autobump
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-markdown-index-autobump"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
+      run_if_changed: '.md$'
+      skip_report: false
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      reporter_config:
+        slack:
+          channel: kyma-prow-alerts
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20221125-ea47d7c8"
+            command:
+              - "/markdown-index"
+            args:
+              - "--config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml"
     - name: post-test-infra-deploy-prow
       annotations:
         pipeline.trigger: "pr-merge"

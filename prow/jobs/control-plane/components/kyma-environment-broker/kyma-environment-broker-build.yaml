@@ -26,14 +26,24 @@ presubmits: # runs on PRs
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.keb"
               - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pull-keb-cleanup-job-build
       annotations:
         pipeline.trigger: "pr-submit"
@@ -57,14 +67,24 @@ presubmits: # runs on PRs
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.cleanup"
               - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pull-keb-subaccount-cleanup-job-build
       annotations:
         pipeline.trigger: "pr-submit"
@@ -88,14 +108,24 @@ presubmits: # runs on PRs
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.sac"
               - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pull-keb-subscription-cleanup-job-build
       annotations:
         pipeline.trigger: "pr-submit"
@@ -119,14 +149,24 @@ presubmits: # runs on PRs
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.scj"
               - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pull-keb-trial-cleanup-job-build
       annotations:
         pipeline.trigger: "pr-submit"
@@ -150,14 +190,24 @@ presubmits: # runs on PRs
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.tcj"
               - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/control-plane:
@@ -186,14 +236,24 @@ postsubmits: # runs on main
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.keb"
               - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-keb-cleanup-job-build
       annotations:
         pipeline.trigger: "pr-merge"
@@ -219,14 +279,24 @@ postsubmits: # runs on main
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.cleanup"
               - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-keb-subaccount-cleanup-job-build
       annotations:
         pipeline.trigger: "pr-merge"
@@ -252,14 +322,24 @@ postsubmits: # runs on main
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.sac"
               - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-keb-subscription-cleanup-job-build
       annotations:
         pipeline.trigger: "pr-merge"
@@ -285,14 +365,24 @@ postsubmits: # runs on main
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.scj"
               - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-keb-trial-cleanup-job-build
       annotations:
         pipeline.trigger: "pr-merge"
@@ -318,12 +408,22 @@ postsubmits: # runs on main
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.tcj"
               - "--config=/config/kaniko-build-config.yaml"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   

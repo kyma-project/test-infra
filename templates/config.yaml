@@ -78,14 +78,21 @@ globalSets:
     pubsub_topic: "prowjobs"
     image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b
     command: /image-builder
+    request_memory: "1.5Gi"
+    request_cpu: "1"
     labels:
       preset-sa-kyma-push-images: "true"
     volumes:
       - name: config
         configMapName: kaniko-build-config
+      - name: signify-secret
+        secretName: signify-dev-secret
     volumeMounts:
       - name: config
         mountPath: /config
+        readOnly: true
+      - name: signify-secret
+        mountPath: /secret
         readOnly: true
   image-builder-buildkit:
     skip_report: "false"
@@ -102,6 +109,8 @@ globalSets:
         effect: NoSchedule
     image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b-buildkit
     command: "/image-builder"
+    request_memory: "1.5Gi"
+    request_cpu: "1"
     labels:
       preset-sa-kyma-push-images: "true"
     annotations:
@@ -114,11 +123,16 @@ globalSets:
         emptyDir: true
       - name: config
         configMapName: kaniko-build-config
+      - name: signify-secret
+        secretName: signify-dev-secret
     volumeMounts:
       - mountPath: /home/user/.local/share/buildkit
         name: share
       - name: config
         mountPath: /config
+        readOnly: true
+      - name: signify-secret
+        mountPath: /secret
         readOnly: true
   linting:
     skip_report: "false"
@@ -170,6 +184,8 @@ globalSets:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
   image_gardener-rotate:
     image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221121-4ded4f32"
+  image_markdown_index:
+    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20221125-ea47d7c8"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
