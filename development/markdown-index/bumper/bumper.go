@@ -131,7 +131,7 @@ func getTreeRef(stderr io.Writer, refname string) (string, error) {
 }
 
 func gitCommit(name, email, message string, stdout, stderr io.Writer) error {
-	if err := Call(stdout, stderr, gitCmd, "add", "index.md"); err != nil {
+	if err := Call(stdout, stderr, gitCmd, "add", "docs/index.md"); err != nil {
 		return fmt.Errorf("git add: %w", err)
 	}
 	commitArgs := []string{"commit", "-m", message}
