@@ -42,6 +42,8 @@ templates:
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
+          command_integration_eventing2:
+            image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:PR-6479"
           command_integration_skr_eventing:
             annotations:
               pipeline.installer: keb
@@ -299,6 +301,7 @@ templates:
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
+                    - command_integration_eventing2
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-goats-api-gateway
                   optional: false
