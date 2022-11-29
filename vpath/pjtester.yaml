@@ -1,0 +1,10 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      lifecycle-manager:
+        prNumber: 327
+  prowJobs:
+    kyma-project:
+      lifecycle-manager:
+        - pjName: pull-lifecycle-mgr-build
+          report: true
