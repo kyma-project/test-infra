@@ -100,7 +100,7 @@ RUN curl -fLSs https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get -y --no-install-recommends install nodejs
 
 #################################################################
-###################### Cluster Integration ###################### 
+###################### Cluster Integration ######################
 #################################################################
 
 #Install helm
@@ -214,3 +214,11 @@ RUN curl -fsSL https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${
   mv gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh &&\
   chmod +x /usr/local/bin/gh &&\
   rm -r gh_${GH_VERSION}_linux_amd64
+
+#################################################################
+################ Install kustomize ########################
+#################################################################
+ENV KUSTOMIZE_VERSION=4.5.7
+RUN curl -fsSL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz -o - | tar -xz &&\
+  mv kustomize /usr/local/bin/kustomize &&\
+  chmod +x /usr/local/bin/kustomize
