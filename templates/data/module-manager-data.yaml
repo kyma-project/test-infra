@@ -14,24 +14,6 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b
-            command: /image-builder
-            request_memory: "1.5Gi"
-            request_cpu: "1"
-            labels:
-              preset-sa-kyma-push-images: "true"
-            volumes:
-              - name: config
-                configMapName: kaniko-build-config
-              - name: signify-secret
-                secretName: signify-dev-secret
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         jobConfigs:
           - repoName: kyma-project/module-manager
             jobs:
@@ -82,6 +64,7 @@ templates:
                   local:
                     - default
                   global:
+                    - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-module-mgr-build
@@ -95,4 +78,5 @@ templates:
                   local:
                     - default
                   global:
+                    - kaniko_buildpack
                     - jobConfig_postsubmit
