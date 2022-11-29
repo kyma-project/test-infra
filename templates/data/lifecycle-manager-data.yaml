@@ -55,10 +55,10 @@ templates:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
-                    - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "build_labels" # default labels
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - build_labels # default labels
               - jobConfig:
                   name: pull-lifecycle-mgr-build
                   always_run: true
@@ -70,6 +70,7 @@ templates:
                   local:
                     - default
                   global:
+                    - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-lifecycle-mgr-build
