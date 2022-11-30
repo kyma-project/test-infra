@@ -238,8 +238,6 @@ branch-protection:
           protect: false
         organization-and-operations:
           protect: false
-        btp-manager:
-          protect: false
         busola:
           branches:
             luigiless-busola:
