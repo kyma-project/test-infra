@@ -26,6 +26,26 @@ templates:
                     - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
+                  name: pull-ord-service-build-new-test
+                  args:
+                    - "--name=incubator/compass-ord-service"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/ord-service"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                  decoration_config:
+                    timeout: 60m
+                    grace_period: 1m
+                  run_if_changed: "^components/ord-service/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                  inheritedConfigs:
+                    global:
+                      - image-builder-buildkit
+                      - jobConfig_presubmit
+              - jobConfig:
                   name: "pull-ord-service-unit-test"
                   command: "/bin/sh"
                   args:
