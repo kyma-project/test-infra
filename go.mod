@@ -1,6 +1,6 @@
 module github.com/kyma-project/test-infra
 
-go 1.16
+go 1.17
 
 replace (
 	github.com/containerd/containerd => github.com/containerd/containerd v1.5.9
