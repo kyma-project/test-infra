@@ -10,6 +10,7 @@ import (
 )
 
 // ClientsAgent group clients used to interact with GitHub.
+// dummmy change to trigger linter.
 type ClientsAgent struct {
 	logging.LoggerInterface
 	GithubClient *client.GithubClient
