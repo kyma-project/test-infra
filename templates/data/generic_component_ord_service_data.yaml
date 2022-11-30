@@ -31,7 +31,7 @@ templates:
                   args:
                     - "-c"
                     - "cd components/ord-service && mvn clean test"
-                  run_if_changed: "^components/ord-service/src"
+                  run_if_changed: "^components/ord-service"
                   inheritedConfigs:
                     global:
                       - jobConfig_presubmit
