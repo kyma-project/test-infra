@@ -1,4 +1,8 @@
 pjConfigs:
+  prConfigs:
+    kyma-project:
+      test-infra:
+        prNumber: 6486
   prowJobs:
     kyma-incubator:
       ord-service:
