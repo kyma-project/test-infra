@@ -181,7 +181,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-function-java11-jvm-alpha-build
-                  run_if_changed: "^components/function/runtimes/java11"
+                  run_if_changed: "^components/function-runtimes/java11"
                   args:
                     - "--name=function-runtime-java11-jvm-build"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -193,7 +193,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-java11-jvm-alpha-build
-                  run_if_changed: "^components/function/runtimes/java11"
+                  run_if_changed: "^components/function-runtimes/java11"
                   args:
                     - "--name=function-runtime-java11-jvm-build"
                     - "--config=/config/kaniko-build-config.yaml"
