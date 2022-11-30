@@ -10,6 +10,9 @@ tmp/
 **/*.swp
 **/.DS_Store
 
+# Visual Studio Code debug binaries
+__debug_bin
+
 /prow/images/probot-stale/package-lock.json
 /prow/images/probot-stale/node_modules
 /development/kyma-slack-connector/issueLabeledFunction/venv/

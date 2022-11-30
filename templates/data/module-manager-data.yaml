@@ -6,32 +6,6 @@ templates:
           jobConfig_default:
             imagePullPolicy: "Always"
             privileged: "false"
-          default:
-            skip_report: "false"
-            max_concurrency: "10"
-            decorate: "true"
-            branches:
-              - "^main$"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b
-            command: /image-builder
-            request_memory: "1.5Gi"
-            request_cpu: "1"
-            labels:
-              preset-sa-kyma-push-images: "true"
-            volumes:
-              - name: config
-                configMapName: kaniko-build-config
-              - name: signify-secret
-                secretName: signify-dev-secret
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         jobConfigs:
           - repoName: kyma-project/module-manager
             jobs:
@@ -79,12 +53,13 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
-                  local:
-                    - default
                   global:
+                    - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-module-mgr-build
+                  branches:
+                    - "^main$"
                   always_run: true
                   args:
                     - "--name=module-manager"
@@ -92,7 +67,6 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
                 inheritedConfigs:
-                  local:
-                    - default
                   global:
+                    - kaniko_buildpack
                     - jobConfig_postsubmit

@@ -90,8 +90,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      branches:
-        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
@@ -101,14 +99,24 @@ presubmits: # runs on PRs
               - "--name=lifecycle-manager"
               - "--config=/config/kaniko-build-config.yaml"
               - "--dockerfile=Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/lifecycle-manager:
@@ -137,12 +145,22 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--dockerfile=Dockerfile"
               - "--tag=latest"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
             volumeMounts:
               - name: config
                 mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
                 readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
