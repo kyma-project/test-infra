@@ -1,5 +1,5 @@
 gitHubLogin: "Sawthis"
-gitHubToken: "prow/markdown-index/token"
+gitHubToken: "/Users/I355770/SAPDevelop/Sawthis/token"
 gitName: "Wojciech Soltys"
 gitEmail: "wojciech.soltys@sap.com"
 skipPullRequest: false
