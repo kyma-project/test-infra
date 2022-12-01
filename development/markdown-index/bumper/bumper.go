@@ -130,6 +130,23 @@ func getTreeRef(stderr io.Writer, refname string) (string, error) {
 	return fields[0], nil
 }
 
+func gitStatus(stderr io.Writer) (string, error) {
+	tmpRead, tmpWrite, err := os.Pipe()
+	if err != nil {
+		return "", err
+	}
+
+	if err := Call(tmpWrite, stderr, gitCmd, "status", "--porcelain"); err != nil {
+		return "", fmt.Errorf("git commit: %w", err)
+	}
+	tmpWrite.Close()
+	output, err := io.ReadAll(tmpRead)
+	if err != nil {
+		return "", err
+	}
+	return string(output), nil
+}
+
 func gitCommit(name, email, message string, stdout, stderr io.Writer) error {
 	if err := Call(stdout, stderr, gitCmd, "add", "docs/index.md"); err != nil {
 		return fmt.Errorf("git add: %w", err)
@@ -292,11 +309,17 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		}
 	}
 
+	resp, err := gitStatus(stderr)
+	if err != nil {
+		return fmt.Errorf("git status: %w", err)
+	}
+	if strings.Contains(resp, "nothing to commit, working tree clean") {
+		fmt.Printf("stdout: %s\n", resp)
+		fmt.Println("No changes, quitting.")
+		return nil
+	}
+
 	if err := gitCommit(o.GitName, o.GitEmail, "Bumping index.md", stdout, stderr); err != nil {
-		if err.Error() == "git commit: exit status 1" {
-			fmt.Println("commit changes to the remote branch: ", err)
-			return nil
-		}
 		return fmt.Errorf("commit changes to the remote branch: %w", err)
 	}
 
