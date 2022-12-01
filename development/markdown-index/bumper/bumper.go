@@ -137,7 +137,7 @@ func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
 	}
 
 	if err := Call(tmpWrite, stderr, gitCmd, "status"); err != nil {
-		return "", fmt.Errorf("git commit: %w", err)
+		return "", fmt.Errorf("git status: %w", err)
 	}
 	tmpWrite.Close()
 	output, err := io.ReadAll(tmpRead)
