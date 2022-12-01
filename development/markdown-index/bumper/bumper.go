@@ -136,7 +136,7 @@ func gitStatus(stderr io.Writer) (string, error) {
 		return "", err
 	}
 
-	if err := Call(tmpWrite, stderr, gitCmd, "status", "--porcelain"); err != nil {
+	if err := Call(tmpWrite, stderr, gitCmd, "status"); err != nil {
 		return "", fmt.Errorf("git commit: %w", err)
 	}
 	tmpWrite.Close()
