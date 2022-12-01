@@ -8,7 +8,7 @@ pjConfigs:
       kyma:
       - pjName: "skr-aws-own-cluster-dev"
         report: false
-prConfigs: #
+prConfigs:
   kyma-project:
     kyma:
       prNumber: 16219
