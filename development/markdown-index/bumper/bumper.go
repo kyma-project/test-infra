@@ -130,7 +130,7 @@ func getTreeRef(stderr io.Writer, refname string) (string, error) {
 	return fields[0], nil
 }
 
-func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
+func gitStatus(stderr io.Writer) (string, error) {
 	tmpRead, tmpWrite, err := os.Pipe()
 	if err != nil {
 		return "", err
@@ -144,7 +144,6 @@ func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	stdout.Write(output)
 	return string(output), nil
 }
 
@@ -310,12 +309,12 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		}
 	}
 
-	resp, err := gitStatus(stdout, stderr)
+	resp, err := gitStatus(stderr)
+	stdout.Write([]byte(resp))
 	if err != nil {
 		return fmt.Errorf("git status: %w", err)
 	}
 	if strings.Contains(resp, "nothing to commit, working tree clean") {
-		fmt.Printf("stdout: %s\n", resp)
 		fmt.Println("No changes, quitting.")
 		return nil
 	}
