@@ -6,7 +6,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma:
-      - pjName: "skr-own-cluster-dev"
+      - pjName: "skr-aws-own-cluster-dev"
         report: false
 prConfigs: #
   kyma-project:
