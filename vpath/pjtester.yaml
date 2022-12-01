@@ -2,7 +2,7 @@ pjConfigs:
   prConfig:
     kyma-project:
       kyma:
-        prNumber: 15901
+        prNumber: 6492
   prowJobs:
     kyma-project:
       kyma:
