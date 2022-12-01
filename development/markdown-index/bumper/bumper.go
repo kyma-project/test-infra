@@ -310,14 +310,16 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 	}
 
 	resp, err := gitStatus(stderr)
-	stdout.Write([]byte(resp))
 	if err != nil {
+		stdout.Write([]byte(resp))
 		return fmt.Errorf("git status: %w", err)
 	}
 	if strings.Contains(resp, "nothing to commit, working tree clean") {
+		stdout.Write([]byte(resp))
 		fmt.Println("No changes, quitting.")
 		return nil
 	}
+	stdout.Write([]byte(resp))
 
 	if err := gitCommit(o.GitName, o.GitEmail, "Bumping index.md", stdout, stderr); err != nil {
 		return fmt.Errorf("commit changes to the remote branch: %w", err)
