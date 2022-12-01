@@ -110,7 +110,7 @@ sudo mkdir /usr/local/go && \
      sudo tar xzf /tmp/go.tar.gz -C /usr/local && \
      rm /tmp/go.tar.gz
 echo 'export PATH="$PATH:/usr/local/go/bin"' | sudo tee -a /etc/profile
-cat /etc/profile
+
 # pre-fetch-docker-images
 sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0
 sudo docker pull eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
