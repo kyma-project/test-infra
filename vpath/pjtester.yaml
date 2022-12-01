@@ -3,9 +3,6 @@ pjConfigs:
     kyma-project:
       kyma:
         prNumber: 16219
-      test-infra: 
-        prNumber: 6500
-
   prowJobs:
     kyma-project:
       kyma:
