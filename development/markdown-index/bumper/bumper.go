@@ -130,7 +130,7 @@ func getTreeRef(stderr io.Writer, refname string) (string, error) {
 	return fields[0], nil
 }
 
-func gitStatus(stderr io.Writer) (string, error) {
+func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
 	tmpRead, tmpWrite, err := os.Pipe()
 	if err != nil {
 		return "", err
@@ -144,6 +144,7 @@ func gitStatus(stderr io.Writer) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	stdout.Write(output)
 	return string(output), nil
 }
 
@@ -309,17 +310,14 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		}
 	}
 
-	resp, err := gitStatus(stderr)
+	resp, err := gitStatus(stdout, stderr)
 	if err != nil {
-		stdout.Write([]byte(resp))
 		return fmt.Errorf("git status: %w", err)
 	}
 	if strings.Contains(resp, "nothing to commit, working tree clean") {
-		stdout.Write([]byte(resp))
 		fmt.Println("No changes, quitting.")
 		return nil
 	}
-	stdout.Write([]byte(resp))
 
 	if err := gitCommit(o.GitName, o.GitEmail, "Bumping index.md", stdout, stderr); err != nil {
 		return fmt.Errorf("commit changes to the remote branch: %w", err)
