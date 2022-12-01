@@ -38,7 +38,7 @@ templates:
           - repoName: "kyma-project/kyma"
             jobs:
               - jobConfig:
-                  name: "skr-aws-own-cluster"
+                  name: "skr-aws-own-cluster-dev"
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:

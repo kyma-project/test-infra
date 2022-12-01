@@ -397,7 +397,7 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: skr-aws-own-cluster
+    - name: skr-aws-own-cluster-dev
       annotations:
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
@@ -407,7 +407,7 @@ periodics: # runs on schedule
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "skr-aws-own-cluster"
+        prow.k8s.io/pubsub.runID: "skr-aws-own-cluster-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
