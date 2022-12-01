@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: pull-function-java11-jvm-alpha-build
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 15901
