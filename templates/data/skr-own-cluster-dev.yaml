@@ -23,6 +23,7 @@ templates:
               preset-kyma-integration-kcp-client-credentials: "true"
               preset-kcp-client-dev-envs: "true"
               preset-btp-operator-stage-credentials: "true"
+              preset-gardener-shoot: "true"
           kyma_integration_subaccount:
             env:
               KEB_SUBACCOUNT_ID: "prow-keb-integration"

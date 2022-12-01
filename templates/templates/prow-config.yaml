@@ -1395,3 +1395,19 @@ presets:
         value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
       - name: KCP_OIDC_ISSUER_URL
         value: "https://kymatest.accounts400.ondemand.com"
+  - labels:
+      preset-gardener-shoot: "true"
+    env:
+      - name: GARDENER_SHOOT_TEMPLATE
+        valueFrom:
+          secretKeyRef:
+            name: gardener-template
+            key: template
+    volumes:
+      - name: gardener-skr-kyma-dev-kubeconfig
+        secret:
+          secretName: gardener-skr-kyma-dev-kubeconfig
+    volumeMounts:
+      - name: gardener-skr-kyma-dev-kubeconfig
+        mountPath: "/gardener"
+        readOnly: true
