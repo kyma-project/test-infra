@@ -82,7 +82,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "maven:3.8.6-eclipse-temurin-11"
             command:
               - "/bin/sh"
             args:
