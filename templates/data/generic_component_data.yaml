@@ -180,6 +180,31 @@ templates:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
+                  name: pull-function-java11-jvm-alpha-build
+                  run_if_changed: "^components/function-runtimes/java11"
+                  args:
+                    - "--name=function-runtime-java11-jvm-build"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-runtimes/java11"
+                    - "--dockerfile=Dockerfile-jvm11-runtime"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-function-java11-jvm-alpha-build
+                  run_if_changed: "^components/function-runtimes/java11"
+                  args:
+                    - "--name=function-runtime-java11-jvm-build"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-runtimes/java11"
+                    - "--dockerfile=Dockerfile-jvm11-runtime"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+              - jobConfig:
                   name: pull-function-runtimes-nodejs14-build
                   run_if_changed: "^components/function-runtimes/nodejs14"
                   args:
