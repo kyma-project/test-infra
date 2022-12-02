@@ -27,10 +27,15 @@ require (
 	cloud.google.com/go/storage v1.28.1
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/aws/aws-sdk-go v1.42.1 // indirect
+	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/cloudevents/sdk-go/v2 v2.12.0
 	github.com/containerd/containerd v1.6.6
 	github.com/containerd/typeurl v1.0.2
+	github.com/fatih/color v1.13.0 // indirect
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
+	github.com/form3tech-oss/jwt-go v3.2.5+incompatible // indirect
+	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/fsouza/go-dockerclient v1.9.0
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-playground/validator/v10 v10.11.1
@@ -40,32 +45,43 @@ require (
 	github.com/google/go-github/v42 v42.0.0
 	github.com/google/go-querystring v1.1.0
 	github.com/google/uuid v1.3.0
+	github.com/hashicorp/errwrap v1.1.0 // indirect
+	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
+	github.com/hashicorp/go-hclog v1.0.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
+	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.13
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.5
+	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/mattn/go-colorable v0.1.12 // indirect
+	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/onsi/ginkgo/v2 v2.3.0
 	github.com/onsi/gomega v1.22.1
 	github.com/pkg/errors v0.9.1
+	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
-	github.com/sigstore/cosign v1.2.1
-	github.com/sigstore/sigstore v1.0.1
 	github.com/sirupsen/logrus v1.9.0
 	github.com/smartystreets/goconvey v1.7.2
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.8.1
 	github.com/tidwall/gjson v1.14.4
+	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.4.0
 	golang.org/x/oauth2 v0.3.0
 	google.golang.org/api v0.104.0
 	google.golang.org/grpc v1.51.0
+	gopkg.in/ini.v1 v1.66.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.22.2
 	k8s.io/apimachinery v0.22.2
 	k8s.io/client-go v11.0.1-0.20190805182717-6502b5e7b1b5+incompatible
+	k8s.io/klog/v2 v2.10.0 // indirect
 	k8s.io/test-infra v0.0.0-20211214153147-7b2c2d007b33
+	knative.dev/pkg v0.0.0-20210908025933-71508fc69a57 // indirect
 	sigs.k8s.io/yaml v1.3.0
 )
 
