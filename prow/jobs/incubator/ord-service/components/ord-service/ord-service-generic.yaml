@@ -27,7 +27,7 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-java:v20210105-9ce011db "
+          - image: "maven:3.8.6-eclipse-temurin-11"
             command:
               - "/image-builder"
             args:
