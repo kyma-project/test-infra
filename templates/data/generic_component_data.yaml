@@ -181,7 +181,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-function-runtimes-nodejs14-build
-                  run_if_changed: "^components/function-runtimes/"
+                  run_if_changed: "^components/function-runtimes/nodejs14"
                   args:
                     - "--name=function-runtime-nodejs14"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -193,7 +193,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-controller-nodejs14-build
-                  run_if_changed: "^components/function-runtimes/"
+                  run_if_changed: "^components/function-runtimes/nodejs14"
                   args:
                     - "--name=function-runtime-nodejs14"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -206,7 +206,7 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-function-runtimes-nodejs16-build
-                  run_if_changed: "^components/function-runtimes/"
+                  run_if_changed: "^components/function-runtimes/nodejs16"
                   args:
                     - "--name=function-runtime-nodejs16"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -218,7 +218,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-controller-nodejs16-build
-                  run_if_changed: "^components/function-runtimes/"
+                  run_if_changed: "^components/function-runtimes/nodejs16"
                   args:
                     - "--name=function-runtime-nodejs16"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -231,7 +231,7 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-function-runtimes-python39-build
-                  run_if_changed: "^components/function-runtimes/"
+                  run_if_changed: "^components/function-runtimes/python39"
                   args:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -243,7 +243,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-controller-python39-build
-                  run_if_changed: "^components/function-runtimes/"
+                  run_if_changed: "^components/function-runtimes/python39"
                   args:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"

@@ -11,7 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-function-runtimes-nodejs14-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/'
+      run_if_changed: '^components/function-runtimes/nodejs14'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -52,7 +52,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-function-runtimes-nodejs16-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/'
+      run_if_changed: '^components/function-runtimes/nodejs16'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -93,7 +93,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-function-runtimes-python39-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/'
+      run_if_changed: '^components/function-runtimes/python39'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -138,7 +138,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-function-controller-nodejs14-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/'
+      run_if_changed: '^components/function-runtimes/nodejs14'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -180,7 +180,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-function-controller-nodejs16-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/'
+      run_if_changed: '^components/function-runtimes/nodejs16'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -222,7 +222,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-function-controller-python39-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/'
+      run_if_changed: '^components/function-runtimes/python39'
       skip_report: false
       decorate: true
       cluster: trusted-workload
