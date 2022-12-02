@@ -109,11 +109,11 @@ sudo mkdir /usr/local/go && \
      curl -fsSL -o /tmp/go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
      sudo tar xzf /tmp/go.tar.gz -C /usr/local && \
      rm /tmp/go.tar.gz
+
+cat /etc/environment
 # shellcheck disable=SC2016
+sudo sed -i.bak '/^PATH/s/"$/:/usr/local/go/bin"/' /etc/environment
 cat /etc/environment
-sudo sed -i env.bak '/^PATH/s/"$/:/usr/local/go/bin"/' /etc/environment
-cat /etc/environment
-echo 'export PATH="$PATH:/usr/local/go/bin"' | sudo tee -a /etc/profile
 
 # pre-fetch-docker-images
 sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0
