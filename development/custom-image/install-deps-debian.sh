@@ -110,6 +110,9 @@ sudo mkdir /usr/local/go && \
      sudo tar xzf /tmp/go.tar.gz -C /usr/local && \
      rm /tmp/go.tar.gz
 # shellcheck disable=SC2016
+cat /etc/environment
+sudo sed -i env.bak '/^PATH/s/"$/:/usr/local/go/bin"/' /etc/environment
+cat /etc/environment
 echo 'export PATH="$PATH:/usr/local/go/bin"' | sudo tee -a /etc/profile
 
 # pre-fetch-docker-images
