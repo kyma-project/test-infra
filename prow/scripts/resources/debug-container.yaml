@@ -79,7 +79,7 @@ spec:
       - name: oom-debug
         securityContext:
           privileged: true
-        image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20221202-762e5494
+        image: eu.gcr.io/kyma-project/test-infra/prow-tools:v20221205-d172c603
         imagePullPolicy: Always
         command:
           - "/prow-tools/oomfinder"
