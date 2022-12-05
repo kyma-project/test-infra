@@ -20,7 +20,7 @@ The `test-infra` repository has the following structure:
   └── prow                        # Installation scripts for Prow on the production cluster    
 
 ```
-See also [index page](/docs/index.md) for test-infra documentation.
+See also the [index page](/docs/index.md) for test-infra documentation.
 
 ### Prow
 
