@@ -27,7 +27,7 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/incubator/compass-ord-service:PR-82"
+          - image: "eu.gcr.io/kyma-project/incubator/compass-ord-service:PR-84"
             command:
               - "/image-builder"
             args:
@@ -82,7 +82,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/incubator/compass-ord-service:PR-82"
+          - image: "eu.gcr.io/kyma-project/incubator/compass-ord-service:PR-84"
             command:
               - "/bin/sh"
             args:
