@@ -1,0 +1,60 @@
+apiVersion: core.gardener.cloud/v1beta1
+kind: Shoot
+metadata:
+  name: <SHOOT>
+  namespace: <NAMESPACE>
+  annotations:
+    confirmation.gardener.cloud/deletion: "true"
+spec:
+  purpose: evaluation
+  cloudProfileName: aws
+  kubernetes:
+    allowPrivilegedContainers: true
+    kubeAPIServer:
+      enableBasicAuthentication: false
+    version: 1.24.7
+  provider:
+    controlPlaneConfig:
+      apiVersion: aws.provider.extensions.gardener.cloud/v1alpha1
+      kind: ControlPlaneConfig
+    infrastructureConfig:
+      apiVersion: aws.provider.extensions.gardener.cloud/v1alpha1
+      kind: InfrastructureConfig
+      networks:
+        vpc:
+          cidr: 10.180.0.0/16
+        zones:
+          - name: $GARDENER_ZONES
+            workers: 10.180.0.0/19
+            public: 10.180.32.0/20
+            internal: 10.180.48.0/20
+    type: aws
+    workers:
+    - machine:
+        image:
+          name: gardenlinux
+          version: 576.12.0
+        type: m5.xlarge
+      maxSurge: 1
+      maxUnavailable: 0
+      maximum: 4
+      minimum: 2
+      name: worker-dev
+      volume:
+        size: 20Gi
+        type: gp3
+      zones:
+      - $GARDENER_ZONES
+  networking:
+    nodes: 10.180.0.0/16
+    type: calico
+  addons:
+    kubernetesDashboard:
+      enabled: false
+    nginxIngress:
+      enabled: false
+  hibernation:
+    enabled: false
+  region: $GARDENER_REGION
+  secretBindingName: $GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
+

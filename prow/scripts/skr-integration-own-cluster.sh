@@ -17,6 +17,9 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
   "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
+export SHOOT_DEFINITION_PATH="${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/skr-test/shoot-template.yaml"
+export GARDENER_SHOOT_TEMPLATE="$(envsubst < $SHOOT_DEFINITION_PATH | base64)"
+
 pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
 
 make ci-skr-own-cluster
