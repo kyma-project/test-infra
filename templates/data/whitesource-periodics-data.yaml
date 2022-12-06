@@ -236,3 +236,17 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_control_plane"
+              - jobConfig:
+                  repository: "warden"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  base_ref: "v0"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_control_plane"
