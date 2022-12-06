@@ -24,7 +24,6 @@ templates:
               preset-kcp-client-dev-envs: "true"
               preset-btp-operator-stage-credentials: "true"
               preset-gardener-aws-kyma-integration: "true"
-              preset-gardener-aws-regions: "true"
           kyma_integration_subaccount:
             env:
               KEB_SUBACCOUNT_ID: "prow-keb-integration"
@@ -36,7 +35,7 @@ templates:
               pipeline.platform: gardener_aws
             env:
               KEB_PLAN_ID: "03e3cb66-a4c6-4c6a-b4b0-5d42224debea"
-          test_gardener:
+          gardener_regions:
             env:
               GARDENER_REGION: "eu-central-1"
               GARDENER_ZONES: "eu-central-1b"
@@ -58,3 +57,4 @@ templates:
                     - "jobConfig_default"
                     - "keb_plan_azure"
                     - "kyma_integration_subaccount"
+                    - "gardener_regions"

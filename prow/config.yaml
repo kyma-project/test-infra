@@ -1158,13 +1158,6 @@ presets:
       - name: KEB_SUBACCOUNT_ID
         value: "19ea2000-865d-42fd-8d6f-3e3e2dcce3c8"
   - labels:
-      preset-gardener-aws-regions: "true"
-    env:
-      - name: GARDENER_REGION
-        value: "eu-central-1"
-      - name: GARDENER_ZONES
-        value: "prow-keb-integration"
-  - labels:
       preset-keb-dev-credentials: "true"
     env:
       - name: KEB_HOST

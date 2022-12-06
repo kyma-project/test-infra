@@ -438,6 +438,10 @@ periodics: # runs on schedule
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration-own-cluster.sh"
             env:
+              - name: GARDENER_REGION
+                value: "eu-central-1"
+              - name: GARDENER_ZONES
+                value: "eu-central-1b"
               - name: KEB_PLAN_ID
                 value: "03e3cb66-a4c6-4c6a-b4b0-5d42224debea"
               - name: KEB_SUBACCOUNT_ID
