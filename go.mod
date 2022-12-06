@@ -22,7 +22,7 @@ require (
 	cloud.google.com/go/firestore v1.9.0
 	cloud.google.com/go/functions v1.9.0
 	cloud.google.com/go/kms v1.7.0
-	cloud.google.com/go/logging v1.6.0
+	cloud.google.com/go/logging v1.6.1
 	cloud.google.com/go/pubsub v1.27.0
 	cloud.google.com/go/storage v1.28.1
 	github.com/Masterminds/semver v1.5.0
