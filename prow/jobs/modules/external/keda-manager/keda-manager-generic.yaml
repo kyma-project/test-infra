@@ -70,7 +70,7 @@ presubmits: # runs on PRs
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
-                value: "europe-west4-docker.pkg.dev/sap-se-cx-kyma-wookiee/dev-registry/unsigned"
+                value: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
               - name: MODULE_SHA
                 value: "PR-${PULL_NUMBER}"
             resources:
@@ -199,7 +199,7 @@ postsubmits: # runs on main
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
             resources:
               requests:
                 memory: 3Gi
