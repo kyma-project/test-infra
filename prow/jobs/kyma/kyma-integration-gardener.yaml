@@ -338,6 +338,8 @@ presubmits: # runs on PRs
                 value: "/etc/credentials/kyma-tunas-prow-event-mesh"
               - name: ENABLE_NEW_CRD_VERSION
                 value: "true"
+              - name: ENABLE_SUBSCRIPTION_V1_ALPHA2
+                value: "true"
               - name: EXECUTION_PROFILE
                 value: "evaluation"
               - name: GARDENER_REGION
