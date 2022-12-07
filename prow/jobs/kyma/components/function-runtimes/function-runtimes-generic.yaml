@@ -3,15 +3,15 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pull-function-java11-jvm-alpha-build
+    - name: pull-function-java17-jvm-alpha-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-java11-jvm-alpha-build"
+        prow.k8s.io/pubsub.runID: "pull-function-java17-jvm-alpha-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/java11'
+      run_if_changed: '^components/function-runtimes/java17'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -22,10 +22,10 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-java11-jvm-build"
+              - "--name=function-runtime-java17-jvm-build"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/function-runtimes/java11"
-              - "--dockerfile=Dockerfile-jvm11-runtime"
+              - "--context=components/function-runtimes/java17"
+              - "--dockerfile=Dockerfile-jvm-runtime"
             resources:
               requests:
                 memory: 1.5Gi
@@ -170,16 +170,16 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-function-java11-jvm-alpha-build
+    - name: post-function-java17-jvm-alpha-build
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-java11-jvm-alpha-build"
+        prow.k8s.io/pubsub.runID: "post-function-java17-jvm-alpha-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/java11'
+      run_if_changed: '^components/function-runtimes/java17'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -190,10 +190,10 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-java11-jvm-build"
+              - "--name=function-runtime-java17-jvm-build"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/function-runtimes/java11"
-              - "--dockerfile=Dockerfile-jvm11-runtime"
+              - "--context=components/function-runtimes/java17"
+              - "--dockerfile=Dockerfile-jvm-runtime"
             resources:
               requests:
                 memory: 1.5Gi
