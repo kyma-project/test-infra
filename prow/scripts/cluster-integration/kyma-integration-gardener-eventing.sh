@@ -110,12 +110,24 @@ gardener::generate_overrides
 export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
-# uses previously set KYMA_SOURCE
-log::info "Deploying Kyma"
-gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}" \
-  --value eventing.controller.jetstream.retentionPolicy=limits \
-  --value eventing.controller.jetstream.consumerDeliverPolicy=all
+# deploy Kyma with Subscription CRD v1alpha1 or v1alpha2
+if [[ "${ENABLE_NEW_CRD_VERSION}" == "true" ]]; then
+    # deploy Kyma with Subscription CRD v1alpha2
+    eventing::run_copy_crds
 
+    # uses previously set KYMA_SOURCE
+    log::info "Deploying Kyma with Subscription CRD v1alpha2"
+    gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source=local --workspace="${KYMA_SOURCES_DIR}" \
+      --value eventing.controller.jetstream.retentionPolicy=limits \
+      --value eventing.controller.jetstream.consumerDeliverPolicy=all \
+      --value eventing.controller.enableNewCRDVersion=true
+else
+    # deploy Kyma with Subscription CRD v1alphav1
+    log::info "Deploying Kyma ${KYMA_SOURCE}"
+    gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}" \
+      --value eventing.controller.jetstream.retentionPolicy=limits \
+      --value eventing.controller.jetstream.consumerDeliverPolicy=all
+fi
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
@@ -128,6 +140,9 @@ if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::wake_up_kyma
 fi
 
+# Printing stored Subscription CRD versions for debugging purposes.
+log::info "Stored Subscription CRD versions:"
+kubectl get crd subscriptions.eventing.kyma-project.io -o json | jq '.status.storedVersions'
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     # test the default Eventing backend which comes with Kyma
