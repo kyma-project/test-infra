@@ -258,6 +258,7 @@ function eventing::fast_integration_test_cleanup() {
 
 function eventing::deployV1Alpha2Subscription() {
     log::info "Copying the CRDs to installation/eventing"
+    export ENABLE_NEW_CRD_VERSION="true"
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
     make copy-crds
