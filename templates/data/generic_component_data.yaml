@@ -183,6 +183,7 @@ templates:
               - jobConfig:
                   name: pull-function-registry-gc-build
                   run_if_changed: "^components/function-controller/"
+                  optional: "true"
                   args:
                     - "--name=function-registry-gc"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -195,6 +196,7 @@ templates:
               - jobConfig:
                   name: post-function-registry-gc-build
                   run_if_changed: "^components/function-controller/"
+                  optional: "true"
                   args:
                     - "--name=function-registry-gc"
                     - "--config=/config/kaniko-build-config.yaml"
