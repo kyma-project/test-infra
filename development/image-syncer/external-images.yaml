@@ -7,7 +7,7 @@ images:
 - source: "curlimages/curl:7.78.0"
 # - source: "cypress/included:9.5.0" # 10.3.0+, latest is 12.0.1
 - source: "fluent/fluent-bit:1.8.3"
-- source: "gcr.io/google-containers/pause-amd64:3.2"
+- source: "gcr.io/google-containers/pause:3.2"
 - source: "goreleaser/goreleaser:v1.11.5"
 # Golang image is pinned because it is force updated in the upstream
 - source: "golang@sha256:a9b24b67dc83b3383d22a14941c2b2b2ca6a103d805cac6820fd1355943beaf1"
