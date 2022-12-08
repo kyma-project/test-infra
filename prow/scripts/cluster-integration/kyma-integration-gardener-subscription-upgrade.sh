@@ -121,6 +121,7 @@ function postUpgrade() {
   gardener::deploy_kyma --source "${KYMA_SOURCE}"
 
   # upgrade to the new v1alpha2 Subscription version
+  export ENABLE_NEW_CRD_VERSION="true"
   eventing::deployV1Alpha2Subscription
 
   # test the eventing fi tests after the upgrade
