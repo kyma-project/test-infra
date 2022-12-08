@@ -9,6 +9,9 @@ readonly BACKEND_SECRET_LABEL_VALUE=NATS
 readonly EVENTING_BACKEND_CR_NAME=eventing-backend
 readonly EVENTING_BACKEND_CR_NAMESPACE=kyma-system
 
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
+
 # Check if required vars are set or not
 function eventing::check_required_vars() {
   if [[ -z ${CREDENTIALS_DIR} ]]; then
@@ -250,4 +253,21 @@ function eventing::fast_integration_test_cleanup() {
     popd
 
     log::success "Fast integration tests cleanup completed"
+}
+
+
+function eventing::deployV1Alpha2Subscription() {
+    log::info "Copying the CRDs to installation/eventing"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
+    make copy-crds
+    popd
+
+    log::info "Deploy the v1alpha2 Subscription CRD"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
+    gardener::deploy_kyma --source=local --component eventing -w /home/prow/go/src/github.com/kyma-project/kyma --value eventing.controller.enableNewCRDVersion=true
+    popd
+
+    log::success "Deploying of the v1alpha2 Subscription completed"
 }
