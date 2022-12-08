@@ -266,7 +266,7 @@ function eventing::deployV1Alpha2Subscription() {
     log::info "Deploy the v1alpha2 Subscription CRD"
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
-    gardener::deploy_kyma --source=local -w /home/prow/go/src/github.com/kyma-project/kyma --value eventing.controller.enableNewCRDVersion=true
+    gardener::deploy_kyma --source=local -w /home/prow/go/src/github.com/kyma-project/kyma --value eventing.controller.enableNewCRDVersion=true --verbose
     popd
 
     log::success "Deploying of the v1alpha2 Subscription completed"
