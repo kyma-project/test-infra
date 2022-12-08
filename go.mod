@@ -56,7 +56,7 @@ require (
 	github.com/stretchr/testify v1.8.1
 	github.com/tidwall/gjson v1.14.4
 	go.uber.org/zap v1.24.0
-	golang.org/x/net v0.3.0
+	golang.org/x/net v0.4.0
 	golang.org/x/oauth2 v0.3.0
 	google.golang.org/api v0.104.0
 	google.golang.org/grpc v1.51.0
