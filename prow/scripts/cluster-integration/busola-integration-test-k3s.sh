@@ -5,7 +5,7 @@ set -o pipefail
 
 LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
-CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:9.5.0"
+CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
 
 function install_cli() {
   local install_dir

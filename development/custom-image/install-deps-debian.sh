@@ -19,7 +19,7 @@ KUBECTL_CLI_VERSION=v1.24.7
 CRICTL_VERSION=v1.12.0
 HELM_VERSION="v3.7.2"
 DOCKER_VERSION=5:20.10.5~3-0~debian-buster
-NODEJS_VERSION="16.x"
+NODEJS_VERSION="14.x"
 K3D_VERSION="5.0.1"
 PG_MIGRATE_VERSION=v4.15.1
 GO_VERSION=1.19.3
@@ -113,5 +113,5 @@ sudo mkdir /usr/local/go && \
 echo 'export PATH="$PATH:/usr/local/go/bin"' | sudo tee -a /etc/profile
 
 # pre-fetch-docker-images
-sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:9.5.0
+sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0
 sudo docker pull eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
