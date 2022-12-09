@@ -112,6 +112,10 @@ install_busola(){
     echo "Busola resources applied √"
 }
 
+ohno() { 
+  cp -r /root/.npm/_logs/ /tmp/artifacts
+}
+
 echo "Node.js version: $(node -v)"
 echo "NPM version: $(npm -v)"
 
@@ -149,6 +153,8 @@ rm "$PWD/busola-tests/fixtures/examples"
 mv "$PWD/busola-examples" "$PWD/busola-tests/fixtures/examples"
 
 echo "STEP: Running Cypress tests inside Docker"
+
+trap ohno EXIT HUP INT
 
 docker run --entrypoint /bin/bash --network=host -v "$PWD/busola-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 npm run test:$SCOPE"
 
