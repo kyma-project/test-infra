@@ -36,13 +36,13 @@ cleanup() {
     # do not fail the job regardless of the vm deletion result
     set +e
 
-    utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/root/.npm/_logs/" "${ARTIFACTS}"
+    # utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/root/.npm/_logs/" "${ARTIFACTS}"
     #shellcheck disable=SC2088
     utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "~/busola-tests/cypress/screenshots" "${ARTIFACTS}"
     #shellcheck disable=SC2088
     utils::receive_from_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "~/busola-tests/cypress/videos" "${ARTIFACTS}"
     
-    gcloud compute instances delete --zone="${ZONE}" "busola-integration-test-${RANDOM_ID}"
+    # gcloud compute instances delete --zone="${ZONE}" "busola-integration-test-${RANDOM_ID}"
     log::info "End of cleanup"
 }
 
