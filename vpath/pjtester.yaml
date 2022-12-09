@@ -1,11 +1,7 @@
 pjConfigs:
-  prConfig: #
-  kyma-project:
-    test-infra:
-      prNumber: 6565
   prowJobs:
     kyma-project:
-      test-infra:
+      busola:
       - pjName: "pre-busola-integration-test-k3s-cluster"
 prConfigs: #
   kyma-project:
