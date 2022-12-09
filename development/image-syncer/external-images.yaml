@@ -25,7 +25,7 @@ images:
 # - source: "kennethreitz/httpbin:latest" # 4 years onl, only amd64
 # - source: "oryd/hydra-maester:v0.0.25" AMD64 only
 - source: "oryd/hydra:v1.11.8"
-- source: "oryd/oathkeeper-maester:v0.1.5"
+# - source: "oryd/oathkeeper-maester:v0.1.5" AMD64 only
 - source: "oryd/oathkeeper:v0.38.25-beta.1"
 - source: "postgres@sha256:4a6be41f4176af134fe8a02b9f07928fab22fb1fb2777811360154912cb682cd"
   tag: "11.18-alpine3.17-v1"
