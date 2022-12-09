@@ -112,7 +112,7 @@ install_busola(){
     echo "Busola resources applied √"
 }
 
-ohno() { 
+ohno() {
   cp -r /root/.npm/_logs/ /tmp/artifacts
 }
 
