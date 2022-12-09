@@ -113,7 +113,8 @@ install_busola(){
 }
 
 ohno() {
-  cp -r /root/.npm/_logs/ /tmp/artifacts
+  echo "copying error log"
+  cp -r /root/.npm/_logs/ "${ARTIFACTS}"
 }
 
 echo "Node.js version: $(node -v)"
