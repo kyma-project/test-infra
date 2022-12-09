@@ -38,7 +38,7 @@ templates:
                   args:
                     - "--name=tpi/registry"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=registry"
+                    - "--context=docker-registry"
                     - "--dockerfile=Dockerfile"
                     - "--env-file=envs"
                 inheritedConfigs:

@@ -40,15 +40,15 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pull-make-module-build
+    - name: pull-keda-module-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-make-module-build"
+        prow.k8s.io/pubsub.runID: "pull-keda-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)|^PROJECT$|^config/*/.*$'
+      run_if_changed: '^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -61,16 +61,18 @@ presubmits: # runs on PRs
             command:
               - "make"
             args:
+              - "-C"
+              - "hack/ci"
               - "all"
             env:
               - name: IMG
-                value: "eu.gcr.io/kyma-project/keda-manager:PR-${PULL_NUMBER}"
+                value: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
-                value: "europe-west4-docker.pkg.dev/sap-se-cx-kyma-wookiee/dev-registry/unsigned"
-              - name: MODULE_VERSION
-                value: "0.0.${PULL_NUMBER}"
+                value: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+              - name: MODULE_SHA
+                value: "PR-${PULL_NUMBER}"
             resources:
               requests:
                 memory: 3Gi
@@ -167,6 +169,48 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/keda-manager:
+    - name: post-keda-module-build
+      annotations:
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-keda-module-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "hack/ci"
+              - "all"
+            env:
+              - name: IMG
+                value: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
+              - name: KUSTOMIZE_VERSION
+                value: "v4.5.6"
+              - name: MODULE_REGISTRY
+                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-keda-manager-operator-build
       annotations:
         pipeline.trigger: "pr-merge"
@@ -193,6 +237,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
+              - "--tag={{ .Env \"PULL_BASE_SHA\" }}"
             resources:
               requests:
                 memory: 1.5Gi
