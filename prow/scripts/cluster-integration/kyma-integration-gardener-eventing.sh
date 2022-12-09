@@ -140,9 +140,7 @@ if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::wake_up_kyma
 fi
 
-# Printing stored Subscription CRD versions for debugging purposes.
-log::info "Stored Subscription CRD versions:"
-kubectl get crd subscriptions.eventing.kyma-project.io -o json | jq '.status.storedVersions'
+eventing::print_subscription_crd_version
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     # test the default Eventing backend which comes with Kyma

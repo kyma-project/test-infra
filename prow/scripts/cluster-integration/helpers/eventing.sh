@@ -268,19 +268,22 @@ function eventing::run_copy_crds() {
     log::success "Eventing copy-crds make target completed"
 }
 
-function eventing::deployV1Alpha2Subscription() {
+# deploy Kyma PR-version with the v1alpha2 Subscription CRD version
+function eventing::deploy_kyma_pr_version_with_v1alpha2_subscription() {
     log::info "Copying the CRDs to installation/eventing"
     export ENABLE_NEW_CRD_VERSION="true"
 
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
-    make copy-crds
-    popd
-
-    log::info "Deploy the v1alpha2 Subscription CRD"
+    eventing::run_copy_crds
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
     gardener::deploy_kyma --source=local -w /home/prow/go/src/github.com/kyma-project/kyma --value eventing.controller.enableNewCRDVersion=true --verbose
     popd
 
     log::success "Deploying of the v1alpha2 Subscription completed"
+}
+
+# Printing stored Subscription CRD versions for debugging purposes.
+function eventing::print_subscription_crd_version(){
+  log::info "Stored Subscription CRD versions:"
+  kubectl get crd subscriptions.eventing.kyma-project.io -o json | jq '.status.storedVersions'
 }

@@ -113,18 +113,15 @@ function beforeUpgrade() {
 
 # provisions Kyma PR-number, deploys the new v1alpha2 Subscription version, executes the e2e Eventing tests and cleans up
 function postUpgrade() {
-  # upgrade the kyma to the current PR state
   export KYMA_SOURCE="PR-${PULL_NUMBER}"
+  log::info "### Upgrading Kyma to $KYMA_SOURCE with the v1alpha2 Subscription CRD"
+  eventing::deploy_kyma_pr_version_with_v1alpha2_subscription
 
-  # uses previously set KYMA_SOURCE
-  log::info "### Upgrading Kyma to $KYMA_SOURCE"
-  gardener::deploy_kyma --source "${KYMA_SOURCE}"
-
-  # upgrade to the new v1alpha2 Subscription version
-  eventing::deployV1Alpha2Subscription
+  # print the crd version
+  eventing::print_subscription_crd_version
 
   # test the eventing fi tests after the upgrade
-  eventing::fast_integration_tests
+  eventing::post_upgrade_test_fast_integration
 }
 
 # nice cleanup on exit, be it successful or on fail
