@@ -253,27 +253,28 @@ until [[ $(kubectl get cronjob -n kyma-system oathkeeper-jwks-rotator --output=j
   sleep 3
 done
 kubectl patch cronjob -n kyma-system oathkeeper-jwks-rotator -p '{"spec":{"schedule": "0 0 1 * *"}}'
-log::info "Install Compass version from main"
-installCompassOld
 
-readonly SUITE_NAME="compass-e2e-tests"
-
-log::info "Execute benchmarks on the current main"
-kubectl uncordon "$NODE"
-bash "${COMPASS_SCRIPTS_DIR}"/testing.sh --benchmark true
-kubectl cordon "$NODE"
-
-PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
-for POD in $PODS; do
-  CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
-  kubectl logs -n kyma-system "$POD" -c "$CONTAINER" > "$CONTAINER"-old
-done
-
-kubectl delete cts $SUITE_NAME
-
-# Because of sequential compass installation, the second one fails due to compass-migration job patching failure. K8s job's fields are immutable.
-log::info "Deleting the old compass-migration job"
-kubectl delete jobs -n compass-system compass-migration
+#log::info "Install Compass version from main"
+#installCompassOld
+#
+#readonly SUITE_NAME="compass-e2e-tests"
+#
+#log::info "Execute benchmarks on the current main"
+#kubectl uncordon "$NODE"
+#bash "${COMPASS_SCRIPTS_DIR}"/testing.sh --benchmark true
+#kubectl cordon "$NODE"
+#
+#PODS=$(kubectl get cts $SUITE_NAME -o=go-template --template='{{range .status.results}}{{range .executions}}{{printf "%s\n" .id}}{{end}}{{end}}')
+#for POD in $PODS; do
+#  CONTAINER=$(kubectl -n kyma-system get pod "$POD" -o jsonpath='{.spec.containers[*].name}' | sed s/istio-proxy//g | awk '{$1=$1};1')
+#  kubectl logs -n kyma-system "$POD" -c "$CONTAINER" > "$CONTAINER"-old
+#done
+#
+#kubectl delete cts $SUITE_NAME
+#
+## Because of sequential compass installation, the second one fails due to compass-migration job patching failure. K8s job's fields are immutable.
+#log::info "Deleting the old compass-migration job"
+#kubectl delete jobs -n compass-system compass-migration
 
 log::info "Install New Compass version"
 installCompassNew
