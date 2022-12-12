@@ -180,3 +180,19 @@ templates:
                     - "jobConfig_default"
                     - "keb_plan_free_aws"
                     - "kyma_integration_subaccount"
+              - jobConfig:
+                  name: "skr-preview-dev"
+                  cron: "5 1,11 * * *" # "At 01:05 and 11:05"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_preview"
+                    - "kyma_integration_subaccount"
+

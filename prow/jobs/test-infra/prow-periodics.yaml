@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
             securityContext:
               privileged: true
             command:
@@ -63,7 +63,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20221125-ea47d7c8"
+          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20221208-d468bc30"
             command:
               - "/markdown-index"
             args:
@@ -88,7 +88,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
             command:
               - "prow/cluster/deploy.sh"
             env:
@@ -120,7 +120,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
             securityContext:
               privileged: true
             command:
@@ -155,7 +155,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/label_sync:v20221208-8898931a7f"
             command:
               - "label_sync"
             args:
@@ -196,7 +196,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20221208-8898931a7f"
             command:
               - "generic-autobumper"
             args:
@@ -223,7 +223,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20221208-8898931a7f"
             command:
               - "generic-autobumper"
             args:

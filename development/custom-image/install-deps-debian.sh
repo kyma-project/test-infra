@@ -22,7 +22,7 @@ DOCKER_VERSION=5:20.10.5~3-0~debian-buster
 NODEJS_VERSION="14.x"
 K3D_VERSION="5.0.1"
 PG_MIGRATE_VERSION=v4.15.1
-GO_VERSION=1.19.1
+GO_VERSION=1.19.3
 
 # install docker
 sudo apt-get update
@@ -109,7 +109,8 @@ sudo mkdir /usr/local/go && \
      curl -fsSL -o /tmp/go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
      sudo tar xzf /tmp/go.tar.gz -C /usr/local && \
      rm /tmp/go.tar.gz
-echo "export PATH=\$PATH:/usr/local/go/bin" | sudo tee -a /etc/profile
+# shellcheck disable=SC2016
+echo 'export PATH="$PATH:/usr/local/go/bin"' | sudo tee -a /etc/profile
 
 # pre-fetch-docker-images
 sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0

@@ -169,9 +169,9 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221124-ce0a9db7"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221208-45f25edc"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221121-3622f3a5"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
   image_buildpack-golang:
@@ -185,7 +185,7 @@ globalSets:
   image_gardener-rotate:
     image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221121-4ded4f32"
   image_markdown_index:
-    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20221125-ea47d7c8"
+    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20221208-d468bc30"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"

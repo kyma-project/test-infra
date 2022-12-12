@@ -17,7 +17,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -45,7 +45,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -73,7 +73,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -101,7 +101,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -129,7 +129,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -157,7 +157,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -185,7 +185,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -213,7 +213,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -241,7 +241,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -269,7 +269,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -297,7 +297,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -325,7 +325,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -353,7 +353,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -381,7 +381,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -409,7 +409,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -437,7 +437,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -465,7 +465,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -493,7 +493,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -521,7 +521,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -549,7 +549,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -577,7 +577,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -605,7 +605,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -633,7 +633,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -661,7 +661,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -689,7 +689,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -717,7 +717,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -745,7 +745,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -773,7 +773,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -801,7 +801,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -829,7 +829,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -857,7 +857,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -885,7 +885,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -913,7 +913,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -941,7 +941,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -969,7 +969,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -997,7 +997,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1025,7 +1025,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1053,7 +1053,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1081,7 +1081,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1109,7 +1109,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1137,7 +1137,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1165,7 +1165,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1193,7 +1193,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1221,7 +1221,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1249,7 +1249,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1277,7 +1277,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1305,7 +1305,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1333,7 +1333,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1361,7 +1361,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1389,7 +1389,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:
@@ -1417,7 +1417,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20221123-4b1eb2a191"
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
             command:
               - "checkconfig"
             args:

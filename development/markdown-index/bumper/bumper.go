@@ -130,8 +130,26 @@ func getTreeRef(stderr io.Writer, refname string) (string, error) {
 	return fields[0], nil
 }
 
+func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
+	tmpRead, tmpWrite, err := os.Pipe()
+	if err != nil {
+		return "", err
+	}
+
+	if err := Call(tmpWrite, stderr, gitCmd, "status"); err != nil {
+		return "", fmt.Errorf("git status: %w", err)
+	}
+	tmpWrite.Close()
+	output, err := io.ReadAll(tmpRead)
+	if err != nil {
+		return "", err
+	}
+	stdout.Write(output)
+	return string(output), nil
+}
+
 func gitCommit(name, email, message string, stdout, stderr io.Writer) error {
-	if err := Call(stdout, stderr, gitCmd, "add", "index.md"); err != nil {
+	if err := Call(stdout, stderr, gitCmd, "add", "docs/index.md"); err != nil {
 		return fmt.Errorf("git add: %w", err)
 	}
 	commitArgs := []string{"commit", "-m", message}
@@ -290,6 +308,15 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		if o.GitEmail == "" {
 			o.GitEmail = user.Email
 		}
+	}
+
+	resp, err := gitStatus(stdout, stderr)
+	if err != nil {
+		return fmt.Errorf("git status: %w", err)
+	}
+	if strings.Contains(resp, "nothing to commit, working tree clean") {
+		fmt.Println("No changes, quitting.")
+		return nil
 	}
 
 	if err := gitCommit(o.GitName, o.GitEmail, "Bumping index.md", stdout, stderr); err != nil {
