@@ -57,8 +57,22 @@ func cancelOnInterrupt(ctx context.Context, cancel context.CancelFunc) {
 	}()
 }
 
-// SyncImage syncs specific image lists between two registries.
-func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Authenticator) (name.Reference, error) {
+func isImageIndex(ctx context.Context, src string) (bool, error) {
+
+	sr, err := name.ParseReference(src)
+	if err != nil {
+		return false, err
+	}
+
+	s, err := remote.Head(sr, remote.WithContext(ctx))
+	if err != nil {
+		return false, fmt.Errorf("source image index pull error: %w", err)
+	}
+	return s.MediaType.IsIndex(), nil
+}
+
+// SyncIndex syncs specific image index between two registries.
+func SyncIndex(ctx context.Context, src, dest string, dryRun bool, auth authn.Authenticator) (name.Reference, error) {
 	log.Debug("Source ", src)
 	log.Debug("Destination ", dest)
 
@@ -73,15 +87,68 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 
 	s, err := remote.Index(sr, remote.WithContext(ctx))
 	if err != nil {
-		return nil, fmt.Errorf("source image index pull error: %w", err)
+		return nil, fmt.Errorf("source index index pull error: %w", err)
 	}
 
 	d, err := remote.Index(dr, remote.WithContext(ctx), remote.WithAuth(auth))
 	if err != nil {
 		if ifRefNotFound(err) {
-			log.Debug("Target image does not exist. Pushing image...")
+			log.Debug("Target index does not exist. Pushing index...")
 			if !dryRun {
 				err := remote.WriteIndex(dr, s, remote.WithContext(ctx), remote.WithAuth(auth))
+				if err != nil {
+					return nil, fmt.Errorf("push index error: %w", err)
+				}
+			} else {
+				log.Debug("Dry-Run enabled. Skipping push.")
+			}
+			return dr, nil
+		}
+		return nil, err
+	}
+
+	ds, err := s.Digest()
+	if err != nil {
+		return nil, err
+	}
+	dd, err := d.Digest()
+	if err != nil {
+		return nil, err
+	}
+	log.Debug("Src digest: ", ds)
+	log.Debug("Dest digest: ", dd)
+	if ds != dd {
+		return nil, fmt.Errorf("digests are not equal: %v, %v - probably source index has been changed", ds, dd)
+	}
+	log.Debug("Digests are equal - nothing to sync")
+	return dr, nil
+}
+
+// SyncImage syncs specific image between two registries for amd64/linux architecture.
+func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Authenticator) (name.Reference, error) {
+	log.Debug("Source ", src)
+	log.Debug("Destination ", dest)
+
+	sr, err := name.ParseReference(src)
+	if err != nil {
+		return nil, err
+	}
+	dr, err := name.ParseReference(dest)
+	if err != nil {
+		return nil, err
+	}
+
+	s, err := remote.Image(sr, remote.WithContext(ctx))
+	if err != nil {
+		return nil, fmt.Errorf("source image pull error: %w", err)
+	}
+
+	d, err := remote.Image(dr, remote.WithContext(ctx))
+	if err != nil {
+		if ifRefNotFound(err) {
+			log.Debug("Target image does not exist. Pushing image...")
+			if !dryRun {
+				err := remote.Write(dr, s, remote.WithContext(ctx), remote.WithAuth(auth))
 				if err != nil {
 					return nil, fmt.Errorf("push image error: %w", err)
 				}
@@ -104,7 +171,7 @@ func SyncImage(ctx context.Context, src, dest string, dryRun bool, auth authn.Au
 	log.Debug("Src digest: ", ds)
 	log.Debug("Dest digest: ", dd)
 	if ds != dd {
-		return nil, fmt.Errorf("digests are not equal: %v, %v - probably source image list has been changed", ds, dd)
+		return nil, fmt.Errorf("digests are not equal: %v, %v - probably source image has been changed", ds, dd)
 	}
 	log.Debug("Digests are equal - nothing to sync")
 	return dr, nil
@@ -115,15 +182,32 @@ func SyncImages(ctx context.Context, cfg *Config, images *imagesyncer.SyncDef, a
 	auth := &authn.Basic{Username: "_json_key", Password: string(authCfg)}
 	for _, img := range images.Images {
 		target, err := getTarget(img.Source, images.TargetRepoPrefix, img.Tag)
+		imageType := "Index"
 		if err != nil {
 			return err
 		}
 		log.WithField("image", img.Source).Info("Start sync")
-		_, err = SyncImage(ctx, img.Source, target, cfg.DryRun, auth)
+		if img.AMD64Only {
+			// sync whole index if possible, otherwise sync singular image
+			// we force users to set explicit info about single-arch images
+			isIndex, err := isImageIndex(ctx, img.Source)
+			if err != nil {
+				return err
+			}
+			if isIndex {
+				_, err = SyncIndex(ctx, img.Source, target, cfg.DryRun, auth)
+			} else {
+				imageType = "Image"
+				_, err = SyncImage(ctx, img.Source, target, cfg.DryRun, auth)
+			}
+		} else {
+			// sync whole index
+			_, err = SyncIndex(ctx, img.Source, target, cfg.DryRun, auth)
+		}
 		if err != nil {
 			return err
 		}
-		log.WithField("target", target).Info("Image synced successfully")
+		log.WithField("target", target).Infof("%s synced successfully", imageType)
 	}
 	return nil
 }
