@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfigs:
+    kyma-project:
+      test-infra:
+        prNumber: 6567
+  prowJobs:
+    kyma-incubator:
+      compass-console:
+        - pjName: "pre-main-compass-gke-benchmark"
+prConfigs:
+  kyma-incubator:
+    compass:
+      prNumber: 2782
