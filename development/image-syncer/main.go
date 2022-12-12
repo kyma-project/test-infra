@@ -190,7 +190,8 @@ func SyncImages(ctx context.Context, cfg *Config, images *imagesyncer.SyncDef, a
 		if img.AMD64Only {
 			// sync whole index if possible, otherwise sync singular image
 			// we force users to set explicit info about single-arch images
-			isIndex, err := isImageIndex(ctx, img.Source)
+			var isIndex bool
+			isIndex, err = isImageIndex(ctx, img.Source)
 			if err != nil {
 				return err
 			}
