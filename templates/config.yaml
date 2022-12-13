@@ -31,6 +31,7 @@ global:
         - name: "application-connector-manager"
         - name: "template-repository"
         - name: "rafter"
+        - name: "btp-manager"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
@@ -326,6 +327,13 @@ globalSets:
         - org: "kyma-project"
           repo: "control-plane"
           path_alias: "github.com/kyma-project/control-plane"
+          base_ref: "main"
+  extra_refs_btp-manager:
+    extra_refs:
+      btp-manager:
+        - org: "kyma-project"
+          repo: "btp-manager"
+          path_alias: "github.com/kyma-project/btp-manager"
           base_ref: "main"
   # labels sets
   build_labels:
