@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      istio:
+        - pjName: "pull-istio-sidecars-component-test"
+prConfigs: #
+  kyma-project:
+    istio:
+      prNumber: 37
