@@ -300,6 +300,7 @@ tide:
     kyma-project/module-manager: squash
     kyma-project/api-gateway: squash
     kyma-project/organization-and-operations: squash
+    kyma-project/btp-manager: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
