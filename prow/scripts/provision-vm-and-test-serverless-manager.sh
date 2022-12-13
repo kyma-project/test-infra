@@ -128,6 +128,5 @@ utils::compress_send_to_vm "${ZONE}" "serverless-manager-test-${RANDOM_ID}" "/ho
 
 log::info "Triggering the installation"
 # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "serverless-manager-test-${RANDOM_ID}" -c "sudo bash -c \"export PATH=\$PATH:\$HOME/serverless-manager/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && cd \$HOME/serverless-manager && make test""
-#&&	PATH=$PATH:$HOME/keda-manager/bin
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "serverless-manager-test-${RANDOM_ID}" -c 'sudo bash -c "cd \$HOME/serverless-manager && make test"'
 log::success "all done"
