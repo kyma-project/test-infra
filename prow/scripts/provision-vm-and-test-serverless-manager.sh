@@ -124,7 +124,7 @@ fi
 
 log::info "Copying Reconciler to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "serverless-manager-test-${RANDOM_ID}" "/home/prow/go/src/github.com/serverless-project/serverless-manager" "~/serverless-manager"
+utils::compress_send_to_vm "${ZONE}" "serverless-manager-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/serverless-manager" "~/serverless-manager"
 
 log::info "Triggering the installation"
 # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
