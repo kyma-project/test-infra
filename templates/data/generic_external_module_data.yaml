@@ -140,3 +140,43 @@ templates:
                     - default
                   global:
                     - jobConfig_postsubmit
+      - to: ../../prow/jobs/kyma/kyma-gke-external-registry.yaml
+        localSets:
+          jobConfig_default:
+            path_alias: github.com/kyma-project/keda-manager
+            command: "bash"
+            env:
+              CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
+            request_memory: 200Mi
+            request_cpu: 80m
+          vm_job_labels_template:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-sa-vm-kyma-integration: "true"
+              preset-gc-project-env: "true"
+          vm_job_template_k3d:
+            annotations:
+              pipeline.platform: k3d
+              pipeline.installer: kyma deploy
+              pipeline.test: fast-integration
+              pipeline.clusterprovisioning: k3d
+        jobConfigs:
+          - repoName: "kyma-project/keda-manager"
+            jobs:
+              - jobConfig:
+                  name: "pre-main-keda-manager-verify"
+                  always_run: "true"
+                  optional: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"    # TODO: Prepare a Keda-Manager Image
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
