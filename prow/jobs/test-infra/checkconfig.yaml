@@ -641,6 +641,34 @@ presubmits: # runs on PRs
               - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
+  kyma-project/btp-manager:
+    - name: pre-btp-manager-validate-inrepo-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-btp-manager-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20221208-8898931a7f"
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
   kyma-incubator/compass:
     - name: pre-compass-validate-inrepo-prow-configs
       annotations:
