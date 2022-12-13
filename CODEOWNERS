@@ -31,6 +31,7 @@
 /prow/jobs/incubator/podpreset-crd @szwedm @tillknuesting @wozniakjan @piotrmiskiewicz @pk85 @ralikio @kyma-project/prow
 /prow/jobs/incubator/reconciler @varbanv @clebs @kwiatekus @jeremyharisch @tobiscr @kyma-project/prow
 /prow/jobs/incubator/varkes @lilitgh @a-thaler @kyma-project/prow
+/prow/jobs/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish
 /prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
 /prow/jobs/kyma/components/central-application-connectivity-validator @koala7659 @akgalwas @franpog859 @ralikio @pk85 @kyma-project/prow
 /prow/jobs/kyma/components/central-application-gateway @koala7659 @ralikio @pk85 @akgalwas @franpog859 @kyma-project/prow
