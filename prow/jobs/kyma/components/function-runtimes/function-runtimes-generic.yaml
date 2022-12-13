@@ -22,7 +22,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-java17-jvm-build"
+              - "--name=function-runtime-java17-jvm-alpha"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-runtimes/java17"
               - "--dockerfile=Dockerfile-jvm-runtime"
@@ -190,7 +190,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-java17-jvm-build"
+              - "--name=function-runtime-java17-jvm-alpha"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-runtimes/java17"
               - "--dockerfile=Dockerfile-jvm-runtime"
