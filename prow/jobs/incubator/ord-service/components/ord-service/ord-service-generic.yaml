@@ -27,7 +27,7 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/incubator/compass-ord-service:PR-84"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b-buildkit"
             command:
               - "/image-builder"
             args:
@@ -159,3 +159,4 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+  
