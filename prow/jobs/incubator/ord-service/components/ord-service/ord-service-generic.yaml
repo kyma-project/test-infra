@@ -87,7 +87,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/ord-service && ./run.sh"
+              - "cd components/ord-service && ./run.sh --no-start"
             resources:
               requests:
                 memory: 1Gi

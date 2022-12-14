@@ -31,7 +31,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/ord-service && ./run.sh"
+                    - "cd components/ord-service && ./run.sh --no-start"
                   run_if_changed: "^components/ord-service"
                 inheritedConfigs:
                   global:
