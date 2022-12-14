@@ -100,8 +100,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      branches:
-        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"

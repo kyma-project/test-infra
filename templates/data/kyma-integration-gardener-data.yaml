@@ -61,6 +61,12 @@ templates:
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing-upgrade.sh"
+          command_upgrade_subscription:
+            annotations:
+              pipeline.installer: kyma deploy
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: kyma cli
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-subscription-upgrade.sh"
           command_busola_long_lasting:
             annotations:
               pipeline.installer: kyma deploy
@@ -271,6 +277,36 @@ templates:
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
               - jobConfig:
+                  name: pre-main-kyma-gardener-gcp-eventing-v1alpha2
+                  optional: true
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                    # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                    ENABLE_NEW_CRD_VERSION: "true"
+                    ENABLE_SUBSCRIPTION_V1_ALPHA2: "true"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job_eventing
+                    - command_integration_eventing
+              - jobConfig:
                   name: pre-main-kyma-gardener-gcp-goats-api-gateway
                   optional: false
                   labels:
@@ -321,6 +357,36 @@ templates:
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_upgrade_eventing
+
+              - jobConfig:
+                  name: pre-main-kyma-gardener-gcp-subscription-upgrade
+                  optional: true
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  run_if_changed: "^((components/eventing-controller/.*|components/event-publisher-proxy/.*|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-bot-github-token: "true"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job_eventing
+                    - command_upgrade_subscription
 
               # periodics
               - jobConfig:

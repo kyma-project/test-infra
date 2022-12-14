@@ -186,7 +186,7 @@ if [[ -z "${VM_FOR_PREFIX_AND_SUFFIX}" ]]; then
     utils::compress_send_to_vm "${ZONE}" "${VM_PREFIX}${SUFFIX}" "/home/prow/go/src/github.com/kyma-incubator/compass" "~/compass"
 
 
-    KYMA_CLI_VERSION="2.1.3"
+    KYMA_CLI_VERSION="2.2.0"
     log::info "Installing Kyma CLI version: $KYMA_CLI_VERSION"
 
     PREV_WD=$(pwd)

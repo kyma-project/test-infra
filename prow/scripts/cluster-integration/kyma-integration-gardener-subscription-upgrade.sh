@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-#Description: Kyma CLI Integration plan on Gardener. This scripts implements a pipeline that consists of many steps. The purpose is to install and test Kyma using the CLI on a real Gardener cluster.
+#Description: Kyma CLI Integration plan on Gardener. This scripts implements a pipeline that consists of many steps.
+# The purpose is to install and test Kyma main using the CLI on a real Gardener cluster, run the eventing fast integration tests,
+# upgrade the cluster to the current PR version, deploy the new subscription version and the run the tests again.
 #
 #Expected common vars:
 # - JOB_TYPE - set up by prow (presubmit, postsubmit, periodic)
@@ -21,8 +23,9 @@
 ## ---------------------------------------------------------------------------------------
 
 # exit on error, and raise error when variable is not set when used
-set -e
+set -o errexit
 
+ENABLE_TEST_CLEANUP=true
 ENABLE_TEST_LOG_COLLECTOR=false
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
@@ -38,9 +41,12 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 # shellcheck source=prow/scripts/cluster-integration/helpers/eventing.sh
 source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/eventing.sh"
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
+    BOT_GITHUB_TOKEN
     GARDENER_PROVIDER
     KYMA_PROJECT_DIR
     GARDENER_REGION
@@ -54,6 +60,7 @@ requiredVars=(
 )
 
 utils::check_required_vars "${requiredVars[@]}"
+log::info "### Starting pipeline"
 
 if [[ $GARDENER_PROVIDER == "azure" ]]; then
     # shellcheck source=prow/scripts/lib/gardener/azure.sh
@@ -65,13 +72,60 @@ elif [[ $GARDENER_PROVIDER == "gcp" ]]; then
     # shellcheck source=prow/scripts/lib/gardener/gcp.sh
     source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
 else
-    ## TODO what should I put here? Is this a backend?
     log::error "GARDENER_PROVIDER ${GARDENER_PROVIDER} is not yet supported"
     exit 1
 fi
 
+function cleanupJobAssets() {
+    # Must be at the beginning
+    EXIT_STATUS=$?
+
+    set +e
+
+    if  [[ "${ENABLE_TEST_CLEANUP}" = true ]] ; then
+        log::banner "Cleanup fast-integration assets"
+        eventing::fast_integration_test_cleanup || log::info "Cleanup fast-integration assets failed"
+    fi
+
+    if  [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
+        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+        gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${CLUSTER_NAME}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    fi
+
+    set -e
+    exit ${EXIT_STATUS}
+}
+
+# provisions Kyma main and executes the e2e Eventing tests
+function beforeUpgrade() {
+  log::info "### Deploying Kyma $KYMA_SOURCE with the v1alpha1 Subscription version"
+  gardener::deploy_kyma --source "${KYMA_SOURCE}"
+
+  # generate pod-security-policy list in json
+  utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
+
+  # perform the e2e Eventing tests
+  eventing::pre_upgrade_test_fast_integration
+}
+
+# provisions Kyma PR-number, deploys the new v1alpha2 Subscription version, executes the e2e Eventing tests and cleans up
+function postUpgrade() {
+  export KYMA_SOURCE="PR-${PULL_NUMBER}"
+  log::info "### Upgrading Kyma to $KYMA_SOURCE with the v1alpha2 Subscription CRD"
+  eventing::deploy_kyma_pr_version_with_v1alpha2_subscription
+
+  # print the crd version
+  eventing::print_subscription_crd_version
+
+  # test the eventing fi tests after the upgrade
+  eventing::post_upgrade_test_fast_integration
+}
+
 # nice cleanup on exit, be it successful or on fail
-trap gardener::cleanup EXIT INT
+trap cleanupJobAssets EXIT INT
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -82,19 +136,13 @@ readonly COMMON_NAME_PREFIX="grd"
 COMMON_NAME=$(echo "${COMMON_NAME_PREFIX}${RANDOM_NAME_SUFFIX}" | tr "[:upper:]" "[:lower:]")
 export COMMON_NAME
 
+### Cluster name must be less than 10 characters!
 export CLUSTER_NAME="${COMMON_NAME}"
 
-# set KYMA_SOURCE used by gardener::deploy_kyma
-utils::generate_vars_for_build \
-    -b "$BUILD_TYPE" \
-    -p "$PULL_NUMBER" \
-    -s "$PULL_BASE_SHA" \
-    -n "$JOB_NAME"
-export KYMA_SOURCE=${utils_generate_vars_for_build_return_kymaSource:?}
+# set pipefail to handle right errors from tests
+set -o pipefail
 
-## ---------------------------------------------------------------------------------------
-## Prow job execution steps
-## ---------------------------------------------------------------------------------------
+export KYMA_SOURCE="main"
 
 # checks required vars and initializes gcloud/docker if necessary
 gardener::init
@@ -102,58 +150,19 @@ gardener::init
 # if MACHINE_TYPE is not set then use default one
 gardener::set_machine_type
 
-kyma::install_cli
+#TODO add an env flag to switch from provisioning using CLI to reconciler in local mode
+kyma::install_unstable_cli
 
 # currently only Azure generates overrides, but this may change in the future
 gardener::generate_overrides
 
+log::info "### Provisioning Gardener cluster"
 export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
-# deploy Kyma with Subscription CRD v1alpha1 or v1alpha2
-if [[ "${ENABLE_NEW_CRD_VERSION}" == "true" ]]; then
-    # deploy Kyma with Subscription CRD v1alpha2
-    eventing::run_copy_crds
+beforeUpgrade
 
-    # uses previously set KYMA_SOURCE
-    log::info "Deploying Kyma with Subscription CRD v1alpha2"
-    gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source=local --workspace="${KYMA_SOURCES_DIR}" \
-      --value eventing.controller.jetstream.retentionPolicy=limits \
-      --value eventing.controller.jetstream.consumerDeliverPolicy=all \
-      --value eventing.controller.enableNewCRDVersion=true
-else
-    # deploy Kyma with Subscription CRD v1alphav1
-    log::info "Deploying Kyma ${KYMA_SOURCE}"
-    gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}" \
-      --value eventing.controller.jetstream.retentionPolicy=limits \
-      --value eventing.controller.jetstream.consumerDeliverPolicy=all
-fi
-
-# generate pod-security-policy list in json
-utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
-
-
-if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
-    gardener::hibernate_kyma
-    # TODO make the sleep value configurable (if it makes sense)
-    sleep 120
-    gardener::wake_up_kyma
-fi
-
-eventing::print_subscription_crd_version
-
-if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
-    # test the default Eventing backend which comes with Kyma
-    log::banner "Execute eventing E2E fast-integration tests"
-    eventing::test_fast_integration_eventing
-else
-    # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-    if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-      export ENABLE_TEST_LOG_COLLECTOR=true
-    fi
-    gardener::test_kyma
-fi
-
+postUpgrade
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

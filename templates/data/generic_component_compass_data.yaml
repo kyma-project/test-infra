@@ -15,7 +15,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -38,7 +38,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -76,7 +76,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -99,7 +99,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -137,10 +137,10 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
-                  request_cpu: 1000m
+                  request_cpu: 2000m
                   run_if_changed: "^components/director/"
                   branches:
                     - ^main$
@@ -160,10 +160,10 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
-                  request_cpu: 1000m
+                  request_cpu: 2000m
                   run_if_changed: "^components/director/"
                   branches:
                     - ^main$
@@ -209,7 +209,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -232,7 +232,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -270,7 +270,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -293,7 +293,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -331,7 +331,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -354,7 +354,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -392,7 +392,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -415,7 +415,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -453,7 +453,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -476,7 +476,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -514,7 +514,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -537,7 +537,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -574,7 +574,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--platform=linux/amd64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -596,7 +596,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--platform=linux/amd64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -624,10 +624,10 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
-                  request_cpu: 1000m
+                  request_cpu: 2000m
                   run_if_changed: "^tests/"
                   branches:
                     - ^main$
@@ -647,10 +647,10 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
-                  request_cpu: 1000m
+                  request_cpu: 2000m
                   run_if_changed: "^tests/"
                   branches:
                     - ^main$
