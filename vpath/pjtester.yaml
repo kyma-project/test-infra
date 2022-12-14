@@ -7,6 +7,7 @@ pjConfigs:
     kyma-incubator:
       ord-service:
         - pjName: "pull-ord-service-unit-test"
+        - pjName: "pull-ord-service-build"
 prConfigs:
   kyma-incubator:
     ord-service:
