@@ -64,7 +64,7 @@ for ZONE in ${EU_ZONES}; do
     gcloud compute instances create "$VM_NAME" \
         --metadata enable-oslogin=TRUE \
         --machine-type n1-standard-4 \
-        --image-family debian-10 \
+        --image-family debian-11 \
         --image-project debian-cloud \
         --zone "${ZONE}" \
         --boot-disk-size 200 \
