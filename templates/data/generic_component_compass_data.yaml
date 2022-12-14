@@ -588,6 +588,21 @@ templates:
                     - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
+                  name: pull-schema-migrator-validate
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/schema-migrator && make validate"
+                  run_if_changed: "^components/schema-migrator/migrations/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+              - jobConfig:
                   name: post-schema-migrator-build
                   args:
                     - "--name=incubator/compass-schema-migrator"
@@ -660,4 +675,3 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-
