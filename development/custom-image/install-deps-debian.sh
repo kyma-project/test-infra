@@ -87,21 +87,12 @@ sudo apt-get -y install \
 # install k3d
 wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v${K3D_VERSION} bash
 
-# install monitoring agent
-# https://cloud.google.com/monitoring/agent/installation
-curl -sSO https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh && \
-sudo bash add-monitoring-agent-repo.sh \
-  --also-install \
-  --version="6.*.*"
-
-# install logging agent
+# install cloud-ops agent
 # https://cloud.google.com/logging/docs/agent/installation
-curl -sSO https://dl.google.com/cloudagents/add-logging-agent-repo.sh && \
-sudo bash add-logging-agent-repo.sh && \
-sudo apt-get update
-sudo apt-cache madison google-fluentd
-sudo apt-get install -y 'google-fluentd=1.*'
-sudo apt-get install -y google-fluentd-catch-all-config
+curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
+sudo bash add-google-cloud-ops-agent-repo.sh \
+  --also-install \
+  --version=2.*.*
 
 # install go
 sudo mkdir /usr/local/go && \
