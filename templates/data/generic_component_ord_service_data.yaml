@@ -27,6 +27,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: "pull-ord-service-unit-test"
+                  image: "eu.gcr.io/kyma-project/incubator/compass-ord-service:PR-84"
                   command: "/bin/sh"
                   args:
                     - "-c"
