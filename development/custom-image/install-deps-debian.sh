@@ -90,10 +90,9 @@ wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG
 # install monitoring agent
 # https://cloud.google.com/monitoring/agent/installation
 curl -sSO https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh && \
-sudo bash add-monitoring-agent-repo.sh && \
-sudo apt-get update
-sudo apt-cache madison stackdriver-agent
-sudo apt-get install -y 'stackdriver-agent=6.*'
+sudo bash add-monitoring-agent-repo.sh \
+  --also-install \
+  --version="6.*.*"
 
 # install logging agent
 # https://cloud.google.com/logging/docs/agent/installation
