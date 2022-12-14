@@ -27,11 +27,11 @@ templates:
           - repoName: "kyma-project/istio"
             jobs:
               - jobConfig:
-                  name: pull-istio-lint
+                  name: pull-istio-sidecars-lint
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
+                    - "cd operator/pkg/lib/sidecars && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
                   always_run: true
                 inheritedConfigs:
                   global:
