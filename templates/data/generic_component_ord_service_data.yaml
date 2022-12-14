@@ -27,11 +27,11 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: "pull-ord-service-unit-test"
-                  image: "eu.gcr.io/kyma-project/incubator/compass-ord-service:PR-84"
+                  image: "maven:3.8.6-eclipse-temurin-11"
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/ord-service && mvn clean test"
+                    - "cd components/ord-service && ./run.sh"
                   run_if_changed: "^components/ord-service"
                 inheritedConfigs:
                   global:
