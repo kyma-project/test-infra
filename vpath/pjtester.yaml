@@ -3,7 +3,7 @@ pjConfigs:
     kyma-project:
       istio:
         - pjName: "pull-istio-sidecars-component-test"
-        - pjName: "pull-istio-lint"
+        - pjName: "pull-istio-sidecars-lint"
 prConfigs: #
   kyma-project:
     istio:
