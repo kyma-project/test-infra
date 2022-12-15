@@ -24,8 +24,8 @@ fi
 
 cleanup() {
     ARG=$?
-    log::info "Removing instance control-plane-integration-test-${RANDOM_ID}"
-    gcloud compute instances delete --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
+    log::info "NOT Removing instance control-plane-integration-test-${RANDOM_ID}"
+    # gcloud compute instances delete --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
     exit $ARG
 }
 
