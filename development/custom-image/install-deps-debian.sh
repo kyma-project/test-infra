@@ -105,3 +105,7 @@ echo 'export PATH="$PATH:/usr/local/go/bin"' | sudo tee -a /etc/profile
 # pre-fetch-docker-images
 sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0
 sudo docker pull eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
+
+sudo sed -i 's/\(GRUB_CMDLINE_LINUX_DEFAULT="\)\(.*\)\("\)/\1\2 systemd.legacy_systemd_cgroup_controller=false systemd.unified_cgroup_hierarchy=false\3/' /etc/default/grub
+sudo sed -i 's/\(GRUB_CMDLINE_LINUX="\)\(.*\)\("\)/\1\2 systemd.legacy_systemd_cgroup_controller=false systemd.unified_cgroup_hierarchy=false\3/' /etc/default/grub
+sudo update-grub
