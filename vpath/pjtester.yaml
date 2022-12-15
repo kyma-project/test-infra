@@ -1,0 +1,5 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      control-plane:
+      - pjName: "pre-main-control-plane-integration"
