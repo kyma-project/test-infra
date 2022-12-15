@@ -64,7 +64,7 @@ wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO
 # install minikube
 curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/${MINIKUBE_VERSION}/minikube-linux-amd64 && \
 chmod +x /tmp/minikube && \
-sudo mv /tmp/minikube /usr/local/bin/minikube
+sudo install /tmp/minikube /usr/local/bin/minikube
 
 
 # install postgres and migrate tool
