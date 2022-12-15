@@ -73,7 +73,7 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 
 # Versions
 
-ENV GO_VERSION 1.19.3
+ENV GO_VERSION 1.19.4
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go
