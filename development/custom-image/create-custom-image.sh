@@ -29,7 +29,6 @@ RANDOM_ID=$(openssl rand -hex 4)
 VM_NAME="kyma-deps-image-vm-${RANDOM_ID}"
 DATE=$(date +v%Y%m%d)
 DEFAULT=false
-sshUser="sa_117798148653314453801"
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
@@ -98,26 +97,26 @@ utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'echo \
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'echo \"RateLimitBurst=1500\" >> /etc/systemd/journald.conf'"
 utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/resources/dbus-1_system-local.conf" "/tmp/system-local.conf"
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'mv /tmp/system-local.conf /etc/dbus-1/system-local.conf'"
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo usermod -aG docker $sshUser && newgrp docker"
 
 
 if [[ $testMinikube == true ]]; then
-    log::info "Testing minikube installation"
-    log::info "Download stable Kyma CLI"
+    log::info "Testing minikube"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "minikube start"
+    #log::info "Download stable Kyma CLI"
     # Using old version of kyma cli because newest doesn't support provision on minikube.
-    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -sSLo kyma.tar.gz \"https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_linux_x86_64.tar.gz\""
-    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "tar xvzf kyma.tar.gz && chmod +x kyma && mkdir ./bin && mv ./kyma ./bin/kyma && sudo cp ./bin/kyma /usr/local/bin/kyma"
-    log::info "Triggering Minikube installation"
-    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "kyma provision minikube --ci --vm-driver docker"
+    #utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -sSLo kyma.tar.gz \"https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_linux_x86_64.tar.gz\""
+    #utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "tar xvzf kyma.tar.gz && chmod +x kyma && mkdir ./bin && mv ./kyma ./bin/kyma && sudo cp ./bin/kyma /usr/local/bin/kyma"
+    #log::info "Triggering Minikube installation"
+    #utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "kyma provision minikube --ci --vm-driver docker"
 fi
 
 
 if [[ $testK3d == true ]]; then
-    log::info "Testing k3d installation"
+    log::info "Testing k3d"
     log::info "Download stable Kyma CLI"
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -Lo kyma https://storage.googleapis.com/kyma-cli-stable/kyma-linux"
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "chmod +x kyma && mkdir ./bin && mv ./kyma ./bin/kyma && sudo cp ./bin/kyma /usr/local/bin/kyma"
-    log::info "Triggering k3d installation"
+    log::info "Starting k3d instance"
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo kyma provision k3d --ci"
 fi
 
