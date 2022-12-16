@@ -1144,6 +1144,11 @@ presets:
       - name: TELEMETRY_ENABLED
         value: "true"
   - labels:
+      preset-kyma-integration-telemetry-alpha-enabled: "true"
+    env:
+      - name: TELEMETRY_ALPHA_ENABLED
+        value: "true"
+  - labels:
       preset-kyma-integration-telemetry-tracing-enabled: "true"
     env:
       - name: TELEMETRY_TRACING_ENABLED
