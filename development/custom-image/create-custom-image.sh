@@ -101,7 +101,7 @@ utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'mv /tm
 
 if [[ $testMinikube == true ]]; then
     log::info "Testing minikube"
-    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "minikube start"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo minikube start --driver=none"
     #log::info "Download stable Kyma CLI"
     # Using old version of kyma cli because newest doesn't support provision on minikube.
     #utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -sSLo kyma.tar.gz \"https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_linux_x86_64.tar.gz\""
