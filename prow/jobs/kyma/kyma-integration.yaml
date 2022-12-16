@@ -397,6 +397,7 @@ presubmits: # runs on PRs
         preset-kyma-integration-telemetry-tracing-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/'
+      optional: trueå
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
