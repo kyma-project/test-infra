@@ -195,7 +195,7 @@ RUN curl -fLSs -o /usr/local/bin/cosign https://github.com/sigstore/cosign/relea
 #################################################################
 
 # Note: kcp-cli doesn't provide releases
-ENV KCPCLI_VERSION=master-1208b417
+ENV KCPCLI_VERSION=master-8a4162fd
 RUN curl -fLSs -o /usr/local/bin/kcp https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux &&\
     chmod +x /usr/local/bin/kcp
 
