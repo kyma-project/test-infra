@@ -1142,6 +1142,13 @@ presets:
       - name: TELEMETRY_ENABLED
         value: "true"
   - labels:
+      preset-kyma-integration-telemetry-managed-fluent-bit-enabled: "true"
+    env:
+      - name: TELEMETRY_ENABLED
+        value: "true"
+      - name: TELEMETRY_MANAGED_FLUENT_BIT_ENABLED
+        value: "true"
+  - labels:
       preset-kyma-integration-telemetry-tracing-enabled: "true"
     env:
       - name: TELEMETRY_TRACING_ENABLED
