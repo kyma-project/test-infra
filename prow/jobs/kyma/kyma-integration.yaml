@@ -378,7 +378,7 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-integration-k3d-telemetry-managed-fluent-bit
+    - name: pre-main-kyma-integration-k3d-telemetry-alpha
       annotations:
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
@@ -388,12 +388,12 @@ presubmits: # runs on PRs
         pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-telemetry-managed-fluent-bit"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-telemetry-alpha"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-telemetry-managed-fluent-bit-enabled: "true"
+        preset-kyma-integration-telemetry-alpha-enabled: "true"
         preset-kyma-integration-telemetry-tracing-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/'
@@ -1652,7 +1652,7 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: kyma-integration-k3d-telemetry-managed-fluent-bit
+    - name: kyma-integration-k3d-telemetry-alpha
       annotations:
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
@@ -1663,12 +1663,12 @@ periodics: # runs on schedule
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-integration-k3d-telemetry-managed-fluent-bit"
+        prow.k8s.io/pubsub.runID: "kyma-integration-k3d-telemetry-alpha"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-telemetry-managed-fluent-bit-enabled: "true"
+        preset-kyma-integration-telemetry-alpha-enabled: "true"
         preset-kyma-integration-telemetry-tracing-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       cron: "0 */2 * * *"

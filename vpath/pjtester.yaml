@@ -6,5 +6,5 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma:
-        - pjName: "kyma-integration-k3d-telemetry-managed-fluent-bit"
-        - pjName: "pre-main-kyma-integration-k3d-telemetry-managed-fluent-bit"
+        - pjName: "kyma-integration-k3d-telemetry-alpha"
+        - pjName: "pre-main-kyma-integration-k3d-telemetry-alpha"
