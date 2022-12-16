@@ -12,6 +12,7 @@
 | serverless-function-metrics-generator | gke |  |  |  | nightly |  Serverless function metrics  |
 | serverless-git-auth-integration-k3s-nightly | k3s | k3s | kyma deploy |  | periodic |  helm serverless-test  |
 | pre-main-kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
+| pre-main-kyma-integration-k3d-telemetry-managed-fluent-bit | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-eval-istio-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-prod-istio-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-istio-reconcilation-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
@@ -25,6 +26,7 @@
 | kyma-upgrade-k3d-kyma2-to-main | k3d | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
 | kyma-integration-k3d | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
+| kyma-integration-k3d-telemetry-managed-fluent-bit | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-gke-nightly | gke | gcloud cli | kyma deploy |  | periodic |    |
 | pre-main-kyma-gardener-azure-fast-integration | gardener_azure | kyma cli | kyma install | evaluation | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-azure-alpha-eval | gardener_azure | kyma cli | kyma deploy | evaluation | pr-submit |  fast-integration  |
