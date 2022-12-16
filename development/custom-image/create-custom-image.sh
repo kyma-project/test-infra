@@ -106,7 +106,7 @@ if [[ $testMinikube == true ]]; then
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -sSLo kyma.tar.gz \"https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_linux_x86_64.tar.gz\""
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "tar xvzf kyma.tar.gz && chmod +x kyma && mkdir ./bin && mv ./kyma ./bin/kyma && sudo cp ./bin/kyma /usr/local/bin/kyma"
     log::info "Triggering Minikube installation"
-    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "kyma provision minikube --ci --vm-driver docker"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo kyma provision minikube --ci --force --vm-driver docker"
 fi
 
 
