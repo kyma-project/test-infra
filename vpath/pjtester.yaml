@@ -1,0 +1,6 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      test-infra:
+        - pjName: "pull-test-minikube-on-vm-image"
+        - pjName: "pull-test-k3d-on-vm-image"

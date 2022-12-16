@@ -41,6 +41,14 @@ do
             DEFAULT=true
             shift
             ;;
+        --test-minikube)
+            testMinikube=true
+            shift
+            ;;
+        --test-k3d)
+            testK3d=true
+            shift
+            ;;
         --*)
             echo "Unknown flag ${1}"
             exit 1
@@ -91,6 +99,26 @@ utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/resources/dbus-1_system-loc
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'mv /tmp/system-local.conf /etc/dbus-1/system-local.conf'"
 
 
+if [[ $testMinikube == true ]]; then
+    log::info "Testing minikube installation"
+    log::info "Download stable Kyma CLI"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -Lo kyma https://storage.googleapis.com/kyma-cli-stable/kyma-linux"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "chmod +x kyma && mkdir ./bin && mv ./kyma ./bin/kyma && sudo cp ./bin/kyma /usr/local/bin/kyma"
+    log::info "Triggering Minikube installation"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "yes | kyma provision minikube"
+fi
+
+
+if [[ $testK3d == true ]]; then
+    log::info "Testing k3d installation"
+    log::info "Download stable Kyma CLI"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -Lo kyma https://storage.googleapis.com/kyma-cli-stable/kyma-linux"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "chmod +x kyma && mkdir ./bin && mv ./kyma ./bin/kyma && sudo cp ./bin/kyma /usr/local/bin/kyma"
+    log::info "Triggering k3d installation"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "yes | kyma provision k3d --ci"
+fi
+
+
 log::info "Stopping $VM_NAME in zone ${ZONE} ..."
 gcloud compute instances stop --zone="${ZONE}" "$VM_NAME"
 
@@ -100,9 +128,11 @@ else
   IMAGE="kyma-deps-image-${DATE}-${PULL_BASE_SHA::6}"
 fi
 
-log::info "Creating the new image $IMAGE..."
-gcloud compute images create "$IMAGE" \
-  --source-disk "$VM_NAME" \
-  --source-disk-zone "${ZONE}" \
-  "${LABELS[@]}" \
-  --family "custom-images"
+if [[ $testMinikube != true && $testK3d != true ]]; then
+    log::info "Creating the new image $IMAGE..."
+    gcloud compute images create "$IMAGE" \
+        --source-disk "$VM_NAME" \
+        --source-disk-zone "${ZONE}" \
+        "${LABELS[@]}" \
+        --family "custom-images"
+fi
