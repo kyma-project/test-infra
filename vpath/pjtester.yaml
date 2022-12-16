@@ -1,0 +1,10 @@
+pjConfigs:
+#  prConfig:
+#    kyma-project:
+#      kyma:
+#        prNumber: 1313
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "kyma-integration-k3d-telemetry-managed-fluent-bit"
+        - pjName: "pre-main-kyma-integration-k3d-telemetry-managed-fluent-bit"
