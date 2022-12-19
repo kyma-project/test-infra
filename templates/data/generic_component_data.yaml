@@ -175,6 +175,39 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - "disable_testgrid"
+              
+      - to: ../../prow/jobs/kyma/components/function-controller/function-controller-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: pull-function-registry-gc-build
+                  run_if_changed: "^components/function-controller/"
+                  optional: "true"
+                  args:
+                    - "--name=function-registry-gc"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-controller"
+                    - "--dockerfile=deploy/registry-gc/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-function-registry-gc-build
+                  run_if_changed: "^components/function-controller/"
+                  optional: "true"
+                  args:
+                    - "--name=function-registry-gc"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/function-controller"
+                    - "--dockerfile=deploy/registry-gc/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - "disable_testgrid"
+                    
       - to: ../../prow/jobs/kyma/components/function-runtimes/function-runtimes-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
