@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      kyma:
+      - pjName: "skr-aws-integration-dev"
+prConfigs: #
+  kyma-project:
+    kyma:
+      prNumber: 16919
