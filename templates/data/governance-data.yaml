@@ -14,48 +14,6 @@ templates:
             request_memory: "10Mi"
             request_cpu: "100m"
         jobConfigs:
-          - repoName: "github.com/kyma-project/addons"
-            jobs:
-              - jobConfig:
-                  name: "pre-main-addons-governance"
-                  args:
-                    - "--repository"
-                    - "addons"
-                  path_alias: github.com/kyma-project/addons
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_bootstrap"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-              - jobConfig:
-                  name: "addons-governance-nightly"
-                  cron: "0 22 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
-                  extra_refs:
-                    addons:
-                      - org: kyma-project
-                        repo: addons
-                        base_ref: master
-                        path_alias: github.com/kyma-project/addons
-                  args:
-                    - "--repository"
-                    - "addons"
-                    - "--repository-dir"
-                    - "/home/prow/go/src/github.com/kyma-project/addons"
-                    - "--full-validation"
-                    - "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_bootstrap"
-                    - "jobConfig_periodic"
-                    - "disable_testgrid"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
           - repoName: "github.com/kyma-project/busola"
             jobs:
               - jobConfig:

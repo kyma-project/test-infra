@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
             securityContext:
               privileged: false
             command:
@@ -49,7 +49,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository: "true"
-        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^(development/image-syncer/external-images.yaml)'
       skip_report: false
@@ -61,7 +60,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
             securityContext:
               privileged: true
             command:
@@ -93,7 +92,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository: "true"
-        preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       run_if_changed: '^(development/image-syncer/external-images.yaml)'
       skip_report: false
@@ -105,7 +103,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
             securityContext:
               privileged: true
             command:

@@ -547,6 +547,25 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               - jobConfig:
+                  name: "pre-main-kyma-integration-k3d-telemetry-alpha"
+                  optional: true
+                  privileged: false
+                  run_if_changed: "^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-telemetry-alpha-enabled: "true"
+                    preset-kyma-integration-telemetry-tracing-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+              - jobConfig:
                   name: "pre-main-kyma-eval-istio-integration-k3d"
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
                   optional: false
@@ -804,6 +823,27 @@ templates:
                   labels:
                     preset-build-main: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
+                    preset-kyma-integration-telemetry-tracing-enabled: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+              - jobConfig:
+                  name: "kyma-integration-k3d-telemetry-alpha"
+                  cron: "0 */2 * * *"
+                  privileged: false
+                  labels:
+                    preset-build-main: "true"
+                    preset-kyma-integration-telemetry-alpha-enabled: "true"
                     preset-kyma-integration-telemetry-tracing-enabled: "true"
                 inheritedConfigs:
                   global:

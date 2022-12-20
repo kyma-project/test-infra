@@ -9,6 +9,9 @@ readonly BACKEND_SECRET_LABEL_VALUE=NATS
 readonly EVENTING_BACKEND_CR_NAME=eventing-backend
 readonly EVENTING_BACKEND_CR_NAMESPACE=kyma-system
 
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
+
 # Check if required vars are set or not
 function eventing::check_required_vars() {
   if [[ -z ${CREDENTIALS_DIR} ]]; then
@@ -250,4 +253,37 @@ function eventing::fast_integration_test_cleanup() {
     popd
 
     log::success "Fast integration tests cleanup completed"
+}
+
+# Runs eventing copy-crd make target
+function eventing::run_copy_crds() {
+    log::info "Running eventing copy-crd make target"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
+    make gomod-vendor-local
+    make gomod-tidy-local
+    make copy-crds
+    popd
+
+    log::success "Eventing copy-crds make target completed"
+}
+
+# deploy Kyma PR-version with the v1alpha2 Subscription CRD version
+function eventing::deploy_kyma_pr_version_with_v1alpha2_subscription() {
+    log::info "Copying the CRDs to installation/eventing"
+    export ENABLE_NEW_CRD_VERSION="true"
+
+    eventing::run_copy_crds
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
+    gardener::deploy_kyma --source=local -w /home/prow/go/src/github.com/kyma-project/kyma --value eventing.controller.enableNewCRDVersion=true --verbose
+    popd
+
+    log::success "Deploying of the v1alpha2 Subscription completed"
+}
+
+# Printing stored Subscription CRD versions for debugging purposes.
+function eventing::print_subscription_crd_version(){
+  log::info "Stored Subscription CRD versions:"
+  kubectl get crd subscriptions.eventing.kyma-project.io -o json | jq '.status.storedVersions'
 }

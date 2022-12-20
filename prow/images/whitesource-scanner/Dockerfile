@@ -6,7 +6,7 @@ ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
 
 ENV UA_VERSION v22.1.1.1
-ENV GO_VERSION 1.19.2
+ENV GO_VERSION 1.19.4
 ENV DEP_RELEASE_TAG v0.5.4
 ENV JAVA_VERSION 8u212-b04
 ENV JAVA_BASE_URL https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b04/OpenJDK8U-jdk_

@@ -14,11 +14,12 @@ function prereq_test() {
   command -v go >/dev/null 2>&1 || { echo >&2 "go not found"; exit 1; }
 }
 
-cleanup() {
-  rm "teltest.yaml" || true
+print_logs() {
+  echo "Printing telemetry-operator logs"
+  kubectl logs --tail=-1 -l control-plane=telemetry-operator -n kyma-system -c manager
 }
 
-trap cleanup EXIT SIGINT
+trap print_logs EXIT SIGINT
 
 function load_env() {
   ENV_FILE=".env"
@@ -69,7 +70,7 @@ function deploy_kyma() {
   local deploy
   local deploy_commands
   local deploy_dryrun
-  
+
   deploy_commands=" --ci
    --source=local
    --workspace ${KYMA_SOURCES_DIR}
@@ -95,7 +96,6 @@ function deploy_kyma() {
 function run_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
   make telemetry
-  kubectl logs --tail=-1 -l control-plane=telemetry-operator -n kyma-system -c manager
   popd
 }
 

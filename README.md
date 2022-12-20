@@ -16,9 +16,11 @@ The `test-infra` repository has the following structure:
   ├── .github                     # Pull request and issue templates             
   ├── development                 # Scripts used for the development of the "test-infra" repository
   ├── docs                        # Documentation for the test infrastructure, such as Prow installation guides
+  │    └── index.md               # Index page for test-infra documentation
   └── prow                        # Installation scripts for Prow on the production cluster    
 
 ```
+See also the [index page](/docs/index.md) for test-infra documentation.
 
 ### Prow
 

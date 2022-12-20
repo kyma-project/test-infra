@@ -1,31 +1,33 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-# This script is designed to provision a new vm and start kyma with control-plane. It takes an optional positional parameter using --image flag
+# This script is designed to provision a new vm and start serverless chart. It takes an optional positional parameter using --image flag
 # Use this flag to specify the custom image for provisining vms. If no flag is provided, the latest custom image is used.
 
 set -o errexit
 
+date
+
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
-KYMA_PROJECT_DIR=${KYMA_PROJECT_DIR:-"/home/prow/go/src/github.com/kyma-project"}
+readonly KYMA_PROJECT_DIR="$(cd "${SCRIPT_DIR}/../../../" && pwd)"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
 # shellcheck source=prow/scripts/lib/utils.sh
-source "${SCRIPT_DIR}/lib/utils.sh"
+source "$SCRIPT_DIR/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$SCRIPT_DIR/lib/gcp.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
-    export JOB_NAME_PATTERN="(pre-control-plane-components-.*)|(pre-control-plane-tests-.*)"
     "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
 cleanup() {
     ARG=$?
-    log::info "Removing instance control-plane-integration-test-${RANDOM_ID}"
-    gcloud compute instances delete --zone="${ZONE}" "control-plane-integration-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
+    log::info "Removing instance keda-manager-test-${RANDOM_ID}"
+    gcloud compute instances delete --zone="${ZONE}" "keda-manager-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
+    date
     exit $ARG
 }
 
@@ -44,15 +46,14 @@ RANDOM_ID=$(openssl rand -hex 4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
-    LABELS=(--labels "branch=$PULL_BASE_REF,job-name=control-plane-integration")
+    LABELS=(--labels "branch=$PULL_BASE_REF,job-name=keda-manager")
 else
-    LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=control-plane-integration")
+    LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=keda-manager")
 fi
 
 POSITIONAL=()
 while [[ $# -gt 0 ]]
 do
-
     key="$1"
 
     case ${key} in
@@ -77,51 +78,57 @@ set -- "${POSITIONAL[@]}" # restore positional parameters
 
 if [[ -z "$IMAGE" ]]; then
     log::info "Provisioning vm using the latest default custom image ..."
-    
+
     IMAGE=$(gcloud compute images list --sort-by "~creationTimestamp" \
          --filter "family:custom images AND labels.default:yes" --limit=1 | tail -n +2 | awk '{print $1}')
-    
+
     if [[ -z "$IMAGE" ]]; then
        log::error "There are no default custom images, the script will exit ..." && exit 1
-    fi   
+    fi
  fi
+
+date
 
 ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
-
+STARTTIME=$(date +%s)
 for ZONE in ${EU_ZONES}; do
-    log::info "Attempting to create a new instance named control-plane-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
-    gcloud compute instances create "control-plane-integration-test-${RANDOM_ID}" \
+    log::info "Attempting to create a new instance named keda-manager-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
+    gcloud compute instances create "keda-manager-test-${RANDOM_ID}" \
         --metadata enable-oslogin=TRUE \
         --image "${IMAGE}" \
         --machine-type n1-standard-4 \
         --zone "${ZONE}" \
         --boot-disk-size 200 "${LABELS[@]}" &&\
-    log::info "Created control-plane-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
+    log::info "Created keda-manager-test-${RANDOM_ID} in zone ${ZONE}" && break
     log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
+ENDTIME=$(date +%s)
+echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
+# apply overrides if we are not using the default test suite
+if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
+    log::info "Creating Serverless git-auth-integration overrides"
+    mkdir -p "${KYMA_PROJECT_DIR}/overrides"
+    cat <<EOF >> "${KYMA_PROJECT_DIR}/overrides/integration-overrides.yaml"
+gitAuth:
+  github:
+    key: "${GH_AUTH_PRIVATE_KEY}"
+  azure:
+    username: "${AZURE_DEVOPS_AUTH_USERNAME}"
+    password: "${AZURE_DEVOPS_AUTH_PASSWORD}"
+EOF
 
-log::info "Copying control-plane to the instance"
+fi
+
+log::info "Copying Reconciler to the instance"
 #shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/control-plane" "~/control-plane"
+utils::compress_send_to_vm "${ZONE}" "keda-manager-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/keda-manager" "~/keda-manager"
 
-log::info "Download stable Kyma CLI"
-curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_linux_x86_64.tar.gz"
-tar xvzf kyma.tar.gz
-chmod +x kyma
-
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "control-plane-integration-test-${RANDOM_ID}" -c "mkdir \$HOME/bin"
-
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "kyma" "~/bin/kyma"
-
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "control-plane-integration-test-${RANDOM_ID}" -c "sudo cp \$HOME/bin/kyma /usr/local/bin/kyma"
 log::info "Triggering the installation"
-
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "control-plane-integration-test-${RANDOM_ID}" -c "yes | ./control-plane/installation/scripts/prow/deploy-and-test.sh"
-log::info "Copying test artifacts from VM"
-utils::receive_from_vm "${ZONE}" "control-plane-integration-test-${RANDOM_ID}" "/var/log/prow_artifacts" "${ARTIFACTS}"
-
-log::info "Provisioning VM Control Plane's done"
+# TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
+# hadolint ignore=SC2016
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "keda-manager-test-${RANDOM_ID}" -c "sudo bash -c \"export PATH=\$PATH:\$HOME/keda-manager/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && cd \$HOME/keda-manager && make -C hack/local run\""
+#&&	PATH=$PATH:$HOME/keda-manager/bin
+log::success "all done"

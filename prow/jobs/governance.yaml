@@ -2,52 +2,6 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/addons:
-    - name: pre-main-addons-governance
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-addons-governance"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-      run_if_changed: 'milv.config.yaml|.md$'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/addons
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
-            args:
-              - "--repository"
-              - "addons"
-            resources:
-              requests:
-                memory: 10Mi
-                cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-  
   kyma-project/busola:
     - name: pre-main-busola-governance
       annotations:
@@ -211,7 +165,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
             securityContext:
               privileged: true
             command:
@@ -457,54 +411,6 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
   
 periodics: # runs on schedule
-    - name: addons-governance-nightly
-      annotations:
-        pipeline.trigger: "periodic"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "addons-governance-nightly"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-      cron: "0 22 * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: addons
-          path_alias: github.com/kyma-project/addons
-          base_ref: master
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
-            args:
-              - "--repository"
-              - "addons"
-              - "--repository-dir"
-              - "/home/prow/go/src/github.com/kyma-project/addons"
-              - "--full-validation"
-              - "true"
-            resources:
-              requests:
-                memory: 10Mi
-                cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-  
     - name: busola-governance-nightly
       annotations:
         pipeline.trigger: "periodic"

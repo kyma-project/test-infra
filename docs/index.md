@@ -84,6 +84,8 @@
 
 [Crier](/docs/prow/crier.md) - Crier reports the Prow Job status changes. For now, it is responsible for Slack notifications as Plank is still reporting the Prow Job statuses to GitHub.
 
+[Label_sync](/docs/prow/label_sync.md) - Label_sync updates or migrates GitHub labels on repositories in a GitHub organisation based on a YAML file. It is triggered as a `ci-prow-label-sync` Prow job.
+
 [Manage component jobs with templates](/docs/prow/manage-component-jobs-with-templates.md) - This document describes how to define, modify, and remove Prow jobs for Kyma components using predefined templates that create both presubmit and postsubmit jobs for your component. Also, this document gives you the steps required to prepare your component for the Prow CI pipeline.
 
 [Obligatory security measures](/docs/prow/obligatory-security-measures.md) - Read about the obligatory security measures to take on a regular basis and when a Kyma organization member leaves the project.
@@ -128,7 +130,7 @@
 
 [Resources](/prow/cluster/resources/README.md) - This directory contains Helm charts used by a Prow cluster.
 
-[External Secrets](/prow/cluster/resources/external-secrets/README.md) - Kubernetes Secrets are synchronized with GCP Secret Manager using [Kubernetes External Secrets](https://github.com/external-secrets/kubernetes-external-secrets).
+[External Secrets](/prow/cluster/resources/external-secrets/README.md) - Kubernetes Secrets are synchronized with GCP Secret Manager using [External Secrets Operator](https://github.com/external-secrets/external-secrets).
 
 [Monitoring](/prow/cluster/resources/monitoring/README.md) - This chart contains the monitoring stack for a Prow cluster. It also includes custom-defined Grafana dashboards.
 

@@ -66,4 +66,4 @@ Actions on Prow can be triggered only by webhooks. To configure them you must cr
 - `hmac-token` - used to validate webhook
 - `oauth-token` - stores the access token used by the GitHub bot
 
-Follow the official [Prow documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/Legacy%20Snapshot/prow/getting_started_deploy.md#create-the-github-secrets) to learn how to create the Secrets.
+Follow the official [Prow documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/getting-started-deploy.md#create-the-github-secrets) to learn how to create the Secrets.

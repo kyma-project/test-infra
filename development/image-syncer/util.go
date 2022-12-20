@@ -39,10 +39,3 @@ func parseImagesFile(file string) (*imagesyncer.SyncDef, error) {
 	}
 	return &syncDef, nil
 }
-
-func shouldSign(global bool, local *bool) bool {
-	if local != nil {
-		return *local
-	}
-	return global
-}
