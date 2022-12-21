@@ -32,3 +32,7 @@ serverless:
       ${DOCKER_PASSWORD}
     registryAddress: $DOCKER_PUSH_REPOSITORY
     serverAddress: $DOCKER_REPOSITORY_ADDRESS
+  webhook:
+    values:
+      featureFlags:
+        java17AlphaEnabled: true
