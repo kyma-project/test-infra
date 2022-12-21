@@ -138,8 +138,8 @@ log::info "### Provisioning Gardener cluster"
 export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
-log::info "### Deploying Kyma $KYMA_SOURCE"
-gardener::deploy_kyma --source "${KYMA_SOURCE}"
+log::info "### Deploying Kyma $KYMA_SOURCE using $EXECUTION_PROFILE profile"
+gardener::deploy_kyma --source "${KYMA_SOURCE}" -p "${EXECUTION_PROFILE}"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
@@ -153,14 +153,14 @@ KYMA_SOURCE="PR-${PULL_NUMBER}"
 export KYMA_SOURCE
 
 # uses previously set KYMA_SOURCE
-log::info "### Upgrading Kyma to $KYMA_SOURCE"
-gardener::deploy_kyma --source "${KYMA_SOURCE}"
+log::info "### Upgrading Kyma to $KYMA_SOURCE using $EXECUTION_PROFILE profile"
+gardener::deploy_kyma --source "${KYMA_SOURCE}" -p "${EXECUTION_PROFILE}"
 
 # test the eventing fi tests after the upgrade
 eventing::fast_integration_tests
 
-log::info "### Upgrading Kyma to $KYMA_SOURCE once again"
-gardener::deploy_kyma --source "${KYMA_SOURCE}"
+log::info "### Upgrading Kyma to $KYMA_SOURCE using $EXECUTION_PROFILE profile once again"
+gardener::deploy_kyma --source "${KYMA_SOURCE}" -p "${EXECUTION_PROFILE}"
 
 # test the eventing fi tests after the second upgrade and clean up
 eventing::post_upgrade_test_fast_integration
