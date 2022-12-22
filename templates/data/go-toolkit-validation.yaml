@@ -140,6 +140,7 @@ templates:
 
               - jobConfig:
                   name: "pull-event-publisher-proxy-lint"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -166,6 +167,7 @@ templates:
 
               - jobConfig:
                   name: "pull-eventing-controller-lint"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
