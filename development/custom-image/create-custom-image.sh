@@ -13,7 +13,7 @@ source "${ROOT_DIR}/prow/scripts/lib/gcp.sh"
 cleanup() {   
     log::info "Removing instance $VM_NAME"
     gcloud compute instances delete --quiet --zone "${ZONE}" "$VM_NAME"
-    if [[ "$JOB_TYPE" == "presubmit" && "$testMinikube" != "true" && "$testK3d" != "true" ]]; then
+    if [[ "$JOB_TYPE" == "presubmit" && "$testK3d" != "true" ]]; then
       log::info "Removing image $IMAGE"
       gcloud compute images delete "$IMAGE"
     fi
@@ -39,10 +39,6 @@ do
     case ${key} in
         --default)
             DEFAULT=true
-            shift
-            ;;
-        --test-minikube)
-            testMinikube=true
             shift
             ;;
         --test-k3d)
@@ -99,18 +95,6 @@ utils::send_to_vm "${ZONE}" "$VM_NAME" "$CURRENT_DIR/resources/dbus-1_system-loc
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'mv /tmp/system-local.conf /etc/dbus-1/system-local.conf'"
 
 
-if [[ $testMinikube == true ]]; then
-    log::info "Testing minikube"
-    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo minikube start --driver=none"
-    #log::info "Download stable Kyma CLI"
-    # Using old version of kyma cli because newest doesn't support provision on minikube.
-    #utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -sSLo kyma.tar.gz \"https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_linux_x86_64.tar.gz\""
-    #utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "tar xvzf kyma.tar.gz && chmod +x kyma && mkdir ./bin && mv ./kyma ./bin/kyma && sudo cp ./bin/kyma /usr/local/bin/kyma"
-    #log::info "Triggering Minikube installation"
-    #utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "kyma provision minikube --ci --vm-driver docker"
-fi
-
-
 if [[ $testK3d == true ]]; then
     log::info "Testing k3d"
     log::info "Download stable Kyma CLI"
@@ -130,7 +114,7 @@ else
   IMAGE="kyma-deps-image-${DATE}-${PULL_BASE_SHA::6}"
 fi
 
-if [[ $testMinikube != true && $testK3d != true ]]; then
+if [[ $testK3d != true ]]; then
     log::info "Creating the new image $IMAGE..."
     gcloud compute images create "$IMAGE" \
         --source-disk "$VM_NAME" \
