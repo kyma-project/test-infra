@@ -220,3 +220,24 @@ templates:
                     - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
+              - jobConfig:
+                  name: post-serverless-module-build
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
+                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "all"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
