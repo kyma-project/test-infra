@@ -91,7 +91,7 @@ templates:
               # presubmits
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing-upgrade
-                  optional: true
+                  optional: false
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
