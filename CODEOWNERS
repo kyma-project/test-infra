@@ -36,8 +36,8 @@
 /prow/jobs/kyma/components/central-application-connectivity-validator @koala7659 @akgalwas @franpog859 @ralikio @pk85 @kyma-project/prow
 /prow/jobs/kyma/components/central-application-gateway @koala7659 @ralikio @pk85 @akgalwas @franpog859 @kyma-project/prow
 /prow/jobs/kyma/components/compass-runtime-agent @franpog859 @ralikio @pk85 @akgalwas @koala7659 @kyma-project/prow
-/prow/jobs/kyma/components/event-publisher-proxy @kyma-project/eventing @kyma-project/prow
-/prow/jobs/kyma/components/eventing-controller @kyma-project/eventing @kyma-project/prow
+/prow/jobs/kyma/components/event-publisher-proxy @kyma-project/eventing
+/prow/jobs/kyma/components/eventing-controller @kyma-project/eventing
 /prow/jobs/kyma/components/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
 /prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @pk85 @kyma-project/prow
 /prow/jobs/kyma/components/iam-kubeconfig-service @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @pk85 @kyma-project/prow
