@@ -1,0 +1,62 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/test-infra/build-test-vm-image.yaml
+        jobConfigs:
+          - repoName: kyma-project/test-infra
+            jobs:
+              - jobConfig:
+                  name: pull-build-test-vm-image
+                  run_if_changed: 'development/custom-image/'
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "development/custom-image/create-custom-image.sh"
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - jobConfig_default
+                    - pubsub_labels
+                    - image_kyma-integration
+              - jobConfig:
+                  name: pull-test-k3d-on-vm-image
+                  run_if_changed: 'development/custom-image/'
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "development/custom-image/create-custom-image.sh --test-k3d"
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - jobConfig_default
+                    - pubsub_labels
+                    - image_kyma-integration
+              - jobConfig:
+                  name: post-build-test-vm-image
+                  run_if_changed: 'development/custom-image/'
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "development/custom-image/create-custom-image.sh --default"
+                  labels:
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - jobConfig_default
+                    - pubsub_labels
+                    - image_kyma-integration
+                    - disable_testgrid
