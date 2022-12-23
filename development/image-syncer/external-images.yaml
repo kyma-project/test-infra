@@ -44,7 +44,7 @@ images:
 - source: "quay.io/prometheus-operator/prometheus-config-reloader:v0.61.1"
 - source: "quay.io/prometheus-operator/prometheus-operator:v0.61.1"
 - source: "quay.io/prometheus/alertmanager:v0.24.0"
-- source: "quay.io/prometheus/prometheus:v2.40.6"
+- source: "quay.io/prometheus/prometheus:v2.40.7"
 - source: "nats@sha256:c0ffa1bed32d05eebcbc9892ecfa0c37ea9f1139ef480d1bc6c8c031a8d2a78e"
   tag: "2.9.9-alpine3.17"
 - source: "natsio/nats-server-config-reloader:0.7.4"
