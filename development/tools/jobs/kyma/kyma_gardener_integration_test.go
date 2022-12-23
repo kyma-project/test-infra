@@ -39,7 +39,7 @@ func TestKymaGardenerGCPKyma2ToMainJobPeriodics(t *testing.T) {
 }
 
 func TestKymaGardenerGCPEventingPresubmit(t *testing.T) {
-	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener.yaml")
+	jobConfig, err := tester.ReadJobConfig("./../../../../prow/jobs/kyma/kyma-integration-gardener-eventing.yaml")
 	require.NoError(t, err)
 
 	presubmits := jobConfig.AllStaticPresubmits([]string{"kyma-project/kyma"})
