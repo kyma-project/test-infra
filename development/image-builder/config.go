@@ -29,7 +29,7 @@ type Config struct {
 	// as well as org/repo mapping of enabled signers in specific repository
 	SignConfig SignConfig `yaml:"sign-config" json:"sign-config"`
 	// PreBuildScript contains path to custom script that will be executed before build
-	// As first parameter it will recieve docker tag generated from TagTemplate
+	// As first parameter it will receive docker tag generated from TagTemplate
 	PreBuildScript string `yaml:"pre-build-script" json:"pre-build-script"`
 }
 
