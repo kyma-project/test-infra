@@ -117,9 +117,9 @@ utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 log::info "### Run pre-upgrade tests"
 # gardener::pre_upgrade_test_fast_integration_kyma
-tree
+ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
 log::info "Running pre-upgrade Kyma Fast Integration tests"
-pushd $kyma2_install_dir/tests/fast-integration
+pushd $kyma2_install_dir/tests/fast-integration  # this path does not exist
 make ci-pre-upgrade
 popd
 log::success "Tests completed"
