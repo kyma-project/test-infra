@@ -200,6 +200,7 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 		return err
 	}
 
+	// (@KacperMalachowski): Consider refactoring for better flexibility
 	if o.Config.PreBuildScript != "" && len(parsedTags) > 0 {
 		cmd := exec.Command(o.Config.PreBuildScript, parsedTags[len(parsedTags)-1])
 		err := cmd.Run()
