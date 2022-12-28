@@ -54,6 +54,9 @@ function make_fast_integration() {
     log::info "Kym Source: to ${KYMA_SOURCE}"
 
     git reset --hard "${KYMA_SOURCE}"
+    echo $PWD
+    git log
+    export DEBUG=true
     make -C "${KYMA_SOURCES_DIR}/tests/fast-integration" "${1}"
 
     if [[ $? -eq 0 ]];then
