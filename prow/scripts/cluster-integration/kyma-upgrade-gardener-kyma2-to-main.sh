@@ -119,7 +119,7 @@ log::info "### Run pre-upgrade tests"
 # gardener::pre_upgrade_test_fast_integration_kyma
 ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
 log::info "Running pre-upgrade Kyma Fast Integration tests"
-pushd $kyma2_install_dir/tests/fast-integration  # this path does not exist
+pushd kyma2/2.9.3/tests/fast-integration  # this path does not exist
 make ci-pre-upgrade
 popd
 log::success "Tests completed"
