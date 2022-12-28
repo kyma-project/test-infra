@@ -5,7 +5,7 @@ set -o pipefail
 
 CYPRESS_IMAGE="eu.gcr.io/kyma-project/external/cypress/included:8.7.0"
 
-mkdir -p "$PWD/kyma-dashboard/cypress/screenshots"
+mkdir -p "$PWD/kyma-dashboard-tests/cypress/screenshots"
 
 function load_env() {
   ENV_FILE=".env"
