@@ -2,7 +2,7 @@ pjConfigs:
   prConfig:
     kyma-project:
       kyma-dashboard:
-        prNumber: 1
+        prNumber: 56
   prowJobs:
     kyma-project:
       kyma-dashboard:
@@ -10,4 +10,4 @@ pjConfigs:
 prConfigs:
   kyma-project:
     kyma-dashboard:
-      prNumber: 1
+      prNumber: 56
