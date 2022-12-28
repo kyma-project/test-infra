@@ -51,8 +51,12 @@ function provision_cluster() {
 function make_fast_integration() {
     log::info "### Run ${1} tests"
 
+    pwd
+    cd ${KYMA_SOURCES_DIR}
     git reset --hard "${KYMA_SOURCE}"
-    make -C "${KYMA_SOURCES_DIR}/tests/fast-integration" "${1}"
+    pwd
+
+    make -C "./tests/fast-integration" "${1}"
 
     if [[ $? -eq 0 ]];then
         log::success "Tests completed"
