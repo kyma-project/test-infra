@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"gopkg.in/yaml.v3"
-	"os"
 )
 
 type Config struct {
@@ -27,6 +28,9 @@ type Config struct {
 	// SignConfig contains custom configuration of signers
 	// as well as org/repo mapping of enabled signers in specific repository
 	SignConfig SignConfig `yaml:"sign-config" json:"sign-config"`
+	// PreBuildScript contains path to custom script that will be executed before build
+	// As first parameter it will recieve docker tag generated from TagTemplate
+	PreBuildScript string `yaml:"pre-build-script" json:"pre-build-script"`
 }
 
 type SignConfig struct {

@@ -4,12 +4,8 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/image-builder/sign"
-	"github.com/kyma-project/test-infra/development/pkg/sets"
-	"github.com/kyma-project/test-infra/development/pkg/tags"
 	"io"
 	"io/fs"
-	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"os"
 	"os/exec"
 	"path"
@@ -17,6 +13,11 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
+	"github.com/kyma-project/test-infra/development/pkg/sets"
+	"github.com/kyma-project/test-infra/development/pkg/tags"
+	errutil "k8s.io/apimachinery/pkg/util/errors"
 )
 
 type options struct {
@@ -198,6 +199,17 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 	if err != nil {
 		return err
 	}
+
+	if o.Config.PreBuildScript != "" && len(parsedTags) > 0 {
+		cmd := exec.Command(o.Config.PreBuildScript, parsedTags[len(parsedTags)-1])
+		err := cmd.Run()
+		if err != nil {
+			return fmt.Errorf("error %v", err)
+		}
+	}
+
+	fmt.Println("Tag:", parsedTags[len(parsedTags)-1], parsedTags)
+
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
 		destinations := gatherDestinations(repo, o.name, parsedTags)
