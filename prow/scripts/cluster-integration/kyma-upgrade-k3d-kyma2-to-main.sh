@@ -52,12 +52,12 @@ function make_fast_integration() {
     log::info "### Run ${1} tests"
 
     log::info "KYMA_SOURCE ${KYMA_SOURCE}"
+    git reset --hard
     if [[ ${KYMA_SOURCE} == "main" ]]
     then
-      git reset --hard
       git checkout ${KYMA_SOURCE}
     else
-      git reset --hard "${KYMA_SOURCE}"
+      git checkout tags/${KYMA_SOURCE}
     fi
 
     make -C "./tests/fast-integration" "${1}"
