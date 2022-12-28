@@ -1,0 +1,6 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      test-infra:
+        - pjName: "kyma-upgrade-k3d-kyma2-to-main"
+
