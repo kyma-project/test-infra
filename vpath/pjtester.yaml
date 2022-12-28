@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      kyma-dashboard:
+        prNumber: 1
+  prowJobs:
+    kyma-project:
+      kyma-dashboard:
+        - pjName: "pre-kyma-dashboard-test"
+prConfigs:
+  kyma-project:
+    kyma-dashboard:
+      prNumber: 1
