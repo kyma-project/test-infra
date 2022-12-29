@@ -871,3 +871,23 @@ function utils::install_helm {
     popd || exit
     eval "${settings}"
 }
+
+function utils::get_kyma_dir {
+  local kymaDirectory="/default/dir"
+  for arg in $@
+  do
+    case "$arg" in
+        -d)
+          if [ ! -z "$2" ]; then
+            kymaDirectory="$2"
+          fi
+          shift 2
+          ;;
+        *)
+          shift
+          ;;
+    esac
+  done
+
+  log::info "$kymaDirectory"
+}
