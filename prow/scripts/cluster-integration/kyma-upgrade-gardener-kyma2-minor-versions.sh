@@ -59,6 +59,7 @@ function deploy_base() {
 
   log::info "### test directory: $kyma2_install_dir/tests/fast-integration"
   gardener::pre_upgrade_test_fast_integration_kyma -d kyma2/"$KYMA_SOURCE"/tests/fast-integration
+}
 
 function upgrade() {
   for (( i=$((valid_minor_release_count -1)); i>0; i-- )) ; do
