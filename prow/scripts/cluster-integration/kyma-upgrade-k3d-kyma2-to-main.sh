@@ -55,9 +55,9 @@ function make_fast_integration() {
     git reset --hard
     if [[ ${KYMA_SOURCE} == "main" ]]
     then
-      git checkout ${KYMA_SOURCE}
+      git checkout "${KYMA_SOURCE}"
     else
-      git checkout tags/${KYMA_SOURCE}
+      git checkout tags/"${KYMA_SOURCE}"
     fi
 
     make -C "./tests/fast-integration" "${1}"
@@ -113,7 +113,7 @@ prereq
 log::info "### Starting pipeline"
 provision_cluster
 
-cd ${KYMA_SOURCES_DIR}
+cd "${KYMA_SOURCES_DIR}"
 
 install_kyma
 

@@ -3,4 +3,6 @@ pjConfigs:
     kyma-project:
       test-infra:
         - pjName: "kyma-upgrade-gardener-kyma2-minor-versions"
+        - pjName: "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"
+        - pjName: "kyma-upgrade-k3d-kyma2-to-main"
 

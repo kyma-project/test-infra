@@ -116,7 +116,7 @@ kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 log::info "### Running pre-upgrade Kyma Fast Integration tests"
-pushd kyma2/$KYMA_SOURCE/tests/fast-integration
+pushd kyma2/"$KYMA_SOURCE"/tests/fast-integration
 make ci-pre-upgrade
 popd
 log::success "Tests completed"
