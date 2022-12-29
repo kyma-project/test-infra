@@ -128,6 +128,6 @@ utils::compress_send_to_vm "${ZONE}" "serverless-manager-test-${RANDOM_ID}" "/ho
 
 log::info "Triggering the installation"
 # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-# shellcheck ignore=SC2016
+# shellcheck disable=SC2016
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "serverless-manager-test-${RANDOM_ID}" -c 'sudo bash -c "source /etc/profile && apt-get install libgit2-dev libssh2-1-dev libssl-dev cmake -y && cd $HOME/serverless-manager && make test"'
 log::success "all done"
