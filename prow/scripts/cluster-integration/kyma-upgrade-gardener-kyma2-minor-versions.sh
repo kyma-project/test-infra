@@ -57,6 +57,7 @@ function deploy_base() {
   kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2.$((valid_minor_release_count))"
   kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
 
+  log::info "### test directory: $kyma2_install_dir/tests/fast-integration"
   gardener::pre_upgrade_test_fast_integration_kyma -d "$kyma2_install_dir"/tests/fast-integration
 }
 

@@ -134,9 +134,9 @@ gardener::test_fast_integration_kyma() {
 
 gardener::pre_upgrade_test_fast_integration_kyma() {
     local kymaDirectory = "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
-    log::info "Running pre-upgrade Kyma Fast Integration tests"
+    log::info "Running pre-upgrade Kyma Fast Integration tests - AWS"
 
-    log::info "Checking Kyma optional arguments"
+    log::info "Checking Kyma fast-integration tests optional arguments"
         while getopts ":s:p:d:u:" opt; do
             case $opt in
                 d)
@@ -159,9 +159,9 @@ gardener::pre_upgrade_test_fast_integration_kyma() {
 
 gardener::post_upgrade_test_fast_integration_kyma() {
     kymaDirectory="/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
-    log::info "Running post-upgrade Kyma Fast Integration tests"
+    log::info "Running post-upgrade Kyma Fast Integration tests - AWS"
 
-    log::info "Checking Kyma optional arguments"
+    log::info "Checking Kyma fast-integration tests optional arguments"
         while getopts ":s:p:d:u:" opt; do
             case $opt in
                 d)
