@@ -293,7 +293,7 @@ gardener::pre_upgrade_test_fast_integration_kyma() {
                     kymaDirectory="$OPTARG"
                     log::info "Kyma Source Directory: ${kymaDirectory}"
                     ;;
-                \?)
+                \*)
                     log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
                 :)
                     log::warn "Option -$OPTARG argument not provided" >&2 ;;
@@ -318,7 +318,7 @@ gardener::post_upgrade_test_fast_integration_kyma() {
                     kymaDirectory="$OPTARG"
                     log::info "Kyma Source Directory: ${kymaDirectory}"
                     ;;
-                \?)
+                \*)
                     log::error "Invalid option: -$OPTARG" >&2; exit 1 ;;
                 :)
                     log::warn "Option -$OPTARG argument not provided" >&2 ;;
