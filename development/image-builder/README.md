@@ -130,5 +130,7 @@ Usage of image-builder:
         Additional tag that the image will be tagged
   -variant string
         If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored
+  -pre-build-script string
+        Path to script that will be run before build. It will receive docker tag in format provided via TagTemplate in config as first argument. Output from script isn't used in build process, but build will fail on script failure.
 
 ```

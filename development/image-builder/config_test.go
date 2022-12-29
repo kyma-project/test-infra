@@ -45,19 +45,6 @@ tag-template: v{{ .Date }}-{{ .ShortSHA }}`,
 			expectedConfig: Config{},
 			expectErr:      true,
 		},
-		{
-			name: "Parsed config with tag export",
-			config: `registry: kyma-project.io/prod-registry
-dev-registry: dev.kyma-project.io/dev-registry
-tag-template: v{{ .Date }}-{{ .ShortSHA }}
-pre-build-script: scripts/custom.sh`,
-			expectedConfig: Config{
-				Registry:       []string{"kyma-project.io/prod-registry"},
-				DevRegistry:    []string{"dev.kyma-project.io/dev-registry"},
-				TagTemplate:    `v{{ .Date }}-{{ .ShortSHA }}`,
-				PreBuildScript: "scripts/custom.sh",
-			},
-		},
 	}
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {

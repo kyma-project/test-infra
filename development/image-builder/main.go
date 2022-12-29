@@ -22,18 +22,19 @@ import (
 
 type options struct {
 	Config
-	configPath string
-	context    string
-	dockerfile string
-	envFile    string
-	name       string
-	variant    string
-	logDir     string
-	orgRepo    string
-	silent     bool
-	isCI       bool
-	tags       sets.Strings
-	platforms  sets.Strings
+	configPath     string
+	context        string
+	dockerfile     string
+	envFile        string
+	name           string
+	variant        string
+	logDir         string
+	orgRepo        string
+	silent         bool
+	isCI           bool
+	tags           sets.Strings
+	platforms      sets.Strings
+	preBuildScript sets.Strings
 }
 
 const (
@@ -201,8 +202,11 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 	}
 
 	// (@KacperMalachowski): Consider refactoring for better flexibility
-	if o.Config.PreBuildScript != "" && len(parsedTags) > 0 {
-		cmd := exec.Command(o.Config.PreBuildScript, parsedTags[len(parsedTags)-1])
+	// It's using docker tag evaluated based on TagTemplate field and pass it as argument
+	// to custom script provided via --pre-build-script option. That script is running as subprocess
+	tagTemplateEvaluated := parsedTags[len(parsedTags)-1]
+	if o.preBuildScript.String() != "" && len(parsedTags) > 0 {
+		cmd := exec.Command(o.preBuildScript.String(), tagTemplateEvaluated)
 		err := cmd.Run()
 		if err != nil {
 			return fmt.Errorf("error %v", err)
@@ -412,6 +416,7 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
 	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged")
 	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
+	fs.Var(&o.preBuildScript, "pre-build-script", "Path to script that will be run before build. It will receive docker tag in format provided via TagTemplate in config as first argument")
 	return fs
 }
 
