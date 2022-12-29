@@ -137,7 +137,7 @@ gardener::pre_upgrade_test_fast_integration_kyma() {
     log::info "Running pre-upgrade Kyma Fast Integration tests - AWS"
 
     log::info "Checking Kyma fast-integration tests optional arguments"
-        while getopts ":s:p:d:u:" opt; do
+        while getopts ":d:" opt; do
             case $opt in
                 d)
                     local kymaDirectory="$OPTARG"
@@ -162,7 +162,7 @@ gardener::post_upgrade_test_fast_integration_kyma() {
     log::info "Running post-upgrade Kyma Fast Integration tests - AWS"
 
     log::info "Checking Kyma fast-integration tests optional arguments"
-        while getopts ":s:p:d:u:" opt; do
+        while getopts ":d:" opt; do
             case $opt in
                 d)
                     kymaDirectory="$OPTARG"
