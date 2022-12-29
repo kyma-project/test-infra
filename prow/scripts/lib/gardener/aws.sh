@@ -158,14 +158,14 @@ gardener::pre_upgrade_test_fast_integration_kyma() {
 }
 
 gardener::post_upgrade_test_fast_integration_kyma() {
-    local kymaDirectory = "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
+    kymaDirectory="/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
     log::info "Running post-upgrade Kyma Fast Integration tests"
 
     log::info "Checking Kyma optional arguments"
         while getopts ":s:p:d:u:" opt; do
             case $opt in
                 d)
-                    local kymaDirectory="$OPTARG"
+                    kymaDirectory="$OPTARG"
                     log::info "Kyma Source Directory: ${kymaDirectory}"
                     ;;
                 \?)
