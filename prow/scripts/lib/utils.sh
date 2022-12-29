@@ -872,8 +872,8 @@ function utils::install_helm {
     eval "${settings}"
 }
 
-function utils::get_kyma_dir {
-  local kymaDirectory="/default/dir"
+function utils::get_kyma_fast_integration_dir {
+  local kymaDirectory="/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
   for arg in $@
   do
     case "$arg" in
@@ -889,5 +889,5 @@ function utils::get_kyma_dir {
     esac
   done
 
-  log::info "$kymaDirectory"
+  log::info "### Kyma Fast-integration-Test-Directory $kymaDirectory"
 }
