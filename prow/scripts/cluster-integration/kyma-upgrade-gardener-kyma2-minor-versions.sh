@@ -57,8 +57,7 @@ function deploy_base() {
   kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2.$((valid_minor_release_count))"
   kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
 
-  log::info "### Run pre-upgrade tests"
-  gardener::pre_upgrade_test_fast_integration_kyma
+  gardener::pre_upgrade_test_fast_integration_kyma -d "$kyma2_install_dir"/tests/fast-integration
 }
 
 function upgrade() {
@@ -83,13 +82,15 @@ function upgrade() {
     utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
     log::info "### Run post-upgrade tests"
-    gardener::post_upgrade_test_fast_integration_kyma
+    gardener::post_upgrade_test_fast_integration_kyma -d "$kyma2_install_dir"/tests/fast-integration
 
     log::info "### waiting some time to finish cleanups"
     sleep 60
 
     log::info "### Run pre-upgrade tests again to validate component removal"
-    gardener::pre_upgrade_test_fast_integration_kyma
+    export KYMA_SOURCE="${minor_release_versions[$((i))]}"
+    kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2.$i"
+    gardener::pre_upgrade_test_fast_integration_kyma -d "$kyma2_install_dir"/tests/fast-integration
   done
 }
 

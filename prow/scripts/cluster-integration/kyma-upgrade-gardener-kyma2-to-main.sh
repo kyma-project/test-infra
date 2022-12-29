@@ -115,11 +115,8 @@ kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-log::info "### Running pre-upgrade Kyma Fast Integration tests"
-pushd kyma2/"$KYMA_SOURCE"/tests/fast-integration
-make ci-pre-upgrade
-popd
-log::success "Tests completed"
+# Pre-Upgrade Tests
+gardener::pre_upgrade_test_fast_integration_kyma -d kyma2/"$KYMA_SOURCE"/tests/fast-integration
 
 # Upgrade kyma to main branch with latest stable cli
 kyma::install_cli
