@@ -115,13 +115,8 @@ kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-log::info "### Run pre-upgrade tests"
-# gardener::pre_upgrade_test_fast_integration_kyma
-ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
-pwd
-log::info "Running pre-upgrade Kyma Fast Integration tests"
-pushd kyma2/2.9.3/tests/fast-integration  # this path does not exist
-pwd
+log::info "### Running pre-upgrade Kyma Fast Integration tests"
+pushd kyma2/$KYMA_SOURCE/tests/fast-integration
 make ci-pre-upgrade
 popd
 log::success "Tests completed"
@@ -135,17 +130,9 @@ log::info "### Installing Kyma $KYMA_SOURCE"
 kymaMain_install_dir="$KYMA_SOURCES_DIR/kymaMain"
 kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kymaMain_install_dir" -u "true"
 
-log::info "### Run post-upgrade tests"
-# gardener::post_upgrade_test_fast_integration_kyma
-
-log::info "Running post-upgrade Kyma Fast Integration tests"
-# pushd $kymaMain_install_dir/tests/fast-integration
-ls -R | grep ":$" | sed -e 's/:$//' -e 's/[^-][^\/]*\//--/g' -e 's/^/   /' -e 's/-/|/'
-pwd
-pushd kymaMain/main/tests/fast-integration
-pwd
+log::info "### Running post-upgrade Kyma Fast Integration tests"
+pushd kymaMain/$KYMA_SOURCE/tests/fast-integration
 make ci-post-upgrade
-popd
 log::success "Tests completed"
 
 log::info "### waiting some time to finish cleanups"
