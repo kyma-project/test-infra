@@ -4,12 +4,8 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/image-builder/sign"
-	"github.com/kyma-project/test-infra/development/pkg/sets"
-	"github.com/kyma-project/test-infra/development/pkg/tags"
 	"io"
 	"io/fs"
-	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"os"
 	"os/exec"
 	"path"
@@ -17,6 +13,12 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/go-git/go-git/v5"
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
+	"github.com/kyma-project/test-infra/development/pkg/sets"
+	"github.com/kyma-project/test-infra/development/pkg/tags"
+	errutil "k8s.io/apimachinery/pkg/util/errors"
 )
 
 type options struct {
@@ -31,6 +33,7 @@ type options struct {
 	orgRepo    string
 	silent     bool
 	isCI       bool
+	release    bool
 	tags       sets.Strings
 	platforms  sets.Strings
 }
@@ -198,6 +201,23 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 	if err != nil {
 		return err
 	}
+
+	if o.release {
+		repository, err := git.PlainOpen(".")
+		if err != nil {
+			return err
+		}
+
+		releaseTag, err := tags.GetLatestTagShortFromRepository(repository)
+		if err != nil {
+			return err
+		}
+
+		tag := fmt.Sprintf("%s-%s", releaseTag, sha)
+
+		parsedTags = append(parsedTags, tag)
+	}
+
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
 		destinations := gatherDestinations(repo, o.name, parsedTags)
@@ -397,6 +417,7 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
 	fs.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
+	fs.BoolVar(&o.release, "release", false, "Tag the image with latest tag on the branch")
 	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged")
 	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
 	return fs
