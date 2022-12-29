@@ -891,4 +891,5 @@ function utils::get_kyma_fast_integration_dir {
   done
 
   log::info "### Kyma Fast-integration-Test-Directory $kymaDirectory"
+  echo "$kymaDirectory"
 }
