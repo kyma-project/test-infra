@@ -55,8 +55,8 @@ presubmits: # runs on PRs
             value: high-cpu
             effect: NoSchedule
         nodeSelector:
-          dedicated: "high-cpu"
-
+            dedicated: "high-cpu"
+  
   kyma-project/serverless-manager:
     - name: pre-main-serverless-manager-verify
       annotations:
@@ -110,8 +110,8 @@ presubmits: # runs on PRs
             value: high-cpu
             effect: NoSchedule
         nodeSelector:
-          dedicated: "high-cpu"
-
+            dedicated: "high-cpu"
+  
   kyma-project/kyma:
     - name: pre-main-kyma-gke-external-registry
       annotations:
@@ -167,11 +167,11 @@ presubmits: # runs on PRs
             value: high-cpu
             effect: NoSchedule
         nodeSelector:
-          dedicated: "high-cpu"
-
+            dedicated: "high-cpu"
+  
 postsubmits: # runs on main
   kyma-project/keda-manager:
-
+  
   kyma-project/serverless-manager:
     - name: post-serverless-module-build
       annotations:
@@ -216,7 +216,7 @@ postsubmits: # runs on main
             value: high-cpu
             effect: NoSchedule
         nodeSelector:
-          dedicated: "high-cpu"
+            dedicated: "high-cpu"
     - name: post-serverless-module-image
       annotations:
         pipeline.trigger: "pr-merge"
@@ -258,7 +258,7 @@ postsubmits: # runs on main
             value: high-cpu
             effect: NoSchedule
         nodeSelector:
-          dedicated: "high-cpu"
+            dedicated: "high-cpu"
   
   kyma-project/kyma:
     - name: post-main-kyma-gke-external-registry
@@ -316,5 +316,5 @@ postsubmits: # runs on main
             value: high-cpu
             effect: NoSchedule
         nodeSelector:
-          dedicated: "high-cpu"
+            dedicated: "high-cpu"
   
