@@ -9,7 +9,7 @@ source "${LIBDIR}/log.sh"
 # Arguments:
 # optional:
 # s - Kyma source
-# d - Kyma sources directory
+# d - Kyma workspace directory
 # p - execution profile
 # u - upgrade (this will not reuse helm values which is already set)
 function kyma::deploy_kyma() {
