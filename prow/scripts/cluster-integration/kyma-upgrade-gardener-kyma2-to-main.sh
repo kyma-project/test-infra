@@ -110,7 +110,7 @@ set +x
 log::info "### Installing Kyma $KYMA_SOURCE"
 
 kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2"
-kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
+# kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
