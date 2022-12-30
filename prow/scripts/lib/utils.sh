@@ -874,7 +874,7 @@ function utils::install_helm {
 
 function utils::get_kyma_fast_integration_dir {
   local kymaDirectory="/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
-  for arg in $@
+  for arg in "$@"
   do
     case "$arg" in
         -d)
