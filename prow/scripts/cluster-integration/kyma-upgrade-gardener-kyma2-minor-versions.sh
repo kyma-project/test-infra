@@ -83,7 +83,7 @@ function upgrade() {
     utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
     log::info "### Run post-upgrade tests"
-    gardener::post_upgrade_test_fast_integration_kyma -d "$kyma2_install_dir/tests/fast-integration"
+    gardener::post_upgrade_test_fast_integration_kyma -d "$kyma2_install_dir/${KYMA_SOURCE}/tests/fast-integration"
 
     log::info "### waiting some time to finish cleanups"
     sleep 60
