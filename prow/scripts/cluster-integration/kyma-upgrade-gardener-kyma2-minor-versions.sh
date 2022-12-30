@@ -91,7 +91,7 @@ function upgrade() {
     log::info "### Run pre-upgrade tests again to validate component removal"
     export KYMA_SOURCE="${minor_release_versions[$((i))]}"
     kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2.$i"
-    gardener::pre_upgrade_test_fast_integration_kyma -d "$kyma2_install_dir"/tests/fast-integration
+    gardener::pre_upgrade_test_fast_integration_kyma -d "${kyma2_install_dir}/tests/fast-integration"
   done
 }
 

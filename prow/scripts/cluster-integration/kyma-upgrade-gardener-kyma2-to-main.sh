@@ -116,7 +116,7 @@ kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2"
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 # Pre-Upgrade Tests
-gardener::pre_upgrade_test_fast_integration_kyma -d kyma2/"$KYMA_SOURCE"/tests/fast-integration
+gardener::pre_upgrade_test_fast_integration_kyma -d "kyma2/${KYMA_SOURCE}/tests/fast-integration"
 
 # Upgrade kyma to main branch with latest stable cli
 kyma::install_cli
