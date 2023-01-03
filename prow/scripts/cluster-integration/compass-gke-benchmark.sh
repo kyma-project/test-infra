@@ -163,7 +163,8 @@ function installKyma() {
   fi
 
   rm -rf "$KYMA_WORKSPACE"/installation/resources/crds/service-catalog || true
-  rm -rf "$KYMA_WORKSPACE"/installation/resources/crds/service-catalog-addons || true
+  rm -f "$KYMA_WORKSPACE"/installation/resources/crds/service-catalog-addons/clusteraddonsconfigurations.addons.crd.yaml || true
+  rm -f "$KYMA_WORKSPACE"/installation/resources/crds/service-catalog-addons/addonsconfigurations.addons.crd.yaml || true
 
   MINIMAL_KYMA="${COMPASS_SOURCES_DIR}/installation/resources/kyma/kyma-components-minimal.yaml"
   kyma deploy --ci --source=local --workspace "$KYMA_WORKSPACE" --verbose -c "${MINIMAL_KYMA}" --values-file "$PWD/kyma_overrides.yaml"
