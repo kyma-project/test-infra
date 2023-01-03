@@ -51,7 +51,7 @@ templates:
               - jobConfig:
                   name: "post-kyma-dashboard-test"
                   optional: false
-                  run_if_changed: "/"
+                  always_run: true
                   labels:
                     preset-build-pr: "false"
                     preset-gardener-azure-kyma-integration: "true"
