@@ -153,20 +153,20 @@ function installKyma() {
   KYMA_VERSION=$(<"${COMPASS_SOURCES_DIR}/installation/resources/KYMA_VERSION")
 
   # TODO: Remove after adoption of Kyma 2.4.3 and change kyma deploy command source to --source="${KYMA_VERSION}"
-  KYMA_WORKSPACE=${HOME}/.kyma/sources/${KYMA_SOURCE}
+  KYMA_WORKSPACE=${HOME}/.kyma/sources/${KYMA_VERSION}
   if [[ -d "$KYMA_WORKSPACE" ]]
   then
-      echo "Kyma ${KYMA_SOURCE} already exists locally."
+      echo "Kyma ${KYMA_VERSION} already exists locally."
   else
-      echo "Pulling Kyma ${KYMA_SOURCE}"
-      git clone --single-branch --branch "${KYMA_SOURCE}" https://github.com/kyma-project/kyma.git "$KYMA_WORKSPACE"
+      echo "Pulling Kyma ${KYMA_VERSION}"
+      git clone --single-branch --branch "${KYMA_VERSION}" https://github.com/kyma-project/kyma.git "$KYMA_WORKSPACE"
   fi
 
   rm -rf "$KYMA_WORKSPACE"/installation/resources/crds/service-catalog || true
   rm -rf "$KYMA_WORKSPACE"/installation/resources/crds/service-catalog-addons || true
 
   MINIMAL_KYMA="${COMPASS_SOURCES_DIR}/installation/resources/kyma/kyma-components-minimal.yaml"
-  kyma deploy --ci --source=local --workspace "$KYMA_WORKSPACE" --workspace "$KYMA_SOURCES_DIR" --verbose -c "${MINIMAL_KYMA}" --values-file "$PWD/kyma_overrides.yaml"
+  kyma deploy --ci --source=local --workspace "$KYMA_WORKSPACE" --verbose -c "${MINIMAL_KYMA}" --values-file "$PWD/kyma_overrides.yaml"
 }
 
 function installCompassOld() {
