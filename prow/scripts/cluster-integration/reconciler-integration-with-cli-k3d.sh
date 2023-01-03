@@ -33,6 +33,16 @@ function load_env() {
 
 function run_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
+
+  log::info "KYMA_SOURCE ${KYMA_SOURCE}"
+  git reset --hard
+  if [[ ${KYMA_SOURCE} == "main" ]]
+  then
+    git checkout "${KYMA_SOURCE}"
+  else
+    git checkout tags/"${KYMA_SOURCE}"
+  fi
+
   make ci
   popd
 }

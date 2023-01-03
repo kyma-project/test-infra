@@ -51,8 +51,16 @@ function provision_cluster() {
 function make_fast_integration() {
     log::info "### Run ${1} tests"
 
-    git reset --hard "${KYMA_SOURCE}"
-    make -C "${KYMA_SOURCES_DIR}/tests/fast-integration" "${1}"
+    log::info "KYMA_SOURCE ${KYMA_SOURCE}"
+    git reset --hard
+    if [[ ${KYMA_SOURCE} == "main" ]]
+    then
+      git checkout "${KYMA_SOURCE}"
+    else
+      git checkout tags/"${KYMA_SOURCE}"
+    fi
+
+    make -C "./tests/fast-integration" "${1}"
 
     if [[ $? -eq 0 ]];then
         log::success "Tests completed"
@@ -104,6 +112,8 @@ prereq
 
 log::info "### Starting pipeline"
 provision_cluster
+
+cd "${KYMA_SOURCES_DIR}"
 
 install_kyma
 
