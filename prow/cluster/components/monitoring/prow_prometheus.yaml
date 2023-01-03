@@ -32,8 +32,8 @@ spec:
     matchExpressions:
     - key: app
       operator: Exists
-  version: v2.7.1
-  baseImage: docker.io/prom/prometheus
+  version: v2.40.7
+  image: eu.gcr.io/kyma-project/external/quay.io/prometheus/prometheus:v2.40.7
   externalLabels: {}
   listenLocal: false
   nodeSelector: {}
