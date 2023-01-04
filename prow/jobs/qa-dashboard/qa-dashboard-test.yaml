@@ -3,16 +3,17 @@
 
 presubmits: # runs on PRs
   kyma-project/qa-dashboard:
-    - name: qa-dashboard-test
+    - name: pre-qa-dashboard-test
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "qa-dashboard-test"
+        prow.k8s.io/pubsub.runID: "pre-qa-dashboard-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
+      always_run: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload

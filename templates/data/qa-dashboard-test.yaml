@@ -6,7 +6,8 @@ templates:
           - repoName: "github.com/kyma-project/qa-dashboard"
             jobs:
               - jobConfig:
-                  name: "qa-dashboard-test"
+                  name: "pre-qa-dashboard-test"
+                  always_run: true
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/qa-dashboard"
                 inheritedConfigs:
