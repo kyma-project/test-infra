@@ -7,3 +7,7 @@ pjConfigs:
     kyma-project:
       qa-dashboard:
         - pjName: "qa-dashboard-test"
+prConfigs:
+  kyma-project:
+    qa-dashboard:
+      prNumber: 5
