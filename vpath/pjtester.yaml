@@ -1,0 +1,9 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      qa-dashboard:
+        prNumber: 4
+  prowJobs:
+    kyma-project:
+      qa-dashboard:
+        - pjName: "qa-dashboard-test"

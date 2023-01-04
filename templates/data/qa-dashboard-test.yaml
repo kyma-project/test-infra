@@ -1,0 +1,20 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/qa-dashboard/qa-dashboard-test.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/qa-dashboard"
+            jobs:
+              - jobConfig:
+                  name: "qa-dashboard-test"
+                  args:
+                    - "/home/prow/go/src/github.com/kyma-project/qa-dashboard"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_generic_component"
+                    - "extra_refs_test-infra"
+                  preConfigs:
+                    global:
+                      - "jobConfig_presubmit"
