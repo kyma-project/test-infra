@@ -7,6 +7,11 @@ pjConfigs:
     kyma-project:
       busola:
         - pjName: "pre-busola-lighthouse"
+        - pjName: "pre-busola-integration-test-k3s-cluster"
+        - pjName: "pre-busola-integration-test-k3s-namespace"
+        - pjName: "pre-busola-smoke-test-docker"
+        - pjName: "pre-busola-web"
+        - pjName: "pre-busola-local"
 prConfigs:
   kyma-project:
     busola:
