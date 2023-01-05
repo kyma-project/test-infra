@@ -95,7 +95,7 @@ require (
 	github.com/Azure/go-autorest/logger v0.2.1 // indirect
 	github.com/Azure/go-autorest/tracing v0.6.0 // indirect
 	github.com/GoogleCloudPlatform/testgrid v0.0.68 // indirect
-	github.com/Masterminds/goutils v1.1.0 // indirect
+	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Microsoft/go-winio v0.6.0 // indirect
 	github.com/Microsoft/hcsshim v0.9.3 // indirect
 	github.com/andygrunwald/go-gerrit v0.0.0-20210709065208-9d38b0be0268 // indirect
