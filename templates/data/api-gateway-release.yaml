@@ -21,7 +21,6 @@ templates:
                   optional: "false"
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
-                  command: "/bin/sh"
                   args:
                     - "--name=api-gateway-controller"
                     - "--config=/config/kaniko-build-config.yaml"
