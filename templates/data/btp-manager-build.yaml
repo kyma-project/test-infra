@@ -7,12 +7,12 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-btp-manager-build
-                  run_if_changed: "^operator"
+                  run_if_changed: "^api/*/.*$|^config/*/.*$|^controllers/*/.*$|^hack/*/.*$|^internal/*/.*$|^module-chart/*/.*$|^pkg/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$"
                   args:
-                    - --name=btp-manager/operator
-                    - --context=operator
-                    - --dockerfile=Dockerfile
-                    - --config=/config/kaniko-build-config.yaml
+                    - "--name=btp-manager"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - "--config=/config/kaniko-build-config.yaml"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
