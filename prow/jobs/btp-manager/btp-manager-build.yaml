@@ -11,7 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-btp-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^operator'
+      run_if_changed: '^api/*/.*$|^config/*/.*$|^controllers/*/.*$|^hack/*/.*$|^internal/*/.*$|^module-chart/*/.*$|^pkg/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -22,8 +22,8 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=btp-manager/operator"
-              - "--context=operator"
+              - "--name=btp-manager"
+              - "--context=."
               - "--dockerfile=Dockerfile"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
