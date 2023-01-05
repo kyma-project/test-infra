@@ -22,7 +22,7 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
             command:
-              - "/bin/sh"
+              - "/image-builder"
             args:
               - "--name=api-gateway-controller"
               - "--config=/config/kaniko-build-config.yaml"
