@@ -129,7 +129,7 @@ utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "${TMP_DIR}/k
 
 log::info "Copying Busola 'tests' folder to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests" "~/busola-tests"
+utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests/integration" "~/busola-tests"
 
 log::info "Copying Busola 'resources' folder to the instance"
 #shellcheck disable=SC2088
