@@ -1,12 +1,10 @@
 package main
 
 import (
-	// "encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http/httputil"
 
-	// "io"
 	"net/http"
 	"os"
 	"strings"
@@ -238,11 +236,6 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err.Error())
 		return
 	}
-	// body, err := json.Marshal(responseEvent)
-	// if err != nil {
-	// 	crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
-	// 	return
-	// }
 	headers := w.Header()
 	headers.Set("Content-Type", cloudevents.ApplicationJSON)
 	headers.Set("X-Cloud-Trace-Context", traceHeader)
@@ -251,5 +244,4 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed write response body, error: %s", err.Error())
 		return
 	}
-	// w.Write(body)
 }
