@@ -183,11 +183,6 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err)
 		return
 	}
-	// body, err := json.Marshal(responseEvent)
-	// if err != nil {
-	// 	crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
-	// 	return
-	// }
 	headers := w.Header()
 	headers.Set("Content-Type", cloudevents.ApplicationJSON)
 	headers.Set("X-Cloud-Trace-Context", traceHeader)
@@ -196,5 +191,4 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed write response body, error: %s", err.Error())
 		return
 	}
-	// w.Write(body)
 }
