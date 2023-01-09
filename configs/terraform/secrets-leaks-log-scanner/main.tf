@@ -318,8 +318,6 @@ resource "google_workflows_workflow" "scan-logs-for-secrets" {
   region      = "europe-west4"
   description = "Workflow is triggered on pubsub ..."
   # service_account = google_service_account.workflows_service_account.id
-  # Imported main workflow YAML file
-  #source_contents = templatefile("${path.module}/../../../development/gcp/workflows/scan-logs-for-secrets.yaml",{})
   source_contents = data.template_file.scan-logs-for-secrets_yaml.rendered
 
 }
