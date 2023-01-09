@@ -111,8 +111,7 @@ func (c *Client) IsStatusOK(resp *github.Response) (bool, error) {
 	return IsStatusOK(resp)
 }
 
-// IsStatusOK will check if http response code is 200, 201 or 202.
-// On not OK status it will read response body to expose details about error.
+// IsStatusOK will check if http response code is in 2xx range.
 func IsStatusOK(resp *github.Response) (bool, error) {
 	statusOK := resp.StatusCode >= 200 && resp.StatusCode < 300
 	if !statusOK {

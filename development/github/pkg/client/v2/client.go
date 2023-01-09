@@ -39,6 +39,8 @@ type GithubClientOption func(*flag.FlagSet) error
 // A constructed client can be configured by providing GithubClientOptions.
 func (o *GithubClientConfig) NewGithubClient(options ...GithubClientOption) (GithubClient, error) {
 	var err error
+	// Add flag to default github client flag set.
+	// New flag enable client to authenticate with token string.
 	fs := flag.NewFlagSet("ghclient", flag.ExitOnError)
 	fs.StringVar(&o.token, "github-token", "", "Github Token")
 	o.AddFlags(fs)
@@ -72,21 +74,21 @@ func WithTokenPath(tokenpath string) GithubClientOption {
 	}
 }
 
-// WithToken is a client constructor configuration option passing a GitHub token to use by client.
+// WithToken is a client constructor configuration option passing a GitHub token to authenticate.
 func WithToken(token string) GithubClientOption {
 	return func(fs *flag.FlagSet) error {
 		return fs.Set("github-token", token)
 	}
 }
 
-// WithHost is a client constructor configuration option passing a GitHub token to use by client.
+// WithEndpoint is a client constructor configuration option passing a GitHub endpoint.
 func WithEndpoint(endpoint string) GithubClientOption {
 	return func(fs *flag.FlagSet) error {
 		return fs.Set("github-endpoint", endpoint)
 	}
 }
 
-// WithHost is a client constructor configuration option passing a GitHub token to use by client.
+// WithHost is a client constructor configuration option passing a GitHub host.
 func WithHost(hostname string) GithubClientOption {
 	return func(fs *flag.FlagSet) error {
 		return fs.Set("github-host", hostname)
