@@ -16,10 +16,8 @@ const (
 // GithubClientConfig holds configuration for GithubClient.
 type GithubClientConfig struct {
 	prowflagutil.GitHubOptions
-	token     string
-	tokenPath string
-	endpoint  string
-	DryRun    bool
+	token  string
+	DryRun bool
 }
 
 // GithubClient is an implementation of GitHub client wrapping k8s test-infra GitHub Client.
