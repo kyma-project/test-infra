@@ -27,9 +27,6 @@ import (
 	"google.golang.org/api/iterator"
 )
 
-/*
- {"project": "sap-kyma-prow", "topic": "test-topic", "runid": "runid", "status": "finished", "url": "test-url", "gcs_path": "https://gcsweb.build.kyma-project.io/gcs/kyma-prow-logs/pr-logs/pull/kyma-incubator_reconciler/1255/pre-main-kyma-incubator-component-reconciler/1600242115000930304/", "job_type": "presubmit", "job_name": "poc-scan-logs"}
-*/
 var (
 	componentName   string
 	applicationName string
