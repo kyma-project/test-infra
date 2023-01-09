@@ -129,13 +129,13 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	h := hasher.Sum(nil)
 	secretsleakscannerID := base64.StdEncoding.EncodeToString(h)
 
-	issueBodyData := templates.SecretsLeakIssueBodyData{
+	issueData := templates.SecretsLeakIssueData{
 		SecretsLeaksScannerID:     secretsleakscannerID,
 		ProwMessage:               msg.ProwMessage,
 		SecretsLeakScannerMessage: msg.SecretsLeakScannerMessage,
 	}
 
-	issueBody, err := templates.SecretsLeakFoundIssueBody(issueBodyData)
+	issueBody, err := issueData.RenderBody()
 	if err != nil {
 		logger.LogError("failed render issue body, error: %s", err.Error())
 	}
@@ -143,7 +143,7 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	issueTitle := fmt.Sprintf("Secret leak found in %s prowjob logs", *msg.JobName)
 	issueLabels := []string{"bug"}
 	issueState := github.String("open")
-	issueData := github.IssueRequest{
+	issueRequest := github.IssueRequest{
 		Title:     github.String(issueTitle),
 		Body:      github.String(fmt.Sprintf(issueBody.String())),
 		Labels:    &issueLabels,
@@ -153,7 +153,7 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 		Assignees: nil,
 	}
 	// Search issues
-	issue, response, err := sapGhClient.Issues.Create(ctx, githubOrg, githubRepo, &issueData)
+	issue, response, err := sapGhClient.Issues.Create(ctx, githubOrg, githubRepo, &issueRequest)
 	if err != nil {
 		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, error: %s", err)
 		return

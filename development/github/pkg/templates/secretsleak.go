@@ -8,14 +8,17 @@ import (
 	"github.com/kyma-project/test-infra/development/types"
 )
 
-type SecretsLeakIssueBodyData struct {
+type IssueData interface {
+	RenderBody (*bytes.Buffer, error)
+}
+
+type SecretsLeakIssueData struct {
 	pubsub.ProwMessage
 	types.SecretsLeakScannerMessage
 	SecretsLeaksScannerID string
 }
 
-
-func SecretsLeakFoundIssueBody(data SecretsLeakIssueBodyData) (*bytes.Buffer, error) {
+func (s *SecretsLeakIssueData) RenderBody() (*bytes.Buffer, error) {
 	templateContent := "Found secret in {{.JobName}} {{.JobType}} prowjob logs. Moved logs to secure location. You can see logs [here]({{.GcsPath}})\n\n" +
 		"Please check leaked secret, rotate it and clean git history if it was committed. Please remove code and settings which print secret in logs.\n\n" +
 		"Detected leaks.\n\n{{range .LeaksReport}}- Description: {{.Description}}\n  StartLine: {{.StartLine}}\n  EndLine: {{.EndLine}}\n  " +
@@ -26,7 +29,7 @@ func SecretsLeakFoundIssueBody(data SecretsLeakIssueBodyData) (*bytes.Buffer, er
 		return nil, err
 	}
 	buf := new(bytes.Buffer)
-	err = tmpl.Execute(buf, data)
+	err = tmpl.Execute(buf, s)
 	if err != nil {
 		return nil, err
 	}
