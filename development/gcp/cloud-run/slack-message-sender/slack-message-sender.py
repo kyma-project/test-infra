@@ -62,6 +62,7 @@ def secret_leak_found():
                  f"Please rotate secret and prevent further leaks.\n"
                  f"See details in Github issue {event.data['githubIssueURL']}.",
             username="KymaBot",
+            # TODO: host icon on our infrastructure
             icon_url="https://assets.stickpng.com/images/580b57fbd9996e24bc43bdfe.png",
             unfurl_links=True,
             unfurl_media=True,
