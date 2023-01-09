@@ -8,7 +8,7 @@ templates:
             max_concurrency: "10"
             optional: "false"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/external/goreleaser:v1.11.5"
+            image: "eu.gcr.io/kyma-project/external/goreleaser/goreleaser:v1.11.5"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -21,15 +21,12 @@ templates:
                   optional: "false"
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
-                  command: "/bin/sh"
                   args:
-                    - "-c"
-                    - "/kaniko-build"
                     - "--name=api-gateway-controller"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - "--tag=$(git describe --abbrev=0 --tags)"
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -39,15 +36,12 @@ templates:
                   optional: "false"
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
-                  command: "/bin/sh"
                   args:
-                    - "-c"
-                    - "/kaniko-build"
                     - "--name=api-gateway-webhook-certificates"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile-certificates"
-                    - "--tag=$(git describe --abbrev=0 --tags)"
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -58,9 +52,10 @@ templates:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
                     preset-bot-github-token: "true"
-                  command: "goreleaser"
+                  command: "/bin/sh"
                   args: 
-                    - "release"
+                    - "-c"
+                    - "git remote add origin https://github.com/kyma-project/api-gateway && goreleaser release"
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit

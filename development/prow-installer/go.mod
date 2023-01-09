@@ -5,7 +5,7 @@ go 1.13
 require (
 	cloud.google.com/go v0.49.0
 	cloud.google.com/go/storage v1.4.0
-	github.com/gogo/protobuf v1.3.1 // indirect
+	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.3.3 // indirect
 	github.com/google/go-cmp v0.3.0
 	github.com/google/gofuzz v1.1.0 // indirect
