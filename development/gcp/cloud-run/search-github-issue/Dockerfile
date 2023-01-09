@@ -1,14 +1,13 @@
-#FROM golang:1.19.3-alpine3.16 as builder
+FROM golang:1.19.3-alpine3.16 as builder
 
-#WORKDIR /go/src/github.com/kyma-project/test-infra
-#COPY . .
+WORKDIR /go/src/github.com/kyma-project/test-infra
+COPY . .
 
-#RUN  CGO_ENABLED=0 go build -o /searchgithubissue -ldflags="-s -w" ./development/gcp/cloud-run/search-github-issue
+RUN  CGO_ENABLED=0 go build -o /searchgithubissue -ldflags="-s -w" ./development/gcp/cloud-run/search-github-issue
 
 FROM alpine:3.16.2
 
-#COPY --from=builder /searchgithubissue /searchgithubissue
-COPY searchgithubissue /searchgithubissue
+COPY --from=builder /searchgithubissue /searchgithubissue
 RUN apk add --no-cache ca-certificates && \
 	chmod +x /searchgithubissue
 ENTRYPOINT ["/searchgithubissue"]
