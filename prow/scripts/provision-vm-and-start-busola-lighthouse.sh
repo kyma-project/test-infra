@@ -127,7 +127,7 @@ utils::send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "${TMP_DIR}/kubecon
 
 log::info "Copying Busola 'lighthouse' folder to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/lighthouse" "~/busola-tests"
+utils::compress_send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests/lighthouse" "~/busola-tests"
 
 log::info "Copying Busola 'resources' folder to the instance"
 #shellcheck disable=SC2088
