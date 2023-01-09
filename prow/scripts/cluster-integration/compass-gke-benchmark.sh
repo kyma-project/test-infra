@@ -107,7 +107,7 @@ function createCluster() {
   gcp::provision_k8s_cluster \
         -c "$COMMON_NAME" \
         -p "$CLOUDSDK_CORE_PROJECT" \
-        -v "1.21.14" \
+        -v "1.22.16" \
         -j "$JOB_NAME" \
         -J "$PROW_JOB_ID" \
         -z "$CLOUDSDK_COMPUTE_ZONE" \
@@ -151,8 +151,23 @@ function installKyma() {
   cd "$PREV_WD"
 
   KYMA_VERSION=$(<"${COMPASS_SOURCES_DIR}/installation/resources/KYMA_VERSION")
+
+  # TODO: Remove after adoption of Kyma 2.4.3 and change kyma deploy command source to --source="${KYMA_VERSION}"
+  KYMA_WORKSPACE=${HOME}/.kyma/sources/${KYMA_VERSION}
+  if [[ -d "$KYMA_WORKSPACE" ]]
+  then
+      echo "Kyma ${KYMA_VERSION} already exists locally."
+  else
+      echo "Pulling Kyma ${KYMA_VERSION}"
+      git clone --single-branch --branch "${KYMA_VERSION}" https://github.com/kyma-project/kyma.git "$KYMA_WORKSPACE"
+  fi
+
+  rm -rf "$KYMA_WORKSPACE"/installation/resources/crds/service-catalog || true
+  rm -f "$KYMA_WORKSPACE"/installation/resources/crds/service-catalog-addons/clusteraddonsconfigurations.addons.crd.yaml || true
+  rm -f "$KYMA_WORKSPACE"/installation/resources/crds/service-catalog-addons/addonsconfigurations.addons.crd.yaml || true
+
   MINIMAL_KYMA="${COMPASS_SOURCES_DIR}/installation/resources/kyma/kyma-components-minimal.yaml"
-  kyma deploy --ci --source="${KYMA_VERSION}" --workspace "$KYMA_SOURCES_DIR" --verbose -c "${MINIMAL_KYMA}" --values-file "$PWD/kyma_overrides.yaml"
+  kyma deploy --ci --source=local --workspace "$KYMA_WORKSPACE" --verbose -c "${MINIMAL_KYMA}" --values-file "$PWD/kyma_overrides.yaml"
 }
 
 function installCompassOld() {

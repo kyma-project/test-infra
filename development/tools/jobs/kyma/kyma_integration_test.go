@@ -154,7 +154,7 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NoError(t, err)
 
 	periodics := jobConfig.AllPeriodics()
-	assert.Len(t, periodics, 16)
+	assert.Len(t, periodics, 17)
 
 	expName := "kyma-upgrade-k3d-kyma2-to-main"
 	kymaUpgradePeriodic := tester.FindPeriodicJobByName(periodics, expName)

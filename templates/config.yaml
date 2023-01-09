@@ -150,7 +150,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -170,21 +170,21 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221213-56b008fb"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221230-ebc10cef"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221216-14ab5da8"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
   image_gardener-rotate:
-    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221121-4ded4f32"
+    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221215-c20ffd65"
   image_markdown_index:
     image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20221208-d468bc30"
   # JobConfig sets

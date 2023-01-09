@@ -30,7 +30,7 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-busola-lighthouse"
-                  optional: false
+                  optional: true
                   run_if_changed: "^resources/|^lighthouse/|^nginx/"
                   labels:
                     preset-build-pr: "true"
@@ -50,7 +50,7 @@ templates:
               # postsubmits
               - jobConfig:
                   name: "post-busola-lighthouse"
-                  optional: false
+                  optional: true
                   run_if_changed: "^resources/|^lighthouse/|^nginx/"
                   labels:
                     preset-build-main: "false"

@@ -1,6 +1,216 @@
 templates:
   - fromTo:
       - from: generic.tmpl
+        to: ../../prow/jobs/kyma/kyma-integration-gardener-eventing.yaml
+      - from: test-inventory.tmpl
+        to: ../../test-inventory-integration.md
+    render:
+      - localSets:
+          extra_refs_kyma-local:
+            extra_refs:
+              kyma-local:
+                - org: "kyma-incubator"
+                  repo: "local-kyma"
+                  path_alias: "github.com/kyma-incubator/local-kyma"
+                  base_ref: "main"
+          extra_refs_busola:
+            extra_refs:
+              busola:
+                - org: "kyma-project"
+                  repo: "busola"
+                  path_alias: "github.com/kyma-project/busola"
+                  base_ref: "main"
+          jobConfig_default:
+            path_alias: github.com/kyma-project/kyma
+            request_memory: 1Gi
+            request_cpu: 400m
+            labels:
+              preset-debug-commando-oom: "true"
+          jobConfig_presubmit:
+            optional: true
+            labels:
+              preset-build-pr: "true"
+          command_integration_eventing:
+            annotations:
+              pipeline.installer: kyma deploy
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: kyma cli
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
+          command_integration_skr_eventing:
+            annotations:
+              pipeline.installer: keb
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: keb
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-skr-eventing.sh"
+            labels:
+              preset-keb-dev-credentials: "true"
+              preset-kyma-integration-compass-dev: "true"
+              preset-kyma-integration-compass-enabled: "true"
+              preset-kyma-integration-central-app-connectivity-enabled: "true"
+              preset-kyma-integration-subaccounnt: "true"
+              preset-kyma-integration-kcp-client-credentials: "true"
+          command_upgrade_eventing:
+            annotations:
+              pipeline.installer: kyma deploy
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: kyma cli
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing-upgrade.sh"
+          command_upgrade_subscription:
+            annotations:
+              pipeline.installer: kyma deploy
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: kyma cli
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-subscription-upgrade.sh"
+          gardener_gcp_job_eventing:
+            labels:
+              preset-gardener-gcp-kyma-integration: "true"
+              preset-kyma-cli-stable: "true"
+              preset-cluster-version: "true"
+            env:
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+              GARDENER_REGION: "europe-west4"
+              GARDENER_ZONES: "europe-west4-b"
+              CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
+            annotations:
+              pipeline.platform: gardener_gcp
+          evaluation_profile:
+            env:
+              EXECUTION_PROFILE: "evaluation"
+            annotations:
+              pipeline.test: fast-integration
+              pipeline.profile: evaluation
+          production_profile:
+            env:
+              EXECUTION_PROFILE: "production"
+            annotations:
+              pipeline.test: fast-integration
+              pipeline.profile: production
+        jobConfigs:
+          - repoName: kyma-project/kyma
+            jobs:
+              # presubmits
+              - jobConfig:
+                  name: pre-main-kyma-gardener-gcp-eventing-upgrade
+                  optional: false
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-bot-github-token: "true"
+                  env:
+                    EXECUTION_PROFILE: "production"
+                    MACHINE_TYPE: "n1-standard-8"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job_eventing
+                    - command_upgrade_eventing
+
+              - jobConfig:
+                  name: pre-main-kyma-gardener-gcp-eventing
+                  optional: false
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                    # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job_eventing
+                    - command_integration_eventing
+
+              - jobConfig:
+                  name: pre-main-kyma-gardener-gcp-eventing-v1alpha2
+                  optional: true
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                    # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                    ENABLE_NEW_CRD_VERSION: "true"
+                    ENABLE_SUBSCRIPTION_V1_ALPHA2: "true"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job_eventing
+                    - command_integration_eventing
+              - jobConfig:
+                  name: pre-main-kyma-gardener-gcp-subscription-upgrade
+                  optional: true
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  run_if_changed: "^((components/eventing-controller/.*|components/event-publisher-proxy/.*|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  labels:
+                    preset-bot-github-token: "true"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job_eventing
+                    - command_upgrade_subscription
+
+  - fromTo:
+      - from: generic.tmpl
         to: ../../prow/jobs/kyma/kyma-integration-gardener.yaml
       - from: test-inventory.tmpl
         to: ../../test-inventory-integration.md
@@ -36,31 +246,6 @@ templates:
               pipeline.test: octopus
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
-          command_integration_eventing:
-            annotations:
-              pipeline.installer: kyma deploy
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: kyma cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
-          command_integration_skr_eventing:
-            annotations:
-              pipeline.installer: keb
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: keb
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-skr-eventing.sh"
-            labels:
-              preset-keb-dev-credentials: "true"
-              preset-kyma-integration-compass-dev: "true"
-              preset-kyma-integration-compass-enabled: "true"
-              preset-kyma-integration-central-app-connectivity-enabled: "true"
-              preset-kyma-integration-subaccounnt: "true"
-              preset-kyma-integration-kcp-client-credentials: "true"
-          command_upgrade_eventing:
-            annotations:
-              pipeline.installer: kyma deploy
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: kyma cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing-upgrade.sh"
           command_upgrade_subscription:
             annotations:
               pipeline.installer: kyma deploy
@@ -84,17 +269,6 @@ templates:
               pipeline.test: upgrade-fast-integration
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-minor-versions.sh"
-          gardener_aws_job:
-            labels:
-              preset-gardener-aws-kyma-integration: "true"
-              preset-kyma-cli-stable: "true"
-              preset-cluster-version: "true"
-            annotations:
-              pipeline.platform: gardener_aws
-            env:
-              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-              GARDENER_REGION: "eu-west-3"
-              GARDENER_ZONES: "eu-west-3a"
           gardener_gcp_job:
             labels:
               preset-gardener-gcp-kyma-integration: "true"
@@ -106,30 +280,6 @@ templates:
               GARDENER_ZONES: "europe-west4-b"
             annotations:
               pipeline.platform: gardener_gcp
-          gardener_gcp_job_eventing:
-            labels:
-              preset-gardener-gcp-kyma-integration: "true"
-              preset-kyma-cli-stable: "true"
-              preset-cluster-version: "true"
-            env:
-              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-              GARDENER_REGION: "europe-west4"
-              GARDENER_ZONES: "europe-west4-b"
-              CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
-            annotations:
-              pipeline.platform: gardener_gcp
-          skr_aws_job_eventing:
-            labels:
-              preset-cluster-version: "true"
-              preset-kyma-integration-kcp-client-credentials: "true"
-              preset-kcp-client-dev-envs: "true"
-            env:
-              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-              CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
-              KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15" # AWS
-              # KEB_PLAN_ID: "8cb22518-aa26-44c5-91a0-e669ec9bf443" # Azure Lite
-            annotations:
-              pipeline.platform: gardener_aws
           gardener_azure_job:
             annotations:
               pipeline.platform: gardener_azure
@@ -249,64 +399,6 @@ templates:
                     - installer_2
               # postsubmits
               - jobConfig:
-                  name: pre-main-kyma-gardener-gcp-eventing
-                  optional: true
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                    # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    EXECUTION_PROFILE: "evaluation"
-                  volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
-                  volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
-                      readOnly: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - gardener_gcp_job_eventing
-                    - command_integration_eventing
-              - jobConfig:
-                  name: pre-main-kyma-gardener-gcp-eventing-v1alpha2
-                  optional: true
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                    # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    EXECUTION_PROFILE: "evaluation"
-                    ENABLE_NEW_CRD_VERSION: "true"
-                    ENABLE_SUBSCRIPTION_V1_ALPHA2: "true"
-                  volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
-                  volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
-                      readOnly: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - gardener_gcp_job_eventing
-                    - command_integration_eventing
-              - jobConfig:
                   name: pre-main-kyma-gardener-gcp-goats-api-gateway
                   optional: false
                   labels:
@@ -328,65 +420,6 @@ templates:
                     - jobConfig_default
                     - gardener_gcp_job
                     - command_integration
-              - jobConfig:
-                  name: pre-main-kyma-gardener-gcp-eventing-upgrade
-                  optional: true
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-bot-github-token: "true"
-                  env:
-                    EXECUTION_PROFILE: "evaluation"
-                  volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
-                  volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
-                      readOnly: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - gardener_gcp_job_eventing
-                    - command_upgrade_eventing
-
-              - jobConfig:
-                  name: pre-main-kyma-gardener-gcp-subscription-upgrade
-                  optional: true
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  run_if_changed: "^((components/eventing-controller/.*|components/event-publisher-proxy/.*|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-bot-github-token: "true"
-                  env:
-                    EXECUTION_PROFILE: "evaluation"
-                  volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
-                  volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
-                      readOnly: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - gardener_gcp_job_eventing
-                    - command_upgrade_subscription
 
               # periodics
               - jobConfig:
@@ -485,3 +518,26 @@ templates:
                     - jobConfig_default
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma2_to_main
+              - jobConfig:
+                  name: kyma-upgrade-gardener-kyma2-minor-versions
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    description: Azure Kyma 2 previous minor versions.
+                  decoration_config:
+                    timeout: 7200000000000 # 2h
+                    grace_period: 600000000000 # 10min
+                  cron: "0 8 * * 1-5"
+                  labels:
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                    - kyma_minor_upgrade
+                  local:
+                    - jobConfig_default
+                    - gardener_azure_job_old_version
+                    - command_upgrade_gardener_kyma2_minor_versions

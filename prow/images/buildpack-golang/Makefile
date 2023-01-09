@@ -21,8 +21,8 @@ tag-image: build-image
 # tag image with current tag
 .PHONY: tag-image
 tag-image:
-	@echo "___ Tagging as go1.19.3 ___"
-	docker tag $(IMG):$(DOCKER_TAG) $(IMG):go1.19.3
+	@echo "___ Tagging as go1.19.4 ___"
+	docker tag $(IMG):$(DOCKER_TAG) $(IMG):go1.19.4
 	@echo "___ Tagging as current ___"
 	docker tag $(IMG):$(DOCKER_TAG) $(IMG):current
 ifdef DOCKER_POST_PR_TAG

@@ -26,7 +26,7 @@ templates:
               - jobConfig:
                   name: ci-prow-label-sync
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20221208-8898931a7f
+                  image: gcr.io/k8s-prow/label_sync:v20230104-ac8ab408a1
                   command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
@@ -48,7 +48,7 @@ templates:
                   name: ci-prow-autobump
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20221208-8898931a7f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230104-ac8ab408a1
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
@@ -110,7 +110,7 @@ templates:
                   name: ci-prow-autobump-jobs
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20221208-8898931a7f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230104-ac8ab408a1
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml
@@ -123,40 +123,3 @@ templates:
                     - "pubsub_labels"
                     - "disable_testgrid"
                     - extra_refs_test-infra
-              - jobConfig:
-                  name: pre-test-infra-build-vm-image
-                  run_if_changed: 'development/custom-image/'
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "development/custom-image/create-custom-image.sh"
-                  labels:
-                    preset-sa-vm-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_presubmit
-                    - jobConfig_default
-                    - pubsub_labels
-                    - image_kyma-integration
-              - jobConfig:
-                  name: post-test-infra-build-vm-image
-                  run_if_changed: 'development/custom-image/'
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "development/custom-image/create-custom-image.sh --default"
-                  labels:
-                    preset-sa-vm-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_postsubmit
-                    - jobConfig_default
-                    - pubsub_labels
-                    - image_kyma-integration
-                    - disable_testgrid

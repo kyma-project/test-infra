@@ -128,7 +128,6 @@ utils::compress_send_to_vm "${ZONE}" "keda-manager-test-${RANDOM_ID}" "/home/pro
 
 log::info "Triggering the installation"
 # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-# hadolint ignore=SC2016
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "keda-manager-test-${RANDOM_ID}" -c "sudo bash -c \"export PATH=\$PATH:\$HOME/keda-manager/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && cd \$HOME/keda-manager && make -C hack/local run\""
 #&&	PATH=$PATH:$HOME/keda-manager/bin
 log::success "all done"

@@ -246,9 +246,9 @@ function utils::ssh_to_vm_with_script() {
   utils::check_empty_arg "$COMMAND" "ssh command not provided."
 
   if [ -z "${LOCAL_SCRIPT_PATH}" ]; then
-      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}"
+      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}"
   else
-      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}" < "${LOCAL_SCRIPT_PATH}"
+      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}" < "${LOCAL_SCRIPT_PATH}"
   fi
 }
 
@@ -870,4 +870,24 @@ function utils::install_helm {
     log::info "OK"
     popd || exit
     eval "${settings}"
+}
+
+function utils::get_kyma_fast_integration_dir {
+  local kymaDirectory="/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
+  for arg in "$@"
+  do
+    case "$arg" in
+        -d)
+          if [ ! -z "$2" ]; then
+            kymaDirectory="$2"
+          fi
+          shift 2
+          ;;
+        *)
+          shift
+          ;;
+    esac
+  done
+
+  echo -n "$kymaDirectory"
 }

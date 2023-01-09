@@ -1,0 +1,70 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-test.yaml
+        localSets:
+          extra_refs_kyma-local:
+            extra_refs:
+              local-kyma:
+                - org: "kyma-incubator"
+                  repo: "local-kyma"
+                  path_alias: "github.com/kyma-incubator/local-kyma"
+                  base_ref: "main"
+          jobConfig_default:
+            path_alias: github.com/kyma-project/kyma-dashboard
+          jobConfig_periodic:
+            cluster: "trusted-workload"
+          request_small:
+            request_memory: 100Mi
+            request_cpu: 50m
+          vm_job_template_k3s:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-dashboard-test.sh"
+          vm_job_labels_template:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-sa-vm-kyma-integration: "true"
+              preset-gc-project-env: "true"
+        jobConfigs:
+          - repoName: kyma-project/kyma-dashboard
+            jobs:
+              # presubmits
+              - jobConfig:
+                  name: "pre-kyma-dashboard-test"
+                  optional: false
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-gardener-azure-kyma-integration: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              # postsubmits
+              - jobConfig:
+                  name: "post-kyma-dashboard-test"
+                  optional: false
+                  always_run: true
+                  labels:
+                    preset-build-pr: "false"
+                    preset-gardener-azure-kyma-integration: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
