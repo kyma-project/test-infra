@@ -67,13 +67,6 @@ require (
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.5.0
 	golang.org/x/oauth2 v0.4.0
-	google.golang.org/api v0.105.0
-	github.com/zricethezav/gitleaks/v8 v8.15.1
-	go.uber.org/zap v1.23.0
-	golang.org/x/net v0.2.0
-	golang.org/x/oauth2 v0.2.0
-	google.golang.org/api v0.103.0
-	google.golang.org/api v0.106.0
 	google.golang.org/api v0.106.0
 	google.golang.org/grpc v1.51.0
 	gopkg.in/ini.v1 v1.66.2 // indirect
@@ -165,7 +158,6 @@ require (
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
-	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mattn/go-zglob v0.0.2 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
@@ -187,14 +179,12 @@ require (
 	github.com/opencontainers/selinux v1.10.0 // indirect
 	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/petar-dambovaliev/aho-corasick v0.0.0-20211021192214-5ab2d9280aa9 // indirect
-	github.com/pelletier/go-toml v1.9.4 // indirect
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.11.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.30.0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/rs/zerolog v1.26.1 // indirect
 	github.com/rs/zerolog v1.26.1 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f // indirect
