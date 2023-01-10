@@ -16,8 +16,9 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/development/gcp/pkg/http"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
+	gcptypes "github.com/kyma-project/test-infra/development/gcp/pkg/types"
 	kgithubv1 "github.com/kyma-project/test-infra/development/github/pkg/client"
-	kgithub "github.com/kyma-project/test-infra/development/github/pkg/client/v2"
+	githubtypes "github.com/kyma-project/test-infra/development/github/pkg/types"
 	"github.com/kyma-project/test-infra/development/types"
 	"golang.org/x/net/context"
 )
@@ -39,10 +40,10 @@ var (
 type message struct {
 	pubsub.ProwMessage
 	types.SecretsLeakScannerMessage
-	kgithub.SearchIssuesResult
-	types.GCPStorageMetadata
-	types.GCPProjectMetadata
-	types.GithubIssueMetadata
+	githubtypes.SearchIssuesResult
+	gcptypes.GCPBucketMetadata
+	gcptypes.GCPProjectMetadata
+	githubtypes.IssueMetadata
 }
 
 func main() {
@@ -119,7 +120,7 @@ func searchGithubIssues(w http.ResponseWriter, r *http.Request) {
 
 	event, err := cloudevents.NewEventFromHTTPRequest(r)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusBadRequest, logger, "failed to parse CloudEvent from request: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed to parse CloudEvent from request: %s", err.Error())
 		return
 	}
 
@@ -127,7 +128,7 @@ func searchGithubIssues(w http.ResponseWriter, r *http.Request) {
 
 	// Load event data
 	if err = event.DataAs(&msg); err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
 		return
 	}
 
@@ -152,13 +153,13 @@ func searchGithubIssues(w http.ResponseWriter, r *http.Request) {
 	}
 	searchResult, result, err := sapGhClient.Search.Issues(ctx, query, opts)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed search github issues, error: %s", err)
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed search github issues, error: %s", err)
 		return
 	}
 
 	_, err = kgithubv1.IsStatusOK(result)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed search github issues, error: %s", err)
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed search github issues, error: %s", err)
 		return
 	}
 
@@ -167,40 +168,29 @@ func searchGithubIssues(w http.ResponseWriter, r *http.Request) {
 	responseEvent.SetSource(applicationName + "/" + componentName)
 	responseEvent.SetID(applicationName + "/" + componentName + "/" + trace)
 	if len(issues) != 0 {
-		msg.IssueFound = github.Bool(true)
-		msg.Issues = issues
+		msg.GithubIssueFound = github.Bool(true)
+		msg.GithubIssues = issues
 		logger.LogInfo("found github issues")
 		responseEvent.SetType("sap.tools.github.leakissue.found")
 		if err = responseEvent.SetData(cloudevents.ApplicationJSON, msg); err != nil {
-			crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err)
+			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err)
 			return
 		}
-		// body, err = json.Marshal(responseEvent)
-		// if err != nil {
-		// 	crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
-		// 	return
-		// }
 	} else {
 		logger.LogInfo("github issues not found")
 		responseEvent.SetType("sap.tools.github.leakissue.notfound")
-		msg.IssueFound = github.Bool(false)
+		msg.GithubIssueFound = github.Bool(false)
 		if err = responseEvent.SetData(cloudevents.ApplicationJSON, msg); err != nil {
-			crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err)
+			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err)
 			return
 		}
-		// body, err = json.Marshal(responseEvent)
-		// if err != nil {
-		// 	crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
-		// 	return
-		// }
 	}
 	headers := w.Header()
 	headers.Set("Content-Type", cloudevents.ApplicationJSON)
 	headers.Set("X-Cloud-Trace-Context", traceHeader)
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(responseEvent); err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed write response body, error: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed write response body, error: %s", err.Error())
 		return
 	}
-	// w.Write(body)
 }
