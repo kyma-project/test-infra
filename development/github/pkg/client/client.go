@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"io"
 	"net/http"
 
 	"github.com/google/go-github/v42/github"
@@ -112,16 +111,11 @@ func (c *Client) IsStatusOK(resp *github.Response) (bool, error) {
 	return IsStatusOK(resp)
 }
 
-// IsStatusOK will check if http response code is 200.
-// On not OK status it will read response body to expose details about error.
+// IsStatusOK will check if http response code is in 2xx range.
 func IsStatusOK(resp *github.Response) (bool, error) {
-	if resp.StatusCode != http.StatusOK {
-		bodyBytes, err := io.ReadAll(resp.Body)
-		if err != nil {
-			return false, fmt.Errorf("got error when reading response body for non 200 HTTP response code, error: %w", err)
-		}
-		bodyString := string(bodyBytes)
-		return false, fmt.Errorf("got non 200 response code in HTTP response, body: %s", bodyString)
+	statusOK := resp.StatusCode >= 200 && resp.StatusCode < 300
+	if !statusOK {
+		return false, fmt.Errorf("got %d response code in HTTP response", resp.StatusCode)
 	}
 	return true, nil
 }
