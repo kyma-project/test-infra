@@ -73,8 +73,6 @@ func main() {
 	}
 }
 
-// https://cloud.google.com/storage/docs/copying-renaming-moving-objects#storage-copy-object-go
-
 func moveGCPBucket(w http.ResponseWriter, r *http.Request) {
 	var (
 		msg         message
@@ -148,11 +146,8 @@ func moveGCPBucket(w http.ResponseWriter, r *http.Request) {
 			crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed copy object %s to bucket %s, error: %s", *msg.Directory, dstBucketName, err.Error())
 			return
 		}
-		// TODO: enable deleting objects when deploying to production
-		// if err := src.Delete(ctx); err != nil {
 		logger.LogDebug("Removing source object %s", *msg.BucketName+"/"+src.ObjectName())
-		err = nil
-		if err != nil {
+		if err := src.Delete(ctx); err != nil {
 			crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed remove object %s from bucket %s, error: %s", *msg.Directory, *msg.BucketName, err.Error())
 			return
 		}
@@ -168,11 +163,6 @@ func moveGCPBucket(w http.ResponseWriter, r *http.Request) {
 		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err.Error())
 		return
 	}
-	// body, err := json.Marshal(responseEvent)
-	// if err != nil {
-	// 	crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
-	// 	return
-	// }
 	headers := w.Header()
 	headers.Set("Content-Type", cloudevents.ApplicationJSON)
 	headers.Set("X-Cloud-Trace-Context", traceHeader)
@@ -181,5 +171,4 @@ func moveGCPBucket(w http.ResponseWriter, r *http.Request) {
 		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed write response body, error: %s", err.Error())
 		return
 	}
-	// w.Write(body)
 }
