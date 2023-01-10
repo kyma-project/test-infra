@@ -61,15 +61,8 @@ require (
 	github.com/spf13/cobra v1.6.1
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.10.0 // indirect
-	github.com/spf13/viper v1.10.0
-	github.com/spf13/viper v1.10.0
 	github.com/stretchr/testify v1.8.1
 	github.com/tidwall/gjson v1.14.4
-	github.com/zricethezav/gitleaks/v8 v8.15.1
-	go.uber.org/zap v1.23.0
-	golang.org/x/net v0.2.0
-	golang.org/x/oauth2 v0.2.0
-	google.golang.org/api v0.103.0
 	github.com/zricethezav/gitleaks/v8 v8.15.1
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.24.0
