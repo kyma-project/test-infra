@@ -128,5 +128,5 @@ utils::compress_send_to_vm "${ZONE}" "serverless-manager-test-${RANDOM_ID}" "/ho
 
 log::info "Triggering the installation"
 # shellcheck disable=SC2016
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "serverless-manager-test-${RANDOM_ID}" -c 'sudo bash -c "cd $HOME/serverless-manager && make test"'
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "serverless-manager-test-${RANDOM_ID}" -c 'sudo bash -c "source /etc/profile && cd $HOME/serverless-manager && make test"'
 log::success "all done"
