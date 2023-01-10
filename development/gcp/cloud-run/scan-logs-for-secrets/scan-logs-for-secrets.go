@@ -127,7 +127,7 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 
 	event, err := cloudevents.NewEventFromHTTPRequest(r)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusBadRequest, logger, "failed to parse CloudEvent from request: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed to parse CloudEvent from request: %s", err.Error())
 		return
 	}
 
@@ -137,20 +137,20 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 
 	err = event.DataAs(&inmsg)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
 		return
 	}
 
 	err = json.Unmarshal(inmsg.Message.Data, &msg)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusBadRequest, logger, "failed unmarshall pubsub message data, error: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed unmarshall pubsub message data, error: %s", err.Error())
 		return
 	}
 
 	validate := validator.New()
 	err = validate.Struct(msg)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusBadRequest, logger, "missing values in config: %s", err)
+		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "missing values in config: %s", err)
 		return
 	}
 
@@ -160,19 +160,19 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 
 	_, bucketAfter, found := strings.Cut(*msg.GcsPath, gcsPrefix)
 	if !found {
-		crhttp.WriteHttpErrorResponse(w, http.StatusBadRequest, logger, "failed get logs bucket name, [%s] prefix not found in gcs url", gcsPrefix)
+		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed get logs bucket name, [%s] prefix not found in gcs url", gcsPrefix)
 		return
 	}
 	bucketName, objectName, found = strings.Cut(bucketAfter, "/")
 	if !found {
-		crhttp.WriteHttpErrorResponse(w, http.StatusBadRequest, logger, "failed get logs bucket name, could not find value expected separator: [/]")
+		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed get logs bucket name, could not find value expected separator: [/]")
 		return
 	}
 	objectName = strings.TrimPrefix(objectName, "/")
 	bucket := storageClient.Bucket(bucketName)
 	battrs, err := bucket.Attrs(ctx)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed read google cloud storage bucket attributes, error: %s", err)
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed read google cloud storage bucket attributes, error: %s", err)
 		return
 	}
 	logger.LogInfo("bucket: %s", battrs.Name)
@@ -186,8 +186,7 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		if err != nil {
-			// TODO: Need better error messages for this scenario
-			crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "Bucket(%s).Objects: %s", bucketName, err.Error())
+			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed get next object from bucket iterator: bucket: %s, error: %s", bucketName, err.Error())
 			return
 		}
 		// Wrapping into anonymous function to let defer work in expected way.
@@ -222,7 +221,6 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 
 	msg.BucketName = github.String(bucketName)
 	msg.Directory = github.String(objectName)
-	// TODO: generating reports should be a separate function.
 	if len(allFindings) != 0 {
 		msg.LeaksFound = github.Bool(true)
 		responseEvent.SetType("prowjob.logs.leaks.found")
@@ -233,7 +231,7 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 	}
 	err = responseEvent.SetData(cloudevents.ApplicationJSON, msg)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err.Error())
 		return
 	}
 	headers := w.Header()
@@ -241,7 +239,7 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 	headers.Set("X-Cloud-Trace-Context", traceHeader)
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(responseEvent); err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed write response body, error: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed write response body, error: %s", err.Error())
 		return
 	}
 }
