@@ -71,11 +71,6 @@ require (
 	golang.org/x/oauth2 v0.2.0
 	google.golang.org/api v0.103.0
 	github.com/zricethezav/gitleaks/v8 v8.15.1
-	github.com/zricethezav/gitleaks/v8 v8.15.1
-	go.uber.org/zap v1.23.0
-	golang.org/x/net v0.2.0
-	golang.org/x/oauth2 v0.2.0
-	google.golang.org/api v0.103.0
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.5.0

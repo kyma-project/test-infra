@@ -15,7 +15,8 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/development/gcp/pkg/http"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
-	kgithub "github.com/kyma-project/test-infra/development/github/pkg/client/v2"
+	gcptypes "github.com/kyma-project/test-infra/development/gcp/pkg/types"
+	githubtypes "github.com/kyma-project/test-infra/development/github/pkg/types"
 	"github.com/kyma-project/test-infra/development/types"
 	"google.golang.org/api/iterator"
 )
@@ -33,10 +34,10 @@ var (
 type message struct {
 	pubsub.ProwMessage
 	types.SecretsLeakScannerMessage
-	kgithub.SearchIssuesResult
-	types.GCPStorageMetadata
-	types.GCPProjectMetadata
-	types.GithubIssueMetadata
+	githubtypes.SearchIssuesResult
+	gcptypes.GCPBucketMetadata
+	gcptypes.GCPProjectMetadata
+	githubtypes.IssueMetadata
 }
 
 func main() {
@@ -103,25 +104,25 @@ func moveGCPBucket(w http.ResponseWriter, r *http.Request) {
 
 	event, err := cloudevents.NewEventFromHTTPRequest(r)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusBadRequest, logger, "failed to parse CloudEvent from request: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed to parse CloudEvent from request: %s", err.Error())
 		return
 	}
 
 	logger.LogInfo("got message, id: %s type: %s", event.ID(), event.Type())
 
 	if err = event.DataAs(&msg); err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
 		return
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	objectName := strings.TrimSuffix(*msg.Directory, "/")
-	bucket := storageClient.Bucket(*msg.BucketName)
+	objectName := strings.TrimSuffix(*msg.GCPBucketDirectory, "/")
+	bucket := storageClient.Bucket(*msg.GCPBucketName)
 	battrs, err := bucket.Attrs(ctx)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed read google cloud storage bucket attributes, error: %s", err)
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed read google cloud storage bucket attributes, error: %s", err)
 	}
 	logger.LogInfo("bucket: %s", battrs.Name)
 	it := bucket.Objects(ctx, &storage.Query{
@@ -135,32 +136,32 @@ func moveGCPBucket(w http.ResponseWriter, r *http.Request) {
 		}
 		if err != nil {
 			// TODO: Need better error messages for this scenario
-			crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed getting next bucket object %s, error: %s", attrs.Name, err.Error())
+			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed getting next bucket object %s, error: %s", attrs.Name, err.Error())
 		}
 		logger.LogDebug("starting copying file: %s", attrs.Name)
-		src := storageClient.Bucket(*msg.BucketName).Object(attrs.Name)
+		src := storageClient.Bucket(*msg.GCPBucketName).Object(attrs.Name)
 		dst := storageClient.Bucket(dstBucketName).Object(attrs.Name)
-		logger.LogDebug("src object name: %s", *msg.BucketName+"/"+src.ObjectName())
+		logger.LogDebug("src object name: %s", *msg.GCPBucketName+"/"+src.ObjectName())
 		logger.LogDebug("dst object name: %s", dstBucketName+"/"+dst.ObjectName())
 		if _, err = dst.CopierFrom(src).Run(ctx); err != nil {
-			crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed copy object %s to bucket %s, error: %s", *msg.Directory, dstBucketName, err.Error())
+			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed copy object %s to bucket %s, error: %s", *msg.GCPBucketDirectory, dstBucketName, err.Error())
 			return
 		}
-		logger.LogDebug("Removing source object %s", *msg.BucketName+"/"+src.ObjectName())
+		logger.LogDebug("Removing source object %s", *msg.GCPBucketName+"/"+src.ObjectName())
 		if err := src.Delete(ctx); err != nil {
-			crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed remove object %s from bucket %s, error: %s", *msg.Directory, *msg.BucketName, err.Error())
+			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed remove object %s from bucket %s, error: %s", *msg.GCPBucketDirectory, *msg.GCPBucketName, err.Error())
 			return
 		}
-		logger.LogInfo("Blob %s moved to %s", *msg.BucketName+"/"+*msg.Directory, dstBucketName+"/"+*msg.Directory)
+		logger.LogInfo("Blob %s moved to %s", *msg.GCPBucketName+"/"+*msg.GCPBucketDirectory, dstBucketName+"/"+*msg.GCPBucketDirectory)
 	}
 	responseEvent := cloudevents.NewEvent()
 	responseEvent.SetSource(applicationName + "/" + componentName)
 	responseEvent.SetID(applicationName + "/" + componentName + "/" + trace)
 	responseEvent.SetType("gcp.storage.bucket.moved")
 	responseEvent.SetDataContentEncoding(cloudevents.TextPlain)
-	msg.BucketName = github.String(dstBucketName)
+	msg.GCPBucketName = github.String(dstBucketName)
 	if err = responseEvent.SetData(cloudevents.ApplicationJSON, msg); err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err.Error())
 		return
 	}
 	headers := w.Header()
@@ -168,7 +169,7 @@ func moveGCPBucket(w http.ResponseWriter, r *http.Request) {
 	headers.Set("X-Cloud-Trace-Context", traceHeader)
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(responseEvent); err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed write response body, error: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed write response body, error: %s", err.Error())
 		return
 	}
 }
