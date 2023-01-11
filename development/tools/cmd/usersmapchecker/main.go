@@ -70,7 +70,7 @@ func main() {
 	// Serviceaccount credentials to access google cloud logging API.
 	saProwjobGcpLoggingClientKeyPath := os.Getenv("SA_PROWJOB_GCP_LOGGING_CLIENT_KEY_PATH")
 	// Create kyma implementation Google cloud logging client with defaults for logging from prowjobs.
-	logClient, err := gcplogging.NewProwjobClient(ctx, saProwjobGcpLoggingClientKeyPath)
+	logClient, err := gcplogging.NewProwjobClient(ctx, saProwjobGcpLoggingClientKeyPath, gcplogging.ProwLogsProjectID)
 	if err != nil {
 		log.Errorf("creating gcp logging client failed, got error: %v", err)
 	}
