@@ -11,11 +11,13 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-qa-dashboard-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
+        preset-docker-push-repository-qa-dashboard: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
       always_run: true
       skip_report: false
       decorate: true
+      path_alias: github.com/kyma-project/qa-dashboard
       cluster: untrusted-workload
       max_concurrency: 10
       branches:

@@ -15,6 +15,7 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_generic_component"
+                    - "jobConfig_generic_component_qa-dashboard"
                     - "extra_refs_test-infra"
                   preConfigs:
                     global:

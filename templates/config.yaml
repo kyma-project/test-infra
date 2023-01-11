@@ -62,14 +62,12 @@ global:
         - name: "sc-removal"
         - name: "service-catalog-tester"
         - name: "service-catalog"
-        
-
 
 # global configSet variables
 pubsub_config: &pubsub_config
   pubsub_project: "sap-kyma-prow"
   pubsub_topic: "prowjobs"
-  
+
 globalSets:
   kaniko_buildpack:
     skip_report: "false"
@@ -203,10 +201,10 @@ globalSets:
     nodeSelector:
       dedicated: high-cpu
     tolerations:
-    - key: dedicated
-      value: high-cpu
-      operator: Equal
-      effect: NoSchedule
+      - key: dedicated
+        value: high-cpu
+        operator: Equal
+        effect: NoSchedule
     <<: *pubsub_config
   jobConfig_kyma20_docu:
     skip_report: "false"
@@ -282,6 +280,10 @@ globalSets:
     labels:
       preset-docker-push-repository-kyma: "true"
     path_alias: "github.com/kyma-project/busola"
+  jobConfig_generic_component_qa-dashboard:
+    labels:
+      preset-docker-push-repository-qa-dashboard: "true"
+    path_alias: "github.com/kyma-project/qa-dashboard"
   jobConfig_generic_component_kyma-dashboard:
     labels:
       preset-docker-push-repository-kyma: "true"
@@ -371,6 +373,6 @@ templates:
             - name: kyma-gke-integration
             - name: kyma-gke-upgrade
             - name: kyma-artifacts
-  - from : test-infra-autobump-config.yaml
+  - from: test-infra-autobump-config.yaml
     render:
       - to: ../../prow/autobump-config/test-infra-autobump-config.yaml

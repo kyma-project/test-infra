@@ -14,6 +14,8 @@ const (
 	DockerPushRepoKyma Preset = "preset-docker-push-repository-kyma"
 	// DockerPushRepoTestInfra means Docker repository test-infra images
 	DockerPushRepoTestInfra Preset = "preset-docker-push-repository-test-infra"
+	// DockerPushRepoTestInfra means Docker repository test-infra images
+	DockerPushRepoQualityDashboard Preset = "preset-docker-push-repository-qa-dashboard"
 	// DockerPushRepoIncubator means Docker repository incubator images
 	DockerPushRepoIncubator Preset = "preset-docker-push-repository-incubator"
 	// DockerPushRepoControlPlane means Docker repository control-plane images
