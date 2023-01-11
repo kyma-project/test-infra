@@ -10,7 +10,7 @@ Install the following tools:
 - kubectl
 - [jsonnet](https://jsonnet.org) and [jsonnet-bundler](https://github.com/jsonnet-bundler/jsonnet-bundler) installed
 
-## Create dashboards configmaps
+## Create dashboards ConfigMaps
 
 The steps assume you have completed the prerequisites.
 
@@ -26,7 +26,7 @@ This will download all required dependencies for generating Grafana dashboards.
 make generate_dashboards
 make apply_configmaps
 ```
-Those commands will generate json dashboards to the `dashboards_out` directory and apply them as configmaps to the kubernetes cluster.
+Those commands will generate json dashboards to the `dashboards_out` directory and apply them as ConfigMaps to the kubernetes cluster.
 
 3. Once everything is done, run `make clean` to remove the generated json files.
 
@@ -91,15 +91,15 @@ Follow these steps to save the dashboard:
 
 1. Export the dashboard to a JSON format.
 
-2. Save the JSON file under `prow/cluster/components/monitoring/dashboards/` and create configmap out of it.
+2. Save the JSON file under `prow/cluster/components/monitoring/dashboards/` and create ConfigMap out of it.
    ```bash
    kubectl -n prow-monitoring create configmap "grafana-dashboard-new" --from-file="prow/cluster/components/monitoring/dashboards/quality/new.json   ```
-3. Update the `prow/cluster/components/monitoring/grafana_deployment.yaml` with newly created configmap and update grafana deployment manually.
+3. Update the `prow/cluster/components/monitoring/grafana_deployment.yaml` with newly created ConfigMap and update grafana deployment manually.
    
    ```bash
    kubectl apply -f prow/cluster/components/monitoring/grafana_deployment.yaml
    ```
-4. Do the rolling restart of grafana deployment.
+4. Do the rolling restart of Grafana deployment.
 
    ```bash
    kubectl -n prow-monitoring rollout restart deployment grafana
