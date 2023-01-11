@@ -67,6 +67,31 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: pull-ord-service-unit-test
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-ord-service-unit-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^components/ord-service'
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "maven:3.8.6-eclipse-temurin-11"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "cd components/ord-service && ./run.sh --no-start"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 100m
   
 postsubmits: # runs on main
   kyma-incubator/ord-service:
