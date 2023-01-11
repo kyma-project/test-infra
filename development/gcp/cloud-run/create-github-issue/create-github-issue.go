@@ -28,10 +28,10 @@ var (
 	applicationName string
 	projectID       string
 	githubToken     []byte
-	githubOrg   string // "neighbors-team"
-	githubRepo  string // "leaks-test"
-	port        string
-	sapGhClient *kgithubv1.SapToolsClient
+	githubOrg       string // "neighbors-team"
+	githubRepo      string // "leaks-test"
+	port            string
+	sapGhClient     *kgithubv1.SapToolsClient
 )
 
 type message struct {
@@ -60,6 +60,9 @@ func main() {
 	ctx := context.Background()
 
 	githubToken, err = os.ReadFile("/etc/github-token/github-token")
+	if err != nil {
+		mainLogger.LogCritical("failed read github token from file, error: %s", err)
+	}
 
 	sapGhClient, err = kgithubv1.NewSapToolsClient(ctx, string(githubToken))
 	if err != nil {
@@ -145,7 +148,7 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	issueState := github.String("open")
 	issueRequest := github.IssueRequest{
 		Title:     github.String(issueTitle),
-		Body:      github.String(fmt.Sprintf(issueBody.String())),
+		Body:      github.String(fmt.Sprint(issueBody.String())),
 		Labels:    &issueLabels,
 		Assignee:  github.String(msg.GithubIssueAssignee.SapToolsGithubUsername),
 		State:     issueState,
