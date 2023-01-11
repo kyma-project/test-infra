@@ -127,6 +127,14 @@ func BusolaRepo() Option {
 	}
 }
 
+// QualityDashboardRepo function returns Option type
+func QualityDashboardRepo() Option {
+	return func(suite *Config) {
+		suite.Repository = "github.com/kyma-project/qa-dashboard"
+		suite.DockerRepositoryPreset = preset.DockerPushRepoQualityDashboard
+	}
+}
+
 // DockerRepositoryPreset function returns Option type
 func DockerRepositoryPreset(preset preset.Preset) Option {
 	return func(suite *Config) {
