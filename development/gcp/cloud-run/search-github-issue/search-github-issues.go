@@ -86,7 +86,7 @@ func main() {
 	// Start HTTP server.
 	mainLogger.LogInfo("Listening on port %s", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		mainLogger.LogError(err.Error())
+		mainLogger.LogError("failed listen on port %s, error: %s", port, err)
 	}
 }
 
