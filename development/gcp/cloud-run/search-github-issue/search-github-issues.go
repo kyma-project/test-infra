@@ -71,6 +71,9 @@ func main() {
 	defer gcsClient.Close()
 
 	githubToken, err = os.ReadFile("/etc/github-token/github-token")
+	if err != nil {
+		mainLogger.LogCritical("failed read github token from file, error: %s", err)
+	}
 
 	sapGhClient, err = kgithubv1.NewSapToolsClient(ctx, string(githubToken))
 	if err != nil {
@@ -114,7 +117,7 @@ func searchGithubIssues(w http.ResponseWriter, r *http.Request) {
 
 	requestDump, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		logger.LogError("failed dump http request, error:", err)
+		logger.LogError("failed dump http request, error: %s", err)
 	}
 	logger.LogDebug("request:\n%v", string(requestDump))
 
@@ -140,7 +143,7 @@ func searchGithubIssues(w http.ResponseWriter, r *http.Request) {
 	h := hasher.Sum(nil)
 	secretsleakscannerID := base64.StdEncoding.EncodeToString(h)
 
-	// TODO: potentialy a query and other parameters could be passed in a call to the service, so the service can be used by multiple tools.
+	// TODO: potentially a query and other parameters could be passed in a call to the service, so the service can be used by multiple tools.
 	// 	This should increase a caching efficiency when implemented.
 	query := fmt.Sprintf("secretsleakscanner_id=%s in:body org:%s repo:%s is:issue is:open", secretsleakscannerID, githubOrg, githubRepo)
 
