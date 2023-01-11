@@ -62,8 +62,10 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.10.0 // indirect
 	github.com/spf13/viper v1.10.0
+	github.com/spf13/viper v1.10.0 // indirect
 	github.com/stretchr/testify v1.8.1
 	github.com/tidwall/gjson v1.14.4
+	github.com/zricethezav/gitleaks/v8 v8.15.2
 	github.com/zricethezav/gitleaks/v8 v8.15.1
 	github.com/zricethezav/gitleaks/v8 v8.15.1
 	go.uber.org/zap v1.23.0
