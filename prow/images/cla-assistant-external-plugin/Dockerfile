@@ -5,7 +5,7 @@
 # docker build -t cla-assistant .
 # NOT MEANT FOR AUTOBUILDS
 
-FROM alpine:3.17.0
+FROM alpine:3.17.1
 
 ARG commit
 ENV IMAGE_COMMIT=$commit
