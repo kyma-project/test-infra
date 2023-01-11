@@ -166,6 +166,59 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: pre-main-keda-manager-verify
+      annotations:
+        pipeline.clusterprovisioning: "k3d"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-keda-manager-verify"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/keda-manager
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221216-14ab5da8"
+            securityContext:
+              privileged: true
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
+            env:
+              - name: CLOUDSDK_COMPUTE_ZONE
+                value: "europe-west4-b"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/keda-manager:
