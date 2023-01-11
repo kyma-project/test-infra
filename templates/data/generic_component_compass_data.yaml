@@ -660,4 +660,3 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-
