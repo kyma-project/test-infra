@@ -15,9 +15,10 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/development/gcp/pkg/http"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
+	gcptypes "github.com/kyma-project/test-infra/development/gcp/pkg/types"
 	kgithubv1 "github.com/kyma-project/test-infra/development/github/pkg/client"
-	kgithub "github.com/kyma-project/test-infra/development/github/pkg/client/v2"
 	"github.com/kyma-project/test-infra/development/github/pkg/templates"
+	githubtypes "github.com/kyma-project/test-infra/development/github/pkg/types"
 	"github.com/kyma-project/test-infra/development/types"
 	"golang.org/x/net/context"
 )
@@ -27,7 +28,6 @@ var (
 	applicationName string
 	projectID       string
 	githubToken     []byte
-	// githubSecretPath string
 	githubOrg   string // "neighbors-team"
 	githubRepo  string // "leaks-test"
 	port        string
@@ -37,10 +37,10 @@ var (
 type message struct {
 	pubsub.ProwMessage
 	types.SecretsLeakScannerMessage
-	kgithub.SearchIssuesResult
-	types.GCPStorageMetadata
-	types.GCPProjectMetadata
-	types.GithubIssueMetadata
+	githubtypes.SearchIssuesResult
+	gcptypes.GCPBucketMetadata
+	gcptypes.GCPProjectMetadata
+	githubtypes.IssueMetadata
 }
 
 func main() {
@@ -75,7 +75,7 @@ func main() {
 	// Start HTTP server.
 	mainLogger.LogInfo("Listening on port %s", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		mainLogger.LogCritical("failed listen on port %d, error: %s", port, err)
+		mainLogger.LogCritical("failed listen on port %s, error: %s", port, err)
 	}
 }
 
@@ -103,13 +103,13 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 
 	requestDump, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		logger.LogError("failed dump http request, error:", err)
+		logger.LogError("failed dump http request, error: %s", err.Error())
 	}
 	logger.LogDebug("request:\n%v", string(requestDump))
 
 	event, err := cloudevents.NewEventFromHTTPRequest(r)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusBadRequest, logger, "failed to parse CloudEvent from request: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed to parse CloudEvent from request: %s", err.Error())
 		return
 	}
 
@@ -117,7 +117,7 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 
 	// Load event data
 	if err = event.DataAs(&msg); err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed marshal event, error: %s", err.Error())
 		return
 	}
 
@@ -147,7 +147,7 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 		Title:     github.String(issueTitle),
 		Body:      github.String(fmt.Sprintf(issueBody.String())),
 		Labels:    &issueLabels,
-		Assignee:  github.String(msg.GithubAssignee.SapToolsGithubUsername),
+		Assignee:  github.String(msg.GithubIssueAssignee.SapToolsGithubUsername),
 		State:     issueState,
 		Milestone: nil,
 		Assignees: nil,
@@ -155,23 +155,23 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	// Search issues
 	issue, response, err := sapGhClient.Issues.Create(ctx, githubOrg, githubRepo, &issueRequest)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, error: %s", err)
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, error: %s", err)
 		return
 	}
 	ok, err := kgithubv1.IsStatusOK(response)
 	if err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, failed read status code, error %s", err)
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, failed read status code, error %s", err)
 		return
 	}
 	if !ok {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, received non 2xx response code: status code %d", response.StatusCode)
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, received non 2xx response code: status code %d", response.StatusCode)
 		return
 	}
 	logger.LogInfo("created github issue: %s", issue.GetHTMLURL())
 	msg.GithubIssueNumber = issue.Number
 	msg.GithubIssueURL = issue.HTMLURL
-	msg.GithubOrg = github.String(githubOrg)
-	msg.GithubRepo = github.String(githubRepo)
+	msg.GithubIssueOrg = github.String(githubOrg)
+	msg.GithubIssueRepo = github.String(githubRepo)
 	// TODO: Add setting GithubAssigne in msg
 
 	// process issue
@@ -180,7 +180,7 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	responseEvent.SetID(applicationName + "/" + componentName + "/" + trace)
 	responseEvent.SetType("sap.tools.github.issue.created")
 	if err = responseEvent.SetData(cloudevents.ApplicationJSON, msg); err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err)
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed set event data, error: %s", err)
 		return
 	}
 	headers := w.Header()
@@ -188,7 +188,7 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	headers.Set("X-Cloud-Trace-Context", traceHeader)
 	w.WriteHeader(http.StatusOK)
 	if err = json.NewEncoder(w).Encode(responseEvent); err != nil {
-		crhttp.WriteHttpErrorResponse(w, http.StatusInternalServerError, logger, "failed write response body, error: %s", err.Error())
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed write response body, error: %s", err.Error())
 		return
 	}
 }
