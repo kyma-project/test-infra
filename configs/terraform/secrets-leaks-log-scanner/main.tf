@@ -42,7 +42,7 @@ resource "google_cloud_run_service" "scan-logs-for-secrets" {
   template {
     spec {
       containers {
-        image = "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev/kyma-neighbors-dev-test/scanlogsforsecrets:0.0.49"
+        image = "europe-docker.pkg.dev/kyma-project/dev/test-infra/scanlogsforsecrets:PR-6684"
         env {
           name  = "PROJECT_ID"
           value = var.google_project_id
@@ -89,7 +89,7 @@ resource "google_cloud_run_service" "move-gcs-bucket" {
   template {
     spec {
       containers {
-        image = "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev/kyma-neighbors-dev-test/movegcsbucket:0.0.10"
+        image = "europe-docker.pkg.dev/kyma-project/dev/test-infra/movegcsbucket:PR-6689"
         env {
           name  = "PROJECT_ID"
           value = var.google_project_id
@@ -136,7 +136,7 @@ resource "google_cloud_run_service" "search-github-issue" {
   template {
     spec {
       containers {
-        image = "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev/kyma-neighbors-dev-test/searchgithubissue:0.0.20"
+        image = "europe-docker.pkg.dev/kyma-project/dev/test-infra/searchgithubissue:PR-6698"
         env {
           name  = "PROJECT_ID"
           value = var.google_project_id
@@ -197,7 +197,7 @@ resource "google_cloud_run_service" "create-github-issue" {
   template {
     spec {
       containers {
-        image = "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev/kyma-neighbors-dev-test/creategithubissue:0.0.16"
+        image = "europe-docker.pkg.dev/kyma-project/dev/test-infra/creategithubissue:PR-6676"
         env {
           name  = "PROJECT_ID"
           value = var.google_project_id
@@ -258,7 +258,7 @@ resource "google_cloud_run_service" "send-slack-message" {
   template {
     spec {
       containers {
-        image = "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev/kyma-neighbors-dev-test/slackmessagesender:0.0.16"
+        image = "europe-docker.pkg.dev/kyma-project/dev/test-infra/slackmessagesender:PR-6685"
         env {
           name  = "PROJECT_ID"
           value = var.google_project_id
