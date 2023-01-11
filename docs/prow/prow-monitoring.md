@@ -94,7 +94,7 @@ Follow these steps to save the dashboard:
 2. Save the JSON file under `prow/cluster/components/monitoring/dashboards/` and create ConfigMap out of it.
    ```bash
    kubectl -n prow-monitoring create configmap "grafana-dashboard-new" --from-file="prow/cluster/components/monitoring/dashboards/quality/new.json   ```
-3. Update the `prow/cluster/components/monitoring/grafana_deployment.yaml` with newly created ConfigMap and update grafana deployment manually.
+3. Update the `prow/cluster/components/monitoring/grafana_deployment.yaml` with newly created ConfigMap and update Grafana deployment manually.
    
    ```bash
    kubectl apply -f prow/cluster/components/monitoring/grafana_deployment.yaml
