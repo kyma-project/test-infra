@@ -98,7 +98,7 @@ func moveGCPBucket(w http.ResponseWriter, r *http.Request) {
 
 	requestDump, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		logger.LogError("failed dump http request, error:", err)
+		logger.LogError("failed dump http request, error: %s", err)
 	}
 	logger.LogDebug("request:\n%v", string(requestDump))
 
@@ -135,7 +135,6 @@ func moveGCPBucket(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		if err != nil {
-			// TODO: Need better error messages for this scenario
 			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed getting next bucket object %s, error: %s", attrs.Name, err.Error())
 		}
 		logger.LogDebug("starting copying file: %s", attrs.Name)
