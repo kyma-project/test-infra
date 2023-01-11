@@ -91,16 +91,19 @@ Follow these steps to save the dashboard:
 
 1. Export the dashboard to a JSON format.
 
-2. Save the JSON file under `prow/cluster/resources/monitoring/dashboards/`.
-
-3. Update the Grafana configuration on the cluster.
+2. Save the JSON file under `prow/cluster/components/monitoring/dashboards/` and create configmap out of it.
+   ```bash
+   kubectl -n prow-monitoring create configmap "grafana-dashboard-new" --from-file="prow/cluster/components/monitoring/dashboards/quality/new.json   ```
+3. Update the `prow/cluster/components/monitoring/grafana_deployment.yaml` with the newly created configmap and update the deployment manually.
    
    ```bash
-   helm upgrade {releaseName} resources/monitoring --recreate-pods
+   kubectl apply -f prow/cluster/components/monitoring/grafana_deployment.yaml
    ```
+4. Do the rolling restart of grafana deployment.
 
-   > **NOTE:** `--recreate-pods` is required because the Secret with the Grafana password is regenerated during the upgrade and it needs to be populated to Grafana.
-
+   ```bash
+   kubectl -n prow-monitoring rollout restart deployment grafana
+   ```
 ## Add recording and alerting rules
 
 1. Add new recording or alerting rules to the [Prometheus Rule specification](../../prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml).
