@@ -88,7 +88,7 @@ func main() {
 	// Start HTTP server.
 	mainLogger.LogInfo("Listening on port %s", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		mainLogger.LogCritical("failed listen on port %d, error: %s", port, err)
+		mainLogger.LogCritical("failed listen on port %s, error: %s", port, err)
 	}
 }
 
@@ -118,7 +118,7 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 
 	requestDump, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		logger.LogError("failed dump http request, error:", err)
+		logger.LogError("failed dump http request, error: %s", err)
 	}
 	logger.LogDebug("request:\n%v", string(requestDump))
 
