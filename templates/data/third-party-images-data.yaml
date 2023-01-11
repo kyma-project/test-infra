@@ -143,34 +143,6 @@ templates:
                     - "kaniko_buildpack"
 
               - jobConfig:
-                  name: "pre-main-tpi-kiali"
-                  run_if_changed: "^kiali/"
-                  args:
-                    - "--name=tpi/kiali"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=kiali"
-                    - "--dockerfile=Dockerfile"
-                    - "--env-file=envs"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - "kaniko_buildpack"
-              - jobConfig:
-                  name: "post-main-tpi-kiali"
-                  run_if_changed: "^kiali/"
-                  args:
-                    - "--name=tpi/kiali"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=kiali"
-                    - "--dockerfile=Dockerfile"
-                    - "--env-file=envs"
-                    - '--tag={{`{{ .Env \"KIALI_VERSION\" }}-{{ .ShortSHA }}`}}'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_postsubmit"
-                    - "kaniko_buildpack"
-
-              - jobConfig:
                   name: "pre-main-tpi-loki"
                   run_if_changed: "^loki/"
                   args:
@@ -393,4 +365,4 @@ templates:
                   global:
                     - "jobConfig_postsubmit"
                     - "kaniko_buildpack"
-                    
+

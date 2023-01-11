@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.10"
+  nextRelease: "2.11"
   releases:
+    - "2.10"
     - "2.9"
     - "2.8"
-    - "2.7"
   orgs:
     - name: "kyma-project"
       repos:
@@ -170,7 +170,7 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221230-ebc10cef"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230111-52dedfad"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221216-14ab5da8"
   image_buildpack-node:
@@ -186,7 +186,7 @@ globalSets:
   image_gardener-rotate:
     image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221215-c20ffd65"
   image_markdown_index:
-    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20221208-d468bc30"
+    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230111-9cdee3fc"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"

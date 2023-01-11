@@ -21,9 +21,6 @@ istio:
   meshConfig:
     defaultConfig:
       holdApplicationUntilProxyStarts: true
-kiali:
-  authProxy:
-    enabled: false
 tracing:
   authProxy:
     enabled: false
