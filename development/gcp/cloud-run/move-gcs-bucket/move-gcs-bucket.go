@@ -70,7 +70,7 @@ func main() {
 	// Start HTTP server.
 	mainLogger.LogInfo("Listening on port %s", port)
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		mainLogger.LogCritical("failed listen on port %d, error: %s", port, err.Error())
+		mainLogger.LogCritical("failed listen on port %s, error: %s", port, err.Error())
 	}
 }
 
