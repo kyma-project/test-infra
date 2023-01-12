@@ -275,35 +275,13 @@ gardener::wake_up_kyma() {
 gardener::test_fast_integration_kyma() {
     log::info "Running Kyma Fast Integration tests"
 
-        pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
 
-        for arg in "$@"
-          do
-            case "$arg" in
-                -v)
-                  if [ ! -z "$2" ]; then
-                    kymaVersion="$2"
-                    log::info "given Kyma Version ${kymaVersion}"
-                    git reset --hard
-                    if [[ ${kymaVersion} == "main" ]]
-                    then
-                      git checkout "${kymaVersion}"
-                    else
-                      git checkout tags/"${kymaVersion}"
-                    fi
-                  fi
-                  shift 2
-                  ;;
-                *)
-                  shift
-                  ;;
-            esac
-          done
+    utils::kyma_git_checkout "$@"
+    make ci
+    popd
 
-        make ci
-        popd
-
-        log::success "Tests completed"
+    log::success "Tests completed"
 }
 
 gardener::pre_upgrade_test_fast_integration_kyma() {

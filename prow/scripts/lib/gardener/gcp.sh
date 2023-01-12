@@ -129,30 +129,24 @@ gardener::test_fast_integration_kyma() {
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
 
-    for arg in "$@"
-      do
-        case "$arg" in
-            -v)
-              if [ ! -z "$2" ]; then
-                kymaVersion="$2"
-                log::info "given Kyma Version ${kymaVersion}"
-                git reset --hard
-                if [[ ${kymaVersion} == "main" ]]
-                then
-                  git checkout "${kymaVersion}"
-                else
-                  git checkout tags/"${kymaVersion}"
-                fi
-              fi
-              shift 2
-              ;;
-            *)
-              shift
-              ;;
-        esac
-      done
+    utils::kyma_git_checkout "$@"
 
     make ci
+    popd
+
+    log::success "Tests completed"
+}
+
+gardener::pre_upgrade_test_fast_integration_kyma_with_git_checkout() {
+    log::info "Running pre-upgrade Kyma Fast Integration tests - GCP"
+
+    kymaDirectory="$(utils::get_kyma_fast_integration_dir "$@")"
+    log::info "Switching directory to '$kymaDirectory'"
+    pushd "$kymaDirectory"
+
+    utils::kyma_git_checkout "$@"
+
+    make ci-pre-upgrade
     popd
 
     log::success "Tests completed"

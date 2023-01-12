@@ -891,3 +891,28 @@ function utils::get_kyma_fast_integration_dir {
 
   echo -n "$kymaDirectory"
 }
+
+# utils::kyma_git_checkout checks out specified Tag or main branch
+function utils::kyma_git_checkout {
+  for arg in "$@"
+  do
+    case "$arg" in
+        -v)
+          if [ ! -z "$2" ]; then
+            kymaVersion="$2"
+            git reset --hard
+            if [[ ${kymaVersion} == "main" ]]
+            then
+              git checkout "${kymaVersion}"
+            else
+              git checkout tags/"${kymaVersion}"
+            fi
+          fi
+          shift 2
+          ;;
+        *)
+          shift
+          ;;
+    esac
+  done
+}
