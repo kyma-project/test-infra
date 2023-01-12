@@ -51,7 +51,7 @@ templates:
               - jobConfig:
                   name: "post-busola-lighthouse"
                   optional: true
-                  run_if_changed: "^resources/|^lighthouse/|^nginx/"
+                  run_if_changed: "^resources/|^tests/|^lighthouse/|^nginx/"
                   labels:
                     preset-build-main: "false"
                     preset-gardener-azure-kyma-integration: "true"
