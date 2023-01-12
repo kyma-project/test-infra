@@ -1,7 +1,7 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      control-plane:
+      test-infra:
         - pjName: "pre-main-control-plane-reconciler-e2e-latest-release"
 prConfigs:
   kyma-project:
