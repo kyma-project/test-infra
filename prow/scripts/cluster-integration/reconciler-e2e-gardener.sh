@@ -129,7 +129,7 @@ reconciler::wait_until_kyma_reconciled
 
 ### Once Kyma is installed run the fast integration test
 log::banner "Executing test"
-gardener::test_fast_integration_kyma
+gardener::test_fast_integration_kyma -v "${KYMA_UPGRADE_SOURCE}"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
