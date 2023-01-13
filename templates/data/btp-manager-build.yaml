@@ -18,7 +18,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: pull-btp-manager-module-build
+                  name: post-btp-manager-module-build
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
