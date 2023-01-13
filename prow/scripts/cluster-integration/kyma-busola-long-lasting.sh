@@ -242,7 +242,7 @@ if [[ $BUSOLA_PROVISION_TYPE == "KYMA" ]]; then
     if [[ $EXECUTE_FAST_INTEGRATION_TESTS == "true" ]]; then
         kubectl get pods --all-namespaces
         log::info "Starting fast integration tests"
-        gardener::test_fast_integration_kyma
+        gardener::test_fast_integration_kyma "$@"
     fi
 elif [[ $BUSOLA_PROVISION_TYPE == "BUSOLA" ]]; then
     log::info "Busola cluster name: ${BUSOLA_COMMON_NAME}"

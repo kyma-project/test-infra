@@ -134,7 +134,7 @@ fi
 
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
-    gardener::test_fast_integration_kyma
+    gardener::test_fast_integration_kyma "$@"
 # this will be extended with the next components
 elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
     api-gateway::configure_ory_hydra

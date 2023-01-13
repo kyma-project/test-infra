@@ -94,6 +94,6 @@ reconciler::trigger_kyma_reconcile
 
 reconciler::wait_until_kyma_reconciled
 
-gardener::test_fast_integration_kyma
+gardener::test_fast_integration_kyma "$@"
 
 reconciler::break_kyma
