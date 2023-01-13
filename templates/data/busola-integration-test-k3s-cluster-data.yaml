@@ -31,7 +31,7 @@ templates:
               - jobConfig:
                   name: "pre-busola-integration-test-k3s-cluster"
                   optional: false
-                  run_if_changed: "^resources/|^tests/^nginx/"
+                  run_if_changed: "^resources/|^tests/|^nginx/"
                   env:
                     SCOPE: cluster
                   labels:
