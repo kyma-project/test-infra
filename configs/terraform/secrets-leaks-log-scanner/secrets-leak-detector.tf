@@ -10,26 +10,20 @@ data "google_storage_bucket" "kyma_prow_logs" {
   location = "EU"
 }
 
+# Create a service account for Eventarc trigger and Workflows
 resource "google_service_account" "secrets_leak_detector" {
   account_id   = "secrets-leak-detector-wf"
   description = ""
 }
 
-# Create a service account for Eventarc trigger and Workflows
-resource "google_service_account" "eventarc_workflows_service_account" {
-  provider     = google-beta
-  account_id   = "eventarc-workflows-sa"
-  display_name = "Eventarc Workflows Service Account"
-}
-
 # Grant the logWriter role to the service account
-resource "google_project_iam_binding" "project_binding_eventarc" {
+resource "google_project_iam_binding" "project_binding_log_writer" {
   project  = data.google_project.project.id
   role     = "roles/logging.logWriter"
 
   members = ["serviceAccount:${google_service_account.secrets_leak_detector.email}"]
 
-  depends_on = [google_service_account.eventarc_workflows_service_account]
+  depends_on = [google_service_account.secrets_leak_detector]
 }
 
 # Grant the workflows.invoker role to the service account
@@ -73,6 +67,17 @@ resource "google_eventarc_trigger" "trigger_secrets_leak_detector_workflow" {
   service_account = google_service_account.secrets_leak_detector.id
 
   labels = {
-    foo = "bar"
+    application = "secrets_leak_detector"
+  }
+
+  matching_criteria {
+    attribute = "type"
+    value = "google.cloud.pubsub.topic.v1.messagePublished"
+  }
+
+  transport {
+    pubsub {
+      topic = "projects/${var.google_project_id}/topics/${var.prow_pubsub_topic_name}"
+    }
   }
 }

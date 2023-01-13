@@ -16,6 +16,11 @@ variable "google_project_id" {
   default = "sap-kyma-prow"
 }
 
+variable "prow_pubsub_topic_name" {
+  type    = string
+  default = "prowjobs"
+}
+
 provider "google" {
   project = var.google_project_id
   region  = "europe-west3"
