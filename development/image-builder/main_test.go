@@ -2,11 +2,12 @@ package main
 
 import (
 	"flag"
-	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"os"
 	"reflect"
 	"testing"
 	"testing/fstest"
+
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
 )
 
 func Test_gatherDestinations(t *testing.T) {
@@ -335,5 +336,43 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 				t.Errorf("wrong number of requested signers %v != %v", len(got), c.expectSigners)
 			}
 		})
+	}
+}
+
+func Test_addTagsToEnv(t *testing.T) {
+	tc := []struct {
+		name         string
+		envs         map[string]string
+		tags         []string
+		expectedEnvs map[string]string
+	}{
+		{
+			name:         "multiple envs and tags",
+			envs:         map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2"},
+			tags:         []string{"latest", "dca515151", "test-tag"},
+			expectedEnvs: map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2", "DOCKER_TAG_0": "latest", "DOCKER_TAG_1": "dca515151", "DOCKER_TAG_2": "test-tag"},
+		},
+		{
+			name:         "no tags",
+			envs:         map[string]string{"KEY": "VAL"},
+			tags:         []string{},
+			expectedEnvs: map[string]string{"KEY": "VAL"},
+		},
+		{
+			name:         "no envs",
+			envs:         map[string]string{},
+			tags:         []string{"latest"},
+			expectedEnvs: map[string]string{"DOCKER_TAG_0": "latest"},
+		},
+	}
+
+	for _, c := range tc {
+		actualEnv := addTagsToEnv(c.tags, c.envs)
+
+		for k, v := range c.expectedEnvs {
+			if actualEnv[k] != v {
+				t.Errorf("%v != %v", actualEnv[k], v)
+			}
+		}
 	}
 }

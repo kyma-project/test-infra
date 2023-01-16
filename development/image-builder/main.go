@@ -4,12 +4,8 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/image-builder/sign"
-	"github.com/kyma-project/test-infra/development/pkg/sets"
-	"github.com/kyma-project/test-infra/development/pkg/tags"
 	"io"
 	"io/fs"
-	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"os"
 	"os/exec"
 	"path"
@@ -17,6 +13,11 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
+	"github.com/kyma-project/test-infra/development/pkg/sets"
+	"github.com/kyma-project/test-infra/development/pkg/tags"
+	errutil "k8s.io/apimachinery/pkg/util/errors"
 )
 
 type options struct {
@@ -198,11 +199,14 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 	if err != nil {
 		return err
 	}
+	// Provide parsedTags as buildArgs for developers (see: https://github.com/kyma-project/test-infra/issues/6252)
+	buildArgs := addTagsToEnv(parsedTags, envs)
+
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
 		destinations := gatherDestinations(repo, o.name, parsedTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		err = runFunc(o, "build", destinations, o.platforms, envs)
+		err = runFunc(o, "build", destinations, o.platforms, buildArgs)
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
 		}
@@ -385,6 +389,17 @@ func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
 		vars[key] = val
 	}
 	return vars, nil
+}
+
+// Add parsed tags to environments which will be passed to dockerfile
+func addTagsToEnv(tags []string, env map[string]string) map[string]string {
+	for i, t := range tags {
+		// (@KacperMalachowski): ENV VAR key shouldn't be hardcoded, we have to find way to parametrize it in the future
+		key := fmt.Sprintf("DOCKER_TAG_%d", i)
+		env[key] = t
+	}
+
+	return env
 }
 
 func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
