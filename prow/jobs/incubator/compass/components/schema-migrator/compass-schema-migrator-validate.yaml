@@ -37,10 +37,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "bash"
-            args:
-              - "-c"
-              - "cd components/schema-migrator/ && make validate"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-compass-shema-migrator.sh"
             resources:
               requests:
                 memory: 100Mi
