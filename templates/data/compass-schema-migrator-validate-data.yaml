@@ -34,5 +34,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
