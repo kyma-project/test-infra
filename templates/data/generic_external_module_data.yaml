@@ -167,7 +167,7 @@ templates:
                   always_run: "true"
                   optional: "true"
                   env:
-                    MAKE_TARGET: 
+                    MAKE_TARGET: "make -C hack/local run"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
