@@ -38,7 +38,7 @@ templates:
             command: "bash"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-              REPO_NAME: "keda-manager"
+              JOB_REPO_NAME: "keda-manager"
             args:
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
@@ -167,7 +167,7 @@ templates:
                   always_run: "true"
                   optional: "true"
                   env:
-                    MAKE_TARGET: "make -C hack/local run"
+                    JOB_MAKE_TARGET: "make -C hack/local run"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

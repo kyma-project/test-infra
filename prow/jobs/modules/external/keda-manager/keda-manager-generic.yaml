@@ -208,9 +208,9 @@ presubmits: # runs on PRs
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: MAKE_TARGET
+              - name: JOB_MAKE_TARGET
                 value: "make -C hack/local run"
-              - name: REPO_NAME
+              - name: JOB_REPO_NAME
                 value: "keda-manager"
             resources:
               requests:
