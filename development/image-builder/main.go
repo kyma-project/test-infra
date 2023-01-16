@@ -392,14 +392,20 @@ func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
 }
 
 // Add parsed tags to environments which will be passed to dockerfile
-func addTagsToEnv(tags []string, env map[string]string) map[string]string {
+func addTagsToEnv(tags []string, envs map[string]string) map[string]string {
+	m := make(map[string]string)
+
 	for i, t := range tags {
 		// (@KacperMalachowski): ENV VAR key shouldn't be hardcoded, we have to find way to parametrize it in the future
 		key := fmt.Sprintf("DOCKER_TAG_%d", i)
-		env[key] = t
+		m[key] = t
 	}
 
-	return env
+	for k, v := range envs {
+		m[k] = v
+	}
+
+	return m
 }
 
 func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
