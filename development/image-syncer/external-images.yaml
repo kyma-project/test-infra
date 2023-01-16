@@ -13,7 +13,7 @@ images:
 - source: "goreleaser/goreleaser:v1.11.5"
 # Golang image is pinned because it is force updated in the upstream
 - source: "golang@sha256:3183b343d01a6e8c9bee7b7c4eb7208518e68dc0cdac8623e1575820342472ed"
-  tag: "1.19.5-alpine3.17"
+  tag: "1.19.5-alpine3.17-v1"
 - source: "grafana/loki:2.2.1"
 - source: "grafana/grafana-image-renderer:3.2.1"
   amd64Only: true
