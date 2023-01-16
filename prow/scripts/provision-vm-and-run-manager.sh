@@ -1,7 +1,10 @@
 #!/bin/bash
 
-# This script is designed to provision a new vm and start serverless chart. It takes an optional positional parameter using --image flag
-# Use this flag to specify the custom image for provisining vms. If no flag is provided, the latest custom image is used.
+# This script is designed to provision a new vm and run specific target from the Makefile on the repository root path.
+#
+# INPUT:
+# - REPO_NAME: name of the repository in the kyma-project org
+# - MAKE_TARGET: desired make target to run on the vm
 
 set -o errexit
 
@@ -25,7 +28,7 @@ fi
 
 cleanup() {
     ARG=$?
-    log::info "Removing instance keda-manager-test-${RANDOM_ID}"
+    log::info "Removing instance ${REPO_NAME}-test-${RANDOM_ID}"
     gcloud compute instances delete --zone="${ZONE}" "keda-manager-test-${RANDOM_ID}" || true ### Workaround: not failing the job regardless of the vm deletion result
     date
     exit $ARG

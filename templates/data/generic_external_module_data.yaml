@@ -38,6 +38,7 @@ templates:
             command: "bash"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+              REPO_NAME: "keda-manager"
             args:
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
@@ -165,6 +166,8 @@ templates:
                   name: "pre-main-keda-manager-verify"
                   always_run: "true"
                   optional: "true"
+                  env:
+                    MAKE_TARGET: 
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -175,7 +178,7 @@ templates:
                     - "keda-manager"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-      - to: ../../prow/jobs/kyma/kyma-gke-external-registry.yaml
+      - to: ../../prow/jobs/modules/external/serverless-manager/serverless-manager-generic.yaml
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-project/serverless-manager
