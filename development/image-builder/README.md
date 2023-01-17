@@ -130,5 +130,6 @@ Usage of image-builder:
         Additional tag that the image will be tagged
   -variant string
         If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored
-
+  -export-tags
+        Export parsed tags as build-args into dockerfile. Each tag will have number added to it in format `DOCKER_TAG_x` where x is index of tags array.
 ```

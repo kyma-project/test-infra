@@ -34,6 +34,7 @@ type options struct {
 	isCI       bool
 	tags       sets.Strings
 	platforms  sets.Strings
+	exportTags bool
 }
 
 const (
@@ -199,8 +200,14 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 	if err != nil {
 		return err
 	}
-	// Provide parsedTags as buildArgs for developers (see: https://github.com/kyma-project/test-infra/issues/6252)
-	buildArgs := addTagsToEnv(parsedTags, envs)
+
+	// Provide parsedTags as buildArgs for developers
+	var buildArgs map[string]string
+	if o.exportTags {
+		buildArgs = addTagsToEnv(parsedTags, envs)
+	} else {
+		buildArgs = envs
+	}
 
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
@@ -420,6 +427,7 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
 	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged")
 	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
+	fs.BoolVar(&o.exportTags, "export-tags", false, "")
 	return fs
 }
 
