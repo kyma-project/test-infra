@@ -1,0 +1,5 @@
+slack_bolt==1.16.1
+slack_sdk==3.19.5
+flask==2.2.2
+cloudevents==1.8.0
+gunicorn==20.1.0
