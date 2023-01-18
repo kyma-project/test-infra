@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/modules/external/keda-manager/keda-manager-generic.yaml
+      - to: ../../prow/jobs/modules/external/keda-manager/keda-manager.yaml
         localSets:
           jobConfig_default:
             imagePullPolicy: "Always"
@@ -38,6 +38,7 @@ templates:
             command: "bash"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+              JOB_REPO_NAME: "keda-manager"
             args:
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
@@ -165,6 +166,22 @@ templates:
                   name: "pre-main-keda-manager-verify"
                   always_run: "true"
                   optional: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"    # TODO: Prepare a Keda-Manager Image
+                    - "extra_refs_test-infra"
+                  local:
+                    - "keda-manager"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+              - jobConfig:
+                  name: "pre-main-keda-manager-integration"
+                  always_run: "true"
+                  optional: "true"
+                  env:
+                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make -C hack/ci run-integration-test"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
