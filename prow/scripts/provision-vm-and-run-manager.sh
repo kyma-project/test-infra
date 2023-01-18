@@ -3,7 +3,7 @@
 # This script is designed to provision a new vm and run specific target from the Makefile on the repository root path.
 #
 # INPUT:
-# - JOB_JOB_REPO_NAME: name of the repository in the kyma-project org
+# - JOB_REPO_NAME: name of the repository in the kyma-project org
 # - JOB_MAKE_TARGET: desired make target to run on the vm
 
 set -o errexit
