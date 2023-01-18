@@ -4,7 +4,7 @@
 #
 # INPUT:
 # - JOB_REPO_NAME: name of the repository in the kyma-project org
-# - JOB_MAKE_TARGET: desired make target to run on the vm
+# - JOB_VM_COMMAND: desired command that should be run on vm
 
 set -o errexit
 
@@ -130,7 +130,7 @@ log::info "Copying Reconciler to the instance"
 utils::compress_send_to_vm "${ZONE}" "${JOB_REPO_NAME}-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/${JOB_REPO_NAME}" "~/${JOB_REPO_NAME}"
 
 log::info "Triggering the installation"
-# TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "${JOB_REPO_NAME}-test-${RANDOM_ID}" -c "sudo bash -c \"export PATH=\$PATH:\$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && cd \$HOME/${JOB_REPO_NAME} && ${JOB_MAKE_TARGET}\""
 
+# shellcheck disable=SC2016
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "${JOB_REPO_NAME}-test-${RANDOM_ID}" -c 'sudo bash -c "cd $HOME/${JOB_REPO_NAME} && ${JOB_VM_COMMAND}"'
 log::success "all done"

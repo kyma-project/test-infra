@@ -167,7 +167,8 @@ templates:
                   always_run: "true"
                   optional: "true"
                   env:
-                    JOB_MAKE_TARGET: "make -C hack/local run"
+                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
+                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make -C hack/local run"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -185,9 +186,10 @@ templates:
             command: "bash"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+              JOB_REPO_NAME: "serverless-manager"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-serverless-manager.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
             request_memory: 200Mi
             request_cpu: 80m
           vm_job_labels_template:
@@ -208,6 +210,8 @@ templates:
                   name: "pre-main-serverless-manager-verify"
                   always_run: "true"
                   optional: "true"
+                  env:
+                    JOB_VM_COMMAND: "source /etc/profile && make test"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
