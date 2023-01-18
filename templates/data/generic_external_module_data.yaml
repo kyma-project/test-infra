@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/modules/external/keda-manager/keda-manager-generic.yaml
+      - to: ../../prow/jobs/modules/external/keda-manager.yaml
         localSets:
           jobConfig_default:
             imagePullPolicy: "Always"
@@ -179,7 +179,7 @@ templates:
                     - "keda-manager"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-      - to: ../../prow/jobs/modules/external/serverless-manager/serverless-manager-generic.yaml
+      - to: ../../prow/jobs/modules/internal/serverless-manager.yaml
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-project/serverless-manager

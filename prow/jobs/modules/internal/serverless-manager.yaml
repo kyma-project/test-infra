@@ -41,10 +41,14 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-serverless-manager.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
+              - name: JOB_REPO_NAME
+                value: "serverless-manager"
+              - name: JOB_VM_COMMAND
+                value: "source /etc/profile && make test"
             resources:
               requests:
                 memory: 200Mi
