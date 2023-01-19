@@ -162,7 +162,7 @@ templates:
                     - default
                   global:
                     - jobConfig_postsubmit
-              - jobConfig:
+              - jobConfig: # TODO: add post run
                   name: "pre-main-keda-manager-verify"
                   always_run: "true"
                   optional: "true"
@@ -186,6 +186,7 @@ templates:
             command: "bash"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+              # TODO: split this env and args into new config "serverless-manager"
               JOB_REPO_NAME: "serverless-manager"
             args:
               - "-c"
