@@ -6,7 +6,7 @@ RUN apk add --no-cache curl && \
   | tar xz docker-credential-gcr \
   && chmod +x docker-credential-gcr && mv docker-credential-gcr /usr/bin/
 
-FROM moby/buildkit:v0.10.4-rootless
+FROM moby/buildkit:v0.11.1-rootless
 
 COPY --from=creds /usr/bin/docker-credential-gcr /usr/bin/
 RUN docker-credential-gcr configure-docker --registries=eu.gcr.io,europe-docker.pkg.dev

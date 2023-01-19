@@ -7,7 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-btp-manager-build
-                  run_if_changed: "^api/*/.*$|^config/*/.*$|^controllers/*/.*$|^hack/*/.*$|^internal/*/.*$|^module-chart/*/.*$|^pkg/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$"
+                  run_if_changed: "^api/*/.*$|^config/*/.*$|^controllers/*/.*$|^hack/*.*$|^internal/*/.*$|^module-chart/*/.*$|^pkg/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^(.*.go|Makefile|.*.sh)|^PROJECT$"
                   args:
                     - "--name=btp-manager"
                     - "--context=."
@@ -17,3 +17,22 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+              - jobConfig:
+                  name: post-btp-manager-module-build
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                  run_if_changed: "^api/*/.*$|^config/*/.*$|^controllers/*/.*$|^hack/*.*$|^internal/*/.*$|^module-chart/*/.*$|^pkg/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^(.*.go|Makefile|.*.sh)|^PROJECT$"
+                  privileged: false
+                  command: "./hack/release.sh"
+                  args:
+                    - "ci"
+                  branches:
+                    - ^\d+\.\d+\.\d+(?:-.*)?$
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
