@@ -11,7 +11,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
-ARG K8S_VERSION=1.24
+ARG K8S_VERSION=1.25
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
