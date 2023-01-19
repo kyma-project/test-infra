@@ -155,11 +155,6 @@ utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "busola-smoke-test-${RANDOM_ID}" ".env" "~/.env"
 
-log::info "Copying Kyma-Local to the instance"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "busola-smoke-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "~/local-kyma"
-
-
 log::info "Launching the busola-smoke-test-k3s.sh script"
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "busola-smoke-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/busola-smoke-test-docker.sh"
 log::success "all done"
