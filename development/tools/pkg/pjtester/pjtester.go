@@ -22,7 +22,6 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/go-yaml/yaml"
-	ghclient "github.com/kyma-project/test-infra/development/github/pkg/client/v2"
 	"github.com/kyma-project/test-infra/development/github/pkg/git"
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	"github.com/sirupsen/logrus"
@@ -100,7 +99,7 @@ type options struct {
 	pjtesterPrOrg     string // pjtesterPrOrg is a name of organisation of pull request for pjtester prowjob.
 	pjtesterPrRepo    string // pjtesterPrRepo is a name of organisation of pull request for pjtester prowjob.
 
-	github              ghclient.GithubClientConfig
+	github              github.Client
 	githubClient        GithubClient
 	gitOptions          git.ClientConfig
 	gitClient           git.Client
@@ -171,13 +170,14 @@ func readTestCfg(testCfgFile string) (testCfg, error) {
 
 // newCommonOptions builds common options and GitHub client for all tests.
 // Options are build from PR env variables.
-func newCommonOptions(ghOptions prowflagutil.GitHubOptions) (options, error) {
+func newCommonOptions(ghOptions *prowflagutil.GitHubOptions) (options, error) {
 	var o options
 	var err error
-	o.github = ghclient.GithubClientConfig{
-		GitHubOptions: ghOptions,
-		DryRun:        false,
+	ghc, err := ghOptions.GitHubClient(false)
+	if err != nil {
+		return options{}, err
 	}
+	o.github = ghc
 	o.clonePath = defaultClonePath
 	o.pjtesterPrBaseRef = os.Getenv("PULL_BASE_REF")
 	o.pjtesterPrBaseSha = os.Getenv("PULL_BASE_SHA")
@@ -560,7 +560,7 @@ func (pjopts *testProwJobOptions) newTestPJ(pjCfg pjConfig, opt options) (prowap
 }
 
 // SchedulePJ will generate ProwJob for testing and create it on prow k8s cluster for execution.
-func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
+func SchedulePJ(ghOptions *prowflagutil.GitHubOptions) {
 	logrus.SetLevel(logrus.DebugLevel)
 	logrus.SetOutput(os.Stdout)
 	log.SetOutput(os.Stdout)
@@ -590,11 +590,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	prowClient := prowClientSet.ProwV1()
 
 	// build GitHub client
-	ghc, err := o.github.NewGithubClient()
-	if err != nil {
-		log.WithError(err).Fatal("Failed create GitHub client")
-	}
-	o.githubClient = ghc
+	o.githubClient = o.github
 
 	// build git client
 	o.gitOptions = git.ClientConfig{}
