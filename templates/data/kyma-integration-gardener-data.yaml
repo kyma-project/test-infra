@@ -98,6 +98,7 @@ templates:
                   run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-bot-github-token: "true"
+                    preset-cluster-version-old: "true"
                   env:
                     EXECUTION_PROFILE: "production"
                     MACHINE_TYPE: "n1-standard-8"

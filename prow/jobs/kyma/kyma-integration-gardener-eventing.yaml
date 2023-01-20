@@ -17,6 +17,7 @@ presubmits: # runs on PRs
         preset-bot-github-token: "true"
         preset-build-pr: "true"
         preset-cluster-version: "true"
+        preset-cluster-version-old: "true"
         preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
