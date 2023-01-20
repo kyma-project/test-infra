@@ -1,0 +1,14 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      kyma-dashboard:
+        prNumber: 83
+  prowJobs:
+    kyma-project:
+      busola:
+        - pjName: "pre-kyma-dashboard-test"
+        - pjName: "pre-kyma-dashboard-dev"
+prConfigs:
+  kyma-project:
+    kyma-dashboard:
+      prNumber: 83
