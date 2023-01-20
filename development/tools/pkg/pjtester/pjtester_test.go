@@ -212,7 +212,7 @@ var _ = Describe("Pjtester", func() {
 
 			ghOptions = prowflagutil.GitHubOptions{}
 			// TODO: test this function in separate context, opts must be defined at the beginning.
-			opts, err = newCommonOptions(ghOptions)
+			opts, err = newCommonOptions(&ghOptions)
 			Expect(err).To(Succeed())
 
 			testConfig, err = readTestCfg(testCfgFile)
