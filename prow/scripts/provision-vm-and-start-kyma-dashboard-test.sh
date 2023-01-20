@@ -155,11 +155,6 @@ utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "kyma-dashboard-test-${RANDOM_ID}" ".env" "~/.env"
 
-log::info "Copying Kyma-Local to the instance"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "kyma-dashboard-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "~/local-kyma"
-
-
 log::info "Launching the kyma-dashboard-test.sh script"
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-dashboard-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-dashboard-test.sh"
 log::success "all done"
