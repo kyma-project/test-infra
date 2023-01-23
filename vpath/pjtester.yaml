@@ -2,8 +2,8 @@ pjConfigs:
   prowJobs:
     kyma-project:
       serverless-manager:
-      - pjName: "pre-main-serverless-manager-verify "
+      - pjName: "pre-main-serverless-manager-verify"
 prConfigs: #
   kyma-project:
     serverless-manager:
-      prNumber: 47
+      prNumber: 48
