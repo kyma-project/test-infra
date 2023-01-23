@@ -54,6 +54,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-btp-manager-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-kyma-btp-manager-bot-github-token: "true"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^api/*/.*$|^config/*/.*$|^controllers/*/.*$|^hack/*.*$|^internal/*/.*$|^module-chart/*/.*$|^pkg/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^(.*.go|Makefile|.*.sh)|^PROJECT$'
       skip_report: false
@@ -70,6 +71,8 @@ postsubmits: # runs on main
             args:
               - "ci"
             env:
+              - name: IMG_REGISTRY
+                value: "europe-docker.pkg.dev/kyma-project/prod"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
