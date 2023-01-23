@@ -140,19 +140,19 @@ function utils::generate_letsencrypt_cert() {
 function utils::receive_from_vm() {
   if [ -z "$1" ]; then
     echo "Zone is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$2" ]; then
     echo "Remote name is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$3" ]; then
     echo "Remote path is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$4" ]; then
     echo "Local path is empty. Exiting..."
-    exit 1
+    return 1
   fi
   local ZONE=$1
   local REMOTE_NAME=$2
@@ -162,7 +162,7 @@ function utils::receive_from_vm() {
   for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
     gcloud compute scp --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SCP_LOG_LEVEL:-error}" --strict-host-key-checking=no --quiet --recurse --zone="${ZONE}" "${REMOTE_NAME}":"${REMOTE_PATH}" "${LOCAL_PATH}" && break;
-    [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
+    [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && return 1
   done;
 }
 
@@ -178,19 +178,19 @@ function utils::send_to_vm() {
   log::info "Checking compute zone, remote name, local path and remote path arguments"
   if [ -z "$1" ]; then
     echo "Zone is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$2" ]; then
     echo "Remote name is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$3" ]; then
     echo "Local path is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$4" ]; then
     echo "Remote path is empty. Exiting..."
-    exit 1
+    return 1
   fi
   local ZONE=$1
   local REMOTE_NAME=$2
@@ -200,7 +200,7 @@ function utils::send_to_vm() {
   for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
     gcloud compute scp --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SCP_LOG_LEVEL:-error}" --strict-host-key-checking=no --quiet --recurse --zone="${ZONE}" "${LOCAL_PATH}" "${REMOTE_NAME}":"${REMOTE_PATH}" && break;
-    [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
+    [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && return 1
   done;
 }
 
