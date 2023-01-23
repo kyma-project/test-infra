@@ -1,9 +1,9 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      keda-manager:
-      - pjName: "pre-main-keda-manager-verify"
+      serverless-manager:
+      - pjName: "pre-main-serverless-manager-verify "
 prConfigs: #
   kyma-project:
-    keda-manager:
-      prNumber: 85
+    serverless-manager:
+      prNumber: 47
