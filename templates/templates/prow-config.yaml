@@ -830,6 +830,15 @@ presets:
         value: "kyma.bot@sap.com"
       - name: BOT_GITHUB_USER
         value: "Kyma Bot"
+  # BTP-Manager Bot
+  - labels:
+      preset-kyma-btp-manager-bot-github-token: "true"
+    env:
+      - name: BOT_GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-btp-manager-bot-github-token
+            key: token
   # Kyma Guard Bot
   - labels:
       preset-kyma-guard-bot-github-token: "true"
