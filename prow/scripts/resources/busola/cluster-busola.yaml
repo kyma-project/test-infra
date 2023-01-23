@@ -6,7 +6,6 @@ spec:
   purpose: development
   cloudProfileName: gcp
   kubernetes:
-    allowPrivilegedContainers: false
     kubeAPIServer:
       enableBasicAuthentication: false
     version: 1.25.5
