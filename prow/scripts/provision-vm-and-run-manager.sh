@@ -132,5 +132,5 @@ utils::compress_send_to_vm "${ZONE}" "${JOB_REPO_NAME}-test-${RANDOM_ID}" "/home
 log::info "Triggering the installation"
 
 # shellcheck disable=SC2016
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "${JOB_REPO_NAME}-test-${RANDOM_ID}" -c "sudo bash -c \"cd $HOME/${JOB_REPO_NAME} && ${JOB_VM_COMMAND}\""
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "${JOB_REPO_NAME}-test-${RANDOM_ID}" -c "sudo bash -c \"cd \$HOME/${JOB_REPO_NAME} && ${JOB_VM_COMMAND}\""
 log::success "all done"
