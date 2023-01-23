@@ -3,13 +3,6 @@ templates:
     render:
       - to: ../../prow/jobs/busola/busola-backend/backend-deployment-check.yaml
         localSets:
-          extra_refs_kyma-local:
-            extra_refs:
-              local-kyma:
-                - org: "kyma-incubator"
-                  repo: "local-kyma"
-                  path_alias: "github.com/kyma-incubator/local-kyma"
-                  base_ref: "main"
           jobConfig_default:
             path_alias: github.com/kyma-project/busola
           request_small:
@@ -44,4 +37,3 @@ templates:
                     - "request_small"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
