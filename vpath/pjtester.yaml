@@ -5,7 +5,7 @@ pjConfigs:
         prNumber: 83
   prowJobs:
     kyma-project:
-      busola:
+      kyma-dashboard:
         - pjName: "pre-kyma-dashboard-test"
         - pjName: "pre-kyma-dashboard-dev"
 prConfigs:
