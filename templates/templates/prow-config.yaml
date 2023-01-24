@@ -1420,9 +1420,9 @@ presets:
         valueFrom:
           secretKeyRef:
             name: kyma-api-gateway-int-test-client-id
-            key: client-id
+            key: token
       - name: CLIENT_SECRET
         valueFrom:
           secretKeyRef:
             name: kyma-api-gateway-int-test-client-secret
-            key: client-secret
+            key: token
