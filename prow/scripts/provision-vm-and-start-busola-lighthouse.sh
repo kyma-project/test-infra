@@ -133,12 +133,6 @@ log::info "Copying Busola 'resources' folder to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/resources" "~/busola-resources"
 
-
-log::info "Copying Kyma-Local to the instance"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "~/local-kyma"
-
-
 log::info "Launching the busola-lighthouse script"
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "busola-lighthouse-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/busola-lighthouse.sh"
 

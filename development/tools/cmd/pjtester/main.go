@@ -28,5 +28,5 @@ func main() {
 	if err := ghOptions.Validate(false); err != nil {
 		logrus.WithError(err).Fatalf("github options validation failed")
 	}
-	pjtester.SchedulePJ(ghOptions)
+	pjtester.SchedulePJ(&ghOptions)
 }

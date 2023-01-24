@@ -3,13 +3,6 @@ templates:
     render:
       - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-test.yaml
         localSets:
-          extra_refs_kyma-local:
-            extra_refs:
-              local-kyma:
-                - org: "kyma-incubator"
-                  repo: "local-kyma"
-                  path_alias: "github.com/kyma-incubator/local-kyma"
-                  base_ref: "main"
           jobConfig_default:
             path_alias: github.com/kyma-project/kyma-dashboard
           jobConfig_periodic:
@@ -46,12 +39,11 @@ templates:
                     - "request_small"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
               # postsubmits
               - jobConfig:
                   name: "post-kyma-dashboard-test"
                   optional: false
-                  always_run: true
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/"
                   labels:
                     preset-build-pr: "false"
                     preset-gardener-azure-kyma-integration: "true"
@@ -67,4 +59,3 @@ templates:
                     - "request_small"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
