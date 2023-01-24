@@ -184,6 +184,19 @@ func TestFlags(t *testing.T) {
 				"--silent",
 			},
 		},
+		{
+			name: "export tag, pass",
+			expectedOpts: options{
+				context:    ".",
+				configPath: "/config/image-builder-config.yaml",
+				dockerfile: "Dockerfile",
+				logDir:     "/logs/artifacts",
+				exportTags: true,
+			},
+			args: []string{
+				"--export-tags",
+			},
+		},
 	}
 	for _, tc := range testcases {
 		t.Run(tc.name, func(t *testing.T) {
