@@ -2087,8 +2087,8 @@ github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5t
 github.com/yvasiyarov/go-metrics v0.0.0-20140926110328-57bccd1ccd43/go.mod h1:aX5oPXxHm3bOH+xeAttToC8pqch2ScQN/JoXYupl6xs=
 github.com/yvasiyarov/gorelic v0.0.0-20141212073537-a9bba5b9ab50/go.mod h1:NUSPSUX/bi6SeDMUh6brw0nXpxHnc96TguQh0+r/ssA=
 github.com/yvasiyarov/newrelic_platform_go v0.0.0-20140908184405-b21fdbd4370f/go.mod h1:GlGEuHIJweS1mbCqG+7vt2nvWLzLLnRHbXz5JKd/Qbg=
-github.com/zricethezav/gitleaks/v8 v8.15.2 h1:GGuK+XrMM8D2V33SFV9ih6vj4VOsQO2EMBVX9msJY/Q=
-github.com/zricethezav/gitleaks/v8 v8.15.2/go.mod h1:JzsbTtA88h1ioImguqG0BL2IV2JfblVO0qj/LSwgUKQ=
+github.com/zricethezav/gitleaks/v8 v8.15.3 h1:xK447xQhL00MwYJ7xjj0/Pu1zzdzFyCBwZVRW2kQPOA=
+github.com/zricethezav/gitleaks/v8 v8.15.3/go.mod h1:JzsbTtA88h1ioImguqG0BL2IV2JfblVO0qj/LSwgUKQ=
 go.etcd.io/bbolt v1.3.1-etcd.7/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=

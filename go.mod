@@ -63,7 +63,7 @@ require (
 	github.com/spf13/viper v1.10.0 // indirect
 	github.com/stretchr/testify v1.8.1
 	github.com/tidwall/gjson v1.14.4
-	github.com/zricethezav/gitleaks/v8 v8.15.2
+	github.com/zricethezav/gitleaks/v8 v8.15.3
 	go.uber.org/multierr v1.7.0 // indirect
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.5.0
