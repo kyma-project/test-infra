@@ -47,6 +47,48 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/btp-manager:
+    - name: post-btp-manager-build
+      annotations:
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-btp-manager-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=btp-manager"
+              - "--context=."
+              - "--dockerfile=Dockerfile"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--tag={{.Env \"PULL_BASE_REF\" }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-btp-manager-module-build
       annotations:
         pipeline.trigger: "pr-merge"
