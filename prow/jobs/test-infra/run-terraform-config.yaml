@@ -25,9 +25,16 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
             securityContext:
               privileged: true
+            workingDir: /home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner
             command:
-              - "[tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER]"
+              - "/tfcmt/tfcmt"
             args:
+              - "-owner"
+              - "$(REPO_OWNER)"
+              - "-repo"
+              - "$(REPO_NAME)"
+              - "-pr"
+              - "$(PULL_NUMBER)"
               - "plan"
               - "--"
               - "terraform"
@@ -67,9 +74,16 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
             securityContext:
               privileged: true
+            workingDir: /home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner
             command:
-              - "[tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER]"
+              - "/tfcmt/tfcmt"
             args:
+              - "-owner"
+              - "$(REPO_OWNER)"
+              - "-repo"
+              - "$(REPO_NAME)"
+              - "-pr"
+              - "$(PULL_NUMBER)"
               - "apply"
             resources:
               requests:
