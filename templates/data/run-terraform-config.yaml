@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/test-infra/apply-terraform-config.yaml
+      - to: ../../prow/jobs/test-infra/run-terraform-config.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
@@ -10,19 +10,27 @@ templates:
                   name: "pull-secret-leaks-log-scanner-tf-plan"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
                   image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
+                  labels:
+                    preset-bot-github-token: "true"
+                  command: ["tfcmt", "-owner", "$REPO_OWNER", "-repo", "$REPO_NAME", "-pr", "$PULL_NUMBER"]
                   args:
+                    - "plan"
+                    - "--"
+                    - "terraform"
                     - "plan"
                 inheritedConfigs:
                   global:
+                    - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
                   optional: "true"
                   name: "post-secret-leaks-log-scanner-tf-apply"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
                   image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
+                  command: ["tfcmt", "-owner", "$REPO_OWNER", "-repo", "$REPO_NAME", "-pr", "$PULL_NUMBER"]
                   args:
                     - "apply"
                 inheritedConfigs:
                   global:
-                    - "kaniko_buildpack"
+                    - "jobConfig_default"
                     - "jobConfig_postsubmit"
