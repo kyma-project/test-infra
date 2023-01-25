@@ -12,7 +12,7 @@ templates:
                   image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
                   labels:
                     preset-bot-github-token: "true"
-                  command: ["tfcmt", "-owner", "$REPO_OWNER", "-repo", "$REPO_NAME", "-pr", "$PULL_NUMBER"]
+                  command: ["/tfcmt/tfcmt", "-owner", "$(REPO_OWNER)", "-repo", "$(REPO_NAME)", "-pr", "$(PULL_NUMBER)"]
                   args:
                     - "plan"
                     - "--"
@@ -27,7 +27,7 @@ templates:
                   name: "post-secret-leaks-log-scanner-tf-apply"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
                   image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
-                  command: ["tfcmt", "-owner", "$REPO_OWNER", "-repo", "$REPO_NAME", "-pr", "$PULL_NUMBER"]
+                  command: ["/tfcmt/tfcmt", "-owner", "$(REPO_OWNER)", "-repo", "$(REPO_NAME)", "-pr", "$(PULL_NUMBER)"]
                   args:
                     - "apply"
                 inheritedConfigs:
