@@ -14,6 +14,6 @@ pjConfigs:
 prConfigs: #
   kyma-project:
     keda-manager:
-      prNumber: 47
+      prNumber: 92
     serverless-manager:
       prNumber: 48
