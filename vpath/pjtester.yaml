@@ -1,0 +1,19 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      keda-manager:
+      - pjName: "pre-keda-manager-operator-lint"
+      - pjName: "pull-keda-module-build"
+      - pjName: "pre-keda-manager-operator-tests"
+      - pjName: "pre-keda-manager-operator-build"
+      - pjName: "pre-main-keda-manager-verify"
+      serverless-manager:
+      - pjName: "pre-main-serverless-manager-verify"
+      - pjName: "post-serverless-module-build"
+      - pjName: "post-serverless-module-image"
+prConfigs: #
+  kyma-project:
+    keda-manager:
+      prNumber: 47
+    serverless-manager:
+      prNumber: 48
