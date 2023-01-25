@@ -50,6 +50,49 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pull-hide-tf-github-comments
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-hide-tf-github-comments"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
+      run_if_changed: '^configs/terraform'
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
+            securityContext:
+              privileged: true
+            command:
+              - "/ghcomment/github-comments"
+            args:
+              - "hide"
+              - "--org"
+              - "$(REPO_OWNER)"
+              - "--repo"
+              - "$(REPO_NAME)"
+              - "-pr"
+              - "$(PULL_NUMBER)"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/test-infra:
