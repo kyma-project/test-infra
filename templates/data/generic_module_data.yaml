@@ -171,7 +171,6 @@ templates:
                     - job_build
               - jobConfig:
                   name: pre-main-keda-manager-verify
-                  privileged: true
                   always_run: "true"
                   optional: "true"
                   env:
@@ -190,7 +189,6 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: post-main-keda-manager-verify
-                  privileged: true
                   always_run: "true"
                   optional: "true"
                   env:
@@ -263,7 +261,6 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
                   run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
-                  privileged: true
                   command: "make"
                   args:
                     - "-C"
@@ -287,7 +284,6 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
                   run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
-                  privileged: true
                   command: "make"
                   args:
                     - "module-image"
