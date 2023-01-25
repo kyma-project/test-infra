@@ -36,7 +36,7 @@ require (
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-playground/validator/v10 v10.11.1
 	github.com/go-yaml/yaml v2.1.0+incompatible
-	github.com/google/go-containerregistry v0.12.1
+	github.com/google/go-containerregistry v0.13.0
 	github.com/google/go-github/v40 v40.0.0
 	github.com/google/go-github/v42 v42.0.0
 	github.com/google/go-github/v48 v48.2.0
@@ -81,8 +81,6 @@ require (
 	knative.dev/pkg v0.0.0-20210908025933-71508fc69a57 // indirect
 	sigs.k8s.io/yaml v1.3.0
 )
-
-require github.com/google/go-github/v48 v48.2.0
 
 require (
 	cloud.google.com/go v0.107.0 // indirect
