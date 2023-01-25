@@ -4,3 +4,7 @@ pjConfigs:
       test-infra:
         - pjName: "pull-build-image-terraform-executor"
         - pjName: "pull-secret-leaks-log-scanner-tf-plan"
+prConfigs:
+  kyma-project:
+    test-infra:
+      prNumber: 6671
