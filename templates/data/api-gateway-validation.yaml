@@ -49,3 +49,16 @@ templates:
                     - jobConfig_presubmit
                   local:
                     - testing
+              - jobConfig:
+                  name: pull-api-gateway-integration-test
+                  always_run: true
+                  labels:
+                    preset-api-gateway-int-test-client-secret: "true"
+                  command: "make"
+                  args:
+                    - "test-integration"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                  local:
+                    - testing
