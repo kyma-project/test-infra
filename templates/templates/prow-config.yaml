@@ -310,7 +310,6 @@ tide:
     kyma-incubator/documentation-component: squash
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
-    kyma-incubator/podpreset-crd: squash
     kyma-incubator/kymart: squash
     kyma-incubator/varkes: squash
     #    kyma-incubator/marketplaces: squash
