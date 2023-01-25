@@ -2,5 +2,5 @@ pjConfigs:
   prowJobs:
     kyma-project:
       test-infra:
-        - pjName: "pull-build-image-terraform"
+        - pjName: "pull-build-image-terraform-executor"
         - pjName: "pull-secret-leaks-log-scanner-tf-plan"
