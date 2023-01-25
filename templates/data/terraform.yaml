@@ -1,13 +1,13 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/test-infra/terraform.yaml
+      - to: ../../prow/jobs/test-infra/terraform-executor.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
                   optional: "true"
-                  name: "pull-build-image-terraform"
+                  name: "pull-build-image-terraform-executor"
                   run_if_changed: '^prow/images/terraform'
                   args:
                     - "--name=test-infra/terraform"
@@ -20,7 +20,7 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   optional: "true"
-                  name: "post-build-image-terraform"
+                  name: "post-build-image-terraform-executor"
                   run_if_changed: '^prow/images/terraform'
                   args:
                     - "--name=test-infra/terraform"
