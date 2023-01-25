@@ -56,11 +56,12 @@ templates:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
                   name: pre-keda-manager-operator-lint
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
                   run_if_changed: "^(go.mod|go.sum|main.go)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
                     description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
+                  privileged: false
                   command: "bash"
                   optional: "true"
                   args:
@@ -118,8 +119,9 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
                   name: pre-keda-manager-operator-tests
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
+                  privileged: false
                   command: "bash"
                   args:
                     - "-c"
@@ -135,6 +137,7 @@ templates:
               - jobConfig:
                   name: pre-keda-manager-operator-build
                   always_run: true
+                  privileged: false
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -148,6 +151,7 @@ templates:
               - jobConfig:
                   name: post-keda-manager-operator-build
                   always_run: true
+                  privileged: false
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -161,6 +165,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: "pre-main-keda-manager-verify"
+                  privileged: false
                   always_run: "true"
                   optional: "true"
                   env:
@@ -178,6 +183,7 @@ templates:
                     - "vm_job_labels"
               - jobConfig:
                   name: "post-main-keda-manager-verify"
+                  privileged: false
                   always_run: "true"
                   optional: "true"
                   env:
@@ -223,6 +229,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-serverless-manager-verify"
+                  privileged: false
                   always_run: "true"
                   optional: "true"
                   env:
@@ -246,6 +253,7 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
                   run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  privileged: false
                   command: "make"
                   args:
                     - "-C"
@@ -267,6 +275,7 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
                   run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  privileged: false
                   command: "make"
                   args:
                     - "module-image"
