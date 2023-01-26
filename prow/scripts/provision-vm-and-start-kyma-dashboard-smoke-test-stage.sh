@@ -156,5 +156,5 @@ utils::save_env_file "${envVars[@]}"
 utils::send_to_vm "${ZONE}" "kyma-dashboard-smoke-test-${RANDOM_ID}" ".env" "~/.env"
 
 log::info "Launching the kyma-dashboard-smoke-test.sh script"
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-dashboard-smoke-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-dashboard-smoke-test.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-dashboard-smoke-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-dashboard-smoke-test-stage.sh"
 log::success "all done"

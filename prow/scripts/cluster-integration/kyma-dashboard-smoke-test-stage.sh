@@ -23,4 +23,4 @@ docker run -d --rm --net=host --pid=host --name busola eu.gcr.io/kyma-project/ky
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/kyma-dashboard-tests/fixtures/kubeconfig.yaml"
 
 echo "STEP: Running Cypress tests inside Docker"
-docker run --entrypoint /bin/bash --network=host -v "$PWD/kyma-dashboard-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 CYPRESS_DOMAIN=http://localhost:3001 $(npm bin)/cypress run --browser chrome -C cypress-smoke.json"
+docker run --entrypoint /bin/bash --network=host -v "$PWD/kyma-dashboard-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 CYPRESS_DOMAIN=http://localhost:3001 cypress run --browser chrome -C cypress-smoke.json"
