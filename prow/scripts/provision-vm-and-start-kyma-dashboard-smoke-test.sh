@@ -33,7 +33,7 @@ log::info "Execute Job Guard"
 -org="kyma-project" \
 -repo="kyma-dashboard" \
 -base-ref="$BASE_REF" \
--expected-contexts-regexp="(.*-dashboard-stage)"
+-expected-contexts-regexp="(.*-dashboard-stage)|(.*-dashboard-prod)" 
 
 if [ -n "${PULL_NUMBER}" ]; then
   echo "Building from PR"
