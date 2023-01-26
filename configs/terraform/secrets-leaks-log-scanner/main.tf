@@ -1,6 +1,7 @@
 terraform {
   backend "gcs" {
-    bucket = "tf-state-kyma-project"
+    #bucket = "tf-state-kyma-project"
+    bucket = "tf-state-kyma-neighbors-dev"
     prefix = "prod"
   }
   required_providers {
@@ -13,7 +14,8 @@ terraform {
 
 variable "google_project_id" {
   type    = string
-  default = "sap-kyma-prow"
+  default = "sap-kyma-neighbors-dev"
+  #default = "sap-kyma-prow"
 }
 
 variable "prow_pubsub_topic_name" {
@@ -30,4 +32,16 @@ provider "google" {
 # Used to retrieve project_number later
 data "google_project" "project" {
   provider = google
+}
+
+data "google_storage_bucket" "kyma_prow_logs" {
+  name = "kyma-prow-logs"
+}
+
+data "google_secret_manager_secret" "gh_tools_kyma_bot_token" {
+  secret_id = "gh-tools-kyma-bot-token"
+}
+
+data "google_secret_manager_secret" "common_slack_bot_token" {
+  secret_id = "common-slack-bot-token"
 }

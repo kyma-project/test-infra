@@ -3,7 +3,15 @@ resource "google_service_account" "slack_message_sender" {
   description = ""
 }
 
+resource "google_secret_manager_secret_iam_member" "slack_msg_sender_common_slack_bot_token_accessor" {
+  project = data.google_secret_manager_secret.common_slack_bot_token.project
+  secret_id = data.google_secret_manager_secret.common_slack_bot_token.secret_id
+  role = "roles/secretmanager.secretAccessor"
+  member = "serviceAccount:${google_service_account.slack_message_sender.email}"
+}
+
 resource "google_cloud_run_service" "slack_message_sender" {
+  depends_on = [google_secret_manager_secret_iam_member.slack_msg_sender_common_slack_bot_token_accessor]
   name     = "slack-message-sender"
   location = "europe-west3"
 

@@ -1,10 +1,15 @@
-resource "google_storage_bucket_iam_member" "secrets_leak_log_scanner" {
+resource "google_service_account" "gcs_bucket_mover" {
+  account_id   = "gcs-bucket-mover-cr"
+  description = ""
+}
+
+resource "google_storage_bucket_iam_member" "kyma_prow_logs_viewer" {
   bucket = data.google_storage_bucket.kyma_prow_logs.name
   role = "roles/storage.objectViewer"
   member = "serviceAccount:${google_service_account.gcs_bucket_mover.email}"
 }
 
-resource "google_storage_bucket_iam_member" "member" {
+resource "google_storage_bucket_iam_member" "kyma_prow_logs_secured_object_admin" {
   bucket = google_storage_bucket.kyma_prow_logs_secured.name
   role = "roles/storage.objectAdmin"
   member = "serviceAccount:${google_service_account.gcs_bucket_mover.email}"
@@ -22,11 +27,6 @@ resource "google_storage_bucket" "kyma_prow_logs_secured" {
   public_access_prevention = "enforced"
 }
 
-resource "google_service_account" "gcs_bucket_mover" {
-  account_id   = "gcs-bucket-mover-cr"
-  description = ""
-}
-
 resource "google_cloud_run_service" "gcs_bucket_mover" {
   name     = "gcs-bucket-mover"
   location = "europe-west3"
@@ -39,7 +39,7 @@ resource "google_cloud_run_service" "gcs_bucket_mover" {
 
   template {
     spec {
-      service_account_name: google_service_account.gcs_bucket_mover.email
+      service_account_name = google_service_account.gcs_bucket_mover.email
       containers {
         image = "europe-docker.pkg.dev/kyma-project/dev/test-infra/movegcsbucket:PR-6689"
         env {

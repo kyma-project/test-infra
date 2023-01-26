@@ -3,7 +3,15 @@ resource "google_service_account" "github_issue_creator" {
   description = ""
 }
 
+resource "google_secret_manager_secret_iam_member" "gh_issue_creator_gh_tools_kyma_bot_token_accessor" {
+  project = data.google_secret_manager_secret.gh_tools_kyma_bot_token.project
+  secret_id = data.google_secret_manager_secret.gh_tools_kyma_bot_token.secret_id
+  role = "roles/secretmanager.secretAccessor"
+  member = "serviceAccount:${google_service_account.github_issue_creator.email}"
+}
+
 resource "google_cloud_run_service" "github_issue_creator" {
+  depends_on = [google_secret_manager_secret_iam_member.gh_issue_creator_gh_tools_kyma_bot_token_accessor]
   name     = "github-issue-creator"
   location = "europe-west3"
 
@@ -15,6 +23,7 @@ resource "google_cloud_run_service" "github_issue_creator" {
 
   template {
     spec {
+      service_account_name = google_service_account.github_issue_creator.email
       containers {
         image = "europe-docker.pkg.dev/kyma-project/dev/test-infra/creategithubissue:PR-6676"
         env {
@@ -43,10 +52,10 @@ resource "google_cloud_run_service" "github_issue_creator" {
         }
         env {
           name = "TOOLS_SAP_TOKEN_PATH"
-          value = "/etc/gh-tools-kyma-bot-token"
+          value = "/etc/gh-token/gh-tools-kyma-bot-token"
         }
         volume_mounts {
-          mount_path = "/etc/gh-tools-kyma-bot-token"
+          mount_path = "/etc/gh-token"
           name       = "gh-tools-kyma-bot-token"
         }
       }

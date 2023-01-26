@@ -3,7 +3,15 @@ resource "google_service_account" "github_issue_finder" {
   description = ""
 }
 
+resource "google_secret_manager_secret_iam_member" "gh_issue_finder_gh_tools_kyma_bot_token_accessor" {
+  project = data.google_secret_manager_secret.gh_tools_kyma_bot_token.project
+  secret_id = data.google_secret_manager_secret.gh_tools_kyma_bot_token.secret_id
+  role = "roles/secretmanager.secretAccessor"
+  member = "serviceAccount:${google_service_account.github_issue_finder.email}"
+}
+
 resource "google_cloud_run_service" "github_issue_finder" {
+  depends_on = [google_secret_manager_secret_iam_member.gh_issue_finder_gh_tools_kyma_bot_token_accessor]
   name     = "github-issue-finder"
   location = "europe-west3"
 

@@ -1,12 +1,12 @@
-resource "google_storage_bucket_iam_member" "secrets_leak_log_scanner" {
-  bucket = data.google_storage_bucket.kyma_prow_logs.name
-  role = "roles/storage.objectViewer"
-  member = "serviceAccount:${google_service_account.secrets_leak_detector.email}"
-}
-
 resource "google_service_account" "secrets_leak_log_scanner" {
   account_id   = "secrets-leak-log-scanner-cr"
   description = ""
+}
+
+resource "google_storage_bucket_iam_member" "secrets_leak_detector" {
+  bucket = data.google_storage_bucket.kyma_prow_logs.name
+  role = "roles/storage.objectViewer"
+  member = "serviceAccount:${google_service_account.secrets_leak_detector.email}"
 }
 
 resource "google_cloud_run_service" "secrets_leak_log_scanner" {
@@ -21,6 +21,7 @@ resource "google_cloud_run_service" "secrets_leak_log_scanner" {
 
   template {
     spec {
+      service_account_name = google_service_account.secrets_leak_log_scanner.email
       containers {
         image = "europe-docker.pkg.dev/kyma-project/dev/test-infra/scanlogsforsecrets:PR-6684"
         env {
