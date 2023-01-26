@@ -26,6 +26,8 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--config=/config/kaniko-build-config.yaml"
                     - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
+                  branches:
+                    - ^\d+\.\d+\.\d+(?:-.*)?$
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
