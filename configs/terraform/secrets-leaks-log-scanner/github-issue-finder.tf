@@ -25,7 +25,7 @@ resource "google_cloud_run_service" "github_issue_finder" {
     spec {
       service_account_name = google_service_account.github_issue_finder.email
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/dev/test-infra/searchgithubissue:PR-6698"
+        image = "europe-docker.pkg.dev/kyma-project/dev/test-infra/searchgithubissue:PR-6801"
         env {
           name  = "PROJECT_ID"
           value = var.google_project_id
@@ -52,10 +52,10 @@ resource "google_cloud_run_service" "github_issue_finder" {
         }
         env {
           name = "TOOLS_SAP_TOKEN_PATH"
-          value = "/etc/gh-tools-kyma-bot-token"
+          value = "/etc/gh-token/gh-tools-kyma-bot-token"
         }
         volume_mounts {
-          mount_path = "/etc/gh-tools-kyma-bot-token"
+          mount_path = "/etc/gh-token"
           name       = "gh-tools-kyma-bot-token"
         }
       }
