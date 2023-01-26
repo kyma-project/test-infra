@@ -28,6 +28,8 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
+                env:
+                  IMAGE_NAME: "prod"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -47,6 +49,8 @@ templates:
                   labels:
                     preset-build-pr: "false"
                     preset-gardener-azure-kyma-integration: "true"
+                env:
+                  IMAGE_NAME: "prod"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

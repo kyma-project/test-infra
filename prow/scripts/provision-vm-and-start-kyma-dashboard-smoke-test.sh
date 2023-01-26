@@ -33,7 +33,7 @@ log::info "Execute Job Guard"
 -org="kyma-project" \
 -repo="kyma-dashboard" \
 -base-ref="$BASE_REF" \
--expected-contexts-regexp="(.*-dashboard-stage)|(.*-dashboard-prod)" 
+-expected-contexts-regexp="(.*-dashboard-.*)" 
 
 if [ -n "${PULL_NUMBER}" ]; then
   echo "Building from PR"
@@ -150,11 +150,12 @@ utils::compress_send_to_vm "${ZONE}" "kyma-dashboard-smoke-test-${RANDOM_ID}" "/
 log::info "Preparing environment variables for the instance"
 envVars=(
   DOCKER_TAG
+  IMAGE_NAME
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
 utils::send_to_vm "${ZONE}" "kyma-dashboard-smoke-test-${RANDOM_ID}" ".env" "~/.env"
 
 log::info "Launching the kyma-dashboard-smoke-test.sh script"
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-dashboard-smoke-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-dashboard-smoke-test-stage.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-dashboard-smoke-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-dashboard-smoke-test.sh"
 log::success "all done"
