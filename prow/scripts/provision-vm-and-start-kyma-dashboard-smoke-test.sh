@@ -24,6 +24,7 @@ else
 fi
 
 log::info "Execute Job Guard"
+log::info ${IMAGE_NAME}
 /prow-tools/jobguard \
 -github-endpoint=http://ghproxy \
 -github-endpoint=https://api.github.com \
