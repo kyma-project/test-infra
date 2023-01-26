@@ -1,0 +1,24 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/test-infra/presubmit-scanner.yaml
+        localSets:
+          jobConfig_allBranches:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            request_memory: "1.5Gi"
+            request_cpu: "0.8"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "pre-test-infra-presubmit-scanner"
+                  command: "--verbose --redact detect"
+                  image: "docker.io/zricethezav/gitleaks:latest"
+                inheritedConfigs:
+                  local:
+                    - "jobConfig_allBranches"
+                  global:
+                    - "jobConfig_presubmit"
+                    - "pubsub_labels"
