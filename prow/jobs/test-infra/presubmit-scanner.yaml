@@ -10,16 +10,15 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      skip_report: false
-      decorate: true
+      skip_report: true
       cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
             command:
-              - "--verbose --redact detect"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 0.8
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA"
+  
