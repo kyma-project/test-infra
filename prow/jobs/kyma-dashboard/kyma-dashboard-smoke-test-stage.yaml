@@ -35,7 +35,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-dashboard-smoke-test.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-dashboard-smoke-test-stage.sh"
             resources:
               requests:
                 memory: 100Mi
@@ -83,7 +83,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-dashboard-smoke-test.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-dashboard-smoke-test-stage.sh"
             resources:
               requests:
                 memory: 100Mi

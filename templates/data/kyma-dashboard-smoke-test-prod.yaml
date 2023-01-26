@@ -11,7 +11,7 @@ templates:
             request_memory: 100Mi
             request_cpu: 50m
           vm_job_template_k3s:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-dashboard-smoke-test.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-dashboard-smoke-test-prod.sh"
           vm_job_labels_template:
             labels:
               preset-kyma-guard-bot-github-token: "true"
