@@ -5,8 +5,8 @@ ENV PYTHONUNBUFFERED True
 
 WORKDIR /app
 
-COPY ./slack-message-sender.py .
-COPY ./requirements.txt .
+COPY ./development/gcp/cloud-run/slack-message-sender/slack-message-sender.py .
+COPY ./development/gcp/cloud-run/slack-message-sender/requirements.txt .
 
 RUN pip install --no-cache-dir --upgrade -r requirements.txt && \
 	apk add --no-cache ca-certificates
