@@ -1,7 +1,6 @@
 terraform {
   backend "gcs" {
-    #bucket = "tf-state-kyma-project"
-    bucket = "tf-state-kyma-neighbors-dev"
+    bucket = "tf-state-kyma-project"
     prefix = "prod"
   }
   required_providers {
@@ -14,8 +13,7 @@ terraform {
 
 variable "google_project_id" {
   type    = string
-  default = "sap-kyma-neighbors-dev"
-  #default = "sap-kyma-prow"
+  default = "sap-kyma-prow"
 }
 
 variable "prow_pubsub_topic_name" {
