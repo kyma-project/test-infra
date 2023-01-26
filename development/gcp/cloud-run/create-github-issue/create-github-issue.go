@@ -24,14 +24,15 @@ import (
 )
 
 var (
-	componentName   string
-	applicationName string
-	projectID       string
-	githubToken     []byte
-	githubOrg       string // "neighbors-team"
-	githubRepo      string // "leaks-test"
-	port            string
-	sapGhClient     *kgithubv1.SapToolsClient
+	componentName        string
+	applicationName      string
+	projectID            string
+	githubToken []byte
+	toolsGithubTokenPath string
+	githubOrg            string // "neighbors-team"
+	githubRepo           string // "leaks-test"
+	port                 string
+	sapGhClient          *kgithubv1.SapToolsClient
 )
 
 type message struct {
@@ -51,6 +52,7 @@ func main() {
 	port = os.Getenv("LISTEN_PORT")
 	githubOrg = os.Getenv("GITHUB_ORG")
 	githubRepo = os.Getenv("GITHUB_REPO")
+	toolsGithubTokenPath = os.Getenv("TOOLS_SAP_TOKEN_PATH")
 
 	mainLogger := cloudfunctions.NewLogger()
 	mainLogger.WithComponent(componentName) // search-github-issue
@@ -59,7 +61,7 @@ func main() {
 
 	ctx := context.Background()
 
-	githubToken, err = os.ReadFile("/etc/github-token/github-token")
+	githubToken, err = os.ReadFile(toolsGithubTokenPath)
 	if err != nil {
 		mainLogger.LogCritical("failed read github token from file, error: %s", err)
 	}
