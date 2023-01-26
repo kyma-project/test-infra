@@ -49,6 +49,8 @@ templates:
                   labels:
                     preset-build-pr: "false"
                     preset-gardener-azure-kyma-integration: "true"
+                env:
+                  IMAGE_NAME: "stage"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
