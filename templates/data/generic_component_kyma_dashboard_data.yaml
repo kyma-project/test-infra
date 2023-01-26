@@ -10,7 +10,7 @@ templates:
                   args:
                     - "."
                     - "release-dev"
-                  run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile"
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/"
                   skipReleaseJobs: "true"
                 inheritedConfigs:
                   global:
