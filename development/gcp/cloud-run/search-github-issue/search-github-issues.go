@@ -24,18 +24,16 @@ import (
 )
 
 var (
-	componentName   string
-	applicationName string
-	projectID       string
-	// bucketName       string
-	port        string
-	githubToken []byte
+	componentName        string
+	applicationName      string
+	projectID            string
+	port                 string
+	githubToken          []byte
 	toolsGithubTokenPath string
-	githubOrg   string // "neighbors-team"
-	githubRepo  string // "leaks-test"
-	// githubSecretPath string
-	sapGhClient *kgithubv1.SapToolsClient
-	gcsClient   *storage.Client
+	githubOrg            string // "neighbors-team"
+	githubRepo           string // "leaks-test"
+	sapGhClient          *kgithubv1.SapToolsClient
+	gcsClient            *storage.Client
 )
 
 type message struct {

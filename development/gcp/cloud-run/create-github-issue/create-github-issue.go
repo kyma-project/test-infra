@@ -27,7 +27,7 @@ var (
 	componentName        string
 	applicationName      string
 	projectID            string
-	githubToken []byte
+	githubToken          []byte
 	toolsGithubTokenPath string
 	githubOrg            string // "neighbors-team"
 	githubRepo           string // "leaks-test"
