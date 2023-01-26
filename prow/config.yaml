@@ -1414,7 +1414,7 @@ presets:
       - name: KCP_OIDC_ISSUER_URL
         value: "https://kymatest.accounts400.ondemand.com"
   - labels:
-      preset-api-gateway-int-test-client-secret: "true"
+      preset-api-gateway-int-test-client-creds: "true"
     env:
       - name: OIDC_ISSUER_URL
         value: "https://kymagoattest.accounts400.ondemand.com"

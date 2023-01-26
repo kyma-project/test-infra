@@ -59,7 +59,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-integration-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-api-gateway-int-test-client-secret: "true"
+        preset-api-gateway-int-test-client-creds: "true"
       always_run: true
       optional: true
       skip_report: false

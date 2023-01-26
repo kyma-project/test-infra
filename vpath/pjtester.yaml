@@ -1,6 +1,6 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      kyma:
+      api-gateway:
         - pjName: "pull-api-gateway-integration-test"
           report: true

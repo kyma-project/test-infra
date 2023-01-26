@@ -53,7 +53,7 @@ templates:
                   name: pull-api-gateway-integration-test
                   always_run: true
                   labels:
-                    preset-api-gateway-int-test-client-secret: "true"
+                    preset-api-gateway-int-test-client-creds: "true"
                   command: "make"
                   args:
                     - "test-integration"
