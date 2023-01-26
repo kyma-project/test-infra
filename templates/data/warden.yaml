@@ -1,0 +1,95 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/warden/warden.yaml
+        localSets:
+          testing:
+            skip_report: "false"
+            max_concurrency: "10"
+            optional: "true"
+            decorate: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 1Gi
+            request_cpu: 100m
+        jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
+              - jobConfig:
+                  name: pull-admission-build
+                  args:
+                    - "--name=warden/admission"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/admission/Dockerfile"
+                  run_if_changed: '.*\.go|docker/admission/'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-admission-build
+                  args:
+                    - "--name=warden/admission"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/admission/Dockerfile"
+                  run_if_changed: '.*\.go|docker/admission/'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: pull-operator-build
+                  args:
+                    - "--name=warden/operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/operator/Dockerfile"
+                  run_if_changed: '.*\.go|docker/operator/'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-operator-build
+                  args:
+                    - "--name=warden/operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/operator/Dockerfile"
+                  run_if_changed: '.*\.go|docker/operator/'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+                  name: pull-warden-lint
+                  optional: true
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  annotations:
+                    description: executes the 'golangci-lint lint' command before any pull request.
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: pull-warden-unit-test
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                  local:
+                    - testing

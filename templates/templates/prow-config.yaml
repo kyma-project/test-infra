@@ -22,10 +22,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230104-ac8ab408a1
-          initupload: gcr.io/k8s-prow/initupload:v20230104-ac8ab408a1
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230104-ac8ab408a1
-          sidecar: gcr.io/k8s-prow/sidecar:v20230104-ac8ab408a1
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230125-a579b87e2c
+          initupload: gcr.io/k8s-prow/initupload:v20230125-a579b87e2c
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230125-a579b87e2c
+          sidecar: gcr.io/k8s-prow/sidecar:v20230125-a579b87e2c
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -300,6 +300,7 @@ tide:
     kyma-project/api-gateway: squash
     kyma-project/organization-and-operations: squash
     kyma-project/btp-manager: squash
+    kyma-project/istio: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
@@ -390,21 +391,21 @@ presets:
       preset-cluster-version-old: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.23"
+        value: "1.24"
       - name: GKE_CLUSTER_VERSION
-        value: "1.23"
+        value: "1.24"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.23"
+        value: "1.24"
   # cluster version
   - labels:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.25"
       - name: GKE_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.25"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.25"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
@@ -830,6 +831,15 @@ presets:
         value: "kyma.bot@sap.com"
       - name: BOT_GITHUB_USER
         value: "Kyma Bot"
+  # BTP-Manager Bot
+  - labels:
+      preset-kyma-btp-manager-bot-github-token: "true"
+    env:
+      - name: BOT_GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-btp-manager-bot-github-token
+            key: token
   # Kyma Guard Bot
   - labels:
       preset-kyma-guard-bot-github-token: "true"
