@@ -17,10 +17,11 @@ function load_env() {
 
 load_env
 echo DOCKER_TAG "${DOCKER_TAG}"
+echo IMAGE_NAME "${IMAGE_NAME}"
 # shellcheck disable=SC2086
-docker run -d --rm --net=host --pid=host --name kyma-dashboard eu.gcr.io/kyma-project/kyma-dashboard-local-dev:${DOCKER_TAG}
+docker run -d --rm --net=host --pid=host --name kyma-dashboard eu.gcr.io/kyma-project/kyma-dashboard-local-${IMAGE_NAME}:${DOCKER_TAG}
 
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/kyma-dashboard-tests/fixtures/kubeconfig.yaml"
 
-echo "STEP: Running Cypress tests inside Docker"
-docker run --entrypoint /bin/bash --network=host -v "$PWD/kyma-dashboard-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 CYPRESS_DOMAIN=http://localhost:3001 cypress run --browser chrome -C /tests/cypress.json"
+echo "STEP: Running Cypress smoke tests inside Docker"
+docker run --entrypoint /bin/bash --network=host -v "$PWD/kyma-dashboard-tests:/tests" -w /tests $CYPRESS_IMAGE -c "npm ci --no-optional; NO_COLOR=1 CYPRESS_DOMAIN=http://localhost:3001 cypress run --browser chrome -C cypress-smoke.json"
