@@ -18,7 +18,6 @@ spec:
       shootIssuers:
         enabled: true
   kubernetes:
-    allowPrivilegedContainers: true
     kubeAPIServer:
       enableBasicAuthentication: false
       oidcConfig:
