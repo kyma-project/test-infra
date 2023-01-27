@@ -55,7 +55,10 @@ func (o *GithubClientConfig) NewGithubClient(options ...GithubClientOption) (Git
 	}
 	var client github.Client
 	if o.token != "" {
-		client = o.GitHubClientWithAccessToken(o.token)
+		client, err = o.GitHubClientWithAccessToken(o.token)
+		if err != nil {
+			return nil, err
+		}
 	} else {
 		client, err = o.GitHubOptions.GitHubClient(o.DryRun)
 		if err != nil {
