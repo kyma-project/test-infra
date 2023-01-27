@@ -3,17 +3,18 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma-dashboard:
-    - name: pre-kyma-dashboard-stage
+    - name: pre-kyma-dashboard-smoke-test-stage
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-stage"
+        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-smoke-test-stage"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-build-pr: "true"
+        preset-gardener-azure-kyma-integration: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^Dockerfile.*|^package.json|^environments/stage/|^extensions|^gulpfile.js|^Makefile|^/tests/cypress-smoke.json|^/tests/tests/.*/test-check-extensions.spec.js'
       skip_report: false
       decorate: true
@@ -30,18 +31,18 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "."
-              - "release-stage"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-dashboard-smoke-test.sh"
+            env:
+              - name: IMAGE_NAME
+                value: "stage"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 100Mi
+                cpu: 50m
         tolerations:
           - key: dedicated
             operator: Equal
@@ -52,18 +53,19 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma-dashboard:
-    - name: post-kyma-dashboard-stage
+    - name: post-kyma-dashboard-smoke-test-stage
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-kyma-dashboard-stage"
+        prow.k8s.io/pubsub.runID: "post-kyma-dashboard-smoke-test-stage"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-build-pr: "false"
+        preset-gardener-azure-kyma-integration: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^Dockerfile.*|^package.json|^environments/stage/|^extensions|^gulpfile.js|^Makefile|^/tests/cypress-smoke.json|^/tests/tests/.*/test-check-extensions.spec.js'
       skip_report: false
       decorate: true
@@ -80,18 +82,18 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "."
-              - "release-stage"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-dashboard-smoke-test.sh"
+            env:
+              - name: IMAGE_NAME
+                value: "stage"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 100Mi
+                cpu: 50m
         tolerations:
           - key: dedicated
             operator: Equal
