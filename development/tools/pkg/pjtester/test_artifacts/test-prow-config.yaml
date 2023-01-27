@@ -294,7 +294,6 @@ tide:
     kyma-incubator/terraform-provider-gardener: squash
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
-    kyma-incubator/podpreset-crd: squash
     kyma-incubator/kymart: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
