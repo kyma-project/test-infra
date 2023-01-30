@@ -24,7 +24,7 @@ templates:
               - jobConfig:
                   name: "pre-kyma-dashboard-smoke-test-prod"
                   optional: false
-                  run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^/tests/cypress-smoke.json|^/tests/tests/.*/test-check-extensions.spec.js"
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
