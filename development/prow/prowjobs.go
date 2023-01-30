@@ -3,6 +3,8 @@ package prow
 import (
 	"errors"
 	"fmt"
+	"os"
+	"path"
 
 	"github.com/google/go-github/v40/github"
 	"github.com/sirupsen/logrus"
