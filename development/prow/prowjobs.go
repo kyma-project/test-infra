@@ -3,9 +3,13 @@ package prow
 import (
 	"errors"
 	"fmt"
+	"os"
+	"path"
 
 	"github.com/google/go-github/v40/github"
+	"github.com/sirupsen/logrus"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
+	"k8s.io/test-infra/prow/config"
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 )
 
@@ -56,4 +60,29 @@ func GetOrgForPresubmit() (string, error) {
 		return jobSpec.Refs.Org, nil
 	}
 	return "", &NotPresubmitError{}
+}
+
+func GetRepoProwjobsConfigForProwjob() ([]config.Presubmit, []config.Postsubmit, []config.Periodic, error) {
+	orgName := os.Getenv("REPO_OWNER")
+	repoName := os.Getenv("REPO_NAME")
+	repoIdentifier := orgName + "/" + repoName
+	dir, err := os.Getwd()
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("failed to get current working directory")
+	}
+	if orgName == "kyma-project" && repoName == "test-infra" {
+		configPath := path.Join(dir, "config.yaml")
+		jobConfigPath := path.Join(dir, "prow/jobs")
+		conf, err := config.Load(configPath, jobConfigPath, nil, "")
+		if err != nil {
+			return nil, nil, nil, fmt.Errorf("error loading prow config: %w", err)
+		}
+		return conf.GetPresubmitsStatic(repoIdentifier), conf.GetPostsubmitsStatic(repoIdentifier), conf.AllPeriodics(), nil
+	} else {
+		prowYAML, err := config.ReadProwYAML(logrus.WithField("repo", repoIdentifier), dir, false)
+		if err != nil {
+			return nil, nil, nil, fmt.Errorf("error loading prow config: %w", err)
+		}
+		return prowYAML.Presubmits, prowYAML.Postsubmits, nil, nil
+	}
 }
