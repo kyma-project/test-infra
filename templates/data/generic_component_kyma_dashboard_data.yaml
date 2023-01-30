@@ -35,7 +35,7 @@ templates:
                   args:
                     - "."
                     - "release-stage"
-                  run_if_changed: "^Dockerfile.*|^package.json|^environments/stage/|^extensions|^gulpfile.js|^Makefile|^/tests/cypress-smoke.json|^/tests/tests/.*/test-check-extensions.spec.js"
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/stage/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
                   skipReleaseJobs: "true"
                 inheritedConfigs:
                   global:
