@@ -23,26 +23,6 @@ type Alias struct {
 	AutomergeNotifications          bool     `yaml:"automerge.notification,omitempty"`
 }
 
-// TODO: Migrate all usages to development/gcp/pkg/types package.
-type GCPStorageMetadata struct {
-	BucketName *string `json:"bucketName,omitempty"`
-	Directory  *string `json:"directory,omitempty"`
-}
-
-// TODO: Migrate all usages to development/gcp/pkg/types package.
-type GCPProjectMetadata struct {
-	Project *string `json:"project,omitempty"`
-}
-
-// TODO: Migrate all usages to development/github/pkg/types package.
-type GithubIssueMetadata struct {
-	GithubOrg         *string `json:"githubOrg,omitempty"`
-	GithubRepo        *string `json:"githubRepo,omitempty"`
-	GithubIssueNumber *int    `json:"githubIssueNumber,omitempty"`
-	GithubIssueURL    *string `json:"githubIssueURL,omitempty"`
-	GithubAssignee    User    `json:"githubIssueAssignee,omitempty"`
-}
-
 type SecretsLeakScannerMessage struct {
 	LeaksFound  *bool            `json:"leaksFound"`
 	LeaksReport []report.Finding `json:"leaksReport,omitempty"`
