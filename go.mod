@@ -16,7 +16,7 @@ require (
 	github.com/aws/aws-sdk-go v1.42.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/cloudevents/sdk-go/v2 v2.13.0
-	github.com/containerd/containerd v1.6.14
+	github.com/containerd/containerd v1.6.15
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
 	github.com/fsouza/go-dockerclient v1.9.3
@@ -60,10 +60,11 @@ require (
 	k8s.io/apimachinery v0.24.2
 	k8s.io/client-go v0.24.2
 	k8s.io/klog/v2 v2.70.1 // indirect
-	k8s.io/test-infra v0.0.0-20230127020025-350e1129d282
 	knative.dev/pkg v0.0.0-20220329144915-0a1ec2e0d46c // indirect
 	sigs.k8s.io/yaml v1.3.0
 )
+
+require k8s.io/test-infra v0.0.0-20230127174025-2d583598368c
 
 require (
 	cloud.google.com/go v0.107.0 // indirect
