@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -49,6 +49,51 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pre-rel210-busola-local
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel210-busola-local"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/busola
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - release-2.10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-2.10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/busola"
+              - "release-local"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel29-busola-local
       annotations:
         pipeline.trigger: "pr-submit"
@@ -60,7 +105,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -105,7 +150,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -118,51 +163,6 @@ presubmits: # runs on PRs
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.8
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/busola"
-              - "release-local"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel27-busola-local
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel27-busola-local"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/busola
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.7
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.7
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
@@ -199,7 +199,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -234,6 +234,52 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: post-rel210-busola-local
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel210-busola-local"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-kyma-kms-sign-key: "true"
+        preset-sa-gcr-push: "true"
+      run_if_changed: '^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/busola
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - release-2.10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-2.10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/busola"
+              - "release-local"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-rel29-busola-local
       annotations:
         pipeline.trigger: "pr-merge"
@@ -246,7 +292,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -292,7 +338,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
+      run_if_changed: '^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -305,52 +351,6 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.8
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-project/busola"
-              - "release-local"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-rel27-busola-local
-      annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel27-busola-local"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/busola
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.7
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.7
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"

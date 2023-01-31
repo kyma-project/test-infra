@@ -1,12 +1,11 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/modules/external/keda-manager/keda-manager-generic.yaml
+      - to: ../../prow/jobs/modules/external/keda-manager.yaml
         localSets:
-          jobConfig_default:
-            imagePullPolicy: "Always"
-            privileged: "false"
-          default:
+          job_default:
+            privileged: false
+          job_build:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
@@ -33,12 +32,34 @@ templates:
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
+          vm_job_make:
+            path_alias: github.com/kyma-project/keda-manager
+            command: "bash"
+            env:
+              CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+              JOB_REPO_NAME: "keda-manager"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
+            request_memory: 200Mi
+            request_cpu: 80m
+          vm_job_labels:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-sa-vm-kyma-integration: "true"
+              preset-gc-project-env: "true"
+          vm_job_k3d:
+            annotations:
+              pipeline.platform: k3d
+              pipeline.installer: kyma deploy
+              pipeline.test: fast-integration
+              pipeline.clusterprovisioning: k3d
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
                   name: pre-keda-manager-operator-lint
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
                   run_if_changed: "^(go.mod|go.sum|main.go)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
                     description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
@@ -53,6 +74,8 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
+                  local:
+                    - job_default
               - jobConfig:
                   name: post-keda-module-build
                   labels:
@@ -62,7 +85,6 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned" 
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
                   run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
-                  privileged: false
                   command: "make"
                   args:
                     - "-C"
@@ -72,9 +94,11 @@ templates:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
-                    - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default
               - jobConfig:
                   name: pull-keda-module-build
                   labels:
@@ -85,7 +109,6 @@ templates:
                     IMG: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
                   run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
-                  privileged: false
                   command: "make"
                   args:
                     - "-C"
@@ -95,12 +118,14 @@ templates:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
-                    - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                  local:
+                    - job_default
               - jobConfig:
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
                   name: pre-keda-manager-operator-tests
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
                   command: "bash"
                   args:
                     - "-c"
@@ -109,10 +134,12 @@ templates:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
-                    - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "build_labels" # default labels
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - build_labels # default labels
+                  local:
+                    - job_default
               - jobConfig:
                   name: pre-keda-manager-operator-build
                   always_run: true
@@ -122,10 +149,11 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
-                  local:
-                    - default
                   global:
                     - jobConfig_presubmit
+                  local:
+                    - job_default
+                    - job_build
               - jobConfig:
                   name: post-keda-manager-operator-build
                   always_run: true
@@ -136,90 +164,94 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
                 inheritedConfigs:
-                  local:
-                    - default
                   global:
                     - jobConfig_postsubmit
-      - to: ../../prow/jobs/kyma/kyma-gke-external-registry.yaml
+                  local:
+                    - job_default
+                    - job_build
+              - jobConfig:
+                  name: pre-main-keda-manager-verify
+                  always_run: "true"
+                  optional: "true"
+                  env:
+                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
+                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make ci-k3d-integration-test"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels
+              - jobConfig:
+                  name: post-main-keda-manager-verify
+                  always_run: "true"
+                  optional: "true"
+                  env:
+                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
+                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make ci-k3d-integration-test"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels
+      - to: ../../prow/jobs/modules/internal/serverless-manager.yaml
         localSets:
-          jobConfig_default:
-            path_alias: github.com/kyma-project/keda-manager
+          job_default:
+            privileged: false
+          vm_job_make:
+            path_alias: github.com/kyma-project/serverless-manager
             command: "bash"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+              # TODO: split this env and args into new config "serverless-manager"
+              JOB_REPO_NAME: "serverless-manager"
             args:
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
             request_memory: 200Mi
             request_cpu: 80m
-          vm_job_labels_template:
+          vm_job_labels:
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-sa-vm-kyma-integration: "true"
               preset-gc-project-env: "true"
-          vm_job_template_k3d:
+          vm_job_k3d:
             annotations:
               pipeline.platform: k3d
               pipeline.installer: kyma deploy
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
         jobConfigs:
-          - repoName: "kyma-project/keda-manager"
+          - repoName: kyma-project/serverless-manager
             jobs:
               - jobConfig:
-                  name: "pre-main-keda-manager-verify"
+                  name: pre-main-serverless-manager-verify
                   always_run: "true"
                   optional: "true"
+                  env:
+                    JOB_VM_COMMAND: "source /etc/profile && make test"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"    # TODO: Prepare a Keda-Manager Image
-                    - "extra_refs_test-infra"
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                    - extra_refs_test-infra
                   local:
-                    - "jobConfig_default"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-      - to: ../../prow/jobs/kyma/kyma-gke-external-registry.yaml
-        localSets:
-          jobConfig_default:
-            path_alias: github.com/kyma-project/serverless-manager
-            command: "bash"
-            env:
-              CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-serverless-manager.sh"
-            request_memory: 200Mi
-            request_cpu: 80m
-          vm_job_labels_template:
-            labels:
-              preset-kyma-guard-bot-github-token: "true"
-              preset-sa-vm-kyma-integration: "true"
-              preset-gc-project-env: "true"
-          vm_job_template_k3d:
-            annotations:
-              pipeline.platform: k3d
-              pipeline.installer: kyma deploy
-              pipeline.test: fast-integration
-              pipeline.clusterprovisioning: k3d
-        jobConfigs:
-          - repoName: "kyma-project/serverless-manager"
-            jobs:
-              - jobConfig:
-                  name: "pre-main-serverless-manager-verify"
-                  always_run: "true"
-                  optional: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels
               - jobConfig:
                   name: post-serverless-module-build
                   labels:
@@ -238,9 +270,11 @@ templates:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
-                    - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default
               - jobConfig:
                   name: post-serverless-module-image
                   labels:
@@ -257,6 +291,8 @@ templates:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
-                    - "image_buildpack-golang" # takes latest golang image
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default

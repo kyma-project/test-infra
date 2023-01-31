@@ -54,9 +54,9 @@ RUN curl -fLSs -o gc-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid
 
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
 # Cluster Version
-ENV CLUSTER_VERSION=1.24
+ENV CLUSTER_VERSION=1.25
 
-# Kubectl 1.24
+# Kubectl 1.25
 RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 
 # Docker-in-docker
