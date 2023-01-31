@@ -55,7 +55,7 @@ function deploy_base() {
 
   # uses previously set KYMA_SOURCE
   kyma2_install_dir="$KYMA_SOURCES_DIR/$KYMA_SOURCE"
-  kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
+  kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$KYMA_SOURCES_DIR" -u "true"
 
   log::info "### test directory: '$kyma2_install_dir/tests/fast-integration'"
   gardener::pre_upgrade_test_fast_integration_kyma -d "${kyma2_install_dir}/tests/fast-integration"
@@ -74,7 +74,7 @@ function upgrade() {
     log::info "### Installing Kyma $KYMA_SOURCE"
 
     kyma2_install_dir="$KYMA_SOURCES_DIR/$KYMA_SOURCE"
-    kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
+    kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$KYMA_SOURCES_DIR" -u "true"
 
     log::info "### restart all functions in all namespaces to workaround https://github.com/kyma-project/kyma/issues/14757"
     kubectl delete pod -l=serverless.kyma-project.io/managed-by=function-controller -A
