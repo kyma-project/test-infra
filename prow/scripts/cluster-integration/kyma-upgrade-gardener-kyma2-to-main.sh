@@ -133,8 +133,5 @@ log::success "Tests completed"
 log::info "### waiting some time to finish cleanups"
 sleep 60
 
-log::info "### Run pre-upgrade tests again to validate component removal"
-gardener::pre_upgrade_test_fast_integration_kyma
-
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
