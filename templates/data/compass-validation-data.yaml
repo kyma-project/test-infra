@@ -1,0 +1,80 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/incubator/compass/components/schema-migrator/compass-schema-migrator-validate.yaml
+        localSets:
+          jobConfig_default:
+            path_alias: github.com/kyma-incubator/compass
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-compass-generic.sh"
+            args:
+              - "--component"
+              - "schema-migrator"
+              - "--command"
+              - "make validate"
+            request_memory: 100Mi
+            request_cpu: 50m
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-dind-enabled: "true"
+              preset-docker-push-repository-kyma: "true"
+              preset-kyma-development-artifacts-bucket: "true"
+              preset-sa-gcr-push: "true"
+        jobConfigs:
+          - repoName: "kyma-incubator/compass"
+            jobs:
+              - jobConfig:
+                  name: "pre-main-compass-schema-migrator-validate"
+                  run_if_changed: "^components/schema-migrator/"
+                  labels:
+                    preset-build-pr: "true"
+                  branches:
+                    - ^master$
+                    - ^main$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+
+      - to: ../../prow/jobs/incubator/compass/components/schema-migrator/compass-director-gqlgen-validate.yaml
+        localSets:
+          jobConfig_default:
+            path_alias: github.com/kyma-incubator/compass
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-compass-generic.sh"
+            args:
+              - "--component"
+              - "director"
+              - "--command"
+              - "make gqlgen check-gqlgen"
+            request_memory: 100Mi
+            request_cpu: 50m
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-dind-enabled: "true"
+              preset-docker-push-repository-kyma: "true"
+              preset-kyma-development-artifacts-bucket: "true"
+              preset-sa-gcr-push: "true"
+        jobConfigs:
+          - repoName: "kyma-incubator/compass"
+            jobs:
+              - jobConfig:
+                  name: "pre-main-compass-director-gqlgen-validate"
+                  run_if_changed: "^components/director/"
+                  labels:
+                    preset-build-pr: "true"
+                  branches:
+                    - ^master$
+                    - ^main$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"

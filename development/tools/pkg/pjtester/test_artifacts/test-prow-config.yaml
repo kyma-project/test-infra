@@ -24,10 +24,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20230123-02a4c5cb00
-        initupload: gcr.io/k8s-prow/initupload:v20230123-02a4c5cb00
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20230123-02a4c5cb00
-        sidecar: gcr.io/k8s-prow/sidecar:v20230123-02a4c5cb00
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20230128-8b677bb83b
+        initupload: gcr.io/k8s-prow/initupload:v20230128-8b677bb83b
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20230128-8b677bb83b
+        sidecar: gcr.io/k8s-prow/sidecar:v20230128-8b677bb83b
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -294,7 +294,6 @@ tide:
     kyma-incubator/terraform-provider-gardener: squash
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
-    kyma-incubator/podpreset-crd: squash
     kyma-incubator/kymart: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash

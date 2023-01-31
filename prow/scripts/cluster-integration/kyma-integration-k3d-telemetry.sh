@@ -16,7 +16,7 @@ function prereq_test() {
 
 print_logs() {
   echo "Printing telemetry-operator logs"
-  kubectl logs --tail=-1 -l control-plane=telemetry-operator -n kyma-system -c manager
+  kubectl logs --tail=-1 -l control-plane=telemetry-operator -n kyma-system -c manager || true  ### Workaround: not failing the job regardless of the command result
 }
 
 trap print_logs EXIT SIGINT

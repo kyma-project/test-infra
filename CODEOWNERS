@@ -28,7 +28,6 @@
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow
 /prow/jobs/incubator/octopus @szwedm @tillknuesting @wozniakjan @piotrmiskiewicz @pk85 @ralikio @kyma-project/prow
 /prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @dzahariev @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
-/prow/jobs/incubator/podpreset-crd @szwedm @tillknuesting @wozniakjan @piotrmiskiewicz @pk85 @ralikio @kyma-project/prow
 /prow/jobs/incubator/reconciler @varbanv @clebs @kwiatekus @jeremyharisch @tobiscr @kyma-project/prow
 /prow/jobs/incubator/varkes @lilitgh @a-thaler @kyma-project/prow
 /prow/jobs/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish

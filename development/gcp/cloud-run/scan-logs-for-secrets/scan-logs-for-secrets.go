@@ -16,6 +16,7 @@ import (
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/development/gcp/pkg/http"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
+	gcptypes "github.com/kyma-project/test-infra/development/gcp/pkg/types"
 	"github.com/kyma-project/test-infra/development/types"
 	"github.com/spf13/viper"
 	"github.com/zricethezav/gitleaks/v8/config"
@@ -40,7 +41,7 @@ var (
 type message struct {
 	pubsub.ProwMessage
 	types.SecretsLeakScannerMessage
-	types.GCPStorageMetadata
+	gcptypes.GCPBucketMetadata
 }
 
 func main() {
@@ -219,8 +220,8 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 	responseEvent.SetSource(applicationName + "/" + componentName)
 	responseEvent.SetID(applicationName + "/" + componentName + "/" + trace)
 
-	msg.BucketName = github.String(bucketName)
-	msg.Directory = github.String(objectName)
+	msg.GCPBucketName = github.String(bucketName)
+	msg.GCPBucketDirectory = github.String(objectName)
 	if len(allFindings) != 0 {
 		msg.LeaksFound = github.Bool(true)
 		responseEvent.SetType("prowjob.logs.leaks.found")

@@ -1,0 +1,65 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-smoke-test-stage.yaml
+        localSets:
+          jobConfig_default:
+            path_alias: github.com/kyma-project/kyma-dashboard
+          jobConfig_periodic:
+            cluster: "trusted-workload"
+          request_small:
+            request_memory: 100Mi
+            request_cpu: 50m
+          vm_job_template_k3s:
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-dashboard-smoke-test.sh"
+          vm_job_labels_template:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-sa-vm-kyma-integration: "true"
+              preset-gc-project-env: "true"
+        jobConfigs:
+          - repoName: kyma-project/kyma-dashboard
+            jobs:
+              # presubmits
+              - jobConfig:
+                  name: "pre-kyma-dashboard-smoke-test-stage"
+                  optional: false
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/stage/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-gardener-azure-kyma-integration: "true"
+                  env:
+                    IMAGE_NAME: "stage"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
+              # postsubmits
+              - jobConfig:
+                  name: "post-kyma-dashboard-smoke-test-stage"
+                  optional: false
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/stage/|^extensions|^gulpfile.js|^Makefile|^/tests/cypress-smoke.json|^/tests/tests/.*/test-check-extensions.spec.js"
+                  labels:
+                    preset-build-pr: "false"
+                    preset-gardener-azure-kyma-integration: "true"
+                  env:
+                    IMAGE_NAME: "stage"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3s"
+                    - "vm_job_labels_template"
