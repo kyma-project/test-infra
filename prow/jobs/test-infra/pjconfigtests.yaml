@@ -21,9 +21,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -60,9 +61,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -99,9 +101,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -138,9 +141,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -177,9 +181,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -216,9 +221,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -255,9 +261,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -294,9 +301,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -333,9 +341,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -372,9 +381,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -411,9 +421,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -450,9 +461,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -489,9 +501,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -528,9 +541,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -567,9 +581,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -606,9 +621,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -645,9 +661,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -684,9 +701,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -723,9 +741,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -762,9 +781,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -801,9 +821,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -840,9 +861,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -879,9 +901,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -918,9 +941,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -957,9 +981,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -996,9 +1021,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1035,9 +1061,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1074,9 +1101,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1113,9 +1141,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1152,9 +1181,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1191,9 +1221,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1230,9 +1261,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1269,9 +1301,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1308,9 +1341,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1347,9 +1381,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1386,9 +1421,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1425,9 +1461,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1464,9 +1501,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1503,9 +1541,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1542,9 +1581,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1581,9 +1621,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1620,9 +1661,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1659,9 +1701,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1698,9 +1741,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1737,9 +1781,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1776,9 +1821,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1815,9 +1861,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1854,9 +1901,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1893,9 +1941,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1932,9 +1981,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
@@ -1971,9 +2021,10 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             command:
-              - "ginkgo"
+              - "/ginkgo"
+            args:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
             resources:
               requests:
                 memory: 1Gi
