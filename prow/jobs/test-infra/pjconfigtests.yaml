@@ -17,7 +17,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -56,7 +56,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -95,7 +95,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -134,7 +134,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -173,7 +173,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -212,7 +212,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -251,7 +251,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -290,7 +290,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -329,7 +329,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -368,7 +368,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -407,7 +407,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -446,7 +446,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -485,7 +485,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -524,7 +524,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -563,7 +563,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -602,7 +602,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -641,7 +641,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -680,7 +680,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -719,7 +719,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -758,7 +758,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -797,7 +797,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -836,7 +836,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -875,7 +875,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -914,7 +914,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -953,7 +953,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -992,7 +992,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1031,7 +1031,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1070,7 +1070,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1109,7 +1109,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1148,7 +1148,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1187,7 +1187,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1226,7 +1226,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1265,7 +1265,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1304,7 +1304,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1343,7 +1343,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1382,7 +1382,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1421,7 +1421,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1460,7 +1460,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1499,7 +1499,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1538,7 +1538,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1577,7 +1577,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1616,7 +1616,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1655,7 +1655,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1694,7 +1694,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1733,7 +1733,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1772,7 +1772,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1811,7 +1811,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1850,7 +1850,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1889,7 +1889,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1928,7 +1928,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1967,7 +1967,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/ginkgo:PR-TEST"
+          - image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
             imagePullPolicy: Always
             securityContext:
               privileged: false
