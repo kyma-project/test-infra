@@ -30,14 +30,8 @@ templates:
                   - "1.0.0"
                   - "1.0.0-rc1"
               - dependencyName: "k8s.io/apimachinery"
-                versions:
-                  - "0.2x"
               - dependencyName: "k8s.io/api"
-                versions:
-                  - "0.2x"
               - dependencyName: "k8s.io/client-go"
-                versions:
-                  - "0.2x"
           dailyDockerEcosystem:
             packageEcosystem: "docker"
             scheduleInterval: "daily"
