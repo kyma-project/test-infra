@@ -32,6 +32,15 @@ updates:
           - "1.1.0-rc1"
           - "1.0.0"
           - "1.0.0-rc1"
+      - dependency-name: "k8s.io/apimachinery"
+        versions:
+          - "0.2x"
+      - dependency-name: "k8s.io/api"
+        versions:
+          - "0.2x"
+      - dependency-name: "k8s.io/client-go"
+        versions:
+          - "0.2x"
   - package-ecosystem: "docker"
     directory: "/prow/images/prow-tools"
     labels:
