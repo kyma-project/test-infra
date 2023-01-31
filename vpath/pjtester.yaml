@@ -3,3 +3,4 @@ pjConfigs:
     kyma-project:
       kyma:
         - pjName: "kyma-upgrade-gardener-kyma2-minor-versions"
+        - pjName: "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"
