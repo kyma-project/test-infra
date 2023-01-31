@@ -1,2 +1,5 @@
-pjNames:
-  - pjName: "kyma-upgrade-gardener-kyma2-minor-versions"
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "kyma-upgrade-gardener-kyma2-minor-versions"
