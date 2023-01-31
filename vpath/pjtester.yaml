@@ -1,0 +1,6 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      test-infra:
+        - pjName: "pull-build-ginkgo"
+        - pjName: "pull-test-infra-pjconfigtest"
