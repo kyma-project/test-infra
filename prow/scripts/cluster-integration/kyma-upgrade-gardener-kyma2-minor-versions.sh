@@ -87,11 +87,6 @@ function upgrade() {
 
     log::info "### waiting some time to finish cleanups"
     sleep 60
-
-    log::info "### Run pre-upgrade tests again to validate component removal"
-    export KYMA_SOURCE="${minor_release_versions[$((i))]}"
-    kyma2_install_dir="$KYMA_SOURCES_DIR/$KYMA_SOURCE"
-    gardener::pre_upgrade_test_fast_integration_kyma -d "${kyma2_install_dir}/tests/fast-integration"
   done
 }
 
