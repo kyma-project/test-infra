@@ -16,8 +16,9 @@
             jobConfig_pjconfigtest:
               run_if_changed: '^.prow/|^.prow.yaml'
               image: "eu.gcr.io/kyma-project/test-infra/ginkgo:PR-6825"
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
-              command: "ginkgo"
+              command: "/ginkgo"
+              args:
+                - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
           jobConfigs:
               {{/* Iterate over orgs and repos in config.yaml global field. */}}
             {{- range $org := .Global.orgs }}
