@@ -449,3 +449,27 @@ templates:
                       local:
                         - "default"
                         - "postsubmit"
+                  - jobConfig:
+                      name: "pull-build-ginkgo"
+                      run_if_changed: "^prow/images/ginkgo/"
+                      args:
+                        - "--name=test-infra/ginkgo"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=prow/images/ginkgo/Dockerfile"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "presubmit"
+                  - jobConfig:
+                      name: "post-build-ginkgo"
+                      run_if_changed: "^prow/images/ginkgo/"
+                      args:
+                        - "--name=test-infra/ginkgo"
+                        - "--config=/config/kaniko-build-config.yaml"
+                        - "--context=."
+                        - "--dockerfile=prow/images/ginkgo/Dockerfile"
+                    inheritedConfigs:
+                      local:
+                        - "default"
+                        - "postsubmit"
