@@ -3,7 +3,8 @@ FROM golang:1.19.4-alpine3.17 AS builder
 COPY . /test-infra
 WORKDIR /test-infra
 RUN cd /test-infra && \
-    go install github.com/onsi/ginkgo/v2/ginkgo/... && \
+    go get github.com/onsi/ginkgo/v2/ginkgo/generators@v2.3.0 && \
+    go install github.com/onsi/ginkgo/v2/ginkgo && \
     go get github.com/onsi/gomega/...
 
 FROM golang:1.19.4-alpine3.17
