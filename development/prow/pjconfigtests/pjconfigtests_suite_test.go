@@ -1,6 +1,8 @@
 package pjconfigtests_test
 
 import (
+	"os"
+	"path"
 	"testing"
 
 	kprow "github.com/kyma-project/test-infra/development/prow"
@@ -12,7 +14,7 @@ import (
 var (
 	presubmitFixtures  []config.Presubmit
 	postsubmitFixtures []config.Postsubmit
-	peridoicFixtures   []config.Periodic
+	periodicFixtures   []config.Periodic
 )
 
 func TestProwjobsConfig(t *testing.T) {
@@ -20,7 +22,13 @@ func TestProwjobsConfig(t *testing.T) {
 
 	var err error
 	g := NewGomegaWithT(t)
-	presubmitFixtures, postsubmitFixtures, peridoicFixtures, err = kprow.GetRepoProwjobsConfigForProwjob()
+
+	orgName := os.Getenv("REPO_OWNER")
+	repoName := os.Getenv("REPO_NAME")
+	g.Expect(os.Getenv(orgName)).ToNot(BeZero())
+	g.Expect(os.Getenv(repoName)).ToNot(BeZero())
+	inrepoConfigPath := path.Join(kprow.OrgDefaultClonePath, orgName, repoName)
+	presubmitFixtures, postsubmitFixtures, periodicFixtures, err = kprow.GetProwjobsConfigForProwjob(orgName, repoName, kprow.ProwConfigDefaultClonePath, kprow.JobConfigDefaultClonePath, inrepoConfigPath)
 	g.Expect(err).To(BeNil())
 
 	RunSpecs(t, "Prowjobs config suite")
