@@ -31,7 +31,7 @@ var (
 	toolsGithubTokenPath string
 	githubOrg            string // "neighbors-team"
 	githubRepo           string // "leaks-test"
-	port                 string
+	listenPort                 string
 	sapGhClient          *kgithubv1.SapToolsClient
 )
 
@@ -49,10 +49,10 @@ func main() {
 	componentName = os.Getenv("COMPONENT_NAME")     // issue-creator
 	applicationName = os.Getenv("APPLICATION_NAME") // github-bot
 	projectID = os.Getenv("PROJECT_ID")
-	port = os.Getenv("LISTEN_PORT")
+	listenPort = os.Getenv("LISTEN_PORT")
 	githubOrg = os.Getenv("GITHUB_ORG")
 	githubRepo = os.Getenv("GITHUB_REPO")
-	toolsGithubTokenPath = os.Getenv("TOOLS_SAP_TOKEN_PATH")
+	toolsGithubTokenPath = os.Getenv("TOOLS_GITHUB_TOKEN_PATH")
 
 	mainLogger := cloudfunctions.NewLogger()
 	mainLogger.WithComponent(componentName) // search-github-issue
@@ -72,15 +72,15 @@ func main() {
 	}
 
 	http.HandleFunc("/", createGithubIssue)
-	// Determine port for HTTP service.
-	if port == "" {
-		port = "8080"
-		mainLogger.LogInfo("Defaulting to port %s", port)
+	// Determine listenPort for HTTP service.
+	if listenPort == "" {
+		listenPort = "8080"
+		mainLogger.LogInfo("Defaulting to listenPort %s", listenPort)
 	}
 	// Start HTTP server.
-	mainLogger.LogInfo("Listening on port %s", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		mainLogger.LogCritical("failed listen on port %s, error: %s", port, err)
+	mainLogger.LogInfo("Listening on listenPort %s", listenPort)
+	if err := http.ListenAndServe(":"+listenPort, nil); err != nil {
+		mainLogger.LogCritical("failed listen on listenPort %s, error: %s", listenPort, err)
 	}
 }
 
