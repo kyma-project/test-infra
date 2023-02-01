@@ -46,6 +46,12 @@ templates:
                   local:
                     - "dailyGoEcosystem"
               - jobConfig:
+                  directory: "/prow/images/ginkgo"
+                  commitMsgPrefix: "ginkgo"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
                   directory: "/prow/images/prow-tools"
                   commitMsgPrefix: "prow-tools"
                 inheritedConfigs:

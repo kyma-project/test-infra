@@ -33,6 +33,17 @@ updates:
           - "1.0.0"
           - "1.0.0-rc1"
   - package-ecosystem: "docker"
+    directory: "/prow/images/ginkgo"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "ginkgo"
+      include: "scope"
+  - package-ecosystem: "docker"
     directory: "/prow/images/prow-tools"
     labels:
       - "docker"
