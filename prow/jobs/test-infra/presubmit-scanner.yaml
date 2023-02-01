@@ -20,5 +20,5 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
