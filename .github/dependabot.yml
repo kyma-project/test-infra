@@ -32,6 +32,26 @@ updates:
           - "1.1.0-rc1"
           - "1.0.0"
           - "1.0.0-rc1"
+  - package-ecosystem: "terraform"
+    directory: "configs/terraform/secrets-leaks-log-scanner"
+    labels:
+      - "terraform"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: 
+      include: "scope"
+  - package-ecosystem: "terraform"
+    directory: "configs/terraform/core"
+    labels:
+      - "terraform"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: 
+      include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/prow-tools"
     labels:
