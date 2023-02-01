@@ -22,7 +22,7 @@ templates:
                   skip_report: "true"
                   args:
                     - "-c"
-                    - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA"
+                    - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
