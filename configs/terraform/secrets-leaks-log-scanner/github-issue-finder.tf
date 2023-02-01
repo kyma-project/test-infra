@@ -51,7 +51,7 @@ resource "google_cloud_run_service" "github_issue_finder" {
           value = "leaks-test"
         }
         env {
-          name = "TOOLS_SAP_TOKEN_PATH"
+          name = "TOOLS_GITHUB_TOKEN_PATH"
           value = "/etc/gh-token/gh-tools-kyma-bot-token"
         }
         volume_mounts {
