@@ -25,8 +25,8 @@ func TestProwjobsConfig(t *testing.T) {
 
 	orgName := os.Getenv("REPO_OWNER")
 	repoName := os.Getenv("REPO_NAME")
-	g.Expect(os.Getenv(orgName)).ToNot(BeZero())
-	g.Expect(os.Getenv(repoName)).ToNot(BeZero())
+	g.Expect(orgName).ToNot(BeZero(), "Variable orgName is zero value.")
+	g.Expect(repoName).ToNot(BeZero(), "Variable repoName is zero value.")
 	inrepoConfigPath := path.Join(kprow.OrgDefaultClonePath, orgName, repoName)
 	presubmitFixtures, postsubmitFixtures, periodicFixtures, err = kprow.GetProwjobsConfigForProwjob(orgName, repoName, kprow.ProwConfigDefaultClonePath, kprow.JobConfigDefaultClonePath, inrepoConfigPath)
 	g.Expect(err).To(BeNil())
