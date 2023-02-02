@@ -35,11 +35,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -61,11 +56,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -87,11 +77,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -113,11 +98,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -139,11 +119,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -165,11 +140,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -191,11 +161,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -217,11 +182,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -243,11 +203,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -269,11 +224,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -295,11 +245,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -321,11 +266,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -347,11 +287,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -373,11 +308,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -399,11 +329,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -425,11 +350,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -451,11 +371,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -477,11 +392,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -503,11 +413,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -529,11 +434,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -555,11 +455,27 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/template-repository:
+    - name: pre-template-repository-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-template-repository-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -581,11 +497,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -607,11 +518,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -633,11 +539,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -659,11 +560,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -685,11 +581,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -711,11 +602,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -737,11 +623,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -763,11 +644,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -789,11 +665,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -815,11 +686,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -841,11 +707,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -867,11 +728,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -893,11 +749,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -919,11 +770,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -945,11 +791,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -971,11 +812,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -997,11 +833,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1023,11 +854,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1049,11 +875,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1075,11 +896,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1101,11 +917,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1127,11 +938,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1153,11 +959,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1179,11 +980,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1205,11 +1001,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1231,11 +1022,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1257,11 +1043,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1283,11 +1064,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1309,11 +1085,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
@@ -1335,11 +1106,6 @@ presubmits: # runs on PRs
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"

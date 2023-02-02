@@ -1,4 +1,3 @@
-  {{$exclude := list "template-repository"}}
   templates:
     - from: generic.tmpl
       render:
@@ -13,18 +12,10 @@
               args:
                 - "-c"
                 - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-            jobConfig_test-infra:
-              run_if_changed: "^prow/((plugins|config).yaml|jobs/)"
-              args:
-                - "--plugin-config=prow/plugins.yaml"
-                - "--config-path=prow/config.yaml"
-                - "--job-config-path=prow/jobs"
           jobConfigs:
-              {{/* Iterate over orgs and repos in config.yaml global field. */}}
+            {{/* Iterate over orgs and repos in config.yaml global field. */}}
             {{- range $org := .Global.orgs }}
             {{- range $repo := .repos }}
-                {{/* Don't generate prowjobs for repository names in exclude list. */}}
-            {{- if has $repo.name $exclude | not }}
                 - repoName: "github.com/{{$org.name}}/{{$repo.name}}"
                   jobs:
                     - jobConfig:
@@ -35,10 +26,5 @@
                         global:
                           - "jobConfig_presubmit"
                           - "pubsub_labels"
-                          {{/* For test-infra repository test-infra as extra refs is not needed. */}}
-                          {{- if ne $repo.name "test-infra"}}
-                          - "extra_refs_test-infra"
-                          {{- end}}
             {{- end}}
-            {{- end }}
             {{- end }}
