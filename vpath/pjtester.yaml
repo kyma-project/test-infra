@@ -1,6 +1,6 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      test-infra:
+      $REPO_NAME:
         - pjName: "pre-test-infra-presubmit-scanner"
           report: true
