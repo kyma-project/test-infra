@@ -12,7 +12,7 @@ templates:
             branches:
               - ^.*$
         jobConfigs:
-          - repoName: "github.com/kyma-project/test-infr([a-z])"
+          - repoName: "github.com/kyma-project/$REPO_NAME"
             jobs:
               - jobConfig:
                   name: "pre-test-infra-presubmit-scanner"
