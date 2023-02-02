@@ -1441,9 +1441,9 @@ metadata:
   labels:
     app.kubernetes.io/instance: default
     app.kubernetes.io/part-of: tekton-pipelines
-# data:
+data:
 #   # size of the PVC volume
-#   size: 5Gi
+  size: 5Gi
 #
 #   # storage class of the PVC volume
 #   storageClassName: storage-class-name
