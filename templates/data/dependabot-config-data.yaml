@@ -187,14 +187,7 @@ templates:
               - jobConfig:
                   directory: "/development/gcp/cloud-run/slack-message-sender"
                   # commit message can be 15 characters max
-                  commitMsgPrefix: "move-gcs-bucket"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/development/gcp/cloud-run/slack-message-sender"
-                  # commit message can be 15 characters max
-                  commitMsgPrefix: "move-gcs-bucket"
+                  commitMsgPrefix: "slack-msg-sender"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"

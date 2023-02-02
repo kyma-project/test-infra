@@ -277,17 +277,6 @@ updates:
     schedule:
       interval: "daily"
     commit-message:
-      prefix: "move-gcs-bucket"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/development/gcp/cloud-run/slack-message-sender"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "move-gcs-bucket"
+      prefix: "slack-msg-sender"
       include: "scope"
 
