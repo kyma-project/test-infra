@@ -2,17 +2,1344 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/$REPO_NAME:
-    - name: pre-test-infra-presubmit-scanner
+  kyma-project/test-infra:
+    - name: pre-test-infra-validate-inrepso-prow-configs
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-test-infra-presubmit-scanner"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-inrepso-prow-configs"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      skip_report: true
+      skip_report: false
+      decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/kyma:
+    - name: pre-kyma-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-kyma-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/busola:
+    - name: pre-busola-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-busola-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/control-plane:
+    - name: pre-control-plane-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-control-plane-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/cli:
+    - name: pre-cli-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-cli-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/website:
+    - name: pre-website-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-website-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/lifecycle-manager:
+    - name: pre-lifecycle-manager-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-lifecycle-manager-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/third-party-images:
+    - name: pre-third-party-images-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-third-party-images-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/community:
+    - name: pre-community-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-community-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/module-manager:
+    - name: pre-module-manager-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-module-manager-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/hydroform:
+    - name: pre-hydroform-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-hydroform-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/istio-operator:
+    - name: pre-istio-operator-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-istio-operator-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/addons:
+    - name: pre-addons-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-addons-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/private-fn-for-e2e-serverless-tests:
+    - name: pre-private-fn-for-e2e-serverless-tests-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-private-fn-for-e2e-serverless-tests-validate-inrepso-prow-c"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/charts:
+    - name: pre-charts-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-charts-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/examples:
+    - name: pre-examples-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-examples-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/api-gateway:
+    - name: pre-api-gateway-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-api-gateway-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/istio:
+    - name: pre-istio-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-istio-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/runtime-watcher:
+    - name: pre-runtime-watcher-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-runtime-watcher-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/keda-manager:
+    - name: pre-keda-manager-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-keda-manager-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/kyma-dashboard:
+    - name: pre-kyma-dashboard-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/application-connector-manager:
+    - name: pre-application-connector-manager-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-application-connector-manager-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/rafter:
+    - name: pre-rafter-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rafter-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/btp-manager:
+    - name: pre-btp-manager-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-btp-manager-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/compass:
+    - name: pre-compass-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-compass-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/ord-service:
+    - name: pre-ord-service-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-ord-service-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/reconciler:
+    - name: pre-reconciler-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-reconciler-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/bullseye-showcase:
+    - name: pre-bullseye-showcase-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-bullseye-showcase-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/documentation-component:
+    - name: pre-documentation-component-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-documentation-component-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/compass-console:
+    - name: pre-compass-console-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-compass-console-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/sap-btp-service-operator:
+    - name: pre-sap-btp-service-operator-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-sap-btp-service-operator-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/milv:
+    - name: pre-milv-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-milv-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/varkes:
+    - name: pre-varkes-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-varkes-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/slack-bot:
+    - name: pre-slack-bot-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-slack-bot-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/podpreset-crd:
+    - name: pre-podpreset-crd-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-podpreset-crd-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/migrate:
+    - name: pre-migrate-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-migrate-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/github-dashboard:
+    - name: pre-github-dashboard-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-github-dashboard-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/website-vuepress:
+    - name: pre-website-vuepress-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-website-vuepress-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/kitbag:
+    - name: pre-kitbag-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-kitbag-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/kyma-showcase:
+    - name: pre-kyma-showcase-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-kyma-showcase-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/hydra-login-consent:
+    - name: pre-hydra-login-consent-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-hydra-login-consent-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/kymart:
+    - name: pre-kymart-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-kymart-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/examples:
+    - name: pre-examples-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-examples-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/vstudio-extension:
+    - name: pre-vstudio-extension-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-vstudio-extension-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/wordpress-connector:
+    - name: pre-wordpress-connector-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-wordpress-connector-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/connector-tools:
+    - name: pre-connector-tools-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-connector-tools-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/artwork:
+    - name: pre-artwork-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-artwork-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/opensap:
+    - name: pre-opensap-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-opensap-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/testdrape:
+    - name: pre-testdrape-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-testdrape-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/sc-removal:
+    - name: pre-sc-removal-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-sc-removal-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/service-catalog-tester:
+    - name: pre-service-catalog-tester-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-service-catalog-tester-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:latest"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-incubator/service-catalog:
+    - name: pre-service-catalog-validate-inrepso-prow-configs
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-service-catalog-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:latest"
