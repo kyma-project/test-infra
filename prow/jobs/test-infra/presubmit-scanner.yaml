@@ -2,7 +2,7 @@
 
 
 presubmits: # runs on PRs
-  kyma-project:
+  kyma-project/.*:
     - name: pre-test-infra-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
