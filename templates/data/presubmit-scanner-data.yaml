@@ -19,7 +19,7 @@
                 - repoName: "github.com/{{$org.name}}/{{$repo.name}}"
                   jobs:
                     - jobConfig:
-                        name: "pre-{{$repo.name}}-validate-inrepso-prow-configs"
+                        name: "pre-{{$repo.name}}-presubmit-scanner"
                       inheritedConfigs:
                         local:
                           - "default"

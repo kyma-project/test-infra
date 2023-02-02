@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pre-test-infra-validate-inrepso-prow-configs
+    - name: pre-test-infra-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-test-infra-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-test-infra-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -24,12 +24,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/kyma:
-    - name: pre-kyma-validate-inrepso-prow-configs
+    - name: pre-kyma-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-kyma-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -45,12 +45,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/busola:
-    - name: pre-busola-validate-inrepso-prow-configs
+    - name: pre-busola-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-busola-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-busola-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -66,12 +66,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/control-plane:
-    - name: pre-control-plane-validate-inrepso-prow-configs
+    - name: pre-control-plane-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-control-plane-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-control-plane-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -87,12 +87,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/cli:
-    - name: pre-cli-validate-inrepso-prow-configs
+    - name: pre-cli-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-cli-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-cli-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -108,12 +108,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/website:
-    - name: pre-website-validate-inrepso-prow-configs
+    - name: pre-website-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-website-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-website-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -129,12 +129,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/lifecycle-manager:
-    - name: pre-lifecycle-manager-validate-inrepso-prow-configs
+    - name: pre-lifecycle-manager-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-lifecycle-manager-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-lifecycle-manager-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -150,12 +150,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/third-party-images:
-    - name: pre-third-party-images-validate-inrepso-prow-configs
+    - name: pre-third-party-images-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-third-party-images-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-third-party-images-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -171,12 +171,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/community:
-    - name: pre-community-validate-inrepso-prow-configs
+    - name: pre-community-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-community-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-community-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -192,12 +192,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/module-manager:
-    - name: pre-module-manager-validate-inrepso-prow-configs
+    - name: pre-module-manager-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-module-manager-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-module-manager-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -213,12 +213,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/hydroform:
-    - name: pre-hydroform-validate-inrepso-prow-configs
+    - name: pre-hydroform-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-hydroform-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-hydroform-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -234,12 +234,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/istio-operator:
-    - name: pre-istio-operator-validate-inrepso-prow-configs
+    - name: pre-istio-operator-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-istio-operator-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-istio-operator-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -255,12 +255,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/addons:
-    - name: pre-addons-validate-inrepso-prow-configs
+    - name: pre-addons-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-addons-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-addons-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -276,12 +276,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/private-fn-for-e2e-serverless-tests:
-    - name: pre-private-fn-for-e2e-serverless-tests-validate-inrepso-prow-configs
+    - name: pre-private-fn-for-e2e-serverless-tests-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-private-fn-for-e2e-serverless-tests-validate-inrepso-prow-c"
+        prow.k8s.io/pubsub.runID: "pre-private-fn-for-e2e-serverless-tests-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -297,12 +297,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/charts:
-    - name: pre-charts-validate-inrepso-prow-configs
+    - name: pre-charts-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-charts-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-charts-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -318,12 +318,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/examples:
-    - name: pre-examples-validate-inrepso-prow-configs
+    - name: pre-examples-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-examples-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-examples-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -339,12 +339,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/api-gateway:
-    - name: pre-api-gateway-validate-inrepso-prow-configs
+    - name: pre-api-gateway-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-api-gateway-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-api-gateway-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -360,12 +360,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/istio:
-    - name: pre-istio-validate-inrepso-prow-configs
+    - name: pre-istio-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-istio-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-istio-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -381,12 +381,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/runtime-watcher:
-    - name: pre-runtime-watcher-validate-inrepso-prow-configs
+    - name: pre-runtime-watcher-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-runtime-watcher-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-runtime-watcher-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -402,12 +402,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/keda-manager:
-    - name: pre-keda-manager-validate-inrepso-prow-configs
+    - name: pre-keda-manager-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-keda-manager-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-keda-manager-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -423,12 +423,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/kyma-dashboard:
-    - name: pre-kyma-dashboard-validate-inrepso-prow-configs
+    - name: pre-kyma-dashboard-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -444,12 +444,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/application-connector-manager:
-    - name: pre-application-connector-manager-validate-inrepso-prow-configs
+    - name: pre-application-connector-manager-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-application-connector-manager-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-application-connector-manager-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -465,12 +465,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/template-repository:
-    - name: pre-template-repository-validate-inrepso-prow-configs
+    - name: pre-template-repository-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-template-repository-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-template-repository-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -486,12 +486,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/rafter:
-    - name: pre-rafter-validate-inrepso-prow-configs
+    - name: pre-rafter-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rafter-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-rafter-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -507,12 +507,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/btp-manager:
-    - name: pre-btp-manager-validate-inrepso-prow-configs
+    - name: pre-btp-manager-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-btp-manager-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-btp-manager-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -528,12 +528,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/compass:
-    - name: pre-compass-validate-inrepso-prow-configs
+    - name: pre-compass-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-compass-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-compass-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -549,12 +549,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/ord-service:
-    - name: pre-ord-service-validate-inrepso-prow-configs
+    - name: pre-ord-service-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-ord-service-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-ord-service-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -570,12 +570,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/reconciler:
-    - name: pre-reconciler-validate-inrepso-prow-configs
+    - name: pre-reconciler-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-reconciler-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-reconciler-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -591,12 +591,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/bullseye-showcase:
-    - name: pre-bullseye-showcase-validate-inrepso-prow-configs
+    - name: pre-bullseye-showcase-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-bullseye-showcase-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-bullseye-showcase-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -612,12 +612,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/documentation-component:
-    - name: pre-documentation-component-validate-inrepso-prow-configs
+    - name: pre-documentation-component-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-documentation-component-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-documentation-component-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -633,12 +633,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/compass-console:
-    - name: pre-compass-console-validate-inrepso-prow-configs
+    - name: pre-compass-console-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-compass-console-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-compass-console-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -654,12 +654,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/sap-btp-service-operator:
-    - name: pre-sap-btp-service-operator-validate-inrepso-prow-configs
+    - name: pre-sap-btp-service-operator-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-sap-btp-service-operator-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-sap-btp-service-operator-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -675,12 +675,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/milv:
-    - name: pre-milv-validate-inrepso-prow-configs
+    - name: pre-milv-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-milv-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-milv-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -696,12 +696,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/varkes:
-    - name: pre-varkes-validate-inrepso-prow-configs
+    - name: pre-varkes-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-varkes-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-varkes-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -717,12 +717,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/slack-bot:
-    - name: pre-slack-bot-validate-inrepso-prow-configs
+    - name: pre-slack-bot-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-slack-bot-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-slack-bot-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -738,12 +738,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/podpreset-crd:
-    - name: pre-podpreset-crd-validate-inrepso-prow-configs
+    - name: pre-podpreset-crd-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-podpreset-crd-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-podpreset-crd-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -759,12 +759,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/migrate:
-    - name: pre-migrate-validate-inrepso-prow-configs
+    - name: pre-migrate-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-migrate-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-migrate-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -780,12 +780,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/github-dashboard:
-    - name: pre-github-dashboard-validate-inrepso-prow-configs
+    - name: pre-github-dashboard-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-github-dashboard-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-github-dashboard-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -801,12 +801,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/website-vuepress:
-    - name: pre-website-vuepress-validate-inrepso-prow-configs
+    - name: pre-website-vuepress-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-website-vuepress-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-website-vuepress-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -822,12 +822,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/kitbag:
-    - name: pre-kitbag-validate-inrepso-prow-configs
+    - name: pre-kitbag-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kitbag-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-kitbag-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -843,12 +843,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/kyma-showcase:
-    - name: pre-kyma-showcase-validate-inrepso-prow-configs
+    - name: pre-kyma-showcase-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-showcase-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-kyma-showcase-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -864,12 +864,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/hydra-login-consent:
-    - name: pre-hydra-login-consent-validate-inrepso-prow-configs
+    - name: pre-hydra-login-consent-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-hydra-login-consent-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-hydra-login-consent-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -885,12 +885,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/kymart:
-    - name: pre-kymart-validate-inrepso-prow-configs
+    - name: pre-kymart-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kymart-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-kymart-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -906,12 +906,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/examples:
-    - name: pre-examples-validate-inrepso-prow-configs
+    - name: pre-examples-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-examples-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-examples-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -927,12 +927,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/vstudio-extension:
-    - name: pre-vstudio-extension-validate-inrepso-prow-configs
+    - name: pre-vstudio-extension-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-vstudio-extension-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-vstudio-extension-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -948,12 +948,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/wordpress-connector:
-    - name: pre-wordpress-connector-validate-inrepso-prow-configs
+    - name: pre-wordpress-connector-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-wordpress-connector-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-wordpress-connector-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -969,12 +969,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/connector-tools:
-    - name: pre-connector-tools-validate-inrepso-prow-configs
+    - name: pre-connector-tools-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-connector-tools-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-connector-tools-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -990,12 +990,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/artwork:
-    - name: pre-artwork-validate-inrepso-prow-configs
+    - name: pre-artwork-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-artwork-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-artwork-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -1011,12 +1011,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/opensap:
-    - name: pre-opensap-validate-inrepso-prow-configs
+    - name: pre-opensap-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-opensap-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-opensap-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -1032,12 +1032,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/testdrape:
-    - name: pre-testdrape-validate-inrepso-prow-configs
+    - name: pre-testdrape-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-testdrape-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-testdrape-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -1053,12 +1053,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/sc-removal:
-    - name: pre-sc-removal-validate-inrepso-prow-configs
+    - name: pre-sc-removal-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-sc-removal-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-sc-removal-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -1074,12 +1074,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/service-catalog-tester:
-    - name: pre-service-catalog-tester-validate-inrepso-prow-configs
+    - name: pre-service-catalog-tester-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-service-catalog-tester-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-service-catalog-tester-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
@@ -1095,12 +1095,12 @@ presubmits: # runs on PRs
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/service-catalog:
-    - name: pre-service-catalog-validate-inrepso-prow-configs
+    - name: pre-service-catalog-presubmit-scanner
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-service-catalog-validate-inrepso-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-service-catalog-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       skip_report: false
       decorate: true
