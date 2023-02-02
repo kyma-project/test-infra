@@ -6,5 +6,5 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma:
-        - pjName: pre-main-control-plane-reconciler-e2e
-        - pjName: pre-main-control-plane-reconciler-e2e-latest-release
+        - pjName: "pre-main-control-plane-reconciler-e2e"
+        - pjName: "pre-main-control-plane-reconciler-e2e-latest-release"
