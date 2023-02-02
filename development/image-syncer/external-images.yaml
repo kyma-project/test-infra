@@ -1,6 +1,6 @@
 targetRepoPrefix:  "eu.gcr.io/kyma-project/external/"
 images:
-- source: "alpine:3.16.2"
+- source: "alpine:3.17.1"
 - source: "bitnami/postgres-exporter:0.11.1-debian-11-r23"
   amd64Only: true
 - source: "busybox@sha256:3b3128d9df6bbbcc92e2358e596c9fbd722a437a62bafbc51607970e9e3b8869"
