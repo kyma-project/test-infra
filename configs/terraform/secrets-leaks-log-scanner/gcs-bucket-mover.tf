@@ -1,6 +1,6 @@
 resource "google_service_account" "gcs_bucket_mover" {
   account_id   = "gcs-bucket-mover-cr"
-  description = ""
+  description = "Identity of cloud run instance running gcs bucket mover service."
 }
 
 resource "google_storage_bucket_iam_member" "kyma_prow_logs_viewer" {

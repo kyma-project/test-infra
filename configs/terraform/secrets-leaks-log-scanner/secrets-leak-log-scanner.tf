@@ -1,6 +1,6 @@
 resource "google_service_account" "secrets_leak_log_scanner" {
   account_id   = "secrets-leak-log-scanner-cr"
-  description = ""
+  description = "Identity of cloud run instance running log scanner service."
 }
 
 resource "google_storage_bucket_iam_member" "secrets_leak_detector" {

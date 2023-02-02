@@ -1,6 +1,6 @@
 resource "google_service_account" "github_issue_creator" {
   account_id   = "github-issue-creator-cr"
-  description = ""
+  description = "Identity of cloud run instance running github issue creator service."
 }
 
 resource "google_secret_manager_secret_iam_member" "gh_issue_creator_gh_tools_kyma_bot_token_accessor" {

@@ -1,6 +1,6 @@
 resource "google_service_account" "github_issue_finder" {
   account_id   = "github-issue-finder-cr"
-  description = ""
+  description = "Identity of cloud run instance running github issue finder service."
 }
 
 resource "google_secret_manager_secret_iam_member" "gh_issue_finder_gh_tools_kyma_bot_token_accessor" {

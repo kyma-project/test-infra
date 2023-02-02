@@ -8,7 +8,7 @@ data "google_iam_policy" "run_invoker" {
 # Create a service account for Eventarc trigger and Workflows
 resource "google_service_account" "secrets_leak_detector" {
   account_id   = "secrets-leak-detector-wf"
-  description = ""
+  description = "Identity of secrets leak detector application."
 }
 
 # Grant the logWriter role to the service account

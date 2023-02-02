@@ -1,6 +1,6 @@
 resource "google_service_account" "slack_message_sender" {
   account_id   = "slack-message-sender-cr"
-  description = ""
+  description = "Identity of cloud run instance running slack message sender service."
 }
 
 resource "google_secret_manager_secret_iam_member" "slack_msg_sender_common_slack_bot_token_accessor" {
