@@ -44,7 +44,6 @@ global:
         - name: "milv"
         - name: "varkes"
         - name: "slack-bot"
-        - name: "podpreset-crd"
         - name: "migrate"
         - name: "github-dashboard"
         - name: "website-vuepress"
@@ -170,7 +169,7 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230126-7e2f5d9f"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230202-cc14d6f8"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
   image_buildpack-node:
@@ -186,7 +185,7 @@ globalSets:
   image_gardener-rotate:
     image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20221215-c20ffd65"
   image_markdown_index:
-    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230112-60c2dfc6"
+    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230127-df02d43c"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
