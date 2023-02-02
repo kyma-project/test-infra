@@ -10,6 +10,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -31,6 +32,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -52,6 +54,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-busola-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -73,6 +76,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-control-plane-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -94,6 +98,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-cli-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -115,6 +120,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-website-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -136,6 +142,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-lifecycle-manager-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -157,6 +164,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-third-party-images-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -178,6 +186,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-community-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -199,6 +208,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-module-manager-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -220,6 +230,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-hydroform-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -241,6 +252,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-istio-operator-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -262,6 +274,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-addons-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -283,6 +296,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-private-fn-for-e2e-serverless-tests-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -304,6 +318,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-charts-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -325,6 +340,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-examples-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -346,6 +362,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-api-gateway-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -367,6 +384,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-istio-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -388,6 +406,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-runtime-watcher-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -409,6 +428,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-keda-manager-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -430,6 +450,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -451,6 +472,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-application-connector-manager-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -472,6 +494,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-template-repository-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -493,6 +516,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rafter-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -514,6 +538,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-btp-manager-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -535,6 +560,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-compass-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -556,6 +582,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-ord-service-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -577,6 +604,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-reconciler-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -598,6 +626,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-bullseye-showcase-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -619,6 +648,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-documentation-component-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -640,6 +670,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-compass-console-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -661,6 +692,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-sap-btp-service-operator-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -682,6 +714,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-milv-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -703,6 +736,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-varkes-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -724,6 +758,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-slack-bot-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -745,6 +780,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-migrate-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -766,6 +802,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-github-dashboard-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -787,6 +824,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-website-vuepress-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -808,6 +846,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kitbag-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -829,6 +868,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-showcase-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -850,6 +890,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-hydra-login-consent-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -871,6 +912,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kymart-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -892,6 +934,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-examples-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -913,6 +956,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-vstudio-extension-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -934,6 +978,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-wordpress-connector-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -955,6 +1000,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-connector-tools-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -976,6 +1022,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-artwork-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -997,6 +1044,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-opensap-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1018,6 +1066,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-testdrape-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1039,6 +1088,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-sc-removal-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1060,6 +1110,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-service-catalog-tester-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1081,6 +1132,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-service-catalog-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload

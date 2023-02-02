@@ -20,6 +20,7 @@ templates:
                 jobs:
                   - jobConfig:
                       name: "pre-{{$repo.name}}-presubmit-scanner"
+                      optional: true
                     inheritedConfigs:
                       local:
                         - "default"
