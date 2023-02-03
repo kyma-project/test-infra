@@ -1,10 +1,8 @@
 # Security Leaks Scanner
 
-Welcome to the Security Leaks Scanner, a tool designed to scan repository for potential 
-security leaks. This scanner operates using gitleaks, ensuring a thorough and efficient 
-examination of your repository. With this tool, you can rest assured that your code base 
-is protected against any potential security threats and vulnerabilities. Stay ahead of 
-the game with the Security Leaks Scanner, your first line of defense against security breaches.
+Security Leaks Scanner is a tool that scans a repository for potential 
+security leaks, thus providing protection against any potential security threats and vulnerabilities. It operates using [Gitleaks](https://github.com/zricethezav/gitleaks), which ensures a thorough and efficient 
+examination of your repository. 
 
 > **NOTE:** The Security Leaks Scanner is a mandatory evaluation that must be completed 
 > prior to merging pull requests. This test is an essential part of ensuring the security 
