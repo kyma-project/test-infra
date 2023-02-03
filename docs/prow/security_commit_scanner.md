@@ -15,7 +15,7 @@ tested, not the entire repository or whole files. During the pull request testin
 Gitleaks is executed, performing leak detection operations. The scanner takes into account 
 commits from the 'main' branch to the last commit on your branch.
 
-### Workflow
+## Workflow
 
 This is how the workflow looks like from the developer's perspective:
 
@@ -24,11 +24,14 @@ Where commit A is SHA of main branch, and commit B is from top of your branch.
 2. Submit a Pull Request.
 3. Review the results.
 
-### Failure in test
+## Failure in test
 
-1. Identify the origin of the leak. The test result will indicate the location.
-2. If the leak is intentional and can be justified, add the `#gitleaks:allow` comment to the 
+Identify the origin of the leak. The test result will indicate the location. 
+
+- If the leak is intentional and can be justified, add the `#gitleaks:allow` comment to the 
 line with the leak.
-3. If the leak can be prevented but has already been committed, squash or amend the commit and push it to the remote branch.
-4. If the leak persists even after a removal attempt, it remains in the branch history and the 
+
+- If the leak can be prevented but has already been committed, squash or amend the commit and push it to the remote branch.
+
+- If the leak persists even after a removal attempt, it remains in the branch history and the 
 test blocks the merge from completing.
