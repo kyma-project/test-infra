@@ -27,8 +27,8 @@ Where commit A is SHA of main branch, and commit B is from top of your branch.
 ### Failure in test
 
 1. Identify the origin of the leak. The test result will indicate the location.
-If the leak is intentional and can be justified, add the `#gitleaks:allow` comment to the 
+2. If the leak is intentional and can be justified, add the `#gitleaks:allow` comment to the 
 line with the leak.
-If the leak can be prevented but has already been committed, squash or amend the commit and push it to the remote branch.
-If the leak persists even after a removal attempt, it remains in the branch history and the 
+3. If the leak can be prevented but has already been committed, squash or amend the commit and push it to the remote branch.
+4. If the leak persists even after a removal attempt, it remains in the branch history and the 
 test blocks the merge from completing.
