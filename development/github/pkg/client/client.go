@@ -2,8 +2,12 @@ package client
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/rand"
+	"crypto/sha256"
 	"flag"
 	"fmt"
+	"hash"
 	"net/http"
 
 	"github.com/google/go-github/v42/github"
@@ -34,6 +38,8 @@ type SapToolsClient struct {
 // Client wraps google github Client and provides additional methods.
 type Client struct {
 	*github.Client
+	hmacKey []byte
+	mac     hash.Hash
 }
 
 // String provide string representation for tokenPathFlag.
@@ -88,21 +94,38 @@ func newOauthHTTPClient(ctx context.Context, accessToken string) *http.Client {
 // TODO: create client with support for github cache or ghproxy.
 func NewClient(ctx context.Context, accessToken string) (*Client, error) {
 	tc := newOauthHTTPClient(ctx, accessToken)
-	c := github.NewClient(tc)
-
-	return &Client{c}, nil
+	ghc := github.NewClient(tc)
+	c := &Client{Client: ghc}
+	err := c.generateHmacKey()
+	if err != nil {
+		return nil, err
+	}
+	err = c.storePasswordHash(accessToken)
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
 }
 
 // NewSapToolsClient creates kyma implementation github Client with SapToolsGithubURL as an endpoint.
 // Client uses oauth authentication with bearer token.
 func NewSapToolsClient(ctx context.Context, accessToken string) (*SapToolsClient, error) {
 	tc := newOauthHTTPClient(ctx, accessToken)
-	c, err := github.NewEnterpriseClient(SapToolsGithubURL, SapToolsGithubURL, tc)
+	ghec, err := github.NewEnterpriseClient(SapToolsGithubURL, SapToolsGithubURL, tc)
 	if err != nil {
-		return nil, fmt.Errorf("got error when creating sap tools github enterprise client: %w", err)
+		return nil, err
+	}
+	c := &Client{Client: ghec}
+	err = c.generateHmacKey()
+	if err != nil {
+		return nil, err
+	}
+	err = c.storePasswordHash(accessToken)
+	if err != nil {
+		return nil, err
 	}
 
-	return &SapToolsClient{&Client{c}}, nil
+	return &SapToolsClient{c}, nil
 }
 
 // IsStatusOK will check if http response code is 200.
@@ -118,6 +141,48 @@ func IsStatusOK(resp *github.Response) (bool, error) {
 		return false, fmt.Errorf("got %d response code in HTTP response", resp.StatusCode)
 	}
 	return true, nil
+}
+
+func (c *Client) generateHmacKey() error {
+	buf := make([]byte, 128)
+	_, err := rand.Read(buf)
+	if err != nil {
+		return err
+	}
+	c.hmacKey = buf
+	return nil
+}
+
+func (c *Client) storePasswordHash(token string) error {
+	mac := hmac.New(sha256.New, c.hmacKey)
+	_, err := mac.Write([]byte(token))
+	if err != nil {
+		return err
+	}
+	c.mac = mac
+	return nil
+}
+
+func (c *Client) CompareTokensHashes(token string) (hash.Hash, error) {
+	mac := hmac.New(sha256.New, c.hmacKey)
+	_, err := mac.Write([]byte(token))
+	if err != nil {
+		return nil, err
+	}
+	if eq := hmac.Equal(c.mac.Sum(nil), mac.Sum(nil)); eq {
+		return nil, nil
+	}
+	return mac, nil
+}
+
+func (c *SapToolsClient) Reauthenticate(ctx context.Context, accessToken string) error {
+	tc := newOauthHTTPClient(ctx, accessToken)
+	ghec, err := github.NewEnterpriseClient(SapToolsGithubURL, SapToolsGithubURL, tc)
+	if err != nil {
+		return err
+	}
+	c.Client.Client = ghec
+	return nil
 }
 
 // GetUsersMap will get users-map.yaml file from github.tools.sap/kyma/test-infra repository.
