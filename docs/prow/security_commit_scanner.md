@@ -17,11 +17,8 @@ commits from the 'main' branch to the last commit on your branch.
 
 ## Workflow
 
-This is how the workflow looks like from the developer's perspective:
-
-1. If you want, scan your commits locally, use 'gitleaks detect --log-opts="--all commitA..commitB"' 
-Where commit A is SHA of main branch, and commit B is from top of your branch.
-2. Submit a Pull Request.
+1. To scan your commits locally, use `gitleaks detect --log-opts="--all commitA..commitB"`,  where commit A is SHA of branch `main`, and commit B is from the top of your branch.
+2. Submit a pull request.
 3. Review the results.
 
 ## Failure in test
