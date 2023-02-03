@@ -23,19 +23,17 @@ commits from the 'main' branch to the last commit on your branch.
 
 This is how the workflow looks like from the developer's perspective:
 
-0. [optional] Scan your commits locally, use
-'gitleaks detect --log-opts="--all commitA..commitB"' Where commit A is SHA of main branch, 
-and commit B is from top of your branch.
-1. Create a Pull Request.
-2. Get the results. 
-3. End - if the results are positive.
+1. If you want, scan your commits locally, use 'gitleaks detect --log-opts="--all commitA..commitB"' 
+Where commit A is SHA of main branch, and commit B is from top of your branch.
+2. Submit a Pull Request.
+3. Review the results.
 
 ### Failure in test
 
-1. Locate the source of the leak. The test result will indicate the location.
-2. If you believe it is intentional and can be explained, add a comment to the 
-commit with '#gitleaks:allow'. 
-3. If you can avoid the leak, but it has already appeared in the commit history, 
-you need to rewrite it. Use a squash commit or amend, and push it to your remote branch.
-4. If not, even after removing the leak, it still exists in the history of your branch 
-and the test will still not allow for the merge to be completed.
+1. Identify the origin of the leak. The test result will indicate the location.
+2. If you believe the leak was intentional and can be justified, add a comment to the 
+line with leak '#gitleaks:allow'.
+3. If the leak can be prevented, but has already been committed, use a squash commit or 
+amend and push it to the remote branch.
+4. If the leak persists even after removal, it remains in the branch history and the 
+test will block the merge from completing.
