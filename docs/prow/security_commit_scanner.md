@@ -8,8 +8,6 @@ examination of your repository.
 > before merging a pull request. It is essential for ensuring security 
 > and integrity of a repository.
 
-> **Important:** Gitleaks repository https://github.com/zricethezav/gitleaks
-
 ### How Security Leaks Scanner works
 
 Every PR is examined for security leaks. Only the commits - changes to individual files are 
