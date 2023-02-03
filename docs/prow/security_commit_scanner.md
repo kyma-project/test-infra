@@ -8,7 +8,7 @@ examination of your repository.
 > before merging a pull request. It is essential for ensuring security 
 > and integrity of a repository.
 
-### How Security Leaks Scanner works
+## How Security Leaks Scanner works
 
 Every PR is examined for security leaks. Only the commits - changes to individual files are 
 tested, not the entire repository or whole files. During the pull request testing process, 
