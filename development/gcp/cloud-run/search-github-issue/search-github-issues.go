@@ -154,13 +154,19 @@ func searchGithubIssues(w http.ResponseWriter, r *http.Request) {
 		TextMatch:   false,
 		ListOptions: github.ListOptions{},
 	}
+
 	searchResult, result, err := sapGhClient.Search.Issues(ctx, query, opts)
-	if err != nil {
-		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed search github issues, error: %s", err)
-		return
+
+	if result != nil {
+		switch {
+		case result.StatusCode == 401:
+			logger.LogWarning("Github authentication failed, got %d response status code, trying to reauthenticate", result.StatusCode)
+		case result.StatusCode < 200 || result.StatusCode >= 300:
+			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed search github issues, error: %s", err)
+			return
+		}
 	}
 
-	_, err = kgithubv1.IsStatusOK(result)
 	if err != nil {
 		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed search github issues, error: %s", err)
 		return
