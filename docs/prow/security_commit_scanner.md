@@ -12,7 +12,7 @@ examination of your repository.
 
 Every PR is examined for security leaks. Only the commits - changes to individual files are 
 tested, not the entire repository or whole files. During the pull request testing process, 
-gitleaks is executed, performing leak detection operations. The scanner takes into account 
+Gitleaks is executed, performing leak detection operations. The scanner takes into account 
 commits from the 'main' branch to the last commit on your branch.
 
 ### Workflow
