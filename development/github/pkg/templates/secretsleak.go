@@ -15,7 +15,8 @@ type IssueData interface {
 type SecretsLeakIssueData struct {
 	pubsub.ProwMessage
 	types.SecretsLeakScannerMessage
-	SecretsLeaksScannerID string
+	SecretsLeaksScannerID      string
+	KymaSecurityGithubTeamName string // kyma/security
 }
 
 func (s *SecretsLeakIssueData) RenderBody() (*bytes.Buffer, error) {
@@ -34,6 +35,8 @@ Detected leaks.
   File: {{.File}}
   RuleID: {{.RuleID}}
 {{- end}}
+
+@{{.KymaSecurityGithubTeamName}} please note we got this.
 
 <!--
 DO NOT REMOVE THIS COMMENT
