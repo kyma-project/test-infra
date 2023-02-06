@@ -263,4 +263,4 @@ templates:
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
-                    - "product_control_plane"
+                    - "product_kyma"
