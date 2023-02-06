@@ -28,6 +28,24 @@ func TestNewTagFromString(t *testing.T) {
 			ExpectedTag: Tag{},
 			ExpectErr:   true,
 		},
+		{
+			Name:        "no name, evaluate from simple value, pass",
+			TagString:   "Value",
+			ExpectedTag: Tag{Name: "Value", Value: "Value"},
+			ExpectErr:   false,
+		},
+		{
+			Name:        "no name, evaluate from go template, pass",
+			TagString:   "v{{ .Test }}",
+			ExpectedTag: Tag{Name: "Test", Value: "v{{ .Test }}"},
+			ExpectErr:   false,
+		},
+		{
+			Name:        "no name, evaluate from go template without spaces, pass",
+			TagString:   "v{{.Test}}",
+			ExpectedTag: Tag{Name: "Test", Value: "v{{.Test}}"},
+			ExpectErr:   false,
+		},
 	}
 
 	for _, c := range tc {

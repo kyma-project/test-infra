@@ -2,6 +2,7 @@ package tags
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 
 	"gopkg.in/yaml.v3"
@@ -19,14 +20,22 @@ func NewTagFromString(val string) (Tag, error) {
 	sp := strings.Split(val, "=")
 	t := Tag{}
 
-	if len(sp) > 2 {
+	switch {
+	case len(sp) > 2:
 		return t, fmt.Errorf("error parsing tag string, too many parts")
-	}
-
-	if len(sp) == 2 {
+	case len(sp) == 2:
 		t.Name = sp[0]
 		t.Value = sp[1]
-	} else {
+	default:
+		re := regexp.MustCompile(`.*\{\{.*\.(.*?)\}\}`)
+		match := re.FindStringSubmatch(val)
+
+		if len(match) > 1 {
+			t.Name = strings.Trim(match[1], " ")
+		} else {
+			t.Name = val
+		}
+
 		t.Value = val
 	}
 
