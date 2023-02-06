@@ -173,6 +173,7 @@ func searchGithubIssues(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				logger.LogCritical("failed reauthenticate github client, error %s", err)
 			}
+			// Retry GitHub API call with eventually new credentials. This may fail again because of no new credentials provided.
 			sapGhClient.WrapperClientMu.RLock()
 			searchResult, result, err = sapGhClient.Search.Issues(ctx, query, opts)
 			sapGhClient.WrapperClientMu.RUnlock()

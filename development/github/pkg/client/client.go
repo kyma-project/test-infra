@@ -200,7 +200,10 @@ func (c *Client) compareTokensHashes(token []byte) (hash.Hash, error) {
 }
 
 // Reauthenticate creates new GitHub Enterprise client with provided access token and replace existing ones.
-// It locks wrapper client mutex for read and write to prevent race conditions between client threads.
+// It locks wrapper client mutex for read and write to prevent race condition between client threads.
+// A caller should retry failed GitHub API call on non error Reauthenticate execution.
+// Because multiple threads may wait to reauthenticate and second or later thread will not detect a token change,
+// method will not raise error and log a warning message. This is to let caller to retry a GitHub API call.
 // TODO: replace cloudfunctions logger with interface
 func (c *SapToolsClient) Reauthenticate(ctx context.Context, logger *cloudfunctions.LogEntry, accessToken []byte) (bool, error) {
 	c.WrapperClientMu.Lock()
@@ -220,6 +223,7 @@ func (c *SapToolsClient) Reauthenticate(ctx context.Context, logger *cloudfuncti
 	}
 	c.Client.Client = ghec
 	c.tokenHmac = tokenHmac
+	logger.LogInfo("New token provided, updated client with new credentials.")
 	return true, nil
 }
 
