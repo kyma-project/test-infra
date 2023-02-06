@@ -16,6 +16,8 @@ type Tag struct {
 	Value string `yaml:"value" json:"value"`
 }
 
+// NewTagFromString creates new Tag from env var style string
+// if not name is provided it will deduce from value based on go template syntax
 func NewTagFromString(val string) (Tag, error) {
 	sp := strings.Split(val, "=")
 	t := Tag{}
@@ -31,6 +33,7 @@ func NewTagFromString(val string) (Tag, error) {
 		match := re.FindStringSubmatch(val)
 
 		if len(match) > 1 {
+			// We have to trim unnecessary spaces
 			t.Name = strings.Trim(match[1], " ")
 		} else {
 			t.Name = val
@@ -42,6 +45,9 @@ func NewTagFromString(val string) (Tag, error) {
 	return t, nil
 }
 
+// UnmarshalYAML provides custom logic for unmarshalling tag into struct
+// If not name is given it will be replaced by default_tag.
+// It ensures that both use cases are supported
 func (t *Tag) UnmarshalYAML(value *yaml.Node) error {
 	var tagTemplate string
 
