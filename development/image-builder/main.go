@@ -32,7 +32,7 @@ type options struct {
 	orgRepo    string
 	silent     bool
 	isCI       bool
-	tags       sets.Strings
+	tags       sets.Tags
 	platforms  sets.Strings
 	exportTags bool
 }
@@ -320,11 +320,11 @@ func (l *StrList) List() []string {
 	return n
 }
 
-func getTags(pr, sha string, templates []string) ([]string, error) {
+func getTags(pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
 	// (Ressetkk): PR tag should not be hardcoded, in the future we have to find a way to parametrize it
 	if pr != "" {
 		// assume we are using PR number, build tag as 'PR-XXXX'
-		return []string{"PR-" + pr}, nil
+		return []tags.Tag{{Name: "PR", Value: "PR-" + pr}}, nil
 	}
 	// build a tag from commit SHA
 	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha))
@@ -338,12 +338,12 @@ func getTags(pr, sha string, templates []string) ([]string, error) {
 	return p, nil
 }
 
-func gatherDestinations(repo []string, name string, tags []string) []string {
+func gatherDestinations(repo []string, name string, tags []tags.Tag) []string {
 	var dst []string
 	for _, t := range tags {
 		for _, r := range repo {
 			image := path.Join(r, name)
-			dst = append(dst, image+":"+strings.ReplaceAll(t, " ", "-"))
+			dst = append(dst, image+":"+strings.ReplaceAll(t.Value, " ", "-"))
 		}
 	}
 	return dst
@@ -399,13 +399,12 @@ func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
 }
 
 // Add parsed tags to environments which will be passed to dockerfile
-func addTagsToEnv(tags []string, envs map[string]string) map[string]string {
+func addTagsToEnv(tags []tags.Tag, envs map[string]string) map[string]string {
 	m := make(map[string]string)
 
-	for i, t := range tags {
-		// (@KacperMalachowski): ENV VAR key shouldn't be hardcoded, we have to find way to parametrize it in the future
-		key := fmt.Sprintf("DOCKER_TAG_%d", i)
-		m[key] = t
+	for _, t := range tags {
+		key := fmt.Sprintf("TAG_%s", t.Name)
+		m[key] = t.Value
 	}
 
 	for k, v := range envs {
