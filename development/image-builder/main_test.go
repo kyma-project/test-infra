@@ -168,7 +168,7 @@ func TestFlags(t *testing.T) {
 			expectedOpts: options{
 				name: "test-image",
 				tags: []tags.Tag{
-					{Name: "", Value: "latest"},
+					{Name: "latest", Value: "latest"},
 					{Name: "cookie", Value: "cookie"},
 				},
 				context:    "prow/build",
