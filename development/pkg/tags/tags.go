@@ -4,14 +4,13 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/pkg/sets"
 	"os"
 	"text/template"
 	"time"
 )
 
 type Tagger struct {
-	tags                sets.Strings
+	tags                []Tag
 	CommitSHA, ShortSHA string
 	Time                time.Time
 	Date                string
@@ -26,10 +25,10 @@ func (tg *Tagger) Env(key string) string {
 	return os.Getenv(key)
 }
 
-func (tg *Tagger) ParseTags() ([]string, error) {
-	var parsed []string
+func (tg *Tagger) ParseTags() ([]Tag, error) {
+	var parsed []Tag
 	for _, t := range tg.tags {
-		tmpl, err := template.New("tag").Parse(t)
+		tmpl, err := template.New("tag").Parse(t.Value)
 		if err != nil {
 			return nil, err
 		}
@@ -38,13 +37,17 @@ func (tg *Tagger) ParseTags() ([]string, error) {
 		if err != nil {
 			return nil, err
 		}
-		parsed = append(parsed, buf.String())
+		tag := Tag{
+			Name:  t.Name,
+			Value: buf.String(),
+		}
+		parsed = append(parsed, tag)
 	}
 
 	return parsed, nil
 }
 
-func NewTagger(tags []string, opts ...TagOption) (*Tagger, error) {
+func NewTagger(tags []Tag, opts ...TagOption) (*Tagger, error) {
 	now := time.Now()
 	t := Tagger{
 		tags: tags,
