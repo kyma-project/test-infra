@@ -2,27 +2,6 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-checks.yaml
-        localSets:
-          linting:
-            skip_report: "false"
-            max_concurrency: "10"
-            optional: "true"
-            decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            request_memory: 200Mi
-            request_cpu: 80m
-          testing:
-            skip_report: "false"
-            max_concurrency: "10"
-            optional: "true"
-            decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            request_memory: 1Gi
-            request_cpu: 100m
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -37,7 +16,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
                   name: "pull-event-publisher-proxy-unit-test"
@@ -49,31 +27,9 @@ templates:
                   run_if_changed: '^components/event-publisher-proxy/.*$'
                 inheritedConfigs:
                   global:
-                    - "jobConfig_presubmit"
-                  local:
                     - testing
+                    - "jobConfig_presubmit"
       - to: ../../prow/jobs/kyma/components/eventing-controller/eventing-controller-checks.yaml
-        localSets:
-          linting:
-            skip_report: "false"
-            max_concurrency: "10"
-            optional: "true"
-            decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            request_memory: 200Mi
-            request_cpu: 80m
-          testing:
-            skip_report: "false"
-            max_concurrency: "10"
-            optional: "true"
-            decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            request_memory: 1Gi
-            request_cpu: 100m
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -88,7 +44,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
                   name: "pull-eventing-controller-unit-test"
@@ -101,7 +56,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - testing
   - from: generic.tmpl
     render:
@@ -140,7 +94,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
                   name: "pull-application-operator-unit-test"
@@ -152,7 +105,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - testing
               - jobConfig:
                   name: "pull-central-application-connectivity-validator-unit-test"
@@ -164,7 +116,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - testing
 
               - jobConfig:
@@ -177,7 +128,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
                   name: "pull-central-application-gateway-unit-test"
@@ -189,7 +139,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - testing
 
               - jobConfig:
@@ -202,7 +151,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
                   name: "pull-compass-runtime-agent-unit-test"
@@ -214,9 +162,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - testing
-
               - jobConfig:
                   name: "pull-directory-size-exporter-lint"
                   command: "/bin/sh"
@@ -227,7 +173,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
                   name: "pull-directory-size-exporter-unit-test"
@@ -239,9 +184,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - testing
-
               - jobConfig:
                   name: "pull-function-controller-lint"
                   command: "/bin/sh"
@@ -252,7 +195,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
                   name: "pull-function-controller-unit-test"
@@ -264,9 +206,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - testing
-
               - jobConfig:
                   name: "pull-telemetry-operator-lint"
                   optional: false
@@ -278,7 +218,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
                   name: "pull-telemetry-operator-unit-test"
@@ -291,5 +230,4 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - testing
