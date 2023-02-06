@@ -29,15 +29,8 @@ func NewTagFromString(val string) (Tag, error) {
 		t.Name = sp[0]
 		t.Value = sp[1]
 	default:
-		re := regexp.MustCompile(`.*\{\{.*\.(.*?)\}\}`)
-		match := re.FindStringSubmatch(val)
-
-		if len(match) > 1 {
-			// We have to trim unnecessary spaces
-			t.Name = strings.Trim(match[1], " ")
-		} else {
-			t.Name = val
-		}
+		re := regexp.MustCompile(`{{ *\.(\w+) *}}`)
+		t.Name = re.ReplaceAllString(val, "$1")
 
 		t.Value = val
 	}

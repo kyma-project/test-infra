@@ -37,13 +37,19 @@ func TestNewTagFromString(t *testing.T) {
 		{
 			Name:        "no name, evaluate from go template, pass",
 			TagString:   "v{{ .Test }}",
-			ExpectedTag: Tag{Name: "Test", Value: "v{{ .Test }}"},
+			ExpectedTag: Tag{Name: "vTest", Value: "v{{ .Test }}"},
 			ExpectErr:   false,
 		},
 		{
 			Name:        "no name, evaluate from go template without spaces, pass",
 			TagString:   "v{{.Test}}",
-			ExpectedTag: Tag{Name: "Test", Value: "v{{.Test}}"},
+			ExpectedTag: Tag{Name: "vTest", Value: "v{{.Test}}"},
+			ExpectErr:   false,
+		},
+		{
+			Name:        "no name, evaluate from go template with multiple go-templates, pass",
+			TagString:   "v{{ .ShortSHA }}-{{ .Date }}",
+			ExpectedTag: Tag{Name: "vShortSHA-Date", Value: "v{{ .ShortSHA }}-{{ .Date }}"},
 			ExpectErr:   false,
 		},
 	}
