@@ -41,15 +41,12 @@ agent: tekton-pipeline # It's a requirement to tell Prow to use Tekton as an age
 cluster: tekton-pipelines # Name of the cluster, where Tekton is working
 ```
 
-Then you must define a PipelineRun spec using `pipeline_run_spec`. For the information on which fields you can define in this spec, see the [Godoc of `PipelineRunSpec`](https://pkg.go.dev/github.com/tektoncd/pipeline@v0.37.5/pkg/apis/pipeline/v1alpha1#PipelineRunSpec).
+Then you must define a PipelineRun spec using `pipeline_run_spec`. For the information on which fields you can define in this spec, see the [Godoc of `PipelineRunSpec`](https://pkg.go.dev/github.com/tektoncd/pipeline@v0.44.0/pkg/apis/pipeline/v1alpha1#PipelineRunSpec).
 
 According to the documentation, you must define a PipelineRunSpec. Dynamically defined `PipelineSpec`, as supported by Tekton's API, is used here:
 ```yaml
 tekton_pipeline_run_spec:
   v1beta1:
-      params:
-        - name: username
-          value: "Prow+Tekton!"
       pipelineSpec:
         description: "Hello world!"
         tasks:
@@ -68,7 +65,7 @@ tekton_pipeline_run_spec:
                   image: alpine:edge
                   script: |
                     #!/bin/sh
-                    echo "Bye, $(params.username)"
+                    echo "Bye!"
 ```
 
 The full ProwJob definition looks like this:
