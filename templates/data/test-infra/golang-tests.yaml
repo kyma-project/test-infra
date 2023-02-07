@@ -1,0 +1,38 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/test-infra/go-validation.yaml
+        localSets:
+        jobConfigs:
+          - repoName: "kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "pull-unit-test-go"
+                  run_if_changed: '.*\.go$'
+                  cluster: untrusted-workload
+                  optional: false
+                  annotations:
+                    pipeline.trigger: "pr-submit"
+                  branches:
+                    - ^main$
+                  command: "go"
+                  args:
+                    - "test"
+                    - "-cover"
+                    - "./..."
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - testing
+              - jobConfig:
+                  name: "pre-main-test-infra-lint"
+                  cluster: untrusted-workload
+                  command: "/golangci-lint.sh"
+                  run_if_changed: 'go.mod|go.sum|.*\.go$|.golangci.yaml'
+                  privileged: false
+                  automountServiceAccountToken: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - "jobConfig_presubmit"
+                    - linting
