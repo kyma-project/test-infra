@@ -56,9 +56,9 @@ templates:
               - jobConfig:
                   name: pull-api-gateway-integration-test
                   always_run: true
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh && make"
+                  command: "/bin/sh"
                   args:
-                    - "test-integration"
+                    - "-c /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh && make test-integration"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min

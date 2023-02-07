@@ -53,7 +53,7 @@ templates:
                   labels:
                     preset-bot-github-token: "true"
                   command: "/bin/sh"
-                  args: 
+                  args:
                     - "-c"
                     - "git remote add origin https://github.com/kyma-project/api-gateway && goreleaser release"
                 inheritedConfigs:
