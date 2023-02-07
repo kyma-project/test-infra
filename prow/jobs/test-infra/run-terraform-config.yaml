@@ -73,7 +73,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/ghcomment/github-comments"
+              - "/ghcomment/github-comment"
             args:
               - "hide"
               - "--org"
