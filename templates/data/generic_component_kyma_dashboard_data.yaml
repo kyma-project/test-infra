@@ -10,7 +10,7 @@ templates:
                   args:
                     - "."
                     - "release-dev"
-                  run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile"
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/"
                   skipReleaseJobs: "true"
                 inheritedConfigs:
                   global:
@@ -35,7 +35,7 @@ templates:
                   args:
                     - "."
                     - "release-stage"
-                  run_if_changed: "^Dockerfile.*|^package.json|^environments/stage/|^extensions|^gulpfile.js|^Makefile"
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/stage/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
                   skipReleaseJobs: "true"
                 inheritedConfigs:
                   global:
@@ -60,7 +60,7 @@ templates:
                   args:
                     - "."
                     - "release-prod"
-                  run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile"
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
                   skipReleaseJobs: "true"
                 inheritedConfigs:
                   global:

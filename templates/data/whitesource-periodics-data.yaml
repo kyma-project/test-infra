@@ -209,20 +209,6 @@ templates:
                     - "jobConfig_default"
                     - "product_kyma"
               - jobConfig:
-                  repository: "podpreset-crd"
-                  language: "golang-mod"
-                  project: "kyma-incubator"
-                  custom_projectname: "podpreset"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma"
-              - jobConfig:
                   repository: "reconciler"
                   language: "golang-mod"
                   project: "kyma-incubator"
@@ -250,3 +236,17 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_control_plane"
+              - jobConfig:
+                  repository: "keda-manager"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  base_ref: "main"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_kyma"

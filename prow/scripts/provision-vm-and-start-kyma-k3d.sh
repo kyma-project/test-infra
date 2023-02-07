@@ -178,16 +178,6 @@ if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR ]] || [[ -v APP
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-app-connector-components-skr.yaml" "~/kyma-integration-k3d-app-connector-components-skr.yaml"
 fi
 
-if [[ -v TELEMETRY_ALPHA_ENABLED ]]; then
-  log::info "Copying components file for telemetry tests"
-  #shellcheck disable=SC2088
-  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml" "~/kyma-integration-k3d-telemetry-components.yaml"
-  log::info "Triggering the installation with managed Fluent Bit"
-  utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-alpha.sh"
-  log::success "all done"
-  exit 0
-fi
-
 if [[ -v TELEMETRY_ENABLED ]]; then
   log::info "Copying components file for telemetry tests"
   #shellcheck disable=SC2088

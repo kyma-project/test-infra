@@ -24,14 +24,15 @@ import (
 )
 
 var (
-	componentName   string
-	applicationName string
-	projectID       string
-	githubToken     []byte
-	githubOrg       string // "neighbors-team"
-	githubRepo      string // "leaks-test"
-	port            string
-	sapGhClient     *kgithubv1.SapToolsClient
+	componentName        string
+	applicationName      string
+	projectID            string
+	githubToken          []byte
+	toolsGithubTokenPath string
+	githubOrg            string // "neighbors-team"
+	githubRepo           string // "leaks-test"
+	listenPort           string
+	sapGhClient          *kgithubv1.SapToolsClient
 )
 
 type message struct {
@@ -48,9 +49,10 @@ func main() {
 	componentName = os.Getenv("COMPONENT_NAME")     // issue-creator
 	applicationName = os.Getenv("APPLICATION_NAME") // github-bot
 	projectID = os.Getenv("PROJECT_ID")
-	port = os.Getenv("LISTEN_PORT")
+	listenPort = os.Getenv("LISTEN_PORT")
 	githubOrg = os.Getenv("GITHUB_ORG")
 	githubRepo = os.Getenv("GITHUB_REPO")
+	toolsGithubTokenPath = os.Getenv("TOOLS_GITHUB_TOKEN_PATH")
 
 	mainLogger := cloudfunctions.NewLogger()
 	mainLogger.WithComponent(componentName) // search-github-issue
@@ -59,7 +61,7 @@ func main() {
 
 	ctx := context.Background()
 
-	githubToken, err = os.ReadFile("/etc/github-token/github-token")
+	githubToken, err = os.ReadFile(toolsGithubTokenPath)
 	if err != nil {
 		mainLogger.LogCritical("failed read github token from file, error: %s", err)
 	}
@@ -70,23 +72,24 @@ func main() {
 	}
 
 	http.HandleFunc("/", createGithubIssue)
-	// Determine port for HTTP service.
-	if port == "" {
-		port = "8080"
-		mainLogger.LogInfo("Defaulting to port %s", port)
+	// Determine listenPort for HTTP service.
+	if listenPort == "" {
+		listenPort = "8080"
+		mainLogger.LogInfo("Defaulting to listenPort %s", listenPort)
 	}
 	// Start HTTP server.
-	mainLogger.LogInfo("Listening on port %s", port)
-	if err := http.ListenAndServe(":"+port, nil); err != nil {
-		mainLogger.LogCritical("failed listen on port %s, error: %s", port, err)
+	mainLogger.LogInfo("Listening on listenPort %s", listenPort)
+	if err := http.ListenAndServe(":"+listenPort, nil); err != nil {
+		mainLogger.LogCritical("failed listen on listenPort %s, error: %s", listenPort, err)
 	}
 }
 
 func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	var (
-		msg         message
-		trace       string
-		traceHeader string
+		msg                        message
+		trace                      string
+		traceHeader                string
+		kymaSecurityGithubTeamName string
 	)
 
 	traceHeader = r.Header.Get("X-Cloud-Trace-Context")
@@ -103,6 +106,8 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	logger.WithLabel("io.kyma.app", applicationName)
 	logger.WithLabel("io.kyma.component", componentName)
 	logger.WithTrace(trace)
+
+	kymaSecurityGithubTeamName = os.Getenv("KYMA_SECURITY_GITHUB_TEAM_NAME")
 
 	requestDump, err := httputil.DumpRequest(r, true)
 	if err != nil {
@@ -133,9 +138,10 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	secretsleakscannerID := base64.StdEncoding.EncodeToString(h)
 
 	issueData := templates.SecretsLeakIssueData{
-		SecretsLeaksScannerID:     secretsleakscannerID,
-		ProwMessage:               msg.ProwMessage,
-		SecretsLeakScannerMessage: msg.SecretsLeakScannerMessage,
+		SecretsLeaksScannerID:      secretsleakscannerID,
+		ProwMessage:                msg.ProwMessage,
+		SecretsLeakScannerMessage:  msg.SecretsLeakScannerMessage,
+		KymaSecurityGithubTeamName: kymaSecurityGithubTeamName,
 	}
 
 	issueBody, err := issueData.RenderBody()
