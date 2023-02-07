@@ -4,13 +4,9 @@ templates:
       - to: ../../prow/jobs/api-gateway/api-gateway-validation.yaml
         localSets:
           jobConfig_default:
-            path_alias: github.com/kyma-project/kyma
+            path_alias: github.com/kyma-project/api-gateway
             labels:
               preset-debug-commando-oom: "true"
-          jobConfig_presubmit:
-            optional: true
-            labels:
-              preset-build-pr: "true"
           gardener_gcp_job:
             labels:
               preset-gardener-gcp-kyma-integration: "true"
@@ -58,7 +54,8 @@ templates:
                   always_run: true
                   command: "/bin/sh"
                   args:
-                    - "-c /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh && make test-integration"
+                    - "-c"
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
