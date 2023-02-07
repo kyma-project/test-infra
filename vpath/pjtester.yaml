@@ -6,9 +6,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       telemetry-manager:
-        - pjName: "presubmit-test-job"
-          report: true
-        - pjName: "orphaned-disks-cleaner"
+        - pjName: "pre-telemetry-manager-operator-lint"
 prConfigs: #
   kyma-project:
     telemetry-manager:
