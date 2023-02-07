@@ -1,6 +1,10 @@
 postsubmits:
   kyma-project/test-infra:
     - name: post-gencred-refresh-kubeconfigs
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-gencred-refresh-kubeconfigs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       cluster: trusted-workload
       run_if_changed: '^configs/gencred-config.yaml'
       decorate: true
@@ -21,6 +25,10 @@ postsubmits:
 periodics:
   - cron: "17 */6 * * *"  # Every 6 hours at 17 minutes past the hour
     name: ci-gencred-refresh-kubeconfigs
+    labels:
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-gencred-refresh-kubeconfigs"
+      prow.k8s.io/pubsub.topic: "prowjobs"
     cluster: trusted-workload
     extra_refs:
       - org: kyma-project

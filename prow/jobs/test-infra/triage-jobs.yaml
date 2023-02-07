@@ -1,5 +1,9 @@
 periodics:
   - name: ci-kyma-bot-triage-close
+    labels:
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-kyma-bot-triage-close"
+      prow.k8s.io/pubsub.topic: "prowjobs"
     interval: 1h
     cluster: trusted-workload
     decorate: true
@@ -48,6 +52,10 @@ periodics:
             secretName: kyma-bot-triage-token
 
   - name: ci-kyma-bot-triage-stale
+    labels:
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-kyma-bot-triage-stale"
+      prow.k8s.io/pubsub.topic: "prowjobs"
     interval: 1h
     cluster: trusted-workload
     decorate: true
