@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230203-47292c1e"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
             command:
               - "/bin/sh"
             args:
@@ -93,7 +93,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230203-47292c1e"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
             command:
               - "/bin/sh"
             args:
@@ -143,7 +143,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230203-47292c1e"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
             command:
               - "/bin/sh"
             args:
@@ -193,7 +193,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230203-47292c1e"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
             command:
               - "/bin/sh"
             args:
@@ -243,7 +243,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230203-47292c1e"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
             command:
               - "/bin/sh"
             args:
@@ -292,7 +292,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230203-47292c1e"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
             command:
               - "/bin/sh"
             args:
