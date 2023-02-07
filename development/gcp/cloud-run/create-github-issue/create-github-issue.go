@@ -31,7 +31,7 @@ var (
 	toolsGithubTokenPath string
 	githubOrg            string // "neighbors-team"
 	githubRepo           string // "leaks-test"
-	listenPort                 string
+	listenPort           string
 	sapGhClient          *kgithubv1.SapToolsClient
 )
 
@@ -86,9 +86,10 @@ func main() {
 
 func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	var (
-		msg         message
-		trace       string
-		traceHeader string
+		msg                        message
+		trace                      string
+		traceHeader                string
+		kymaSecurityGithubTeamName string
 	)
 
 	traceHeader = r.Header.Get("X-Cloud-Trace-Context")
@@ -105,6 +106,8 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	logger.WithLabel("io.kyma.app", applicationName)
 	logger.WithLabel("io.kyma.component", componentName)
 	logger.WithTrace(trace)
+
+	kymaSecurityGithubTeamName = os.Getenv("KYMA_SECURITY_GITHUB_TEAM_NAME")
 
 	requestDump, err := httputil.DumpRequest(r, true)
 	if err != nil {
@@ -135,9 +138,10 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 	secretsleakscannerID := base64.StdEncoding.EncodeToString(h)
 
 	issueData := templates.SecretsLeakIssueData{
-		SecretsLeaksScannerID:     secretsleakscannerID,
-		ProwMessage:               msg.ProwMessage,
-		SecretsLeakScannerMessage: msg.SecretsLeakScannerMessage,
+		SecretsLeaksScannerID:      secretsleakscannerID,
+		ProwMessage:                msg.ProwMessage,
+		SecretsLeakScannerMessage:  msg.SecretsLeakScannerMessage,
+		KymaSecurityGithubTeamName: kymaSecurityGithubTeamName,
 	}
 
 	issueBody, err := issueData.RenderBody()

@@ -20,10 +20,22 @@ component_name = os.getenv('COMPONENT_NAME')
 application_name = os.getenv('APPLICATION_NAME')
 slack_channel_id = os.getenv('SLACK_CHANNEL_ID')
 slack_base_url = os.getenv('SLACK_BASE_URL')  # https://slack.com/api
+kyma_security_slack_group_name = os.getenv('KYMA_SECURITY_SLACK_GROUP_NAME')
 # TODO: make it configurable through env vars
 with open('/etc/slack-secret/common-slack-bot-token') as token_file:
     slack_bot_token = token_file.readline()
 slack_app = App(token=slack_bot_token)
+
+slack_usergroups = slack_app.client.usergroups_list()
+tmp_groups = [usersgroup["id"] for usersgroup in slack_usergroups if usersgroup["handle"] == "btp-kyma-security"]
+if len(tmp_groups) != 1:
+    entry = dict(
+        severity="ERROR",
+        message=f"Failed get kyma security slack gropup id from usersgroups, got unexpected number of items, " +
+                f"expected 1 but got {len(tmp_groups)}"
+    )
+    print(json.dumps(entry))
+kyma_security_slack_group_id: str = tmp_groups[0]
 
 
 @app.route("/secret-leak-found", methods=["POST"])
@@ -56,6 +68,7 @@ def secret_leak_found():
             **log_fields,
         )
         print(json.dumps(entry))
+
         result = slack_app.client.chat_postMessage(
             channel=slack_channel_id,
             text=f"Found secrets in {event.data['job_name']} {event.data['job_type']} prowjob logs.\n"
@@ -99,7 +112,31 @@ def secret_leak_found():
         )
         entry = dict(
             severity="INFO",
-            message=f'Slack message send, message id: {result["message"]["ts"]}',
+            message=f'Slack message send, message id: {result["ts"]}',
+            **log_fields,
+        )
+        print(json.dumps(entry))
+        msg_ts = result["ts"]
+        result = slack_app.client.chat_postMessage(
+            channel=slack_channel_id,
+            text=f"<!subteam^{kyma_security_slack_group_id}>, just to let you know we got this.\n",
+            username="KymaBot",
+            thread_ts=msg_ts,
+            unfurl_links=True,
+            unfurl_media=True,
+            link_names=True,
+            blocks=[{
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"<!subteam^{kyma_security_slack_group_id}>, just to let you know we got this.\n"
+                    }
+                }
+            ]
+        )
+        entry = dict(
+            severity="INFO",
+            message=f'Slack message send, message id: {result["ts"]}',
             **log_fields,
         )
         print(json.dumps(entry))
