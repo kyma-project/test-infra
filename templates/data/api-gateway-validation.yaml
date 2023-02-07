@@ -23,6 +23,32 @@ templates:
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
             request_cpu: 500m
+          jobConfig_default:
+            path_alias: github.com/kyma-project/kyma
+            request_memory: 1Gi
+            request_cpu: 400m
+            labels:
+              preset-debug-commando-oom: "true"
+          jobConfig_presubmit:
+            optional: true
+            labels:
+              preset-build-pr: "true"
+          gardener_gcp_job:
+            labels:
+              preset-gardener-gcp-kyma-integration: "true"
+              preset-kyma-cli-stable: "true"
+              preset-cluster-version: "true"
+            env:
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+              GARDENER_REGION: "europe-west4"
+              GARDENER_ZONES: "europe-west4-b"
+            annotations:
+              pipeline.platform: gardener_gcp
+          command_integration:
+            annotations:
+              pipeline.installer: kyma install
+              pipeline.test: octopus
+              pipeline.clusterprovisioning: kyma cli
         jobConfigs:
           - repoName: "kyma-project/api-gateway"
             jobs:
@@ -51,14 +77,28 @@ templates:
                     - testing
               - jobConfig:
                   name: pull-api-gateway-integration-test
+                  optional: false
                   always_run: true
                   labels:
+                    preset-build-pr: "true"
                     preset-api-gateway-int-test-client-creds: "true"
-                  command: "make"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh; make"
                   args:
                     - "test-integration"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_presubmit
-                  local:
-                    - testing
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  env:
+                    API_GATEWAY_INTEGRATION: "true"
+                    TEST_ORY_IMAGE: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
+                  inheritedConfigs:
+                    global:
+                      - jobConfig_default
+                      - jobConfig_presubmit
+                      - extra_refs_test-infra
+                      - image_kyma-integration
+                    local:
+                      - jobConfig_default
+                      - gardener_gcp_job
+                      - command_integration
+                      - testing
