@@ -1,0 +1,15 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      telemetry-manager:
+        prNumber: 1
+  prowJobs:
+    kyma-project:
+      telemetry-manager:
+        - pjName: "presubmit-test-job"
+          report: true
+        - pjName: "orphaned-disks-cleaner"
+prConfigs: #
+  kyma-project:
+    telemetry-manager:
+      prNumber: 1
