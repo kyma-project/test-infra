@@ -7,6 +7,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "api-gateway-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -55,6 +58,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "control-plane-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -103,6 +109,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -151,6 +160,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "lifecycle-manager-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -199,6 +211,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "runtime-watcher-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -247,6 +262,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "module-manager-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -295,6 +313,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "busola-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -343,6 +364,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "cli-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -391,6 +415,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "hydroform-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -441,6 +468,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "reconciler-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -489,6 +519,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "warden-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -537,6 +570,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "keda-manager-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -587,6 +623,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-2.11-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -635,6 +674,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "cli-2.11-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -686,6 +728,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-2.10-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -734,6 +779,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "cli-2.10-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"

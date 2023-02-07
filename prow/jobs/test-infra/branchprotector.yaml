@@ -1,5 +1,9 @@
 periodics:
   - name: ci-prow-branchprotector
+    labels:
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-prow-branchprotector"
+      prow.k8s.io/pubsub.topic: "prowjobs"
     cron: "54 * * * *" # at 54th minute every hour
     decorate: true
     decoration_config:
