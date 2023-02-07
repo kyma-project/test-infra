@@ -40,6 +40,13 @@ templates:
               - "docker"
               - "skip-review"
               - "area/dependency"
+          dailyTerraform:
+            packageEcosystem: "terraform"
+            scheduleInterval: "daily"
+            commitIncludeScope: "true"
+            labels:
+              - "terraform"
+              - "area/dependency"
         jobConfigs:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
@@ -48,6 +55,16 @@ templates:
                 inheritedConfigs:
                   local:
                     - "dailyGoEcosystem"
+              - jobConfig:
+                  directory: "configs/terraform/secrets-leaks-log-scanner"
+                inheritedConfigs:
+                  local:
+                    - "dailyTerraform"
+              - jobConfig:
+                  directory: "configs/terraform/core"
+                inheritedConfigs:
+                  local:
+                    - "dailyTerraform"
               - jobConfig:
                   directory: "/prow/images/prow-tools"
                   commitMsgPrefix: "prow-tools"
