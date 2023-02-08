@@ -11,6 +11,9 @@
       {{- end}}
       {{- if or .JobConfig.labels .JobConfig.project .JobConfig.product false}}
       labels:
+        prow.k8s.io/pubsub.project: {{if .JobConfig.pubsub_project}}{{quote .JobConfig.pubsub_project}}{{else}}{{fail "mandatory .JobConfig.pubsub_project is not defined, probably globalSet jobConfig_default not inherited"}}{{end}}
+        prow.k8s.io/pubsub.runID: "{{default .JobConfig.repository .JobConfig.custom_projectname}}{{if .JobConfig.whitesource_release}}-{{.JobConfig.Release}}{{end}}-whitesource-scan"
+        prow.k8s.io/pubsub.topic: {{if .JobConfig.pubsub_topic}}{{quote .JobConfig.pubsub_topic}}{{else}}{{fail "mandatory .JobConfig.pubsub_topic is not defined, probably globalSet jobConfig_default not inherited"}}{{end}}
         {{- if .JobConfig.labels}}
         {{- range $key, $value := .JobConfig.labels}}
         {{$key}}: {{quote $value}}

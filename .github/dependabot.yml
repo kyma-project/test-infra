@@ -35,6 +35,26 @@ updates:
       - dependency-name: "k8s.io/client-go"
         versions:
           - "0.2x"
+  - package-ecosystem: "terraform"
+    directory: "configs/terraform/secrets-leaks-log-scanner"
+    labels:
+      - "terraform"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: 
+      include: "scope"
+  - package-ecosystem: "terraform"
+    directory: "configs/terraform/core"
+    labels:
+      - "terraform"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: 
+      include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/prow-tools"
     labels:
