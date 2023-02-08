@@ -1,4 +1,4 @@
-# Prow Secrets Management
+# KMS Secrets Management
 
 ## Overview
 
@@ -19,7 +19,7 @@ Use the `export {VARIABLE}={value}` command to set up these variables, where:
  - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
  - **LOCATION** is the geographical location of the data center that handles requests for Cloud KMS regarding a given resource and stores the corresponding cryptographic keys. When set to `global`, your Cloud KMS resources are available from multiple data centres.
 
-## Secrets management
+## KMS Secrets management
 
 >**NOTE:** Before you follow this guide, check Prow Secrets setup for the Google Cloud project.
 
