@@ -409,7 +409,7 @@ templates:
                   args:
                     - "--name=telemetry-operator"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context="
+                    - "--context=."
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
@@ -421,7 +421,7 @@ templates:
                   args:
                     - "--name=telemetry-operator"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context="
+                    - "--context=."
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
