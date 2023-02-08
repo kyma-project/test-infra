@@ -101,16 +101,12 @@ presubmits: # runs on PRs
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
             env:
-              - name: API_GATEWAY_INTEGRATION
-                value: "true"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
-              - name: TEST_ORY_IMAGE
-                value: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
             resources:
               requests:
                 memory: 1Gi
