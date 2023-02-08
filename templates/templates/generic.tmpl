@@ -86,6 +86,9 @@
             securityContext:
               privileged: {{.JobConfig.privileged}}
             {{- end}}
+            {{- if .JobConfig.workingDir}}
+            workingDir: {{.JobConfig.workingDir}}
+            {{- end}}
             command:
               {{- if .JobConfig.command }}
               - {{ quote .JobConfig.command }}
