@@ -9,6 +9,7 @@ templates:
                   privileged: "false"
                   name: "pull-secret-leaks-log-scanner-tf-plan"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
+                  #image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
                   labels:
                     preset-bot-github-token: "true"
@@ -25,6 +26,21 @@ templates:
                     - "terraform"
                     - "plan"
                     - "-chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+              - jobConfig:
+                  privileged: "false"
+                  name: "test-pull-secret-leaks-log-scanner-tf-plan"
+                  run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
+                  #image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
+                  labels:
+                    preset-bot-github-token: "true"
+                  command: "sleep"
+                  args:
+                    - "1800"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -53,6 +69,7 @@ templates:
                   privileged: "false"
                   name: "post-secret-leaks-log-scanner-tf-apply"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
+                  #image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
                   command: "/tfcmt/tfcmt"
                   args:
