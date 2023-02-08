@@ -82,6 +82,33 @@ templates:
             request_memory: 1Gi
             request_cpu: 100m
         jobConfigs:
+          - repoName: "kyma-project/telemetry-manager"
+            jobs:
+              - jobConfig:
+                  name: "pull-telemetry-manager-lint"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "make lint"
+                  run_if_changed: '^(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - linting
+              - jobConfig:
+                  name: "pull-telemetry-manager-unit-test"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "make test-local"
+                  run_if_changed: '^.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - testing
+
           - repoName: "kyma-project/kyma"
             jobs:
               - jobConfig:
@@ -231,52 +258,4 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
-      - to: ../../prow/jobs/kyma/components/telemetry-manager-static-checks.yaml
-        localSets:
-          linting:
-            skip_report: "false"
-            max_concurrency: "10"
-            optional: "true"
-            decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            request_memory: 200Mi
-            request_cpu: 80m
-          testing:
-            skip_report: "false"
-            max_concurrency: "10"
-            optional: "true"
-            decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            request_memory: 1Gi
-            request_cpu: 100m
-        jobConfigs:
-          - repoName: "kyma-project/telemetry-manager"
-            jobs:
-              - jobConfig:
-                  name: "pull-telemetry-manager-lint"
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "make lint"
-                  run_if_changed: '^(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - linting
-              - jobConfig:
-                  name: "pull-telemetry-manager-unit-test"
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "make test-local"
-                  run_if_changed: '^.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
+
