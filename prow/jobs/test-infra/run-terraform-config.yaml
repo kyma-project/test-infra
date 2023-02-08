@@ -12,7 +12,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
       run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -24,7 +23,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
             securityContext:
-              privileged: true
+              privileged: false
             workingDir: /home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner
             command:
               - "/tfcmt/tfcmt"
@@ -59,7 +58,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
       run_if_changed: '^configs/terraform'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -71,7 +69,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/ghcomment/github-comment"
             args:
@@ -104,7 +102,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-secret-leaks-log-scanner-tf-apply"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
-      optional: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -116,7 +113,7 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
             securityContext:
-              privileged: true
+              privileged: false
             workingDir: /home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner
             command:
               - "/tfcmt/tfcmt"

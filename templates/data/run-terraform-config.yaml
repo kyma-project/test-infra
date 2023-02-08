@@ -6,7 +6,7 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  optional: "true"
+                  privileged: "false"
                   name: "pull-secret-leaks-log-scanner-tf-plan"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
                   image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
@@ -30,7 +30,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  optional: "true"
+                  privileged: "false"
                   name: "pull-hide-tf-github-comments"
                   run_if_changed: '^configs/terraform'
                   image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
@@ -50,7 +50,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  optional: "true"
+                  privileged: "false"
                   name: "post-secret-leaks-log-scanner-tf-apply"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
                   image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
