@@ -24,8 +24,8 @@ templates:
                     - "plan"
                     - "--"
                     - "terraform"
-                    - "plan"
                     - "-chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner"
+                    - "plan"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -49,7 +49,7 @@ templates:
                   privileged: "false"
                   name: "pull-hide-tf-github-comments"
                   run_if_changed: '^configs/terraform'
-                  image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
                   labels:
                     preset-bot-github-token: "true"
                   command: "/ghcomment/github-comment"
@@ -79,8 +79,8 @@ templates:
                     - "$(REPO_NAME)"
                     - "-pr"
                     - "$(PULL_NUMBER)"
-                    - "apply"
                     - "-chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner"
+                    - "apply"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
