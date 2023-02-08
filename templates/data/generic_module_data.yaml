@@ -296,4 +296,3 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - job_default
-
