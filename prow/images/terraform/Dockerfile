@@ -1,4 +1,4 @@
-FROM hashicorp/terraform:1.3.7
+FROM hashicorp/terraform:1.3.6
 
 RUN apk add --no-cache unzip curl && \
     mkdir /tfplugins && \
