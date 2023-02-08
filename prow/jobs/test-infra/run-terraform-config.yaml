@@ -21,10 +21,9 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
             securityContext:
               privileged: false
-            workingDir: /home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner
             command:
               - "/tfcmt/tfcmt"
             args:
@@ -38,6 +37,7 @@ presubmits: # runs on PRs
               - "--"
               - "terraform"
               - "plan"
+              - "-chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner"
             resources:
               requests:
                 memory: 3Gi
@@ -111,10 +111,9 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
             securityContext:
               privileged: false
-            workingDir: /home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner
             command:
               - "/tfcmt/tfcmt"
             args:
@@ -125,6 +124,7 @@ postsubmits: # runs on main
               - "-pr"
               - "$(PULL_NUMBER)"
               - "apply"
+              - "-chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner"
             resources:
               requests:
                 memory: 3Gi
