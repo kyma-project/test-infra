@@ -4,7 +4,7 @@ templates:
       - to: ../../prow/jobs/api-gateway/api-gateway-validation.yaml
         localSets:
           jobConfig_default:
-            path_alias: github.com/kyma-project/api-gateway
+            path_alias: github.com/kyma-project/kyma
             labels:
               preset-debug-commando-oom: "true"
           gardener_gcp_job:
