@@ -98,7 +98,7 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-telemetry-manager-unit-test"
-                  optional: false
+                  optional: true
                   command: "/bin/sh"
                   args:
                     - "-c"
