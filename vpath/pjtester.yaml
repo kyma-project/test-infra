@@ -13,4 +13,4 @@ prConfigs: #
     kyma:
       prNumber: 16763
     test-infra: 
-      prNumber: 6500
+      prNumber: 6501
