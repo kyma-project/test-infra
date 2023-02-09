@@ -28,7 +28,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "> /bin/terraform -chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner init && /tfcmt/tfcmt -owner "$REPO_OWNER" -repo "$(REPO_NAME)" -pr "$PULL_NUMBER" plan -- terraform -chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner plan -input=false"
+              - "> /bin/terraform -chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner init && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER plan -- terraform -chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner plan -input=false"
             resources:
               requests:
                 memory: 3Gi
