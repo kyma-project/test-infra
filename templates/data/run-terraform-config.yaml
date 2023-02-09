@@ -16,7 +16,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - >
+                    - '>
                       /bin/terraform
                       -chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner
                       init &&
@@ -28,7 +28,7 @@ templates:
                       -- terraform
                       -chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner
                       plan
-                      -input=false
+                      -input=false'
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
