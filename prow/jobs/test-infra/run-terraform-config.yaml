@@ -94,7 +94,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:PR-6893"
+          - image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/terraform:PR-6893"
             securityContext:
               privileged: false
             command:
@@ -163,3 +163,4 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+  
