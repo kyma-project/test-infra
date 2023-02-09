@@ -10,7 +10,7 @@ templates:
                   name: "pull-secret-leaks-log-scanner-tf-plan"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
                   #image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:PR-6893"
+                  image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/terraform:PR-6893"
                   labels:
                     preset-bot-github-token: "true"
                   command: "/bin/sh"
@@ -38,7 +38,7 @@ templates:
                   name: "test-pull-secret-leaks-log-scanner-tf-plan"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
                   #image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:PR-6893"
+                  image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/terraform:PR-6893"
                   labels:
                     preset-bot-github-token: "true"
                   command: "sleep"
@@ -73,7 +73,7 @@ templates:
                   name: "post-secret-leaks-log-scanner-tf-apply"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
                   #image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230208-5e9eb8fa"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:PR-6893"
+                  image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/terraform:PR-6893"
                   command: "/tfcmt/tfcmt"
                   args:
                     - "-owner"
