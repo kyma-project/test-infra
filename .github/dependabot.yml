@@ -43,7 +43,7 @@ updates:
     schedule:
       interval: "daily"
     commit-message:
-      prefix: 
+      prefix: "tf"
       include: "scope"
   - package-ecosystem: "terraform"
     directory: "configs/terraform/core"
@@ -53,7 +53,7 @@ updates:
     schedule:
       interval: "daily"
     commit-message:
-      prefix: 
+      prefix: "tf"
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/ginkgo"

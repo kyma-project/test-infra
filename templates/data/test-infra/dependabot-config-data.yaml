@@ -44,6 +44,7 @@ templates:
             packageEcosystem: "terraform"
             scheduleInterval: "daily"
             commitIncludeScope: "true"
+            commitMsgPrefix: "tf"
             labels:
               - "terraform"
               - "area/dependency"
