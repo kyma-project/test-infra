@@ -1,0 +1,10 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      kyma:
+        prNumber: 16779
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
+          report: false

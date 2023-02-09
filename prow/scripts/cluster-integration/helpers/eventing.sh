@@ -287,3 +287,37 @@ function eventing::print_subscription_crd_version(){
   log::info "Stored Subscription CRD versions:"
   kubectl get crd subscriptions.eventing.kyma-project.io -o json | jq '.status.storedVersions'
 }
+
+function eventing::print_troubleshooting_logs() {
+    log::banner "Printing troubleshooting logs"
+
+    # all pods in kyma-system
+    log::banner "Pods in kyma-system namespace"
+    kubectl get po -n kyma-system
+
+    # Eventing backend
+    log::banner "Active Eventing backend"
+    kubectl get eventingbackends -n kyma-system
+
+    # Subscriptions
+    log::banner "Subscriptions"
+    kubectl get subscriptions -A -o wide
+
+    # Logs from NATS pods
+    log::banner "Logs: eventing-nats-0"
+    kubectl logs -n kyma-system eventing-nats-0 -c nats
+    log::banner "Logs: eventing-nats-1"
+    kubectl logs -n kyma-system eventing-nats-1 -c nats
+    log::banner "Logs: eventing-nats-2"
+    kubectl logs -n kyma-system eventing-nats-2 -c nats
+
+    # Logs from EPP
+    log::banner "Logs: eventing-publisher-proxy"
+    kubectl logs -n kyma-system deployment/eventing-publisher-proxy -c eventing-publisher-proxy
+    # kubectl logs -n kyma-system -l "app.kubernetes.io/name=eventing-publisher-proxy"
+
+    # Logs from EC
+    log::banner "Logs: eventing-controller"
+    kubectl logs -n kyma-system deployment/eventing-controller -c controller
+    # kubectl logs --since=1h -n kyma-system -l "app.kubernetes.io/instance=eventing, app.kubernetes.io/name=controller"
+}
