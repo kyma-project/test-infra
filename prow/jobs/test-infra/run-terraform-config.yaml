@@ -24,7 +24,7 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner"
+            workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner"
             command:
               - "/tfcmt/tfcmt"
             args:
@@ -114,7 +114,7 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/kyma-project/test-infra/terraform:PR-6790"
             securityContext:
               privileged: false
-              workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner"
+            workingDir: "/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner"
             command:
               - "/tfcmt/tfcmt"
             args:
