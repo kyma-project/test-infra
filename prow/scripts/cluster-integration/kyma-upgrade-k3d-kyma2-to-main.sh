@@ -15,7 +15,7 @@ set -o errexit
 set -o pipefail
 
 function prereq() {
-    # Unpack given envs 
+    # Unpack given envs
     ENV_FILE=".env"
     if [ -f "${ENV_FILE}" ]; then
     # shellcheck disable=SC2046
@@ -41,7 +41,7 @@ function prereq() {
 
     log::info "### Install latest unstable Kyma CLI"
     kyma::install_unstable_cli
-} 
+}
 
 function provision_cluster() {
     log::info "### Provision k3s cluster"
@@ -90,7 +90,7 @@ function install_kyma() {
 
 function upgrade_kyma() {
     # Upgrade kyma to main
-    export KYMA_SOURCE="main"
+    export KYMA_SOURCE="PR-16772"
 
     log::info "### Upgrade Kyma to ${KYMA_SOURCE}"
     kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 20m
