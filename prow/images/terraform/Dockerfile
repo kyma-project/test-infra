@@ -8,7 +8,7 @@ RUN apk add --no-cache unzip curl && \
     unzip -q /terraform-provider-google_4.50.0.zip -d /tfplugins//terraform-provider-google_4.50.0 && \
     curl -fLSs -o tfcmt_linux_amd64.tgz "https://github.com/suzuki-shunsuke/tfcmt/releases/download/v4.0.1/tfcmt_linux_amd64.tar.gz" && \
     tar -xzf tfcmt_linux_amd64.tgz -C /tfcmt && \
-    curl -fLSS -o github-comment_5.0.2_linux_amd64.tgz "https://github.com/suzuki-shunsuke/github-comment/releases/download/v5.0.2/github-comment_5.0.2_linux_amd64.tar.gz" && \
+    curl -fLSs -o github-comment_5.0.2_linux_amd64.tgz "https://github.com/suzuki-shunsuke/github-comment/releases/download/v5.0.2/github-comment_5.0.2_linux_amd64.tar.gz" && \
     tar -xzf github-comment_5.0.2_linux_amd64.tgz -C /ghcomment
 
 RUN PATH="/tfcmt:$PATH"

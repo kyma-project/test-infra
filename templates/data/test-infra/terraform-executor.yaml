@@ -6,9 +6,8 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  optional: "true"
                   name: "pull-build-image-terraform-executor"
-                  run_if_changed: '^prow/images/terraform'
+                  run_if_changed: '^prow/images/terraform/'
                   args:
                     - "--name=test-infra/terraform"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -19,9 +18,8 @@ templates:
                     - "kaniko_buildpack"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  optional: "true"
                   name: "post-build-image-terraform-executor"
-                  run_if_changed: '^prow/images/terraform'
+                  run_if_changed: '^prow/images/terraform/'
                   args:
                     - "--name=test-infra/terraform"
                     - "--config=/config/kaniko-build-config.yaml"
