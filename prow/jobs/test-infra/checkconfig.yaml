@@ -689,7 +689,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230207-263aa75bf4"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230209-6c118536fa"
             command:
               - "checkconfig"
             args:
