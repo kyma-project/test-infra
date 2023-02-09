@@ -6,4 +6,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       istio:
-        - pjName: "pull-istio-build"
+        - pjName: "pull-istio-lint"
+        - pjName: "pull-istio-sidecars-test"
+        - pjName: "pull-istio-test"
+        - pjName: "pull-istio-operator-build"

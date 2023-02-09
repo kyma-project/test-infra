@@ -6,18 +6,18 @@ templates:
           - repoName: "kyma-project/istio"
             jobs:
               - jobConfig:
-                  name: pull-istio-sidecars-lint
+                  name: pull-istio-lint
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd operator/pkg/lib/sidecars && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
+                    - "cd operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
                   always_run: true
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
                     - linting
               - jobConfig:
-                  name: pull-istio-sidecars-component-test
+                  name: pull-istio-sidecars-test
                   run_if_changed: "^operator/pkg/lib/sidecars"
                   request_cpu: 500m
                   command: "/bin/sh"
@@ -29,29 +29,13 @@ templates:
                     - jobConfig_presubmit
                     - testing
               - jobConfig:
-                  name: pull-istio-build
-                  always_run: true
+                  name: pull-istio-test
+                  request_cpu: 500m
+                  command: "/bin/sh"
                   args:
-                    - "--name=istio-operator"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=./operator/"
-                    - "--dockerfile=Dockerfile"
+                    - "-c"
+                    - "cd operator && EXPORT_RESULTS=true make test"
                 inheritedConfigs:
                   global:
-                    - kaniko_buildpack
                     - jobConfig_presubmit
-              - jobConfig:
-                  name: post-istio-build
-                  always_run: true
-                  branches:
-                    - ^main$
-                    - "^release-\\d+\\.\\d+$"
-                  args:
-                    - "--name=istio-operator"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=./operator/"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
+                    - testing
