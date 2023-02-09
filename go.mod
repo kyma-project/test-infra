@@ -19,7 +19,7 @@ require (
 	github.com/containerd/containerd v1.6.16
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsouza/go-dockerclient v1.9.3
+	github.com/fsouza/go-dockerclient v1.9.4
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/go-yaml/yaml v2.1.0+incompatible
@@ -64,7 +64,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230201172905-8a19e538232d
+require k8s.io/test-infra v0.0.0-20230209100625-8d065a1a6c17
 
 require (
 	cloud.google.com/go v0.107.0 // indirect
@@ -103,7 +103,7 @@ require (
 	github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1 // indirect
 	github.com/docker/cli v20.10.20+incompatible // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
-	github.com/docker/docker v20.10.23+incompatible // indirect
+	github.com/docker/docker v23.0.0+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.7.0 // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-events v0.0.0-20190806004212-e31b211e4f1c // indirect
@@ -167,8 +167,9 @@ require (
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/moby/locker v1.0.1 // indirect
-	github.com/moby/sys/mount v0.3.3 // indirect
+	github.com/moby/patternmatcher v0.5.0 // indirect
 	github.com/moby/sys/mountinfo v0.6.2 // indirect
+	github.com/moby/sys/sequential v0.5.0 // indirect
 	github.com/moby/sys/signal v0.6.0 // indirect
 	github.com/moby/term v0.0.0-20210619224110-3f7ff695adc6 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
