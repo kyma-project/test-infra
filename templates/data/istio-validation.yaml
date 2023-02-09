@@ -7,7 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-istio-lint
-                  request_cpu: 500m
+                  request_cpu: 200m
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -17,18 +17,6 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - linting
-              - jobConfig:
-                  name: pull-istio-sidecars-test
-                  run_if_changed: "^operator/pkg/lib/sidecars"
-                  request_cpu: 500m
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd operator/pkg/lib/sidecars/test && EXPORT_RESULTS=true make test"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_presubmit
-                    - testing
               - jobConfig:
                   name: pull-istio-test
                   request_cpu: 500m

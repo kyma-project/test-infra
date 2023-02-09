@@ -27,32 +27,7 @@ presubmits: # runs on PRs
             resources:
               requests:
                 memory: 200Mi
-                cpu: 500m
-    - name: pull-istio-sidecars-test
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-istio-sidecars-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^operator/pkg/lib/sidecars'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd operator/pkg/lib/sidecars/test && EXPORT_RESULTS=true make test"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 500m
+                cpu: 200m
     - name: pull-istio-test
       annotations:
         pipeline.trigger: "pr-submit"
