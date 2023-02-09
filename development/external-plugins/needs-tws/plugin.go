@@ -47,7 +47,6 @@ type ownersAliases interface {
 }
 
 type AliasesClient struct {
-	ownersAliases
 }
 
 func (o AliasesClient) LoadOwnersAliases(l *zap.SugaredLogger, basedir, filename string) (repoowners.RepoAliases, error) {
