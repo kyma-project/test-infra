@@ -15,4 +15,3 @@ RUN PATH="/tfcmt:$PATH"
 
 
 WORKDIR $GOPATH
-ENTRYPOINT ["tfcmt", "-owner", "$REPO_OWNER", "-repo", "$REPO_NAME", "-pr", "$PULL_NUMBER"]

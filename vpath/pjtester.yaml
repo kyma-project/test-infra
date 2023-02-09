@@ -4,4 +4,3 @@ pjConfigs:
       test-infra:
         - pjName: "pull-hide-tf-github-comments"
         - pjName: "pull-secret-leaks-log-scanner-tf-plan"
-        - pjName: "test-pull-secret-leaks-log-scanner-tf-plan"
