@@ -7,6 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-istio-lint
+                  request_cpu: 500m
                   command: "/bin/sh"
                   args:
                     - "-c"
