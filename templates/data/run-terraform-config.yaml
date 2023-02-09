@@ -52,7 +52,7 @@ templates:
                   privileged: "false"
                   name: "pull-hide-tf-github-comments"
                   run_if_changed: '^configs/terraform'
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:PR-6893"
+                  image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/terraform:PR-6893"
                   labels:
                     preset-bot-github-token: "true"
                   command: "/ghcomment/github-comment"
