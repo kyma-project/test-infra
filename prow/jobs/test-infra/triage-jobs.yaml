@@ -1,5 +1,9 @@
 periodics:
   - name: ci-kyma-bot-triage-close
+    labels:
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-kyma-bot-triage-close"
+      prow.k8s.io/pubsub.topic: "prowjobs"
     interval: 1h
     cluster: trusted-workload
     decorate: true
@@ -7,7 +11,7 @@ periodics:
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20230205-1a18f0ced9
+        - image: gcr.io/k8s-prow/commenter:v20230209-6c118536fa
           command:
             - commenter
           args:
@@ -48,6 +52,10 @@ periodics:
             secretName: kyma-bot-triage-token
 
   - name: ci-kyma-bot-triage-stale
+    labels:
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-kyma-bot-triage-stale"
+      prow.k8s.io/pubsub.topic: "prowjobs"
     interval: 1h
     cluster: trusted-workload
     decorate: true
@@ -55,7 +63,7 @@ periodics:
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20230205-1a18f0ced9
+        - image: gcr.io/k8s-prow/commenter:v20230209-6c118536fa
           command:
             - commenter
           args:

@@ -118,6 +118,8 @@
 
 [Quality metrics](/docs/prow/quality-metrics.md) - This document describes reports that provide an overview of the basic quality measures for the Kyma project.
 
+[Security Leaks Scanner](/docs/prow/security_commit_scanner.md) - Security Leaks Scanner is a tool that scans a repository for potential security leaks, thus providing protection against any potential security threats and vulnerabilities. It operates using [Gitleaks](https://github.com/zricethezav/gitleaks), which ensures a thorough and efficient examination of your repository. 
+
 [Prow Test Clusters](/docs/prow/test-clusters.md) - This document gathers information about test clusters that Prow jobs build. All test clusters are built in the `sap-kyma-prow-workloads` project.
 
 [Tide introduction](/docs/prow/tide-introduction-notes.md) - Along with the Prow upgrade, we want to introduce Tide for merging the PRs automatically.

@@ -9,6 +9,7 @@ templates:
             decorate: "true"
             command: "/bin/sh"
             image: "docker.io/zricethezav/gitleaks:latest"
+            always_run: "true"
             args:
               - "-c"
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
