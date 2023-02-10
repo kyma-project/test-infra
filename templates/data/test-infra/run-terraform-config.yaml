@@ -17,7 +17,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "/bin/terraform -chdir=./configs/terraform/secrets-leaks-log-scanner init && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER plan -- terraform -chdir=./configs/terraform/secrets-leaks-log-scanner plan -input=false"
+                    - "/bin/terraform -chdir=./configs/terraform/secrets-leaks-log-scanner init && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER -sha1 $PULL_PULL_SHA plan -- terraform -chdir=./configs/terraform/secrets-leaks-log-scanner plan -input=false"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -39,6 +39,8 @@ templates:
                     - "$(REPO_NAME)"
                     - "-pr"
                     - "$(PULL_NUMBER)"
+                    - "-sha1"
+                    - "$(PULL_PULL_SHA)"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
