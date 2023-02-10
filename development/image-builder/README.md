@@ -104,6 +104,17 @@ If the job is running in CI (Prow), it picks up the current `org/repo` value fro
 
 Currently, image-builder contains a basic implementation of a notary signer. If you want to add a new signer, refer to the [`sign`](./sign) package, and its code.
 
+## Named Tags
+
+image-builder supports passing name along with tag both via -tag option or config for tag template.
+You can use `-tag name=value` to pass name for tag. 
+
+If name is not provided, it will be evaluated from value:
+ - if value is string it will be used as name directly eg.: 
+   - `-tag latest` will be equal to `-tag latest=latest`
+ - if value is go-template it will be converted to valid name eg:
+   - `-tag v{{ .ShortSHA }}-{{ .Date }}` will be equal to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
+
 ## Usage
 
 ```
@@ -131,5 +142,5 @@ Usage of image-builder:
   -variant string
         If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored
   -export-tags
-        Export parsed tags as build-args into dockerfile. Each tag will have number added to it in format `DOCKER_TAG_x` where x is index of tags array.
+        Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x where x is either tag name passed along with tag (see: Named Tags section). 
 ```
