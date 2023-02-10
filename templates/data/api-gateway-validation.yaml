@@ -2,6 +2,28 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/api-gateway/api-gateway-validation.yaml
+        localSets:
+          jobConfig_default:
+            path_alias: github.com/kyma-project/api-gateway
+            labels:
+              preset-debug-commando-oom: "true"
+          gardener_gcp_job:
+            labels:
+              preset-gardener-gcp-kyma-integration: "true"
+              preset-kyma-cli-stable: "true"
+              preset-cluster-version: "true"
+              preset-api-gateway-int-test-client-creds: "true"
+            env:
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+              GARDENER_REGION: "europe-west4"
+              GARDENER_ZONES: "europe-west4-b"
+            annotations:
+              pipeline.platform: gardener_gcp
+          command_integration:
+            annotations:
+              pipeline.installer: kyma install
+              pipeline.test: octopus
+              pipeline.clusterprovisioning: kyma cli
         jobConfigs:
           - repoName: "kyma-project/api-gateway"
             jobs:
@@ -27,3 +49,27 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+              - jobConfig:
+                  name: pull-api-gateway-integration-test
+                  always_run: true
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  env:
+                    SKIP_TESTS: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_kyma
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                    - testing
+                  local:
+                    - jobConfig_default
+                    - gardener_gcp_job
+                    - command_integration
