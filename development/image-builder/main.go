@@ -256,16 +256,35 @@ func getSignersForOrgRepo(o *options, orgRepo string) ([]sign.Signer, error) {
 		return nil, nil
 	}
 	var enabled StrList
-
+	jobType := os.Getenv("JOB_TYPE")
 	defaultSigners := c.EnabledSigners["*"]
 	orgRepoSigners := c.EnabledSigners[orgRepo]
 	for _, s := range append(defaultSigners, orgRepoSigners...) {
 		enabled.Add(s)
 	}
-	fmt.Println("sign images using services", strings.Join(enabled.List(), ","))
+	fmt.Println("sign images using services", strings.Join(enabled.List(), ", "))
 	var signers []sign.Signer
 	for _, sc := range c.Signers {
 		if enabled.Has(sc.Name) {
+			// if signerConfig doesn't contain any jobTypes, it should be considered enabled by default
+			if len(sc.JobType) > 0 && !o.isCI {
+				fmt.Println("signer", sc.Name, "ignored, because image-builder is not running in CI mode and contains 'job-type' field defined")
+				continue
+			}
+			if len(jobType) > 0 && len(sc.JobType) > 0 && o.isCI {
+				var has bool
+				for _, t := range sc.JobType {
+					if t == jobType {
+						has = true
+						break
+					}
+				}
+				if !has {
+					// ignore signer if the jobType doesn't contain specific job type
+					fmt.Println("signer", sc.Name, "ignored, because is not enabled for a CI job of type:", jobType)
+					continue
+				}
+			}
 			s, err := sc.Config.NewSigner()
 			if err != nil {
 				return nil, fmt.Errorf("signer init: %w", err)
