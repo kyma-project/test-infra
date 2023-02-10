@@ -6,24 +6,23 @@ templates:
           - repoName: "kyma-project/istio"
             jobs:
               - jobConfig:
-                  name: pull-istio-sidecars-lint
+                  name: pull-istio-lint
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd operator/pkg/lib/sidecars && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
+                    - "cd operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
                   always_run: true
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
                     - linting
               - jobConfig:
-                  name: pull-istio-sidecars-component-test
-                  run_if_changed: "^operator/pkg/lib/sidecars"
+                  name: pull-istio-test
                   request_cpu: 500m
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd operator/pkg/lib/sidecars/test && EXPORT_RESULTS=true make test"
+                    - "cd operator && EXPORT_RESULTS=true make test"
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit

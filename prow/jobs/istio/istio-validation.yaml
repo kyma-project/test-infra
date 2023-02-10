@@ -3,12 +3,12 @@
 
 presubmits: # runs on PRs
   kyma-project/istio:
-    - name: pull-istio-sidecars-lint
+    - name: pull-istio-lint
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-istio-sidecars-lint"
+        prow.k8s.io/pubsub.runID: "pull-istio-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       always_run: true
       optional: true
@@ -23,19 +23,18 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "cd operator/pkg/lib/sidecars && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
+              - "cd operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
             resources:
               requests:
                 memory: 200Mi
                 cpu: 80m
-    - name: pull-istio-sidecars-component-test
+    - name: pull-istio-test
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-istio-sidecars-component-test"
+        prow.k8s.io/pubsub.runID: "pull-istio-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^operator/pkg/lib/sidecars'
       optional: true
       skip_report: false
       decorate: true
@@ -48,7 +47,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "cd operator/pkg/lib/sidecars/test && EXPORT_RESULTS=true make test"
+              - "cd operator && EXPORT_RESULTS=true make test"
             resources:
               requests:
                 memory: 1Gi
