@@ -1,0 +1,9 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      istio:
+        prNumber: 74
+  prowJobs:
+    kyma-project:
+      istio:
+        - pjName: "pull-istio-lint"
