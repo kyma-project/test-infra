@@ -59,7 +59,6 @@ provider "google" {
 }
 
 locals {
-  #prow_terraform_workload_identity_gcp_service_account = format("%s.svc.id.goog[%s/%s]", var.gcp_project_id, var.k8s_terraform_sa.namespace, var.k8s_terraform_sa.name)
   prow_terraform_workload_identity_gcp_service_account = format("%s.svc.id.goog[%s/%s]", var.gcp_project_id, kubernetes_service_account.terraform.metadata[0].namespace, kubernetes_service_account.terraform.metadata[0].name)
 }
 
@@ -74,20 +73,6 @@ resource "google_project_iam_member" "project_editor" {
   role    = "roles/editor"
   member  = "serviceAccount:${google_service_account.prow-terraform-executor.email}"
 }
-
-#resource "google_service_account_iam_member" "prow_terraform_workload_identity" {
-#  member             = "serviceAccount:${local.prow_terraform_workload_identity_gcp_service_account}"
-#  role               = "roles/iam.workloadIdentityUser"
-#  service_account_id = google_service_account.prow-terraform-executor.name
-#  depends_on = [kubernetes_service_account.terraform]
-#}
-
-#data "google_iam_policy" "prow_terraform_workload_identity" {
-#  binding {
-#    members = ["serviceAccount:${local.prow_terraform_workload_identity_gcp_service_account}"]
-#    role    = "roles/iam.workloadIdentityUser"
-#  }
-#}
 
 resource "google_service_account_iam_binding" "prow_terraform_workload_identity" {
   members            = ["serviceAccount:${local.prow_terraform_workload_identity_gcp_service_account}"]
