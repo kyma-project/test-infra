@@ -53,6 +53,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-lifecycle-mgr-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   branches:
                     - ^main$ # any pr against main triggers this
                   always_run: true

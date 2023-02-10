@@ -1423,3 +1423,12 @@ presets:
           secretKeyRef:
             name: kyma-api-gateway-int-test-client-secret
             key: token
+  - labels:
+      preset-signify-prod-secret: "true"
+    volumes:
+      - name: signify-prod-secret
+        secretName: signify-prod-secret
+    volumeMounts:
+      - name: signify-prod-secret
+        mountPath: /secret-prod
+        readOnly: true

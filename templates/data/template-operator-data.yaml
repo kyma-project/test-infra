@@ -80,6 +80,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-template-op-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   always_run: true
                   args:
                     - "--name=template-operator"

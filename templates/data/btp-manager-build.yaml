@@ -19,6 +19,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig: # builds a docker image of the btp-manager tagged with the branch name
                   name: post-btp-manager-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   always_run: true
                   args:
                     - "--name=btp-manager"
