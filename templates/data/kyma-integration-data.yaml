@@ -755,8 +755,8 @@ templates:
                     testgrid-dashboards: kyma_integration
                     description: K3d Kyma 2.0 to main branch.
                   decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
+                    timeout: 14400000000000 # 4h
+                    grace_period: 1800000000000 # 30min
                   cron: "0 0 6-18/2 ? * 1-5"
                 inheritedConfigs:
                   global:
