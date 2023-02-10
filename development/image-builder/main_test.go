@@ -286,6 +286,8 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 		expectErr     bool
 		expectSigners int
 		orgRepo       string
+		jobType       string
+		ci            bool
 	}{
 		{
 			name:          "1 notary signer org/repo, pass",
@@ -305,14 +307,38 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 			expectSigners: 1,
 			orgRepo:       "org/repo-empty",
 		},
+		{
+			name:          "1 global signer for presubmit job",
+			expectErr:     false,
+			expectSigners: 1,
+			orgRepo:       "ci-org/ci-repo",
+			jobType:       "presubmit",
+			ci:            true,
+		},
+		{
+			name:          "2 signers for postsubmit job",
+			expectErr:     false,
+			expectSigners: 2,
+			orgRepo:       "ci-org/ci-repo",
+			jobType:       "postsubmit",
+			ci:            true,
+		},
+		{
+			name:          "1 signer in non-CI environment",
+			expectErr:     false,
+			expectSigners: 1,
+			orgRepo:       "ci-org/ci-repo",
+		},
 	}
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			o := &options{Config: Config{SignConfig: SignConfig{
+			t.Setenv("JOB_TYPE", c.jobType)
+			o := &options{isCI: c.ci, Config: Config{SignConfig: SignConfig{
 				EnabledSigners: map[string][]string{
-					"*":         {"test-notary"},
-					"org/repo":  {"test-notary"},
-					"org/repo2": {"test-notary2"},
+					"*":              {"test-notary"},
+					"org/repo":       {"test-notary"},
+					"org/repo2":      {"test-notary2"},
+					"ci-org/ci-repo": {"ci-notary"},
 				},
 				Signers: []sign.SignerConfig{
 					{
@@ -324,6 +350,12 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 						Name:   "test-notary2",
 						Type:   sign.TypeNotaryBackend,
 						Config: sign.NotaryConfig{},
+					},
+					{
+						Name:    "ci-notary",
+						Type:    sign.TypeNotaryBackend,
+						Config:  sign.NotaryConfig{},
+						JobType: []string{"postsubmit"},
 					},
 				},
 			}}}
