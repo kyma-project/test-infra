@@ -44,7 +44,7 @@ resource "google_cloud_run_service" "gcs_bucket_mover" {
         image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/movegcsbucket:v20230202-40569193"
         env {
           name  = "PROJECT_ID"
-          value = var.google_project_id
+          value = var.gcp_project_id
         }
         env {
           name  = "COMPONENT_NAME"

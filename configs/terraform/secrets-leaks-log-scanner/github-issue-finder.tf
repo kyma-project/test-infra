@@ -28,7 +28,7 @@ resource "google_cloud_run_service" "github_issue_finder" {
         image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/searchgithubissue:v20230202-40569193"
         env {
           name  = "PROJECT_ID"
-          value = var.google_project_id
+          value = var.gcp_project_id
         }
         env {
           name  = "COMPONENT_NAME"
