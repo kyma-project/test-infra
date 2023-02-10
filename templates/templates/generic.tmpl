@@ -87,7 +87,7 @@
               privileged: {{.JobConfig.privileged}}
             {{- end}}
             {{- if .JobConfig.workingDir}}
-            workingDir: {{.JobConfig.workingDir}}
+            workingDir: {{quote .JobConfig.workingDir}}
             {{- end}}
             command:
               {{- if .JobConfig.command }}
