@@ -31,7 +31,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "/bin/terraform -chdir=./configs/terraform/secrets-leaks-log-scanner init && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER -sha1 $PULL_PULL_SHA plan -- terraform -chdir=./configs/terraform/secrets-leaks-log-scanner plan -input=false"
+              - "/bin/terraform -chdir=./configs/terraform/secrets-leaks-log-scanner init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER -sha1 $PULL_PULL_SHA plan -- terraform -chdir=./configs/terraform/secrets-leaks-log-scanner plan -input=false"
             resources:
               requests:
                 memory: 3Gi
@@ -54,7 +54,7 @@ presubmits: # runs on PRs
       run_if_changed: '^configs/terraform'
       skip_report: false
       decorate: true
-      cluster: untrusted-workload
+      cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^master$
@@ -97,6 +97,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-secret-leaks-log-scanner-tf-apply"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
       run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
       skip_report: false
       decorate: true
@@ -107,21 +108,17 @@ postsubmits: # runs on main
         - ^main$
       spec:
         serviceAccountName: terraform
+        automountServiceAccountToken: true
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/terraform:PR-6893"
+            automountServiceAccountToken: true
             securityContext:
               privileged: false
             command:
-              - "/tfcmt/tfcmt"
+              - "/bin/sh"
             args:
-              - "-owner"
-              - "$(REPO_OWNER)"
-              - "-repo"
-              - "$(REPO_NAME)"
-              - "-pr"
-              - "$(PULL_NUMBER)"
-              - "-chdir=/home/prow/go/src/github.com/kyma-project/test-infra/configs/terraform/secrets-leaks-log-scanner"
-              - "apply"
+              - "-c"
+              - "/bin/terraform -chdir=./configs/terraform/secrets-leaks-log-scanner init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER -sha1 $PULL_PULL_SHA apply -- terraform -chdir=./configs/terraform/secrets-leaks-log-scanner apply -input=false -auto-approve"
             resources:
               requests:
                 memory: 3Gi
