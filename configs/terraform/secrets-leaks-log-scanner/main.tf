@@ -37,7 +37,7 @@ data "google_storage_bucket" "kyma_prow_logs" {
 }
 
 data "google_secret_manager_secret" "gh_tools_kyma_bot_token" {
-  secret_id = "gh-tools-kyma-bot-token"
+  secret_id = "trusted_default_kyma-bot-github-sap-token"
 }
 
 data "google_secret_manager_secret" "common_slack_bot_token" {

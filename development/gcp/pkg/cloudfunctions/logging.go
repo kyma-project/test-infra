@@ -12,7 +12,7 @@ type LogEntry struct {
 	Severity string `json:"severity,omitempty"`
 	// Trace will be the same for one function call, you can use it for filetering in logs
 	Trace  string            `json:"logging.googleapis.com/trace,omitempty"`
-	Labels map[string]string `json:"logging.googleapis.com/operation,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 	// Cloud Log Viewer allows filtering and display of this as `jsonPayload.component`.
 	Component string `json:"component,omitempty"`
 }
