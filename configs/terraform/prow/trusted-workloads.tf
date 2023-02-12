@@ -1,33 +1,30 @@
-variable "k8s_terraform_sa" {
+variable "prow_terraform_executor_k8s_service_account" {
   type = object({
     name      = string
     namespace = string
   })
-  description = ""
+  description = "Details of terraform k8s service account."
 }
 
-resource "kubernetes_secret" "terraform_sa" {
+resource "kubernetes_secret" "prow_terraform_executor" {
   metadata {
-    name = var.k8s_terraform_sa.name
+    name      = var.prow_terraform_executor_k8s_service_account.name
+    namespace = var.prow_terraform_executor_k8s_service_account.namespace
     annotations = {
-      "kubernetes.io/service-account.name" = var.k8s_terraform_sa.name
+      "kubernetes.io/service-account.name" = kubernetes_service_account.prow_terraform_executor.metadata[0].name
     }
   }
-
   type = "kubernetes.io/service-account-token"
 }
 
 
-resource "kubernetes_service_account" "terraform" {
+resource "kubernetes_service_account" "prow_terraform_executor" {
   metadata {
-    namespace = var.k8s_terraform_sa.namespace
-    name      = var.k8s_terraform_sa.name
+    namespace = var.prow_terraform_executor_k8s_service_account.namespace
+    name      = var.prow_terraform_executor_k8s_service_account.name
     annotations = {
-      "iam.gke.io/gcp-service-account" = "prow-terraform-executor@sap-kyma-prow.iam.gserviceaccount.com"
+      "iam.gke.io/gcp-service-account" = format("%s@%s.iam.gserviceaccount.com", var.prow_terraform_executor_gcp_service_account.id, var.gcp_project_id)
     }
-  }
-  secret {
-    name = kubernetes_secret.terraform_sa.metadata[0].name
   }
   automount_service_account_token = true
 }

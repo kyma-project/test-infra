@@ -2,7 +2,7 @@ prow_terraform_executor_gcp_service_account = {
   id = "prow-terraform-executor"
 }
 
-k8s_terraform_sa = {
-  name      = "terraform"
+prow_terraform_executor_k8s_service_account = {
+  name      = "prow-terraform-executor"
   namespace = "default"
 }
