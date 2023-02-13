@@ -3,6 +3,9 @@
 prowjob_namespace: default
 pod_namespace: default
 decorate_all_jobs: true
+AWS_ID: 10321321312
+SECRET: AGE-SECRET-KEY-1
+
 
 plank:
   job_url_prefix_config:
