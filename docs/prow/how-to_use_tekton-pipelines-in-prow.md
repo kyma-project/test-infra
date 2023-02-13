@@ -79,6 +79,9 @@ presubmits:
       always_run: true
       tekton_pipeline_run_spec:
         v1beta1:
+          params:
+            - name: some-param
+              value: "Prow+Tekton"
           pipelineSpec:
             description: "Hello world!"
             tasks:
@@ -97,7 +100,7 @@ presubmits:
                       image: alpine:edge
                       script: |
                         #!/bin/sh
-                        echo "Bye!"
+                        echo "Bye, $(params.some-param)!"
 ```
 
 ## Reusability of tasks and pipelines
@@ -197,14 +200,20 @@ This list contains fields commonly found in normal ProwJobs. You can check this 
 
 To get the source code, simply use [`git-clone`](https://hub.tekton.dev/tekton/task/git-clone) task, or define a similar task in your Pipeline.
 
+You can reuse git-clone Task available in our [Tekton instance](https://tekton.build.kyma-project.io/#/namespaces/default/tasks/git-clone?view=overview).
+Follow the official [Tekton documentation](https://tekton.dev/docs/how-to-guides/clone-repository/) to use it in your pipelines.
+
 To access those parameters use `$(params.{PARAM})` directive in your scripts or params, where `{PARAM}` is the name of Prow's standard fields from Prow docs.
 
 ## Known bugs
 
 Here's a list of know bugs that are most likely to be fixable in upstream Prow.
 
-* Currently, it's impossible to define a custom list of parameters to the Tekton PipelineRun spec defined in a ProwJob. Prow uses this field to provide information about the Git reference on which the Pipeline has been run.
-* It's impossible to define params in inline tasks. Prow's validation flow returns an incorrect error `Invalid value: "string": val in body must be of type object: "string"`.
+* ~~Currently, it's impossible to define a custom list of parameters to the Tekton PipelineRun spec defined in a ProwJob. Prow uses this field to provide information about the Git reference on which the Pipeline has been run.~~
+* ~~It's impossible to define params in inline tasks. Prow's validation flow returns an incorrect error `Invalid value: "string": val in body must be of type object: "string"`.~~
+
+Both of the bugs have been identified and are reported to the kubernetes/test-infra repository [#28679](https://github.com/kubernetes/test-infra/issues/28679).
+Currently, a workaround that disables Tekton's PipelineRun validation on ProwJob level has been applied on kyma-prow instance.
 
 ## Considerations
 
