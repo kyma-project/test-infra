@@ -277,3 +277,29 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+              - jobConfig:
+                  name: pull-keb-deprovision-retrigger-job-build
+                  run_if_changed: "^components/kyma-environment-broker"
+                  args:
+                    - --name=control-plane/kyma-environment-deprovision-retrigger-job
+                    - --context=components/kyma-environment-broker
+                    - --dockerfile=Dockerfile.drj
+                    - --config=/config/kaniko-build-config.yaml
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-keb-deprovision-retrigger-job-build
+                  run_if_changed: "^components/kyma-environment-broker"
+                  branches:
+                    - ^main$
+                  args:
+                    - --name=control-plane/kyma-environment-deprovision-retrigger-job
+                    - --context=components/kyma-environment-broker
+                    - --dockerfile=Dockerfile.drj
+                    - --config=/config/kaniko-build-config.yaml
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
