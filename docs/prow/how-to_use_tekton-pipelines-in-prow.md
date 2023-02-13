@@ -41,7 +41,7 @@ agent: tekton-pipeline # It's a requirement to tell Prow to use Tekton as an age
 cluster: tekton-pipelines # Name of the cluster, where Tekton is working
 ```
 
-Then you must define a PipelineRun spec using `pipeline_run_spec`. For the information on which fields you can define in this spec, see the [Godoc of `PipelineRunSpec`](https://pkg.go.dev/github.com/tektoncd/pipeline@v0.44.0/pkg/apis/pipeline/v1alpha1#PipelineRunSpec).
+Then you must define a PipelineRun spec using `pipeline_run_spec`. For the information on which fields you can define in this spec, see the [Godoc of `PipelineRunSpec`](https://pkg.go.dev/github.com/tektoncd/pipeline@v0.44.0/pkg/apis/pipeline/v1beta1#PipelineRunSpec).
 
 According to the documentation, you must define a PipelineRunSpec. Dynamically defined `PipelineSpec`, as supported by Tekton's API, is used here:
 ```yaml
@@ -109,7 +109,7 @@ Kyma's Tekton pipelines and tasks are under [`configs/tekton/catalog` directory]
 
 ### Reusing tasks
 
-Let's define a simple task that would return a "Hello World from task!" to the results field:
+Task defined below would return a "Hello World from task!" to the results field:
 ```yaml
 apiVersion: tekton.dev/v1beta1
 kind: Task
@@ -129,7 +129,7 @@ spec:
 
 Tekton supports reusing tasks in Pipelines using the special field `taskRef`. This field is mutually exclusive with `taskSpec`.
 
-Now, let's define a ProwJob that would reuse this task. Firstly, the Pipeline will execute the referenced task. Secondly, it will fetch the result of the previous task and print it to the stdout:
+Look at the example below that reuses this task. Firstly, the Pipeline will execute the referenced task. Secondly, it will fetch the result of the previous task and print it to the stdout:
 ```yaml
 presubmits:
   kyma-project/kyma:
