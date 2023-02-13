@@ -7,7 +7,7 @@ Kubernetes-native implementation of CI/CD pipelines, where every task is a self-
 For complete information about Tekton's features, read [Tekton official documentation](https://tekton.dev/docs/).**
 
 Tekton can't trigger pipelines natively without an external hook. Prow acts as such a trigger and executes pipeline definition
-when it receives a webhook event from GitHub, just as how ProwJob execution works.
+when it receives a webhook event from GitHub, just like ProwJob execution does.
 
 ## Defining a PipelineRun in ProwJob
 
@@ -220,7 +220,7 @@ Currently, a workaround that disables Tekton's PipelineRun validation on ProwJob
 Although Tekton Pipelines provide a much more complex solution for building pipelines, it still has some drawbacks:
 * YAMLs get utterly cluttered with complex configuration fields
 * Understanding pipelines requires good knowledge of Tekton and its resources
-* As Tasks work as separate Pods, this will generate an increased load on the K8s cluster, thus increasing the cost
+* As tasks work as separate Pods, this will generate an increased load on the K8s cluster, thus increasing the cost
 * Pipelines can be marginally slower to build and define than simple ProwJobs
 
 If you want to build your pipeline with Tekton, consider the following:
