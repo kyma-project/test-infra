@@ -102,7 +102,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "make test-local"
+                    - "make test"
                   run_if_changed: '^.*\.go$'
                 inheritedConfigs:
                   global:

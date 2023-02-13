@@ -1,0 +1,18 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      telemetry-manager:
+        prNumber: 1
+  prowJobs:
+    kyma-project:
+      telemetry-manager:
+        - pjName: "pull-telemetry-manager-lint"
+          report: true
+        - pjName: "pull-telemetry-manager-unit-test"
+          report: true
+        - pjName: "pull-telemetry-manager-build"
+          report: true
+prConfigs: #
+  kyma-project:
+    telemetry-manager:
+      prNumber: 1

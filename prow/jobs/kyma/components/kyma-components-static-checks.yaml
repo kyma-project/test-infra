@@ -46,7 +46,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "make test-local"
+              - "make test"
             resources:
               requests:
                 memory: 1Gi
