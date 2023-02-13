@@ -2,11 +2,17 @@ package client
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/rand"
+	"crypto/sha256"
 	"flag"
 	"fmt"
+	"hash"
 	"net/http"
+	"sync"
 
 	"github.com/google/go-github/v42/github"
+	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	"github.com/kyma-project/test-infra/development/types"
 	"golang.org/x/oauth2"
 	"gopkg.in/yaml.v2"
@@ -34,6 +40,13 @@ type SapToolsClient struct {
 // Client wraps google github Client and provides additional methods.
 type Client struct {
 	*github.Client
+	hmacKey []byte // A random generated key for hmac hashing.
+	// Token hmac hash used to authenticate client on GitHub.
+	// Before reauthenticating client, check if new token is different from stored token hmac hash.
+	tokenHmac hash.Hash
+	// Used to prevent race condition when reauthenticating client.
+	// RLock and RUnlock must be used to secure all client methods calls.
+	WrapperClientMu sync.RWMutex
 }
 
 // String provide string representation for tokenPathFlag.
@@ -88,21 +101,44 @@ func newOauthHTTPClient(ctx context.Context, accessToken string) *http.Client {
 // TODO: create client with support for github cache or ghproxy.
 func NewClient(ctx context.Context, accessToken string) (*Client, error) {
 	tc := newOauthHTTPClient(ctx, accessToken)
-	c := github.NewClient(tc)
-
-	return &Client{c}, nil
+	ghc := github.NewClient(tc)
+	c := &Client{
+		Client:          ghc,
+		WrapperClientMu: sync.RWMutex{},
+	}
+	err := c.generateHmacKey()
+	if err != nil {
+		return nil, err
+	}
+	err = c.storeTokenHash([]byte(accessToken))
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
 }
 
 // NewSapToolsClient creates kyma implementation github Client with SapToolsGithubURL as an endpoint.
 // Client uses oauth authentication with bearer token.
 func NewSapToolsClient(ctx context.Context, accessToken string) (*SapToolsClient, error) {
 	tc := newOauthHTTPClient(ctx, accessToken)
-	c, err := github.NewEnterpriseClient(SapToolsGithubURL, SapToolsGithubURL, tc)
+	ghec, err := github.NewEnterpriseClient(SapToolsGithubURL, SapToolsGithubURL, tc)
 	if err != nil {
-		return nil, fmt.Errorf("got error when creating sap tools github enterprise client: %w", err)
+		return nil, err
+	}
+	c := &Client{
+		Client:          ghec,
+		WrapperClientMu: sync.RWMutex{},
+	}
+	err = c.generateHmacKey()
+	if err != nil {
+		return nil, err
+	}
+	err = c.storeTokenHash([]byte(accessToken))
+	if err != nil {
+		return nil, err
 	}
 
-	return &SapToolsClient{&Client{c}}, nil
+	return &SapToolsClient{c}, nil
 }
 
 // IsStatusOK will check if http response code is 200.
@@ -117,6 +153,77 @@ func IsStatusOK(resp *github.Response) (bool, error) {
 	if !statusOK {
 		return false, fmt.Errorf("got %d response code in HTTP response", resp.StatusCode)
 	}
+	return true, nil
+}
+
+// generateHmacKey generate cryptographically safe random key.
+// Key is stored in a Client struct and used to hash password with hmac.
+func (c *Client) generateHmacKey() error {
+	buf := make([]byte, 128)
+	_, err := rand.Read(buf)
+	if err != nil {
+		return err
+	}
+	c.hmacKey = buf
+	return nil
+}
+
+// storeTokenHash hash token with hmac sha256 and store it in a client.
+// Using hmac as it's designed for passwords secure storage.
+func (c *Client) storeTokenHash(token []byte) error {
+	mac := hmac.New(sha256.New, c.hmacKey)
+	_, err := mac.Write(token)
+	if err != nil {
+		return err
+	}
+	c.tokenHmac = mac
+	return nil
+}
+
+// CompareTokensHashes generates hmac hash for provided token and compare it with hash stored in a client.
+// If provided token is the same as a token stored in a client return nil hash.Hash and error, if not new token hmac hash
+// and nil error is returned.
+// Compare tokens to check if client reauthentication with new token is required.
+// Creating a new client with wrong token doesn't return error.
+// A client will get error again on first GitHub API call, so check first if new password exist and reauthentication
+// is required.
+func (c *Client) compareTokensHashes(token []byte) (hash.Hash, error) {
+	mac := hmac.New(sha256.New, c.hmacKey)
+	_, err := mac.Write(token)
+	if err != nil {
+		return nil, err
+	}
+	if eq := hmac.Equal(c.tokenHmac.Sum(nil), mac.Sum(nil)); eq {
+		return nil, nil
+	}
+	return mac, nil
+}
+
+// Reauthenticate creates new GitHub Enterprise client with provided access token and replace existing ones.
+// It locks wrapper client mutex for read and write to prevent race condition between client threads.
+// A caller should retry failed GitHub API call on non error Reauthenticate execution.
+// Because multiple threads may wait to reauthenticate and second or later thread will not detect a token change,
+// method will not raise error and log a warning message. This is to let caller to retry a GitHub API call.
+// TODO: replace cloudfunctions logger with interface
+func (c *SapToolsClient) Reauthenticate(ctx context.Context, logger *cloudfunctions.LogEntry, accessToken []byte) (bool, error) {
+	c.WrapperClientMu.Lock()
+	defer c.WrapperClientMu.Unlock()
+	tokenHmac, err := c.compareTokensHashes(accessToken)
+	if err != nil {
+		logger.LogCritical("failed compare token hashes, error %s", err)
+	}
+	if tokenHmac == nil {
+		logger.LogWarning("No new token available for GitHub client, can't reauthenticate.")
+		return false, nil
+	}
+	tc := newOauthHTTPClient(ctx, string(accessToken))
+	ghec, err := github.NewEnterpriseClient(SapToolsGithubURL, SapToolsGithubURL, tc)
+	if err != nil {
+		return false, err
+	}
+	c.Client.Client = ghec
+	c.tokenHmac = tokenHmac
+	logger.LogInfo("New token provided, updated client with new credentials.")
 	return true, nil
 }
 
