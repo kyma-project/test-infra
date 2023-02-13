@@ -1455,8 +1455,8 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       decoration_config:
-        grace_period: 600000000000
-        timeout: 7200000000000
+        grace_period: 1800000000000
+        timeout: 14400000000000
       path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       extra_refs:
