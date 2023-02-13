@@ -6,7 +6,7 @@ import (
 	"math/rand"
 )
 
-// Entry defines a log entry.
+// LogEntry defines a log entry.
 type LogEntry struct {
 	Message  string `json:"message"`
 	Severity string `json:"severity,omitempty"`
@@ -67,6 +67,13 @@ func (e LogEntry) LogCritical(format string, args ...interface{}) {
 func (e LogEntry) LogError(format string, args ...interface{}) {
 	message := fmt.Sprintf(format, args...)
 	e.Severity = "ERROR"
+	e.Message = message
+	fmt.Println(e)
+}
+
+func (e LogEntry) LogWarning(format string, args ...interface{}) {
+	message := fmt.Sprintf(format, args...)
+	e.Severity = "WARNING"
 	e.Message = message
 	fmt.Println(e)
 }
