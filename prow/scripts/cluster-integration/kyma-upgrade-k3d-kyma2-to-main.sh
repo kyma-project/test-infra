@@ -74,6 +74,7 @@ function install_kyma() {
     # Fetch latest Kyma2 release
     kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
     export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
+    export KYMA_SOURCE="PR-16772" # TODO(marcobebway) remove
     log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 
     # Install kyma from latest 2.x release
