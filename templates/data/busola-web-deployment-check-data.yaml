@@ -22,7 +22,7 @@ templates:
               - jobConfig:
                   name: "pre-busola-web-deployment-check"
                   optional: false
-                  run_if_changed: "^core/|^core-ui/|^shared/|^package.json"
+                  run_if_changed: "^public/|^src/|^scripts/|^shared/|^package.json"
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
