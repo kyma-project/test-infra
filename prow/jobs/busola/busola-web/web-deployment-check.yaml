@@ -15,7 +15,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^core/|^core-ui/|^shared/|^package.json'
+      run_if_changed: '^public/|^src/|^scripts/|^shared/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
