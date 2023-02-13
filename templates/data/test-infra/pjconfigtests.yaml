@@ -1,0 +1,49 @@
+  {{$exclude := list "template-repository"}}
+  templates:
+    - from: generic.tmpl
+      render:
+        - to: ../../prow/jobs/test-infra/pjconfigtests.yaml
+          localSets:
+            jobConfig_default:
+              imagePullPolicy: "Always"
+              privileged: "false"
+              type_presubmit: "true"
+              branches:
+                - ^.*$
+              skip_report: "false"
+              decorate: "true"
+              request_memory: 1Gi
+            jobConfig_pjconfigtest:
+              run_if_changed: '^.prow/|^.prow.yaml'
+              image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/ginkgo:PR-6825"
+              command: "/ginkgo"
+              args:
+                - "-r"
+                - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+          jobConfigs:
+              {{/* Iterate over orgs and repos in config.yaml global field. */}}
+            {{- range $org := .Global.orgs }}
+            {{- range $repo := .repos }}
+                {{/* Don't generate prowjobs for repository names in exclude list. */}}
+            {{- if has $repo.name $exclude | not }}
+                - repoName: "{{$org.name}}/{{$repo.name}}"
+                  jobs:
+                    - jobConfig:
+                        {{- if eq $repo.name "test-infra"}}
+                        run_if_changed: '^prow/jobs/'
+                        {{- end}}
+                        name: "pull-{{$repo.name}}-pjconfigtest"
+                      inheritedConfigs:
+                        local:
+                          - "jobConfig_default"
+                          - "jobConfig_pjconfigtest"
+                        global:
+                          - "jobConfig_default"
+                          - "untrusted_cluster"
+                          {{/* For test-infra repository test-infra as extra refs is not needed. */}}
+                          {{- if ne $repo.name "test-infra"}}
+                          - "extra_refs_test-infra"
+                          {{- end}}
+            {{- end}}
+            {{- end }}
+            {{- end }}

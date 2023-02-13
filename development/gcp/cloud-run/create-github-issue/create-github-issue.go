@@ -27,7 +27,6 @@ var (
 	componentName        string
 	applicationName      string
 	projectID            string
-	githubToken          []byte
 	toolsGithubTokenPath string
 	githubOrg            string // "neighbors-team"
 	githubRepo           string // "leaks-test"
@@ -61,7 +60,7 @@ func main() {
 
 	ctx := context.Background()
 
-	githubToken, err = os.ReadFile(toolsGithubTokenPath)
+	githubToken, err := os.ReadFile(toolsGithubTokenPath)
 	if err != nil {
 		mainLogger.LogCritical("failed read github token from file, error: %s", err)
 	}
@@ -161,21 +160,44 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 		Milestone: nil,
 		Assignees: nil,
 	}
-	// Search issues
-	issue, response, err := sapGhClient.Issues.Create(ctx, githubOrg, githubRepo, &issueRequest)
+
+	var (
+		issue  *github.Issue
+		result *github.Response
+	)
+	sapGhClient.WrapperClientMu.RLock()
+	issue, result, err = sapGhClient.Issues.Create(ctx, githubOrg, githubRepo, &issueRequest)
+	sapGhClient.WrapperClientMu.RUnlock()
+	if result != nil {
+		switch {
+		case result.StatusCode == 401:
+			logger.LogWarning("Github authentication failed, got %d response status code, trying to reauthenticate", result.StatusCode)
+			githubToken, err := os.ReadFile(toolsGithubTokenPath)
+			if err != nil {
+				logger.LogCritical("failed read github token from file, error: %s", err)
+			}
+			_, err = sapGhClient.Reauthenticate(ctx, logger, githubToken)
+			if err != nil {
+				logger.LogCritical("failed reauthenticate github client, error %s", err)
+			}
+			// Retry GitHub API call with eventually new credentials. This may fail again because of no new credentials provided.
+			sapGhClient.WrapperClientMu.RLock()
+			issue, result, err = sapGhClient.Issues.Create(ctx, githubOrg, githubRepo, &issueRequest)
+			sapGhClient.WrapperClientMu.RUnlock()
+			if result != nil && (result.StatusCode < 200 || result.StatusCode >= 300) {
+				crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, received non 2xx response code, error: %s", err)
+				return
+			}
+		case result.StatusCode < 200 || result.StatusCode >= 300:
+			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, received non 2xx response code, error: %s", err)
+			return
+		}
+	}
 	if err != nil {
 		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, error: %s", err)
 		return
 	}
-	ok, err := kgithubv1.IsStatusOK(response)
-	if err != nil {
-		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, failed read status code, error %s", err)
-		return
-	}
-	if !ok {
-		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, received non 2xx response code: status code %d", response.StatusCode)
-		return
-	}
+
 	logger.LogInfo("created github issue: %s", issue.GetHTMLURL())
 	msg.GithubIssueNumber = issue.Number
 	msg.GithubIssueURL = issue.HTMLURL
