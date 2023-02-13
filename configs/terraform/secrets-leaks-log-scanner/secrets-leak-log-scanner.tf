@@ -78,26 +78,3 @@ resource "google_monitoring_alert_policy" "secrets_leak_log_scanner" {
     app       = "secrets-leak-detector"
   }
 }
-
-#resource "google_logging_metric" "secrets_leak_log_scanner" {
-#  name = "secrests_leak_log_scanner_errors"
-#  filter = "resource.type=cloud_run_revision AND severity>=ERROR AND jsonPayload.component=secrets-leak-log-scanner AND labels.io.kyma.app=secrets-leaks-detector"
-#  metric_descriptor {
-#    metric_kind = "DELTA"
-#    value_type  = "INT64"
-#    labels {
-#      key = "component"
-#      value_type = "STRING"
-#      description = ""
-#    }
-#    labels {
-#      key = "app"
-#      value_type = "STRING"
-#      description = ""
-#    }
-#  }
-#  label_extractors = {
-#    "component" = "EXTRACT(jsonPayload.component)"
-#    "app" = "EXTRACT(labels.io.kyma.app)"
-#  }
-#}
