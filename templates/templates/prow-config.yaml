@@ -22,10 +22,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230131-fdea11eb1b
-          initupload: gcr.io/k8s-prow/initupload:v20230131-fdea11eb1b
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230131-fdea11eb1b
-          sidecar: gcr.io/k8s-prow/sidecar:v20230131-fdea11eb1b
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230209-f319bbff04
+          initupload: gcr.io/k8s-prow/initupload:v20230209-f319bbff04
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230209-f319bbff04
+          sidecar: gcr.io/k8s-prow/sidecar:v20230209-f319bbff04
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -1152,11 +1152,6 @@ presets:
       - name: TELEMETRY_ENABLED
         value: "true"
   - labels:
-      preset-kyma-integration-telemetry-alpha-enabled: "true"
-    env:
-      - name: TELEMETRY_ALPHA_ENABLED
-        value: "true"
-  - labels:
       preset-kyma-integration-telemetry-tracing-enabled: "true"
     env:
       - name: TELEMETRY_TRACING_ENABLED
@@ -1411,3 +1406,18 @@ presets:
         value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
       - name: KCP_OIDC_ISSUER_URL
         value: "https://kymatest.accounts400.ondemand.com"
+  - labels:
+      preset-api-gateway-int-test-client-creds: "true"
+    env:
+      - name: OIDC_ISSUER_URL
+        value: "https://kymagoattest.accounts400.ondemand.com"
+      - name: CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: kyma-api-gateway-int-test-client-id
+            key: token
+      - name: CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: kyma-api-gateway-int-test-client-secret
+            key: token

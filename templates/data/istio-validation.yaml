@@ -2,51 +2,28 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/istio/istio-validation.yaml
-        localSets:
-          linting:
-            skip_report: "false"
-            max_concurrency: "10"
-            optional: "true"
-            decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            request_memory: 200Mi
-            request_cpu: 80m
-          testing:
-            skip_report: "false"
-            max_concurrency: "10"
-            optional: "true"
-            decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            request_memory: 1Gi
-            request_cpu: 500m
         jobConfigs:
           - repoName: "kyma-project/istio"
             jobs:
               - jobConfig:
-                  name: pull-istio-sidecars-lint
+                  name: pull-istio-lint
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd operator/pkg/lib/sidecars && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
+                    - "cd operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
                   always_run: true
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
-                  local:
                     - linting
               - jobConfig:
-                  name: pull-istio-sidecars-component-test
-                  run_if_changed: "^operator/pkg/lib/sidecars"
+                  name: pull-istio-test
+                  request_cpu: 500m
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd operator/pkg/lib/sidecars/test && EXPORT_RESULTS=true make test"
+                    - "cd operator && EXPORT_RESULTS=true make test"
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
-                  local:
                     - testing

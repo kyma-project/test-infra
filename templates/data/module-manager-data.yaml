@@ -11,7 +11,7 @@ templates:
             jobs:
               - jobConfig:
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
                   name: pull-module-mgr-lint
                   annotations:
                     description: executes the 'golangci-lint lint' command before any pull request.

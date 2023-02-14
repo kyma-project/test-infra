@@ -7,6 +7,7 @@ presubmits:
         preset-kind-volume-mounts: "true"
       cluster: untrusted-workload
       decorate: true
+      run_if_changed: '.*\.go$|charts/'
       spec:
         containers:
           - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759

@@ -13,12 +13,6 @@ templates:
               - "skip-review"
               - "area/dependency"
             ignore:
-              - dependencyName: "github.com/onsi/ginkgo/v2"
-                versions:
-                  - "2.x"
-              - dependencyName: "github.com/onsi/gomega"
-                versions:
-                  - "1.2x"
               - dependencyName: "github.com/go-logr/logr"
                 versions:
                   - "1.2.2"
@@ -29,6 +23,15 @@ templates:
                   - "1.1.0-rc1"
                   - "1.0.0"
                   - "1.0.0-rc1"
+              - dependencyName: "k8s.io/apimachinery"
+                versions:
+                  - "0.2x"
+              - dependencyName: "k8s.io/api"
+                versions:
+                  - "0.2x"
+              - dependencyName: "k8s.io/client-go"
+                versions:
+                  - "0.2x"
           dailyDockerEcosystem:
             packageEcosystem: "docker"
             scheduleInterval: "daily"
@@ -36,6 +39,14 @@ templates:
             labels:
               - "docker"
               - "skip-review"
+              - "area/dependency"
+          dailyTerraform:
+            packageEcosystem: "terraform"
+            scheduleInterval: "daily"
+            commitIncludeScope: "true"
+            commitMsgPrefix: "tf"
+            labels:
+              - "terraform"
               - "area/dependency"
         jobConfigs:
           - repoName: "github.com/kyma-project/test-infra"
@@ -46,6 +57,22 @@ templates:
                   local:
                     - "dailyGoEcosystem"
               - jobConfig:
+                  directory: "configs/terraform/secrets-leaks-log-scanner"
+                inheritedConfigs:
+                  local:
+                    - "dailyTerraform"
+              - jobConfig:
+                  directory: "configs/terraform/core"
+                inheritedConfigs:
+                  local:
+                    - "dailyTerraform"
+              - jobConfig:
+                  directory: "/prow/images/ginkgo"
+                  commitMsgPrefix: "ginkgo"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
                   directory: "/prow/images/prow-tools"
                   commitMsgPrefix: "prow-tools"
                 inheritedConfigs:
@@ -55,12 +82,6 @@ templates:
                   directory: "/development/tools/cmd/githubrelease"
                   # commit message can be 15 characters max
                   commitMsgPrefix: "githubrelease"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/development/kyma-ci-force-bot/ciforcebot"
-                  commitMsgPrefix: "ciforcebot"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
@@ -86,7 +107,6 @@ templates:
                     - "dailyDockerEcosystem"
               - jobConfig:
                   directory: "/prow/images/bootstrap"
-
                   commitMsgPrefix: "bootstrap"
                 inheritedConfigs:
                   local:
@@ -166,6 +186,41 @@ templates:
                   directory: "/development/markdown-index"
                   # commit message can be 15 characters max
                   commitMsgPrefix: "markdown-index"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/gcp/cloud-run/create-github-issue"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "create-gh-issue"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/gcp/cloud-run/search-github-issue"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "search-gh-issue"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/gcp/cloud-run/scan-logs-for-secrets"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "scan-logs-for-secrets"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/gcp/cloud-run/move-gcs-bucket"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "move-gcs-bucket"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/gcp/cloud-run/slack-message-sender"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "slack-msg-sender"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"

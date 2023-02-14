@@ -26,7 +26,7 @@ presubmits: # runs on PRs
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
             securityContext:
               privileged: true
             command:
