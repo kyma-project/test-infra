@@ -7,12 +7,14 @@ templates:
             path_alias: github.com/kyma-project/api-gateway
             labels:
               preset-debug-commando-oom: "true"
+          with_ias_credentials:
+            labels:
+              preset-api-gateway-int-test-client-creds: "true"
           gardener_gcp_job:
             labels:
               preset-gardener-gcp-kyma-integration: "true"
               preset-kyma-cli-stable: "true"
               preset-cluster-version: "true"
-              preset-api-gateway-int-test-client-creds: "true"
             env:
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
               GARDENER_REGION: "europe-west4"
@@ -72,4 +74,17 @@ templates:
                   local:
                     - jobConfig_default
                     - gardener_gcp_job
+                    - with_ias_credentials
                     - command_integration
+              - jobConfig:
+                  name: pull-api-gateway-integration-test-k3d
+                  command: "make test-integration-k3d"
+                  always_run: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - testing
+                  local:
+                    - jobConfig_default
+                    - with_ias_credentials
