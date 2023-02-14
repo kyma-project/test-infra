@@ -105,10 +105,12 @@ presubmits: # runs on PRs
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
+              - name: JOBGUARD_TIMEOUT
+                value: "10m"
+              - name: JOB_NAME_PATTERN
+                value: "pull-api-gateway-build"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
-              - name: SKIP_TESTS
-                value: "true"
             resources:
               requests:
                 memory: 1Gi
