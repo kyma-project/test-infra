@@ -78,7 +78,9 @@ templates:
                     - command_integration
               - jobConfig:
                   name: pull-api-gateway-integration-test-k3d
-                  command: "make test-integration-k3d"
+                  command: "make"
+                  args: 
+                  - "test-integration-k3d"
                   always_run: true
                 inheritedConfigs:
                   global:
