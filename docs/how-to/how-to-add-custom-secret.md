@@ -9,26 +9,26 @@ This tutorial shows how to add a custom secret and use it in the Prow pipeline.
 
 2. Update External Secrets Operator yaml file.
 
-Add External Secret definitions to one of the following files:
-- [external_secrets_trusted.yaml](https://github.com/kyma-project/test-infra/blob/main/prow/cluster/resources/external-secrets/external_secrets_trusted.yaml) if the secret is applied only on trusted cluster (applicable for postsubmit or release job).
-- [external_secrets_untrusted.yaml](https://github.com/kyma-project/test-infra/blob/main/prow/cluster/resources/external-secrets/external_secrets_untrusted.yaml) if the secret is applied only on untrusted cluster (applicable for presubmit job).
-- [external_secrets_workloads.yaml](https://github.com/kyma-project/test-infra/blob/main/prow/cluster/resources/external-secrets/external_secrets_workloads.yaml) if the secret is applied on both clusters (applicable for presubmit and postsubmit jobs).
+    Add External Secret definitions to one of the following files:
+    - [external_secrets_trusted.yaml](https://github.com/kyma-project/test-infra/blob/main/prow/cluster/resources/external-secrets/external_secrets_trusted.yaml) if the secret is applied only on trusted cluster (applicable for postsubmit or release job).
+    - [external_secrets_untrusted.yaml](https://github.com/kyma-project/test-infra/blob/main/prow/cluster/resources/external-secrets/external_secrets_untrusted.yaml) if the secret is applied only on untrusted cluster (applicable for presubmit job).
+    - [external_secrets_workloads.yaml](https://github.com/kyma-project/test-infra/blob/main/prow/cluster/resources/external-secrets/external_secrets_workloads.yaml) if the secret is applied on both clusters (applicable for presubmit and postsubmit jobs).
 
 3. Apply the Secrets manually in the Prow cluster as K8s External Secret.
 
 4. Create ProwJob Preset in [prow-config.yaml ](https://github.com/kyma-project/test-infra/blob/main/templates/templates/prow-config.yaml) that maps the Secret to the variable or to the file.
 
-For example:
+    For example:
 
-```yaml
-- labels:
-    preset-kyma-btp-manager-bot-github-token: "true"
-    env:
-    - name: BOT_GITHUB_TOKEN
-        valueFrom:
-        secretKeyRef:
-            name: kyma-btp-manager-bot-github-token
-            key: token
-```
+    ```yaml
+    - labels:
+        preset-kyma-btp-manager-bot-github-token: "true"
+        env:
+        - name: BOT_GITHUB_TOKEN
+            valueFrom:
+            secretKeyRef:
+                name: kyma-btp-manager-bot-github-token
+                key: token
+    ```
 
-Now you can use the Preset in your job definition and refer to the Secret in your pipeline.
+    Now you can use the Preset in your job definition and refer to the Secret in your pipeline.
