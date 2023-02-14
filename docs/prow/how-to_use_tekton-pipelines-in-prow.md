@@ -105,7 +105,7 @@ presubmits:
 
 ## Reusability of tasks and pipelines
 
-Kyma's Tekton pipelines and tasks are under [`configs/tekton/catalog` directory](../../configs/tekton/catalog). You can reuse any of the tasks and pipelines in your own ProwJob definition.
+Kyma's Tekton pipelines and tasks are under [`tekton/catalog` directory](../../tekton/catalog). You can reuse any of the tasks and pipelines in your own ProwJob definition.
 
 ### Reusing tasks
 
