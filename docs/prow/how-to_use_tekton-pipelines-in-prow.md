@@ -27,8 +27,17 @@ presubmits:
       always_run: true
       tekton_pipeline_run_spec:
         v1beta1:
-            pipelineRef:
-              name: prototype-pipeline
+            pipelineSpec:
+              description: "Hello world!"
+                tasks:
+                  - name: hello
+                     taskSpec:
+                       steps:
+                         - name: echo
+                            image: alpine:edge
+                            script: |
+                              #!/bin/sh
+                              echo "Hello World"
             workspaces:
               - name: artifacts
                 emptyDir: {}
