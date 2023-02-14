@@ -21,9 +21,9 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
 fi
 
 cleanup() {
-  log::info "Wait before cleanup - start"
-  sleep 3h 30m
-  log::info "Wait before cleanup - end"
+#  log::info "Wait before cleanup - start"
+#  sleep 3h 30m
+#  log::info "Wait before cleanup - end"
 
   # TODO - collect junit results
   log::info "Stopping instance kyma-upgrade-test-${RANDOM_ID}"
