@@ -60,7 +60,8 @@ templates:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                   env:
-                    SKIP_TESTS: "true"
+                    JOB_NAME_PATTERN: "pull-api-gateway-build"
+                    JOBGUARD_TIMEOUT: "10m"
                 inheritedConfigs:
                   global:
                     - jobConfig_default

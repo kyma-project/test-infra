@@ -111,6 +111,7 @@ if [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
   api-gateway::deploy_login_consent_app
 elif [[ "${API_GATEWAY_INTEGRATION_TESTS}" == "true" ]]; then
   api-gateway::prepare_components_file_istio_only
+  "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
   integration_tests::install_kyma
 else
   kyma::deploy_kyma \
