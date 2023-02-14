@@ -426,7 +426,7 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
 	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged")
 	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
-	fs.BoolVar(&o.exportTags, "export-tags", false, "Add docker tags to build args array. Each tag has key DOCKER_TAG_x where x is index of it in tags list")
+	fs.BoolVar(&o.exportTags, "export-tags", false, "Add docker tags to build args array. Each tag has key TAG_x where x is name attached to it.")
 	return fs
 }
 
