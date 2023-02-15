@@ -226,7 +226,7 @@ templates:
                   repository: "warden"
                   language: "golang-mod"
                   project: "kyma-project"
-                  base_ref: "v0"
+                  base_ref: "main"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
