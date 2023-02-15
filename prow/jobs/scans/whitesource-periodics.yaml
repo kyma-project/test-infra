@@ -541,7 +541,7 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: warden
           path_alias: github.com/kyma-project/warden
-          base_ref: v0
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
