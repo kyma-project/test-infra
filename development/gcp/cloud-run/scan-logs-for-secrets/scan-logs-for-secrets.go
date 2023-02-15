@@ -72,14 +72,15 @@ func main() {
 	}
 	fmt.Printf("Current working directory: %s\n", cwd)
 
-	// Get a list of files in the current directory
-	files, err := ioutil.ReadDir(cwd)
+	// Get a list of files in the app directory
+	appDir := cwd + "/app"
+	files, err := ioutil.ReadDir(appDir)
 	if err != nil {
 		fmt.Printf("Error reading directory contents: %s\n", err)
 		return
 	}
 
-	fmt.Println("Files in the current directory:")
+	fmt.Println("Files in the app directory:")
 	for _, file := range files {
 		fmt.Println(file.Name())
 	}
