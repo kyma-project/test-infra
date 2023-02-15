@@ -1,5 +1,4 @@
 #!/bin/bash
-
 export GO111MODULE=on
 
 ROOT_PATH=$(dirname "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)")
