@@ -8,5 +8,7 @@ pjConfigs:
       kyma:
         - pjName: "pre-main-kyma-gardener-gcp-eventing"
           report: false
-#        - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
-#          report: false
+        - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
+          report: false
+        - pjName: "pre-main-kyma-gardener-gcp-subscription-upgrade"
+          report: false

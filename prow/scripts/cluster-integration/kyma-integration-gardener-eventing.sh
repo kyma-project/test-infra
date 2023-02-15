@@ -79,18 +79,8 @@ function cleanupJobAssets() {
     log::banner "Job Exit Status:: \"${EXIT_STATUS}\""
 
     if [[ $EXIT_STATUS != "0" ]]; then
-        log::info "Exiting 1"
-    elif [[ $EXIT_STATUS != 0 ]]; then
-        log::info "Exiting 2"
-    elif [[ $EXIT_STATUS == "0" ]]; then
-        log::info "Exiting 3"
-    elif [[ $EXIT_STATUS == 0 ]]; then
-        log::info "Exiting 4"
-    else
-        log::info "Exiting else"
+        eventing::print_troubleshooting_logs
     fi
-
-    eventing::print_troubleshooting_logs
 
     log::banner "Cleanup fast-integration assets"
     eventing::fast_integration_test_cleanup

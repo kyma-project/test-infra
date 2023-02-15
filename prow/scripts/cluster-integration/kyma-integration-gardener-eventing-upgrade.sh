@@ -83,7 +83,9 @@ function cleanupJobAssets() {
 
     log::banner "Job Exit Status:: \"${EXIT_STATUS}\""
 
-    eventing::print_troubleshooting_logs
+    if [[ $EXIT_STATUS != "0" ]]; then
+        eventing::print_troubleshooting_logs
+    fi
 
     log::banner "Cleaning job assets"
     if  [[ "${ENABLE_TEST_CLEANUP}" = true ]] ; then
