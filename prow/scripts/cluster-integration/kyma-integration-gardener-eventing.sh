@@ -80,10 +80,14 @@ function cleanupJobAssets() {
 
     if [[ $EXIT_STATUS != "0" ]]; then
         log::info "Exiting 1"
-    elif [[ $GARDENER_PROVIDER != 0 ]]; then
+    elif [[ $EXIT_STATUS != 0 ]]; then
         log::info "Exiting 2"
-    else
+    elif [[ $EXIT_STATUS == "0" ]]; then
         log::info "Exiting 3"
+    elif [[ $EXIT_STATUS == 0 ]]; then
+        log::info "Exiting 4"
+    else
+        log::info "Exiting else"
     fi
 
     eventing::print_troubleshooting_logs
@@ -173,9 +177,9 @@ eventing::print_subscription_crd_version
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     # test the default Eventing backend which comes with Kyma
     log::banner "Execute eventing E2E fast-integration tests"
-    # eventing::pre_upgrade_test_fast_integration will not do the cleanup of FI tests.
-    # It will done later in cleanup script
-    eventing::pre_upgrade_test_fast_integration
+    # eventing test assets cleanup will done later in cleanup script
+    eventing::test_fast_integration_eventing_prep
+    eventing::fast_integration_tests
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
     if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then

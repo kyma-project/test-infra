@@ -165,6 +165,18 @@ function eventing::wait_for_backend_ready() {
   return 1
 }
 
+# Runs eventing specific fast-integration tests preparation
+function eventing::test_fast_integration_eventing_prep() {
+    log::info "Running Eventing script to prepare test assets"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    npm install
+    npm run eventing-test-prep
+    popd
+
+    log::success "Eventing test preparation completed"
+}
+
 # Runs eventing specific fast-integration tests
 function eventing::test_fast_integration_eventing() {
     log::info "Running Eventing E2E release tests"
