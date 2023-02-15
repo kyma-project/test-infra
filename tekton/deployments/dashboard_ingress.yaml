@@ -20,12 +20,12 @@ metadata:
   namespace: tekton-pipelines
 spec:
   rules:
-  - host: tekton.build.kyma-project.io
-    http:
-      paths:
-      - backend:
-          service:
-            name: tekton-dashboard
-            port:
-              number: 9097
-        pathType: ImplementationSpecific
+    - host: tekton.build.kyma-project.io
+      http:
+        paths:
+          - backend:
+              service:
+                name: tekton-dashboard
+                port:
+                  number: 9097
+            pathType: ImplementationSpecific
