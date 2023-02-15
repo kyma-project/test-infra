@@ -111,7 +111,6 @@ if [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
   api-gateway::deploy_login_consent_app
 elif [[ "${API_GATEWAY_INTEGRATION_TESTS}" == "true" ]]; then
   api-gateway::prepare_components_file_istio_only
-  integration_tests::install_kyma
 else
   kyma::deploy_kyma \
     -p "$EXECUTION_PROFILE" \
@@ -125,9 +124,6 @@ else
         -d "$KYMA_SOURCES_DIR"
   fi
 fi
-
-# generate pod-security-policy list in json
-utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma

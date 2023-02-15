@@ -109,8 +109,6 @@ presubmits: # runs on PRs
                 value: "europe-west4-b"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
-              - name: SKIP_TESTS
-                value: "true"
             resources:
               requests:
                 memory: 1Gi
