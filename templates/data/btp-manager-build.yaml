@@ -56,6 +56,7 @@ templates:
               - jobConfig: # builds an OCI image with btp-operator module from the PR branch
                   name: pull-btp-manager-module-build
                   # TODO adjust regex
+                  # TODO somehow branches are defined in rendered job
                   run_if_changed: "^api/*/.*$|^config/*/.*$|^hack/*.*$|^internal/*/.*$|^module-chart/*/.*$|^(Makefile|.*.sh)|^PROJECT$"
                   labels:
                     preset-sa-kyma-push-images: "true"
