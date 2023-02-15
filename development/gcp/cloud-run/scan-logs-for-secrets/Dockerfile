@@ -6,6 +6,18 @@ COPY . .
 RUN  CGO_ENABLED=0 go build -o /scanlogsforsecrets -ldflags="-s -w" ./development/gcp/cloud-run/scan-logs-for-secrets
 RUN ls -al
 RUN pwd
+RUN cd development
+RUN ls -al
+RUN pwd
+RUN cd gcp
+RUN ls -al
+RUN pwd
+RUN cd cloud-run
+RUN ls -al
+RUN pwd
+RUN cd scan-logs-for-secrets
+RUN ls -al
+RUN pwd
 FROM alpine:3.17.1
 
 COPY --from=builder /development/gcp/cloud-run/scan-logs-for-secrets/gitleaks.toml /app
