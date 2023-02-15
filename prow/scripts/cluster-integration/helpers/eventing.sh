@@ -303,7 +303,8 @@ function eventing::print_troubleshooting_logs() {
 
     # Subscriptions
     log::banner "Subscriptions: All namespaces"
-    kubectl get subscriptions -A -o wide
+    kubectl get subscriptions -A
+    kubectl get subscriptions -A -o yaml
 
     # NATS health
     log::banner "NATS Health Check"
