@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http/httputil"
 
 	"net/http"
@@ -64,28 +63,8 @@ func main() {
 		mainLogger.LogCritical("failed to create storageClient: %s", err)
 	}
 
-	defer storageClient.Close()
-	cwd, err := os.Getwd()
-	if err != nil {
-		fmt.Printf("Error getting current working directory: %s\n", err)
-		return
-	}
-	fmt.Printf("Current working directory: %s\n", cwd)
-
-	// Get a list of files in the app directory
-	appDir := cwd + "/app"
-	files, err := ioutil.ReadDir(appDir)
-	if err != nil {
-		fmt.Printf("Error reading directory contents: %s\n", err)
-		return
-	}
-
-	fmt.Println("Files in the app directory:")
-	for _, file := range files {
-		fmt.Println(file.Name())
-	}
 	// Setup configuration for gitleaks
-	viper.SetConfigFile("app/gitleaks.toml")
+	viper.SetConfigFile("app/development/gcp/cloud-run/scan-logs-for-secrets/gitleaks.toml")
 	viper.ReadInConfig()
 	if err := viper.ReadInConfig(); err != nil {
 		mainLogger.LogError("failed to read viper config, error: %s", err)
