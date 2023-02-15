@@ -111,8 +111,7 @@ if [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
   api-gateway::deploy_login_consent_app
 elif [[ "${API_GATEWAY_INTEGRATION_TESTS}" == "true" ]]; then
   api-gateway::prepare_components_file_istio_only
-  "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
-  integration_tests::install_kyma
+  api-gateway::prepare_test_env_integration_tests
 else
   kyma::deploy_kyma \
     -p "$EXECUTION_PROFILE" \
@@ -144,7 +143,7 @@ elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
     api-gateway::prepare_test_environments
     api-gateway::launch_tests
 elif [[ "${API_GATEWAY_INTEGRATION_TESTS}" == "true" ]]; then
-    api-gateway::prepare_test_env_integration_tests
+    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
     api-gateway::launch_integration_tests
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
