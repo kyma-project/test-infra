@@ -7,7 +7,7 @@ RUN  CGO_ENABLED=0 go build -o /scanlogsforsecrets -ldflags="-s -w" ./developmen
 
 FROM alpine:3.17.1
 
-COPY --from=builder /gitleaks.toml .
+COPY --from=builder /gitleaks.toml /config
 COPY --from=builder /scanlogsforsecrets /scanlogsforsecrets
 
 RUN apk add --no-cache ca-certificates && \
