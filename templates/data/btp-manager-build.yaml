@@ -72,3 +72,4 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
+                    - "kaniko_buildpack" # TODO get rid of it defining  JobConfig.image
