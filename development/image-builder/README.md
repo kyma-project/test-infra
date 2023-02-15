@@ -106,7 +106,7 @@ Currently, image-builder contains a basic implementation of a notary signer. If 
 
 ## Named Tags
 
-image-builder supports passing name along with tag both via -tag option or config for tag template.
+image-builder supports passing the name along with the tag both using the `-tag` option or config for the tag template.
 You can use `-tag name=value` to pass name for tag. 
 
 If name is not provided, it will be evaluated from value:
