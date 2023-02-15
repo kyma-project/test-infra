@@ -70,7 +70,7 @@ resource "google_eventarc_trigger" "secrets_leak_detector_workflow" {
 
   transport {
     pubsub {
-      topic = "projects/${var.google_project_id}/topics/${var.prow_pubsub_topic_name}"
+      topic = "projects/${var.gcp_project_id}/topics/${var.prow_pubsub_topic_name}"
     }
   }
 }
