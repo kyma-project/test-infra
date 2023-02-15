@@ -7,7 +7,7 @@ RUN  CGO_ENABLED=0 go build -o /scanlogsforsecrets -ldflags="-s -w" ./developmen
 
 FROM alpine:3.17.1
 
-#COPY --from=builder /development/gcp/cloud-run/scan-logs-for-secrets/gitleaks.toml /app
+COPY --from=builder /development/gcp/cloud-run/scan-logs-for-secrets/gitleaks.toml /app
 COPY --from=builder /scanlogsforsecrets /scanlogsforsecrets
 
 USER root
