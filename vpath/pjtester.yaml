@@ -7,7 +7,7 @@ pjConfigs:
     kyma-project:
       telemetry-manager:
         - pjName: "pre-main-telemetry-manager-governance"
-          report: true
+          report: false
 prConfigs: #
   kyma-project:
     telemetry-manager:
