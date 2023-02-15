@@ -303,7 +303,7 @@ function eventing::print_subscription_crd_version(){
 function eventing::print_troubleshooting_logs() {
     log::banner "Printing troubleshooting logs"
 
-    CMD_RUN_IMAGE="eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+    CMD_RUN_IMAGE="curlimages/curl"
 
     # all pods in kyma-system
     log::banner "Pods: kyma-system namespace"
@@ -320,11 +320,11 @@ function eventing::print_troubleshooting_logs() {
 
     # NATS health
     log::banner "NATS Health Check"
-    log::banner "eventing-nats-0"
+    log::info "eventing-nats-0"
     kubectl run -it natscheck0 --image="${CMD_RUN_IMAGE}" --timeout=360s --restart=Never --rm -- curl http://eventing-nats-0.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
-    log::banner "eventing-nats-1"
+    log::info "eventing-nats-1"
     kubectl run -it natscheck1 --image="${CMD_RUN_IMAGE}" --timeout=360s --restart=Never --rm -- curl http://eventing-nats-1.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
-    log::banner "eventing-nats-2"
+    log::info "eventing-nats-2"
     kubectl run -it natscheck2 --image="${CMD_RUN_IMAGE}" --timeout=360s --restart=Never --rm -- curl http://eventing-nats-2.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
 
     # Logs from NATS pods
