@@ -23,7 +23,7 @@ paths = [
 [[rules]]
 description = "Bearer Authorization Token"
 id = "bearer-authorization-token"
-regex = '''Authorization: Bearer\s+[a-zA-Z0-9\._-]+'''
+regex = '''[Aa]uthorization: [Bb]earer\s+[a-zA-Z0-9\\._-]+'''
 keywords = [
     "bearer",
     "authorization"
