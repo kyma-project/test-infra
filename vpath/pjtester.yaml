@@ -2,7 +2,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       api-gateway:
-        - pjName: "pull-api-gateway-integration-test-k3d"
+        - pjName: "pull-api-gateway-integration-test"
 prConfigs:
   kyma-project:
     api-gateway:
