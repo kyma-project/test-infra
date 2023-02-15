@@ -63,6 +63,7 @@ templates:
                     grace_period: 600000000000 # 10min
                   env:
                     SKIP_TESTS: "true"
+                    API_GATEWAY_INTEGRATION_TESTS: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
