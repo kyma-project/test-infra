@@ -321,11 +321,11 @@ function eventing::print_troubleshooting_logs() {
     # NATS health
     log::banner "NATS Health Check"
     log::banner "eventing-nats-0"
-    kubectl run -it natscheck0 --image="${CMD_RUN_IMAGE}" --timeout=120s --restart=Never --rm -- curl http://eventing-nats-0.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
+    kubectl run -it natscheck0 --image="${CMD_RUN_IMAGE}" --timeout=360s --restart=Never --rm -- curl http://eventing-nats-0.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
     log::banner "eventing-nats-1"
-    kubectl run -it natscheck1 --image="${CMD_RUN_IMAGE}" --timeout=120s --restart=Never --rm -- curl http://eventing-nats-1.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
+    kubectl run -it natscheck1 --image="${CMD_RUN_IMAGE}" --timeout=360s --restart=Never --rm -- curl http://eventing-nats-1.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
     log::banner "eventing-nats-2"
-    kubectl run -it natscheck2 --image="${CMD_RUN_IMAGE}" --timeout=120s --restart=Never --rm -- curl http://eventing-nats-2.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
+    kubectl run -it natscheck2 --image="${CMD_RUN_IMAGE}" --timeout=360s --restart=Never --rm -- curl http://eventing-nats-2.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
 
     # Logs from NATS pods
     log::banner "Logs: eventing-nats-0"
