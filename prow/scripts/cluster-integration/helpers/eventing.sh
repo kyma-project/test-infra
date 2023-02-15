@@ -291,8 +291,10 @@ function eventing::print_subscription_crd_version(){
 function eventing::print_troubleshooting_logs() {
     log::banner "Printing troubleshooting logs"
 
+    CMD_RUN_IMAGE="eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+
     # all pods in kyma-system
-    log::banner "Pods in kyma-system namespace"
+    log::banner "Pods: kyma-system namespace"
     kubectl get po -n kyma-system
 
     # Eventing backend
@@ -300,8 +302,17 @@ function eventing::print_troubleshooting_logs() {
     kubectl get eventingbackends -n kyma-system
 
     # Subscriptions
-    log::banner "Subscriptions"
+    log::banner "Subscriptions: All namespaces"
     kubectl get subscriptions -A -o wide
+
+    # NATS health
+    log::banner "NATS Health Check"
+    log::banner "eventing-nats-0"
+    kubectl run -it natscheck0 --image="${CMD_RUN_IMAGE}" --timeout=120s --restart=Never --rm -- curl http://eventing-nats-0.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
+    log::banner "eventing-nats-1"
+    kubectl run -it natscheck1 --image="${CMD_RUN_IMAGE}" --timeout=120s --restart=Never --rm -- curl http://eventing-nats-1.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
+    log::banner "eventing-nats-2"
+    kubectl run -it natscheck2 --image="${CMD_RUN_IMAGE}" --timeout=120s --restart=Never --rm -- curl http://eventing-nats-2.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
 
     # Logs from NATS pods
     log::banner "Logs: eventing-nats-0"
@@ -314,10 +325,12 @@ function eventing::print_troubleshooting_logs() {
     # Logs from EPP
     log::banner "Logs: eventing-publisher-proxy"
     kubectl logs -n kyma-system deployment/eventing-publisher-proxy -c eventing-publisher-proxy
-    # kubectl logs -n kyma-system -l "app.kubernetes.io/name=eventing-publisher-proxy"
 
     # Logs from EC
     log::banner "Logs: eventing-controller"
     kubectl logs -n kyma-system deployment/eventing-controller -c controller
-    # kubectl logs --since=1h -n kyma-system -l "app.kubernetes.io/instance=eventing, app.kubernetes.io/name=controller"
+
+    # all pods in all namespaces
+    log::banner "Pods: All namespace"
+    kubectl get po -A
 }

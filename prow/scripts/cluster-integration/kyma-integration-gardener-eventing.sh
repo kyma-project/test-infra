@@ -70,8 +70,25 @@ else
     exit 1
 fi
 
+function cleanupJobAssets() {
+    # Must be at the beginning
+    EXIT_STATUS=$?
+
+    set +e
+
+    log::banner "Job Exit Status:: \"${EXIT_STATUS}\""
+
+    eventing::print_troubleshooting_logs
+
+    log::banner "Cleaning job assets"
+    gardener::cleanup
+
+    set -e
+    exit ${EXIT_STATUS}
+}
+
 # nice cleanup on exit, be it successful or on fail
-trap gardener::cleanup EXIT INT
+trap cleanupJobAssets EXIT INT
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"

@@ -79,26 +79,27 @@ function cleanupJobAssets() {
     # Must be at the beginning
     EXIT_STATUS=$?
 
+    set +e
+
     log::banner "Job Exit Status:: \"${EXIT_STATUS}\""
 
     eventing::print_troubleshooting_logs
 
-#    set +e
-#
-#    if  [[ "${ENABLE_TEST_CLEANUP}" = true ]] ; then
-#        log::banner "Cleanup fast-integration assets"
-#        eventing::fast_integration_test_cleanup || log::info "Cleanup fast-integration assets failed"
-#    fi
-#
-#    if  [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
-#        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
-#        gardener::deprovision_cluster \
-#            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
-#            -c "${CLUSTER_NAME}" \
-#            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
-#    fi
-#
-#    set -e
+    log::banner "Cleaning job assets"
+    if  [[ "${ENABLE_TEST_CLEANUP}" = true ]] ; then
+        log::banner "Cleanup fast-integration assets"
+        eventing::fast_integration_test_cleanup || log::info "Cleanup fast-integration assets failed"
+    fi
+
+    if  [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
+        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+        gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${CLUSTER_NAME}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    fi
+
+    set -e
     exit ${EXIT_STATUS}
 }
 
