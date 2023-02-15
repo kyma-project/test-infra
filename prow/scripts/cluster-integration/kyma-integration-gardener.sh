@@ -19,7 +19,7 @@
 
 
 # exit on error, and raise error when variable is not set when used
-set -ex
+set -e
 
 ENABLE_TEST_LOG_COLLECTOR=false
 
