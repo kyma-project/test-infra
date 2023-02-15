@@ -66,7 +66,7 @@ func main() {
 	defer storageClient.Close()
 
 	// Setup configuration for gitleaks
-	viper.SetConfigFile("./app/gitleaks.toml")
+	viper.SetConfigFile("/app/gitleaks.toml")
 	viper.ReadInConfig()
 	if err := viper.ReadInConfig(); err != nil {
 		mainLogger.LogError("failed to read viper config, error: %s", err)
