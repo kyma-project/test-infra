@@ -109,11 +109,9 @@ Currently, image-builder contains a basic implementation of a notary signer. If 
 image-builder supports passing the name along with the tag both using the `-tag` option or config for the tag template.
 You can use `-tag name=value` to pass the name for the tag. 
 
-If name is not provided, it will be evaluated from value:
- - if value is string it will be used as name directly eg.: 
-   - `-tag latest` will be equal to `-tag latest=latest`
- - if value is go-template it will be converted to valid name eg:
-   - `-tag v{{ .ShortSHA }}-{{ .Date }}` will be equal to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
+If the name is not provided, it is evaluated from the value:
+ - if the value is a string, it is used as a name directly. For example,`-tag latest` is equal to `-tag latest=latest`
+ - if the value is go-template, it will be converted to a valid name. For example, `-tag v{{ .ShortSHA }}-{{ .Date }}` is equal to `-tag vShortSHA-Date=v{{ .ShortSHA }}-{{ .Date }}`
 
 ## Usage
 
