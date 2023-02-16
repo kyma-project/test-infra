@@ -140,5 +140,5 @@ Usage of image-builder:
   -variant string
         If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored
   -export-tags
-        Export parsed tags as build-args into Dockerfile. Each tag will have format TAG_x where x is either tag name passed along with tag (see: Named Tags section). 
+        Export parsed tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag (see: Named Tags section). 
 ```
