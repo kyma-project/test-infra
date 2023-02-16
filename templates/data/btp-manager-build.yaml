@@ -55,16 +55,14 @@ templates:
                     - "jobConfig_postsubmit"
               - jobConfig: # builds an OCI image with btp-operator module from the PR branch
                   name: pull-btp-manager-module-build
-                  # TODO adjust regex
-                  # TODO somehow branches are defined in rendered job
-                  run_if_changed: "^api/*/.*$|^config/*/.*$|^hack/*.*$|^internal/*/.*$|^module-chart/*/.*$|^(Makefile|.*.sh)|^PROJECT$"
+                  always_run: true
                   labels:
                     preset-sa-kyma-push-images: "true"
                     preset-kyma-btp-manager-bot-github-token: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned" #TODO verify registry
-                    IMG_REGISTRY:  "europe-docker.pkg.dev/kyma-project/prod" #TODO verify registry
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+                    IMG_REGISTRY:  "europe-docker.pkg.dev/kyma-project/dev"
                   privileged: false
                   command: "./hack/create_module_image.sh"
                   args:
@@ -73,4 +71,4 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "kaniko_buildpack" # TODO get rid of it defining  JobConfig.image
+                    - "image_buildpack-golang" # takes latest golang image

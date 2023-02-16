@@ -53,7 +53,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kyma-btp-manager-bot-github-token: "true"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^api/*/.*$|^config/*/.*$|^hack/*.*$|^internal/*/.*$|^module-chart/*/.*$|^(Makefile|.*.sh)|^PROJECT$'
+      always_run: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -63,29 +63,22 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
             command:
-              - "./hack/generate_module_image.sh"
+              - "./hack/create_module_image.sh"
             args:
               - "ci"
             env:
               - name: IMG_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/prod"
+                value: "europe-docker.pkg.dev/kyma-project/dev"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                value: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -93,13 +86,6 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/btp-manager:
