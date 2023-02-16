@@ -56,6 +56,7 @@ templates:
               - jobConfig: # builds an OCI image with btp-operator module from the PR branch
                   name: pull-btp-manager-module-build
                   always_run: true
+                  optional: true
                   labels:
                     preset-sa-kyma-push-images: "true"
                     preset-kyma-btp-manager-bot-github-token: "true"
