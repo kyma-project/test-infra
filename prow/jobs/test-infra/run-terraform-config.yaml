@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
       spec:
-        serviceAccountName: terraform
+        serviceAccountName: prow-terraform-executor
         automountServiceAccountToken: true
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
@@ -107,7 +107,7 @@ postsubmits: # runs on main
         - ^master$
         - ^main$
       spec:
-        serviceAccountName: terraform
+        serviceAccountName: prow-terraform-executor
         automountServiceAccountToken: true
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
@@ -130,3 +130,4 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+  

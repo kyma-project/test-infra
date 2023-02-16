@@ -10,7 +10,7 @@ templates:
                   name: "pull-secret-leaks-log-scanner-tf-plan"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
-                  serviceAccountName: "terraform"
+                  serviceAccountName: "prow-terraform-executor"
                   automountServiceAccountToken: true
                   labels:
                     preset-bot-github-token: "true"
@@ -51,7 +51,7 @@ templates:
                   name: "post-secret-leaks-log-scanner-tf-apply"
                   run_if_changed: '^configs/terraform/secrets-leaks-log-scanner'
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
-                  serviceAccountName: "terraform"
+                  serviceAccountName: "prow-terraform-executor"
                   automountServiceAccountToken: true
                   labels:
                     preset-bot-github-token: "true"
