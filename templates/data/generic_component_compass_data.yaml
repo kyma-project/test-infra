@@ -30,6 +30,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-operations-controller-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-operations-controller"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -91,6 +93,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-connector-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-connector"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -152,6 +156,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-director-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-director"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -224,6 +230,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-hydrator-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-hydrator"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -285,6 +293,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-system-broker-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-system-broker"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -346,6 +356,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-external-services-mock-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-external-services-mock"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -407,6 +419,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-connectivity-adapter-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-connectivity-adapter"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -468,6 +482,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-pairing-adapter-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-pairing-adapter"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -529,6 +545,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-gateway-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-gateway"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -589,6 +607,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-schema-migrator-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-schema-migrator"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -639,6 +659,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-tests-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-e2e-tests"
                     - "--config=/config/kaniko-build-config.yaml"
