@@ -163,7 +163,7 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=environmentscleanup
-                    - "--export-tags"
+                    - --export-tags
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -179,7 +179,7 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=environmentscleanup
-                    - "--export-tags"
+                    - --export-tags
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -193,7 +193,7 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=accountcleanup
-                    - "--export-tags"
+                    - --export-tags
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -209,7 +209,7 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=accountcleanup
-                    - "--export-tags"
+                    - --export-tags
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -223,7 +223,7 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=subscriptioncleanup
-                    - "--export-tags"
+                    - --export-tags
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -239,7 +239,7 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=subscriptioncleanup
-                    - "--export-tags"
+                    - --export-tags
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -253,7 +253,7 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=trialcleanup
-                    - "--export-tags"
+                    - --export-tags
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -269,7 +269,7 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=trialcleanup
-                    - "--export-tags"
+                    - --export-tags
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -283,7 +283,7 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=deprovisionretrigger
-                    - "--export-tags"
+                    - --export-tags
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -299,7 +299,7 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=deprovisionretrigger
-                    - "--export-tags"
+                    - --export-tags
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
