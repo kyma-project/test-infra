@@ -64,7 +64,10 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230210174731-f8b080ac11c5
+require (
+	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb
+	k8s.io/test-infra v0.0.0-20230216054138-d56bc333ae8a
+)
 
 require (
 	cloud.google.com/go v0.107.0 // indirect
