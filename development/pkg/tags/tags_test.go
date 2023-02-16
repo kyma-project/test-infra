@@ -8,31 +8,31 @@ import (
 func TestTagger_ParseTags(t *testing.T) {
 	tc := []struct {
 		name     string
-		template []string
-		expected string
+		template []Tag
+		expected Tag
 		expErr   bool
 	}{
 		{
 			name:     "tag is v20220602-abc1234",
-			template: []string{`v{{ .Date }}-{{ .ShortSHA }}`},
-			expected: "v20220602-abc1234",
+			template: []Tag{{Name: "TagTemplate", Value: `v{{ .Date }}-{{ .ShortSHA }}`}},
+			expected: Tag{Name: "TagTemplate", Value: "v20220602-abc1234"},
 		},
 		{
 			name:     "fail, malformed tag template",
-			template: []string{"{{ ..Date }}-{{ .ShortSHA }}"},
+			template: []Tag{{Name: "", Value: "{{ ..Date }}-{{ .ShortSHA }}"}},
 			expErr:   true,
-			expected: "",
+			expected: Tag{},
 		},
 		{
 			name:     "could not parse, missing field",
-			template: []string{"{{ .Missing }}-field"},
-			expected: "",
+			template: []Tag{{Name: "", Value: "{{ .Missing }}-field"}},
+			expected: Tag{},
 			expErr:   true,
 		},
 		{
 			name:     "tag is v20220602-test",
-			template: []string{`v{{ .Date }}-{{ .Env "test-var" }}`},
-			expected: "v20220602-test",
+			template: []Tag{{Name: "Test", Value: `v{{ .Date }}-{{ .Env "test-var" }}`}},
+			expected: Tag{Name: "Test", Value: "v20220602-test"},
 		},
 	}
 	for _, c := range tc {

@@ -7,12 +7,15 @@ templates:
             path_alias: github.com/kyma-project/api-gateway
             labels:
               preset-debug-commando-oom: "true"
+              preset-kyma-guard-bot-github-token: "true"
+          with_ias_credentials:
+            labels:
+              preset-api-gateway-int-test-client-creds: "true"
           gardener_gcp_job:
             labels:
               preset-gardener-gcp-kyma-integration: "true"
               preset-kyma-cli-stable: "true"
               preset-cluster-version: "true"
-              preset-api-gateway-int-test-client-creds: "true"
             env:
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
               GARDENER_REGION: "europe-west4"
@@ -29,6 +32,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-api-gateway-lint
+                  request_cpu: 200m
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -60,7 +64,9 @@ templates:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                   env:
-                    SKIP_TESTS: "true"
+                    API_GATEWAY_INTEGRATION_TESTS: "true"
+                    JOB_NAME_PATTERN: "pull-api-gateway-build"
+                    JOBGUARD_TIMEOUT: "10m"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -72,4 +78,35 @@ templates:
                   local:
                     - jobConfig_default
                     - gardener_gcp_job
+                    - with_ias_credentials
+                    - command_integration
+              - jobConfig:
+                  name: post-api-gateway-integration-test
+                  always_run: true
+                  branches:
+                    - ^main$
+                    - "^release-\\d+\\.\\d+$"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  env:
+                    API_GATEWAY_INTEGRATION_TESTS: "true"
+                    JOB_NAME_PATTERN: "post-api-gateway-build"
+                    JOBGUARD_TIMEOUT: "10m"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_kyma
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                    - testing
+                  local:
+                    - jobConfig_default
+                    - gardener_gcp_job
+                    - with_ias_credentials
                     - command_integration
