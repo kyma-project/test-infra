@@ -20,6 +20,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-cloudsql-proxy"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^cloudsql-proxy/"
                   args:
                     - "--name=tpi/cloudsql-docker/gce-proxy"
@@ -47,6 +49,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-docker-registry"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^docker-registry/"
                   args:
                     - "--name=tpi/registry"
@@ -76,6 +80,8 @@ templates:
 
               - jobConfig:
                   name: "post-main-tpi-fluent-bit"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^fluent-bit/"
                   args:
                     - "--name=tpi/fluent-bit"
@@ -104,6 +110,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-jaeger-operator"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^jaeger-operator/"
                   args:
                     - "--name=tpi/jaeger-operator"
@@ -131,6 +139,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-k8s-tools"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^k8s-tools/"
                   args:
                     - "--name=tpi/k8s-tools"
@@ -157,6 +167,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-loki"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^loki/"
                   args:
                     - "--name=tpi/loki"
@@ -185,6 +197,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-oauth2-proxy"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^oauth2-proxy/"
                   args:
                     - "--name=tpi/oauth2-proxy"
@@ -213,6 +227,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-kiwigrid-sidecar"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^kiwigrid-sidecar/"
                   args:
                     - "--name=tpi/k8s-sidecar"
@@ -241,6 +257,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-node-exporter"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^prometheus-node-exporter/"
                   args:
                     - "--name=tpi/node-exporter"
@@ -269,6 +287,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-grafana"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^grafana/"
                   args:
                     - "--name=tpi/grafana"
@@ -297,6 +317,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-kaniko-executer"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^kaniko-executer/"
                   args:
                     - "--name=tpi/kaniko-executor"
@@ -325,6 +347,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-kube-state-metrics"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^kube-state-metrics/"
                   args:
                     - "--name=tpi/kube-state-metrics"
@@ -353,6 +377,8 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-otel-collector"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^otel-collector/"
                   args:
                     - "--name=tpi/otel-collector"

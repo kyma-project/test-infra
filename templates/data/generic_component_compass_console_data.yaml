@@ -71,6 +71,8 @@ templates:
                     - testing
               - jobConfig:
                   name: post-compass-console-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-console"
                     - "--config=/config/kaniko-build-config.yaml"

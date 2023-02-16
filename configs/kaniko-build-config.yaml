@@ -15,13 +15,28 @@ sign-config:
   enabled-signers:
     '*':
       - signify-dev
+      - signify-prod
   signers:
     - name: signify-dev
       type: notary
+      job-type:
+        - presubmit
+        - postsubmit
       config:
         endpoint: https://signing-dev.repositories.cloud.sap/signingsvc/sign
         timeout: 5m
         retry-timeout: 10s
         secret:
           path: /secret/secret.yaml
+          type: signify
+    - name: signify-prod
+      type: notary
+      job-type:
+        - postsubmit
+      config:
+        endpoint: https://signing.repositories.cloud.sap/signingsvc/sign
+        timeout: 5m
+        retry-timeout: 10s
+        secret:
+          path: /secret-prod/secret.yaml
           type: signify

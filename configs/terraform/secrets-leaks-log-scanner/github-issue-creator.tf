@@ -25,10 +25,10 @@ resource "google_cloud_run_service" "github_issue_creator" {
     spec {
       service_account_name = google_service_account.github_issue_creator.email
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/dev/test-infra/creategithubissue:PR-6801"
+        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/creategithubissue:v20230207-d59daeb0"
         env {
           name  = "PROJECT_ID"
-          value = var.google_project_id
+          value = var.gcp_project_id
         }
         env {
           name  = "COMPONENT_NAME"

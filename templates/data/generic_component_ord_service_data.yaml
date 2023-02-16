@@ -39,6 +39,8 @@ templates:
                     - testing
               - jobConfig:
                   name: post-ord-service-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-ord-service"
                     - "--config=/config/kaniko-build-config.yaml"

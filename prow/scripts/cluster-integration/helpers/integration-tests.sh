@@ -39,6 +39,7 @@ prerequisites:
 components:
   - name: "istio-resources"
   - name: "api-gateway"
+  - name: "ory" # Until drop of ory oathkeeper Ory needs to be deployed for noop and OAuth2 scenarios
 EOF
 }
 
@@ -168,7 +169,8 @@ function api-gateway::launch_tests() {
 function api-gateway::launch_integration_tests() {
   log::info "Running API-Gateway integration tests"
   pushd "${API_GATEWAY_SOURCES_DIR}"
-  #make test-integration
+  make install-kyma
+  make test-integration
   popd
 
   log::success "Tests completed"

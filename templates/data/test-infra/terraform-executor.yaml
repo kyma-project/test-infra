@@ -19,6 +19,8 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "post-build-image-terraform-executor"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: '^prow/images/terraform/'
                   args:
                     - "--name=test-infra/terraform"
