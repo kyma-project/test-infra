@@ -27,7 +27,7 @@ presubmits: # runs on PRs
             resources:
               requests:
                 memory: 200Mi
-                cpu: 80m
+                cpu: 200m
     - name: pull-api-gateway-test
       annotations:
         pipeline.trigger: "pr-submit"
@@ -68,6 +68,7 @@ presubmits: # runs on PRs
         preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
+        preset-kyma-guard-bot-github-token: "true"
       always_run: true
       optional: true
       skip_report: false
@@ -107,6 +108,86 @@ presubmits: # runs on PRs
                 value: "europe-west4"
               - name: GARDENER_ZONES
                 value: "europe-west4-b"
+              - name: JOBGUARD_TIMEOUT
+                value: "10m"
+              - name: JOB_NAME_PATTERN
+                value: "pull-api-gateway-build"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+postsubmits: # runs on main
+  kyma-project/api-gateway:
+    - name: post-api-gateway-integration-test
+      annotations:
+        pipeline.clusterprovisioning: "kyma cli"
+        pipeline.installer: "kyma install"
+        pipeline.platform: "gardener_gcp"
+        pipeline.test: "octopus"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-api-gateway-integration-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-api-gateway-int-test-client-creds: "true"
+        preset-cluster-version: "true"
+        preset-debug-commando-oom: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-cli-stable: "true"
+        preset-kyma-guard-bot-github-token: "true"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
+      path_alias: github.com/kyma-project/api-gateway
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-\d+\.\d+$
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+            securityContext:
+              privileged: true
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+            env:
+              - name: API_GATEWAY_INTEGRATION_TESTS
+                value: "true"
+              - name: GARDENER_REGION
+                value: "europe-west4"
+              - name: GARDENER_ZONES
+                value: "europe-west4-b"
+              - name: JOBGUARD_TIMEOUT
+                value: "10m"
+              - name: JOB_NAME_PATTERN
+                value: "post-api-gateway-build"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:

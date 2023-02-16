@@ -3,16 +3,17 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/gcbuild/config"
-	"github.com/kyma-project/test-infra/development/pkg/tags"
 	"io"
-	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
 	"strings"
 	"sync"
+
+	"github.com/kyma-project/test-infra/development/gcbuild/config"
+	"github.com/kyma-project/test-infra/development/pkg/tags"
+	errutil "k8s.io/apimachinery/pkg/util/errors"
 )
 
 type options struct {
@@ -159,7 +160,7 @@ func runBuildJob(o options, cb *config.CloudBuild, vs config.Variants) error {
 			tagTmpl = o.TagTemplate
 		}
 		// build a tag from commit SHA
-		tagger, err := tags.NewTagger([]string{tagTmpl}, tags.CommitSHA(sha))
+		tagger, err := tags.NewTagger([]tags.Tag{{Name: "TagTemplate", Value: tagTmpl}}, tags.CommitSHA(sha))
 		if err != nil {
 			return fmt.Errorf("get tagger: %w", err)
 		}
@@ -168,7 +169,7 @@ func runBuildJob(o options, cb *config.CloudBuild, vs config.Variants) error {
 			return fmt.Errorf("build tag: %w", err)
 		}
 		// we'll always get one tag in this slice
-		tag = p[0]
+		tag = p[0].Value
 	}
 
 	// TODO (@Ressetkk): custom staging bucket implementation and re-using source code in builds
