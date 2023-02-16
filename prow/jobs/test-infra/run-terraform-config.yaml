@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         serviceAccountName: terraform
         automountServiceAccountToken: true
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/terraform:PR-6893"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -61,7 +61,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/terraform:PR-6893"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
             securityContext:
               privileged: false
             command:
@@ -110,7 +110,7 @@ postsubmits: # runs on main
         serviceAccountName: terraform
         automountServiceAccountToken: true
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/terraform:PR-6893"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
             automountServiceAccountToken: true
             securityContext:
               privileged: false
@@ -118,7 +118,7 @@ postsubmits: # runs on main
               - "/bin/sh"
             args:
               - "-c"
-              - "/bin/terraform -chdir=./configs/terraform/secrets-leaks-log-scanner init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER -sha1 $PULL_PULL_SHA apply -- terraform -chdir=./configs/terraform/secrets-leaks-log-scanner apply -input=false -auto-approve"
+              - "/bin/terraform -chdir=./configs/terraform/secrets-leaks-log-scanner init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -sha1 $PULL_BASE_SHA apply -- terraform -chdir=./configs/terraform/secrets-leaks-log-scanner apply -input=false -auto-approve"
             resources:
               requests:
                 memory: 3Gi
@@ -130,4 +130,3 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  
