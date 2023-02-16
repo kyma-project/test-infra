@@ -53,3 +53,23 @@ templates:
                     - "image_buildpack-golang" # takes latest golang image
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
+              - jobConfig: # builds an OCI image with btp-operator module from the PR branch
+                  name: pull-btp-manager-module-build
+                  always_run: true
+                  optional: true
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                    preset-kyma-btp-manager-bot-github-token: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+                    IMG_REGISTRY:  "europe-docker.pkg.dev/kyma-project/dev"
+                  privileged: false
+                  command: "./hack/create_module_image.sh"
+                  args:
+                    - "ci"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_buildpack-golang" # takes latest golang image
