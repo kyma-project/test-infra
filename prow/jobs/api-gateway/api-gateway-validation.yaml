@@ -27,7 +27,7 @@ presubmits: # runs on PRs
             resources:
               requests:
                 memory: 200Mi
-                cpu: 80m
+                cpu: 200m
     - name: pull-api-gateway-test
       annotations:
         pipeline.trigger: "pr-submit"
