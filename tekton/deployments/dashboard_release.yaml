@@ -278,7 +278,7 @@ spec:
             - --read-only=true
             - --log-level=info
             - --log-format=json
-            - --namespace=
+            - --namespace=default
             - --stream-logs=true
             - --external-logs=
           env:
