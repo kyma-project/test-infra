@@ -66,7 +66,8 @@ presubmits: # runs on PRs
               - "--name=control-plane/kyma-environments-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.job"
-              - "--build-arg=BIN=environmentscleanup"
+              - "--tag=BIN=environmentscleanup"
+              - "--export-tags"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -108,7 +109,8 @@ presubmits: # runs on PRs
               - "--name=control-plane/kyma-environment-subaccount-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.job"
-              - "--build-arg=BIN=accountcleanup"
+              - "--tag=BIN=accountcleanup"
+              - "--export-tags"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -150,7 +152,8 @@ presubmits: # runs on PRs
               - "--name=control-plane/kyma-environment-subscription-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.job"
-              - "--build-arg=BIN=subscriptioncleanup"
+              - "--tag=BIN=subscriptioncleanup"
+              - "--export-tags"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -192,7 +195,8 @@ presubmits: # runs on PRs
               - "--name=control-plane/kyma-environment-trial-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.job"
-              - "--build-arg=BIN=trialcleanup"
+              - "--tag=BIN=trialcleanup"
+              - "--export-tags"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -234,7 +238,8 @@ presubmits: # runs on PRs
               - "--name=control-plane/kyma-environment-deprovision-retrigger-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.job"
-              - "--build-arg=BIN=deprovisionretrigger"
+              - "--tag=BIN=deprovisionretrigger"
+              - "--export-tags"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -324,7 +329,8 @@ postsubmits: # runs on main
               - "--name=control-plane/kyma-environments-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.job"
-              - "--build-arg=BIN=environmentscleanup"
+              - "--tag=BIN=environmentscleanup"
+              - "--export-tags"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -368,7 +374,8 @@ postsubmits: # runs on main
               - "--name=control-plane/kyma-environment-subaccount-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.job"
-              - "--build-arg=BIN=accountcleanup"
+              - "--tag=BIN=accountcleanup"
+              - "--export-tags"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -412,7 +419,8 @@ postsubmits: # runs on main
               - "--name=control-plane/kyma-environment-subscription-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.job"
-              - "--build-arg=BIN=subscriptioncleanup"
+              - "--tag=BIN=subscriptioncleanup"
+              - "--export-tags"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -456,7 +464,8 @@ postsubmits: # runs on main
               - "--name=control-plane/kyma-environment-trial-cleanup-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.job"
-              - "--build-arg=BIN=trialcleanup"
+              - "--tag=BIN=trialcleanup"
+              = "--export-tags"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -500,7 +509,8 @@ postsubmits: # runs on main
               - "--name=control-plane/kyma-environment-deprovision-retrigger-job"
               - "--context=components/kyma-environment-broker"
               - "--dockerfile=Dockerfile.job"
-              - "--build-arg=BIN=deprovisionretrigger"
+              - "--tag=BIN=deprovisionretrigger"
+              - "--export-tags"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
