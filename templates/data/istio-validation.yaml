@@ -7,6 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-istio-lint
+                  request_cpu: 200m
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -23,6 +24,7 @@ templates:
                   args:
                     - "-c"
                     - "cd operator && EXPORT_RESULTS=true make test"
+                  always_run: true
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
