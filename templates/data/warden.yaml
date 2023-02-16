@@ -29,6 +29,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-admission-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=warden/admission"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -53,6 +55,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-operator-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=warden/operator"
                     - "--config=/config/kaniko-build-config.yaml"
