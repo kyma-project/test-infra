@@ -136,7 +136,7 @@ Usage of image-builder:
   -silent
         Do not push build logs to stdout
   -tag value
-        Additional tag that the image will be tagged
+        Additional tag that the image will be tagged. Optionaly you can pass name in format name=value which will be used by export-tags.
   -variant string
         If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored
   -export-tags
