@@ -2,27 +2,29 @@ package main
 
 import (
 	"flag"
-	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"os"
 	"reflect"
 	"testing"
 	"testing/fstest"
+
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
+	"github.com/kyma-project/test-infra/development/pkg/tags"
 )
 
 func Test_gatherDestinations(t *testing.T) {
 	tc := []struct {
 		name     string
 		repos    []string
-		tags     []string
+		tags     []tags.Tag
 		expected []string
 	}{
 		{
 			name:  "subdirectory/test-image",
 			repos: []string{"dev.kyma.io", "dev2.kyma.io"},
-			tags: []string{
-				"20222002-abcd1234",
-				"latest",
-				"cookie",
+			tags: []tags.Tag{
+				{Name: "TestName", Value: "20222002-abcd1234"},
+				{Name: "", Value: "latest"},
+				{Name: "cookie", Value: "cookie"},
 			},
 			expected: []string{
 				"dev.kyma.io/subdirectory/test-image:20222002-abcd1234",
@@ -34,9 +36,11 @@ func Test_gatherDestinations(t *testing.T) {
 			},
 		},
 		{
-			name:     "test-no-directory",
-			repos:    []string{"kyma.dev"},
-			tags:     []string{"latest"},
+			name:  "test-no-directory",
+			repos: []string{"kyma.dev"},
+			tags: []tags.Tag{
+				{Name: "", Value: "latest"},
+			},
 			expected: []string{"kyma.dev/test-no-directory:latest"},
 		},
 	}
@@ -162,8 +166,11 @@ func TestFlags(t *testing.T) {
 			name:        "parsed config, pass",
 			expectedErr: false,
 			expectedOpts: options{
-				name:       "test-image",
-				tags:       []string{"latest", "cookie"},
+				name: "test-image",
+				tags: []tags.Tag{
+					{Name: "latest", Value: "latest"},
+					{Name: "cookie", Value: "cookie"},
+				},
 				context:    "prow/build",
 				configPath: "config.yaml",
 				dockerfile: "Dockerfile",
@@ -177,10 +184,23 @@ func TestFlags(t *testing.T) {
 				"--repo=kyma-project/test-infra",
 				"--name=test-image",
 				"--tag=latest",
-				"--tag=cookie",
+				"--tag=cookie=cookie",
 				"--context=prow/build",
 				"--log-dir=prow/logs",
 				"--silent",
+			},
+		},
+		{
+			name: "export tag, pass",
+			expectedOpts: options{
+				context:    ".",
+				configPath: "/config/image-builder-config.yaml",
+				dockerfile: "Dockerfile",
+				logDir:     "/logs/artifacts",
+				exportTags: true,
+			},
+			args: []string{
+				"--export-tags",
 			},
 		},
 	}
@@ -204,16 +224,16 @@ func Test_gatTags(t *testing.T) {
 		name           string
 		pr             string
 		sha            string
-		tagTemplate    string
+		tagTemplate    tags.Tag
 		env            map[string]string
-		additionalTags []string
+		additionalTags []tags.Tag
 		expectErr      bool
-		expectResult   []string
+		expectResult   []tags.Tag
 	}{
 		{
 			name:         "pr variable is present",
 			pr:           "1234",
-			expectResult: []string{"PR-1234"},
+			expectResult: []tags.Tag{{Name: "PR", Value: "PR-1234"}},
 		},
 		{
 			name:      "sha is empty",
@@ -223,16 +243,27 @@ func Test_gatTags(t *testing.T) {
 			name:        "bad tagTemplate",
 			expectErr:   true,
 			sha:         "abcd1234",
-			tagTemplate: `v{{ .ASD }}`,
+			tagTemplate: tags.Tag{Name: "TagTemplate", Value: `v{{ .ASD }}`},
 		},
 		{
-			name:           "custom template, additional fields, env variable",
-			expectErr:      false,
-			sha:            "da39a3ee5e6b4b0d3255bfef95601890afd80709",
-			tagTemplate:    `{{ .ShortSHA }}`,
-			env:            map[string]string{"CUSTOM_ENV": "customEnvValue"},
-			additionalTags: []string{"latest", "cookie", `{{ .CommitSHA }}`, `{{ .Env "CUSTOM_ENV" }}`},
-			expectResult:   []string{"latest", "cookie", "da39a3ee5e6b4b0d3255bfef95601890afd80709", "customEnvValue", "da39a3ee"},
+			name:        "custom template, additional fields, env variable",
+			expectErr:   false,
+			sha:         "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+			tagTemplate: tags.Tag{Name: "TagTemplate", Value: `{{ .ShortSHA }}`},
+			env:         map[string]string{"CUSTOM_ENV": "customEnvValue"},
+			additionalTags: []tags.Tag{
+				{Name: "latest", Value: "latest"},
+				{Name: "Test", Value: "cookie"},
+				{Name: "AnotherTest", Value: `{{ .CommitSHA }}`},
+				{Name: "TestEnv", Value: `{{ .Env "CUSTOM_ENV" }}`},
+			},
+			expectResult: []tags.Tag{
+				{Name: "latest", Value: "latest"},
+				{Name: "Test", Value: "cookie"},
+				{Name: "AnotherTest", Value: `da39a3ee5e6b4b0d3255bfef95601890afd80709`},
+				{Name: "TestEnv", Value: "customEnvValue"},
+				{Name: "TagTemplate", Value: "da39a3ee"},
+			},
 		},
 	}
 	for _, c := range tc {
@@ -367,5 +398,49 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 				t.Errorf("wrong number of requested signers %v != %v", len(got), c.expectSigners)
 			}
 		})
+	}
+}
+
+func Test_addTagsToEnv(t *testing.T) {
+	tc := []struct {
+		name         string
+		envs         map[string]string
+		tags         []tags.Tag
+		expectedEnvs map[string]string
+	}{
+		{
+			name: "multiple envs and tags",
+			envs: map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2"},
+			tags: []tags.Tag{
+				{Name: "latest", Value: "latest"},
+				{Name: "ShortSHA", Value: "dca515151"},
+				{Name: "test", Value: "test-tag"},
+			},
+			expectedEnvs: map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2", "TAG_latest": "latest", "TAG_ShortSHA": "dca515151", "TAG_test": "test-tag"},
+		},
+		{
+			name:         "no tags",
+			envs:         map[string]string{"KEY": "VAL"},
+			tags:         []tags.Tag{},
+			expectedEnvs: map[string]string{"KEY": "VAL"},
+		},
+		{
+			name: "no envs",
+			envs: map[string]string{},
+			tags: []tags.Tag{
+				{Name: "Test", Value: "latest"},
+			},
+			expectedEnvs: map[string]string{"TAG_Test": "latest"},
+		},
+	}
+
+	for _, c := range tc {
+		actualEnv := addTagsToEnv(c.tags, c.envs)
+
+		for k, v := range c.expectedEnvs {
+			if actualEnv[k] != v {
+				t.Errorf("%v != %v", actualEnv[k], v)
+			}
+		}
 	}
 }
