@@ -424,9 +424,9 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
 	fs.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
-	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged. Optionaly you can pass name in format name=value which will be used by export-tags")
+	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
 	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
-	fs.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into Dockerfile. Each tag will have format TAG_x where x is either tag name passed along with tag")
+	fs.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
 	return fs
 }
 
