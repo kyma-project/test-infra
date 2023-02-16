@@ -102,7 +102,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230210-26684a25e"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
             command:
               - "/image-builder"
             args:
@@ -147,7 +147,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230210-26684a25e"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
             command:
               - "/image-builder"
             args:
