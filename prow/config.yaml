@@ -1428,7 +1428,8 @@ presets:
       preset-signify-prod-secret: "true"
     volumes:
       - name: signify-prod-secret
-        secretName: signify-prod-secret
+        secret:
+          secretName: signify-prod-secret
     volumeMounts:
       - name: signify-prod-secret
         mountPath: /secret-prod
