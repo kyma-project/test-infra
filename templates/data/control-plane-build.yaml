@@ -158,6 +158,7 @@ templates:
               - jobConfig:
                   name: pull-keb-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   args:
                     - --name=control-plane/kyma-environments-cleanup-job
                     - --context=components/kyma-environment-broker
@@ -172,6 +173,7 @@ templates:
               - jobConfig:
                   name: post-keb-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   branches:
                     - ^main$
                   args:
@@ -188,6 +190,7 @@ templates:
               - jobConfig:
                   name: pull-keb-subaccount-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   args:
                     - --name=control-plane/kyma-environment-subaccount-cleanup-job
                     - --context=components/kyma-environment-broker
@@ -202,6 +205,7 @@ templates:
               - jobConfig:
                   name: post-keb-subaccount-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   branches:
                     - ^main$
                   args:
@@ -218,6 +222,7 @@ templates:
               - jobConfig:
                   name: pull-keb-subscription-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   args:
                     - --name=control-plane/kyma-environment-subscription-cleanup-job
                     - --context=components/kyma-environment-broker
@@ -232,6 +237,7 @@ templates:
               - jobConfig:
                   name: post-keb-subscription-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   branches:
                     - ^main$
                   args:
@@ -248,6 +254,7 @@ templates:
               - jobConfig:
                   name: pull-keb-trial-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   args:
                     - --name=control-plane/kyma-environment-trial-cleanup-job
                     - --context=components/kyma-environment-broker
@@ -262,6 +269,7 @@ templates:
               - jobConfig:
                   name: post-keb-trial-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   branches:
                     - ^main$
                   args:
@@ -278,6 +286,7 @@ templates:
               - jobConfig:
                   name: pull-keb-deprovision-retrigger-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   args:
                     - --name=control-plane/kyma-environment-deprovision-retrigger-job
                     - --context=components/kyma-environment-broker
@@ -292,6 +301,7 @@ templates:
               - jobConfig:
                   name: post-keb-deprovision-retrigger-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   branches:
                     - ^main$
                   args:
