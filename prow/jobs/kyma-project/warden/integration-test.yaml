@@ -22,6 +22,7 @@ presubmits:
                 kubectl cluster-info
                 make install run-integration-tests
                 failed=$?
+                kubectl logs -l app=warden --prefix=true
                 k3d cluster delete
                 exit $failed
             requests:
