@@ -83,7 +83,7 @@ resource "google_monitoring_alert_policy" "gcs_bucket_mover" {
       filter = "resource.type=cloud_run_revision AND severity>=ERROR AND jsonPayload.component=gcs-bucket-mover AND labels.io.kyma.app=secrets-leaks-detector"
     }
   }
-  notification_channels = ["projects/${var.google_project_id}/notificationChannels/5909844679104799956"]
+  notification_channels = ["projects/${var.gcp_project_id}/notificationChannels/5909844679104799956"]
   alert_strategy {
     notification_rate_limit {
       period = "6 hr"
