@@ -79,9 +79,6 @@ function deploy_kyma() {
   deploy="kyma deploy -p evaluation"
   deploy_dryrun="kyma deploy --dry-run  -p production"
 
-  ls ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/
-  echo "Copy tracepipeline CRD"
-  cp ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ${KYMA_SOURCES_DIR}/installation/resources/crds/telemetry/tracepipelines.crd.yaml
 
   deploy+="$deploy_commands"
   deploy_dryrun+="$deploy_commands"
