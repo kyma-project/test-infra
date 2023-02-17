@@ -5,7 +5,7 @@ COPY . .
 
 RUN  CGO_ENABLED=0 go build -o /scanlogsforsecrets -ldflags="-s -w" ./development/gcp/cloud-run/scan-logs-for-secrets
 
-FROM alpine:3.17.1
+FROM alpine:3.17.2
 
 COPY --from=builder /scanlogsforsecrets /scanlogsforsecrets
 RUN apk add --no-cache ca-certificates && \
