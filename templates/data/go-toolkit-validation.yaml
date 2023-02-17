@@ -234,28 +234,4 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
-              - jobConfig:
-                  name: "pull-telemetry-operator-lint"
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/telemetry-operator && make lint"
-                  run_if_changed: '^components/telemetry-operator/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - linting
-              - jobConfig:
-                  name: "pull-telemetry-operator-unit-test"
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/telemetry-operator && make test-local"
-                  run_if_changed: '^components/telemetry-operator/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
 
