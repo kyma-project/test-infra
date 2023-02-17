@@ -21,8 +21,6 @@ type githubClient interface {
 	GetCombinedStatus(org, repo, ref string) (*github.CombinedStatus, error)
 	AddLabel(org, repo string, number int, label string) error
 	CreateComment(org, repo string, number int, comment string) error
-	IsCollaborator(org, repo, user string) (bool, error)
-	BotUserChecker() (func(string) bool, error)
 }
 
 type handlerBackend struct {
