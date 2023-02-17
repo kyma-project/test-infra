@@ -26,15 +26,15 @@ type githubClient interface {
 }
 
 type handlerBackend struct {
-	ghc githubClient
-	gcf git.ClientFactory
-	logLevel zapcore.Level
+	ghc        githubClient
+	gcf        git.ClientFactory
+	logLevel   zapcore.Level
 	conditions map[string]map[string]map[string][]ApproveCondition
 }
 
 type ApproveCondition struct {
 	RequiredLabels []string
-	ChangedFiles []string
+	ChangedFiles   []string
 }
 
 func (ac *ApproveCondition) checkRequiredLabels(prLabels []github.Label) bool {
@@ -69,7 +69,6 @@ func (ac *ApproveCondition) checkChangedFiles(changes []github.PullRequestChange
 	return true
 }
 
-
 // checkIfEventSupported check conditions PR must meet to send notification.
 // At the time a conditions are hard coded. In future this will be taken from Tide queries.
 func (h *handlerBackend) checkPrApproveConditions(conditions []ApproveCondition, changes []github.PullRequestChange, prLabels []github.Label) bool {
@@ -87,13 +86,12 @@ func (h *handlerBackend) checkPrApproveConditions(conditions []ApproveCondition,
 	return false
 }
 
-
-func (h *handlerBackend) handleReviewRequestedAction (logger *zap.SugaredLogger, prEvent github.PullRequestEvent) {
-	if conditions, ok := h.conditions[prEvent.Repo.Owner.Name][prEvent.Repo.Name][prEvent.Sender.Login]; ok{
+func (h *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger, prEvent github.PullRequestEvent) {
+	if conditions, ok := h.conditions[prEvent.Repo.Owner.Name][prEvent.Repo.Name][prEvent.Sender.Login]; ok {
 		// Get changes from pull request.
 		changes, err := h.ghc.GetPullRequestChanges(prEvent.Repo.Owner.Name, prEvent.Repo.Name, prEvent.Number)
-		if err != nil{
-			logger.Errorw("failed get pull request changes", "error", err)
+		if err != nil {
+			logger.Errorw("failed get pull request changes", "error", err.Error())
 		}
 		conditionsMatched := h.checkPrApproveConditions(conditions, changes, prEvent.PullRequest.Labels)
 		if !conditionsMatched {
@@ -101,7 +99,7 @@ func (h *handlerBackend) handleReviewRequestedAction (logger *zap.SugaredLogger,
 		}
 		prStatuses, err := h.ghc.GetCombinedStatus(prEvent.Repo.Owner.Name, prEvent.Repo.Name, prEvent.PullRequest.Head.SHA)
 		if err != nil {
-			Log error
+			logger.Errorw("failed get pull request contexts combined status", "error", err.Error())
 		}
 		// Don't check if pr checks status is success as that means all context are success, even tide context.
 		// That means a pr was already approved and is ready for merge, because tide context transition to success
@@ -112,16 +110,29 @@ func (h *handlerBackend) handleReviewRequestedAction (logger *zap.SugaredLogger,
 			return
 		case "pending":
 			for _, prStatus := range prStatuses.Statuses {
-				if prStatus.State != "failure"{
-					Do a comment on pr
+				if prStatus.State != "failure" {
+					logger.Infof("pull request %s/%s#%d is in failure state", prEvent.Repo.Owner.Name, prEvent.Repo.Name, prEvent.Number)
 					return
 				}
 			}
-			Approve pr.
+			review := github.DraftReview{
+				CommitSHA: prEvent.PullRequest.Head.SHA,
+				Body:      "",
+				Action:    "APPROVE",
+				Comments:  nil,
+			}
+			err := h.ghc.CreateReview(prEvent.Repo.Owner.Name, prEvent.Repo.Name, prEvent.Number, review)
+			if err != nil {
+				logger.Errorf("failed create review for pull request %s/%s#%d sha: %s, got error: %s",
+					prEvent.Repo.Owner.Name,
+					prEvent.Repo.Name,
+					prEvent.Number,
+					prEvent.PullRequest.Head.SHA,
+					err)
+			}
 		}
 	}
 }
-
 
 func (h *handlerBackend) pullRequestEventHandler(_ *externalplugin.Plugin, payload externalplugin.Event) {
 
