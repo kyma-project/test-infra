@@ -86,9 +86,9 @@ resource "google_monitoring_alert_policy" "gcs_bucket_mover" {
   notification_channels = ["projects/${var.gcp_project_id}/notificationChannels/5909844679104799956"]
   alert_strategy {
     notification_rate_limit {
-      period = "6 hr"
+      period = "21600s"
     }
-    auto_close = "4 days"
+    auto_close = "345600s"
   }
   user_labels = {
     component = "gcs-bucket-mover"
