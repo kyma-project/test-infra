@@ -32,6 +32,8 @@
 
 [prowjobparser](/development/prowjobparser/README.md) - The prowjobparser is a helper tool which parses all Prow Jobs under the provided path, matches them against the provided label filters, and prints matching Prow Job names to the standard output.
 
+[Rotate service account secrets](/development/secrets-rotator/cloud-run/rotate-service-account/README.md) - RotateServiceAccount creates a new key for a GCP service account and updates the required secret data. It's triggered by a  Pub/Sub message sent by a secret stored in Secret Manager. It runs as a cloud run container.
+
 [Test Log Collector](/development/test-log-collector/README.md) - The purpose of the Test Log Collector is to gather logs from the testing Pods and to send them to the appropriate Slack channels.
 
 [Octopus Types](/development/test-log-collector/pkg/resources/clustertestsuite/types/README.md) - Types in that package has been copied from https://github.com/kyma-incubator/octopus/tree/master/pkg/apis/testing/v1alpha1 in order to solve problems with older dependencies in `octopus` project.
