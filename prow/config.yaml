@@ -304,6 +304,7 @@ tide:
     kyma-project/btp-manager: squash
     kyma-project/istio: squash
     kyma-project/warden: squash
+    kyma-project/telemetry-manager: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
