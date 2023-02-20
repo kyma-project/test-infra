@@ -1,0 +1,67 @@
+presubmits:
+  kyma-project/kyma:
+    - name: pre-main-kyma-integration-k3d-app-gateway
+      annotations:
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-app-gateway"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-incubator
+          repo: local-kyma
+          path_alias: github.com/kyma-incubator/local-kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                service docker start
+                curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+                k3d cluster create
+                kubectl cluster-info
+
+                curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_Linux_x86_64.tar.gz" && mkdir kyma-release && tar -C kyma-release -zxvf kyma.tar.gz && chmod +x kyma-release/kyma && sudo mv kyma-release/kyma /usr/local/bin && rm -rf kyma-release kyma.tar.gz
+
+                kyma deploy --components-file tests/components/application-connector/resources/installation-config/mini-kyma-os.yaml --source $PWD
+                cd tests/components/application-connector
+                make -f Makefile.test-application-gateway test-gateway
+
+                failed=$?
+                k3d cluster delete
+                exit $failed
+            resources:
+              requests:
+                memory: 1Gi
+              limits:
+                memory: 1Gi
+            securityContext:
+              privileged: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
