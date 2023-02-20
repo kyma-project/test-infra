@@ -10,7 +10,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(.*\.go$|.golangcilint.yaml)'
+      run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -34,7 +34,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.*\.go$'
+      run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload

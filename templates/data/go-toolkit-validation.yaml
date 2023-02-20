@@ -91,7 +91,7 @@ templates:
                   args:
                     - "-c"
                     - "make lint"
-                  run_if_changed: '^(.*\.go$|.golangcilint.yaml)'
+                  run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
@@ -103,7 +103,7 @@ templates:
                   args:
                     - "-c"
                     - "make test"
-                  run_if_changed: '^.*\.go$'
+                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
