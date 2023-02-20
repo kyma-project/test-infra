@@ -83,7 +83,7 @@ func main() {
 	}
 }
 
-// RotateServiceAccount adds new secret version in Secret Manager on pubsub rotate message
+// rotateServiceAccount adds new secret version in Secret Manager on pubsub rotate message
 func rotateServiceAccount(w http.ResponseWriter, r *http.Request) {
 	var (
 		trace               string
