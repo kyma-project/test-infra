@@ -13,12 +13,12 @@ RotateServiceAccount creates a new key for a GCP service account and updates the
 
 ## Cloud Run deployment
 
-RotateServiceAccount is deployed to cloud run applying Terraform config stored in [./terraform directory](../../terraform). Terraform apply is executed automatically on every PR changing Terraform .tf files belonging to the application. 
+RotateServiceAccount is deployed to Cloud Run applying Terraform config stored in [./terraform directory](../../terraform). `terraform apply` is executed automatically on every PR changing Terraform .tf files belonging to the application. 
 
 ## RotateServiceAccount usage
 
-To setup an automatic rotation for a Secret Manager secret follow these steps:
+To setup an automatic rotation for a Secret Manager secret, follow these steps:
 1. Create a new secret in Secret Manager with the existing service account data.
-2. Add `type: service-account` label to the secret.
+2. Add the `type: service-account` label to the secret.
 3. Set `secret-manager-notifications` as a secret Pub/Sub topic.
-4. Set up rotation period for the secret.
+4. Set up a rotation period for the secret.
