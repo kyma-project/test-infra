@@ -1,6 +1,6 @@
 presubmits:
   kyma-project/kyma:
-    - name: pre-main-kyma-integration-k3d-app-gateway
+    - name: pre-main-kyma-integration-k3d-app-gateway-min
       annotations:
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
