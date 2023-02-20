@@ -86,7 +86,7 @@
 
 [Crier](/docs/prow/crier.md) - Crier reports the Prow Job status changes. For now, it is responsible for Slack notifications as Plank is still reporting the Prow Job statuses to GitHub.
 
-[Use Tekton Pipelines with Prow](/docs/prow/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use
+[Use Tekton Pipelines with Prow](/docs/how-to/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use
 
 [Label_sync](/docs/prow/label_sync.md) - Label_sync updates or migrates GitHub labels on repositories in a GitHub organisation based on a YAML file. It is triggered as a `ci-prow-label-sync` Prow job.
 
