@@ -74,6 +74,7 @@ resource "google_cloud_run_service_iam_policy" "gcs_bucket_mover" {
 
   policy_data = data.google_iam_policy.run_invoker.policy_data
 }
+
 resource "google_monitoring_alert_policy" "gcs_bucket_mover" {
   combiner     = "OR"
   display_name = "gcs-bucket-mover-error-logged"
