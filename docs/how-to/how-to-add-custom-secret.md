@@ -25,7 +25,7 @@ This tutorial shows how to add a custom secret and use it in the Prow pipeline.
         preset-kyma-btp-manager-bot-github-token: "true"
         env:
         - name: BOT_GITHUB_TOKEN
-            valueFrom:
+          valueFrom:
             secretKeyRef:
                 name: kyma-btp-manager-bot-github-token
                 key: token
