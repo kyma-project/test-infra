@@ -224,3 +224,10 @@ templates:
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/secrets-rotator/cloud-run/rotate-service-account"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "docker-rotate-sa"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
