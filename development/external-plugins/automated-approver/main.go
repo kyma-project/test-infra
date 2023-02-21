@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/kyma-project/test-infra/development/github/pkg/git"
 	consolelog "github.com/kyma-project/test-infra/development/logging"
 	"github.com/kyma-project/test-infra/development/prow/externalplugin"
 	"k8s.io/test-infra/prow/config"
@@ -28,11 +27,9 @@ func main() {
 
 	// Initialize configuration options for clients.
 	pluginOptions := externalplugin.Opts{}
-	gitOptions := git.ClientConfig{}
 
 	// Add client and plugin cli flags.
 	fs := pluginOptions.NewFlags()
-	gitOptions.AddFlags(fs)
 	pluginOptions.ParseFlags(fs)
 
 	atom.SetLevel(pluginOptions.LogLevel)
@@ -45,17 +42,8 @@ func main() {
 	}
 	logger.Debug("github client ready")
 
-	// Create git factory for github.com.
-	gitClientFactory, err := gitOptions.NewClient(git.WithTokenPath(pluginOptions.Github.TokenPath), git.WithGithubClient(ghClient))
-	if err != nil {
-		logger.Fatalw("Failed creating git client", "error", err)
-		panic(err)
-	}
-	logger.Debug("git client ready")
-
 	hb := handlerBackend{
 		ghc:      ghClient,
-		gcf:      gitClientFactory,
 		logLevel: pluginOptions.LogLevel,
 	}
 

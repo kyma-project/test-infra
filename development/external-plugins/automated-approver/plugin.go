@@ -10,7 +10,6 @@ import (
 	"github.com/kyma-project/test-infra/development/prow/externalplugin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"k8s.io/test-infra/prow/git/v2"
 	"k8s.io/test-infra/prow/github"
 )
 
@@ -25,7 +24,6 @@ type githubClient interface {
 
 type handlerBackend struct {
 	ghc        githubClient
-	gcf        git.ClientFactory
 	logLevel   zapcore.Level
 	conditions map[string]map[string]map[string][]ApproveCondition
 }
