@@ -7,7 +7,7 @@ data "google_iam_policy" "run_invoker" {
 
 # Create a service account for Eventarc trigger and Workflows
 resource "google_service_account" "secrets_leak_detector" {
-  account_id  = "secrets-leak-detector-wf"
+  account_id  = "secrets-leak-detector"
   description = "Identity of secrets leak detector application."
 }
 
@@ -45,7 +45,7 @@ resource "google_workflows_workflow" "secrets_leak_detector" {
 }
 
 resource "google_eventarc_trigger" "secrets_leak_detector_workflow" {
-  name     = "secrets-leak-detector-workflow"
+  name     = "secrets-leak-detector"
   location = "europe-west3"
   matching_criteria {
     attribute = "type"

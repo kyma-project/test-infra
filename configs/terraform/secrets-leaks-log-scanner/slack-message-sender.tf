@@ -1,5 +1,5 @@
 resource "google_service_account" "slack_message_sender" {
-  account_id  = "slack-message-sender-cr"
+  account_id  = "slack-message-sender"
   description = "Identity of cloud run instance running slack message sender service."
 }
 

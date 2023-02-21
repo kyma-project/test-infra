@@ -1,5 +1,5 @@
 resource "google_service_account" "gcs_bucket_mover" {
-  account_id  = "gcs-bucket-mover-cr"
+  account_id  = "gcs-bucket-mover"
   description = "Identity of cloud run instance running gcs bucket mover service."
 }
 

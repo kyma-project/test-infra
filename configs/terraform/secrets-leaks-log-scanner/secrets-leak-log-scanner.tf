@@ -1,5 +1,5 @@
 resource "google_service_account" "secrets_leak_log_scanner" {
-  account_id  = "secrets-leak-log-scanner-cr"
+  account_id  = "secrets-leak-log-scanner"
   description = "Identity of cloud run instance running log scanner service."
 }
 

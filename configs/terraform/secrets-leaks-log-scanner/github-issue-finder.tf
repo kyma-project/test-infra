@@ -1,5 +1,5 @@
 resource "google_service_account" "github_issue_finder" {
-  account_id  = "github-issue-finder-cr"
+  account_id  = "github-issue-finder"
   description = "Identity of cloud run instance running github issue finder service."
 }
 
