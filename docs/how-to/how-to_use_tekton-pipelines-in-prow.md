@@ -29,15 +29,15 @@ presubmits:
         v1beta1:
             pipelineSpec:
               description: "Hello world!"
-                tasks:
-                  - name: hello
-                     taskSpec:
-                       steps:
-                         - name: echo
-                            image: alpine:edge
-                            script: |
-                              #!/bin/sh
-                              echo "Hello World"
+              tasks:
+              - name: hello
+                taskSpec:
+                  steps:
+                  - name: echo
+                    image: alpine:edge
+                    script: |
+                      #!/bin/sh
+                      echo "Hello World"
             workspaces:
               - name: artifacts
                 emptyDir: {}
