@@ -64,8 +64,7 @@ func main() {
 	}
 
 	// Setup configuration for gitleaks
-	viper.SetConfigFile("app/development/gcp/cloud-run/scan-logs-for-secrets/gitleaks.toml")
-	viper.ReadInConfig()
+	viper.SetConfigFile("app/gitleaks.toml"
 	if err := viper.ReadInConfig(); err != nil {
 		mainLogger.LogError("failed to read viper config, error: %s", err)
 		// Set default config if fail

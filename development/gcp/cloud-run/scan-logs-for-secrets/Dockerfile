@@ -8,7 +8,7 @@ RUN  CGO_ENABLED=0 go build -o /scanlogsforsecrets -ldflags="-s -w" ./developmen
 FROM alpine:3.17.1
 
 COPY --from=builder /scanlogsforsecrets /scanlogsforsecrets
-COPY --from=builder /go/src/github.com/kyma-project/test-infra/ /app/
+COPY --from=builder /go/src/github.com/kyma-project/test-infra/gitleaks.toml /app/
 
 RUN apk add --no-cache ca-certificates && \
 	chmod +x /scanlogsforsecrets
