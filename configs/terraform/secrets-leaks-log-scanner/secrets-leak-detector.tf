@@ -37,15 +37,15 @@ data "template_file" "scan_logs_for_secrets_yaml" {
 }
 
 resource "google_workflows_workflow" "secrets_leak_detector" {
-  name            = "scan-logs-for-secrets"
+  name            = "secrets-leak-detector"
   region          = "europe-west3"
-  description     = "Workflow is triggered on pubsub ..."
+  description     = "Workflow is triggered by message published to prowjobs PubSub topic and scans prowjobs logs for secrets."
   service_account = google_service_account.secrets_leak_detector.id
   source_contents = data.template_file.scan_logs_for_secrets_yaml.rendered
 }
 
 resource "google_eventarc_trigger" "secrets_leak_detector_workflow" {
-  name     = "name"
+  name     = "secrets-leak-detector-workflow"
   location = "europe-west3"
   matching_criteria {
     attribute = "type"
@@ -54,18 +54,10 @@ resource "google_eventarc_trigger" "secrets_leak_detector_workflow" {
   destination {
     workflow = google_workflows_workflow.secrets_leak_detector.id
   }
-
   service_account = google_service_account.secrets_leak_detector.id
-
   labels = {
     application = "secrets_leak_detector"
   }
-
-  matching_criteria {
-    attribute = "type"
-    value     = "google.cloud.pubsub.topic.v1.messagePublished"
-  }
-
   transport {
     pubsub {
       topic = "projects/${var.gcp_project_id}/topics/${var.prow_pubsub_topic_name}"
