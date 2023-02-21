@@ -19,6 +19,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-provisioner-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/provisioner"
                   branches:
                     - ^main$
@@ -50,6 +52,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-schema-migrator-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/schema-migrator"
                   branches:
                     - ^main$
@@ -81,6 +85,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-kyma-metrics-collector-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-metrics-collector"
                   branches:
                     - ^main$
@@ -112,6 +118,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-kubeconfig-service-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kubeconfig-service"
                   branches:
                     - ^main$
@@ -143,6 +151,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
                   branches:
                     - ^main$
@@ -172,6 +182,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-cleanup-job-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   branches:
@@ -204,6 +216,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-subaccount-cleanup-job-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   branches:
@@ -236,6 +250,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-subscription-cleanup-job-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   branches:
@@ -268,6 +284,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-trial-cleanup-job-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
                   branches:

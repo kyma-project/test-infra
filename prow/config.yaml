@@ -24,10 +24,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230209-f319bbff04
-          initupload: gcr.io/k8s-prow/initupload:v20230209-f319bbff04
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230209-f319bbff04
-          sidecar: gcr.io/k8s-prow/sidecar:v20230209-f319bbff04
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230215-1f9eebbd96
+          initupload: gcr.io/k8s-prow/initupload:v20230215-1f9eebbd96
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230215-1f9eebbd96
+          sidecar: gcr.io/k8s-prow/sidecar:v20230215-1f9eebbd96
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -303,6 +303,8 @@ tide:
     kyma-project/organization-and-operations: squash
     kyma-project/btp-manager: squash
     kyma-project/istio: squash
+    kyma-project/warden: squash
+    kyma-project/telemetry-manager: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
@@ -1423,3 +1425,13 @@ presets:
           secretKeyRef:
             name: kyma-api-gateway-int-test-client-secret
             key: token
+  - labels:
+      preset-signify-prod-secret: "true"
+    volumes:
+      - name: signify-prod-secret
+        secret:
+          secretName: signify-prod-secret
+    volumeMounts:
+      - name: signify-prod-secret
+        mountPath: /secret-prod
+        readOnly: true

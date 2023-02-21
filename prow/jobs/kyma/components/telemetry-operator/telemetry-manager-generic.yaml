@@ -2,29 +2,29 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
-    - name: pull-telemetry-operator-build
+  kyma-project/telemetry-manager:
+    - name: pull-telemetry-manager-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-telemetry-operator-build"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/telemetry-operator/'
+      run_if_changed: '^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
             command:
               - "/image-builder"
             args:
-              - "--name=telemetry-operator"
+              - "--name=telemetry-manager"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/telemetry-operator"
+              - "--context=."
               - "--dockerfile=Dockerfile"
             resources:
               requests:
@@ -46,30 +46,31 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
   
 postsubmits: # runs on main
-  kyma-project/kyma:
-    - name: post-telemetry-operator-build
+  kyma-project/telemetry-manager:
+    - name: post-telemetry-manager-build
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-telemetry-operator-build"
+        prow.k8s.io/pubsub.runID: "post-telemetry-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/telemetry-operator/'
+        preset-signify-prod-secret: "true"
+      run_if_changed: '^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
             command:
               - "/image-builder"
             args:
-              - "--name=telemetry-operator"
+              - "--name=telemetry-manager"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/telemetry-operator"
+              - "--context=."
               - "--dockerfile=Dockerfile"
             resources:
               requests:

@@ -66,7 +66,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
+            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 200Mi
@@ -82,6 +82,33 @@ templates:
             request_memory: 1Gi
             request_cpu: 100m
         jobConfigs:
+          - repoName: "kyma-project/telemetry-manager"
+            jobs:
+              - jobConfig:
+                  name: "pull-telemetry-manager-lint"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "make lint"
+                  run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - linting
+              - jobConfig:
+                  name: "pull-telemetry-manager-unit-test"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "make test"
+                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - testing
+
           - repoName: "kyma-project/kyma"
             jobs:
               - jobConfig:
@@ -207,27 +234,4 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
-              - jobConfig:
-                  name: "pull-telemetry-operator-lint"
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/telemetry-operator && make lint"
-                  run_if_changed: '^components/telemetry-operator/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - linting
-              - jobConfig:
-                  name: "pull-telemetry-operator-unit-test"
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/telemetry-operator && make test-local"
-                  run_if_changed: '^components/telemetry-operator/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
+

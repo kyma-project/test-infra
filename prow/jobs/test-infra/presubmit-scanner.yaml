@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -41,7 +41,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -64,7 +64,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -87,7 +87,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -110,7 +110,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -133,7 +133,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -156,7 +156,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -179,7 +179,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -202,7 +202,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -225,7 +225,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -248,7 +248,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -271,7 +271,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -294,7 +294,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -317,7 +317,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -340,7 +340,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -363,7 +363,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -386,7 +386,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -409,7 +409,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -432,7 +432,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -455,7 +455,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -478,7 +478,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -501,7 +501,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -524,7 +524,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -547,7 +547,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -570,7 +570,30 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/telemetry-manager:
+    - name: pre-telemetry-manager-presubmit-scanner
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-telemetry-manager-presubmit-scanner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -593,7 +616,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -616,7 +639,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -639,7 +662,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -662,7 +685,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -685,7 +708,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -708,7 +731,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -731,7 +754,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -754,7 +777,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -777,7 +800,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -800,7 +823,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -823,7 +846,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -846,7 +869,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -869,7 +892,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -892,7 +915,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -915,7 +938,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -938,7 +961,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -961,7 +984,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -984,7 +1007,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -1007,7 +1030,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -1030,7 +1053,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -1053,7 +1076,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -1076,7 +1099,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -1099,7 +1122,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -1122,7 +1145,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -1145,7 +1168,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -1168,7 +1191,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:
@@ -1191,7 +1214,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:latest"
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
             command:
               - "/bin/sh"
             args:

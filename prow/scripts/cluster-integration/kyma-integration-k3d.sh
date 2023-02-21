@@ -96,11 +96,6 @@ function deploy_kyma() {
 
   if [[ -v TELEMETRY_TRACING_ENABLED ]]; then
     kyma_deploy_cmd+=" --value=telemetry.operator.controllers.tracing.enabled=true"
-    ls ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/
-    if [[ -f ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ]]; then
-        echo "Copy tracepipeline CRD"
-        cp ${KYMA_SOURCES_DIR}/components/telemetry-operator/config/crd/bases/telemetry.kyma-project.io_tracepipelines.yaml ${KYMA_SOURCES_DIR}/installation/resources/crds/telemetry/tracepipelines.crd.yaml
-    fi
   fi
 
   if [[ -v TELEMETRY_ENABLED ]]; then

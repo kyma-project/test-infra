@@ -32,6 +32,8 @@
 
 [prowjobparser](/development/prowjobparser/README.md) - The prowjobparser is a helper tool which parses all Prow Jobs under the provided path, matches them against the provided label filters, and prints matching Prow Job names to the standard output.
 
+[Rotate service account secrets](/development/secrets-rotator/cloud-run/rotate-service-account/README.md) - RotateServiceAccount creates a new key for a GCP service account and updates the required secret data. It's triggered by a  Pub/Sub message sent by a secret stored in Secret Manager. It runs as a cloud run container.
+
 [Test Log Collector](/development/test-log-collector/README.md) - The purpose of the Test Log Collector is to gather logs from the testing Pods and to send them to the appropriate Slack channels.
 
 [Octopus Types](/development/test-log-collector/pkg/resources/clustertestsuite/types/README.md) - Types in that package has been copied from https://github.com/kyma-incubator/octopus/tree/master/pkg/apis/testing/v1alpha1 in order to solve problems with older dependencies in `octopus` project.
@@ -78,6 +80,10 @@
 
 [Documentation guidelines](/docs/documentation_guidelines.md) - 1. Each repository must contain an automatically updated index page in `docs` directory.
 
+[Add custom secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add a custom secret and use it in the Prow pipeline.
+
+[Use Tekton Pipelines with Prow](/docs/how-to/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use
+
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
 
 [Authorization](/docs/prow/authorization.md) - To deploy a Prow cluster, configure the following service accounts in the GCP project you own.
@@ -112,7 +118,7 @@
 
 [Naming conventions](/docs/prow/prow-naming-convention.md) - This document describes the naming conventions for the Prow test instance and its resources hosted in Google Cloud Platform.
 
-[Prow Secrets Management](/docs/prow/prow-secrets-management.md) - Some jobs require using sensitive data. Encrypt the data using Key Management Service (KMS) and store it in Google Cloud Storage (GCS).
+[KMS Secrets Management](/docs/prow/prow-secrets-management.md) - Some jobs require using sensitive data. Encrypt the data using Key Management Service (KMS) and store it in Google Cloud Storage (GCS).
 
 [Prow Secrets](/docs/prow/prow-secrets.md) - This document lists all types of Secrets used in the `kyma-prow` and `workload-kyma-prow` clusters, where all Prow Jobs are executed.
 

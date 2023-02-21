@@ -29,6 +29,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-admission-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=warden/admission"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -53,6 +55,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-operator-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=warden/operator"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -64,7 +68,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
                   name: pull-warden-lint
                   optional: true
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
