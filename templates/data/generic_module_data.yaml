@@ -14,7 +14,7 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
@@ -59,7 +59,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-keda-manager-operator-lint
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
                   run_if_changed: "^(go.mod|go.sum|main.go)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
                     description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
@@ -157,6 +157,8 @@ templates:
               - jobConfig:
                   name: post-keda-manager-operator-build
                   always_run: true
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"

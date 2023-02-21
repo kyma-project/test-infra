@@ -70,8 +70,30 @@ else
     exit 1
 fi
 
+function cleanupJobAssets() {
+    # Must be at the beginning
+    EXIT_STATUS=$?
+
+    set +e
+
+    log::banner "Job Exit Status:: \"${EXIT_STATUS}\""
+
+    if [[ $EXIT_STATUS != "0" ]]; then
+        eventing::print_troubleshooting_logs
+    fi
+
+    log::banner "Cleanup fast-integration assets"
+    eventing::fast_integration_test_cleanup
+
+    log::banner "Cleaning job assets"
+    gardener::cleanup
+
+    set -e
+    exit ${EXIT_STATUS}
+}
+
 # nice cleanup on exit, be it successful or on fail
-trap gardener::cleanup EXIT INT
+trap cleanupJobAssets EXIT INT
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -145,7 +167,9 @@ eventing::print_subscription_crd_version
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     # test the default Eventing backend which comes with Kyma
     log::banner "Execute eventing E2E fast-integration tests"
-    eventing::test_fast_integration_eventing
+    # eventing test assets cleanup will done later in cleanup script
+    eventing::test_fast_integration_eventing_prep
+    eventing::fast_integration_tests
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
     if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then

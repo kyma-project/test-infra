@@ -82,6 +82,12 @@ function cleanupJobAssets() {
 
     set +e
 
+    log::banner "Job Exit Status:: \"${EXIT_STATUS}\""
+
+    if [[ $EXIT_STATUS != "0" ]]; then
+        eventing::print_troubleshooting_logs
+    fi
+
     if  [[ "${ENABLE_TEST_CLEANUP}" = true ]] ; then
         log::banner "Cleanup fast-integration assets"
         eventing::fast_integration_test_cleanup || log::info "Cleanup fast-integration assets failed"

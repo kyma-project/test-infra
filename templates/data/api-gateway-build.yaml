@@ -19,6 +19,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-api-gateway-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   always_run: true
                   branches:
                     - ^main$
@@ -46,6 +48,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-api-gateway-webhook-certificates-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   always_run: true
                   branches:
                     - ^main$
