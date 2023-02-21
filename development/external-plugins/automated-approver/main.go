@@ -28,8 +28,14 @@ func main() {
 	// Initialize configuration options for clients.
 	pluginOptions := externalplugin.Opts{}
 
+	hb := handlerBackend{
+		logLevel: pluginOptions.LogLevel,
+	}
+
 	// Add client and plugin cli flags.
 	fs := pluginOptions.NewFlags()
+	fs.StringVar(&hb.configPath, "config-path", "", "Path to the configuration file.")
+	fs.IntVar(&hb.waitForStatusesTimeout, "wait-for-statuses-timeout", 30, "Timeout in seconds for waiting for statuses.")
 	pluginOptions.ParseFlags(fs)
 
 	atom.SetLevel(pluginOptions.LogLevel)
@@ -41,11 +47,7 @@ func main() {
 		panic(err)
 	}
 	logger.Debug("github client ready")
-
-	hb := handlerBackend{
-		ghc:      ghClient,
-		logLevel: pluginOptions.LogLevel,
-	}
+	hb.ghc = ghClient
 
 	// Create and start plugin instance.
 	server := externalplugin.Plugin{}

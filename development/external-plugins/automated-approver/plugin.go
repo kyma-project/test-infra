@@ -2,9 +2,14 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
+	"os"
 	"regexp"
+	"time"
 
+	"github.com/cenkalti/backoff/v4"
 	"golang.org/x/exp/slices"
+	"gopkg.in/yaml.v3"
 
 	consolelog "github.com/kyma-project/test-infra/development/logging"
 	"github.com/kyma-project/test-infra/development/prow/externalplugin"
@@ -23,14 +28,16 @@ type githubClient interface {
 }
 
 type handlerBackend struct {
-	ghc        githubClient
-	logLevel   zapcore.Level
-	conditions map[string]map[string]map[string][]ApproveCondition
+	ghc                    githubClient
+	logLevel               zapcore.Level
+	waitForStatusesTimeout int                                                 // in seconds
+	configPath             string                                              // Path to yaml config file
+	conditions             map[string]map[string]map[string][]ApproveCondition `yaml:"conditions"`
 }
 
 type ApproveCondition struct {
-	RequiredLabels []string
-	ChangedFiles   []string
+	RequiredLabels []string `yaml:"requiredLabels"`
+	ChangedFiles   []string `yaml:"changedFiles"`
 }
 
 func (ac *ApproveCondition) checkRequiredLabels(prLabels []github.Label) bool {
@@ -63,6 +70,37 @@ func (ac *ApproveCondition) checkChangedFiles(changes []github.PullRequestChange
 		}
 	}
 	return true
+}
+
+// readConfig reads config from config file.
+func (h *handlerBackend) readConfig() error {
+	h.conditions = make(map[string]map[string]map[string][]ApproveCondition)
+	configFile, err := os.ReadFile(h.configPath)
+	if err == nil {
+		return yaml.Unmarshal(configFile, h)
+	}
+	return err
+}
+
+// checkPrStatuses checks if all statuses are in success state.
+// Tide required status check is not taken into account. It will be always pending until PR is ready to merge.
+// Timeout limits time waiting for statuses became success.
+func (h *handlerBackend) checkPrStatuses(prStatuses []github.Status) error {
+	backOff := backoff.NewExponentialBackOff()
+	backOff.MaxElapsedTime = time.Duration(h.waitForStatusesTimeout) * time.Second
+	backOff.MaxInterval = 15 * time.Minute
+	backOff.InitialInterval = 5 * time.Minute
+	err := backoff.Retry(func() error {
+		for _, prStatus := range prStatuses {
+			if prStatus.State == "failure" {
+				return backoff.Permanent(fmt.Errorf("pull request status check %s failed", prStatus.Context))
+			} else if prStatus.State == "pending" && prStatus.Context != "tide" {
+				return fmt.Errorf("pull request status check %s is pending", prStatus.Context)
+			}
+		}
+		return nil
+	}, backOff)
+	return err
 }
 
 // checkIfEventSupported check conditions PR must meet to send notification.
@@ -105,11 +143,14 @@ func (h *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger, 
 			logger.Infof("Pull request %d is in failure state, skip approving.", prEvent.Number)
 			return
 		case "pending":
-			for _, prStatus := range prStatuses.Statuses {
-				if prStatus.State != "failure" {
-					logger.Infof("pull request %s/%s#%d is in failure state", prEvent.Repo.Owner.Name, prEvent.Repo.Name, prEvent.Number)
-					return
-				}
+			err = h.checkPrStatuses(prStatuses.Statuses)
+			if err != nil {
+				logger.Errorf("pull request %s/%s#%d has non success statuses, got error: %s",
+					prEvent.Repo.Owner.Name,
+					prEvent.Repo.Name,
+					prEvent.Number,
+					err)
+				return
 			}
 			review := github.DraftReview{
 				CommitSHA: prEvent.PullRequest.Head.SHA,
@@ -124,6 +165,15 @@ func (h *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger, 
 					prEvent.Repo.Name,
 					prEvent.Number,
 					prEvent.PullRequest.Head.SHA,
+					err)
+				return
+			}
+			err = h.ghc.AddLabel(prEvent.Repo.Owner.Name, prEvent.Repo.Name, prEvent.Number, "auto-approved")
+			if err != nil {
+				logger.Errorf("failed add label to pull request %s/%s#%d, got error: %s",
+					prEvent.Repo.Owner.Name,
+					prEvent.Repo.Name,
+					prEvent.Number,
 					err)
 			}
 		}

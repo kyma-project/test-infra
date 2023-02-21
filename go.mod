@@ -65,6 +65,7 @@ require (
 )
 
 require (
+	github.com/cenkalti/backoff/v4 v4.2.0
 	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb
 	k8s.io/test-infra v0.0.0-20230217184003-44840148fd8f
 )
