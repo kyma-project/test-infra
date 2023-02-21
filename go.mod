@@ -66,9 +66,8 @@ require (
 
 require (
 	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb
-	k8s.io/test-infra v0.0.0-20230216054138-d56bc333ae8a
+	k8s.io/test-infra v0.0.0-20230217184003-44840148fd8f
 )
-require k8s.io/test-infra v0.0.0-20230217184003-44840148fd8f
 
 require (
 	cloud.google.com/go v0.107.0 // indirect

@@ -1790,8 +1790,6 @@ k8s.io/kube-openapi v0.0.0-20220328201542-3ee0da9b0b42/go.mod h1:Z/45zLw8lUo4wdi
 k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1 h1:MQ8BAZPZlWk3S9K4a9NCkIFQtZShWqoha7snGixVgEA=
 k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1/go.mod h1:C/N6wCaBHeBHkHUesQOQy2/MZqGgMAFPqGsGQLdbZBU=
 k8s.io/kubernetes v1.13.0/go.mod h1:ocZa8+6APFNC2tX1DZASIbocyYT5jHzqFVsY5aoB7Jk=
-k8s.io/test-infra v0.0.0-20230216054138-d56bc333ae8a h1:hUWNYUJ98oC3hg4LHGLVmf0txhzkJl2Ek244Vla0w0k=
-k8s.io/test-infra v0.0.0-20230216054138-d56bc333ae8a/go.mod h1:a6zj8l2OE8pfLoWWUP4ypEtM32nDOIlNhaUyfjaUTBY=
 k8s.io/test-infra v0.0.0-20230217184003-44840148fd8f h1:HFSvRnuR2x8z12a8pIRI04Ha1NgyaK6/s0JTGileAF8=
 k8s.io/test-infra v0.0.0-20230217184003-44840148fd8f/go.mod h1:a6zj8l2OE8pfLoWWUP4ypEtM32nDOIlNhaUyfjaUTBY=
 k8s.io/utils v0.0.0-20201110183641-67b214c5f920/go.mod h1:jPW/WVKK9YHAvNhRxK0md/EJ228hCsBRufyofKtW8HA=
