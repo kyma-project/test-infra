@@ -5,7 +5,7 @@ pjConfigs:
         prNumber: 1
   prowJobs:
     kyma-project:
-      kyma:
+      directory-size-exporter:
         - pjName: "pull-directory-size-exporter-build"
         - pjName: "pull-directory-size-exporter-unit-test"
         - pjName: "pull-function-controller-lint"
