@@ -80,53 +80,101 @@ Official documentation: https://learn.microsoft.com/en-us/azure/devops/pipelines
 
 4. Enter the name of repo, and choose Public or Private. Then click on Create button
 
-    ![create-repo](./images/create-repo.png)
+   ![create-repo](./images/create-repo.png)
 
 ##### - Azure DevOps
 
-5. Open [Azure DevOps project](https://dev.azure.com) 
+5. Open [Azure DevOps project](https://dev.azure.com)
 
 6. Navigate to Project settings
 
-    ![project-settings](./images/project-settings.png)
+   ![project-settings](./images/project-settings.png)
 
 7. Select Service connections
 
-    ![service-connections](./images/service-connections.png)
+   ![service-connections](./images/service-connections.png)
 
 8. Click on **New service connection** button (top right corner)
 
-    ![new-service-connection](./images/new-service-connection.png)
+   ![new-service-connection](./images/new-service-connection.png)
 
 9. Type `incoming` to search fild to find **Incoming WebHook**, then click Next button
 
-    ![incomingwebhook](./images/incomingwebhook.png)
+   ![incomingwebhook](./images/incomingwebhook.png)
 
-When the repository is created, clone it to your computer. For this copy the repository url
+10. Provide the required data on create connection pane, then click Save button
+
+    - WebHook name
+    - Secret (I usually generates a 64 character long string with lowercase, uppercase and numbers)
+    - Service connection name
+    - Check **Grant access permission to all pipelines** under Security
+
+    ![incomindwebhook-data](./images/incomindwebhook-data.png)
+
+##### - Local IDE
+
+11. Our repository is is created. Now, clone it to your computer. For this copy the repository url
 
     ![clone-repo](./images/clone-repo.png)
 
-6. Open your IDE, such as Visual Studio code and start clone the repo (in VS Code: Press F1 then find Git:Clone)
+12. Open your IDE, such as Visual Studio code and start clone the repo (in VS Code: Press F1 then find Git:Clone)
 
-    ![git-clone](./images/git-clone.png) 
+![git-clone](./images/git-clone.png)
 
-7. Then paste the repo url, and hit Enter
+13. Then paste the repo url, and hit Enter
 
-    ![git-clone-repo](./images/git-clone-repo.png) 
+![git-clone-repo](./images/git-clone-repo.png)
 
-8. Choose the destination folder for the repo
+14. Choose the destination folder for the repo
 
-    ![repo-location](./images/repo-location.png) 
+![repo-location](./images/repo-location.png)
 
-9. When it is download to your computer, you can open it the current window or  a new one
+15. When it is download to your computer, you can open it the current window or a new one
 
-    ![open-in-ide](./images/open-in-ide.png) 
+![open-in-ide](./images/open-in-ide.png)
 
-10. In the project root directory, create the `azure-pipelines.yml` file. This is the soul of yout pipelinr
+16. In the project root directory, create the `azure-pipelines.yml` file. This is the soul of yout pipelinr
 
-    ![new-file](./images/new-file.png) 
+    ![new-file](./images/new-file.png)
 
-10. In the project root directory, create the `azure-pipelines.yml` file. This is the soul of yout pipelinr
+17. In the project root directory, create the `azure-pipelines.yml` file. This is the soul of your pipeline
 
-    ![new-file](./images/new-file.png) 
+    ![new-file](./images/new-file.png)
 
+18. Add the following simple content to `azure-pipelines.yml`. Customize it according to your `Incoming WebHook` connection parameter
+
+Some explanation:
+- trigger: **none** (we will manage the execution of the pipeline by the GitHub webhook calls)
+- resources.webhooks.webhook: `Incoming WebHook`'s name
+- resources.webhooks.webhook.connection: `Incoming WebHook`'s service connection name
+
+Also replace the `Incoming WebHook`'s name inside the stages and steps!
+
+```yaml
+# Using a general purpose pipeline for Azure
+trigger: none
+
+resources:
+  webhooks:
+    - webhook: githubcomwebhook
+      connection: githubconnection
+
+stages:
+  - stage: PrerequisiteCheck
+    jobs:
+      - job: ActionValueCheck
+        steps:
+          - script: |
+              echo 'Action:' ${{ convertToJson(parameters.githubcomwebhook.action) }}
+              echo 'Is the Condition reopened, opened, ready_for_review, synchronize?:' ${{ in(parameters.githubcomwebhook.action, 'reopened','opened','ready_for_review','synchronize') }}
+```
+
+19. Save the file, and check the right branch before commit and push
+
+    ![check-branch](./images/check-branch.png)
+
+20. After this add to stage changes, commit and push to remote
+
+    ![push-changes](./images/push-changes.png)
+
+##### - Azure DevOps
