@@ -8,7 +8,7 @@ pjConfigs:
       directory-size-exporter:
         - pjName: "pull-directory-size-exporter-build"
         - pjName: "pull-directory-size-exporter-unit-test"
-        - pjName: "pull-function-controller-lint"
+        - pjName: "pull-directory-size-exporter-lint"
 prConfigs: #
   kyma-project:
     directory-size-exporter:
