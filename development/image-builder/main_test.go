@@ -8,6 +8,7 @@ import (
 	"testing/fstest"
 
 	"github.com/kyma-project/test-infra/development/image-builder/sign"
+	"github.com/kyma-project/test-infra/development/pkg/sets"
 	"github.com/kyma-project/test-infra/development/pkg/tags"
 )
 
@@ -201,6 +202,23 @@ func TestFlags(t *testing.T) {
 			},
 			args: []string{
 				"--export-tags",
+			},
+		},
+		{
+			name: "build args, pass",
+			expectedOpts: options{
+				context:    ".",
+				configPath: "/config/image-builder-config.yaml",
+				dockerfile: "Dockerfile",
+				logDir:     "/logs/artifacts",
+				buildArgs: sets.Tags{
+					tags.Tag{Name: "BIN", Value: "test"},
+					tags.Tag{Name: "BIN2", Value: "test2"},
+				},
+			},
+			args: []string{
+				"--build-arg=BIN=test",
+				"--build-arg=BIN2=test2",
 			},
 		},
 	}

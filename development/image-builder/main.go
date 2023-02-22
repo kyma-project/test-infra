@@ -33,6 +33,7 @@ type options struct {
 	silent     bool
 	isCI       bool
 	tags       sets.Tags
+	buildArgs  sets.Tags
 	platforms  sets.Strings
 	exportTags bool
 }
@@ -207,6 +208,16 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 		buildArgs = addTagsToEnv(parsedTags, envs)
 	} else {
 		buildArgs = envs
+	}
+
+	parsedBuildArgss, err := getTags(pr, sha, append(o.buildArgs, o.TagTemplate))
+	if err != nil {
+		return err
+	}
+	if o.buildArgs != nil && len(parsedBuildArgss) != 0 {
+		for _, arg := range parsedBuildArgss {
+			buildArgs[arg.Name] = arg.Value
+		}
 	}
 
 	if len(vs) == 0 {
@@ -444,6 +455,7 @@ func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
 	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
 	fs.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
 	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
+	fs.Var(&o.buildArgs, "build-arg", "Flag to pass additional arguments to built Dockerfile. Van be used in the name=value format.")
 	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
 	fs.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
 	return fs
