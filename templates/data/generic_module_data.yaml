@@ -190,6 +190,29 @@ templates:
                     - vm_job_k3d
                     - vm_job_labels
               - jobConfig:
+                  name: pre-main-keda-manager-upgrade-main-to-pr
+                  extra_refs:
+                    - org: kyma-project
+                      repo: keda-manager
+                      path_alias: github.com/kyma-project/keda-main
+                      base_ref: main
+                  always_run: "true"
+                  optional: "false"
+                  env:
+                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
+                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make -C ../keda-main local-run && make ci-k3d-upgrade-test"
+                  inheritedConfigs:
+                    global:
+                      - jobConfig_default
+                      - jobConfig_presubmit
+                      - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                      - extra_refs_test-infra
+                    local:
+                      - job_default
+                      - vm_job_make
+                      - vm_job_k3d
+                      - vm_job_labels
+              - jobConfig:
                   name: post-main-keda-manager-verify
                   always_run: "true"
                   optional: "true"
