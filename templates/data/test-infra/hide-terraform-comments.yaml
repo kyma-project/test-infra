@@ -8,7 +8,7 @@ templates:
               - jobConfig:
                   privileged: "false"
                   name: "pull-hide-tf-github-comments"
-                  run_if_changed: '.*\.tf$|^development/gcp/workflows'
+                  run_if_changed: '.*\.tf$|.*\.tfvars$|^development/gcp/workflows'
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
                   labels:
                     preset-bot-github-token: "true"
