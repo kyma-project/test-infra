@@ -2,9 +2,9 @@
 
 The basic requirement and motivation was the following:
 We have to verify that the integration of an SAP Azure DevopsPipeline as quality gate for a Github.com works.
-Expected is to implement a simple AzruDevopsOps pipeline and configure it to become a quality gate for a PR of an public Github.com repository.
+Expected is to implement a simple AzruDevopsOps pipeline and configure it to become a quality gate for a PR of a public Github.com repository.
 
-- Create two simple Azure Devops Pipeline (one which is always failing and another one which is finishing successfully).
+- Create two simple Azure DevOps Pipeline (one which is always failing and another one which is finishing successfully).
 - Create a public Github.com repository
 - Configure these two pipelines as quality gate for PRs to this repository (by using Webhooks etc.).
 - Open a PR to the repository
@@ -13,10 +13,10 @@ Expected is to implement a simple AzruDevopsOps pipeline and configure it to bec
 
 At first sight the easiest way to do this, to create a Hyperspace based managed pipeline. Unfortunately the **Hyperspace does not support the GitHub.com** related git repository management.
 
-Although we opened a feature request: https://github.tools.sap/hyper-pipe/portal/issues/2303. Finally the responsible team declined our request with the following reason:
+Although we opened a feature request: https://github.tools.sap/hyper-pipe/portal/issues/2303. Finally, the responsible team declined our request with the following reason:
 "We focus on internal development only. If GH.com would be easily feasible, we'd be happy to also support it. Today it is not in our focus and it also seems not to be so easy. We integrate many internal development tools, some of which are not enabled for GH.com. If GH.com is a strategic investment we would contribute our part as well, but since we integrate only existing solutions, we cannot be front-runners here."
 
-Therefore we started to find another way to establish a stable integration between github.com and Azure Pipeline (Azure DevOps).
+Therefore, we started to find another way to establish a stable integration between github.com and Azure Pipeline (Azure DevOps).
 
 ## Solution
 
@@ -24,7 +24,7 @@ We have two (2) options to integrate them.
 
 ### 1. Create GitHub conection by GitHub PAT (personal access token)
 
-This solution is similar than the Hyperspace related solution on GitHub Enterprise side. This means after the integration the GitHiub side webhook urls configured via a system generated unique identifier depends on PAT. This id's name is **channelId**. (it has a secret which is unknown by us)
+This solution is similar than the Hyperspace related solution on GitHub Enterprise side. This means after the integration the GitHiub side webhook urls configured via a system generated unique identifier depends on PAT. The id's name is **channelId**. (it has a secret which is unknown by us)
 
 - The common format of this url: `https://dev.azure.com/<azure devops organisation>/_apis/public/hooks/externalEvents?publisherId=github&channelId=<system generated unique identifier>&api-version=7.1-preview`
 
@@ -66,7 +66,7 @@ Cons:
 
 Official documentation: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/?view=azure-pipelines
 
-**Accordingly we start to use this method.**
+**Accordingly, we start to use this method.**
 
 #### **Step-by-step configuration**
 
@@ -105,7 +105,7 @@ Official documentation: https://learn.microsoft.com/en-us/azure/devops/pipelines
 10. Provide the required data on create connection pane, then click Save button
 
     - WebHook name
-    - Secret (I usually generates a 64 character long string with lowercase, uppercase and numbers)
+    - Secret (For instance generates a 64 character long string with lowercase, uppercase and numbers)
     - Service connection name
     - Check **Grant access permission to all pipelines** under Security
 
@@ -113,7 +113,7 @@ Official documentation: https://learn.microsoft.com/en-us/azure/devops/pipelines
 
 ##### - Local IDE
 
-11. Our repository is is created. Now, clone it to your computer. For this copy the repository url
+11. Our repository is created. Now, clone it to your computer. For this copy the repository url
 
     ![clone-repo](./images/clone-repo.png)
 
@@ -146,7 +146,7 @@ Official documentation: https://learn.microsoft.com/en-us/azure/devops/pipelines
 Some explanation:
 - trigger: **none** (we will manage the execution of the pipeline by the GitHub webhook calls)
 - resources.webhooks.webhook: `Incoming WebHook`'s name
-- resources.webhooks.webhook.connection: `Incoming WebHook`'s service connection name
+- resources.webhooks.connection: `Incoming WebHook`'s service connection name
 
 Also replace the `Incoming WebHook`'s name inside the stages and steps!
 
@@ -178,3 +178,90 @@ stages:
     ![push-changes](./images/push-changes.png)
 
 ##### - Azure DevOps
+
+21. Back to ADO and start to create pipeline
+
+    ![pipeline](./images/pipeline.png)
+
+22. Click on **New pipeline** button (top right corner)
+
+    ![new-pipeline](./images/new-pipeline.png)
+
+23. Select **GitHub** as source
+
+    ![pipeline-source](./images/pipeline-source.png)
+
+24. Connect to GitHub if necessary, then end of fielter field select **All repositories** and type your repo name in ther filter field.
+
+    ![pipeline-gitrepository](./images/pipeline-gitrepository.png)
+
+25. Select the repo, then choose the existing yaml file (`azure-pipelines.yml`) in then next step and continue
+
+26. In review step, you can check the yaml file content before you create the pipeline
+
+    ![pipeline-review](./images/pipeline-review.png)
+
+27. Choose the **Save** option under the Run dropdown to save the pipeline
+
+    ![pipeline-save](./images/pipeline-save.png)
+
+28. Pipeline is ready for run
+
+    ![pipeline-saved](./images/pipeline-saved.png)
+
+Let's cinfigure the GitHub side webhook.
+
+##### - GitHub
+
+29. Go to you repositorym and click Settings option
+
+    ![repo-settings](./images/repo-settings.png)
+
+30. If you have pull_request related webhook, start to edit that. If you don't have webhook, click on **Add webhook** button
+
+    ![repo-hook-add](./images/repo-hook-add.png)
+
+31. Provide the required data, then click **Add webhook / Update webhook** button
+
+Some explanation:
+
+- Payload URL: Configure the following URL according to your Azure DevOps related **Organisation** and **Incoming WebHook name** - `https://dev.azure.com/<organisation>/_apis/public/distributedtask/webhooks/<incoming web hook name>?api-version=7.1-preview`
+- Content type: `application/json`
+- Secret: Secret you used in **Incoming WebHook** connection
+- Enable SSL verification
+- Which events would you like to trigger this webhook?: Select `Let me select individual events`, then scroll down to check `Pull requests`
+
+    ![repo-hook-new01](./images/repo-hook-new01.png)
+    ![repo-hook-new02](./images/repo-hook-new02.png)
+    ![repo-hook-new03](./images/repo-hook-new03.png)
+
+32. Click on **Recent Deliveres** tab, and check the ping request (which makes a health check)
+
+    ![repo-hook-ping](./images/repo-hook-ping.png)
+
+Pipeline configuration is done. :-)
+
+##### - Local IDE
+
+33. To check the pipeline, go back to yor IDE, and create a new branch (eg.: featurebranch). Make some code change, maybe ion README.md file. Then push the changes to GitHub.
+
+34. Open your GitHub repo in your browser and start a pull request
+
+    ![test-pullrequest](./images/test-pullrequest.png)
+
+35. When the pull request opened (eg.: waiting for review) the GitHub will start a wehbook call. Then the pull request is closed there will be anither webhook call. Accordingly, there must be 2 webhook calls. 
+
+- 35.1. GitHub side `Recent Deliveries`:
+
+![test-pullrequestresult](./images/test-pullrequestresult.png)
+
+
+- 35.2. Azure DevOps side `Runs`:
+
+![test-pullrequest-ado](./images/test-pullrequest-ado.png)
+
+    Check payload parsing:
+
+![test-ado-opened](./images/test-ado-opened.png)
+![test-ado-closed](./images/test-ado-closed.png)
+
