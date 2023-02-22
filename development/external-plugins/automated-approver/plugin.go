@@ -205,25 +205,27 @@ func (h *handlerBackend) pullRequestEventHandler(_ *externalplugin.Plugin, paylo
 
 // dumpRequest dumps http request to log.
 func (h *handlerBackend) dumpRequest(w http.ResponseWriter, r *http.Request) {
-	// logger, atom := consolelog.NewLoggerWithLevel()
-	// defer logger.Sync()
-	// atom.SetLevel(h.logLevel)
+	logger, atom := consolelog.NewLoggerWithLevel()
+	atom.SetLevel(h.logLevel)
 	dump, err := httputil.DumpRequest(r, true)
 	if err != nil {
-		// logger.Errorw("Failed to dump request", "error", err)
-		fmt.Printf("Failed to dump request: %v", err)
+		logger.Errorw("Failed to dump request", "error", err)
+		logger.Sync()
+		// fmt.Printf("Failed to dump request: %v", err)
 	}
-	// logger.Debugw("Got http request", "payload", string(dump))
-	fmt.Printf("Got http request: %v", string(dump))
-	// logger = logger.With("event-type", r.Header.Get("X-GitHub-Event"))
-	fmt.Printf("Got event type: %v", r.Header.Get("X-GitHub-Event"))
-	// logger.Debug("Got event payload")
+	logger.Debugw("Got http request", "payload", string(dump))
+	// fmt.Printf("Got http request: %v", string(dump))
+	logger = logger.With("event-type", r.Header.Get("X-GitHub-Event"))
+	// fmt.Printf("Got event type: %v", r.Header.Get("X-GitHub-Event"))
+	logger.Debug("Got event payload")
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
-		// logger.Errorw("Failed to read request body", "error", err)
-		fmt.Printf("Failed to read request body: %v", err)
+		logger.Errorw("Failed to read request body", "error", err)
+		logger.Sync()
+		// fmt.Printf("Failed to read request body: %v", err)
 	}
-	fmt.Printf("Got event payload: %v", string(body))
-	// logger.Debugw("Got event payload", "payload", string(body))
+	// fmt.Printf("Got event payload: %v", string(body))
+	logger.Debugw("Got event payload", "payload", string(body))
+	logger.Sync()
 	w.WriteHeader(http.StatusOK)
 }
