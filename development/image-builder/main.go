@@ -210,7 +210,7 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 		buildArgs = envs
 	}
 
-	if o.buildArgs != nil && len(o.buildArgs) != 0 {
+	if len(o.buildArgs) > 0 {
 		parsedBuildArgs, err := getTags(pr, sha, append(o.buildArgs, o.TagTemplate))
 		if err != nil {
 			return err
