@@ -37,7 +37,7 @@ require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/onsi/ginkgo/v2 v2.8.1
-	github.com/onsi/gomega v1.27.0
+	github.com/onsi/gomega v1.27.1
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
@@ -69,6 +69,7 @@ require (
 	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb
 	k8s.io/test-infra v0.0.0-20230217184003-44840148fd8f
 )
+require k8s.io/test-infra v0.0.0-20230221135956-a7c051d842bf
 
 require (
 	cloud.google.com/go v0.107.0 // indirect
