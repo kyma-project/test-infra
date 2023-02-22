@@ -319,4 +319,15 @@ updates:
     commit-message:
       prefix: "slack-msg-sender"
       include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/development/secrets-rotator/cloud-run/rotate-service-account"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "docker-rotate-sa"
+      include: "scope"
 

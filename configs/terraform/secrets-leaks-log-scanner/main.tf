@@ -1,17 +1,17 @@
 terraform {
   backend "gcs" {
     bucket = "tf-state-kyma-project"
-    prefix = "prod"
+    prefix = "secret-leaks-log-scanner"
   }
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "4.52.0"
+      version = "4.53.1"
     }
   }
 }
 
-variable "google_project_id" {
+variable "gcp_project_id" {
   type    = string
   default = "sap-kyma-prow"
 }
@@ -22,7 +22,7 @@ variable "prow_pubsub_topic_name" {
 }
 
 provider "google" {
-  project = var.google_project_id
+  project = var.gcp_project_id
   region  = "europe-west3"
   zone    = "europe-west3-a"
 }

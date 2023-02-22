@@ -10,14 +10,14 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(.*\.go$|.golangcilint.yaml)'
+      run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
             command:
               - "/bin/sh"
             args:
@@ -34,7 +34,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.*\.go$'
+      run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -68,7 +68,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
             command:
               - "/bin/sh"
             args:
@@ -143,7 +143,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
             command:
               - "/bin/sh"
             args:
@@ -193,7 +193,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
             command:
               - "/bin/sh"
             args:
@@ -243,7 +243,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
             command:
               - "/bin/sh"
             args:
@@ -293,7 +293,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
             command:
               - "/bin/sh"
             args:
@@ -324,54 +324,6 @@ presubmits: # runs on PRs
             args:
               - "-c"
               - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
-    - name: pull-telemetry-operator-lint
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-telemetry-operator-lint"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/telemetry-operator/(.*\.go$|.golangcilint.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/telemetry-operator && make lint"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-    - name: pull-telemetry-operator-unit-test
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-telemetry-operator-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/telemetry-operator/.*\.go$'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/telemetry-operator && make test-local"
             resources:
               requests:
                 memory: 1Gi

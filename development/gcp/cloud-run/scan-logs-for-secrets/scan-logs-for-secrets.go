@@ -63,14 +63,16 @@ func main() {
 		mainLogger.LogCritical("failed to create storageClient: %s", err)
 	}
 
-	defer storageClient.Close()
-
 	// Setup configuration for gitleaks
-	viper.SetConfigType("toml")
-	if err := viper.ReadConfig(strings.NewReader(config.DefaultConfig)); err != nil {
-		mainLogger.LogError("failed read default viper config for leaks scanner, error: %s", err)
+	viper.SetConfigFile("app/gitleaks.toml")
+	if err := viper.ReadInConfig(); err != nil {
+		mainLogger.LogError("failed to read viper config, error: %s", err)
+		// Set default config if fail
+		viper.SetConfigType("toml")
+		if err := viper.ReadConfig(strings.NewReader(config.DefaultConfig)); err != nil {
+			mainLogger.LogError("failed read default viper config for leaks scanner, error: %s", err)
+		}
 	}
-
 	// Load config
 	if err = viper.Unmarshal(&vc); err != nil {
 		mainLogger.LogCritical("Failed unmarshal viper config, got error: %s", err)

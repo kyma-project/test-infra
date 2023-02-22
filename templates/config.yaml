@@ -77,7 +77,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -108,7 +108,7 @@ globalSets:
         value: high-cpu
         operator: Equal
         effect: NoSchedule
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b-buildkit
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f-buildkit
     command: "/image-builder"
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -140,7 +140,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
+    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 200Mi
@@ -170,7 +170,7 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230214-88ddcc0f"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230220-9bd840c9"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
   image_buildpack-node:
@@ -186,7 +186,7 @@ globalSets:
   image_gardener-rotate:
     image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230202-40569193"
   image_markdown_index:
-    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230202-40569193"
+    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230220-55aefaf0"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"

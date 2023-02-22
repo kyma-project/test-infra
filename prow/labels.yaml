@@ -179,18 +179,23 @@ default:
       target: both
       addedBy: label
     - color: 0052cc
-      description: Issues or PRs related to logging
+      description: Issues or PRs related to the logging module (deprecated)
       name: area/logging
       target: both
       addedBy: label
     - color: 0052cc
-      description: Issues or PRs related to monitoring
+      description: Issues or PRs related to the monitoring module (deprecated)
       name: area/monitoring
       target: both
       addedBy: label
     - color: 0052cc
-      description: Issues or PRs related to tracing
+      description: Issues or PRs related to the tracing module (deprecated)
       name: area/tracing
+      target: both
+      addedBy: label
+    - color: 0052cc
+      description: Issues or PRs related to the telemetry module
+      name: area/telemetry
       target: both
       addedBy: label
     - color: 0052cc

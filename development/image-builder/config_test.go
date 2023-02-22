@@ -4,6 +4,8 @@ import (
 	"os"
 	"reflect"
 	"testing"
+
+	"github.com/kyma-project/test-infra/development/pkg/tags"
 )
 
 func Test_ParseConfig(t *testing.T) {
@@ -21,7 +23,7 @@ tag-template: v{{ .Date }}-{{ .ShortSHA }}`,
 			expectedConfig: Config{
 				Registry:    []string{"kyma-project.io/prod-registry"},
 				DevRegistry: []string{"dev.kyma-project.io/dev-registry"},
-				TagTemplate: `v{{ .Date }}-{{ .ShortSHA }}`,
+				TagTemplate: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`},
 			},
 		},
 		{
@@ -36,7 +38,7 @@ tag-template: v{{ .Date }}-{{ .ShortSHA }}`,
 			expectedConfig: Config{
 				Registry:    []string{"kyma-project.io/prod-registry", "kyma-project.io/second-registry"},
 				DevRegistry: []string{"dev.kyma-project.io/dev-registry", "dev.kyma-project.io/second-registry"},
-				TagTemplate: `v{{ .Date }}-{{ .ShortSHA }}`,
+				TagTemplate: tags.Tag{Name: "default_tag", Value: `v{{ .Date }}-{{ .ShortSHA }}`},
 			},
 		},
 		{

@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
-	"github.com/kyma-project/test-infra/development/image-builder/sign"
-	"gopkg.in/yaml.v3"
 	"os"
+
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
+	"github.com/kyma-project/test-infra/development/pkg/tags"
+	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
@@ -18,7 +20,7 @@ type Config struct {
 	Cache CacheConfig `yaml:"cache" json:"cache"`
 	// TagTemplate is go-template field that defines the format of the $_TAG substitution.
 	// See tags.Tag struct for more information and available fields
-	TagTemplate string `yaml:"tag-template" json:"tag-template"`
+	TagTemplate tags.Tag `yaml:"tag-template" json:"tag-template"`
 	// LogFormat defines the format kaniko logs are projected.
 	// Supported formats are 'color', 'text' and 'json'. Default: 'color'
 	LogFormat string `yaml:"log-format" json:"log-format"`

@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230206-d1e303a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
             command:
               - "/bin/sh"
             args:
@@ -27,7 +27,7 @@ presubmits: # runs on PRs
             resources:
               requests:
                 memory: 200Mi
-                cpu: 80m
+                cpu: 200m
     - name: pull-istio-test
       annotations:
         pipeline.trigger: "pr-submit"
@@ -35,6 +35,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
+      always_run: true
       optional: true
       skip_report: false
       decorate: true

@@ -19,6 +19,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-istio-operator-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   always_run: true
                   branches:
                     - ^main$
