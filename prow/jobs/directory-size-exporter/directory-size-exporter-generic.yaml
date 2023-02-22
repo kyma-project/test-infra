@@ -2,7 +2,7 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
+  kyma-project/directory-size-exporter:
     - name: pull-directory-size-exporter-build
       annotations:
         pipeline.trigger: "pr-submit"
@@ -11,7 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/directory-size-exporter/'
+      run_if_changed: '^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -24,7 +24,7 @@ presubmits: # runs on PRs
             args:
               - "--name=directory-size-exporter"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/directory-size-exporter"
+              - "--context=."
               - "--dockerfile=Dockerfile"
             resources:
               requests:
@@ -46,7 +46,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
   
 postsubmits: # runs on main
-  kyma-project/kyma:
+  kyma-project/directory-size-exporter:
     - name: post-directory-size-exporter-build
       annotations:
         pipeline.trigger: "pr-merge"
@@ -57,7 +57,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/directory-size-exporter/'
+      run_if_changed: '^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -70,7 +70,7 @@ postsubmits: # runs on main
             args:
               - "--name=directory-size-exporter"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/directory-size-exporter"
+              - "--context=."
               - "--dockerfile=Dockerfile"
             resources:
               requests:

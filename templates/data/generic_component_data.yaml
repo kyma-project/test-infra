@@ -449,17 +449,17 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/directory-size-exporter/directory-size-exporter-generic.yaml
+      - to: ../../prow/jobs/directory-size-exporter/directory-size-exporter-generic.yaml
         jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
+          - repoName: "github.com/kyma-project/directory-size-exporter"
             jobs:
               - jobConfig:
                   name: pull-directory-size-exporter-build
-                  run_if_changed: "^components/directory-size-exporter/"
+                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   args:
                     - "--name=directory-size-exporter"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/directory-size-exporter"
+                    - "--context=."
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
@@ -469,11 +469,11 @@ templates:
                   name: post-directory-size-exporter-build
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/directory-size-exporter/"
+                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   args:
                     - "--name=directory-size-exporter"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/directory-size-exporter"
+                    - "--context=."
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
