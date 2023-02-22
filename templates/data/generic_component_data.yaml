@@ -455,7 +455,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-directory-size-exporter-build
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  always_run: true
                   args:
                     - "--name=directory-size-exporter"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -467,6 +467,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-directory-size-exporter-build
+                  branches:
+                    - "^main$"
+                  always_run: true
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
