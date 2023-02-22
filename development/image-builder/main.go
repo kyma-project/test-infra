@@ -210,11 +210,12 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 		buildArgs = envs
 	}
 
-	parsedBuildArgs, err := getTags(pr, sha, append(o.buildArgs, o.TagTemplate))
-	if err != nil {
-		return err
-	}
-	if o.buildArgs != nil && len(parsedBuildArgs) != 0 {
+	if o.buildArgs != nil && len(o.buildArgs) != 0 {
+		parsedBuildArgs, err := getTags(pr, sha, append(o.buildArgs, o.TagTemplate))
+		if err != nil {
+			return err
+		}
+
 		for _, arg := range parsedBuildArgs {
 			buildArgs[arg.Name] = arg.Value
 		}
