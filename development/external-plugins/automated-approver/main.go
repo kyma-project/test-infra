@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	consolelog "github.com/kyma-project/test-infra/development/logging"
 	"github.com/kyma-project/test-infra/development/prow/externalplugin"
 	"k8s.io/test-infra/prow/config"
@@ -50,10 +52,15 @@ func main() {
 	hb.ghc = ghClient
 
 	// Create and start plugin instance.
-	server := externalplugin.Plugin{}
-	server.WithLogger(logger)
-	server.Name = PluginName
-	server.WithWebhookSecret(pluginOptions.WebhookSecretPath)
-	server.RegisterWebhookHandler("pull_request", hb.pullRequestEventHandler)
-	externalplugin.Start(&server, helpProvider, &pluginOptions)
+	// server := externalplugin.Plugin{}
+	// server.WithLogger(logger)
+	// server.Name = PluginName
+	// server.WithWebhookSecret(pluginOptions.WebhookSecretPath)
+	// server.RegisterWebhookHandler("pull_request", hb.pullRequestEventHandler)
+	// externalplugin.Start(&server, helpProvider, &pluginOptions)
+	http.HandleFunc("/", hb.dumpRequest)
+	// Start HTTP server.
+	if err := http.ListenAndServe(":8080", nil); err != nil {
+		logger.Errorf("failed listen on listenPort 8080, error: %s", err)
+	}
 }

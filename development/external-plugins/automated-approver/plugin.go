@@ -3,6 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"net/http/httputil"
 	"os"
 	"regexp"
 	"time"
@@ -198,4 +201,24 @@ func (h *handlerBackend) pullRequestEventHandler(_ *externalplugin.Plugin, paylo
 		logger = logger.With("pr-number", prEvent.Number)
 		h.handleReviewRequestedAction(logger, prEvent)
 	}
+}
+
+// dumpRequest dumps http request to log.
+func (h *handlerBackend) dumpRequest(w http.ResponseWriter, r *http.Request) {
+	logger, atom := consolelog.NewLoggerWithLevel()
+	defer logger.Sync()
+	atom.SetLevel(h.logLevel)
+	dump, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		logger.Errorw("Failed to dump request", "error", err)
+	}
+	logger.Debugw("Got http request", "payload", string(dump))
+	logger = logger.With("event-type", r.Header.Get("X-GitHub-Event"))
+	logger.Debug("Got event payload")
+	body, err := io.ReadAll(r.Body)
+	if err != nil {
+		logger.Errorw("Failed to read request body", "error", err)
+	}
+	logger.Debugw("Got event payload", "payload", string(body))
+	w.WriteHeader(http.StatusOK)
 }
