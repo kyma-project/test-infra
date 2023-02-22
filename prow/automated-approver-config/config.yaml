@@ -1,0 +1,11 @@
+conditions:
+  kyma-project:
+    test-infra:
+      dependabot[bot]:
+        - requiredLabels:
+            - "skip-review"
+          changedFiles:
+            - ".*"
+      kyma-bot:
+        - changedFiles:
+            - "^docs/index.md$"
