@@ -260,7 +260,7 @@ presubmits: # runs on PRs
               - name: JOB_REPO_NAME
                 value: "keda-manager"
               - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && git checkout $PULL_BASE_SHA && make -C ../keda-main local-run && git switch - && make ci-k3d-upgrade-test"
+                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && git checkout $PULL_BASE_SHA && make local-run && git switch - && make ci-k3d-upgrade-test"
             resources:
               requests:
                 memory: 200Mi
