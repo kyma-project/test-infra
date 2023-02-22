@@ -84,7 +84,7 @@ Official documentation: https://learn.microsoft.com/en-us/azure/devops/pipelines
 
 ##### - Azure DevOps
 
-5. Open [Azure DevOps project](https://dev.azure.com/hyperspace-pipelines/neighbors-team) 
+5. Open [Azure DevOps project](https://dev.azure.com) 
 
 6. Navigate to Project settings
 

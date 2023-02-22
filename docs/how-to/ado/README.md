@@ -8,4 +8,4 @@ The folder contains documents that provide an insight into Azure DevOps (ADO) co
 
 Read the documents to learn how to:
 
-- [How to imntegrate github.com with Azure Pipeline](./how-to_integrate-githubcom-azurepipeline.md) provides the detailed configuration steps.
+- [How to integrate github.com with Azure Pipeline](./how-to_integrate-githubcom-azurepipeline.md) provides the detailed configuration steps.
