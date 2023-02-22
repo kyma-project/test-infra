@@ -418,7 +418,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/telemetry-operator/telemetry-manager-generic.yaml
+      - to: ../../prow/jobs/telemetry-manager/telemetry-manager-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/telemetry-manager"
             jobs:
