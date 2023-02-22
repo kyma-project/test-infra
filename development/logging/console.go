@@ -34,11 +34,11 @@ func newLogger(l zapcore.Level) (*zap.SugaredLogger, zap.AtomicLevel) {
 	atom := zap.NewAtomicLevel()
 	atom.SetLevel(l)
 	errorMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= zapcore.ErrorLevel && lvl >= atom.Level()
+		return lvl >= zapcore.ErrorLevel
 	})
 
 	infoMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl < zapcore.ErrorLevel && lvl >= atom.Level()
+		return lvl < zapcore.ErrorLevel
 	})
 
 	consoleInfo := zapcore.Lock(os.Stdout)
