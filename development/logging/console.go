@@ -54,6 +54,6 @@ func newLogger(l zapcore.Level) (*zap.SugaredLogger, zap.AtomicLevel) {
 	)
 
 	logger := zap.New(core)
-	zap.RedirectStdLog(logger)
+	// zap.RedirectStdLog(logger)
 	return logger.Sugar(), atom
 }
