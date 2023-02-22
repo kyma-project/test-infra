@@ -50,7 +50,7 @@ presubmits:
                 make -f Makefile.test-application-gateway test-gateway
 
                 failed=$?
-                k3d cluster delete
+                k3d cluster delete kyma
                 exit $failed
             resources:
               requests:
