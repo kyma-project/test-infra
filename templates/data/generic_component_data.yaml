@@ -425,7 +425,6 @@ templates:
               - jobConfig:
                   name: pull-telemetry-manager-build
                   always_run: true
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   args:
                     - "--name=telemetry-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -442,7 +441,6 @@ templates:
                   always_run: true
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   args:
                     - "--name=telemetry-manager"
                     - "--config=/config/kaniko-build-config.yaml"
