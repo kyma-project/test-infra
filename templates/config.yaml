@@ -33,6 +33,7 @@ global:
         - name: "rafter"
         - name: "btp-manager"
         - name: "telemetry-manager"
+        - name: "director-size-exporter"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
