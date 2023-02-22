@@ -27,7 +27,7 @@
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow
 /prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @dzahariev @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
 /prow/jobs/incubator/reconciler @varbanv @clebs @kwiatekus @jeremyharisch @tobiscr @kyma-project/prow
-/prow/jobs/incubator/varkes @lilitgh @a-thaler @kyma-project/prow
+/prow/jobs/incubator/varkes @kyma-project/observability @kyma-project/prow
 /prow/jobs/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish
 /prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
 /prow/jobs/kyma/components/central-application-connectivity-validator @koala7659 @akgalwas @franpog859 @ralikio @pk85 @kyma-project/prow
@@ -42,8 +42,8 @@
 /prow/jobs/kyma/components/istio-installer @tomasz-smelcerz-sap @werdes72 @pk85 @dariusztutaj @strekm @kyma-project/prow
 /prow/jobs/kyma/components/kyma-operator @tomasz-smelcerz-sap @werdes72 @pk85 @dariusztutaj @strekm @kyma-project/prow
 /prow/jobs/kyma/components/permission-controller @pk85 @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
-/prow/jobs/kyma/components/telemetry-operator @a-thaler @kyma-project/prow
-/prow/jobs/kyma/components/directory-size-exporter @a-thaler @kyma-project/prow
+/prow/jobs/telemetry-manager @kyma-project/observability @kyma-project/prow
+/prow/jobs/kyma/components/directory-size-exporter @kyma-project/observability @kyma-project/prow
 /prow/jobs/kyma/components/xip-patch @strekm @tomasz-smelcerz-sap @werdes72 @pk85 @dariusztutaj @kyma-project/prow
 /prow/jobs/kyma/tests/end-to-end @kyma-project/gopher @kyma-project/prow
 /prow/jobs/kyma/tests/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
