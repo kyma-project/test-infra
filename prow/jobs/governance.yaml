@@ -429,6 +429,11 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
@@ -470,6 +475,11 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
