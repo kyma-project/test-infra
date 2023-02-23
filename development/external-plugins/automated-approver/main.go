@@ -46,7 +46,7 @@ func main() {
 		logger.Fatalw("Failed creating GitHub client", "error", err)
 		panic(err)
 	}
-	logger.Debug("github client ready")
+	logger.Info("github client ready")
 	hb.ghc = ghClient
 
 	err = hb.readConfig()
@@ -54,7 +54,7 @@ func main() {
 		logger.Fatalw("Failed reading config", "error", err)
 		panic(err)
 	}
-	logger.Debug("config ready")
+	logger.Info("config ready")
 
 	// Watch hb.configPath for changes and reload config.
 	go hb.watchConfig(logger)

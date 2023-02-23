@@ -41,7 +41,7 @@ type handlerBackend struct {
 // WatchConfig watches for changes in config file and reloads it.
 func (hb *handlerBackend) watchConfig(logger *zap.SugaredLogger) {
 	defer logger.Sync()
-	logger.Debug("Starting config watcher")
+	logger.Info("Starting config watcher")
 	watcher, err := fsnotify.NewWatcher()
 	if err != nil {
 		logger.Fatal("NewWatcher failed: ", err)
@@ -261,10 +261,11 @@ func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger,
 			logger.Infof("Label auto-approved was added to pull request %s/%s#%d.", prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number)
 		}
 	} else {
-		logger.Infof("Pull request %s/%s#%d doesn't meet conditions to be auto approved.",
+		logger.Infof("Pull request %s/%s#%d doesn't meet conditions to be auto approved, sender %s doesn't have conditions defined.",
 			prEvent.Repo.Owner.Login,
 			prEvent.Repo.Name,
-			prEvent.Number)
+			prEvent.Number,
+			prEvent.Sender.Login)
 	}
 }
 
