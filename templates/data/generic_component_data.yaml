@@ -708,4 +708,3 @@ templates:
                     - jobConfig_postsubmit
                     - "disable_testgrid"
 
-
