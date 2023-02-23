@@ -180,7 +180,7 @@ func (h *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger, 
 		}
 	}
 	logger.Infof("Pull request %s/%s#%d doesn't meet conditions to be auto approved.",
-		prEvent.Repo.Owner.Name,
+		prEvent.Repo.Owner.Login,
 		prEvent.Repo.Name,
 		prEvent.Number)
 }
