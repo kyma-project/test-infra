@@ -17,9 +17,8 @@ The Cloud Run service deletes old keys for a GCP service account and updates the
 
 ServiceAccountKeysCleaner is deployed to Cloud Run applying Terraform config stored in [./terraform directory](../../terraform). `terraform apply` is executed automatically on every PR changing Terraform .tf files belonging to the application.
 
-1. Create the `secret-manager-notifications` Pub/Sub topic if it does not exist.
-2. Create the `service-${PROJECT_NUMBER}@gcp-sa-secretmanager.iam.gserviceaccount.com` service account with the `roles/pubsub.publisher` role if it does not exist.
-3. Merge your changes to test-infra main branch to trigger Terraform execution.
+1. Create the `service-${PROJECT_NUMBER}@gcp-sa-secretmanager.iam.gserviceaccount.com` service account with the `roles/pubsub.publisher` role if it does not exist.
+2. Merge your changes to test-infra main branch to trigger Terraform execution.
 
 
 ## GET parameters
