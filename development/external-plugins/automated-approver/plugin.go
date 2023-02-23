@@ -144,6 +144,7 @@ func (h *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger, 
 			return
 		case "pending":
 			err = h.checkPrStatuses(prStatuses.Statuses)
+			logger.Sync()
 			if err != nil {
 				logger.Errorf("pull request %s/%s#%d has non success statuses, got error: %s",
 					prEvent.Repo.Owner.Name,
@@ -178,6 +179,10 @@ func (h *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger, 
 			}
 		}
 	}
+	logger.Infof("Pull request %s/%s#%d doesn't meet conditions to be auto approved.",
+		prEvent.Repo.Owner.Name,
+		prEvent.Repo.Name,
+		prEvent.Number)
 }
 
 func (h *handlerBackend) pullRequestEventHandler(_ *externalplugin.Plugin, payload externalplugin.Event) {
@@ -194,6 +199,7 @@ func (h *handlerBackend) pullRequestEventHandler(_ *externalplugin.Plugin, paylo
 		return
 	}
 
+	logger.Sync()
 	if prEvent.Action == github.PullRequestActionReviewRequested {
 		logger = logger.With("pr-number", prEvent.Number)
 		h.handleReviewRequestedAction(logger, prEvent)
