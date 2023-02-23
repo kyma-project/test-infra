@@ -337,3 +337,19 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
+          - repoName: "github.com/kyma-project/telemetry-manager"
+            jobs:
+              - jobConfig:
+                  name: "pre-main-telemetry-manager-governance"
+                  args:
+                    - "--repository"
+                    - "telemetry-manager"
+                  path_alias: github.com/kyma-project/telemetry-manager
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
