@@ -7,24 +7,22 @@ data "google_iam_policy" "run_invoker" {
 
 # Create a service account for Eventarc trigger and Workflows
 resource "google_service_account" "secrets_leak_detector" {
-  account_id   = "secrets-leak-detector-wf"
+  account_id  = "secrets-leak-detector"
   description = "Identity of secrets leak detector application."
 }
 
 # Grant the logWriter role to the service account
-resource "google_project_iam_binding" "project_binding_log_writer" {
-  project  = data.google_project.project.id
-  role     = "roles/logging.logWriter"
-  members = ["serviceAccount:${google_service_account.secrets_leak_detector.email}"]
-  depends_on = [google_service_account.secrets_leak_detector]
+resource "google_project_iam_member" "project_log_writer" {
+  member  = "serviceAccount:${google_service_account.secrets_leak_detector.email}"
+  project = data.google_project.project.id
+  role    = "roles/logging.logWriter"
 }
 
 # Grant the workflows.invoker role to the service account
-resource "google_project_iam_binding" "workflows_invoker" {
-  project  = data.google_project.project.id
-  role     = "roles/workflows.invoker"
-
-  members = ["serviceAccount:${google_service_account.secrets_leak_detector.email}"]
+resource "google_project_iam_member" "project_workflows_invoker" {
+  project = data.google_project.project.id
+  role    = "roles/workflows.invoker"
+  member  = "serviceAccount:${google_service_account.secrets_leak_detector.email}"
 }
 
 data "template_file" "scan_logs_for_secrets_yaml" {
@@ -39,35 +37,27 @@ data "template_file" "scan_logs_for_secrets_yaml" {
 }
 
 resource "google_workflows_workflow" "secrets_leak_detector" {
-  name        = "poc-scan-logs-for-secrets"
-  region      = "europe-west3"
-  description = "Workflow is triggered on pubsub ..."
+  name            = "secrets-leak-detector"
+  region          = "europe-west3"
+  description     = "Workflow is triggered by message published to prowjobs PubSub topic and scans prowjobs logs for secrets."
   service_account = google_service_account.secrets_leak_detector.id
   source_contents = data.template_file.scan_logs_for_secrets_yaml.rendered
 }
 
 resource "google_eventarc_trigger" "secrets_leak_detector_workflow" {
-  name = "name"
+  name     = "secrets-leak-detector"
   location = "europe-west3"
   matching_criteria {
     attribute = "type"
-    value = "google.cloud.pubsub.topic.v1.messagePublished"
+    value     = "google.cloud.pubsub.topic.v1.messagePublished"
   }
   destination {
     workflow = google_workflows_workflow.secrets_leak_detector.id
-    }
-
+  }
   service_account = google_service_account.secrets_leak_detector.id
-
   labels = {
     application = "secrets_leak_detector"
   }
-
-  matching_criteria {
-    attribute = "type"
-    value = "google.cloud.pubsub.topic.v1.messagePublished"
-  }
-
   transport {
     pubsub {
       topic = "projects/${var.gcp_project_id}/topics/${var.prow_pubsub_topic_name}"
