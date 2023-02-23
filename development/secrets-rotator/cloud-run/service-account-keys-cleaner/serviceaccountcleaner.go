@@ -11,11 +11,9 @@ import (
 	"time"
 
 	"cloud.google.com/go/compute/metadata"
-	gpubsub "cloud.google.com/go/pubsub"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/development/gcp/pkg/http"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/iam"
-	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/secretmanager"
 	gcpiam "google.golang.org/api/iam/v1"
 )
@@ -74,10 +72,9 @@ func main() {
 // serviceAccountCleaner destroys old versions of service-account secrets and corresponding keys
 func serviceAccountKeysCleaner(w http.ResponseWriter, r *http.Request) {
 	var (
-		trace               string
-		traceHeader         string
-		secretRotateMessage pubsub.SecretRotateMessage
-		err                 error
+		trace       string
+		traceHeader string
+		err         error
 	)
 
 	// set trace value to use it in logEntry
@@ -97,21 +94,6 @@ func serviceAccountKeysCleaner(w http.ResponseWriter, r *http.Request) {
 	logger.WithLabel("io.kyma.app", applicationName)
 	logger.WithLabel("io.kyma.component", componentName)
 	logger.WithTrace(trace)
-
-	// decode http messages body
-	var message gpubsub.Message
-	if err := json.NewDecoder(r.Body).Decode(&message); err != nil {
-		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed decode message body")
-		return
-	}
-
-	logger.WithLabel("messageId", message.ID)
-
-	err = json.Unmarshal(message.Data, &secretRotateMessage)
-	if err != nil {
-		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed to unmarshal message data field, error: %s", err.Error())
-		return
-	}
 
 	// options are provided as GET query:
 	// time that latest version of secret needs to exist before older ones can be destroyed
