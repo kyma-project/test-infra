@@ -54,6 +54,7 @@ func main() {
 		logger.Fatalw("Failed reading config", "error", err)
 		panic(err)
 	}
+	logger.Debugf("config: %+v", hb.conditions)
 	logger.Info("config ready")
 
 	// Watch hb.configPath for changes and reload config.

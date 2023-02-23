@@ -142,10 +142,12 @@ func (ac *ApproveCondition) checkChangedFiles(logger *zap.SugaredLogger, changes
 
 // readConfig reads config from config file.
 func (hb *handlerBackend) readConfig() error {
-	hb.conditions = make(map[string]map[string]map[string][]ApproveCondition)
+	c := make(map[string]map[string]map[string]map[string][]ApproveCondition)
 	configFile, err := os.ReadFile(hb.configPath)
 	if err == nil {
-		return yaml.Unmarshal(configFile, hb)
+		yaml.Unmarshal(configFile, &c)
+		hb.conditions = c["conditions"]
+		return nil
 	}
 	return err
 }
@@ -198,7 +200,7 @@ func (hb *handlerBackend) checkPrApproveConditions(logger *zap.SugaredLogger, co
 
 func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger, prEvent github.PullRequestEvent) {
 	defer logger.Sync()
-	logger.Debugf("Checking if conditions for PR sender %s exists: %t", prEvent.Repo.Owner.Login, hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.Sender.Login] != nil)
+	logger.Debugf("Checking if conditions for PR sender %s exists: %t", prEvent.Sender.Login, hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.Sender.Login] != nil)
 	if conditions, ok := hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.Sender.Login]; ok {
 		logger.Debugf("Checking if PR %d meets approval conditions: %v", prEvent.Number, conditions)
 		// Get changes from pull request.
