@@ -212,7 +212,9 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 
 	if len(o.buildArgs) > 0 {
 		for _, arg := range o.buildArgs {
-			buildArgs[arg.Name] = arg.Value
+			if _, exists := buildArgs[arg.Name]; !exists {
+				buildArgs[arg.Name] = arg.Value
+			}
 		}
 	}
 
