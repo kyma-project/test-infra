@@ -231,6 +231,7 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 	return fmt.Errorf("building variants is not supported at this moment")
 }
 
+// appendMissing appends key, values pairs from source array to target map
 func appendMissing(target *map[string]string, source []tags.Tag) {
 	if len(source) > 0 {
 		for _, arg := range source {
