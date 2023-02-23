@@ -49,6 +49,16 @@ func main() {
 	logger.Debug("github client ready")
 	hb.ghc = ghClient
 
+	err = hb.readConfig()
+	if err != nil {
+		logger.Fatalw("Failed reading config", "error", err)
+		panic(err)
+	}
+	logger.Debug("config ready")
+
+	// Watch hb.configPath for changes and reload config.
+	go hb.watchConfig(logger)
+
 	// Create and start plugin instance.
 	server := externalplugin.Plugin{}
 	server.WithLogger(logger)
