@@ -12,7 +12,6 @@ plank:
       [Full PR test history](https://status.build.kyma-project.io/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
       [Your PR dashboard](https://status.build.kyma-project.io/pr?query=is:pr+state:open+author:{{with
       index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
-  allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
   max_concurrency: 100 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
   pod_pending_timeout: 60m
   default_decoration_configs:
@@ -24,10 +23,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20230215-1f9eebbd96
-        initupload: gcr.io/k8s-prow/initupload:v20230215-1f9eebbd96
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20230215-1f9eebbd96
-        sidecar: gcr.io/k8s-prow/sidecar:v20230215-1f9eebbd96
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20230222-1346bb3cfc
+        initupload: gcr.io/k8s-prow/initupload:v20230222-1346bb3cfc
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20230222-1346bb3cfc
+        sidecar: gcr.io/k8s-prow/sidecar:v20230222-1346bb3cfc
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
