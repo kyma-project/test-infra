@@ -72,7 +72,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_kyma
-                    - testing
                     - image_kyma-integration
                   local:
                     - jobConfig_default
@@ -101,7 +100,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - extra_refs_kyma
-                    - testing
                     - image_kyma-integration
                   local:
                     - jobConfig_default
