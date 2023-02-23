@@ -471,10 +471,14 @@ func Test_appendMissing(t *testing.T) {
 		expectedEnvs map[string]string
 	}{
 		{
-			name:     "multiple source and targets",
-			existing: map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2"},
+			name: "multiple source and targets",
+			existing: map[string]string{
+				"KEY_1": "VAL1",
+				"KEY_2": "VAL2",
+				"KEY_3": "VAL3",
+			},
 			newTags: []tags.Tag{
-				{Name: "KEY_3", Value: "VAL3"},
+				{Name: "KEY_3", Value: "VAL5"},
 				{Name: "KEY_4", Value: "VAL4"},
 			},
 			expectedEnvs: map[string]string{
