@@ -32,7 +32,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-api-gateway-lint
-                  request_cpu: 200m
+                  request_cpu: 500m
                   command: "/bin/sh"
                   args:
                     - "-c"
