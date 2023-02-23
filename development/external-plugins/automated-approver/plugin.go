@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
+	"github.com/fsnotify/fsnotify"
 	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 
@@ -41,14 +42,45 @@ type handlerBackend struct {
 func (hb *handlerBackend) watchConfig(logger *zap.SugaredLogger) {
 	defer logger.Sync()
 	logger.Debug("Starting config watcher")
-	for {
-		time.Sleep(10 * time.Second)
-		err := hb.readConfig()
-		if err != nil {
-			logger.Errorw("Failed reading config", "error", err)
-		}
-		logger.Info("Config reloaded")
+	watcher, err := fsnotify.NewWatcher()
+	if err != nil {
+		logger.Fatal("NewWatcher failed: ", err)
 	}
+	defer watcher.Close()
+
+	done := make(chan bool)
+	go func() {
+		defer close(done)
+
+		for {
+			select {
+			case event, ok := <-watcher.Events:
+				if !ok {
+					return
+				}
+				logger.Infof("%s %s", event.Name, event.Op)
+				if event.Has(fsnotify.Write) || event.Has(fsnotify.Create) {
+					logger.Info("Reloading config")
+					err := hb.readConfig()
+					if err != nil {
+						logger.Fatalf("Failed reading config: %s", err)
+					}
+				}
+			case err, ok := <-watcher.Errors:
+				if !ok {
+					return
+				}
+				logger.Errorf("error: %s", err)
+			}
+		}
+
+	}()
+
+	err = watcher.Add(hb.configPath)
+	if err != nil {
+		logger.Fatalf("Add failed: %s", err)
+	}
+	<-done
 }
 
 // ApproveCondition defines conditions for approving PR.
@@ -166,7 +198,9 @@ func (hb *handlerBackend) checkPrApproveConditions(logger *zap.SugaredLogger, co
 
 func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger, prEvent github.PullRequestEvent) {
 	defer logger.Sync()
+	logger.Debugf("Checking if conditions for PR sender %s exists: %t", prEvent.Repo.Owner.Login, hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.Sender.Login] != nil)
 	if conditions, ok := hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.Sender.Login]; ok {
+		logger.Debugf("Checking if PR %d meets approval conditions: %v", prEvent.Number, conditions)
 		// Get changes from pull request.
 		changes, err := hb.ghc.GetPullRequestChanges(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number)
 		if err != nil {
@@ -226,11 +260,12 @@ func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger,
 			}
 			logger.Infof("Label auto-approved was added to pull request %s/%s#%d.", prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number)
 		}
+	} else {
+		logger.Infof("Pull request %s/%s#%d doesn't meet conditions to be auto approved.",
+			prEvent.Repo.Owner.Login,
+			prEvent.Repo.Name,
+			prEvent.Number)
 	}
-	logger.Infof("Pull request %s/%s#%d doesn't meet conditions to be auto approved.",
-		prEvent.Repo.Owner.Login,
-		prEvent.Repo.Name,
-		prEvent.Number)
 }
 
 func (hb *handlerBackend) pullRequestEventHandler(_ *externalplugin.Plugin, payload externalplugin.Event) {
