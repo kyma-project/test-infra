@@ -46,7 +46,7 @@ images:
 - source: "quay.io/prometheus/prometheus:v2.40.7"
 - source: "nats@sha256:563571e1ce1bf17367bf80f61526381dac15e299ffb2e54f14dc242b1b8a8e70"
   tag: "v20230223-2.9.14-alpine3.17"
-- source: "natsio/nats-server-config-reloader:0.7.4"
+- source: "natsio/nats-server-config-reloader:0.10.1"
 - source: "natsio/prometheus-nats-exporter:0.10.1"
 - source: "mockserver/mockserver:mockserver-5.11.2"
   amd64Only: true
