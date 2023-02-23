@@ -210,13 +210,7 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 		buildArgs = envs
 	}
 
-	if len(o.buildArgs) > 0 {
-		for _, arg := range o.buildArgs {
-			if _, exists := buildArgs[arg.Name]; !exists {
-				buildArgs[arg.Name] = arg.Value
-			}
-		}
-	}
+	appendMissing(&buildArgs, o.buildArgs)
 
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
@@ -235,6 +229,16 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 		return nil
 	}
 	return fmt.Errorf("building variants is not supported at this moment")
+}
+
+func appendMissing(target *map[string]string, source []tags.Tag) {
+	if len(source) > 0 {
+		for _, arg := range source {
+			if _, exists := (*target)[arg.Name]; !exists {
+				(*target)[arg.Name] = arg.Value
+			}
+		}
+	}
 }
 
 func signImages(o *options, images []string) error {

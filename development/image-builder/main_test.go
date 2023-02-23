@@ -462,3 +462,37 @@ func Test_addTagsToEnv(t *testing.T) {
 		}
 	}
 }
+
+func Test_appendMissing(t *testing.T) {
+	tc := []struct {
+		name         string
+		existing     map[string]string
+		newTags      []tags.Tag
+		expectedEnvs map[string]string
+	}{
+		{
+			name:     "multiple source and targets",
+			existing: map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2"},
+			newTags: []tags.Tag{
+				{Name: "KEY_3", Value: "VAL3"},
+				{Name: "KEY_4", Value: "VAL4"},
+			},
+			expectedEnvs: map[string]string{
+				"KEY_1": "VAL1",
+				"KEY_2": "VAL2",
+				"KEY_3": "VAL3",
+				"KEY_4": "VAL4",
+			},
+		},
+	}
+
+	for _, c := range tc {
+		appendMissing(&c.existing, c.newTags)
+
+		for k, v := range c.expectedEnvs {
+			if c.existing[k] != v {
+				t.Errorf("%v != %v", c.existing[k], v)
+			}
+		}
+	}
+}
