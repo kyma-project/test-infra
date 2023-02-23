@@ -2,7 +2,7 @@
 
 The basic requirement and motivation was the following:
 We have to verify that the integration of an SAP Azure DevopsPipeline as quality gate for a Github.com works.
-Expected is to implement a simple AzruDevopsOps pipeline and configure it to become a quality gate for a PR of a public Github.com repository.
+Expected is to implement a simple Azure DevOps pipeline and configure it to become a quality gate for a PR of a public Github.com repository.
 
 - Create two simple Azure DevOps Pipeline (one which is always failing and another one which is finishing successfully).
 - Create a public Github.com repository
