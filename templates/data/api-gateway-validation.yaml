@@ -59,7 +59,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+                    - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -72,9 +72,8 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_kyma
-                    - extra_refs_test-infra
-                    - image_kyma-integration
                     - testing
+                    - image_kyma-integration
                   local:
                     - jobConfig_default
                     - gardener_gcp_job
@@ -89,7 +88,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+                    - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -102,9 +101,8 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - extra_refs_kyma
-                    - extra_refs_test-infra
-                    - image_kyma-integration
                     - testing
+                    - image_kyma-integration
                   local:
                     - jobConfig_default
                     - gardener_gcp_job
