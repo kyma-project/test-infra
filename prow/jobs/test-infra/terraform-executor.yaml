@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
@@ -67,7 +67,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
