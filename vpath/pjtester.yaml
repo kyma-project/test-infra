@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfigs:
+    kyma-project:
+      test-infra:
+        prNumber: 7057
+  prowJobs:
+    kyma-incubator:
+      compass:
+        - pjName: "pull-schema-migrator-build"
+prConfigs:
+  kyma-incubator:
+    compass:
+      prNumber: 2913
