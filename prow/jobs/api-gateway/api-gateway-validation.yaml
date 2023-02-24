@@ -70,7 +70,6 @@ presubmits: # runs on PRs
         preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
       always_run: true
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
@@ -112,8 +111,8 @@ presubmits: # runs on PRs
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
-                memory: 1Gi
-                cpu: 100m
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -142,7 +141,6 @@ postsubmits: # runs on main
         preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
       always_run: true
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
@@ -184,8 +182,8 @@ postsubmits: # runs on main
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
-                memory: 1Gi
-                cpu: 100m
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
