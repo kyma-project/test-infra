@@ -64,7 +64,6 @@ templates:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                   env:
-                    API_GATEWAY_INTEGRATION_TESTS: "true"
                     JOB_NAME_PATTERN: "pull-api-gateway-build"
                     JOBGUARD_TIMEOUT: "10m"
                 inheritedConfigs:
@@ -92,7 +91,6 @@ templates:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                   env:
-                    API_GATEWAY_INTEGRATION_TESTS: "true"
                     JOB_NAME_PATTERN: "post-api-gateway-build"
                     JOBGUARD_TIMEOUT: "10m"
                 inheritedConfigs:

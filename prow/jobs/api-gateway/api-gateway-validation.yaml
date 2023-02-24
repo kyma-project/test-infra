@@ -97,8 +97,6 @@ presubmits: # runs on PRs
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
             env:
-              - name: API_GATEWAY_INTEGRATION_TESTS
-                value: "true"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
@@ -168,8 +166,6 @@ postsubmits: # runs on main
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
             env:
-              - name: API_GATEWAY_INTEGRATION_TESTS
-                value: "true"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
