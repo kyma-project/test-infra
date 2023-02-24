@@ -198,8 +198,8 @@ func (hb *handlerBackend) checkPrApproveConditions(logger *zap.SugaredLogger, co
 
 func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger, prEvent github.PullRequestEvent) {
 	defer logger.Sync()
-	logger.Debugf("Checking if conditions for PR sender %s exists: %t", prEvent.Sender.Login, hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.Sender.Login] != nil)
-	if conditions, ok := hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.Sender.Login]; ok {
+	logger.Debugf("Checking if conditions for PR author %s exists: %t", prEvent.PullRequest.User.Login, hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.PullRequest.User.Login] != nil)
+	if conditions, ok := hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.PullRequest.User.Login]; ok {
 		logger.Debugf("Checking if PR %d meets approval conditions: %v", prEvent.Number, conditions)
 		// Get changes from pull request.
 		changes, err := hb.ghc.GetPullRequestChanges(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number)
@@ -263,11 +263,11 @@ func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger,
 			logger.Infof("Label auto-approved was added to pull request %s/%s#%d.", prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number)
 		}
 	} else {
-		logger.Infof("Pull request %s/%s#%d doesn't meet conditions to be auto approved, sender %s doesn't have conditions defined.",
+		logger.Infof("Pull request %s/%s#%d doesn't meet conditions to be auto approved, pr author %s doesn't have conditions defined.",
 			prEvent.Repo.Owner.Login,
 			prEvent.Repo.Name,
 			prEvent.Number,
-			prEvent.Sender.Login)
+			prEvent.PullRequest.User.Login)
 	}
 }
 
