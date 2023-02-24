@@ -145,7 +145,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-nodejs-v16"
+              - "--name=function-runtime-nodejs16"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-runtimes/nodejs"
               - "--dockerfile=nodejs16/Dockerfile"
@@ -186,7 +186,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-nodejs-v18"
+              - "--name=function-runtime-nodejs18"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-runtimes/nodejs"
               - "--dockerfile=nodejs18/Dockerfile"
@@ -402,7 +402,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-nodejs-v16"
+              - "--name=function-runtime-nodejs16"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-runtimes/nodejs"
               - "--dockerfile=nodejs16/Dockerfile"
@@ -445,7 +445,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-nodejs-v18"
+              - "--name=function-runtime-nodejs18"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/function-runtimes/nodejs"
               - "--dockerfile=nodejs18/Dockerfile"

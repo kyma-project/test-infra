@@ -311,7 +311,7 @@ templates:
                   name: pull-function-runtimes-nodejs-v16-build
                   run_if_changed: "^components/function-runtimes/nodejs"
                   args:
-                    - "--name=function-runtime-nodejs-v16"
+                    - "--name=function-runtime-nodejs16"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/function-runtimes/nodejs"
                     - "--dockerfile=nodejs16/Dockerfile"
@@ -325,7 +325,7 @@ templates:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/function-runtimes/nodejs"
                   args:
-                    - "--name=function-runtime-nodejs-v16"
+                    - "--name=function-runtime-nodejs16"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/function-runtimes/nodejs"
                     - "--dockerfile=nodejs16/Dockerfile"
@@ -338,7 +338,7 @@ templates:
                   name: pull-function-runtimes-nodejs-v18-build
                   run_if_changed: "^components/function-runtimes/nodejs"
                   args:
-                    - "--name=function-runtime-nodejs-v18"
+                    - "--name=function-runtime-nodejs18"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/function-runtimes/nodejs"
                     - "--dockerfile=nodejs18/Dockerfile"
@@ -352,7 +352,7 @@ templates:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/function-runtimes/nodejs"
                   args:
-                    - "--name=function-runtime-nodejs-v18"
+                    - "--name=function-runtime-nodejs18"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/function-runtimes/nodejs"
                     - "--dockerfile=nodejs18/Dockerfile"
