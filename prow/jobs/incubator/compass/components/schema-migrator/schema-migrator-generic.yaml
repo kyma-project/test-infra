@@ -36,6 +36,7 @@ presubmits: # runs on PRs
               - "--context=components/schema-migrator"
               - "--dockerfile=Dockerfile"
               - "--platform=linux/amd64"
+              - "--platform=linux/arm64"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -104,6 +105,7 @@ postsubmits: # runs on main
               - "--context=components/schema-migrator"
               - "--dockerfile=Dockerfile"
               - "--platform=linux/amd64"
+              - "--platform=linux/arm64"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
