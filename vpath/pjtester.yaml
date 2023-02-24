@@ -1,9 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-project:
-      api-gateway:
-        - pjName: "pull-api-gateway-integration-test"
-prConfigs:
-  kyma-project:
-    api-gateway:
-      prNumber: 220
