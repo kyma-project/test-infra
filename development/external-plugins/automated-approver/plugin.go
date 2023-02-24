@@ -176,8 +176,6 @@ func (hb *handlerBackend) checkPrStatuses(logger *zap.SugaredLogger, prStatuses 
 	return err
 }
 
-// checkIfEventSupported check conditions PR must meet to send notification.
-// At the time a conditions are hard coded. In future this will be taken from Tide queries.
 func (hb *handlerBackend) checkPrApproveConditions(logger *zap.SugaredLogger, conditions []ApproveCondition, changes []github.PullRequestChange, prLabels []github.Label) bool {
 	defer logger.Sync()
 	for _, condition := range conditions {
@@ -208,6 +206,7 @@ func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger,
 		if err != nil {
 			logger.Errorw("failed get pull request changes", "error", err.Error())
 		}
+		logger.Sync()
 		conditionsMatched := hb.checkPrApproveConditions(logger, conditions, changes, prEvent.PullRequest.Labels)
 		if !conditionsMatched {
 			return
@@ -216,6 +215,7 @@ func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger,
 		if err != nil {
 			logger.Errorw("failed get pull request contexts combined status", "error", err.Error())
 		}
+		logger.Sync()
 		// Don't check if pr checks status is success as that means all context are success, even tide context.
 		// That means a pr was already approved and is ready for merge, because tide context transition to success
 		// when pr is ready for merge.
@@ -284,10 +284,10 @@ func (hb *handlerBackend) pullRequestEventHandler(_ *externalplugin.Plugin, payl
 		return
 	}
 
-	logger.Sync()
 	if prEvent.Action == github.PullRequestActionReviewRequested {
 		logger = logger.With("pr-number", prEvent.Number)
 		logger.Debug("Got pull request review requested action")
+		logger.Sync()
 		hb.handleReviewRequestedAction(logger, prEvent)
 	}
 }
