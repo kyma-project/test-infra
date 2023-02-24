@@ -32,7 +32,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -83,7 +83,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -134,7 +134,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -185,7 +185,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -236,7 +236,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -287,7 +287,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -338,7 +338,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -389,7 +389,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -440,7 +440,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -493,7 +493,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -544,7 +544,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -595,7 +595,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -646,7 +646,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -699,7 +699,7 @@ periodics: # runs on schedule
           base_ref: release-2.11
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -750,7 +750,7 @@ periodics: # runs on schedule
           base_ref: release-2.11
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -804,7 +804,7 @@ periodics: # runs on schedule
           base_ref: release-2.10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -855,7 +855,7 @@ periodics: # runs on schedule
           base_ref: release-2.10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
