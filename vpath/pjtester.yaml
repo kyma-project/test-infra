@@ -1,8 +1,4 @@
 pjConfigs:
-  prConfigs:
-    kyma-project:
-      test-infra:
-        prNumber: 7057
   prowJobs:
     kyma-incubator:
       compass:
