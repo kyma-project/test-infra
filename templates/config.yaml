@@ -182,7 +182,7 @@ globalSets:
   image_buildpack-golang-toolbox:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
   image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+    image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-194ebb7e"
   image_gardener-rotate:
     image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230202-40569193"
   image_markdown_index:
