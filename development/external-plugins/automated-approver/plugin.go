@@ -121,7 +121,7 @@ func (ac *ApproveCondition) checkRequiredLabels(logger *zap.SugaredLogger, prLab
 // checkChangedFiles checks if PR changed only allowed files.
 func (ac *ApproveCondition) checkChangedFiles(logger *zap.SugaredLogger, changes []github.PullRequestChange) bool {
 	defer logger.Sync()
-	logger.Debugf("Checking if PR cahnged only allowed files: %v", ac.ChangedFiles)
+	logger.Debugf("Checking if PR changed only allowed files: %v", ac.ChangedFiles)
 	for _, change := range changes {
 		change := change
 		logger.Debugf("Checking file: %s", change.Filename)
