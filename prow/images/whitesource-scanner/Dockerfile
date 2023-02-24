@@ -4,6 +4,7 @@ FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 ENV UA_VERSION v23.1.2.1
 ENV GO_VERSION 1.20.1
