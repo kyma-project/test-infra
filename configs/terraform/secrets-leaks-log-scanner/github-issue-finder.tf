@@ -1,10 +1,9 @@
 resource "google_service_account" "github_issue_finder" {
-  account_id  = "github-issue-finder-cr"
+  account_id  = "github-issue-finder"
   description = "Identity of cloud run instance running github issue finder service."
 }
 
 resource "google_secret_manager_secret_iam_member" "gh_issue_finder_gh_tools_kyma_bot_token_accessor" {
-  project   = data.google_secret_manager_secret.gh_tools_kyma_bot_token.project
   secret_id = data.google_secret_manager_secret.gh_tools_kyma_bot_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
   member    = "serviceAccount:${google_service_account.github_issue_finder.email}"
@@ -52,7 +51,7 @@ resource "google_cloud_run_service" "github_issue_finder" {
         }
         env {
           name  = "TOOLS_GITHUB_TOKEN_PATH"
-          value = "/etc/gh-token/gh-tools-kyma-bot-token"
+          value = "/etc/gh-token/${data.google_secret_manager_secret.gh_tools_kyma_bot_token.secret_id}"
         }
         volume_mounts {
           mount_path = "/etc/gh-token"
@@ -62,7 +61,7 @@ resource "google_cloud_run_service" "github_issue_finder" {
       volumes {
         name = "gh-tools-kyma-bot-token"
         secret {
-          secret_name = "gh-tools-kyma-bot-token"
+          secret_name = data.google_secret_manager_secret.gh_tools_kyma_bot_token.secret_id
         }
       }
     }
@@ -76,6 +75,7 @@ resource "google_cloud_run_service_iam_policy" "github_issue_finder" {
 
   policy_data = data.google_iam_policy.run_invoker.policy_data
 }
+
 resource "google_monitoring_alert_policy" "github_issue_finder" {
   combiner     = "OR"
   display_name = "github-issue-finder-error-logged"
@@ -88,9 +88,9 @@ resource "google_monitoring_alert_policy" "github_issue_finder" {
   notification_channels = ["projects/${var.gcp_project_id}/notificationChannels/5909844679104799956"]
   alert_strategy {
     notification_rate_limit {
-      period = "6 hr"
+      period = "21600s"
     }
-    auto_close = "4 days"
+    auto_close = "345600s"
   }
   user_labels = {
     component = "github-issue-finder"

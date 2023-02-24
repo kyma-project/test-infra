@@ -57,8 +57,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 			},
 			expNotRunIfChangedPaths: []string{
 				"components/directory-size-exporter/main.go",
-				"components/telemetry-operator/main.go",
-				"components/webhook-cert-init/main.go",
 				"installation/README.md",
 				"installation/test/test/README.MD",
 			},
