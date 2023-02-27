@@ -88,7 +88,7 @@ In the second option, you can use Incoming WebHook connection on the Azure DevOp
 
 ### Azure DevOps
 
-5. Open [Azure DevOps project](https://dev.azure.com)
+5. Open Azure DevOps project on dev.azure.com
 
 6. Navigate to **Project settings**
 
@@ -225,7 +225,7 @@ Configure the GitHub side webhook.
 
 Some explanation:
 
-- Payload URL: Configure the following URL according to your Azure DevOps related **Organisation** and **Incoming WebHook name** - `https://dev.azure.com/<organisation>/_apis/public/distributedtask/webhooks/<incoming web hook name>?api-version=7.1-preview`
+- Payload URL: Configure the following URL according to your Azure DevOps related **Organisation** and **Incoming WebHook name** - **\<azure devops organisation\>/_apis/public/distributedtask/webhooks/\<incoming web hook name\>?api-version=7.1-preview**
 - Content type: `application/json`
 - Secret: Secret you used in **Incoming WebHook** connection
 - Enable SSL verification
