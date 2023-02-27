@@ -50,6 +50,8 @@ periodics: # runs on schedule
                 value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
               - name: KEB_SUBACCOUNT_ID
                 value: "kyma-skr-nightly"
+              - name: MACHINE_TYPE_UPDATE
+                value: "Standard_D8_v3"
             resources:
               requests:
                 memory: 100Mi
@@ -105,6 +107,8 @@ periodics: # runs on schedule
                 value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
+              - name: MACHINE_TYPE_UPDATE
+                value: "Standard_D8_v3"
             resources:
               requests:
                 memory: 100Mi
@@ -217,6 +221,8 @@ periodics: # runs on schedule
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
+              - name: MACHINE_TYPE_UPDATE
+                value: "m5.4xlarge"
             resources:
               requests:
                 memory: 100Mi
