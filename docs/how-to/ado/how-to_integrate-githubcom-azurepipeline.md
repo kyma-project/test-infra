@@ -69,7 +69,7 @@ For more information, see [the official documentation](https://learn.microsoft.c
 <br> 
 
 > **NOTE** The webhook payload (request body data) parsing is mandatory in this scenario. Therefore, the first option is not the right direction in this usecase.
-In the second option, you can use Incoming WebHook connection on the Azure DevOps side, and you can call this specific URL from any webhook-ready system, such as github.com. This way, you can parse webhook payload (request body data) in runtime in Azure Pipeline. This method ensures executing conditional stages and steps of our pipeline. Thus it is described in the following section of this document.
+In the second option, you can use Incoming WebHook connection on the Azure DevOps side, and you can call this specific URL from any webhook-ready system, such as github.com. This way, you can parse webhook payload (request body data) in runtime in Azure Pipeline. This method ensures executing conditional stages and steps of your pipeline. Thus it is described in the following section of this document.
 
 
 ## Configuration
