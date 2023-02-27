@@ -27,7 +27,7 @@ A stable integration between github.com and Azure Pipeline (Azure DevOps) can be
 <summary>Create a GitHub connection with GitHub PAT (personal access token)</summary>
 
 This solution is similar to the Hyperspace-related solution on the GitHub Enterprise side. This means that after the integration, the GitHub side webhook URLs are configured with a system-generated unique identifier. The ID's name is **channelId**. It has a secret unknown to the user.  
-Here is the common format of this URL with `dev.azure.com` secure url prefix: **\<azure devops organisation\>/_apis/public/hooks/externalEvents?publisherId=github&channelId=\<system generated unique identifier\>&api-version=7.1-preview**.  
+Here is the common format of this URL with `dev.azure.com` secure URL prefix: **\<azure devops organisation\>/_apis/public/hooks/externalEvents?publisherId=github&channelId=\<system generated unique identifier\>&api-version=7.1-preview**.  
 Here are GitHub PAT (personal access token) recommended scopes: repo, user, admin:repo_hook.
   ![pat scopes](./images/pat-recommended-scopes.png)
 
