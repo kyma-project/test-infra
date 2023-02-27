@@ -34,16 +34,19 @@ templates:
               pipeline.platform: gardener_azure
             env:
               KEB_PLAN_ID: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+              MACHINE_TYPE_UPDATE: "Standard_D8_v3"
           keb_plan_gcp:
             annotations:
               pipeline.platform: gardener_gcp
             env:
               KEB_PLAN_ID: "ca6e5357-707f-4565-bbbd-b3ab732597c6"
+              MACHINE_TYPE_UPDATE: "n2-standard-8"
           keb_plan_aws:
             annotations:
               pipeline.platform: gardener_aws
             env:
               KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15"
+              MACHINE_TYPE_UPDATE: "m5.2xlarge"
           keb_plan_azure_lite:
             annotations:
               pipeline.platform: gardener_azure
