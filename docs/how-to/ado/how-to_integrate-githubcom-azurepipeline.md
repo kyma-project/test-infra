@@ -50,7 +50,7 @@ Cons:
 <summary>Create Incoming WebHook connection on Azure DevOps side (call a general webhook from GitHub)</summary>
 
 In this solution, you create a secure connection (Incoming WebHook) on the Azure DevOps side and generate a specific URL for this connection. This URL is used on the GitHub side in the WebHook section.  
-Here is the common format of this url  with `dev.azure.com` secure url prefix: **\<azure devops organisation\>/_apis/public/distributedtask/webhooks/\<incoming webhook name\>?api-version=7.1-preview**.
+Here is the common format of this url  with `dev.azure.com` secure URL prefix: **\<azure devops organisation\>/_apis/public/distributedtask/webhooks/\<incoming webhook name\>?api-version=7.1-preview**.
 
 Pros:
 
