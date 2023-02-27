@@ -80,6 +80,10 @@
 
 [Documentation guidelines](/docs/documentation_guidelines.md) - 1. Each repository must contain an automatically updated index page in `docs` directory.
 
+[Documentation](/docs/how-to/ado/README.md) - The folder contains documents that provide an insight into Azure DevOps (ADO) configuration, development, and testing.
+
+[GitHub.com and Azure Pipeline (ADO) integration](/docs/how-to/ado/how-to_integrate-githubcom-azurepipeline.md) - We have to verify that the integration of an SAP Azure DevopsPipeline as a quality gate for github.com works.
+
 [Add custom secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add a custom secret and use it in the Prow pipeline.
 
 [Use Tekton Pipelines with Prow](/docs/how-to/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use
@@ -180,4 +184,3 @@
 
 [Templates](/templates/README.md) - Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.
 
-[Azure DevOps](/docs/how-to/ado/README.md) - Azure DevOps and Azure Pipelines related 'How to' topics.
