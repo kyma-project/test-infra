@@ -2,15 +2,9 @@ pjConfigs:
   prConfig:
     kyma-project:
       kyma:
-        prNumber: 1313
+        prNumber: 16932
   prowJobs:
     kyma-project:
       kyma:
         - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
           report: false
-        - pjName: "pre-main-kyma-gardener-gcp-subscription-upgrade"
-          report: false
-prConfigs: #
-  kyma-project:
-    kyma:
-      prNumber: 16932
