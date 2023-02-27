@@ -241,7 +241,7 @@ The pipeline configuration is complete.
 
 ### Local IDE
 
-32. To check the pipeline, go back to your IDE, and create a new branch (for example, a feature branch). Make some code changes, for example, in the README.md file. Then push the changes to GitHub
+32. To check the pipeline, go back to your IDE, and create a new branch (for example, a feature branch). Make some code changes, for example, in the `README.md` file. Then push the changes to GitHub
 
 33. Open your GitHub repository in your browser and start a pull request
 
