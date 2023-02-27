@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http/httputil"
+	"regexp"
 
 	"net/http"
 	"os"
@@ -36,6 +37,7 @@ var (
 	err             error
 	cfg             config.Config
 	storageClient   *storage.Client
+	gcsBucketRegex  *regexp.Regexp
 )
 
 type message struct {
@@ -81,6 +83,9 @@ func main() {
 	if err != nil {
 		mainLogger.LogCritical("Failed translate to leaks scanner config, got error: %s", err)
 	}
+
+	// Compile regex for matching a GCS bucket name and path from a GCS URL.
+	gcsBucketRegex = regexp.MustCompile(`^gs://(?P<bucket>.+?)/(?P<object>.*)$`)
 
 	http.HandleFunc("/", scanLogsForSecrets)
 	// Determine port for HTTP service.
@@ -157,22 +162,27 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Creates the new bucket.
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// TODO: replace strings methods with non greedy regexp
-	_, bucketAfter, found := strings.Cut(*msg.GcsPath, gcsPrefix)
-	if !found {
-		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed get logs bucket name, [%s] prefix not found in gcs url", gcsPrefix)
+	matches := gcsBucketRegex.FindStringSubmatch(*msg.GcsPath)
+	if len(matches) != 3 {
+		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed get logs bucket name and object name, gcs url does not match regex")
 		return
 	}
-	bucketName, objectName, found = strings.Cut(bucketAfter, "/")
-	if !found {
-		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed get logs bucket name, could not find value expected separator: [/]")
+
+	bucketName = matches[1]
+	if bucketName == "" {
+		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed get logs bucket name, regex match is empty")
 		return
 	}
-	objectName = strings.TrimPrefix(objectName, "/")
+
+	objectName = matches[2]
+	if objectName == "" {
+		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed get logs object name, regex match is empty")
+		return
+	}
+
 	bucket := storageClient.Bucket(bucketName)
 	battrs, err := bucket.Attrs(ctx)
 	if err != nil {
