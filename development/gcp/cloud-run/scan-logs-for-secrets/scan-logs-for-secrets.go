@@ -30,14 +30,14 @@ import (
 var (
 	componentName   string
 	applicationName string
-	gcsPrefix       string
-	projectID       string
-	vc              config.ViperConfig
-	findings        []report.Finding
-	err             error
-	cfg             config.Config
-	storageClient   *storage.Client
-	gcsBucketRegex  *regexp.Regexp
+	// gcsPrefix       string
+	projectID      string
+	vc             config.ViperConfig
+	findings       []report.Finding
+	err            error
+	cfg            config.Config
+	storageClient  *storage.Client
+	gcsBucketRegex *regexp.Regexp
 )
 
 type message struct {
@@ -50,7 +50,7 @@ func main() {
 	componentName = os.Getenv("COMPONENT_NAME")     // logs-scanner
 	applicationName = os.Getenv("APPLICATION_NAME") // scan-logs-for-secrets-leaks
 	projectID = os.Getenv("PROJECT_ID")
-	gcsPrefix = os.Getenv("GCS_PREFIX") // gcsweb.build.kyma-project.io/gcs/
+	// gcsPrefix = os.Getenv("GCS_PREFIX") // gcsweb.build.kyma-project.io/gcs/
 	port := os.Getenv("LISTEN_PORT")
 
 	mainLogger := cloudfunctions.NewLogger()
