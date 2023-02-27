@@ -254,11 +254,11 @@ The pipeline configuration is complete.
 ![test-pullrequestresult](./images/test-pullrequestresult.png)
 
 
-- 34.2. Azure DevOps side `Runs`:
+- 34.2. Azure DevOps side `Runs` :
 
 ![test-pullrequest-ado](./images/test-pullrequest-ado.png)
 
-    Check payload parsing:
+ Check payload parsing:
 
 ![test-ado-opened](./images/test-ado-opened.png)
 ![test-ado-closed](./images/test-ado-closed.png)
