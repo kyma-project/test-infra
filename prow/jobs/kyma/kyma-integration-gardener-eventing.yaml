@@ -163,7 +163,6 @@ presubmits: # runs on PRs
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
@@ -239,7 +238,6 @@ presubmits: # runs on PRs
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:

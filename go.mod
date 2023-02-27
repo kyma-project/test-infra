@@ -3,7 +3,7 @@ module github.com/kyma-project/test-infra
 go 1.19
 
 require (
-	cloud.google.com/go/bigquery v1.46.0
+	cloud.google.com/go/bigquery v1.47.0
 	cloud.google.com/go/compute/metadata v0.2.3
 	cloud.google.com/go/firestore v1.9.0
 	cloud.google.com/go/functions v1.10.0
@@ -16,10 +16,10 @@ require (
 	github.com/aws/aws-sdk-go v1.42.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/cloudevents/sdk-go/v2 v2.13.0
-	github.com/containerd/containerd v1.6.17
+	github.com/containerd/containerd v1.6.18
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsouza/go-dockerclient v1.9.4
+	github.com/fsouza/go-dockerclient v1.9.5
 	github.com/ghodss/yaml v1.0.0
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/go-yaml/yaml v2.1.0+incompatible
@@ -64,7 +64,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230222181757-256245e0269f
+require k8s.io/test-infra v0.0.0-20230224183335-db99a8a3fde4
 
 require (
 	cloud.google.com/go v0.107.0 // indirect
@@ -106,7 +106,7 @@ require (
 	github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1 // indirect
 	github.com/docker/cli v20.10.20+incompatible // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
-	github.com/docker/docker v23.0.0+incompatible // indirect
+	github.com/docker/docker v23.0.1+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.7.0 // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-events v0.0.0-20190806004212-e31b211e4f1c // indirect

@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
@@ -59,13 +59,14 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
               - "--name=control-plane/kyma-environments-cleanup-job"
               - "--context=components/kyma-environment-broker"
-              - "--dockerfile=Dockerfile.cleanup"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=environmentscleanup"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -100,13 +101,14 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
               - "--name=control-plane/kyma-environment-subaccount-cleanup-job"
               - "--context=components/kyma-environment-broker"
-              - "--dockerfile=Dockerfile.sac"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=accountcleanup"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -141,13 +143,14 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
               - "--name=control-plane/kyma-environment-subscription-cleanup-job"
               - "--context=components/kyma-environment-broker"
-              - "--dockerfile=Dockerfile.scj"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=subscriptioncleanup"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -182,13 +185,14 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
               - "--name=control-plane/kyma-environment-trial-cleanup-job"
               - "--context=components/kyma-environment-broker"
-              - "--dockerfile=Dockerfile.tcj"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=trialcleanup"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -223,13 +227,14 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
               - "--name=control-plane/kyma-environment-deprovision-retrigger-job"
               - "--context=components/kyma-environment-broker"
-              - "--dockerfile=Dockerfile.drj"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=deprovisionretrigger"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -270,7 +275,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
@@ -314,13 +319,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
               - "--name=control-plane/kyma-environments-cleanup-job"
               - "--context=components/kyma-environment-broker"
-              - "--dockerfile=Dockerfile.cleanup"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=environmentscleanup"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -358,13 +364,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
               - "--name=control-plane/kyma-environment-subaccount-cleanup-job"
               - "--context=components/kyma-environment-broker"
-              - "--dockerfile=Dockerfile.sac"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=accountcleanup"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -402,13 +409,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
               - "--name=control-plane/kyma-environment-subscription-cleanup-job"
               - "--context=components/kyma-environment-broker"
-              - "--dockerfile=Dockerfile.scj"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=subscriptioncleanup"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -442,17 +450,16 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
-      branches:
-        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef - ^main$"
             command:
               - "/image-builder"
             args:
               - "--name=control-plane/kyma-environment-trial-cleanup-job"
               - "--context=components/kyma-environment-broker"
-              - "--dockerfile=Dockerfile.tcj"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=trialcleanup"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
@@ -489,13 +496,14 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230216-adf36d04f"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
             command:
               - "/image-builder"
             args:
               - "--name=control-plane/kyma-environment-deprovision-retrigger-job"
               - "--context=components/kyma-environment-broker"
-              - "--dockerfile=Dockerfile.drj"
+              - "--dockerfile=Dockerfile.job"
+              - "--build-arg=BIN=deprovisionretrigger"
               - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
