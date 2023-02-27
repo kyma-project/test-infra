@@ -211,7 +211,7 @@ stages:
 
 ### GitHub
 
-28.  Go to your repository and click **Settings** 
+28.  To configure the GitHub side webhook, go to your repository and click **Settings** 
 
     ![repo-settings](./images/repo-settings.png)
 
