@@ -213,11 +213,11 @@ stages:
 
 28.  To configure the GitHub side webhook, go to your repository and click **Settings** 
 
-    ![repo-settings](./images/repo-settings.png)
+![repo-settings](./images/repo-settings.png)    
 
 29.  If you have a pull_request related webhook, start to edit it. If you don't have a webhook, click **Add webhook** 
 
-    ![repo-hook-add](./images/repo-hook-add.png)
+![repo-hook-add](./images/repo-hook-add.png)
 
 30.  Provide the required data, then click **Add webhook / Update webhook** 
 
@@ -235,7 +235,7 @@ Some explanation:
 
 31.  Click **Recent Deliveries**, and check the ping request (which makes a health check)
 
-    ![repo-hook-ping](./images/repo-hook-ping.png)
+![repo-hook-ping](./images/repo-hook-ping.png)
 
 The pipeline configuration is complete.
 
