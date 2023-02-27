@@ -4,8 +4,8 @@
 
 The Cloud Run service deletes old keys for a GCP service account and updates the required secret data for all service account secrets stored in the Secret Manager. The service is triggered by a Cloud Scheduler job.
 
-1. Cloud Scheduler calls service-account-keys-cleaner service.
-2. For each secret stored in Secret Manager service executes the following steps:
+1. Cloud Scheduler calls the service-account-keys-cleaner service.
+2. For each secret stored in Secret Manager, the service executes the following steps:
     1. Checks if the value of the **type** label is set to `service-account`. If not, it stops running.
     2. Checks if the value of the **skip-cleanup** label is not set to `true`. If not, it stops running.
     3. Reads the name of the service account from the latest version of a secret.
@@ -15,7 +15,7 @@ The Cloud Run service deletes old keys for a GCP service account and updates the
 
 ## Cloud Run service deployment
 
-ServiceAccountKeysCleaner is deployed to Cloud Run applying Terraform config stored in [./terraform directory](../../terraform). `terraform apply` is executed automatically on every PR changing Terraform .tf files belonging to the application.
+ServiceAccountKeysCleaner is deployed to Cloud Run applying Terraform config stored in [./terraform directory](../../terraform). `terraform apply` runs automatically on every PR changing Terraform .tf files belonging to the application.
 
 1. Create the `service-${PROJECT_NUMBER}@gcp-sa-secretmanager.iam.gserviceaccount.com` service account with the `roles/pubsub.publisher` role if it does not exist.
 2. Merge your changes to test-infra main branch to trigger Terraform execution.
