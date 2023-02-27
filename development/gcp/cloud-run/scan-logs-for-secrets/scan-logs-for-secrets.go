@@ -161,6 +161,7 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	// TODO: replace strings methods with non greedy regexp
 	_, bucketAfter, found := strings.Cut(*msg.GcsPath, gcsPrefix)
 	if !found {
 		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed get logs bucket name, [%s] prefix not found in gcs url", gcsPrefix)
