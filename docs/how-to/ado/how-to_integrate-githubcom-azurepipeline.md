@@ -209,8 +209,6 @@ stages:
 
     ![pipeline-saved](./images/pipeline-saved.png)
 
-Configure the GitHub side webhook.
-
 ### GitHub
 
 28.  Go to your repository and click **Settings** 
