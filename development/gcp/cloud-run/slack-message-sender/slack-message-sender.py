@@ -27,6 +27,12 @@ with open('/etc/slack-secret/common-slack-bot-token') as token_file:
 slack_app = App(token=slack_bot_token)
 
 slack_usergroups = slack_app.client.usergroups_list()
+entry = dict(
+    severity="DEBUG",
+    message=f"slack_usergroups: {slack_usergroups}",
+)
+print(json.dumps(entry))
+
 tmp_groups = [usersgroup["id"] for usersgroup in slack_usergroups if usersgroup["handle"] == "btp-kyma-security"]
 if len(tmp_groups) != 1:
     entry = dict(
