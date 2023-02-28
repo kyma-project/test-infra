@@ -33,7 +33,7 @@ entry = dict(
 )
 print(json.dumps(entry))
 
-tmp_groups = [usersgroup["id"] for usersgroup in slack_usergroups if usersgroup["handle"] == "btp-kyma-security"]
+tmp_groups = [usergroup["id"] for usergroup in slack_usergroups["usergroups"] if usergroup["handle"] == "btp-kyma-security"]
 if len(tmp_groups) != 1:
     entry = dict(
         severity="ERROR",
