@@ -225,6 +225,7 @@ func (hb *handlerBackend) checkPrApproveConditions(logger *zap.SugaredLogger, co
 
 func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger, prEvent github.PullRequestEvent) {
 	defer logger.Sync()
+	defer hb.unlockPR(logger, prEvent.PullRequest.Head.SHA)
 	logger.Debugf("Checking if conditions for PR author %s exists: %t", prEvent.PullRequest.User.Login, hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.PullRequest.User.Login] != nil)
 	if conditions, ok := hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.PullRequest.User.Login]; ok {
 		logger.Debugf("Checking if PR %d meets approval conditions: %v", prEvent.Number, conditions)
