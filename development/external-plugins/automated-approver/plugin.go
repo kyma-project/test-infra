@@ -246,6 +246,10 @@ func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger,
 		if !conditionsMatched {
 			return
 		}
+		// Sleep for 30 seconds to make sure all statuses are registered.
+		logger.Debug("Sleeping for 30 seconds to make sure all statuses are registered")
+		time.Sleep(30 * time.Second)
+
 		prStatuses, err := hb.ghc.GetCombinedStatus(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.PullRequest.Head.SHA)
 		if err != nil {
 			logger.Errorw("failed get pull request contexts combined status", "error", err.Error())
@@ -256,8 +260,6 @@ func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger,
 		// That means a pr was already approved and is ready for merge, because tide context transition to success
 		// when pr is ready for merge.
 		logger.Debugf("Pull request %d status: %s", prEvent.Number, prStatuses.State)
-		// Sleep for 30 seconds to make sure all statuses are registered.
-		time.Sleep(30 * time.Second)
 		switch prState := prStatuses.State; prState {
 		case "failure":
 			logger.Infof("Pull request %d is in failure state, skip approving.", prEvent.Number)
