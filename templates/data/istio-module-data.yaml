@@ -135,4 +135,39 @@ templates:
                   local:
                     - job_default
                     - job_build
-
+              - jobConfig:
+                  name: pull-istio-manager-verify
+                  always_run: "true"
+                  optional: "true"
+                  env:
+                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
+                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make ci-k3d-integration-test"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration    # TODO: Prepare a Istio-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels
+              - jobConfig:
+                  name: post-istio-manager-verify
+                  always_run: "true"
+                  optional: "true"
+                  env:
+                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
+                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make ci-k3d-integration-test"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - image_kyma-integration    # TODO: Prepare a Istio-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels

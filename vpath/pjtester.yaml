@@ -6,6 +6,7 @@ pjConfigs:
         - pjName: "pull-istio-operator-build"
         - pjName: "pull-istio-lint"
         - pjName: "pull-istio-test"
+        - pjName: "pull-istio-manager-verify"
 prConfigs:
   kyma-project:
     istio:
