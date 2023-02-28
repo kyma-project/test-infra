@@ -30,7 +30,7 @@ resource "google_cloud_run_service" "secrets_leak_log_scanner" {
         }
         env {
           name  = "COMPONENT_NAME"
-          value = google_cloud_run_service.secrets_leak_log_scanner.name
+          value = "secrets-leak-log-scanner"
         }
         env {
           name  = "APPLICATION_NAME"

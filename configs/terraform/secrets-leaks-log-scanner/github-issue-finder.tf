@@ -31,7 +31,7 @@ resource "google_cloud_run_service" "github_issue_finder" {
         }
         env {
           name  = "COMPONENT_NAME"
-          value = google_cloud_run_service.github_issue_finder.name
+          value = "github-issue-finder"
         }
         env {
           name  = "APPLICATION_NAME"

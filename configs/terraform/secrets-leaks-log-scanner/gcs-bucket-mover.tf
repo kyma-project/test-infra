@@ -48,7 +48,7 @@ resource "google_cloud_run_service" "gcs_bucket_mover" {
         }
         env {
           name  = "COMPONENT_NAME"
-          value = google_cloud_run_service.gcs_bucket_mover.name
+          value = "gcs-bucket-mover"
         }
         env {
           name  = "APPLICATION_NAME"
