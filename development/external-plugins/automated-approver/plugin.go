@@ -88,6 +88,8 @@ func (hb *handlerBackend) watchConfig(logger *zap.SugaredLogger) {
 
 // lockPR locks PR for processing by adding head sha to prLocks.
 // If PR is already locked, returns false.
+// Because GitHub sends multiple review request events for one PR, we need to lock PR to avoid processing it multiple times.
+// GitHub sends multiple events because it sends one event for each reviewer.
 func (hb *handlerBackend) lockPR(logger *zap.SugaredLogger, headSha string) bool {
 	// Sync access to prLocks with mutex.
 	hb.prMutex.Lock()
@@ -189,7 +191,7 @@ func (hb *handlerBackend) checkPrStatuses(logger *zap.SugaredLogger, prStatuses 
 	defer logger.Sync()
 	backOff := backoff.NewExponentialBackOff()
 	backOff.MaxElapsedTime = time.Duration(hb.waitForStatusesTimeout) * time.Second
-	backOff.MaxInterval = 15 * time.Minute
+	backOff.MaxInterval = 10 * time.Minute
 	backOff.InitialInterval = 5 * time.Minute
 	logger.Debugf("Waiting for statuses to become success. Timeout: %d", hb.waitForStatusesTimeout)
 	err := backoff.Retry(func() error {
@@ -197,6 +199,7 @@ func (hb *handlerBackend) checkPrStatuses(logger *zap.SugaredLogger, prStatuses 
 			if prStatus.State == "failure" {
 				return backoff.Permanent(fmt.Errorf("pull request status check %s failed", prStatus.Context))
 			} else if prStatus.State == "pending" && prStatus.Context != "tide" {
+				logger.Debugf("Checked status of %s, still in pending state", prStatus.Context)
 				return fmt.Errorf("pull request status check %s is pending", prStatus.Context)
 			}
 		}
@@ -232,12 +235,13 @@ func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger,
 	logger.Debugf("Checking if conditions for PR author %s exists: %t", prEvent.PullRequest.User.Login, hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.PullRequest.User.Login] != nil)
 	if conditions, ok := hb.conditions[prEvent.Repo.Owner.Login][prEvent.Repo.Name][prEvent.PullRequest.User.Login]; ok {
 		logger.Debugf("Checking if PR %d meets approval conditions: %v", prEvent.Number, conditions)
+
 		// Get changes from pull request.
 		changes, err := hb.ghc.GetPullRequestChanges(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number)
 		if err != nil {
 			logger.Errorw("failed get pull request changes", "error", err.Error())
 		}
-		logger.Sync()
+		logger.Sync() // Syncing logger to make sure all logs from calling GitHub API are written before logs from functions called in next steps.
 		conditionsMatched := hb.checkPrApproveConditions(logger, conditions, changes, prEvent.PullRequest.Labels)
 		if !conditionsMatched {
 			return
@@ -246,11 +250,14 @@ func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger,
 		if err != nil {
 			logger.Errorw("failed get pull request contexts combined status", "error", err.Error())
 		}
-		logger.Sync()
+		logger.Sync() // Syncing logger to make sure all logs from calling GitHub API are written before logs from functions called in next steps.
+
 		// Don't check if pr checks status is success as that means all context are success, even tide context.
 		// That means a pr was already approved and is ready for merge, because tide context transition to success
 		// when pr is ready for merge.
 		logger.Debugf("Pull request %d status: %s", prEvent.Number, prStatuses.State)
+		// Sleep for 30 seconds to make sure all statuses are registered.
+		time.Sleep(30 * time.Second)
 		switch prState := prStatuses.State; prState {
 		case "failure":
 			logger.Infof("Pull request %d is in failure state, skip approving.", prEvent.Number)
