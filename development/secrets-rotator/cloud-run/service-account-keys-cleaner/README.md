@@ -7,7 +7,7 @@ The Cloud Run service deletes old keys for a GCP service account and updates the
 1. Cloud Scheduler calls the service-account-keys-cleaner service.
 2. For each secret stored in Secret Manager, the service executes the following steps:
     1. Checks if the value of the **type** label is set to `service-account`. If not, it stops running.
-    2. Checks if the value of the **skip-cleanup** label is not set to `true`. If not, it stops running.
+    2. Checks if the value of the **skip-cleanup** label is set to `true`. If it is, the service stops running.
     3. Reads the name of the service account from the latest version of a secret.
     4. Checks if the latest secret version is older than the time in hours set in the **age** GET parameter. If not, it stops running.
     5. Removes old versions of keys for the service account.
