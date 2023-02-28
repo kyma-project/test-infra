@@ -95,6 +95,9 @@ func (hb *handlerBackend) lockPR(logger *zap.SugaredLogger, headSha string) bool
 	defer logger.Sync()
 	_, ok := hb.prLocks[headSha]
 	if !ok {
+		if hb.prLocks == nil {
+			hb.prLocks = make(map[string]struct{})
+		}
 		hb.prLocks[headSha] = struct{}{}
 		return true
 	}
