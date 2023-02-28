@@ -210,6 +210,10 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 		buildArgs = envs
 	}
 
+	if buildArgs == nil {
+		buildArgs = make(map[string]string)
+	}
+
 	appendMissing(&buildArgs, o.buildArgs)
 
 	if len(vs) == 0 {

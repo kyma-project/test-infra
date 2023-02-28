@@ -1435,3 +1435,11 @@ presets:
       - name: signify-prod-secret
         mountPath: /secret-prod
         readOnly: true
+  - labels:
+      preset-azure-devops-sa-token: "true"
+    env:
+      - name: AZURE_DEVOPS_SA_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: azure-devops-token
+            key: azure-devops-token
