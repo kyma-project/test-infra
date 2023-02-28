@@ -31,7 +31,7 @@ resource "google_cloud_run_service" "github_issue_creator" {
         }
         env {
           name  = "COMPONENT_NAME"
-          value = "github-issue-creator"
+          value = google_cloud_run_service.github_issue_creator.name
         }
         env {
           name  = "APPLICATION_NAME"

@@ -30,7 +30,7 @@ resource "google_cloud_run_service" "secrets_leak_log_scanner" {
         }
         env {
           name  = "COMPONENT_NAME"
-          value = "secrets-leak-log-scanner"
+          value = google_cloud_run_service.secrets_leak_log_scanner.name
         }
         env {
           name  = "APPLICATION_NAME"
@@ -39,10 +39,6 @@ resource "google_cloud_run_service" "secrets_leak_log_scanner" {
         env {
           name  = "LISTEN_PORT"
           value = "8080"
-        }
-        env {
-          name  = "GCS_PREFIX"
-          value = "gcsweb.build.kyma-project.io/gcs/"
         }
       }
     }

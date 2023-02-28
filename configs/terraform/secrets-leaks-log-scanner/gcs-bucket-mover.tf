@@ -48,7 +48,7 @@ resource "google_cloud_run_service" "gcs_bucket_mover" {
         }
         env {
           name  = "COMPONENT_NAME"
-          value = "gcs-bucket-mover"
+          value = google_cloud_run_service.gcs_bucket_mover.name
         }
         env {
           name  = "APPLICATION_NAME"
@@ -60,7 +60,7 @@ resource "google_cloud_run_service" "gcs_bucket_mover" {
         }
         env {
           name  = "DST_BUCKET_NAME"
-          value = "dev-prow-logs-secured"
+          value = google_storage_bucket.kyma_prow_logs_secured.name
         }
       }
     }
