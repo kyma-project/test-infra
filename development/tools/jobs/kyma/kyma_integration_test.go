@@ -56,7 +56,6 @@ func TestKymaIntegrationJobsPresubmit(t *testing.T) {
 				"installation/resources/crds/telemetry/logpipelines.crd.yaml",
 			},
 			expNotRunIfChangedPaths: []string{
-				"components/directory-size-exporter/main.go",
 				"installation/README.md",
 				"installation/test/test/README.MD",
 			},
