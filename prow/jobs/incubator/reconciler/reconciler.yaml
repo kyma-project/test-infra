@@ -682,7 +682,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
             command:
               - "/image-builder"
             args:
@@ -725,7 +725,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
             command:
               - "/image-builder"
             args:
@@ -956,6 +956,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-main-kyma-incubator-mothership-reconciler"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -965,7 +966,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
             command:
               - "/image-builder"
             args:
@@ -1000,6 +1001,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-main-kyma-incubator-component-reconciler"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -1009,7 +1011,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
             command:
               - "/image-builder"
             args:
