@@ -259,6 +259,15 @@ data:
   auditlog-config-path: "/path"
   auditlog-security-path: "/path"
   auditlog-tenant: "tnt"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kcp-provisioner-database-encryption
+  namespace: kcp-system
+type: Opaque
+data:
+  secretKey: MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIK #gitleaks:allow
 EOF
 }
 

@@ -32,7 +32,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-api-gateway-lint
-                  request_cpu: 200m
+                  request_cpu: 500m
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -59,12 +59,11 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+                    - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                   env:
-                    API_GATEWAY_INTEGRATION_TESTS: "true"
                     JOB_NAME_PATTERN: "pull-api-gateway-build"
                     JOBGUARD_TIMEOUT: "10m"
                 inheritedConfigs:
@@ -72,9 +71,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_kyma
-                    - extra_refs_test-infra
                     - image_kyma-integration
-                    - testing
                   local:
                     - jobConfig_default
                     - gardener_gcp_job
@@ -89,12 +86,11 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+                    - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
                   env:
-                    API_GATEWAY_INTEGRATION_TESTS: "true"
                     JOB_NAME_PATTERN: "post-api-gateway-build"
                     JOBGUARD_TIMEOUT: "10m"
                 inheritedConfigs:
@@ -102,9 +98,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - extra_refs_kyma
-                    - extra_refs_test-infra
                     - image_kyma-integration
-                    - testing
                   local:
                     - jobConfig_default
                     - gardener_gcp_job
