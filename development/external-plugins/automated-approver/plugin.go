@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"sync"
 	"time"
 
 	"github.com/cenkalti/backoff/v4"
@@ -36,6 +37,8 @@ type handlerBackend struct {
 	waitForStatusesTimeout int                                                 // in seconds
 	configPath             string                                              // Path to yaml config file
 	conditions             map[string]map[string]map[string][]ApproveCondition `yaml:"conditions"`
+	prLocks                map[string]struct{}                                 // Holds PRs head sha that are being processed.
+	prMutex                *sync.Mutex
 }
 
 // WatchConfig watches for changes in config file and reloads it.
@@ -81,6 +84,30 @@ func (hb *handlerBackend) watchConfig(logger *zap.SugaredLogger) {
 		logger.Fatalf("Add failed: %s", err)
 	}
 	<-done
+}
+
+// lockPR locks PR for processing by adding head sha to prLocks.
+// If PR is already locked, returns false.
+func (hb *handlerBackend) lockPR(logger *zap.SugaredLogger, headSha string) bool {
+	// Sync access to prLocks with mutex.
+	hb.prMutex.Lock()
+	defer hb.prMutex.Unlock()
+	defer logger.Sync()
+	_, ok := hb.prLocks[headSha]
+	if !ok {
+		hb.prLocks[headSha] = struct{}{}
+		return true
+	}
+	return false
+}
+
+// unlockPR unlocks PR by removing head sha from prLocks.
+func (hb *handlerBackend) unlockPR(logger *zap.SugaredLogger, headSha string) {
+	// Sync access to prLocks with mutex.
+	hb.prMutex.Lock()
+	defer hb.prMutex.Unlock()
+	defer logger.Sync()
+	delete(hb.prLocks, headSha)
 }
 
 // ApproveCondition defines conditions for approving PR.
@@ -286,6 +313,10 @@ func (hb *handlerBackend) pullRequestEventHandler(_ *externalplugin.Plugin, payl
 
 	if prEvent.Action == github.PullRequestActionReviewRequested {
 		logger = logger.With("pr-number", prEvent.Number)
+		if locked := hb.lockPR(logger, prEvent.PullRequest.Head.SHA); !locked {
+			logger.Infof("Reeview request for pull request head sha %s already in process.", prEvent.PullRequest.Head.SHA)
+			return
+		}
 		logger.Debug("Got pull request review requested action")
 		logger.Sync()
 		hb.handleReviewRequestedAction(logger, prEvent)
