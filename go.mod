@@ -48,7 +48,7 @@ require (
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tidwall/gjson v1.14.4
-	github.com/zricethezav/gitleaks/v8 v8.15.3
+	github.com/zricethezav/gitleaks/v8 v8.16.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.7.0
 	golang.org/x/oauth2 v0.5.0
@@ -64,7 +64,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230227183240-fb8629b64f23
+require k8s.io/test-infra v0.0.0-20230228131928-cf38888d4bfc
 
 require (
 	cloud.google.com/go v0.107.0 // indirect
