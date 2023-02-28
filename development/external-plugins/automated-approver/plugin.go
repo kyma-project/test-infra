@@ -38,7 +38,7 @@ type handlerBackend struct {
 	configPath             string                                              // Path to yaml config file
 	conditions             map[string]map[string]map[string][]ApproveCondition `yaml:"conditions"`
 	prLocks                map[string]struct{}                                 // Holds PRs head sha that are being processed.
-	prMutex                *sync.Mutex
+	prMutex                sync.Mutex
 }
 
 // WatchConfig watches for changes in config file and reloads it.
