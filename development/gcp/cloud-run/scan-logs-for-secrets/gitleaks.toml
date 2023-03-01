@@ -502,6 +502,7 @@ paths = [
     '''Database.refactorlog'''
 ]
 stopwords= [
+    "KYMA_PASS12!@",
     "client",
     "endpoint",
     "vpn",

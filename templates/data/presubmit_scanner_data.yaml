@@ -12,7 +12,7 @@ templates:
             always_run: "true"
             args:
               - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact --config development/gcp/cloud-run/scan-logs-for-secrets/gitleaks.toml; echo Please check documentation: https://github.com/kyma-project/test-infra/blob/main/docs/prow/security_commit_scanner.md#failure-in-test"
         jobConfigs:
             {{/* Iterate over orgs and repos in config.yaml global field. */}}
           {{- range $org := .Global.orgs }}
