@@ -187,20 +187,45 @@ func (hb *handlerBackend) readConfig() error {
 // checkPrStatuses checks if all statuses are in success state.
 // Tide required status check is not taken into account. It will be always pending until PR is ready to merge.
 // Timeout limits time waiting for statuses became success.
-func (hb *handlerBackend) checkPrStatuses(logger *zap.SugaredLogger, prStatuses []github.Status) error {
+func (hb *handlerBackend) checkPrStatuses(logger *zap.SugaredLogger, prEvent github.PullRequestEvent) error {
 	defer logger.Sync()
+	// Sleep for 30 seconds to make sure all statuses are registered.
+	logger.Debug("Sleeping for 30 seconds to make sure all statuses are registered")
+	time.Sleep(30 * time.Second)
+
 	backOff := backoff.NewExponentialBackOff()
 	backOff.MaxElapsedTime = time.Duration(hb.waitForStatusesTimeout) * time.Second
 	backOff.MaxInterval = 10 * time.Minute
 	backOff.InitialInterval = 5 * time.Minute
 	logger.Debugf("Waiting for statuses to become success. Timeout: %d", hb.waitForStatusesTimeout)
+
 	err := backoff.Retry(func() error {
-		for _, prStatus := range prStatuses {
-			if prStatus.State == "failure" {
-				return backoff.Permanent(fmt.Errorf("pull request status check %s failed", prStatus.Context))
-			} else if prStatus.State == "pending" && prStatus.Context != "tide" {
-				logger.Debugf("Checked status of %s, still in pending state", prStatus.Context)
-				return fmt.Errorf("pull request status check %s is pending", prStatus.Context)
+		defer logger.Sync()
+		prStatuses, err := hb.ghc.GetCombinedStatus(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.PullRequest.Head.SHA)
+		if err != nil {
+			gherr := fmt.Errorf("failed get pull request contexts combined status, got error %w", err)
+			logger.Error(gherr.Error())
+			return gherr
+		}
+		// logger.Sync() // Syncing logger to make sure all logs from calling GitHub API are written before logs from functions called in next steps.
+
+		// Don't check if pr checks status is success as that means all context are success, even tide context.
+		// That means a pr was already approved and is ready for merge, because tide context transition to success
+		// when pr is ready for merge.
+		logger.Debugf("Pull request %d status: %s", prEvent.Number, prStatuses.State)
+		switch prState := prStatuses.State; prState {
+		case "failure":
+			return backoff.Permanent(fmt.Errorf("pull request %d is in failure state, skip approving", prEvent.Number))
+		case "pending":
+			logger.Infof("Pull request %d is in pending state, wait for statuses to become success.", prEvent.Number)
+			for _, prStatus := range prStatuses.Statuses {
+				if prStatus.State == "failure" {
+					return backoff.Permanent(fmt.Errorf("pull request status check %s failed", prStatus.Context))
+				} else if prStatus.State == "pending" && prStatus.Context != "tide" {
+					statusErr := fmt.Errorf("pull request status check %s is pending", prStatus.Context)
+					logger.Debug(statusErr.Error())
+					return statusErr
+				}
 			}
 		}
 		logger.Debugf("All statuses are success")
@@ -247,61 +272,60 @@ func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger,
 			return
 		}
 		// Sleep for 30 seconds to make sure all statuses are registered.
-		logger.Debug("Sleeping for 30 seconds to make sure all statuses are registered")
-		time.Sleep(30 * time.Second)
+		// logger.Debug("Sleeping for 30 seconds to make sure all statuses are registered")
+		// time.Sleep(30 * time.Second)
 
-		prStatuses, err := hb.ghc.GetCombinedStatus(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.PullRequest.Head.SHA)
-		if err != nil {
-			logger.Errorw("failed get pull request contexts combined status", "error", err.Error())
-		}
-		logger.Sync() // Syncing logger to make sure all logs from calling GitHub API are written before logs from functions called in next steps.
+		// prStatuses, err := hb.ghc.GetCombinedStatus(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.PullRequest.Head.SHA)
+		// if err != nil {
+		// 	logger.Errorw("failed get pull request contexts combined status", "error", err.Error())
+		// }
+		// logger.Sync() // Syncing logger to make sure all logs from calling GitHub API are written before logs from functions called in next steps.
 
 		// Don't check if pr checks status is success as that means all context are success, even tide context.
 		// That means a pr was already approved and is ready for merge, because tide context transition to success
 		// when pr is ready for merge.
-		logger.Debugf("Pull request %d status: %s", prEvent.Number, prStatuses.State)
-		switch prState := prStatuses.State; prState {
-		case "failure":
-			logger.Infof("Pull request %d is in failure state, skip approving.", prEvent.Number)
+		// logger.Debugf("Pull request %d status: %s", prEvent.Number, prStatuses.State)
+		// switch prState := prStatuses.State; prState {
+		// case "failure":
+		// 	logger.Infof("Pull request %d is in failure state, skip approving.", prEvent.Number)
+		// 	return
+		// case "pending":
+		// 	logger.Infof("Pull request %d is in pending state, wait for statuses to become success.", prEvent.Number)
+		err = hb.checkPrStatuses(logger, prEvent)
+		if err != nil {
+			logger.Errorf("pull request %s/%s#%d has non success statuses, got error: %s",
+				prEvent.Repo.Owner.Login,
+				prEvent.Repo.Name,
+				prEvent.Number,
+				err)
 			return
-		case "pending":
-			logger.Infof("Pull request %d is in pending state, wait for statuses to become success.", prEvent.Number)
-			err = hb.checkPrStatuses(logger, prStatuses.Statuses)
-			if err != nil {
-				logger.Errorf("pull request %s/%s#%d has non success statuses, got error: %s",
-					prEvent.Repo.Owner.Login,
-					prEvent.Repo.Name,
-					prEvent.Number,
-					err)
-				return
-			}
-			review := github.DraftReview{
-				CommitSHA: prEvent.PullRequest.Head.SHA,
-				Body:      "",
-				Action:    "APPROVE",
-				Comments:  nil,
-			}
-			err := hb.ghc.CreateReview(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number, review)
-			if err != nil {
-				logger.Errorf("failed create review for pull request %s/%s#%d sha: %s, got error: %s",
-					prEvent.Repo.Owner.Login,
-					prEvent.Repo.Name,
-					prEvent.Number,
-					prEvent.PullRequest.Head.SHA,
-					err)
-				return
-			}
-			logger.Infof("Pull request %s/%s#%d was approved.", prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number)
-			err = hb.ghc.AddLabel(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number, "auto-approved")
-			if err != nil {
-				logger.Errorf("failed add label to pull request %s/%s#%d, got error: %s",
-					prEvent.Repo.Owner.Login,
-					prEvent.Repo.Name,
-					prEvent.Number,
-					err)
-			}
-			logger.Infof("Label auto-approved was added to pull request %s/%s#%d.", prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number)
 		}
+		review := github.DraftReview{
+			CommitSHA: prEvent.PullRequest.Head.SHA,
+			Body:      "",
+			Action:    "APPROVE",
+			Comments:  nil,
+		}
+		err = hb.ghc.CreateReview(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number, review)
+		if err != nil {
+			logger.Errorf("failed create review for pull request %s/%s#%d sha: %s, got error: %s",
+				prEvent.Repo.Owner.Login,
+				prEvent.Repo.Name,
+				prEvent.Number,
+				prEvent.PullRequest.Head.SHA,
+				err)
+			return
+		}
+		logger.Infof("Pull request %s/%s#%d was approved.", prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number)
+		err = hb.ghc.AddLabel(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number, "auto-approved")
+		if err != nil {
+			logger.Errorf("failed add label to pull request %s/%s#%d, got error: %s",
+				prEvent.Repo.Owner.Login,
+				prEvent.Repo.Name,
+				prEvent.Number,
+				err)
+		}
+		logger.Infof("Label auto-approved was added to pull request %s/%s#%d.", prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.Number)
 	} else {
 		logger.Infof("Pull request %s/%s#%d doesn't meet conditions to be auto approved, pr author %s doesn't have conditions defined.",
 			prEvent.Repo.Owner.Login,

@@ -66,8 +66,9 @@ require (
 
 require (
 	github.com/cenkalti/backoff/v4 v4.2.0
+	github.com/fsnotify/fsnotify v1.6.0
 	golang.org/x/exp v0.0.0-20230213192124-5e25df0256eb
-	k8s.io/test-infra v0.0.0-20230221135956-a7c051d842bf
+	k8s.io/test-infra v0.0.0-20230301192917-96e69903af3b
 )
 
 require (
@@ -121,7 +122,6 @@ require (
 	github.com/fatih/semgroup v1.2.0 // indirect
 	github.com/fatih/structs v1.1.0 // indirect
 	github.com/felixge/fgprof v0.9.1 // indirect
-	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/fvbommel/sortorder v1.0.1 // indirect
 	github.com/gitleaks/go-gitdiff v0.8.0 // indirect
 	github.com/go-kit/log v0.1.0 // indirect
