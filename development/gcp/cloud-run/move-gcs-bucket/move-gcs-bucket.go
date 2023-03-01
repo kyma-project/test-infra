@@ -54,8 +54,8 @@ func main() {
 	mainLogger.WithLabel("io.kyma.app", applicationName)
 	mainLogger.WithLabel("io.kyma.component", componentName)
 
-	if dryRun != "true" || dryRun != "false" {
-		mainLogger.LogCritical("DRY_RUN env variable is not set")
+	if dryRun != "true" && dryRun != "false" {
+		mainLogger.LogCritical("DRY_RUN env variable must have value 'true' or 'false'")
 	}
 
 	ctx := context.Background()
