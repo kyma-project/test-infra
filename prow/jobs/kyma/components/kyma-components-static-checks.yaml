@@ -25,8 +25,8 @@ presubmits: # runs on PRs
               - "make lint"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 500Mi
+                cpu: 200m
     - name: pull-telemetry-manager-unit-test
       annotations:
         pipeline.trigger: "pr-submit"
@@ -49,8 +49,8 @@ presubmits: # runs on PRs
               - "make test"
             resources:
               requests:
-                memory: 1Gi
-                cpu: 100m
+                memory: 1.5Gi
+                cpu: 200m
   
   kyma-project/kyma:
     - name: pull-application-operator-lint
