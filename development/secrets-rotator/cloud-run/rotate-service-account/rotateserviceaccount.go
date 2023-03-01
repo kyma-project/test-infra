@@ -45,7 +45,7 @@ func main() {
 	var err error
 
 	componentName = os.Getenv("COMPONENT_NAME")     // issue-creator
-	applicationName = os.Getenv("APPLICATION_NAME") // github-bot
+	applicationName = os.Getenv("APPLICATION_NAME") // secrets-rotator
 	listenPort = os.Getenv("LISTEN_PORT")
 
 	mainLogger := cloudfunctions.NewLogger()
@@ -103,7 +103,9 @@ func rotateServiceAccount(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// Create logger to use google cloud functions structured logging
 	logger := cloudfunctions.NewLogger()
+	// Set component for log entries to identify all messages for this function.
 	logger.WithComponent(componentName)
 	logger.WithLabel("io.kyma.app", applicationName)
 	logger.WithLabel("io.kyma.component", componentName)
