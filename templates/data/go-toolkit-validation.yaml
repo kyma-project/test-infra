@@ -102,6 +102,8 @@ templates:
             jobs:
               - jobConfig:
                   name: "pull-telemetry-manager-lint"
+                  request_cpu: 200m
+                  request_memory: 500Mi
                   optional: false
                   command: "/bin/sh"
                   args:
@@ -114,6 +116,8 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-telemetry-manager-unit-test"
+                  request_cpu: 200m
+                  request_memory: 1.5Gi
                   optional: false
                   command: "/bin/sh"
                   args:
