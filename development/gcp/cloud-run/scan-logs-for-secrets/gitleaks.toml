@@ -19,6 +19,8 @@ paths = [
     '''node_modules''',
     '''vendor''',
 ]
+stopwords= [
+    "KYMA_PASS12!@"]
 
 [[rules]]
 description = "Bearer Authorization Token"
@@ -502,7 +504,6 @@ paths = [
     '''Database.refactorlog'''
 ]
 stopwords= [
-    "KYMA_PASS12!@",
     "client",
     "endpoint",
     "vpn",
