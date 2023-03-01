@@ -271,26 +271,6 @@ func (hb *handlerBackend) handleReviewRequestedAction(logger *zap.SugaredLogger,
 		if !conditionsMatched {
 			return
 		}
-		// Sleep for 30 seconds to make sure all statuses are registered.
-		// logger.Debug("Sleeping for 30 seconds to make sure all statuses are registered")
-		// time.Sleep(30 * time.Second)
-
-		// prStatuses, err := hb.ghc.GetCombinedStatus(prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.PullRequest.Head.SHA)
-		// if err != nil {
-		// 	logger.Errorw("failed get pull request contexts combined status", "error", err.Error())
-		// }
-		// logger.Sync() // Syncing logger to make sure all logs from calling GitHub API are written before logs from functions called in next steps.
-
-		// Don't check if pr checks status is success as that means all context are success, even tide context.
-		// That means a pr was already approved and is ready for merge, because tide context transition to success
-		// when pr is ready for merge.
-		// logger.Debugf("Pull request %d status: %s", prEvent.Number, prStatuses.State)
-		// switch prState := prStatuses.State; prState {
-		// case "failure":
-		// 	logger.Infof("Pull request %d is in failure state, skip approving.", prEvent.Number)
-		// 	return
-		// case "pending":
-		// 	logger.Infof("Pull request %d is in pending state, wait for statuses to become success.", prEvent.Number)
 		err = hb.checkPrStatuses(logger, prEvent)
 		if err != nil {
 			logger.Errorf("pull request %s/%s#%d has non success statuses, got error: %s",
