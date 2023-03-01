@@ -3,7 +3,7 @@ module github.com/kyma-project/test-infra
 go 1.19
 
 require (
-	cloud.google.com/go/bigquery v1.47.0
+	cloud.google.com/go/bigquery v1.48.0
 	cloud.google.com/go/compute/metadata v0.2.3
 	cloud.google.com/go/firestore v1.9.0
 	cloud.google.com/go/functions v1.10.0
@@ -64,7 +64,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230228174516-89ac42333a8e
+require k8s.io/test-infra v0.0.0-20230301182925-049e47e105ec
 
 require (
 	cloud.google.com/go v0.107.0 // indirect
