@@ -7,3 +7,4 @@ pjConfigs:
     kyma-project:
       test-infra:
         - pjName: "keda-manager-governance-periodic"
+        - pjName: "pre-keda-manager-governance"

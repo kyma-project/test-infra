@@ -3,6 +3,49 @@
 
 presubmits: # runs on PRs
   kyma-project/keda-manager:
+    - name: pre-keda-manager-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-keda-manager-governance"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-dind-enabled: "true"
+      run_if_changed: 'milv.config.yaml|.md$'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/keda-manager
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "--repository"
+              - "keda-manager"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-keda-manager-operator-lint
       annotations:
         description: "executes the 'golangci-lint lint' command on keda-manager before any pull request."

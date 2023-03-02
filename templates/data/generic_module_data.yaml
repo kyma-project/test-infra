@@ -57,6 +57,27 @@ templates:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
               - jobConfig:
+                  name: "pre-keda-manager-governance"
+                  run_if_changed: "milv.config.yaml|.md$"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-dind-enabled: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+                  request_memory: "10Mi"
+                  request_cpu: "100m"
+                  args:
+                    - "--repository"
+                    - "keda-manager"
+                  path_alias: github.com/kyma-project/keda-manager
+                  branches:
+                    - "^main$"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+              - jobConfig:
                   name: "keda-manager-governance-periodic"
                   cron: "0 */6 * * 1-5" # "Every six hours from midnight every day-of-week from Monday through Friday."
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
