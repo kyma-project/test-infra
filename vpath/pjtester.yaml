@@ -1,9 +1,9 @@
 pjConfigs:
   prConfig:
     kyma-project:
-      kyma:
+      test-infra:
         prNumber: 7116
   prowJobs:
     kyma-project:
-      kyma:
+      test-infra:
         - pjName: "keda-manager-governance-periodic"
