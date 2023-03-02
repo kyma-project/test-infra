@@ -59,7 +59,7 @@ templates:
               - jobConfig:
                   name: "keda-manager-governance-periodic"
                   cron: "0 */6 * * 1-5" # "Every six hours from midnight every day-of-week from Monday through Friday."
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
                   extra_refs:
                     keda-manager:
                       - org: kyma-project
