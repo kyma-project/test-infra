@@ -54,6 +54,10 @@ func newLogger(l zapcore.Level) (*zap.SugaredLogger, zap.AtomicLevel) {
 	)
 
 	logger := zap.New(core)
-	zap.RedirectStdLog(logger)
+	_, err := zap.RedirectStdLogAt(logger, zapcore.InfoLevel)
+	if err != nil {
+		logger.Fatal("Failed to redirect stdlib log messages to zap", zap.Field{Key: "error", String: err.Error(), Type: zapcore.StringType})
+		panic(err)
+	}
 	return logger.Sugar(), atom
 }
