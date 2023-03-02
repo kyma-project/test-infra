@@ -475,6 +475,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "keda-manager-governance-periodic"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
       cron: "0 */6 * * 1-5"
       skip_report: false
       decorate: true
@@ -491,8 +492,10 @@ periodics: # runs on schedule
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+            securityContext:
+              privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
               - "--repository"
               - "keda-manager"
@@ -505,8 +508,8 @@ periodics: # runs on schedule
                 value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make local-run"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 10Mi
+                cpu: 100m
         tolerations:
           - key: dedicated
             operator: Equal
