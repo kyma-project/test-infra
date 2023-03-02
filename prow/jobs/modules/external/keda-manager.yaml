@@ -200,8 +200,6 @@ presubmits: # runs on PRs
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
             env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
               - name: JOB_REPO_NAME
                 value: "keda-manager"
               - name: JOB_VM_COMMAND
@@ -255,8 +253,6 @@ presubmits: # runs on PRs
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
             env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
               - name: JOB_REPO_NAME
                 value: "keda-manager"
               - name: JOB_VM_COMMAND
@@ -310,8 +306,6 @@ presubmits: # runs on PRs
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
             env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
               - name: JOB_REPO_NAME
                 value: "keda-manager"
               - name: JOB_VM_COMMAND
@@ -456,8 +450,6 @@ postsubmits: # runs on main
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
             env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
               - name: JOB_REPO_NAME
                 value: "keda-manager"
               - name: JOB_VM_COMMAND
@@ -466,6 +458,55 @@ postsubmits: # runs on main
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+periodics: # runs on schedule
+    - name: keda-manager-governance-nightly
+      annotations:
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "keda-manager-governance-nightly"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      cron: "0 */6 * * 1-5"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: keda-manager
+          path_alias: github.com/kyma-project/keda-manager
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "--repository"
+              - "keda-manager"
+              - "--repository-dir"
+              - "/home/prow/go/src/github.com/kyma-project/keda-manager"
+              - "--full-validation"
+              - "true"
+            env:
+              - name: JOB_VM_COMMAND
+                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make local-run"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
