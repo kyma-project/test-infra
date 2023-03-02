@@ -33,8 +33,7 @@ images:
 - source: "oryd/oathkeeper-maester:v0.1.5"
   amd64Only: true
 - source: "oryd/oathkeeper:v0.38.25-beta.1"
-- source: "postgres@sha256:4a6be41f4176af134fe8a02b9f07928fab22fb1fb2777811360154912cb682cd"
-  tag: "11.18-alpine3.17-v1"
+- source: "postgres:11.19-alpine3.17"
 - source: "prom/pushgateway:v1.4.3"
 - source: "k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.5.0"
 - source: "quay.io/jetstack/cert-manager-controller:v1.1.0"
