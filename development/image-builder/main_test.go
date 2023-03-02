@@ -8,6 +8,7 @@ import (
 	"testing/fstest"
 
 	"github.com/kyma-project/test-infra/development/image-builder/sign"
+	"github.com/kyma-project/test-infra/development/pkg/sets"
 	"github.com/kyma-project/test-infra/development/pkg/tags"
 )
 
@@ -201,6 +202,23 @@ func TestFlags(t *testing.T) {
 			},
 			args: []string{
 				"--export-tags",
+			},
+		},
+		{
+			name: "build args, pass",
+			expectedOpts: options{
+				context:    ".",
+				configPath: "/config/image-builder-config.yaml",
+				dockerfile: "Dockerfile",
+				logDir:     "/logs/artifacts",
+				buildArgs: sets.Tags{
+					tags.Tag{Name: "BIN", Value: "test"},
+					tags.Tag{Name: "BIN2", Value: "test2"},
+				},
+			},
+			args: []string{
+				"--build-arg=BIN=test",
+				"--build-arg=BIN2=test2",
 			},
 		},
 	}
@@ -440,6 +458,44 @@ func Test_addTagsToEnv(t *testing.T) {
 		for k, v := range c.expectedEnvs {
 			if actualEnv[k] != v {
 				t.Errorf("%v != %v", actualEnv[k], v)
+			}
+		}
+	}
+}
+
+func Test_appendMissing(t *testing.T) {
+	tc := []struct {
+		name         string
+		existing     map[string]string
+		newTags      []tags.Tag
+		expectedEnvs map[string]string
+	}{
+		{
+			name: "multiple source and targets",
+			existing: map[string]string{
+				"KEY_1": "VAL1",
+				"KEY_2": "VAL2",
+				"KEY_3": "VAL3",
+			},
+			newTags: []tags.Tag{
+				{Name: "KEY_3", Value: "VAL5"},
+				{Name: "KEY_4", Value: "VAL4"},
+			},
+			expectedEnvs: map[string]string{
+				"KEY_1": "VAL1",
+				"KEY_2": "VAL2",
+				"KEY_3": "VAL3",
+				"KEY_4": "VAL4",
+			},
+		},
+	}
+
+	for _, c := range tc {
+		appendMissing(&c.existing, c.newTags)
+
+		for k, v := range c.expectedEnvs {
+			if c.existing[k] != v {
+				t.Errorf("%v != %v", c.existing[k], v)
 			}
 		}
 	}

@@ -551,6 +551,8 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: post-main-kyma-incubator-mothership-reconciler
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/reconciler/mothership"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -580,6 +582,8 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: post-main-kyma-incubator-component-reconciler
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/reconciler/component"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -655,7 +659,7 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230215-1f9eebbd96
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230301-6893d98ee8
                   command: generic-autobumper
                   args:
                     - --config=/home/prow/go/src/github.com/kyma-project/test-infra/prow/autobump-config/control-plane-autobump-reconciler-config.yaml

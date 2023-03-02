@@ -107,7 +107,7 @@ function createCluster() {
   gcp::provision_k8s_cluster \
         -c "$COMMON_NAME" \
         -p "$CLOUDSDK_CORE_PROJECT" \
-        -v "1.22.16" \
+        -v "1.22.17" \
         -j "$JOB_NAME" \
         -J "$PROW_JOB_ID" \
         -z "$CLOUDSDK_COMPUTE_ZONE" \
@@ -205,6 +205,9 @@ function installCompassNew() {
     exit 1
   fi
 
+  echo "Checkout $NEW_VERSION_COMMIT_ID"
+  git checkout "${NEW_VERSION_COMMIT_ID}"
+
   COMPASS_OVERRIDES="$PWD/compass_benchmark_overrides.yaml"
   COMPASS_COMMON_OVERRIDES="$PWD/compass_common_overrides.yaml"
 
@@ -268,6 +271,7 @@ until [[ $(kubectl get cronjob -n kyma-system oathkeeper-jwks-rotator --output=j
   sleep 3
 done
 kubectl patch cronjob -n kyma-system oathkeeper-jwks-rotator -p '{"spec":{"schedule": "0 0 1 * *"}}'
+NEW_VERSION_COMMIT_ID=$(cd "$COMPASS_SOURCES_DIR" && git rev-parse --short HEAD)
 log::info "Install Compass version from main"
 installCompassOld
 

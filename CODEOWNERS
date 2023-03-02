@@ -12,12 +12,11 @@
 /prow @kyma-project/prow
 /prow/cluster @kyma-project/prow
 /prow/images @kyma-project/prow
-/prow/images/buildpack-node @kyma-project/prow @akucharska @wawrzyn321 @a-thaler @lilitgh @sawthis @valentinvieriu @qbalukom
+/prow/images/buildpack-node @kyma-project/prow @akucharska  @a-thaler @lilitgh @valentinvieriu @qbalukom
 
 /prow/jobs @kyma-project/prow
-/prow/jobs/busola @qbalukom @sawthis @valentinvieriu @wawrzyn321 @akucharska @kyma-project/prow
-/prow/jobs/cli @chrkl @jeremyharisch @lindnerby @tobiscr @clebs @lilitgh @rakesh-garimella @skhalash @kyma-project/prow
-/prow/jobs/console @akucharska @qbalukom @sawthis @valentinvieriu @wawrzyn321 @kyma-project/prow
+/prow/jobs/busola @qbalukom @valentinvieriu  @akucharska @kyma-project/prow
+/prow/jobs/cli @chrkl @jeremyharisch @lindnerby @tobiscr  @lilitgh @rakesh-garimella @skhalash @kyma-project/prow
 /prow/jobs/control-plane @kyma-project/gopher @akgalwas @franpog859 @koala7659 @kyma-project/prow
 /prow/jobs/incubator/compass @gvachkov @petartodorovv @desislavaa @dimitarpetrov @krasish @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
 /prow/jobs/incubator/compass-console @gvachkov @petartodorovv @desislavaa @dimitarpetrov @krasish @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
@@ -26,7 +25,7 @@
 /prow/jobs/incubator/kyma-showcase @cortey @lyczeq @mrcherry97 @mvshao @kyma-project/prow
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow
 /prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @dzahariev @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
-/prow/jobs/incubator/reconciler @varbanv @clebs @kwiatekus @jeremyharisch @tobiscr @kyma-project/prow
+/prow/jobs/incubator/reconciler @varbanv  @kwiatekus @jeremyharisch @tobiscr @kyma-project/prow
 /prow/jobs/incubator/varkes @kyma-project/observability @kyma-project/prow
 /prow/jobs/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish
 /prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
@@ -43,7 +42,7 @@
 /prow/jobs/kyma/components/kyma-operator @tomasz-smelcerz-sap @werdes72 @pk85 @dariusztutaj @strekm @kyma-project/prow
 /prow/jobs/kyma/components/permission-controller @pk85 @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
 /prow/jobs/telemetry-manager @kyma-project/observability @kyma-project/prow
-/prow/jobs/kyma/components/directory-size-exporter @kyma-project/observability @kyma-project/prow
+/prow/jobs/directory-size-exporter @kyma-project/observability @kyma-project/prow
 /prow/jobs/kyma/components/xip-patch @strekm @tomasz-smelcerz-sap @werdes72 @pk85 @dariusztutaj @kyma-project/prow
 /prow/jobs/kyma/tests/end-to-end @kyma-project/gopher @kyma-project/prow
 /prow/jobs/kyma/tests/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow

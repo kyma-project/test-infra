@@ -392,3 +392,13 @@ default:
       target: both
       prowPlugin: label
       addedBy: anyone
+    - color: 0ffa16
+      description: Denotes a PR that was approved by automation.
+      name: auto-approved
+      target: both
+      addedBy: anyone
+    - color: 0052cc
+      description: Issues or PRs related to automation.
+      name: area/automation
+      target: both
+      addedBy: anyone

@@ -1,0 +1,30 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/test-infra/hide-terraform-comments.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  privileged: "false"
+                  name: "pull-hide-tf-github-comments"
+                  run_if_changed: '.*\.tf$|.*\.tfvars$|^development/gcp/workflows'
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
+                  labels:
+                    preset-bot-github-token: "true"
+                  command: "/ghcomment/github-comment"
+                  args:
+                    - "hide"
+                    - "--org"
+                    - "$(REPO_OWNER)"
+                    - "--repo"
+                    - "$(REPO_NAME)"
+                    - "-pr"
+                    - "$(PULL_NUMBER)"
+                    - "-sha1"
+                    - "$(PULL_PULL_SHA)"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "trusted_cluster"

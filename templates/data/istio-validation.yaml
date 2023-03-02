@@ -7,11 +7,11 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-istio-lint
-                  request_cpu: 200m
+                  request_cpu: 500m
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
+                    - "golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
                   always_run: true
                 inheritedConfigs:
                   global:
@@ -23,7 +23,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd operator && EXPORT_RESULTS=true make test"
+                    - "EXPORT_RESULTS=true make test"
                   always_run: true
                 inheritedConfigs:
                   global:

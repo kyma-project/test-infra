@@ -1,13 +1,13 @@
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759
 
 # Commit details
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-ENV UA_VERSION v22.1.1.1
-ENV GO_VERSION 1.19.4
-ENV DEP_RELEASE_TAG v0.5.4
+ENV UA_VERSION v23.1.2.1
+ENV GO_VERSION 1.20.1
 ENV JAVA_VERSION 8u212-b04
 ENV JAVA_BASE_URL https://github.com/AdoptOpenJDK/openjdk8-binaries/releases/download/jdk8u212-b04/OpenJDK8U-jdk_
 ENV JAVA_URL_VERSION 8u212b04
@@ -26,14 +26,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl -fLSs -o openjdk.tgz "${JAVA_BASE_URL}x64_linux_hotspot_${JAVA_URL_VERSION}.tar.gz"
 
 RUN mkdir -p "$JAVA_HOME"; \
-	tar --extract \
-		--file openjdk.tgz \
-		--directory "$JAVA_HOME" \
-		--strip-components 1 \
-		--no-same-owner \
-	; \
-	rm openjdk.tgz* \
-	; \
+    tar --extract \
+    --file openjdk.tgz \
+    --directory "$JAVA_HOME" \
+    --strip-components 1 \
+    --no-same-owner \
+    ; \
+    rm openjdk.tgz* \
+    ; \
     java -version
 
 
@@ -46,11 +46,6 @@ RUN curl -o go.tar.gz -LfSs https://dl.google.com/go/go${GO_VERSION}.linux-amd64
     mv go /usr/local && \
     mkdir -p ${GOPATH}/bin && \
     mkdir -p ${GOPATH}/src
-
-
-# Install Dep
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
 # install unified agent
 RUN curl -LJO https://github.com/whitesource/unified-agent-distribution/releases/download/"${UA_VERSION}"/wss-unified-agent.jar && \

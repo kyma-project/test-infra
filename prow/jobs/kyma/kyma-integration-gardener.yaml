@@ -594,7 +594,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-bot-github-token: "true"
-        preset-cluster-version-previous: "true"
+        preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"

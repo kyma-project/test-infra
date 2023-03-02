@@ -27,7 +27,7 @@ presubmits: # runs on PRs
             resources:
               requests:
                 memory: 200Mi
-                cpu: 200m
+                cpu: 500m
     - name: pull-api-gateway-test
       annotations:
         pipeline.trigger: "pr-submit"
@@ -70,7 +70,6 @@ presubmits: # runs on PRs
         preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
       always_run: true
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
@@ -87,23 +86,17 @@ presubmits: # runs on PRs
           repo: kyma
           path_alias: github.com/kyma-project/kyma
           base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
             securityContext:
               privileged: true
             command:
               - "/bin/sh"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+              - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
             env:
-              - name: API_GATEWAY_INTEGRATION_TESTS
-                value: "true"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
@@ -116,8 +109,8 @@ presubmits: # runs on PRs
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
-                memory: 1Gi
-                cpu: 100m
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -146,7 +139,6 @@ postsubmits: # runs on main
         preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
       always_run: true
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
@@ -163,23 +155,17 @@ postsubmits: # runs on main
           repo: kyma
           path_alias: github.com/kyma-project/kyma
           base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
             securityContext:
               privileged: true
             command:
               - "/bin/sh"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
+              - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
             env:
-              - name: API_GATEWAY_INTEGRATION_TESTS
-                value: "true"
               - name: GARDENER_REGION
                 value: "europe-west4"
               - name: GARDENER_ZONES
@@ -192,8 +178,8 @@ postsubmits: # runs on main
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
-                memory: 1Gi
-                cpu: 100m
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
