@@ -467,13 +467,13 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
   
 periodics: # runs on schedule
-    - name: keda-manager-governance-nightly
+    - name: keda-manager-governance-periodic
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "keda-manager-governance-nightly"
+        prow.k8s.io/pubsub.runID: "keda-manager-governance-periodic"
         prow.k8s.io/pubsub.topic: "prowjobs"
       cron: "0 */6 * * 1-5"
       skip_report: false
