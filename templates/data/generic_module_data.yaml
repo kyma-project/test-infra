@@ -58,6 +58,36 @@ templates:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
               - jobConfig:
+                  name: "keda-manager-governance-nightly"
+                  cron: "0 */6 * * 1-5" # “Every six hours from midnight every day-of-week from Monday through Friday.”
+                  args:
+                    - "--repository"
+                    - "keda-manager"
+                    - "--repository-dir"
+                    - "/home/prow/go/src/github.com/kyma-project/keda-manager"
+                    - "--full-validation"
+                    - "true"
+                  extra_refs:
+                    keda-manager:
+                      - org: kyma-project
+                        repo: keda-manager
+                        base_ref: main
+                        path_alias: github.com/kyma-project/keda-manager
+                  env:
+                    JOB_VM_COMMAND: >-
+                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin 
+                      &&
+                      make local-run
+                  inheritedConfigs:
+                    global:
+                      - jobConfig_default
+                      - image_bootstrap
+                      - jobConfig_periodic
+                      - disable_testgrid
+                      - extra_refs_test-infra
+                    local:
+                      - job_default
+              - jobConfig:
                   name: pre-keda-manager-operator-lint
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
                   run_if_changed: "^(go.mod|go.sum|main.go)$|^*/(.*.go|Makefile|.*.sh)"
