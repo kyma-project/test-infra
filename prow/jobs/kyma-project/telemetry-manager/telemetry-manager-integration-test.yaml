@@ -17,7 +17,6 @@ presubmits:
               - -c
               - |
                 service docker start
-                export PATH=$PATH:$PWD/bin
                 make e2e-test
             requests:
               memory: 2Gi
