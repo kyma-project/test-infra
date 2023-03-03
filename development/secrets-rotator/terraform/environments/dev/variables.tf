@@ -14,7 +14,7 @@ variable "location" {
   description = "Google Cloud location to deploy the service account keys rotator to."
 }
 
-variable "service_name" {
+variable "service_account_keys_rotator_service_name" {
   type        = string
   description = "Name of the service account keys rotator service instance."
 }

@@ -40,7 +40,7 @@ module "service_account_keys_rotator" {
   source = "../../modules/rotate-service-account"
 
   application_name = var.application_name
-  service_name     = var.service_name
+  service_name     = var.service_account_keys_rotator_service_name
   project = {
     id     = data.google_project.project.project_id
     number = data.google_project.project.number
