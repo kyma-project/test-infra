@@ -6,5 +6,4 @@ pjConfigs:
   prowJobs:
     kyma-project:
       test-infra:
-        - pjName: "keda-manager-governance-periodic"
-        - pjName: "pre-keda-manager-governance"
+        - pjName: "keda-manager-nightly-periodic"
