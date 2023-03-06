@@ -1,0 +1,5 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      serverless-manager:
+        - pjName: "pre-serverless-manager-operator-build"
