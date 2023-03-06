@@ -101,6 +101,7 @@ templates:
                   env:
                     EXECUTION_PROFILE: "production"
                     MACHINE_TYPE: "n1-standard-8"
+                    EVENTING_UPGRADE_JOB: true
                   volumes:
                     - name: kyma-tunas-prow-event-mesh
                       secretName: kyma-tunas-prow-event-mesh
