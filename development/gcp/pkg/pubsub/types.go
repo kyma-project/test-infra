@@ -26,7 +26,8 @@ type Client struct {
 
 // Message is the message sent to pubsub system.
 type Message struct {
-	Message      MessagePayload `json:"message"`
+	// Message      MessagePayload `json:"message"`
+	Message      pubsub.Message `json:"message"`
 	Subscription string         `json:"subscription"`
 }
 

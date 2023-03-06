@@ -10,7 +10,7 @@ import (
 	"strings"
 
 	"cloud.google.com/go/compute/metadata"
-	gpubsub "cloud.google.com/go/pubsub"
+	// gpubsub "cloud.google.com/go/pubsub"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/development/gcp/pkg/http"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
@@ -112,11 +112,14 @@ func rotateServiceAccount(w http.ResponseWriter, r *http.Request) {
 	logger.WithTrace(trace)
 
 	// decode http messages body
-	var message gpubsub.Message
-	if err := json.NewDecoder(r.Body).Decode(&message); err != nil {
+	var pubsubMessage pubsub.Message
+	if err := json.NewDecoder(r.Body).Decode(&pubsubMessage); err != nil {
 		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed decode message body")
 		return
 	}
+
+	message := pubsubMessage.Message
+	logger.LogDebug("Received message: %+v", message)
 
 	logger.WithLabel("messageId", message.ID)
 
