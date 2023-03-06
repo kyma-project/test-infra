@@ -6,11 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/http/httputil"
 	"os"
 	"strings"
 
 	"cloud.google.com/go/compute/metadata"
-	// gpubsub "cloud.google.com/go/pubsub"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/development/gcp/pkg/http"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
@@ -111,19 +111,28 @@ func rotateServiceAccount(w http.ResponseWriter, r *http.Request) {
 	logger.WithLabel("io.kyma.component", componentName)
 	logger.WithTrace(trace)
 
+	// Dump http request. This will be printed in case of error.
+	request, err := httputil.DumpRequest(r, true)
+	if err != nil {
+		logger.LogError("failed to dump request, error: %s", err.Error())
+	}
+
 	// decode http messages body
 	var pubsubMessage pubsub.Message
 	if err := json.NewDecoder(r.Body).Decode(&pubsubMessage); err != nil {
+		logger.LogDebug("Received HTTP request: %s", string(request))
 		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed decode message body")
 		return
 	}
 
 	message := pubsubMessage.Message
-	logger.LogDebug("Received message: %+v", message)
-
 	logger.WithLabel("messageId", message.ID)
 
+	// Check if message is secret rotate message, this should never become true,
+	// because this service is subscribed to subscription with attribute filter.
+	// Pubsub subscription prevent receiving messages with unsupported event type.
 	if message.Attributes["eventType"] != "SECRET_ROTATE" {
+		logger.LogDebug("Received HTTP request: %s", string(request))
 		logger.LogDebug("Unsupported event type: %s, quitting", message.Attributes["eventType"])
 		w.WriteHeader(http.StatusOK)
 		return
@@ -131,11 +140,13 @@ func rotateServiceAccount(w http.ResponseWriter, r *http.Request) {
 
 	err = json.Unmarshal(message.Data, &secretRotateMessage)
 	if err != nil {
+		logger.LogDebug("Received HTTP request: %s", string(request))
 		crhttp.WriteHTTPErrorResponse(w, http.StatusBadRequest, logger, "failed to unmarshal message data field, error: %s", err.Error())
 		return
 	}
 
 	if secretRotateMessage.Labels["type"] != "service-account" {
+		logger.LogDebug("Received HTTP request: %s", string(request))
 		logger.LogDebug("Unsupported secret type: %s, quitting", secretRotateMessage.Labels["type"])
 		w.WriteHeader(http.StatusOK)
 		return
