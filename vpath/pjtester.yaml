@@ -3,3 +3,7 @@ pjConfigs:
     kyma-project:
       serverless-manager:
         - pjName: "pre-serverless-manager-operator-build"
+prConfigs:
+  kyma-project:
+    serverless-manager:
+      prNumber: 58
