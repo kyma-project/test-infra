@@ -281,6 +281,7 @@ templates:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c
+                  branches:
                     - ^main$
                   args:
                     - --name=control-plane/kyma-environment-trial-cleanup-job
