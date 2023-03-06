@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      keda-manager:
+        - pjName: "pre-main-keda-manager-upgrade-main-to-channel"
+prConfigs: #
+  kyma-project:
+    keda-manager:
+      prNumber:
