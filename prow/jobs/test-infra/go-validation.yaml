@@ -55,8 +55,8 @@ presubmits: # runs on PRs
               - "/golangci-lint.sh"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 1Gi
+                cpu: 500m
         tolerations:
           - key: dedicated
             operator: Equal
