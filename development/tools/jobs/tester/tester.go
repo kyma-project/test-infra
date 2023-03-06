@@ -6,7 +6,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ghodss/yaml"
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/pkg/errors"
@@ -15,6 +14,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 	"k8s.io/test-infra/prow/config"
+	"sigs.k8s.io/yaml"
 )
 
 const (
