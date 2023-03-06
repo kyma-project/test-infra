@@ -4,9 +4,24 @@ resource "google_service_account" "service_account_keys_rotator" {
   description = "Identity of the service account keys rotator service."
 }
 
+// roles/iam.serviceAccountKeyAdmin is required to be able to create new keys for the service account
 resource "google_project_iam_member" "service_account_keys_rotator" {
   project = var.project.id
   role    = "roles/iam.serviceAccountKeyAdmin"
+  member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
+}
+
+// roles/secretmanager.secretAccessor is required to be able to access the secret in secret manager
+resource "google_project_iam_member" "service_account_keys_rotator_secret_version_accessor" {
+  project = var.project.id
+  role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
+}
+
+// roles/secretmanager.secretVersionAdder is required to be able to add new versions to the secret in secret manager
+resource "google_project_iam_member" "service_account_keys_rotator_secret_version_adder" {
+  project = var.project.id
+  role    = "roles/secretmanager.secretVersionAdder"
   member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
 }
 
