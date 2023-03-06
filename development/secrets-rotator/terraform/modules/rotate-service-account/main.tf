@@ -76,6 +76,10 @@ resource "google_pubsub_subscription" "service_account_keys_rotator" {
     }
   }
 
+  expiration_policy {
+    ttl = "31556952s" // 1 year
+  }
+
   retry_policy {
     minimum_backoff = "300s"
     maximum_backoff = "600s"
