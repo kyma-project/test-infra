@@ -536,18 +536,28 @@ func (pjopts *testProwJobOptions) newTestPJ(pjCfg pjConfig, opt options) (prowap
 	if err != nil {
 		return prowapi.ProwJob{}, fmt.Errorf("failed set RefsGetters, error: %w", err)
 	}
+
 	log.Debugf("Loading Prow config from %s and jobs config from %s.", opt.configPath, opt.jobConfigPath)
 	// Loading Prow config and Prow Jobs config from files. If files were changed in pull request, new values will be used for test.
 	conf, err := config.Load(opt.configPath, opt.jobConfigPath, nil, "")
 	if err != nil {
 		return prowapi.ProwJob{}, fmt.Errorf("error loading prow config: %w", err)
 	}
-	_, pjSpecification, err := pjopts.genJobSpec(opt, conf, pjCfg)
+
+	log.Debug("Generating prowjob specification to test.")
+	job, pjSpecification, err := pjopts.genJobSpec(opt, conf, pjCfg)
 	if err != nil {
 		return prowapi.ProwJob{}, fmt.Errorf("failed generating prowjob specification to test: %w", err)
 	}
+
+	log.Debug("Adding pjtester labels to ProwJob.")
+	// Add pjtester labels to ProwJob.
+	job.Labels["created-by-pjtester"] = "true"
+	job.Labels["prow.k8s.io/is-optional"] = "true"
+
 	// Building ProwJob k8s resource based on generated job specifications.
-	pj := pjutil.NewProwJob(pjSpecification, map[string]string{"created-by-pjtester": "true", "prow.k8s.io/is-optional": "true"}, map[string]string{})
+	log.Debug("Generating ProwJob k8s resource.")
+	pj := pjutil.NewProwJob(pjSpecification, job.Labels, job.Annotations)
 	// Make sure prowjob to test will run on untrusted-workload cluster.
 	pj.Spec.Cluster = "untrusted-workload"
 	// Enable all reporting, otherwise send slack messages to null channel.
