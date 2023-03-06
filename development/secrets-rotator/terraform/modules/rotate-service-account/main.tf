@@ -11,7 +11,7 @@ resource "google_project_iam_member" "service_account_keys_rotator" {
   member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
 }
 
-// roles/secretmanager.secretAccessor is required to be able to access the secret in secret manager
+// roles/secretmanager.secretAccessor is required to be able to access the secret version payload in secret manager
 resource "google_project_iam_member" "service_account_keys_rotator_secret_version_accessor" {
   project = var.project.id
   role    = "roles/secretmanager.secretAccessor"
@@ -22,6 +22,13 @@ resource "google_project_iam_member" "service_account_keys_rotator_secret_versio
 resource "google_project_iam_member" "service_account_keys_rotator_secret_version_adder" {
   project = var.project.id
   role    = "roles/secretmanager.secretVersionAdder"
+  member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
+}
+
+// roles/secretmanager.viewer is required to be able to access the secret in secret manager and read its metadata
+resource "google_project_iam_member" "service_account_keys_rotator_secret_version_viewer" {
+  project = var.project.id
+  role    = "roles/secretmanager.viewer"
   member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
 }
 
