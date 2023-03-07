@@ -482,16 +482,9 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "keda-operator-nightly-periodic"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-main: "true"
-        preset-certificates-bucket: "true"
         preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-kyma-encryption-key: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-keyring: "true"
-        preset-nightly-github-integration: "true"
         preset-sa-vm-kyma-integration: "true"
-        preset-slack-alerts: "true"
       cron: "0 6 * * 1-5"
       skip_report: false
       decorate: true

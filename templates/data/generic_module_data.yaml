@@ -69,14 +69,6 @@ templates:
                     testgrid-days-of-results: "60"
                   path_alias: github.com/kyma-project/kyma
                   cluster: "trusted-workload"
-                  labels:
-                    preset-kyma-keyring: "true"
-                    preset-kyma-encryption-key: "true"
-                    preset-build-main: "true"
-                    preset-nightly-github-integration: "true"
-                    preset-kms-gc-project-env: "true"
-                    preset-certificates-bucket: "true"
-                    preset-slack-alerts: "true"
                   volumes:
                     - name: sa-stability-fluentd-storage-writer
                       secretName: sa-stability-fluentd-storage-writer
