@@ -269,7 +269,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "git config --global --add safe.directory $(pwd)/module-chart && ./hack/generate_module-chart.sh && /image-builder --name=serverless-manager --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag={{ .Env \"PULL_BASE_SHA\" }}"
+              - "git config --global --add safe.directory $(pwd)/module-chart && ./hack/generate_module-chart.sh && /image-builder --name=serverless-manager --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_SHA"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
