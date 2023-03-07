@@ -128,7 +128,7 @@ func rotateServiceAccount(w http.ResponseWriter, r *http.Request) {
 	message := pubsubMessage.Message
 	logger.WithLabel("messageId", message.ID)
 
-	// Check if message is secret rotate message, this should never become true,
+	// Check if message is not a secret rotate message, this should never become true,
 	// because this service is subscribed to subscription with attribute filter.
 	// Pubsub subscription prevent receiving messages with unsupported event type.
 	if message.Attributes["eventType"] != "SECRET_ROTATE" {
