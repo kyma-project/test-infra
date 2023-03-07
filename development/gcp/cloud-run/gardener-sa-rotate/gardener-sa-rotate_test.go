@@ -504,7 +504,7 @@ func TestRotateGardenerServiceAccount(t *testing.T) {
 			RotateGardenerServiceAccount(rr, req)
 
 			if got := rr.Body.String(); got != test.expectedResponse {
-				t.Errorf("ServiceAccountCleaner(%q) = %q, want %q", test.requestBody, got, test.expectedResponse)
+				t.Errorf("ServiceAccountCleaner(%v) = %q, want %q", test.requestBody, got, test.expectedResponse)
 			}
 
 			if !reflect.DeepEqual(test.keys, test.expectedKeys) {
