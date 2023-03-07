@@ -168,9 +168,6 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-runtime-agent
       annotations:
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"
@@ -207,14 +204,29 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
-            securityContext:
-              privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
+              - /bin/bash
+            args:
+              - c
+              - |
+                service docker start
+                curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+                curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_Linux_x86_64.tar.gz" && mkdir kyma-release && tar -C kyma-release -zxvf kyma.tar.gz && chmod +x kyma-release/kyma && rm -rf kyma.tar.gz
+                kyma-release/kyma provision k3d
+                kubectl cluster-info
+                kyma-release/kyma deploy --ci --components-file tests/components/application-connector/resources/installation-config/mini-kyma-skr.yaml --source local --workspace $PWD
+                cd tests/components/application-connector
+                make -f Makefile.test-compass-runtime-agent test-compass-runtime-agent
+                failed=$?
+                k3d cluster delete kyma
+                exit $failed
             resources:
               requests:
-                memory: 100Mi
-                cpu: 50m
+                memory: 1Gi
+              limits:
+                memory: 1Gi
+            securityContext:
+              privileged: true
         tolerations:
           - key: dedicated
             operator: Equal
@@ -1740,4 +1752,3 @@ periodics: # runs on schedule
           - name: sa-stability-fluentd-storage-writer
             secret:
               secretName: sa-stability-fluentd-storage-writer
-  
