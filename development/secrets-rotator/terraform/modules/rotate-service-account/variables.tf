@@ -18,7 +18,7 @@ variable "service_name" {
 
 variable "application_name" {
   type        = string
-  description = "Name of the application a rotate the service account keys is a part of."
+  description = "Name of the application a service account keys rotator is a part of."
 }
 
 variable "service_account_keys_rotator_account_id" {
@@ -61,5 +61,5 @@ variable "create_secret_manager_notifications_topic" {
 
 variable "secrets_rotator_sa_email" {
   type        = string
-  description = "Service account email of the service account keys rotator."
+  description = "Secrets rotator application service account email."
 }

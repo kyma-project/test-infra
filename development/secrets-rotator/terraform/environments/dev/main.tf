@@ -60,3 +60,25 @@ module "service_account_keys_rotator" {
 output "service_account_keys_rotator" {
   value = module.service_account_keys_rotator
 }
+
+module "service_account_keys_cleaner" {
+  source = "../../modules/service-account-keys-cleaner"
+
+  application_name = var.application_name
+  service_name     = var.service_account_keys_cleaner_service_name
+  project = {
+    id     = data.google_project.project.project_id
+    number = data.google_project.project.number
+  }
+  location                                   = var.location
+  service_account_keys_cleaner_account_id    = var.service_account_keys_cleaner_account_id
+  service_account_keys_cleaner_image         = var.service_account_keys_cleaner_image
+  cloud_run_service_listen_port              = var.cloud_run_service_listen_port
+  scheduler_name                             = var.service_account_keys_cleaner_service_name
+  secrets_rotator_sa_email                   = google_service_account.secrets-rotator.email
+  service_account_key_latest_version_min_age = var.service_account_key_latest_version_min_age
+}
+
+output "service_account_keys_cleaner" {
+  value = module.service_account_keys_cleaner
+}
