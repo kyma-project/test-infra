@@ -376,8 +376,6 @@ templates:
               - jobConfig:
                   name: pre-serverless-manager-operator-build
                   always_run: true
-                  # TODO: remove after test phase (or fixing pjtester)
-                  optional: "true"
                   command: sh
                   args:
                     - -c
@@ -402,8 +400,6 @@ templates:
               - jobConfig:
                   name: post-serverless-manager-operator-build
                   always_run: true
-                  # TODO: remove after test phase (or fixing pjtester)
-                  optional: "true"
                   labels:
                     preset-signify-prod-secret: "true"
                   command: sh
@@ -419,6 +415,7 @@ templates:
                       --config=/config/kaniko-build-config.yaml
                       --context=.
                       --dockerfile=Dockerfile
+                      --tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
@@ -430,7 +427,7 @@ templates:
               - jobConfig:
                   name: pre-main-serverless-manager-verify
                   always_run: "true"
-                  optional: "true"
+                  optional: "false"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
                     JOB_VM_COMMAND: >-
