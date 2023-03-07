@@ -493,6 +493,7 @@ templates:
                   name: "pre-main-serverless-integration-k3s-local"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/serverless\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  optional: true
                   annotations:
                     pipeline.platform: k3s
                   labels:

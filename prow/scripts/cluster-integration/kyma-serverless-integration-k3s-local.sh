@@ -65,13 +65,11 @@ sleep 60
 ########
 
 SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"
-job_name="k3s-serverless-test"
 
 if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
   echo "--> Fetching Serverless k3s-tests"
  
   git clone https://github.com/kyma-project/kyma "${KYMA_SOURCES_DIR}"
-  job_name="k3s-serverless-nightly-test"
 fi
 
 VALUES="-f ${SERVERLESS_CHART_DIR}/values.yaml"
@@ -80,12 +78,15 @@ if [[ -e "${SERVERLESS_OVERRIDES_DIR}/integration-overrides.yaml" ]]; then
   VALUES+=" -f ${SERVERLESS_OVERRIDES_DIR}/integration-overrides.yaml"
 fi
 
-#TODO: This is the part of helm running the test, we need to remove it
-#shellcheck disable=SC2086
-make $(INTEGRATION_SUITE)
+#https://github.com/kyma-project/test-infra/issues/6513
+export PATH=${PATH}:/usr/local/go/bin
+set +o errexit
+(cd ${KYMA_SOURCES_DIR}/tests/function-controller && make "${INTEGRATION_SUITE})"
 job_status=$?
+set -o errexit
 
-collect_results "${job_name}" "default"
+#TODO: after migrating to the new solution, we can remove the first parameter
+collect_results "k3s-serverless-test" "default"
 
 echo "Exit code ${job_status}"
 
