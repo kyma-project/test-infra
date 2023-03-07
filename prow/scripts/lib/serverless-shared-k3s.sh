@@ -100,16 +100,26 @@ collect_results(){
     echo "kubectl get pods -A"
     echo "###################"
     kubectl get pods -A
+
     echo "########################"
     echo "kubectl get functions -A"
     echo "########################"
     kubectl get -n "${namespace}" functions -A
+
     echo "########################################################"
     echo "kubectl logs -n kyma-system -l app=serverless --tail=-1"
+    echo "########################################################"
     kubectl logs -n kyma-system -l app=serverless --tail=-1
+
+
+    echo "########################################################"
+    echo "kubectl logs -n kyma-system -l app=serverless-webhook --tail=-1"
+    echo "########################################################"
+    kubectl logs -n kyma-system -l app=serverless-webhook --tail=-1
+
     echo "##############################################"
     echo "kubectl logs -l job-name=${job_name} --tail=-1"
+    echo "########################################################"
     kubectl logs -n "${namespace}" -l "job-name=${job_name}" --tail=-1
-    echo "###############"
 echo ""
 }
