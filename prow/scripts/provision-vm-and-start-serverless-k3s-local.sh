@@ -109,17 +109,10 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 trap cleanup exit INT
 # apply overrides if we are not using the default test suite
 if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
-    log::info "Creating Serverless git-auth-integration overrides"
-    mkdir -p "${KYMA_PROJECT_DIR}/overrides"
-    cat <<EOF >> "${KYMA_PROJECT_DIR}/overrides/integration-overrides.yaml"
-gitAuth:
-  github:
-    key: "${GH_AUTH_PRIVATE_KEY}"
-  azure:
-    username: "${AZURE_DEVOPS_AUTH_USERNAME}"
-    password: "${AZURE_DEVOPS_AUTH_PASSWORD}"
-EOF
-
+    log::info "Creating Serverless git-auth-integration envs"
+    export APP_GITHUB_SSH_AUTH_KEY=${GH_AUTH_PRIVATE_KEY}
+    export APP_AZURE_BASIC_AUTH_USERNAME=${AZURE_DEVOPS_AUTH_USERNAME}
+    export APP_AZURE_BASIC_AUTH_PASSWORD=${AZURE_DEVOPS_AUTH_PASSWORD}
 fi
 
 log::info "Copying Kyma to the instance"
@@ -127,6 +120,6 @@ log::info "Copying Kyma to the instance"
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}" "~/"
 
 log::info "Triggering the installation"
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash ~/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3s.sh ${INTEGRATION_SUITE}"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash ~/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3s-local.sh ${INTEGRATION_SUITE}"
 
 log::success "all done"
