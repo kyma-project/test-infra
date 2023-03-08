@@ -187,7 +187,7 @@ globalSets:
   image_gardener-rotate:
     image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230202-40569193"
   image_markdown_index:
-    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230220-55aefaf0"
+    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230308-be78ed1e"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
