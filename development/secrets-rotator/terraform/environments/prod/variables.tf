@@ -9,7 +9,7 @@ variable "application_name" {
   default     = "secrets-rotator"
 }
 
-variable "location" {
+variable "region" {
   type        = string
   description = "Google Cloud location to deploy the service account keys rotator to."
 }

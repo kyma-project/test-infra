@@ -47,7 +47,7 @@ module "service_account_keys_rotator" {
     id     = data.google_project.project.project_id
     number = data.google_project.project.number
   }
-  location = var.location
+  region = var.region
 
   service_account_keys_rotator_account_id            = var.service_account_keys_rotator_account_id
   service_account_keys_rotator_dead_letter_topic_uri = google_pubsub_topic.secrets_rotator_dead_letter.id
@@ -70,12 +70,13 @@ module "service_account_keys_cleaner" {
     id     = data.google_project.project.project_id
     number = data.google_project.project.number
   }
-  location                                   = var.location
+  region                                     = var.region
   service_account_keys_cleaner_account_id    = var.service_account_keys_cleaner_account_id
   service_account_keys_cleaner_image         = var.service_account_keys_cleaner_image
   cloud_run_service_listen_port              = var.cloud_run_service_listen_port
   scheduler_name                             = var.service_account_keys_cleaner_service_name
   secrets_rotator_sa_email                   = google_service_account.secrets-rotator.email
+  scheduler_cron_schedule                    = var.service_account_keys_cleaner_scheduler_cron_schedule
   service_account_key_latest_version_min_age = var.service_account_key_latest_version_min_age
 }
 

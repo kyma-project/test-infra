@@ -9,7 +9,7 @@ variable "application_name" {
   default     = "secrets-rotator"
 }
 
-variable "location" {
+variable "region" {
   type        = string
   description = "Google Cloud location to deploy the service account keys rotator to."
 }
@@ -68,4 +68,9 @@ variable "secret_manager_notifications_topic" {
 variable "service_account_key_latest_version_min_age" {
   type        = number
   description = "Minimum age in hours the service account key latest version exist, before old version to be deleted."
+}
+
+variable "service_account_keys_cleaner_scheduler_cron_schedule" {
+  type        = string
+  description = "Cron schedule for the service account keys cleaner scheduler."
 }

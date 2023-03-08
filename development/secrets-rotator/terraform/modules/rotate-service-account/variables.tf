@@ -6,7 +6,7 @@ variable "project" {
   description = "Google Cloud project ID to deploy the service account keys rotator to."
 }
 
-variable "location" {
+variable "region" {
   type        = string
   description = "Google Cloud location to deploy the service account keys rotator to."
 }

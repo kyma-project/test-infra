@@ -29,7 +29,7 @@ resource "google_cloud_run_service_iam_member" "service_account_keys_cleaner_inv
 
 resource "google_cloud_run_service" "service_account_keys_cleaner" {
   name     = var.service_name
-  location = var.location
+  location = var.region
   project  = var.project.id
 
   template {
@@ -56,6 +56,8 @@ resource "google_cloud_run_service" "service_account_keys_cleaner" {
 
 resource "google_cloud_scheduler_job" "service_account_keys_cleaner" {
   name             = var.scheduler_name
+  project          = var.project.id
+  region           = var.region
   description      = "Call service account keys cleaner service, to remove old versions of secrets"
   schedule         = var.scheduler_cron_schedule
   time_zone        = "Etc/UTC"
