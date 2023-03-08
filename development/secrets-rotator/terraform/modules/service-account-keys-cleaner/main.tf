@@ -18,6 +18,13 @@ resource "google_project_iam_member" "service_account_keys_cleaner_secrets_versi
   member  = "serviceAccount:${google_service_account.service_account_keys_cleaner.email}"
 }
 
+// roles/secretmanager.viewer is required to be able to access the secret in secret manager and read its metadata
+resource "google_project_iam_member" "service_account_keys_cleaner_secret_viewer" {
+  project = var.project.id
+  role    = "roles/secretmanager.viewer"
+  member  = "serviceAccount:${google_service_account.service_account_keys_cleaner.email}"
+}
+
 // Allow secrets rotator to call the service account keys cleaner service.
 resource "google_cloud_run_service_iam_member" "service_account_keys_cleaner_invoker" {
   location = google_cloud_run_service.service_account_keys_cleaner.location
@@ -69,6 +76,7 @@ resource "google_cloud_scheduler_job" "service_account_keys_cleaner" {
 
     oidc_token {
       service_account_email = var.secrets_rotator_sa_email
+      audience              = google_cloud_run_service.service_account_keys_cleaner.status[0].url
     }
   }
 }
