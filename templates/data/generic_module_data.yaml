@@ -219,6 +219,7 @@ templates:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
                     JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin 
                     && make kyma
+                    && mkdir tmp
                     && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/moduletemplate-keda.yaml > tmp/moduletemplate-keda.yaml
                     && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/kustomization.yaml > tmp/kustomization.yaml
                     && ./bin/kyma-unstable alpha deploy --ci --force-conflicts --templates tmp/
