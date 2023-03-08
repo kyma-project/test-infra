@@ -315,7 +315,7 @@ presubmits: # runs on PRs
               - name: JOB_REPO_NAME
                 value: "keda-manager"
               - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make kyma && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/moduletemplate-keda.yaml > ./bin/kyma-unstable alpha deploy --template _ && make ci-k3d-upgrade-test"
+                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make kyma && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/moduletemplate-keda.yaml > tmp/moduletemplate-keda.yaml && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/kustomization.yaml > tmp/kustomization.yaml && ./bin/kyma-unstable alpha deploy --ci --force-conflicts --templates tmp/ && make ci-k3d-upgrade-test"
             resources:
               requests:
                 memory: 200Mi
