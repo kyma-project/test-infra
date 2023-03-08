@@ -14,32 +14,21 @@ variable "region" {
   description = "Google Cloud location to deploy the service account keys rotator to."
 }
 
+variable "cloud_run_service_listen_port" {
+  type        = number
+  description = "Port on which the secrets rotator services listens."
+  default     = 8080
+}
+
 variable "service_account_keys_rotator_service_name" {
   type        = string
   description = "Name of the service account keys rotator service instance."
-}
-
-variable "service_account_keys_cleaner_service_name" {
-  type        = string
-  description = "Name of the service account keys cleaner service instance."
 }
 
 variable "service_account_keys_rotator_account_id" {
   type        = string
   default     = "sa-keys-rotator"
   description = "Service account ID of the service account keys rotator."
-}
-
-variable "service_account_keys_cleaner_account_id" {
-  type        = string
-  default     = "sa-keys-cleaner"
-  description = "Service account ID of the service account keys cleaner."
-}
-
-variable "cloud_run_service_listen_port" {
-  type        = number
-  description = "Port on which the service account keys rotator service listens."
-  default     = 8080
 }
 
 variable "service_account_keys_rotator_image" {
@@ -51,6 +40,23 @@ variable "service_account_keys_rotator_image" {
   }
 }
 
+variable "secret_manager_notifications_topic" {
+  type        = string
+  description = "Name of the topic to which the service account keys rotator subscribes to."
+  default     = "secret-manager-notifications"
+}
+
+variable "service_account_keys_cleaner_service_name" {
+  type        = string
+  description = "Name of the service account keys cleaner service instance."
+}
+
+variable "service_account_keys_cleaner_account_id" {
+  type        = string
+  default     = "sa-keys-cleaner"
+  description = "Service account ID of the service account keys cleaner."
+}
+
 variable "service_account_keys_cleaner_image" {
   type        = string
   description = "Image of the service account keys cleaner."
@@ -58,11 +64,6 @@ variable "service_account_keys_cleaner_image" {
     condition     = can(regex("^europe-docker.pkg.dev/kyma.*", var.service_account_keys_cleaner_image))
     error_message = "The service account keys cleaner image must be hosted in the Kyma Google Artifact Registry."
   }
-}
-variable "secret_manager_notifications_topic" {
-  type        = string
-  description = "Name of the topic to which the service account keys rotator subscribes to."
-  default     = "secret-manager-notifications"
 }
 
 variable "service_account_key_latest_version_min_age" {
