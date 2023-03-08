@@ -6,4 +6,4 @@ pjConfigs:
 prConfig:
   kyma-project:
     test-infra:
-      prNumber: ?
+      prNumber: 7164
