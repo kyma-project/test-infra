@@ -36,7 +36,6 @@ templates:
             path_alias: github.com/kyma-project/keda-manager
             command: "bash"
             env:
-              CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
               JOB_REPO_NAME: "keda-manager"
             args:
               - "-c"
@@ -57,6 +56,53 @@ templates:
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
+              - jobConfig:
+                  name: "keda-operator-nightly-periodic"
+                  cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
+                  annotations:
+                    description: Keda nightly verify
+                    pipeline.platform: gke
+                    pipeline.installer: kyma deploy
+                    pipeline.clusterprovisioning: gcloud cli
+                    pipeline.type: integration
+                    testgrid-dashboards: keda-nightly
+                    testgrid-days-of-results: "60"
+                  path_alias: github.com/kyma-project/kyma
+                  cluster: "trusted-workload"
+                  volumes:
+                    - name: sa-stability-fluentd-storage-writer
+                      secretName: sa-stability-fluentd-storage-writer
+                  volumeMounts:
+                    - name: sa-stability-fluentd-storage-writer
+                      mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+                      readOnly: true
+                  env:
+                    MACHINE_TYPE: "custom-8-15360"
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    NODES_PER_ZONE: "1"
+                    STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG: "0.6.4"
+                    INPUT_CLUSTER_NAME: "keda-nightly-periodic"
+                    GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    TEST_RESULT_WINDOW_TIME: "6h"
+                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make local-run"
+                  extra_refs:
+                    keda-manager:
+                      - org: kyma-project
+                        repo: keda-manager
+                        base_ref: main
+                        path_alias: github.com/kyma-project/keda-manager
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                  local:
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels
               - jobConfig:
                   name: pre-keda-manager-operator-lint
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
