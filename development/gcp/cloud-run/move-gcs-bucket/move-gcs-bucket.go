@@ -26,6 +26,7 @@ var (
 	componentName   string
 	applicationName string
 	projectID       string
+	dryRun          string
 	err             error
 	storageClient   *storage.Client
 )
@@ -46,11 +47,16 @@ func main() {
 	projectID = os.Getenv("PROJECT_ID")
 	port := os.Getenv("LISTEN_PORT")
 	dstBucketName = os.Getenv("DST_BUCKET_NAME")
+	dryRun = os.Getenv("DRY_RUN")
 
 	mainLogger := cloudfunctions.NewLogger()
 	mainLogger.WithComponent(componentName)
 	mainLogger.WithLabel("io.kyma.app", applicationName)
 	mainLogger.WithLabel("io.kyma.component", componentName)
+
+	if dryRun != "true" && dryRun != "false" {
+		mainLogger.LogCritical("DRY_RUN env variable must have value 'true' or 'false'")
+	}
 
 	ctx := context.Background()
 	// Creates a storageClient.
@@ -142,14 +148,22 @@ func moveGCPBucket(w http.ResponseWriter, r *http.Request) {
 		dst := storageClient.Bucket(dstBucketName).Object(attrs.Name)
 		logger.LogDebug("src object name: %s", *msg.GCPBucketName+"/"+src.ObjectName())
 		logger.LogDebug("dst object name: %s", dstBucketName+"/"+dst.ObjectName())
-		if _, err = dst.CopierFrom(src).Run(ctx); err != nil {
-			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed copy object %s to bucket %s, error: %s", *msg.GCPBucketDirectory, dstBucketName, err.Error())
-			return
+		if dryRun == "false" {
+			if _, err = dst.CopierFrom(src).Run(ctx); err != nil {
+				crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed copy object %s to bucket %s, error: %s", *msg.GCPBucketDirectory, dstBucketName, err.Error())
+				return
+			}
+		} else {
+			logger.LogDebug("dry run, skipping copy")
 		}
 		logger.LogDebug("Removing source object %s", *msg.GCPBucketName+"/"+src.ObjectName())
-		if err := src.Delete(ctx); err != nil {
-			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed remove object %s from bucket %s, error: %s", *msg.GCPBucketDirectory, *msg.GCPBucketName, err.Error())
-			return
+		if dryRun == "false" {
+			if err := src.Delete(ctx); err != nil {
+				crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed remove object %s from bucket %s, error: %s", *msg.GCPBucketDirectory, *msg.GCPBucketName, err.Error())
+				return
+			}
+		} else {
+			logger.LogDebug("dry run, skipping remove")
 		}
 		logger.LogInfo("Blob %s moved to %s", *msg.GCPBucketName+"/"+*msg.GCPBucketDirectory, dstBucketName+"/"+*msg.GCPBucketDirectory)
 	}
