@@ -67,7 +67,7 @@ templates:
                     pipeline.type: integration
                     testgrid-dashboards: keda-nightly
                     testgrid-days-of-results: "60"
-                  path_alias: github.com/kyma-project/kyma
+                  path_alias: github.com/kyma-project/keda-manager
                   cluster: "trusted-workload"
                   volumes:
                     - name: sa-stability-fluentd-storage-writer
@@ -359,6 +359,53 @@ templates:
         jobConfigs:
           - repoName: kyma-project/serverless-manager
             jobs:
+              - jobConfig:
+                  name: "serverless-operator-nightly-periodic"
+                  cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
+                  annotations:
+                    description: serverless operator nightly verify
+                    pipeline.platform: gke
+                    pipeline.installer: kyma deploy
+                    pipeline.clusterprovisioning: gcloud cli
+                    pipeline.type: integration
+                    testgrid-dashboards: serverless-operator-nightly
+                    testgrid-days-of-results: "60"
+                  path_alias: github.com/kyma-project/serverless-manager
+                  cluster: "trusted-workload"
+                  volumes:
+                    - name: sa-stability-fluentd-storage-writer
+                      secretName: sa-stability-fluentd-storage-writer
+                  volumeMounts:
+                    - name: sa-stability-fluentd-storage-writer
+                      mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+                      readOnly: true
+                  env:
+                    MACHINE_TYPE: "custom-8-15360"
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    NODES_PER_ZONE: "1"
+                    STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG: "0.6.4"
+                    INPUT_CLUSTER_NAME: "serverless-operator-nightly-periodic"
+                    GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    TEST_RESULT_WINDOW_TIME: "6h"
+                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make local-run"
+                  extra_refs:
+                    serverless-manager:
+                      - org: kyma-project
+                        repo: serverless-manager
+                        base_ref: main
+                        path_alias: github.com/kyma-project/serverless-manager
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                  local:
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels
               - jobConfig:
                   name: post-serverless-module-build
                   labels:

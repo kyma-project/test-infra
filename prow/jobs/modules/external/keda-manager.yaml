@@ -488,7 +488,7 @@ periodics: # runs on schedule
       cron: "0 6 * * 1-5"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/keda-manager
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
