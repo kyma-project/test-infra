@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "serverless-git-auth-integration-k3s-nightly-local"
+          report: false
+prConfigs: #
+  kyma-project:
+    kyma:
+      prNumber: 17071
