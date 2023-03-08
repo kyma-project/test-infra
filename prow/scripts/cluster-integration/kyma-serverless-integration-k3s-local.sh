@@ -81,7 +81,7 @@ fi
 #https://github.com/kyma-project/test-infra/issues/6513
 export PATH=${PATH}:/usr/local/go/bin
 set +o errexit
-(cd ${KYMA_SOURCES_DIR}/tests/function-controller && make "${INTEGRATION_SUITE})"
+(cd ${KYMA_SOURCES_DIR}/tests/function-controller && make "${INTEGRATION_SUITE}")
 job_status=$?
 set -o errexit
 
