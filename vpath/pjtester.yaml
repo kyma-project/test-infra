@@ -1,9 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-project:
-      test-infra:
-        - pjName: "keda-operator-nightly-periodic"
-prConfig:
-  kyma-project:
-    test-infra:
-      prNumber: 7116
