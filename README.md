@@ -8,7 +8,7 @@ The purpose of the `test-infra` repository is to store configuration and scripts
 
 ### Project documentation
 
-Please see the [index page](/docs/index.md) for test-infra documentation. It list all documentatoin available in test-infra repository.
+Please see the [index page](/docs/index.md) for the Test Infra documentation. It lists all the documentation available in the `test-infra` repository.
 
 ### Prow
 
