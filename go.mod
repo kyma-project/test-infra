@@ -19,7 +19,7 @@ require (
 	github.com/containerd/containerd v1.6.19
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsouza/go-dockerclient v1.9.5
+	github.com/fsouza/go-dockerclient v1.9.6
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-containerregistry v0.13.0
@@ -63,7 +63,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230306183230-a54d76d2416e
+require k8s.io/test-infra v0.0.0-20230309183402-67c25528b2fc
 
 require (
 	cloud.google.com/go v0.107.0 // indirect
