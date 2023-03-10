@@ -64,6 +64,8 @@ elif [[ $GARDENER_PROVIDER == "aws" ]]; then
 elif [[ $GARDENER_PROVIDER == "gcp" ]]; then
     # shellcheck source=prow/scripts/lib/gardener/gcp.sh
     source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
+    # shellcheck source=prow/scripts/lib/gardener/gardener.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 else
     ## TODO what should I put here? Is this a backend?
     log::error "GARDENER_PROVIDER ${GARDENER_PROVIDER} is not yet supported"
