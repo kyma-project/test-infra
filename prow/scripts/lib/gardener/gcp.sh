@@ -128,6 +128,7 @@ gardener::test_fast_integration_kyma() {
     log::info "Running Kyma Fast Integration tests"
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    export DEBUG=true
     make ci
     popd
 
