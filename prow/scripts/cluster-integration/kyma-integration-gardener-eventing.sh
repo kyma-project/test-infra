@@ -70,13 +70,15 @@ else
     exit 1
 fi
 
+log::banner "Updated script:::"
+
 function cleanupJobAssets() {
     # Must be at the beginning
     EXIT_STATUS=$?
 
     set +e
 
-    log::banner "Job Exit Status:: \"${EXIT_STATUS}\""
+    log::banner "New script: Job Exit Status:: \"${EXIT_STATUS}\""
 
     if [[ $EXIT_STATUS != "0" ]]; then
         eventing::print_troubleshooting_logs
