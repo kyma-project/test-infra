@@ -49,7 +49,13 @@ gardener::cleanup() {
     log::info "Job is finished ${MSG}"
     set -e
 
-    exit "${EXIT_STATUS}"
+    if [[ ${OVERRIDE_EXIT_STATUS} != "0" ]]; then
+        log::info "Job Exiting with OVERRIDE_EXIT_STATUS: \"${OVERRIDE_EXIT_STATUS}\""
+        exit "${OVERRIDE_EXIT_STATUS}"
+    else
+        log::info "Job Exiting with EXIT_STATUS: \"${EXIT_STATUS}\""
+        exit "${EXIT_STATUS}"
+    fi
 }
 
 

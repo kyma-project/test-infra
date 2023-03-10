@@ -74,27 +74,23 @@ log::banner "Updated script:::"
 
 function cleanupJobAssets() {
     # Must be at the beginning
-    EXIT_STATUS=$?
+    export OVERRIDE_EXIT_STATUS=$?
 
     set +e
 
-    log::banner "New script: Job Exit Status:: \"${EXIT_STATUS}\""
+    log::banner "Job Exit Status:: \"${OVERRIDE_EXIT_STATUS}\""
 
-    if [[ $EXIT_STATUS != "0" ]]; then
+    if [[ OVERRIDE_EXIT_STATUS != "0" ]]; then
         eventing::print_troubleshooting_logs
     fi
 
     log::banner "Cleanup fast-integration assets"
     eventing::fast_integration_test_cleanup
 
+    set -e
+
     log::banner "Cleaning job assets"
     gardener::cleanup
-
-    set -e
-    if [[ $EXIT_STATUS != "0" ]]; then
-        log::banner "Job Exiting with error"
-        exit 1
-    fi
 }
 
 # nice cleanup on exit, be it successful or on fail
