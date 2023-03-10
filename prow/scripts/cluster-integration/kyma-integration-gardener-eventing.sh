@@ -89,7 +89,10 @@ function cleanupJobAssets() {
     gardener::cleanup
 
     set -e
-    exit ${EXIT_STATUS}
+    if [[ $EXIT_STATUS != "0" ]]; then
+        log::banner "Job Exiting with error"
+        exit 1
+    fi
 }
 
 # nice cleanup on exit, be it successful or on fail
