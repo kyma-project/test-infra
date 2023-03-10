@@ -1,9 +1,0 @@
-pjConfigs:
-  prConfig:
-    kyma-project:
-      test-infra:
-        prNumber: 7191
-  prowJobs:
-    kyma-project:
-      control-plane:
-        - pjName: "pre-main-control-plane-reconciler-e2e-latest-release"
