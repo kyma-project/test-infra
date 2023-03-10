@@ -64,6 +64,8 @@ elif [[ $GARDENER_PROVIDER == "aws" ]]; then
 elif [[ $GARDENER_PROVIDER == "gcp" ]]; then
     # shellcheck source=prow/scripts/lib/gardener/gcp.sh
     source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
+    # shellcheck source=prow/scripts/lib/gardener/gardener.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 else
     ## TODO what should I put here? Is this a backend?
     log::error "GARDENER_PROVIDER ${GARDENER_PROVIDER} is not yet supported"
@@ -86,7 +88,13 @@ function cleanupJobAssets() {
     eventing::fast_integration_test_cleanup
 
     log::banner "Cleaning job assets"
-    gardener::cleanup
+    if  [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
+        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+        gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${CLUSTER_NAME}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    fi
 
     set -e
     exit ${EXIT_STATUS}
