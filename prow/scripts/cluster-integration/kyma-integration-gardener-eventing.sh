@@ -70,27 +70,32 @@ else
     exit 1
 fi
 
-log::banner "Updated script:::"
-
 function cleanupJobAssets() {
     # Must be at the beginning
-    export OVERRIDE_EXIT_STATUS=$?
+    EXIT_STATUS=$?
 
     set +e
 
-    log::banner "Job Exit Status:: \"${OVERRIDE_EXIT_STATUS}\""
+    log::banner "Job Exit Status:: \"${EXIT_STATUS}\""
 
-    if [[ OVERRIDE_EXIT_STATUS != "0" ]]; then
+    if [[ $EXIT_STATUS != "0" ]]; then
         eventing::print_troubleshooting_logs
     fi
 
     log::banner "Cleanup fast-integration assets"
     eventing::fast_integration_test_cleanup
 
-    set -e
-
     log::banner "Cleaning job assets"
-    gardener::cleanup
+    if  [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
+        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+        gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${CLUSTER_NAME}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    fi
+
+    set -e
+    exit ${EXIT_STATUS}
 }
 
 # nice cleanup on exit, be it successful or on fail
