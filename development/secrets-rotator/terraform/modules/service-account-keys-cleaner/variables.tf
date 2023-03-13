@@ -8,7 +8,7 @@ variable "project" {
 
 variable "region" {
   type        = string
-  description = "Google Cloud location to deploy the service account keys cleaner to."
+  description = "Google Cloud region to deploy the service account keys cleaner to."
 }
 
 variable "service_name" {
