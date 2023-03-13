@@ -12,7 +12,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                  run_if_changed: "^.*$"
+                  always_run: true
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -27,7 +27,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
-                  run_if_changed: "^.*$"
+                  always_run: true
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
