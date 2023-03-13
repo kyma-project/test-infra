@@ -50,6 +50,7 @@
 /prow/jobs/kyma/tests/serverless-bench @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
 /prow/jobs/kyma/tools/event-subscriber @kyma-project/eventing @kyma-project/prow
 /prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @kyma-project/prow
+/prow/jobs/kyma-project/telemetry-manager @kyma-project/jellyfish @kyma-project/prow
 
 /prow/scripts @kyma-project/prow
 
