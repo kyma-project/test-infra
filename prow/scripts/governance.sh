@@ -137,6 +137,10 @@ function validate_external_on_pr() {
 }
 
 function validate_crd_md() {
+    echo "Install Go"
+    readonly GO_VERSION=1.19
+    wget -q https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && sudo tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && export PATH=$PATH:/usr/local/go/bin && go version
+
     sh ${KYMA_SOURCES_DIR}/hack/verify-md.sh
 }
 
