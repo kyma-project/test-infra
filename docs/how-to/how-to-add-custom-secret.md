@@ -7,7 +7,7 @@ This tutorial shows how to add a custom secret and use it in the Prow pipeline.
 
 ![permissions](./secret-manager-permissions.png)
 
-2. Apply labels to the secret in Secret Manager that will help us identify who is an owner of a secret. For example: `owner: teamname`
+2. Apply labels to the secret in Secret Manager that will help identify the owner of a secret. For example: `owner: team name`
 3. Update External Secrets Operator yaml file.
 
     Add External Secret definitions to one of the following files:
