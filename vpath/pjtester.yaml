@@ -1,0 +1,9 @@
+pjConfigs:
+    prowJobs:
+      kyma-project:
+        kyma:
+        - pjName: "pre-main-kyma-governance"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 17038
