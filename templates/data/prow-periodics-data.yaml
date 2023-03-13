@@ -38,7 +38,6 @@ templates:
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
-                    - extra_refs_test-infra
           - repoName: kyma-project/test-infra
             jobs:
               - jobConfig:
