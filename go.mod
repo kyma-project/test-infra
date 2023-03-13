@@ -3,11 +3,11 @@ module github.com/kyma-project/test-infra
 go 1.19
 
 require (
-	cloud.google.com/go/bigquery v1.47.0
+	cloud.google.com/go/bigquery v1.48.0
 	cloud.google.com/go/compute/metadata v0.2.3
 	cloud.google.com/go/firestore v1.9.0
 	cloud.google.com/go/functions v1.10.0
-	cloud.google.com/go/kms v1.8.0
+	cloud.google.com/go/kms v1.9.0
 	cloud.google.com/go/logging v1.7.0
 	cloud.google.com/go/pubsub v1.28.0
 	cloud.google.com/go/storage v1.29.0
@@ -19,8 +19,7 @@ require (
 	github.com/containerd/containerd v1.6.19
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsouza/go-dockerclient v1.9.5
-	github.com/ghodss/yaml v1.0.0
+	github.com/fsouza/go-dockerclient v1.9.6
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-containerregistry v0.13.0
@@ -36,8 +35,8 @@ require (
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.5
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
-	github.com/onsi/ginkgo/v2 v2.8.4
-	github.com/onsi/gomega v1.27.1
+	github.com/onsi/ginkgo/v2 v2.9.0
+	github.com/onsi/gomega v1.27.2
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
@@ -50,9 +49,9 @@ require (
 	github.com/tidwall/gjson v1.14.4
 	github.com/zricethezav/gitleaks/v8 v8.16.0
 	go.uber.org/zap v1.24.0
-	golang.org/x/net v0.7.0
-	golang.org/x/oauth2 v0.5.0
-	google.golang.org/api v0.110.0
+	golang.org/x/net v0.8.0
+	golang.org/x/oauth2 v0.6.0
+	google.golang.org/api v0.112.0
 	google.golang.org/grpc v1.53.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -64,13 +63,13 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230228174516-89ac42333a8e
+require k8s.io/test-infra v0.0.0-20230309183402-67c25528b2fc
 
 require (
-	cloud.google.com/go v0.107.0 // indirect
+	cloud.google.com/go v0.110.0 // indirect
 	cloud.google.com/go/compute v1.18.0 // indirect
-	cloud.google.com/go/iam v0.11.0 // indirect
-	cloud.google.com/go/longrunning v0.3.0 // indirect
+	cloud.google.com/go/iam v0.12.0 // indirect
+	cloud.google.com/go/longrunning v0.4.1 // indirect
 	contrib.go.opencensus.io/exporter/ocagent v0.7.1-0.20200907061046-05415f1de66d // indirect
 	contrib.go.opencensus.io/exporter/prometheus v0.4.0 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
@@ -226,15 +225,15 @@ require (
 	golang.org/x/crypto v0.5.0 // indirect
 	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.5.0 // indirect
-	golang.org/x/term v0.5.0 // indirect
-	golang.org/x/text v0.7.0 // indirect
+	golang.org/x/sys v0.6.0 // indirect
+	golang.org/x/term v0.6.0 // indirect
+	golang.org/x/text v0.8.0 // indirect
 	golang.org/x/time v0.1.0 // indirect
 	golang.org/x/tools v0.6.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20230222225845-10f96fb3dbec // indirect
+	google.golang.org/genproto v0.0.0-20230303212802-e74f57abe488 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect

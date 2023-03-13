@@ -1,4 +1,4 @@
-FROM golang:1.20.1-alpine3.17 as builder
+FROM golang:1.20.2-alpine3.17 as builder
 
 ENV BASE_APP_DIR=/go/src/github.com/kyma-project/test-infra/development/test-log-collector \
     GO111MODULE=on \

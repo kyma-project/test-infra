@@ -48,6 +48,50 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pre-rel212-kyma-artifacts
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rel212-kyma-artifacts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-kyma-development-artifacts-bucket: "true"
+        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-artifacts: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^release-2.12$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-2.12
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 0.2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-rel211-kyma-artifacts
       annotations:
         pipeline.trigger: "pr-submit"
@@ -136,12 +180,12 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-rel29-kyma-artifacts
+    - name: pre-rel213-kyma-artifacts
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel29-kyma-artifacts"
+        prow.k8s.io/pubsub.runID: "pre-rel213-kyma-artifacts"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
@@ -156,56 +200,12 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^release-2.9$
+        - ^release-2.13$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.9
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel212-kyma-artifacts
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel212-kyma-artifacts"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-bot-github-token: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-development-artifacts-bucket: "true"
-        preset-sa-gcr-push: "true"
-        preset-sa-kyma-push-artifacts: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^release-2.12$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.12
+          base_ref: release-2.13
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
@@ -255,6 +255,51 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 0.2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: post-rel212-kyma-artifacts
+      annotations:
+        pipeline.trigger: "pr-merge"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-rel212-kyma-artifacts"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
+        preset-dind-enabled: "true"
+        preset-docker-push-repository-kyma: "true"
+        preset-kyma-artifacts-bucket: "true"
+        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-artifacts: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^release-2.12$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: release-2.12
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
@@ -363,13 +408,13 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel29-kyma-artifacts
+    - name: post-rel213-kyma-artifacts
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel29-kyma-artifacts"
+        prow.k8s.io/pubsub.runID: "post-rel213-kyma-artifacts"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-dind-enabled: "true"
@@ -384,57 +429,12 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^release-2.9$
+        - ^release-2.13$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.9
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-rel212-kyma-artifacts
-      annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel212-kyma-artifacts"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-bot-github-token: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-artifacts-bucket: "true"
-        preset-sa-gcr-push: "true"
-        preset-sa-kyma-push-artifacts: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^release-2.12$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.12
+          base_ref: release-2.13
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"

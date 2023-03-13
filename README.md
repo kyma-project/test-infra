@@ -6,21 +6,9 @@
 
 The purpose of the `test-infra` repository is to store configuration and scripts for the test infrastructure used in the `kyma-project` organization.
 
-### Project structure
+### Project documentation
 
-<!-- Update the repository structure each time you modify it. -->
-
-The `test-infra` repository has the following structure:
-
-```
-  ├── .github                     # Pull request and issue templates             
-  ├── development                 # Scripts used for the development of the "test-infra" repository
-  ├── docs                        # Documentation for the test infrastructure, such as Prow installation guides
-  │    └── index.md               # Index page for test-infra documentation
-  └── prow                        # Installation scripts for Prow on the production cluster    
-
-```
-See also the [index page](/docs/index.md) for test-infra documentation.
+Please see the [index page](/docs/index.md) for the Test Infra documentation. It lists all the documentation available in the `test-infra` repository.
 
 ### Prow
 

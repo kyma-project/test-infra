@@ -1,6 +1,6 @@
 clusters:
   - gke: projects/sap-kyma-prow/locations/europe-west4/clusters/tekton
-    duration: 48h
+    duration: 8760h
     name: tekton-pipelines
     gsm:
       name: tekton-pipelines-kubeconfig

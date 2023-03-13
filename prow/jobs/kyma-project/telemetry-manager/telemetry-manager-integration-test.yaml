@@ -1,0 +1,33 @@
+presubmits:
+  kyma-project/telemetry-manager:
+    - name: pull-telemetry-manager-integration-test
+      optional: false
+      labels:
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+      cluster: untrusted-workload
+      decorate: true
+      run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/'
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                service docker start
+                make e2e-test
+            requests:
+              memory: 2Gi
+            limits:
+              memory: 2Gi
+            securityContext:
+              privileged: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+          dedicated: "high-cpu"

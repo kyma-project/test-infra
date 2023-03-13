@@ -5,9 +5,9 @@ templates:
         jobConfigs:
           - repoName: "github.com/kyma-project/btp-manager"
             jobs:
-              - jobConfig:
+              - jobConfig: # builds a docker image of the btp-manager tagged with the PR name
                   name: pull-btp-manager-build
-                  run_if_changed: "^api/*/.*$|^config/*/.*$|^controllers/*/.*$|^hack/*.*$|^internal/*/.*$|^module-chart/*/.*$|^pkg/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^(.*.go|Makefile|.*.sh)|^PROJECT$"
+                  always_run: true
                   args:
                     - "--name=btp-manager"
                     - "--context=."

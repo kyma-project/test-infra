@@ -6,7 +6,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ghodss/yaml"
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/kyma-project/test-infra/development/tools/jobs/tester/preset"
 	"github.com/pkg/errors"
@@ -15,6 +14,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
 	"k8s.io/test-infra/prow/config"
+	"sigs.k8s.io/yaml"
 )
 
 const (
@@ -32,7 +32,7 @@ const (
 	// ImageGolangToolboxLatest represents the latest version of the golang buildpack toolbox
 	ImageGolangToolboxLatest = "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65" // see https://github.com/kyma-project/test-infra/pull/3738
 	// ImageProwToolsLatest represents the latest version of the prow-tools image
-	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230228-d4083ec8"
+	ImageProwToolsLatest = "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230309-1d421c4f"
 	// KymaProjectDir means kyma project dir
 	KymaProjectDir = "/home/prow/go/src/github.com/kyma-project"
 	// KymaIncubatorDir means kyma incubator dir
