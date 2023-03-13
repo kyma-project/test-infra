@@ -530,7 +530,9 @@ templates:
                     JOB_VM_COMMAND: >-
                       export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin 
                       && 
-                      make ci-k3d-integration-test
+                      make -C hack/local/serverless run-manual
+                      &&
+                      make -C hack/ci integration-test
                 inheritedConfigs:
                   global:
                     - jobConfig_default
