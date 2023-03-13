@@ -3,6 +3,7 @@ pjConfigs:
       kyma-project:
         kyma:
         - pjName: "pre-main-kyma-governance"
+          report: true
 prConfigs:
   kyma-project:
     kyma:
