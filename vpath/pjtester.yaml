@@ -2,7 +2,7 @@ pjConfigs:
     prowJobs:
       kyma-project:
         kyma:
-        - pjName: "pre-main-kyma-governance"
+        - pjName: "kyma-governance"
 prConfigs:
   kyma-project:
     kyma:
