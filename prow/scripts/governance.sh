@@ -4,7 +4,7 @@ set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-export KYMA_SOURCES_DIR="./kyma"
+export KYMA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/kyma"
 
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
