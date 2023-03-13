@@ -7,3 +7,7 @@ pjConfigs:
     kyma-project:
       cli:
       - pjName: "pull-cli-integration-test"
+prConfigs: #
+  kyma-project:
+    cli:
+      prNumber: 1585
