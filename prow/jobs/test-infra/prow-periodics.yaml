@@ -2,6 +2,8 @@
 
 
 postsubmits: # runs on main
+  kyma-project/eventing-tools:
+  
   kyma-project/test-infra:
     - name: post-test-infra-markdown-index-autobump
       annotations:
@@ -63,6 +65,26 @@ postsubmits: # runs on main
               secretName: sa-prow-deploy
   
 periodics: # runs on schedule
+    - name: eventing-tools-autobump
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "eventing-tools-autobump"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
+      cron: "30 * * * 1-5"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230226-ef2af11076"
+            command:
+              - "generic-autobumper"
+            args:
+              - "--config=prow/autobump-config/eventing-tools-autobump-config.yaml"
+  
     - name: ci-prow-label-sync
       annotations:
         testgrid-create-test-group: "false"
