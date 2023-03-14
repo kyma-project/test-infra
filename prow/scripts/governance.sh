@@ -136,11 +136,6 @@ function validate_external_on_pr() {
     fi
 }
 
-function install_golang() {
-    readonly GO_VERSION=1.19
-    wget -q https://golang.org/dl/go${GO_VERSION}.linux-amd64.tar.gz && tar -C /usr/local -xzf go${GO_VERSION}.linux-amd64.tar.gz && export PATH=$PATH:/usr/local/go/bin && go version
-}
-
 function validate_crd_md() {
     sh ${KYMA_SOURCES_DIR}/hack/verify-md.sh
 }
@@ -159,9 +154,6 @@ function main() {
         log::info "Validate external links on changed markdown files"
         validate_external_on_pr
     fi
-
-    log::info "Installing golang"
-    install_golang
 
     log::info "Validate CRD documentation tables"
     validate_crd_md
