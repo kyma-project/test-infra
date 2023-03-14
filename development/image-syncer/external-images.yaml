@@ -1,6 +1,7 @@
 targetRepoPrefix:  "eu.gcr.io/kyma-project/external/"
 images:
-- source: "alpine:3.17.2"
+- source: "alpine@sha256:69665d02cb32192e52e07644d76bc6f25abeb5410edc1c7a81a10ba3f0efb90a"
+  tag: "3.17.2"
 - source: "bitnami/postgres-exporter:0.11.1-debian-11-r23"
   amd64Only: true
 - source: "busybox@sha256:3b3128d9df6bbbcc92e2358e596c9fbd722a437a62bafbc51607970e9e3b8869"
@@ -11,8 +12,8 @@ images:
 - source: "gcr.io/google-containers/pause:3.2"
 - source: "goreleaser/goreleaser:v1.11.5"
 # Golang image is pinned because it is force updated in the upstream
-- source: "golang@sha256:48f336ef8366b9d6246293e3047259d0f614ee167db1869bdbc343d6e09aed8a"
-  tag: "1.20.1-alpine3.17"
+- source: "golang@sha256:4e6bc0eafc261b6c8ba9bd9999b6698e8cefbe21e6d90fbc10c34599d75dc608"
+  tag: "1.20.2-alpine3.17"
 - source: "grafana/loki:2.2.1"
 - source: "grafana/grafana-image-renderer:3.2.1"
   amd64Only: true
