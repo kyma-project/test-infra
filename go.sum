@@ -1144,8 +1144,8 @@ github.com/yvasiyarov/newrelic_platform_go v0.0.0-20140908184405-b21fdbd4370f/go
 github.com/zeebo/assert v1.3.0 h1:g7C04CbJuIDKNPFHmsk4hwZDO5O+kntRxzaUoNXj+IQ=
 github.com/zeebo/xxh3 v1.0.2 h1:xZmwmqxHZA8AI603jOQ0tMqmBr9lPeFwGg6d+xy9DC0=
 github.com/zeebo/xxh3 v1.0.2/go.mod h1:5NWz9Sef7zIDm2JHfFlcQvNekmcEl9ekUZQQKCYaDcA=
-github.com/zricethezav/gitleaks/v8 v8.16.0 h1:mYy6rovlEdkmfHvGwSrcDPKsLbAyV7EgbFctdwTzUx0=
-github.com/zricethezav/gitleaks/v8 v8.16.0/go.mod h1:JzsbTtA88h1ioImguqG0BL2IV2JfblVO0qj/LSwgUKQ=
+github.com/zricethezav/gitleaks/v8 v8.16.1 h1:Y+x4GNIZx70fPQBJseuZydecadlgbKUJgirNeySSZw8=
+github.com/zricethezav/gitleaks/v8 v8.16.1/go.mod h1:JzsbTtA88h1ioImguqG0BL2IV2JfblVO0qj/LSwgUKQ=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=
@@ -1792,8 +1792,8 @@ k8s.io/kube-openapi v0.0.0-20220328201542-3ee0da9b0b42/go.mod h1:Z/45zLw8lUo4wdi
 k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1 h1:MQ8BAZPZlWk3S9K4a9NCkIFQtZShWqoha7snGixVgEA=
 k8s.io/kube-openapi v0.0.0-20220803162953-67bda5d908f1/go.mod h1:C/N6wCaBHeBHkHUesQOQy2/MZqGgMAFPqGsGQLdbZBU=
 k8s.io/kubernetes v1.13.0/go.mod h1:ocZa8+6APFNC2tX1DZASIbocyYT5jHzqFVsY5aoB7Jk=
-k8s.io/test-infra v0.0.0-20230312164840-d6acd1068fe6 h1:CAJBqKU1xB8bURcGBP4dSSvebPwF7+pCotFZSU7j3QQ=
-k8s.io/test-infra v0.0.0-20230312164840-d6acd1068fe6/go.mod h1:6n8IUtr6O54jvYP97p7OqCe3xIKet+GxyI2esOmNOnw=
+k8s.io/test-infra v0.0.0-20230314173416-d13af5dafcc3 h1:nADKwqSw49mN1MByKzdj9UYAs+hoItlhwSShoFPrBrE=
+k8s.io/test-infra v0.0.0-20230314173416-d13af5dafcc3/go.mod h1:6n8IUtr6O54jvYP97p7OqCe3xIKet+GxyI2esOmNOnw=
 k8s.io/utils v0.0.0-20201110183641-67b214c5f920/go.mod h1:jPW/WVKK9YHAvNhRxK0md/EJ228hCsBRufyofKtW8HA=
 k8s.io/utils v0.0.0-20210802155522-efc7438f0176/go.mod h1:jPW/WVKK9YHAvNhRxK0md/EJ228hCsBRufyofKtW8HA=
 k8s.io/utils v0.0.0-20220210201930-3a6ce19ff2f9/go.mod h1:jPW/WVKK9YHAvNhRxK0md/EJ228hCsBRufyofKtW8HA=
