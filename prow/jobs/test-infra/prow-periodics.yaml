@@ -79,7 +79,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230226-ef2af11076"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230313-23dc2a84f3"
             command:
               - "generic-autobumper"
             args:
