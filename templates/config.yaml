@@ -78,7 +78,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -109,7 +109,7 @@ globalSets:
         value: high-cpu
         operator: Equal
         effect: NoSchedule
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c-buildkit
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     command: "/image-builder"
     request_memory: "1.5Gi"
     request_cpu: "1"

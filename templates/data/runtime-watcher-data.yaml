@@ -14,7 +14,7 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
             command: /image-builder
             labels:
               preset-sa-kyma-push-images: "true"
