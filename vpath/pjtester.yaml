@@ -1,0 +1,13 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      serverless-manager:
+      - pjName: "serverless-operator-nightly-periodic"
+      - pjName: "pull-serverless-module-build"
+      - pjName: "pre-serverless-manager-operator-tests"
+      - pjName: "pre-serverless-manager-operator-build"
+      - pjName: "pre-main-serverless-manager-verify"
+prConfigs: #
+  kyma-project:
+    serverless-manager:
+      prNumber: 69
