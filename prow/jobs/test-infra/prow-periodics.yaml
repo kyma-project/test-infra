@@ -77,13 +77,18 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: eventing-tools
+          path_alias: github.com/kyma-project/eventing-tools
+          base_ref: main
       spec:
         containers:
           - image: "gcr.io/k8s-prow/generic-autobumper:v20230226-ef2af11076"
             command:
               - "generic-autobumper"
             args:
-              - "--config=prow/autobump-config/eventing-tools-autobump-config.yaml"
+              - "--config=ci/eventing-tools-autobump-config.yaml"
   
     - name: ci-prow-label-sync
       annotations:
