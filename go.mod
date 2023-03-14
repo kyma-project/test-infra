@@ -9,7 +9,7 @@ require (
 	cloud.google.com/go/functions v1.10.0
 	cloud.google.com/go/kms v1.9.0
 	cloud.google.com/go/logging v1.7.0
-	cloud.google.com/go/pubsub v1.28.0
+	cloud.google.com/go/pubsub v1.29.0
 	cloud.google.com/go/storage v1.29.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
@@ -63,7 +63,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230312164840-d6acd1068fe6
+require k8s.io/test-infra v0.0.0-20230314173416-d13af5dafcc3
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
@@ -228,7 +228,7 @@ require (
 	golang.org/x/sys v0.6.0 // indirect
 	golang.org/x/term v0.6.0 // indirect
 	golang.org/x/text v0.8.0 // indirect
-	golang.org/x/time v0.1.0 // indirect
+	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.7.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
