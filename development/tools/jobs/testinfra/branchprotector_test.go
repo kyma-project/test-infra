@@ -6,11 +6,11 @@ import (
 	"os"
 	"testing"
 
-	"github.com/ghodss/yaml"
 	"github.com/kyma-project/test-infra/development/tools/jobs/releases"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"k8s.io/test-infra/prow/config"
+	"sigs.k8s.io/yaml"
 )
 
 func TestBranchProtection(t *testing.T) {

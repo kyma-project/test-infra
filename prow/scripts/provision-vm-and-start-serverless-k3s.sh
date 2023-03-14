@@ -127,6 +127,6 @@ log::info "Copying Kyma to the instance"
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${KYMA_PROJECT_DIR}" "~/"
 
 log::info "Triggering the installation"
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash ~/test-infra/prow/scripts/cluster-integration/serverless-integration-k3s.sh ${INTEGRATION_SUITE}"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash ~/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3s.sh ${INTEGRATION_SUITE}"
 
 log::success "all done"

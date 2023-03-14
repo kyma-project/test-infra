@@ -14,7 +14,7 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
@@ -36,7 +36,6 @@ templates:
             path_alias: github.com/kyma-project/keda-manager
             command: "bash"
             env:
-              CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
               JOB_REPO_NAME: "keda-manager"
             args:
               - "-c"
@@ -57,6 +56,53 @@ templates:
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
+              - jobConfig:
+                  name: "keda-operator-nightly-periodic"
+                  cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
+                  annotations:
+                    description: Keda nightly verify
+                    pipeline.platform: gke
+                    pipeline.installer: kyma deploy
+                    pipeline.clusterprovisioning: gcloud cli
+                    pipeline.type: integration
+                    testgrid-dashboards: keda-nightly
+                    testgrid-days-of-results: "60"
+                  path_alias: github.com/kyma-project/keda-manager
+                  cluster: "trusted-workload"
+                  volumes:
+                    - name: sa-stability-fluentd-storage-writer
+                      secretName: sa-stability-fluentd-storage-writer
+                  volumeMounts:
+                    - name: sa-stability-fluentd-storage-writer
+                      mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+                      readOnly: true
+                  env:
+                    MACHINE_TYPE: "custom-8-15360"
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    NODES_PER_ZONE: "1"
+                    STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG: "0.6.4"
+                    INPUT_CLUSTER_NAME: "keda-nightly-periodic"
+                    GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    TEST_RESULT_WINDOW_TIME: "6h"
+                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make local-run"
+                  extra_refs:
+                    keda-manager:
+                      - org: kyma-project
+                        repo: keda-manager
+                        base_ref: main
+                        path_alias: github.com/kyma-project/keda-manager
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                  local:
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels
               - jobConfig:
                   name: pre-keda-manager-operator-lint
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
@@ -219,7 +265,11 @@ templates:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
                     JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin 
                     && make kyma
-                    && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/moduletemplate-keda.yaml > ./bin/kyma-unstable alpha deploy --template _
+                    && ./bin/kyma-unstable provision k3d
+                    && mkdir tmp
+                    && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/moduletemplate-keda.yaml > tmp/moduletemplate-keda.yaml
+                    && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/kustomization.yaml > tmp/kustomization.yaml
+                    && ./bin/kyma-unstable alpha deploy --ci --force-conflicts --templates tmp/
                     && make ci-k3d-upgrade-test"
                 inheritedConfigs:
                   global:
@@ -310,6 +360,53 @@ templates:
           - repoName: kyma-project/serverless-manager
             jobs:
               - jobConfig:
+                  name: "serverless-operator-nightly-periodic"
+                  cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
+                  annotations:
+                    description: serverless operator nightly verify
+                    pipeline.platform: gke
+                    pipeline.installer: kyma deploy
+                    pipeline.clusterprovisioning: gcloud cli
+                    pipeline.type: integration
+                    testgrid-dashboards: serverless-operator-nightly
+                    testgrid-days-of-results: "60"
+                  path_alias: github.com/kyma-project/serverless-manager
+                  cluster: "trusted-workload"
+                  volumes:
+                    - name: sa-stability-fluentd-storage-writer
+                      secretName: sa-stability-fluentd-storage-writer
+                  volumeMounts:
+                    - name: sa-stability-fluentd-storage-writer
+                      mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
+                      readOnly: true
+                  env:
+                    MACHINE_TYPE: "custom-8-15360"
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    NODES_PER_ZONE: "1"
+                    STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG: "0.6.4"
+                    INPUT_CLUSTER_NAME: "serverless-operator-nightly-periodic"
+                    GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    TEST_RESULT_WINDOW_TIME: "6h"
+                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make local-run"
+                  extra_refs:
+                    serverless-manager:
+                      - org: kyma-project
+                        repo: serverless-manager
+                        base_ref: main
+                        path_alias: github.com/kyma-project/serverless-manager
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                  local:
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels
+              - jobConfig:
                   name: post-serverless-module-build
                   labels:
                     preset-sa-kyma-push-images: "true"
@@ -376,8 +473,6 @@ templates:
               - jobConfig:
                   name: pre-serverless-manager-operator-build
                   always_run: true
-                  # TODO: remove after test phase (or fixing pjtester)
-                  optional: "true"
                   command: sh
                   args:
                     - -c
@@ -402,8 +497,6 @@ templates:
               - jobConfig:
                   name: post-serverless-manager-operator-build
                   always_run: true
-                  # TODO: remove after test phase (or fixing pjtester)
-                  optional: "true"
                   labels:
                     preset-signify-prod-secret: "true"
                   command: sh
@@ -419,6 +512,7 @@ templates:
                       --config=/config/kaniko-build-config.yaml
                       --context=.
                       --dockerfile=Dockerfile
+                      --tag=$PULL_BASE_SHA
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
@@ -430,13 +524,15 @@ templates:
               - jobConfig:
                   name: pre-main-serverless-manager-verify
                   always_run: "true"
-                  optional: "true"
+                  optional: "false"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
                     JOB_VM_COMMAND: >-
                       export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin 
                       && 
-                      make ci-k3d-integration-test
+                      make -C hack/local/serverless run-manual
+                      &&
+                      make -C hack/ci integration-test
                 inheritedConfigs:
                   global:
                     - jobConfig_default
