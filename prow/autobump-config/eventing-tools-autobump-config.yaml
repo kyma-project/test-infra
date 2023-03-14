@@ -1,0 +1,17 @@
+gitHubLogin: "kyma-bot"
+gitHubToken: "/etc/github/token"
+gitName: "Kyma Bot"
+gitEmail: "kyma.bot@sap.com"
+skipPullRequest: false
+gitHubOrg: "kyma-project"
+gitHubRepo: "eventing-tools"
+remoteName: "eventing-tools-1"
+upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/eventing-tools/main"
+includedConfigPaths:
+  - "resources"
+targetVersion: "latest" 
+prefixes:
+  - name: "eventing-tools"
+    prefix: "eu.gcr.io/kyma-project/eventing-tools"
+    repo: "https://github.com/kyma-project/eventing-tools"
+    summarise: true
