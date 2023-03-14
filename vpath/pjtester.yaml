@@ -6,7 +6,4 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma:
-      - pjName: "pre-main-kyma-integration-k3d"
-        report: true
       - pjName: "post-rel211-kyma-integration-k3d" 
-        report: true
