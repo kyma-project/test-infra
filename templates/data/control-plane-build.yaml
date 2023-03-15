@@ -168,7 +168,7 @@ templates:
               - jobConfig:
                   name: pull-keb-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
                     - --name=control-plane/kyma-environments-cleanup-job
                     - --context=components/kyma-environment-broker
@@ -184,7 +184,7 @@ templates:
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   branches:
                     - ^main$
                   args:
@@ -200,7 +200,7 @@ templates:
               - jobConfig:
                   name: pull-keb-subaccount-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
                     - --name=control-plane/kyma-environment-subaccount-cleanup-job
                     - --context=components/kyma-environment-broker
@@ -216,7 +216,7 @@ templates:
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   branches:
                     - ^main$
                   args:
@@ -232,7 +232,7 @@ templates:
               - jobConfig:
                   name: pull-keb-subscription-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
                     - --name=control-plane/kyma-environment-subscription-cleanup-job
                     - --context=components/kyma-environment-broker
@@ -248,7 +248,7 @@ templates:
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   branches:
                     - ^main$
                   args:
@@ -264,7 +264,7 @@ templates:
               - jobConfig:
                   name: pull-keb-trial-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
                     - --name=control-plane/kyma-environment-trial-cleanup-job
                     - --context=components/kyma-environment-broker
@@ -280,7 +280,8 @@ templates:
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+                  branches:
                     - ^main$
                   args:
                     - --name=control-plane/kyma-environment-trial-cleanup-job
@@ -295,7 +296,7 @@ templates:
               - jobConfig:
                   name: pull-keb-deprovision-retrigger-job-build
                   run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
                     - --name=control-plane/kyma-environment-deprovision-retrigger-job
                     - --context=components/kyma-environment-broker
@@ -309,7 +310,7 @@ templates:
               - jobConfig:
                   name: post-keb-deprovision-retrigger-job-build
                   run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   branches:
                     - ^main$
                   args:

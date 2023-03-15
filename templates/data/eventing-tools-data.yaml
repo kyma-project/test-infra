@@ -1,36 +1,35 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/istio/istio-operator-build.yaml
+      - to: ../../prow/jobs/eventing-tools/eventing-tools-generic.yaml
         jobConfigs:
-          - repoName: "kyma-project/istio"
+          - repoName: "github.com/kyma-project/eventing-tools"
             jobs:
               - jobConfig:
-                  name: pull-istio-operator-build
-                  always_run: true
+                  name: pull-eventing-tools-build
                   args:
-                    - "--name=istio-operator"
+                    - "--name=eventing-tools"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=./operator/"
+                    - "--context=."
                     - "--dockerfile=Dockerfile"
+                  always_run: true
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-istio-operator-build
+                  name: post-eventing-tools-build
                   labels:
                     preset-signify-prod-secret: "true"
-                  always_run: true
-                  branches:
-                    - ^main$
-                    - "^release-\\d+\\.\\d+$"
                   args:
-                    - "--name=istio-operator"
+                    - "--name=eventing-tools"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=./operator/"
+                    - "--context=."
                     - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
+                  always_run: true
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                    - "disable_testgrid"

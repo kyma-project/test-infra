@@ -3,7 +3,7 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-rel27-kyma-integration-k3d
+    - name: pre-rel213-kyma-integration-k3d
       annotations:
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
@@ -12,7 +12,7 @@ presubmits: # runs on PRs
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel27-kyma-integration-k3d"
+        prow.k8s.io/pubsub.runID: "pre-rel213-kyma-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-gc-project-env: "true"
@@ -24,12 +24,12 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^release-2.7$
+        - ^release-2.13$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.7
+          base_ref: release-2.13
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
@@ -37,9 +37,6 @@ presubmits: # runs on PRs
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -54,18 +51,18 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-rel27-kyma-integration-k3d
+    - name: post-rel213-kyma-integration-k3d
       annotations:
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
-        testgrid-dashboards: "kyma_release-2.7"
+        testgrid-dashboards: "kyma_release-2.13"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel27-kyma-integration-k3d"
+        prow.k8s.io/pubsub.runID: "post-rel213-kyma-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-gc-project-env: "true"
@@ -77,12 +74,12 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^release-2.7$
+        - ^release-2.13$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.7
+          base_ref: release-2.13
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
@@ -90,9 +87,6 @@ postsubmits: # runs on main
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -104,25 +98,24 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel27-kyma-release-candidate
+    - name: post-rel213-kyma-release-candidate
       annotations:
-        description: "Release candidate job for Kyma 2.7."
+        description: "Release candidate job for Kyma 2.13."
         pipeline.trigger: "pr-merge"
-        testgrid-dashboards: "kyma_release-2.7"
+        testgrid-dashboards: "kyma_release-2.13"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel27-kyma-release-candidate"
+        prow.k8s.io/pubsub.runID: "post-rel213-kyma-release-candidate"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-certificates-bucket: "true"
         preset-cluster-use-ssd: "true"
-        preset-cluster-version-old: "true"
+        preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-gke-kyma-developers-group: "true"
-        preset-gke-pod-security-policy: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
         preset-kyma-keyring: "true"
@@ -135,12 +128,12 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^2.7\.\d+(?:-.*)?$
+        - ^2.13\.\d+(?:-.*)?$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.7
+          base_ref: release-2.13
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
@@ -183,29 +176,28 @@ postsubmits: # runs on main
               secretName: kyma-tunas-release-testing-event-mesh
   
 periodics: # runs on schedule
-    - name: kyma-gke-nightly-rel27
+    - name: kyma-gke-nightly-rel213
       annotations:
-        description: "Kyma GKE nightly build (release-2.7)"
+        description: "Kyma GKE nightly build (release-2.13)"
         pipeline.clusterprovisioning: "gcloud cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gke"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
-        testgrid-dashboards: "kyma_release-2.7"
+        testgrid-dashboards: "kyma_release-2.13"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-gke-nightly-rel27"
+        prow.k8s.io/pubsub.runID: "kyma-gke-nightly-rel213"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-certificates-bucket: "true"
         preset-cluster-use-ssd: "true"
-        preset-cluster-version-old: "true"
+        preset-cluster-version: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-gke-pod-security-policy: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-artifacts-bucket: "true"
         preset-kyma-encryption-key: "true"
@@ -223,11 +215,11 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: release-2.7
+          base_ref: release-2.13
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.7
+          base_ref: release-2.13
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
@@ -244,7 +236,7 @@ periodics: # runs on schedule
               - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
                 value: "cluster-access"
               - name: INPUT_CLUSTER_NAME
-                value: "nightly-27"
+                value: "nightly-213"
               - name: MACHINE_TYPE
                 value: "custom-8-15360"
               - name: NODES_PER_ZONE

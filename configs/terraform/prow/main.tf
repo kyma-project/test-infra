@@ -67,7 +67,7 @@ resource "google_service_account" "prow_terraform_executor" {
 
 resource "google_project_iam_member" "project_editor" {
   project = var.gcp_project_id
-  role    = "roles/editor"
+  role    = "roles/owner"
   member  = "serviceAccount:${google_service_account.prow_terraform_executor.email}"
 }
 

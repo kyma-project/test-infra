@@ -18,7 +18,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -102,7 +102,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -186,7 +186,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -270,7 +270,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -354,7 +354,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -438,7 +438,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -522,7 +522,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -606,7 +606,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -690,7 +690,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -774,7 +774,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -858,7 +858,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -942,7 +942,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1026,7 +1026,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1110,7 +1110,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1194,7 +1194,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1278,7 +1278,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1362,7 +1362,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1446,7 +1446,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1530,7 +1530,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1614,7 +1614,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1698,7 +1698,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1782,7 +1782,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1866,7 +1866,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1950,7 +1950,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2034,7 +2034,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2097,6 +2097,90 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
   
+  kyma-project/director-size-exporter:
+    - name: pull-director-size-exporter-pjtester
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-director-size-exporter-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+    - name: pull-director-size-exporter-vpathguard
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-director-size-exporter-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-pjtester-kubeconfig: "true"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
   kyma-incubator/compass:
     - name: pull-compass-pjtester
       labels:
@@ -2118,7 +2202,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2202,7 +2286,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2286,7 +2370,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2370,7 +2454,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2454,7 +2538,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2538,7 +2622,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2622,7 +2706,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2706,7 +2790,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2790,7 +2874,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2874,7 +2958,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2958,7 +3042,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3042,7 +3126,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3126,7 +3210,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3210,7 +3294,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3294,7 +3378,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3378,7 +3462,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3462,7 +3546,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3546,7 +3630,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3630,7 +3714,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3714,7 +3798,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3798,7 +3882,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3882,7 +3966,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3966,7 +4050,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -4050,7 +4134,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -4134,7 +4218,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -4218,7 +4302,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -4302,7 +4386,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230314-e8a07f36"
             imagePullPolicy: Always
             securityContext:
               privileged: false

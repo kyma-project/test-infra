@@ -55,12 +55,6 @@ templates:
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing-upgrade.sh"
-          command_upgrade_subscription:
-            annotations:
-              pipeline.installer: kyma deploy
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: kyma cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-subscription-upgrade.sh"
           gardener_gcp_job_eventing:
             labels:
               preset-gardener-gcp-kyma-integration: "true"
@@ -101,6 +95,7 @@ templates:
                   env:
                     EXECUTION_PROFILE: "production"
                     MACHINE_TYPE: "n1-standard-8"
+                    EVENTING_UPGRADE_JOB: true
                   volumes:
                     - name: kyma-tunas-prow-event-mesh
                       secretName: kyma-tunas-prow-event-mesh
@@ -179,35 +174,6 @@ templates:
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
-              - jobConfig:
-                  name: pre-main-kyma-gardener-gcp-subscription-upgrade
-                  optional: false
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-bot-github-token: "true"
-                  env:
-                    EXECUTION_PROFILE: "evaluation"
-                  volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
-                  volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
-                      readOnly: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - gardener_gcp_job_eventing
-                    - command_upgrade_subscription
 
   - fromTo:
       - from: generic.tmpl
@@ -246,12 +212,6 @@ templates:
               pipeline.test: octopus
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
-          command_upgrade_subscription:
-            annotations:
-              pipeline.installer: kyma deploy
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: kyma cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-subscription-upgrade.sh"
           command_busola_long_lasting:
             annotations:
               pipeline.installer: kyma deploy
@@ -539,5 +499,5 @@ templates:
                     - kyma_minor_upgrade
                   local:
                     - jobConfig_default
-                    - gardener_azure_job_old_version
+                    - gardener_azure_job
                     - command_upgrade_gardener_kyma2_minor_versions
