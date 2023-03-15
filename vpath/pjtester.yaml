@@ -1,0 +1,14 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      kyma:
+        prNumber: 17052
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "pre-main-kyma-gardener-gcp-eventing"
+          report: false
+prConfigs: #
+  kyma-project:
+    kyma:
+      prNumber: 17052
