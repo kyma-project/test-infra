@@ -22,7 +22,7 @@ require (
 	github.com/fsouza/go-dockerclient v1.9.6
 	github.com/go-playground/validator/v10 v10.11.2
 	github.com/go-yaml/yaml v2.1.0+incompatible
-	github.com/google/go-containerregistry v0.13.0
+	github.com/google/go-containerregistry v0.14.0
 	github.com/google/go-github/v40 v40.0.0
 	github.com/google/go-github/v42 v42.0.0
 	github.com/google/go-github/v48 v48.2.0
@@ -103,7 +103,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/denormal/go-gitignore v0.0.0-20180930084346-ae8ad1d07817 // indirect
 	github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1 // indirect
-	github.com/docker/cli v20.10.20+incompatible // indirect
+	github.com/docker/cli v23.0.1+incompatible // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
 	github.com/docker/docker v23.0.1+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.7.0 // indirect
@@ -155,13 +155,13 @@ require (
 	github.com/hashicorp/go-retryablehttp v0.7.0 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
-	github.com/inconshreveable/mousetrap v1.0.1 // indirect
+	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/jtolds/gls v4.20.0+incompatible // indirect
 	github.com/klauspost/asmfmt v1.3.2 // indirect
-	github.com/klauspost/compress v1.15.11 // indirect
+	github.com/klauspost/compress v1.16.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
