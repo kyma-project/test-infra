@@ -60,7 +60,7 @@ function run_post_upgrade_tests() {
     # extract 2.12 from 2.12.0
     RELEASE_BRANCH=$(echo $KYMA_UPGRADE_VERSION| cut -c -4)
     log::banner "Checkout release branch ${RELEASE_BRANCH}"
-    git checkout "branch-${RELEASE_BRANCH}"
+    git checkout "release-${RELEASE_BRANCH}"
   fi
 
   make ci-post-upgrade
