@@ -107,12 +107,16 @@ ENDTIME=$(date +%s)
 echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 
 trap cleanup exit INT
+
 # apply overrides if we are not using the default test suite
 if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
     log::info "Creating Serverless git-auth-integration envs"
-    export APP_GITHUB_SSH_AUTH_KEY=${GH_AUTH_PRIVATE_KEY}
-    export APP_AZURE_BASIC_AUTH_USERNAME=${AZURE_DEVOPS_AUTH_USERNAME}
-    export APP_AZURE_BASIC_AUTH_PASSWORD=${AZURE_DEVOPS_AUTH_PASSWORD}
+    mkdir -p "${KYMA_PROJECT_DIR}/overrides"
+    cat <<EOF >> "${KYMA_PROJECT_DIR}/overrides/git-auth.env"
+export APP_TEST_GITHUB_SSH_AUTH_KEY="${GH_AUTH_PRIVATE_KEY}"
+export APP_TEST_AZURE_BASIC_AUTH_USERNAME="${AZURE_DEVOPS_AUTH_USERNAME}"
+export APP_TEST_AZURE_BASIC_AUTH_PASSWORD="${AZURE_DEVOPS_AUTH_PASSWORD}"
+EOF
 fi
 
 log::info "Copying Kyma to the instance"

@@ -17,7 +17,6 @@ fi
 
 export KYMA_SOURCES_DIR="./kyma"
 export SERVERLESS_OVERRIDES_DIR="./overrides"
-
 export INTEGRATION_SUITE=${1:-serverless-integration}
 
 echo "--> Installing kyma-cli"
@@ -67,17 +66,17 @@ sleep 60
 SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"
 
 if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
-  echo "--> Fetching Serverless k3s-tests"
- 
+  echo "--> Cloning Serverless integration tests from kyma:main"
   git clone https://github.com/kyma-project/kyma "${KYMA_SOURCES_DIR}"
 fi
 
-VALUES="-f ${SERVERLESS_CHART_DIR}/values.yaml"
-# check for test overrides.
-if [[ -e "${SERVERLESS_OVERRIDES_DIR}/integration-overrides.yaml" ]]; then
-  VALUES+=" -f ${SERVERLESS_OVERRIDES_DIR}/integration-overrides.yaml"
+# check for test secrets.
+if [[ -e "${SERVERLESS_OVERRIDES_DIR}/git-auth.env" ]]; then
+  # shellcheck source=/dev/null
+  source "${SERVERLESS_OVERRIDES_DIR}/git-auth.env"
 fi
 
+export APP_TEST_CLEANUP="onSuccessOnly"
 #https://github.com/kyma-project/test-infra/issues/6513
 export PATH=${PATH}:/usr/local/go/bin
 set +o errexit
