@@ -12,6 +12,7 @@
 | pre-main-serverless-integration-k3s-local | k3s | k3s | kyma deploy |  | pr-submit |  serverless-test  |
 | serverless-function-metrics-generator | gke |  |  |  | nightly |  Serverless function metrics  |
 | serverless-git-auth-integration-k3s-nightly | k3s | k3s | kyma deploy |  | periodic |  helm serverless-test  |
+| serverless-git-auth-integration-k3s-nightly-local | k3s | k3s | kyma deploy |  | periodic |  serverless-test  |
 | pre-main-kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-eval-istio-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-prod-istio-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
