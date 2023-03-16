@@ -36,6 +36,7 @@ templates:
                     eventing-tools:
                       - org: "kyma-project"
                         repo: "eventing-tools"
+                        path_alias: "github.com/kyma-project/eventing-tools"
                         base_ref: "main"
                 inheritedConfigs:
                   local:

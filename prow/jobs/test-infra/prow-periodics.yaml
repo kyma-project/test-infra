@@ -81,7 +81,7 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: eventing-tools
-          path_alias: <no value>
+          path_alias: github.com/kyma-project/eventing-tools
           base_ref: main
       spec:
         containers:
