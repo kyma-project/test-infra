@@ -29,7 +29,15 @@ templates:
                   image: gcr.io/k8s-prow/generic-autobumper:v20230315-6d54c174f4
                   command: generic-autobumper
                   args:
-                    - --config=prow/autobump-config/eventing-tools-autobump-config.yaml
+                    - --config=ci/eventing-tools-autobump-config.yaml
+                  labels:
+                    preset-tunas-github-bot-token: "true"
+                  extra_refs:
+                    eventing-tools:
+                      - org: "kyma-project"
+                        repo: "eventing-tools"
+                        path_alias: "github.com/kyma-project/eventing-tools"
+                        base_ref: "main"
                 inheritedConfigs:
                   local:
                     - periodic_config
