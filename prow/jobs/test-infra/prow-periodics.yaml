@@ -73,6 +73,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "eventing-tools-autobump"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-autobump-bot-github-token: "true"
+        preset-tunas-github-bot-token: "true"
       cron: "30 * * * 1-5"
       skip_report: false
       decorate: true

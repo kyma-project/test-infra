@@ -30,6 +30,8 @@ templates:
                   command: generic-autobumper
                   args:
                     - --config=ci/eventing-tools-autobump-config.yaml
+                  labels:
+                    preset-tunas-github-bot-token: "true"
                   extra_refs:
                     eventing-tools:
                       - org: "kyma-project"
