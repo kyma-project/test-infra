@@ -56,8 +56,11 @@ function run_post_upgrade_tests() {
   then
     git checkout "${KYMA_SOURCE}"
   else
-    log::banner "Checkout KYMA_UPGRADE_VERSION tag ${KYMA_UPGRADE_VERSION}"
-    git checkout tags/"${KYMA_UPGRADE_VERSION}"
+    # Switch to git tag when 2.12.1 or later version is released
+    # extract 2.12 from 2.12.0
+    RELEASE_BRANCH=$(echo $KYMA_UPGRADE_VERSION| cut -c -4)
+    log::banner "Checkout release branch ${RELEASE_BRANCH}"
+    git checkout "branch-${RELEASE_BRANCH}"
   fi
 
   make ci-post-upgrade
