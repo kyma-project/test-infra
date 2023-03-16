@@ -1,0 +1,57 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: clone-refs
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.36.0"
+    tekton.dev/categories: Git
+    tekton.dev/tags: git
+    tekton.dev/displayName: "clone-refs"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    This Task is a Git task to work with repositories used by other tasks
+    in your Pipeline.
+ 
+    The clonerefs Task will clone a repo from the provided url into the
+    output Workspace. By default the repo will be cloned into the root of
+    your Workspace. You can clone into a subdirectory by setting this Task's
+    subdirectory param. This Task also supports sparse checkouts. To perform
+    a sparse checkout, pass a list of comma separated directory patterns to
+    this Task's sparseCheckoutDirectories param.
+  workspaces:
+    - name: logs
+      description: TODO
+      mountPath: /logs
+      optional: true
+    - name: repo
+      description: TODO
+      mountPath: /home/prow/go
+    - name: tmp
+      description: TODO
+      mountPath: /tmp
+      optional: true
+  params:
+    - name: JOB_SPEC
+      description: TODO
+      type: string
+    - name: LOG
+      description: TODO
+      type: string
+      default: "/logs/clone.json"
+    - name: SRC_ROOT
+      description: TODO
+      type: string
+      default: "/home/prow/go"
+  steps:
+    - name: clone-refs
+      image: europe-docker.pkg.dev/kyma-project/dev/test-infra/tekton-clonerefs:latest
+      env:
+        - name: JOB_SPEC
+          value: $(params.JOB_SPEC)
+        - name: LOG
+          value: $(params.LOG)
+        - name: SRC_ROOT
+          value: $(params.SRC_ROOT)

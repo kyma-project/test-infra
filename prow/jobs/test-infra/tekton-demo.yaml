@@ -1,0 +1,78 @@
+presubmits:
+  kyma-project/kyma:
+    - name: tekton-demo
+      decorate: false
+      agent: tekton-pipeline
+      cluster: tekton-pipelines
+      always_run: false
+      tekton_pipeline_run_spec:
+        v1beta1:
+          workspaces:
+            - name: logs
+              emptyDir: {}
+            - name: repo
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: premium-rwo
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
+            - name: tmp
+              emptyDir: {}
+          pipelineSpec:
+            workspaces:
+              - name: logs
+                description: TODO
+                mountPath: /logs
+              - name: repo
+                description: TODO
+                mountPath: /home/prow/go
+              - name: tmp
+                description: TODO
+                mountPath: /tmp
+            params:
+              - name: JOB_SPEC
+                type: string
+                description: TODO
+            description: "Tekton Demo"
+            tasks:
+              - name: clonerefs
+                workspaces:
+                  - name: logs
+                    workspace: logs
+                  - name: repo
+                    workspace: repo
+                  - name: tmp
+                    workspace: tmp
+                params:
+                  - name: JOB_SPEC
+                    value: $(params.JOB_SPEC)
+                taskRef:
+                  name: clonerefs
+              - name: list-files
+                workspaces:
+                  - name: logs
+                    workspace: logs
+                  - name: repo
+                    workspace: repo
+                  - name: tmp
+                    workspace: tmp
+                taskSpec:
+                  workspaces:
+                    - name: logs
+                      description: TODO
+                      mountPath: /logs
+                    - name: repo
+                      description: TODO
+                      mountPath: /home/prow/go
+                    - name: tmp
+                      description: TODO
+                      mountPath: /tmp
+                  steps:
+                    - name: list-files
+                      image: alpine
+                      script: |
+                        #!/usr/bin/env sh
+                        ls -la /home/prow/go
