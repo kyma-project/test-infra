@@ -56,12 +56,12 @@ serviceAccount:
   create: true
   # -- Annotations to add to the service account.
   annotations:
-    iam.gke.io/gcp-service-account: secret-manager-prow@sap-kyma-prow.iam.gserviceaccount.com 
+    iam.gke.io/gcp-service-account: tekton-external-secrets@sap-kyma-prow.iam.gserviceaccount.com
   # -- Extra Labels to add to the service account.
   extraLabels: {}
   # -- The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template.
-  name: secret-manager-prow
+  name: tekton-external-secrets
 
 rbac:
   # -- Specifies whether role and rolebinding resources should be created.
@@ -103,12 +103,12 @@ resources: {}
   #   cpu: 10m
   #   memory: 32Mi
 
-prometheus:
+#prometheus:
   # -- deprecated. will be removed with 0.7.0, use serviceMonitor instead.
-  enabled: false
-  service:
+#  enabled: false
+#  service:
     # -- deprecated. will be removed with 0.7.0, use serviceMonitor instead.
-    port: 8080
+#    port: 8080
 
 serviceMonitor:
   # -- Specifies whether to create a ServiceMonitor resource for collecting Prometheus metrics
@@ -185,7 +185,7 @@ webhook:
     extraLabels: {}
     # -- The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template.
-    name: ""
+    name: "webhook-tekton-external-secrets"
   nodeSelector: {}
 
   tolerations: []
@@ -302,7 +302,7 @@ certController:
     extraLabels: {}
     # -- The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template.
-    name: ""
+    name: "cert-ctrl-tekton-external-secrets"
   nodeSelector: {}
 
   tolerations: []
