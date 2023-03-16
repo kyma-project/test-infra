@@ -27,13 +27,13 @@ fi
 
 cleanup() {
   # TODO - collect junit results
-  log::info "Stopping instance reconciler-component-integration-test-${RANDOM_ID}"
+  log::info "Stopping instance reconciler-istio-integration-test-${RANDOM_ID}"
   log::info "It will be removed automatically by cleaner job"
 
   # do not fail the job regardless of the vm deletion result
   set +e
 
-  gcloud compute instances stop --async --zone="${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}"
+  gcloud compute instances stop --async --zone="${ZONE}" "reconciler-istio-integration-test-${RANDOM_ID}"
 
   log::info "End of cleanup"
 }
@@ -97,14 +97,14 @@ ZONE_LIMIT=${ZONE_LIMIT:-5}
 EU_ZONES=$(gcloud compute zones list --filter="name~europe" --limit="${ZONE_LIMIT}" | tail -n +2 | awk '{print $1}')
 STARTTIME=$(date +%s)
 for ZONE in ${EU_ZONES}; do
-  log::info "Attempting to create a new instance named reconciler-component-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
-  gcloud compute instances create "reconciler-component-integration-test-${RANDOM_ID}" \
+  log::info "Attempting to create a new instance named "reconciler-istio-integration-test-${RANDOM_ID} in zone ${ZONE} using image ${IMAGE}"
+  gcloud compute instances create ""reconciler-istio-integration-test-${RANDOM_ID}" \
       --metadata enable-oslogin=TRUE \
       --image "${IMAGE}" \
       --machine-type n2-standard-4 \
       --zone "${ZONE}" \
       --boot-disk-size 200 "${LABELS[@]}" && \
-  log::info "Created reconciler-component-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
+  log::info "Created "reconciler-istio-integration-test-${RANDOM_ID} in zone ${ZONE}" && break
   log::error "Could not create machine in zone ${ZONE}"
 done || exit 1
 ENDTIME=$(date +%s)
@@ -133,15 +133,15 @@ envVars=(
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" ".env" "~/.env"
+utils::send_to_vm "${ZONE}" ""reconciler-istio-integration-test-${RANDOM_ID}" ".env" "~/.env"
 
 log::info "Copying Reconciler to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/reconciler" "~/reconciler"
+utils::compress_send_to_vm "${ZONE}" ""reconciler-istio-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/reconciler" "~/reconciler"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "reconciler-component-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
+utils::compress_send_to_vm "${ZONE}" ""reconciler-istio-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
 
 log::info "Triggering the installation"
-utils::ssh_to_vm_with_script -z "${ZONE}" -n "reconciler-component-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/reconciler-component-integration.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n ""reconciler-istio-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/reconciler-istio-integration.sh"
 
 log::success "all done"

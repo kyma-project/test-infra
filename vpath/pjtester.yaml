@@ -1,0 +1,11 @@
+pjConfigs:
+  prConfig:
+    kyma-incubator:
+      reconciler:
+        prNumber: 1316
+  prowJobs:
+    incubator:
+      reconciler:
+        - pjName: "pre-latest-istio-reconciler-integration"
+        - pjName: "pre-main-istio-reconciler-integration"
+        - pjName: "pre-main-ory-reconciler-eval-integration"
