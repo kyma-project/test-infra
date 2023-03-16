@@ -1,7 +1,6 @@
 presubmits:
   kyma-project/warden:
     - name: pull-warden-integration-test
-      optional: true
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
