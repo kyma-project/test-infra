@@ -1443,3 +1443,13 @@ presets:
           secretKeyRef:
             name: azure-devops-token
             key: azure-devops-token
+  - labels:
+      preset-tunas-github-bot-token: "true"
+    volumes:
+      - name: tunas-github-bot-token
+        secret:
+          secretName: tunas-github-bot-token
+    volumeMounts:
+      - name: tunas-github-bot-token
+        mountPath: /tunas-bot
+        readOnly: true
