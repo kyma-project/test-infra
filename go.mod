@@ -10,7 +10,7 @@ require (
 	cloud.google.com/go/kms v1.10.0
 	cloud.google.com/go/logging v1.7.0
 	cloud.google.com/go/pubsub v1.29.0
-	cloud.google.com/go/storage v1.29.0
+	cloud.google.com/go/storage v1.30.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/aws/aws-sdk-go v1.42.1 // indirect
@@ -63,7 +63,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230315233305-7c4145d33ac2
+require k8s.io/test-infra v0.0.0-20230316173120-ac3134cff2b2
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
