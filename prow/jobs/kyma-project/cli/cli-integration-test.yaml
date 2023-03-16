@@ -18,7 +18,7 @@ presubmits:
               - |
                 service docker start
                 curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-                make ci-alpha-integration-linux
+                make ci-test-integration-cluster-linux
             requests:
               memory: 2Gi
             limits:
