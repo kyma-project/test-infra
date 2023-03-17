@@ -51,7 +51,7 @@ require (
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.8.0
 	golang.org/x/oauth2 v0.6.0
-	google.golang.org/api v0.113.0
+	google.golang.org/api v0.114.0
 	google.golang.org/grpc v1.53.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -63,7 +63,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230316173120-ac3134cff2b2
+require k8s.io/test-infra v0.0.0-20230317165117-13df479a8bdb
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
