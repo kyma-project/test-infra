@@ -11,7 +11,7 @@ variable "application_name" {
 
 variable "region" {
   type        = string
-  description = "Google Cloud location to deploy the service account keys rotator to."
+  description = "Google Cloud region to deploy the service account keys rotator to."
 }
 
 variable "cloud_run_service_listen_port" {
