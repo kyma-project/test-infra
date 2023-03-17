@@ -4,7 +4,7 @@ pjConfigs:
       reconciler:
         prNumber: 1316
   prowJobs:
-    incubator:
+    kyma-incubator:
       reconciler:
         - pjName: "pre-latest-istio-reconciler-integration"
         - pjName: "pre-main-istio-reconciler-integration"
