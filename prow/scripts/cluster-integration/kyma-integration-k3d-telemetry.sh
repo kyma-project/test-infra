@@ -67,24 +67,16 @@ function deploy_kyma() {
 
   kubectl version --output=yaml
 
-  local deploy
-  local deploy_commands
-  local deploy_dryrun
+  local deploy_command
 
-  deploy_commands=" --ci
+  deploy_command="kyma deploy
+   --ci
    --source=local
    --workspace ${KYMA_SOURCES_DIR}
    --value=telemetry.operator.controllers.tracing.enabled=true
    --components-file kyma-integration-k3d-telemetry-components.yaml"
-  deploy="kyma deploy -p evaluation"
-  deploy_dryrun="kyma deploy --dry-run  -p production"
 
-
-  deploy+="$deploy_commands"
-  deploy_dryrun+="$deploy_commands"
-
-  $deploy
-  $deploy_dryrun 1>/dev/null
+  $deploy_command
 
   kubectl get pods -A
 }
