@@ -402,3 +402,8 @@ default:
       name: area/automation
       target: both
       addedBy: anyone
+    - color: 0052cc
+      description: Issues or PRs related to terraform.
+      name: terraform
+      target: both
+      addedBy: anyone
