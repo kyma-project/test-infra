@@ -142,6 +142,6 @@ utils::compress_send_to_vm "${ZONE}" "reconciler-istio-integration-test-${RANDOM
 utils::compress_send_to_vm "${ZONE}" "reconciler-istio-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/test-infra" "~/test-infra"
 
 log::info "Triggering the installation"
-utils::ssh_to_vm_with_script -z "${ZONE}" -n ""reconciler-istio-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/reconciler-istio-integration.sh"
+utils::ssh_to_vm_with_script -z "${ZONE}" -n "reconciler-istio-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/reconciler-istio-integration.sh"
 
 log::success "all done"
