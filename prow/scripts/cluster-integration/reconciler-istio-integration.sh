@@ -98,9 +98,8 @@ function deploy_kyma() {
 
   local kyma_deploy_cmd
 
-  #local k3d_cni_overrides="istio.helmValues.cni.cniConfDir=/var/lib/rancher/k3s/agent/etc/cni/net.d,istio.helmValues.cni.cniBinDir=/bin"
-  #kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=${CLUSTER_DOMAIN},global.domainName=${CLUSTER_DOMAIN},${k3d_cni_overrides} --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
-  kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=${CLUSTER_DOMAIN},global.domainName=${CLUSTER_DOMAIN} --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
+  local k3d_cni_overrides="istio.helmValues.cni.cniConfDir=/var/lib/rancher/k3s/agent/etc/cni/net.d,istio.helmValues.cni.cniBinDir=/bin"
+  kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=${CLUSTER_DOMAIN},global.domainName=${CLUSTER_DOMAIN},${k3d_cni_overrides} --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
 
   if [[ $TEST_NAME == ory ]]; then
     ory::prepare_components_file
