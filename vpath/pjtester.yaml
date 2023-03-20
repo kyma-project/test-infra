@@ -6,4 +6,5 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma:
-      - pjName: "pre-main-control-plane-gke-integration" 
+      - pjName: "pre-main-kyma-integration-k3d"
+      - pjName: "pre-main-kyma-gardener-gcp-goats-api-gateway"
