@@ -1,0 +1,9 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      test-infra:
+        prNumber: 7256
+  prowJobs:
+    kyma-project:
+      kyma:
+      - pjName: "pre-main-control-plane-gke-integration" 
