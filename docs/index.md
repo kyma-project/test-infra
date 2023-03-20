@@ -8,10 +8,6 @@
 
 [gcbuild](/development/gcbuild/README.md) - This tool serves as an intelligent wrapper for `gcloud builds submit`. It runs remote build jobs on Google infrastructure with setting automated substitutions, that developers can use. It's built to reduce the complexity of building the Docker images.
 
-[Rotate service account secrets using Cloud Function](/development/gcp/cloud-functions/rotateserviceaccount/README.md) - Cloud Function creates a new key for a GCP service account and updates the required secret data. The function is triggered by a  Pub/Sub message sent by a secret stored in Secret Manager.
-
-[Cleanup of service account secrets using Cloud Function](/development/gcp/cloud-functions/serviceaccountcleaner/README.md) - The Cloud Function deletes old keys for a GCP service account and updates the required secret data for all service account secrets stored in the Secret Manager. The function is triggered by a Cloud Scheduler job.
-
 [Rotate Gardener service account secrets using Cloud Run](/development/gcp/cloud-run/gardener-sa-rotate/README.md) - The Cloud Run application creates a new key for a GCP service account, updates the required secret data, and deletes old versions of a key. The function is triggered by a Pub/Sub message sent by a secret stored in Secret Manager.
 
 [Rotate KMS secrets using Cloud Run](/development/gcp/cloud-run/kms-rotate/README.md) - The Cloud Run application decrypts and encrypts files in a bucket with the latest version of a KMS key, and deletes old versions of a key. The function is triggered by a HTTP POST request sent by a Cloud Scheduler.
@@ -185,4 +181,3 @@
 [Cluster](/prow/workload-cluster/README.md) - This folder contains configuration files for the Prow workload. This configuration is used during cluster provisioning.
 
 [Templates](/templates/README.md) - Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.
-
