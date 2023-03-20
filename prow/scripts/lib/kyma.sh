@@ -221,33 +221,6 @@ kyma::provision_k3d() {
   kubectl version
 }
 
-kyma::install_cli() {
-    local settings
-    local kyma_version
-    settings="$(set +o); set -$-"
-    mkdir -p "/tmp/bin"
-    export PATH="/tmp/bin:${PATH}"
-    os=$(host::os)
-
-    pushd "/tmp/bin" || exit
-
-    log::info "--> Install kyma CLI ${os} locally to /tmp/bin"
-    
-    if [[ "${KYMA_MAJOR_VERSION-}" == "1" ]]; then
-        curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_${os}_x86_64.tar.gz"
-        tar xvzf kyma.tar.gz
-    else
-        curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
-    fi
-
-    chmod +x kyma
-    kyma_version=$(kyma version --client)
-    log::info "--> Kyma CLI version: ${kyma_version}"
-    log::info "OK"
-    popd || exit
-    eval "${settings}"
-}
-
 kyma::install_unstable_cli() {
     local settings
     local kyma_version
@@ -269,7 +242,7 @@ kyma::install_unstable_cli() {
     eval "${settings}"
 }
 
-kyma::install_cli_last_release() {
+kyma::install_cli() { #latest CLI release
     local settings
     settings="$(set +o); set -$-"
 
