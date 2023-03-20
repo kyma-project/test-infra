@@ -1,15 +1,24 @@
 presubmits:
-  kyma-project/kyma:
+  kyma-project/test-infra:
     - name: tekton-demo
+      # Default Prow decoration must be disabled because the pipeline uses its own decoration.
       decorate: false
+      # Prowjobs using Tekton pipelines must use the tekton-pipeline agent.
       agent: tekton-pipeline
-      cluster: tekton-pipelines
+      # Tekton has its own dedicated cluster to run pipelines. Use tekton cluster to for pipeline prowjobs.
+      cluster: tekton
       always_run: false
+      # Prow set pipeline params according to the list of job environment variables.
+      # See https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
+      # The pipeline can use these environment variables to get the refs and extra-refs to clone.
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          base_ref: main
       tekton_pipeline_run_spec:
         v1beta1:
+          # PipelineRun provide implementation details of workspaces used by the pipeline.
           workspaces:
-            - name: logs
-              emptyDir: {}
             - name: repo
               volumeClaimTemplate:
                 spec:
@@ -19,60 +28,115 @@ presubmits:
                   resources:
                     requests:
                       storage: 1Gi
-            - name: tmp
-              emptyDir: {}
+            - name: config
+              configMap:
+                name: kaniko-build-config
+            - name: signify-secret
+              secret:
+                secretName: signify-dev-secret
+            - name: images-registry-credentials
+              secret:
+                secretName: sa-kyma-push-images
+          # PipelineRun provide values of params used by the pipeline.
+          # Prow implicitly and automatically set values of params according to the list of job environment variables.
+          params:
+            - name: name
+              value: test-infra/test-image
+            - name: config
+              value: /config/kaniko-build-config.yaml
+            - name: dockerfile
+              value: development/secrets-rotator/cloud-run/rotate-service-account/Dockerfile
+          # The following resources are not used by the pipeline, but are required by the ProwJob syntax validator.
+          # They are not used by the pipeline because the pipeline uses environment variables to get extra_refs to clone the repo in a task.
+          # This is a workaround for deprecated resource object in Tekton Pipeline api version v1beta1.
+          resources:
+            - name: extra-ref
+              resourceRef:
+                name: PROW_EXTRA_GIT_REF_0
+          # Inline pipeline specification.
           pipelineSpec:
+            # Workspaces required by the pipeline.
             workspaces:
-              - name: logs
-                description: TODO
-                mountPath: /logs
               - name: repo
-                description: TODO
                 mountPath: /home/prow/go
-              - name: tmp
-                description: TODO
-                mountPath: /tmp
+              - name: config
+              - name: signify-secret
+              - name: images-registry-credentials
+            # Params required by the pipeline.
             params:
               - name: JOB_SPEC
                 type: string
-                description: TODO
+              - name: JOB_TYPE
+                type: string
+              - name: PULL_NUMBER
+                type: string
+              - name: PULL_BASE_SHA
+                type: string
+              - name: CI
+                type: string
+              - name: REPO_OWNER
+                type: string
+              - name: REPO_NAME
+                type: string
+              - name: name
+                type: string
+              - name: config
+                type: string
+              - name: dockerfile
+                type: string
+            # The following resources are not used by the pipeline, but are required by the ProwJob syntax validator.
+            # They are not used by the pipeline because the pipeline uses environment variables to get extra_refs to clone the repo in a task.
+            # This is a workaround for deprecated resource object in Tekton Pipeline api version v1beta1.
+            resources:
+              - name: extra-ref
+                type: git
             description: "Tekton Demo"
+            # TaskRuns executed by teh pipieline. TaskRuns provide values and implementation details required by Tasks executed by the pipeline.
+            # TaskRuns provide values and implementations explicitly or binding them to values and implementations provided by the pipeline.
             tasks:
-              - name: clonerefs
+              # Task name.
+              - name: clone-refs
+                # A name of a Task to execute. A Task specification must exist in the pipelines cluster.
+                taskRef:
+                  name: clone-refs
+                # Bindings of workspaces used by the Task to workspaces provided by the pipeline.
                 workspaces:
-                  - name: logs
-                    workspace: logs
                   - name: repo
                     workspace: repo
-                  - name: tmp
-                    workspace: tmp
+                # Bindings of params used by the Task to params provided by the pipeline.
                 params:
                   - name: JOB_SPEC
                     value: $(params.JOB_SPEC)
+              - name: build-image
                 taskRef:
-                  name: clonerefs
-              - name: list-files
+                  name: build-image
+                runAfter:
+                  - clone-refs
                 workspaces:
-                  - name: logs
-                    workspace: logs
                   - name: repo
                     workspace: repo
-                  - name: tmp
-                    workspace: tmp
-                taskSpec:
-                  workspaces:
-                    - name: logs
-                      description: TODO
-                      mountPath: /logs
-                    - name: repo
-                      description: TODO
-                      mountPath: /home/prow/go
-                    - name: tmp
-                      description: TODO
-                      mountPath: /tmp
-                  steps:
-                    - name: list-files
-                      image: alpine
-                      script: |
-                        #!/usr/bin/env sh
-                        ls -la /home/prow/go
+                  - name: config
+                    workspace: config
+                  - name: signify-secret
+                    workspace: signify-secret
+                  - name: images-registry-credentials
+                    workspace: images-registry-credentials
+                params:
+                  - name: name
+                    value: $(params.name)
+                  - name: config
+                    value: $(params.config)
+                  - name: dockerfile
+                    value: $(params.dockerfile)
+                  - name: JOB_TYPE
+                    value: $(params.JOB_TYPE)
+                  - name: PULL_NUMBER
+                    value: $(params.PULL_NUMBER)
+                  - name: PULL_BASE_SHA
+                    value: $(params.PULL_BASE_SHA)
+                  - name: CI
+                    value: $(params.CI)
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
