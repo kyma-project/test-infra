@@ -123,3 +123,20 @@ templates:
                     - "pubsub_labels"
                     - "disable_testgrid"
                     - extra_refs_test-infra
+              - jobConfig:
+                  name: "orphaned-gke-disks-cleanup"
+                  cron: "22 0 * * *"
+                  command: bash
+                  args:
+                    - -c
+                    - 'gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS} && gcloud compute disks --quiet delete $(gcloud compute disks list --filter=\"-users:*\" --format \"value(uri())\") || true'
+                  labels:
+                    preset-sa-gke-kyma-integration: "true"
+                    preset-gc-project-env: "true"
+                inheritedConfigs:
+                  global:
+                    - "pubsub_labels"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "periodic_config"

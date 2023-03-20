@@ -151,4 +151,28 @@ periodics: # runs on schedule
             args:
               - "--config=prow/autobump-config/test-infra-autobump-config.yaml"
               - "--labels-override=skip-review"
+    - name: orphaned-gke-disks-cleanup
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "orphaned-gke-disks-cleanup"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-sa-gke-kyma-integration: "true"
+      cron: "22 0 * * *"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS} && gcloud compute disks --quiet delete $(gcloud compute disks list --filter=\"-users:*\" --format \"value(uri())\") || true"
   
