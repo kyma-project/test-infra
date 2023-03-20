@@ -12,37 +12,32 @@ metadata:
     tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
-    This Task is a Git task to work with repositories used by other tasks
-    in your Pipeline.
- 
-    The clonerefs Task will clone a repo from the provided url into the
-    output Workspace. By default the repo will be cloned into the root of
-    your Workspace. You can clone into a subdirectory by setting this Task's
-    subdirectory param. This Task also supports sparse checkouts. To perform
-    a sparse checkout, pass a list of comma separated directory patterns to
-    this Task's sparseCheckoutDirectories param.
+    The clonerefs Task clone repositories references defined by prowjob refs and extra-refs.
+    Prowjob refs and extra-refs are read from the environment variable JOB_SPEC.
+    JOB_SPEC is a JSON-encoded prowjob specification and is set by prow.
+    The Task will clone the repositories in to workspace repo.
+    The Task use k8s prow clonerefs tool to clone the repositories.
   workspaces:
     - name: logs
-      description: TODO
+      description: "The workspace where the clone logs will be written."
       mountPath: /logs
       optional: true
     - name: repo
-      description: TODO
+      description: "The workspace where the git repos will be cloned."
       mountPath: /home/prow/go
     - name: tmp
-      description: TODO
       mountPath: /tmp
       optional: true
   params:
     - name: JOB_SPEC
-      description: TODO
+      description: "JSON-encoded job specification. Variable set by prow."
       type: string
     - name: LOG
-      description: TODO
+      description: "The path to the clone logs file."
       type: string
       default: "/logs/clone.json"
     - name: SRC_ROOT
-      description: TODO
+      description: "The root path where to clone repositories."
       type: string
       default: "/home/prow/go"
   steps:
