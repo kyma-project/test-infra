@@ -7,4 +7,4 @@ pjConfigs:
     kyma-project:
       kyma:
       - pjName: "pre-main-kyma-integration-k3d"
-      - pjName: "pre-main-kyma-gardener-gcp-goats-api-gateway"
+      - pjName: "pre-main-kyma-gardener-azure-fast-integration"
