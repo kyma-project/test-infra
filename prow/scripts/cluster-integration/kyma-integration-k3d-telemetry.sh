@@ -37,18 +37,17 @@ function install_cli() {
   mkdir -p "$install_dir"
 
   local os
-  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
-  if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
-    echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
-    exit 1
+  os="$(uname -s)"
+  if [[ -z "$os" || ! "$os" =~ ^(Darwin|Linux)$ ]]; then
+      echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
+      exit 1
   else
-    readonly os
+      readonly os
   fi
 
-  pushd "$install_dir" || exit
-  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
-  chmod +x kyma
-  popd
+  curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_${os}_x86_64.tar.gz" \
+  && tar -zxvf kyma.tar.gz && chmod +x kyma \
+  && rm -f kyma.tar.gz
 
   kyma version --client
 }
