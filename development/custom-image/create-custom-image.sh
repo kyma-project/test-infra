@@ -98,7 +98,9 @@ utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'mv /tm
 if [[ $testK3d == true ]]; then
     log::info "Testing k3d"
     log::info "Download latest CLI released"
-    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/'$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_Linux_x86_64.tar.gz' && tar -zxvf kyma.tar.gz"
+    local latest
+    latest="$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/'${latest}/kyma_Linux_x86_64.tar.gz' && tar -zxvf kyma.tar.gz"
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "chmod +x kyma && mkdir ./bin && mv ./kyma ./bin/kyma && sudo cp ./bin/kyma /usr/local/bin/kyma"
     log::info "Starting k3d instance"
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo kyma provision k3d --ci"
