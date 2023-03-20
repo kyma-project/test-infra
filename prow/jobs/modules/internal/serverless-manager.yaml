@@ -26,7 +26,7 @@ presubmits: # runs on PRs
             args:
               - "-C"
               - "hack/ci"
-              - "all"
+              - "module-build"
             env:
               - name: IMG
                 value: "europe-docker.pkg.dev/kyma-project/dev/serverless-manager:PR-${PULL_NUMBER}"
@@ -186,7 +186,7 @@ presubmits: # runs on PRs
               - name: JOB_REPO_NAME
                 value: "serverless-manager"
               - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin  &&  make -C hack/local/serverless run-manual && make -C hack/ci integration-test"
+                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin  && make -C hack/ci k3d-integration-test"
             resources:
               requests:
                 memory: 200Mi
@@ -224,7 +224,7 @@ postsubmits: # runs on main
             args:
               - "-C"
               - "hack/ci"
-              - "all"
+              - "module-build"
             env:
               - name: IMG
                 value: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
@@ -347,7 +347,7 @@ postsubmits: # runs on main
               - name: JOB_REPO_NAME
                 value: "serverless-manager"
               - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin  && make ci-k3d-integration-test"
+                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin  && make -C hack/ci k3d-lm-integration-test"
             resources:
               requests:
                 memory: 200Mi
@@ -411,7 +411,7 @@ periodics: # runs on schedule
               - name: JOB_REPO_NAME
                 value: "serverless-manager"
               - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make local-run"
+                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make -C hack/local run-with-lifecycle-manager"
               - name: MACHINE_TYPE
                 value: "custom-8-15360"
               - name: NODES_PER_ZONE
