@@ -15,6 +15,10 @@ presubmits:
         - org: kyma-project
           repo: kyma
           base_ref: main
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "tekton-demo"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       tekton_pipeline_run_spec:
         v1beta1:
           # PipelineRun provide implementation details of workspaces used by the pipeline.
