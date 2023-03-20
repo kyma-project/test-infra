@@ -464,7 +464,7 @@ templates:
               - jobConfig:
                   name: "pre-main-serverless-integration-k3s"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/function-controller\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((resources/serverless\\S+|tests/function-controller\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   annotations:
                     pipeline.platform: k3s
                   labels:
