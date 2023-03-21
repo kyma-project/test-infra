@@ -6,8 +6,6 @@ set -o pipefail # Fail a pipe if any sub-command fails.
 readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=prow/scripts/cluster-integration/kyma-serverless-run-test.sh
 source "${SCRIPT_DIR}/kyma-serverless-run-test.sh"
-
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck source=prow/scripts/lib/serverless-shared-k3s.sh
 source "${SCRIPT_DIR}/../lib/serverless-shared-k3s.sh"
 
