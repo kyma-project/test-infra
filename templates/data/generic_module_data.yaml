@@ -236,7 +236,7 @@ templates:
                     - vm_job_k3d
                     - vm_job_labels
               - jobConfig:
-                  name: pre-main-keda-manager-upgrade-main-to-pr
+                  name: post-main-keda-manager-upgrade-main-to-pr
                   always_run: "true"
                   optional: "true"
                   env:
@@ -249,7 +249,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_presubmit
+                    - jobConfig_postsubmit
                     - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
@@ -258,7 +258,7 @@ templates:
                     - vm_job_k3d
                     - vm_job_labels
               - jobConfig:
-                  name: pre-main-keda-manager-upgrade-main-to-channel
+                  name: post-main-keda-manager-upgrade-main-to-channel
                   always_run: "true"
                   optional: "true"
                   env:
@@ -274,7 +274,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_presubmit
+                    - jobConfig_postsubmit
                     - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
