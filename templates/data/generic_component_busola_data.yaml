@@ -56,7 +56,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - kaniko_buildpack
+                    - image-builder-buildkit
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-busola-backend-build
@@ -74,7 +74,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - kaniko_buildpack
+                    - image-builder-buildkit
                     - "jobConfig_postsubmit"
                     - "disable_testgrid"
 
