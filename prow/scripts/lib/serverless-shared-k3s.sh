@@ -93,9 +93,6 @@ function host::patch_coredns() {
 }
 
 collect_results(){
-    job_name=$1
-    namespace=${2:-default}
-
     echo "####################"
     echo "kubectl get pods -A"
     echo "###################"
@@ -104,7 +101,7 @@ collect_results(){
     echo "########################"
     echo "kubectl get functions -A"
     echo "########################"
-    kubectl get -n "${namespace}" functions -A
+    kubectl get functions -A
 
     echo "########################################################"
     echo "kubectl logs -n kyma-system -l app=serverless --tail=-1"
@@ -128,10 +125,5 @@ collect_results(){
     do
       kubectl logs --namespace "${NAMESPACE}" --all-containers  --selector job-name --ignore-errors --prefix=true
     done
-
-    echo "##############################################"
-    echo "kubectl logs -l job-name=${job_name} --tail=-1"
-    echo "########################################################"
-    kubectl logs -n "${namespace}" -l "job-name=${job_name}" --tail=-1
 echo ""
 }
