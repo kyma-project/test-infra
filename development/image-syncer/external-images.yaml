@@ -25,7 +25,7 @@ images:
 - source: "istio/istioctl:1.17.1"
 - source: "jaegertracing/all-in-one:1.37.0"
 - source: "jettech/kube-webhook-certgen:v1.5.0"
-- source: "jimmidyson/configmap-reload:v0.5.0"
+- source: "jimmidyson/configmap-reload:v0.8.0"
 - source: "kennethreitz/httpbin:latest"
   amd64Only: true
 - source: "oryd/hydra-maester:v0.0.25"
