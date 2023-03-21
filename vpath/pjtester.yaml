@@ -6,4 +6,4 @@ pjConfigs:
 prConfigs:
   kyma-project:
     keda-manager:
-      prNumber: 103
+      prNumber: 112
