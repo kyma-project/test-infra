@@ -31,7 +31,7 @@ templates:
                   name: "pre-main-kyma-gke-external-registry"
                   args:
                   - "-c"
-                  - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-gke-external-registry.sh"
+                  - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/kyma-serverless-gke-external-registry.sh"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/serverless\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:

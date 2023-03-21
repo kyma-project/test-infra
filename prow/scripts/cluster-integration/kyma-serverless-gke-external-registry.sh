@@ -198,17 +198,13 @@ fi
 log::info "Verify if internal docker registry is disabled"
 verify_internal_registry
 
+#TODO: remove serverless chart from here, call other script
 log::info "Test Kyma"
-# Istio sidecar will keep running and will not terminate when the test pod is completed. This causes the test job to
-# be stuck forever. So, we disable the sidecar for the test job pod. Kyma runs with istio mtls STRICT peer authentication. 
-# The STRICT mode will block any traffic comming from pods without istio sidecar. SO, we need to make it PERMISSIVE.
-kubectl patch peerauthentication -n istio-system default -p '{"spec":{"mtls":{"mode":"PERMISSIVE"}}}' --type=merge
 
 SERVERLESS_CHART_DIR="${KYMA_SOURCES_DIR}/resources/serverless"
 job_name="k3s-serverless-test"
 
 helm install serverless-test "${SERVERLESS_CHART_DIR}/charts/k3s-tests" -n default -f "${SERVERLESS_CHART_DIR}/values.yaml" --set jobName="${job_name}"
-kubectl patch job -n default k3s-serverless-test -p '{"metadata":{"annotations":{"sidecar.istio.io/inject":"false"}}}'
 job_status=1
 
 # helm does not wait for jobs to complete even with --wait
