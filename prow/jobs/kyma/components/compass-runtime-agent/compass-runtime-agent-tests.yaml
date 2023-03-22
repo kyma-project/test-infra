@@ -1,4 +1,5 @@
 presubmits: # runs on PRs
+  kyma-project/kyma:
     - name: pre-main-kyma-integration-k3d-runtime-agent
       annotations:
         pipeline.test: "fast-integration"
