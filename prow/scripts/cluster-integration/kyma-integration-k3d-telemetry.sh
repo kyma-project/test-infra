@@ -46,11 +46,11 @@ function install_cli() {
   fi
 
   pushd "$install_dir" || exit
-  curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_${os}_x86_64.tar.gz" \
+  curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/latest/download/kyma_${os}_x86_64.tar.gz" \
   && tar -zxvf kyma.tar.gz && chmod +x kyma \
   && rm -f kyma.tar.gz
   popd
-  
+
   kyma version --client
 }
 
