@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfigs:
+    kyma-project:
+      test-infra:
+        prNumber: 7283
+  prowJobs:
+      kyma-incubator:
+        compass:
+        - pjName: "pull-ias-adapter-unit-test"
+prConfigs:
+    kyma-incubator:
+      compass:
+        prNumber: 2948
