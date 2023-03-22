@@ -281,33 +281,6 @@ templates:
                     - jobConfig_postsubmit
                     - "disable_testgrid"
               - jobConfig:
-                  name: pull-function-runtimes-nodejs16-build
-                  run_if_changed: "^components/function-runtimes/nodejs16"
-                  args:
-                    - "--name=function-runtime-nodejs16"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes/nodejs16"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-function-controller-nodejs16-build
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/function-runtimes/nodejs16"
-                  args:
-                    - "--name=function-runtime-nodejs16"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes/nodejs16"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
-              - jobConfig:
                   name: pull-function-runtimes-nodejs-v16-build
                   run_if_changed: "^components/function-runtimes/nodejs"
                   args:
