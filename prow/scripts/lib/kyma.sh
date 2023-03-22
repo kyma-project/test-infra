@@ -252,14 +252,14 @@ kyma::install_cli() { #latest CLI release
 
     local os
     os="$(uname -s)"
-    if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
+    if [[ -z "$os" || ! "$os" =~ ^(Darwin|Linux)$ ]]; then
         echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
         exit 1
     else
         readonly os
     fi
 
-    curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_Linux_x86_64.tar.gz" \
+    curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/latest/download/kyma_${os}_x86_64.tar.gz" \
     && tar -zxvf kyma.tar.gz && chmod +x kyma \
     && rm -f kyma.tar.gz
 
