@@ -356,9 +356,6 @@ globalSets:
       pipeline.platform: gardener_gcp
 
 templates:
-  - from: releases.go.tmpl
-    render:
-      - to: ../../development/tools/jobs/releases/releases.go
   - from: prow-config.yaml
     render:
       - to: ../../prow/config.yaml
