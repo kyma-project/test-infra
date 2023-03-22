@@ -360,8 +360,8 @@ func (l *StrList) List() []string {
 func getTags(pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
 	// (Ressetkk): PR tag should not be hardcoded, in the future we have to find a way to parametrize it
 	if pr != "" {
-		// assume we are using PR number, build tag as 'PR-XXXX'
-		return []tags.Tag{{Name: "PR", Value: "PR-" + pr}}, nil
+		// assume we are using PR number, build default tag as 'PR-XXXX'
+		return []tags.Tag{{Name: "default_tag", Value: "PR-" + pr}}, nil
 	}
 	// build a tag from commit SHA
 	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha))
@@ -451,28 +451,28 @@ func addTagsToEnv(tags []tags.Tag, envs map[string]string) map[string]string {
 	return m
 }
 
-func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
-	fs.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
-	fs.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
-	fs.StringVar(&o.context, "context", ".", "Path to build directory context")
-	fs.StringVar(&o.envFile, "env-file", "", "Path to file with environment variables to be loaded in build")
-	fs.StringVar(&o.name, "name", "", "Name of the image to be built")
-	fs.StringVar(&o.dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to context")
-	fs.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
-	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
-	fs.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
-	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
-	fs.Var(&o.buildArgs, "build-arg", "Flag to pass additional arguments to build Dockerfile. It can be used in the name=value format.")
-	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
-	fs.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
-	return fs
+func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
+	flagSet.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
+	flagSet.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
+	flagSet.StringVar(&o.context, "context", ".", "Path to build directory context")
+	flagSet.StringVar(&o.envFile, "env-file", "", "Path to file with environment variables to be loaded in build")
+	flagSet.StringVar(&o.name, "name", "", "Name of the image to be built")
+	flagSet.StringVar(&o.dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to context")
+	flagSet.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
+	flagSet.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
+	flagSet.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
+	flagSet.Var(&o.tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
+	flagSet.Var(&o.buildArgs, "build-arg", "Flag to pass additional arguments to build Dockerfile. It can be used in the name=value format.")
+	flagSet.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
+	flagSet.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
+	return flagSet
 }
 
 func main() {
-	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	flagSet := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	o := options{isCI: os.Getenv("CI") == "true"}
-	o.gatherOptions(fs)
-	if err := fs.Parse(os.Args[1:]); err != nil {
+	o.gatherOptions(flagSet)
+	if err := flagSet.Parse(os.Args[1:]); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

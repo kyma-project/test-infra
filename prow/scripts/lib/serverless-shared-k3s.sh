@@ -93,23 +93,37 @@ function host::patch_coredns() {
 }
 
 collect_results(){
-    job_name=$1
-    namespace=${2:-default}
-
     echo "####################"
     echo "kubectl get pods -A"
     echo "###################"
     kubectl get pods -A
+
     echo "########################"
     echo "kubectl get functions -A"
     echo "########################"
-    kubectl get -n "${namespace}" functions -A
+    kubectl get functions -A
+
     echo "########################################################"
     echo "kubectl logs -n kyma-system -l app=serverless --tail=-1"
+    echo "########################################################"
     kubectl logs -n kyma-system -l app=serverless --tail=-1
-    echo "##############################################"
-    echo "kubectl logs -l job-name=${job_name} --tail=-1"
-    kubectl logs -n "${namespace}" -l "job-name=${job_name}" --tail=-1
-    echo "###############"
+
+
+    echo "########################################################"
+    echo "kubectl logs -n kyma-system -l app=serverless-webhook --tail=-1"
+    echo "########################################################"
+    kubectl logs -n kyma-system -l app=serverless-webhook --tail=-1
+
+
+    echo "########################################################"
+    echo "Get logs from all serverless jobs"
+    echo "########################################################"
+    ALL_TEST_NAMESPACES=$(kubectl get namespace --selector created-by=serverless-controller-manager-test   --no-headers -o custom-columns=name:.metadata.name)
+    # shellcheck disable=SC2206
+    ALL=($ALL_TEST_NAMESPACES)
+    for NAMESPACE in "${ALL[@]}"
+    do
+      kubectl logs --namespace "${NAMESPACE}" --all-containers  --selector job-name --ignore-errors --prefix=true
+    done
 echo ""
 }
