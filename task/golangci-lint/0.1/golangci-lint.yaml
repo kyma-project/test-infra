@@ -1,0 +1,39 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: golangci-lint
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.36.0"
+    tekton.dev/categories: Code Quality
+    tekton.dev/tags: linter
+    tekton.dev/displayName: "golangci-lint"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    The golanci-lint Task runs a golang linter.
+    A workspace named repo stores the source code to lint.
+  workspaces:
+    - name: repo
+      description: "The workspace where sources to lint are stored."
+      mountPath: /home/prow/go
+  params:
+    - name: REPO_OWNER
+      description: "GitHub org that triggered the job. Variable set by prow. Prow will not set this variable if the prowjob type is periodic. In that case an empty string default value will be used."
+      type: string
+      default: ""
+    - name: REPO_NAME
+      description: "GitHub repo that triggered the job. Variable set by prow. Prow will not set this variable if the prowjob type is periodic. In that case an empty string default value will be used."
+      type: string
+      default: ""
+  steps:
+    - name: build-image
+      image: eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f
+      workingDir: /home/prow/go/src/github.com/$(params.REPO_OWNER)/$(params.REPO_NAME)
+      command:
+        - /golangci-lint.sh
+      resources:
+        limits:
+          memory: 1Gi
+          cpu: 1
