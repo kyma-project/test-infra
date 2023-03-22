@@ -69,7 +69,10 @@ if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
   git clone https://github.com/kyma-project/kyma "${KYMA_SOURCES_DIR}"
 fi
 
+set +o errexit
 TEST_STATUS=$(run_tests "${INTEGRATION_SUITE}" "${KYMA_SOURCES_DIR}")
+set -o errexit
+
 collect_results
 echo "Exit code ${TEST_STATUS}"
 
