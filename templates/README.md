@@ -19,8 +19,6 @@ The template list includes:
 - `testgrid-default.yaml`, which defines a set of testgrid dashbords.
 - `whitesource-periodics.tmpl`, which defines a set of periodic jobs that run a Whitesource scan. 
 
-Jobs and Prow configurations have unit tests that are located [here](../development/tools/jobs).
-
 ### Configuration file
 
 The `config.yaml` file has two keys:
