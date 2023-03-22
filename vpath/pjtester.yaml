@@ -3,8 +3,3 @@ pjConfigs:
     kyma-project:
       kyma:
       - pjName: "pre-main-kyma-integration-k3d-runtime-agent"
-
-prConfigs:
-  kyma-project:
-    kyma:
-      prNumber: 17121
