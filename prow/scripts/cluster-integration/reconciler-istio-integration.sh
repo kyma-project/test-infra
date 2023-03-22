@@ -97,7 +97,9 @@ function deploy_kyma() {
   fi
 
   local kyma_deploy_cmd
-  kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=${CLUSTER_DOMAIN},global.domainName=${CLUSTER_DOMAIN} --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
+
+  local k3d_cni_overrides="istio.helmValues.cni.cniConfDir=/var/lib/rancher/k3s/agent/etc/cni/net.d,istio.helmValues.cni.cniBinDir=/bin"
+  kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=${CLUSTER_DOMAIN},global.domainName=${CLUSTER_DOMAIN},${k3d_cni_overrides} --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
 
   if [[ $TEST_NAME == ory ]]; then
     ory::prepare_components_file
@@ -112,9 +114,16 @@ function deploy_kyma() {
   log::info "Deploying Kyma components from version ${KYMA_VERSION}"
 
   $kyma_deploy_cmd
+  local kyma_deploy_exit_code=$?
 
-  log::success "Kyma components were deployed successfully"
   kubectl get pods -A
+
+  if [ $kyma_deploy_exit_code -ne 0 ]; then
+      log::error "Error during deployment"
+      exit 1
+  else
+    log::success "Kyma components were deployed successfully"
+  fi
 
   popd
 }
