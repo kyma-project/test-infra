@@ -63,4 +63,14 @@ echo "##########################################################################
 sleep 60
 ########
 
-run_tests "${INTEGRATION_SUITE}"
+
+if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
+  echo "--> Cloning Serverless integration tests from kyma:main"
+  git clone https://github.com/kyma-project/kyma "${KYMA_SOURCES_DIR}"
+fi
+
+TEST_STATUS=$(run_tests "${INTEGRATION_SUITE}" "${KYMA_SOURCES_DIR}")
+collect_results
+echo "Exit code ${TEST_STATUS}"
+
+exit ${TEST_STATUS}
