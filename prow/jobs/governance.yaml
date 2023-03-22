@@ -294,6 +294,11 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
@@ -709,6 +714,10 @@ periodics: # runs on schedule
       decorate: true
       cluster: untrusted-workload
       extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
