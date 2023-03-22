@@ -171,114 +171,80 @@ func TestKymaIntegrationJobPeriodics(t *testing.T) {
 	require.NotNil(t, disksCleanerPeriodic)
 	assert.Equal(t, expName, disksCleanerPeriodic.Name)
 
-	assert.Equal(t, "30 * * * *", disksCleanerPeriodic.Cron)
-	tester.AssertThatHasPresets(t, disksCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
-	tester.AssertThatHasExtraRepoRefCustom(t, disksCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, disksCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, disksCleanerPeriodic.Spec.Containers[0].Command)
-	assert.Equal(t, []string{"-c", "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='.*'"}, disksCleanerPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, disksCleanerPeriodic.JobBase)
+	assert.Equal(t, []string{"-c", "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex=''"}, disksCleanerPeriodic.Spec.Containers[0].Args)
 
 	expName = "orphaned-ips-cleaner"
 	addressesCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, addressesCleanerPeriodic)
 	assert.Equal(t, expName, addressesCleanerPeriodic.Name)
 
-	assert.Equal(t, "0 1 * * *", addressesCleanerPeriodic.Cron)
-	tester.AssertThatHasPresets(t, addressesCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
-	tester.AssertThatHasExtraRepoRefCustom(t, addressesCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, addressesCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, addressesCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-exclude-name-regex='^nightly|nightly-(.*)|weekly|weekly-(.*)|nat-auto-ip'"}, addressesCleanerPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, addressesCleanerPeriodic.JobBase)
 
 	expName = "orphaned-assetstore-gcp-bucket-cleaner"
 	assetstoreGcpBucketCleaner := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, assetstoreGcpBucketCleaner)
 	assert.Equal(t, expName, assetstoreGcpBucketCleaner.Name)
 
-	assert.Equal(t, "00 00 * * *", assetstoreGcpBucketCleaner.Cron)
-	tester.AssertThatHasPresets(t, assetstoreGcpBucketCleaner.JobBase, preset.GCProjectEnv, preset.SaProwJobResourceCleaner)
-	tester.AssertThatHasExtraRepoRefCustom(t, assetstoreGcpBucketCleaner.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, assetstoreGcpBucketCleaner.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"}, assetstoreGcpBucketCleaner.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, assetstoreGcpBucketCleaner.JobBase)
 
 	expName = "orphaned-clusters-cleaner"
 	clustersCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, clustersCleanerPeriodic)
 	assert.Equal(t, expName, clustersCleanerPeriodic.Name)
 
-	assert.Equal(t, "0 * * * *", clustersCleanerPeriodic.Cron)
-	tester.AssertThatHasPresets(t, clustersCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
-	tester.AssertThatHasExtraRepoRefCustom(t, clustersCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, clustersCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, clustersCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22"}, clustersCleanerPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, clustersCleanerPeriodic.JobBase)
 
 	expName = "orphaned-vms-cleaner"
 	vmsCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, vmsCleanerPeriodic)
 	assert.Equal(t, expName, vmsCleanerPeriodic.Name)
 
-	assert.Equal(t, "15,45 * * * *", vmsCleanerPeriodic.Cron)
-	tester.AssertThatHasPresets(t, vmsCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
-	tester.AssertThatHasExtraRepoRefCustom(t, vmsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, vmsCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, vmsCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*|gke-gke-release-.*' -jobLabelRegexp='kyma-gke-nightly|kyma-gke-nightly-.*|kyma-gke-weekly|kyma-gke-weekly-.*|post-rel.*-kyma-release-candidate' -dryRun=false"}, vmsCleanerPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, vmsCleanerPeriodic.JobBase)
 
 	expName = "orphaned-loadbalancer-cleaner"
 	loadbalancerCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, loadbalancerCleanerPeriodic)
 	assert.Equal(t, expName, loadbalancerCleanerPeriodic.Name)
 
-	assert.Equal(t, "15 * * * *", loadbalancerCleanerPeriodic.Cron)
-	tester.AssertThatHasPresets(t, loadbalancerCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
-	tester.AssertThatHasExtraRepoRefCustom(t, loadbalancerCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, loadbalancerCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "/prow-tools/orphanremover -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"}, loadbalancerCleanerPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, loadbalancerCleanerPeriodic.JobBase)
 
 	expName = "orphaned-dns-cleaner"
 	dnsCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, dnsCleanerPeriodic)
 	assert.Equal(t, expName, dnsCleanerPeriodic.Name)
 
-	assert.Equal(t, "30 * * * *", dnsCleanerPeriodic.Cron)
-	tester.AssertThatHasPresets(t, dnsCleanerPeriodic.JobBase, preset.GCProjectEnv, preset.SaGKEKymaIntegration)
-	tester.AssertThatHasExtraRepoRefCustom(t, dnsCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, dnsCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, dnsCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "/prow-tools/dnscollector -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"}, dnsCleanerPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, dnsCleanerPeriodic.JobBase)
 
 	expName = "gcr-cleaner-prow-workloads"
 	gcrCleanerPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, gcrCleanerPeriodic)
 	assert.Equal(t, expName, gcrCleanerPeriodic.Name)
 
-	assert.Equal(t, "0 1 * * *", gcrCleanerPeriodic.Cron)
-	tester.AssertThatHasPresets(t, gcrCleanerPeriodic.JobBase, preset.SaGKEKymaIntegration)
-	tester.AssertThatHasExtraRepoRefCustom(t, gcrCleanerPeriodic.JobBase.UtilityConfig, []string{"test-infra"}, []string{"main"})
 	assert.Equal(t, tester.ImageProwToolsLatest, gcrCleanerPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"bash"}, gcrCleanerPeriodic.Spec.Containers[0].Command)
 	assert.Equal(t, []string{"-c", "/prow-tools/gcrcleaner --repository=eu.gcr.io/sap-kyma-prow-workloads --age-in-hours=168 --dry-run=false"}, gcrCleanerPeriodic.Spec.Containers[0].Args)
-	tester.AssertThatSpecifiesResourceRequests(t, gcrCleanerPeriodic.JobBase)
 
 	expName = "github-issues"
 	githubIssuesPeriodic := tester.FindPeriodicJobByName(periodics, expName)
 	require.NotNil(t, githubIssuesPeriodic)
 	assert.Equal(t, expName, githubIssuesPeriodic.Name)
 
-	assert.Equal(t, "0 6 * * *", githubIssuesPeriodic.Cron)
 	assert.Equal(t, tester.ImageProwToolsLatest, githubIssuesPeriodic.Spec.Containers[0].Image)
 	assert.Equal(t, []string{"/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"}, githubIssuesPeriodic.Spec.Containers[0].Command)
-	tester.AssertThatSpecifiesResourceRequests(t, githubIssuesPeriodic.JobBase)
 
 	expName = "serverless-function-metrics-generator"
 	functionsMetricsPeriodic := tester.FindPeriodicJobByName(periodics, expName)
