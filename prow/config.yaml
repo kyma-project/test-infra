@@ -724,11 +724,6 @@ presets:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project"
   - labels:
-      preset-docker-push-repository-gke-external-registry-integration: "true" # Needed for kyma installer image
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/sap-kyma-prow-workloads/gke-external-registry/functions"
-  - labels:
       preset-docker-push-repository-gke-integration: "true" # Needed for kyma installer image
     env:
       - name: DOCKER_PUSH_REPOSITORY
