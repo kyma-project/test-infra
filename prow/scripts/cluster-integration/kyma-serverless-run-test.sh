@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-set -o errexit
 set -o pipefail # Fail a pipe if any sub-command fails.
 
 run_tests() {
@@ -20,10 +19,6 @@ run_tests() {
   export PATH=${PATH}:/usr/local/go/bin
 
   export APP_TEST_CLEANUP="onSuccessOnly"
-  set +o errexit
-  (cd ${KYMA_SOURCES_DIR}/tests/function-controller && make "${INTEGRATION_SUITE}")
-  job_status=$?
-  set -o errexit
-
-  return $job_status
+  (cd "${KYMA_SOURCES_DIR}/tests/function-controller" && make "${INTEGRATION_SUITE}")
+  return $?
 }

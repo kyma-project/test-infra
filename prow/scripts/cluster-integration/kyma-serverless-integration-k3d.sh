@@ -70,7 +70,8 @@ if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
 fi
 
 set +o errexit
-TEST_STATUS=$(run_tests "${INTEGRATION_SUITE}" "${KYMA_SOURCES_DIR}")
+run_tests "${INTEGRATION_SUITE}" "${KYMA_SOURCES_DIR}"
+TEST_STATUS=$?
 set -o errexit
 
 collect_results
