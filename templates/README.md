@@ -17,7 +17,7 @@ The template list includes:
 - `prow-config.yaml` that serves to create the main Prow configuration without job definitions.
 - `releases.go.tmpl` that contains a set of functions for the release which provide the list of currently supported releases and all supported Kyma release branches.
 - `testgrid-default.yaml`, which defines a set of testgrid dashbords.
-- `whitesource-periodics.tmpl`, which defines a set of periodic jobs that run a Whitesource scan. 
+- `whitesource-periodics.tmpl`, which defines a set of periodic jobs that run a Whitesource scan.
 
 ### Configuration file
 

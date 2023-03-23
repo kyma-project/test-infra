@@ -80,11 +80,6 @@ serviceAccounts:
   - name : sa-stability-fluentd-storage-writer
     roles:
       - storage.objectAdmin
-  - name : sa-kyma-backup-restore
-    roles :
-      - storage.admin
-      - storage.objectAdmin
-      - compute.storageAdmin
 generics:
   - prefix: kyma-bot-github-token
     key: token
