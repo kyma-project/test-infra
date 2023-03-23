@@ -1,5 +1,5 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      kyma:
+      lifecycle-manager:
       - pjName: "pull-lifecycle-mgr-lint"
