@@ -1,0 +1,100 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-image
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.36.0"
+    tekton.dev/categories: Image Build
+    tekton.dev/tags: image-build
+    tekton.dev/displayName: "build-image"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    The build-image Task builds an OCI image from a Dockerfile.
+    A workspace named repo stores the source code to build the image.
+    A workspace named config stores the build config file. It is mounted from a configmap.
+    A config workspace reference the kaniko-build-config configmap.
+    A workspace named signify-secret stores the signify secret. It is mounted from a secret.
+    A workspace named images-registry-credentials stores the images registry credentials. It is mounted from a secret.
+    The Task use k8s prow image-builder tool to build the image.
+    Documentation of image builder image used by this Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
+  workspaces:
+    - name: repo
+      description: "The workspace where sources to build an image are stored."
+      mountPath: /home/prow/go
+    - name: config
+      description: "The workspace where the config file is mounted from configmap."
+      mountPath: /config
+    - name: signify-secret
+      description: "The workspace where the signify secret is mounted from secret."
+      mountPath: /secret
+    - name: images-registry-credentials
+      description: "The workspace where the images registry credentials are mounted from secret."
+      mountPath: /etc/credentials/sa-kyma-push-images
+  params:
+    - name: name
+      description: "Name of the image to be built"
+      type: string
+    - name: config
+      description: "Path to image-builder config file (default /config/kaniko-build-config.yaml)"
+      type: string
+      default: /config/kaniko-build-config.yaml
+    - name: context
+      description: "Path to build context (default .)"
+      type: string
+      default: .
+    - name: dockerfile
+      description: "Path to Dockerfile file relative to context"
+      type: string
+    - name: JOB_TYPE
+      description: "Type of prowjob. Variable set by prow."
+      type: string
+    - name: PULL_NUMBER
+      description: "Pull request number. Variable set by prow."
+      type: string
+    - name: PULL_BASE_SHA
+      description: "Git SHA of the base branch. Variable set by prow."
+      type: string
+    - name: CI
+      description: "Set to true when the current environment is a CI environment. Variable set by prow."
+      type: string
+      default: "true"
+    - name: REPO_OWNER
+      description: "GitHub org that triggered the job. Variable set by prow."
+      type: string
+    - name: REPO_NAME
+      description: "GitHub repo that triggered the job. Variable set by prow."
+      type: string
+  steps:
+    - name: build-image
+      image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c
+      workingDir: /home/prow/go/src/github.com/$(params.REPO_OWNER)/$(params.REPO_NAME)
+      command:
+        - /image-builder
+      args:
+        - --name=$(params.name)
+        - --config=$(params.config)
+        - --context=$(params.context)
+        - --dockerfile=$(params.dockerfile)
+        - --log-dir=/
+      env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /etc/credentials/sa-kyma-push-images/service-account.json
+        - name: JOB_TYPE
+          value: $(params.JOB_TYPE)
+        - name: PULL_NUMBER
+          value: $(params.PULL_NUMBER)
+        - name: PULL_BASE_SHA
+          value: $(params.PULL_BASE_SHA)
+        - name: CI
+          value: $(params.CI)
+        - name: REPO_OWNER
+          value: $(params.REPO_OWNER)
+        - name: REPO_NAME
+          value: $(params.REPO_NAME)
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 1
