@@ -25,8 +25,8 @@ presubmits: # runs on PRs
               - "make lint"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 500Mi
+                cpu: 200m
     - name: pull-telemetry-manager-unit-test
       annotations:
         pipeline.trigger: "pr-submit"
@@ -49,8 +49,8 @@ presubmits: # runs on PRs
               - "make test"
             resources:
               requests:
-                memory: 1Gi
-                cpu: 100m
+                memory: 1.5Gi
+                cpu: 200m
   
   kyma-project/kyma:
     - name: pull-application-operator-lint
@@ -228,56 +228,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
-    - name: pull-directory-size-exporter-lint
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-lint"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/directory-size-exporter/(.*\.go$|.golangcilint.yaml)'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/directory-size-exporter && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-    - name: pull-directory-size-exporter-unit-test
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/directory-size-exporter/.*\.go$'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/directory-size-exporter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
     - name: pull-function-controller-lint
       annotations:
         pipeline.trigger: "pr-submit"
@@ -324,6 +274,56 @@ presubmits: # runs on PRs
             args:
               - "-c"
               - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 100m
+  
+  kyma-project/directory-size-exporter:
+    - name: pull-directory-size-exporter-lint
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-lint"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "make lint"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
+    - name: pull-directory-size-exporter-unit-test
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-unit-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "make test"
             resources:
               requests:
                 memory: 1Gi

@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.12"
+  nextRelease: "2.13"
   releases:
+    - "2.12"
     - "2.11"
     - "2.10"
-    - "2.9"
   orgs:
     - name: "kyma-project"
       repos:
@@ -33,6 +33,7 @@ global:
         - name: "rafter"
         - name: "btp-manager"
         - name: "telemetry-manager"
+        - name: "director-size-exporter"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
@@ -77,7 +78,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -108,7 +109,7 @@ globalSets:
         value: high-cpu
         operator: Equal
         effect: NoSchedule
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230224-15885e7ef-buildkit
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     command: "/image-builder"
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -170,7 +171,7 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230224-b6c73305"
+    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230317-addc1b91"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
   image_buildpack-node:
@@ -186,7 +187,7 @@ globalSets:
   image_gardener-rotate:
     image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230202-40569193"
   image_markdown_index:
-    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230220-55aefaf0"
+    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230308-be78ed1e"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -355,9 +356,6 @@ globalSets:
       pipeline.platform: gardener_gcp
 
 templates:
-  - from: releases.go.tmpl
-    render:
-      - to: ../../development/tools/jobs/releases/releases.go
   - from: prow-config.yaml
     render:
       - to: ../../prow/config.yaml

@@ -23,10 +23,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230226-ef2af11076
-          initupload: gcr.io/k8s-prow/initupload:v20230226-ef2af11076
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230226-ef2af11076
-          sidecar: gcr.io/k8s-prow/sidecar:v20230226-ef2af11076
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230322-fad14aa00d
+          initupload: gcr.io/k8s-prow/initupload:v20230322-fad14aa00d
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230322-fad14aa00d
+          sidecar: gcr.io/k8s-prow/sidecar:v20230322-fad14aa00d
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -304,6 +304,7 @@ tide:
     kyma-project/istio: squash
     kyma-project/warden: squash
     kyma-project/telemetry-manager: squash
+    kyma-project/directory-size-exporter: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
@@ -1013,11 +1014,6 @@ presets:
     env:
       - name: CLUSTER_USE_SSD
         value: "true"
-  - labels:
-      preset-gke-pod-security-policy: "true"
-    env:
-      - name: GKE_ENABLE_POD_SECURITY_POLICY
-        value: "true"
   # whitesource labels
   - labels:
       preset-wssagent-keys: "true"
@@ -1433,4 +1429,22 @@ presets:
     volumeMounts:
       - name: signify-prod-secret
         mountPath: /secret-prod
+        readOnly: true
+  - labels:
+      preset-azure-devops-sa-token: "true"
+    env:
+      - name: AZURE_DEVOPS_SA_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: azure-devops-token
+            key: azure-devops-token
+  - labels:
+      preset-tunas-github-bot-token: "true"
+    volumes:
+      - name: tunas-github-bot-token
+        secret:
+          secretName: tunas-github-bot-token
+    volumeMounts:
+      - name: tunas-github-bot-token
+        mountPath: /tunas-bot
         readOnly: true
