@@ -18,7 +18,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "golangci-lint run"
+                    - "golangci-lint run -v"
                   branches:
                     - ^main$
                 inheritedConfigs:

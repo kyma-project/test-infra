@@ -27,7 +27,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "golangci-lint run"
+              - "golangci-lint run -v"
             resources:
               requests:
                 memory: 3Gi
