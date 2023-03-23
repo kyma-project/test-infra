@@ -394,21 +394,21 @@ presets:
       preset-cluster-version-old: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.25"
       - name: GKE_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.25"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.25"
   # cluster version
   - labels:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.25"
+        value: "1.26"
       - name: GKE_CLUSTER_VERSION
-        value: "1.25"
+        value: "1.26"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.25"
+        value: "1.26"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
