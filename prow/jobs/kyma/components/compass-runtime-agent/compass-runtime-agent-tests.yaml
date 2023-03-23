@@ -26,7 +26,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
             command:
-              - tests/components/application-connector/scripts/run-tests.sh
+              - tests/components/application-connector/scripts/test-cra.sh
             resources:
               requests:
                 memory: 1Gi
@@ -34,10 +34,3 @@ presubmits: # runs on PRs
                 memory: 1Gi
             securityContext:
               privileged: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
