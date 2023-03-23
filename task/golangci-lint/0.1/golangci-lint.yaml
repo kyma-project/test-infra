@@ -12,11 +12,14 @@ metadata:
     tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
-    The golanci-lint Task runs a golang linter.
+    The golangci-lint Task runs a golang linter.
+    Task is tailored to be triggered by prow as a prowjob.
+    It uses a golangci-lint tool.
+    The golangci tool config is stored in the .golangci.yaml file which is read from a repository hosting tested code.
     A workspace named repo stores the source code to lint.
   workspaces:
     - name: repo
-      description: "The workspace where sources to lint are stored."
+      description: "The workspace where sources to lint are stored. Usually it should be a shared workspace with other tasks. A default mount path is aligned with prowjob running under a kubernetes agent."
       mountPath: /home/prow/go
   params:
     - name: REPO_OWNER
@@ -28,7 +31,7 @@ spec:
       type: string
       default: ""
   steps:
-    - name: build-image
+    - name: lint-go-code
       image: eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f
       workingDir: /home/prow/go/src/github.com/$(params.REPO_OWNER)/$(params.REPO_NAME)
       timeout: 30m
