@@ -18,6 +18,8 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
+                    - "pwd"
+                    - "cd /home/prow/go/src/github.com/kyma-project/lifecycle-manager/"
                     - "golangci-lint run -c /home/prow/go/src/github.com/kyma-project/lifecycle-manager/.golangci.yaml"
                   branches:
                     - ^main$
