@@ -12,7 +12,7 @@ The golangci tool config is stored in the .golangci.yaml file in a repository ho
 ## Install
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/task/unit-tests-go/0.1/unit-tests-go.yaml
+kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/task/go-unit-tests/0.1/go-unit-tests.yaml
 ```
 
 ## Workspaces
