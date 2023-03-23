@@ -153,7 +153,6 @@ gcp::provision_k8s_cluster \
     -r "$PROVISION_REGIONAL_CLUSTER" \
     -s "$STACKDRIVER_KUBERNETES" \
     -D "$CLUSTER_USE_SSD" \
-    -e "$GKE_ENABLE_POD_SECURITY_POLICY" \
     -P "$TEST_INFRA_SOURCES_DIR"
 export CLEANUP_CLUSTER="true"
 

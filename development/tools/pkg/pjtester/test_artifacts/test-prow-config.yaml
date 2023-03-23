@@ -948,11 +948,6 @@ presets:
     env:
       - name: CLUSTER_USE_SSD
         value: "true"
-  - labels:
-      preset-gke-pod-security-policy: "true"
-    env:
-      - name: GKE_ENABLE_POD_SECURITY_POLICY
-        value: "true"
   # whitesource labels
   - labels:
       preset-wssagent-keys: "true"
