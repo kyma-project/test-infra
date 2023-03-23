@@ -49,7 +49,7 @@ presubmits: # runs on PRs
       spec:
         automountServiceAccountToken: true
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230320-fa050cb1"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
             automountServiceAccountToken: true
             command:
               - "/golangci-lint.sh"

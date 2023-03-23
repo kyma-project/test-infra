@@ -103,7 +103,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230320-fa050cb1"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
             securityContext:
               privileged: true
             command:
