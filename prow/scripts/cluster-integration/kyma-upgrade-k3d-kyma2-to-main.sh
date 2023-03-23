@@ -60,6 +60,7 @@ function make_fast_integration() {
       git checkout tags/"${KYMA_SOURCE}"
     fi
 
+
     export DEBUG=true
     make -C "./tests/fast-integration" "${1}"
 
