@@ -1,0 +1,9 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      test-infra:
+        prNumber: 7299
+  prowJobs:
+    kyma-project:
+      control-plane:
+        - pjName: "kyma-upgrade-k3d-kyma2-to-main"
