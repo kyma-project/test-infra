@@ -48,7 +48,7 @@ presubmits: # runs on PRs
               - name: CREDENTIALS_DIR
                 value: "/etc/credentials/kyma-tunas-prow-event-mesh"
               - name: EVENTING_UPGRADE_JOB
-                value: "true"
+                value: "false"
               - name: EXECUTION_PROFILE
                 value: "production"
               - name: GARDENER_REGION
