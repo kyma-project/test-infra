@@ -18,7 +18,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "golangci-lint run -v -c /home/prow/go/src/github.com/kyma-project/lifecycle-manager/.golangci.yaml"
+                    - "golangci-lint run -c /home/prow/go/src/github.com/kyma-project/lifecycle-manager/.golangci.yaml"
                   branches:
                     - ^main$
                 inheritedConfigs:
