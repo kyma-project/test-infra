@@ -1,0 +1,66 @@
+presubmits:
+  kyma-project/test-infra:
+    # Prow set pipeline params according to the list of job environment variables.
+    # See https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
+    # The pipeline can use these environment variables to get the refs and extra-refs to clone.
+    - name: tekton-demo
+      # Default Prow decoration must be disabled because the pipeline uses its own decoration.
+      decorate: false
+      # Prowjobs using Tekton pipelines must use the tekton-pipeline agent.
+      agent: tekton-pipeline
+      # Tekton has its own dedicated cluster to run pipelines. Use tekton cluster to for pipeline prowjobs.
+      cluster: tekton
+      always_run: false
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "tekton-demo"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      tekton_pipeline_run_spec:
+        v1beta1:
+          workspaces:
+            - name: repo
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: premium-rwo
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
+          pipelineSpec:
+            workspaces:
+              - name: repo
+                mountPath: /home/prow/go
+            params:
+              # Prow set pipeline params according to the list of job environment variables.
+              - name: JOB_SPEC
+                type: string
+              - name: REPO_OWNER
+                type: string
+              - name: REPO_NAME
+                type: string
+            description: "Tekton Demo"
+            tasks:
+              # clone-refs must run first to clone repositories refs provided by prowjob.
+              - name: clone-refs
+                taskRef:
+                  name: clone-refs
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: JOB_SPEC
+                    value: $(params.JOB_SPEC)
+              - name: go-unit-tests
+                taskRef:
+                  name: go-unit-tests
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                runAfter:
+                  - clone-refs

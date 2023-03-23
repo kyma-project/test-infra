@@ -36,10 +36,7 @@ The Pipeline can be run on `linux/amd64` platform.
 
 See the following samples for usage:
 
-- **[`cache-image.yaml`](samples/cache-image.yaml)**: A PipelineRun configured to cache build artifacts in an image.
-- **[`cache-volume.yaml`](samples/cache-volume.yaml)**: A PipelineRun configured to cache build artifacts in a volume.
-- **[`env-vars.yaml`](samples/env-vars.yaml)**: A PipelineRun configured to provide _build-time_ environment variables.
-- **[`run-image.yaml`](samples/run-image.yaml)**: A PipelineRun configured to specify an explicit run image.
+- **[`prowjob-testing-go-code.yaml`](samples/prowjob-testing-go-code.yaml)**: A presubmit prowjob configured to run golang unit tests.
 
 ## Contributing
 
