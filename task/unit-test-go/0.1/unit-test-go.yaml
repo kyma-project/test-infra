@@ -41,11 +41,11 @@ spec:
         - "test"
         - "-cover"
         - "$(params.path-to-test)"
-      #      env:
-      #        - name: REPO_OWNER
-      #          value: $(params.REPO_OWNER)
-      #        - name: REPO_NAME
-      #          value: $(params.REPO_NAME)
+      env:
+        - name: REPO_OWNER
+          value: $(params.REPO_OWNER)
+        - name: REPO_NAME
+          value: $(params.REPO_NAME)
       resources:
         requests:
           memory: 500M
