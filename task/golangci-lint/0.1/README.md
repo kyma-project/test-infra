@@ -1,6 +1,6 @@
 # Unit Tests for Go Code
 
-The golanci-lint Task runs a golang linter.
+The golangci-lint Task runs a golang linter.
 Task is tailored to be triggered by prow as a prowjob.
 It uses a golangci-lint tool.
 The golangci tool config is stored in the .golangci.yaml file in a repository hosting tested code.
@@ -12,7 +12,7 @@ The golangci tool config is stored in the .golangci.yaml file in a repository ho
 ## Install
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/task/glangci-lint/0.1/golangci-lint.yaml
+kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/task/golangci-lint/0.1/golangci-lint.yaml
 ```
 
 ## Workspaces
