@@ -31,9 +31,10 @@ spec:
     - name: build-image
       image: eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f
       workingDir: /home/prow/go/src/github.com/$(params.REPO_OWNER)/$(params.REPO_NAME)
+      timeout: 30m
+      resources:
+        requests:
+          memory: 1.5Gi
+          cpu: 2
       command:
         - /golangci-lint.sh
-      resources:
-        limits:
-          memory: 1Gi
-          cpu: 1
