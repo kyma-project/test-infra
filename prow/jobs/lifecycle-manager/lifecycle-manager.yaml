@@ -27,7 +27,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "golangci-lint run -v"
+              - "golangci-lint run -v -c /home/prow/go/src/github.com/kyma-project/lifecycle-manager/.golangci.yaml"
             resources:
               requests:
                 memory: 3Gi
