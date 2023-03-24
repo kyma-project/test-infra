@@ -5,14 +5,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"io"
-	"k8s.io/test-infra/prow/config/secret"
-	"k8s.io/test-infra/prow/github"
-	"k8s.io/test-infra/robots/pr-creator/updater"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/sirupsen/logrus"
+	"k8s.io/test-infra/prow/config/secret"
+	"k8s.io/test-infra/prow/github"
+	"k8s.io/test-infra/robots/pr-creator/updater"
 )
 
 // Options is the options for autobumper operations.
@@ -273,7 +274,7 @@ func validateOptions(o *Options) error {
 }
 
 // Run is the entrypoint which will update index.md file based on the provided options.
-func Run(ctx context.Context, o *Options, prh PRHandler) error {
+func Run(_ context.Context, o *Options, prh PRHandler) error {
 	if err := validateOptions(o); err != nil {
 		return fmt.Errorf("validating options: %w", err)
 	}
@@ -282,10 +283,10 @@ func Run(ctx context.Context, o *Options, prh PRHandler) error {
 		logrus.Debugf("--skip-pull-request is set to true, won't create a pull request.")
 	}
 
-	return processGitHub(ctx, o, prh)
+	return processGitHub(o, prh)
 }
 
-func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
+func processGitHub(o *Options, prh PRHandler) error {
 	stdout := HideSecretsWriter{Delegate: os.Stdout, Censor: secret.Censor}
 	stderr := HideSecretsWriter{Delegate: os.Stderr, Censor: secret.Censor}
 	if err := secret.Add(o.GitHubToken); err != nil {
