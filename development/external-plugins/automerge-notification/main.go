@@ -78,7 +78,7 @@ func checkIfEventSupported(pr github.PullRequestEvent) bool {
 }
 
 // pullRequestEventHandler process pull_request event webhooks received by plugin.
-func pullRequestEventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
+func pullRequestEventHandler(_ *externalplugin.Plugin, event externalplugin.Event) {
 	logger, atom := consolelog.NewLoggerWithLevel()
 	defer logger.Sync()
 	atom.SetLevel(pluginOptions.LogLevel)

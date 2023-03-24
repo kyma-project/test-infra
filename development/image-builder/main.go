@@ -102,10 +102,7 @@ func runInBuildKit(o options, name string, destinations, platforms []string, bui
 	cmd.Stdout = io.MultiWriter(outw...)
 	cmd.Stderr = io.MultiWriter(errw...)
 
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-	return nil
+	return cmd.Run()
 }
 
 // runInKaniko prepares command execution and handles gathering logs to file
@@ -162,10 +159,7 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 	cmd.Stdout = io.MultiWriter(outw...)
 	cmd.Stderr = io.MultiWriter(errw...)
 
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-	return nil
+	return cmd.Run()
 }
 
 func runBuildJob(o options, vs Variants, envs map[string]string) error {

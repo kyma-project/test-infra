@@ -22,7 +22,7 @@ type FakeStorageAPIWrapper struct {
 }
 
 // ReadBucketObject is a fake implementation of ReadBucketObject func
-func (fsaw *FakeStorageAPIWrapper) ReadBucketObject(ctx context.Context, fileName string) (io.ReadCloser, int64, error) {
+func (fsaw *FakeStorageAPIWrapper) ReadBucketObject(_ context.Context, fileName string) (io.ReadCloser, int64, error) {
 	fsaw.TimesReadBucketObjectCalled++
 	return io.NopCloser(strings.NewReader("test artifact data for " + fileName)), 100, nil
 
@@ -37,7 +37,7 @@ type FakeGithubAPIWrapper struct {
 }
 
 // CreateGithubRelease is a fake implementation of CreateGithubRelease func
-func (fgaw *FakeGithubAPIWrapper) CreateGithubRelease(ctx context.Context, opts *Options) (*github.RepositoryRelease, *github.Response, error) {
+func (fgaw *FakeGithubAPIWrapper) CreateGithubRelease(_ context.Context, opts *Options) (*github.RepositoryRelease, *github.Response, error) {
 
 	fakeID := int64(1)
 
@@ -56,7 +56,7 @@ func (fgaw *FakeGithubAPIWrapper) CreateGithubRelease(ctx context.Context, opts 
 }
 
 // UploadContent is a fake implementation of UploadContent func
-func (fgaw *FakeGithubAPIWrapper) UploadContent(ctx context.Context, releaseID int64, artifactName string, reader io.Reader, size int64) (*github.Response, error) {
+func (fgaw *FakeGithubAPIWrapper) UploadContent(_ context.Context, _ int64, artifactName string, _ io.Reader, _ int64) (*github.Response, error) {
 
 	currID := int64(fgaw.AssetCount)
 
