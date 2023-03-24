@@ -34,7 +34,8 @@
 /prow/jobs/kyma/components/compass-runtime-agent @franpog859 @ralikio @pk85 @akgalwas @koala7659 @kyma-project/prow
 /prow/jobs/kyma/components/event-publisher-proxy @kyma-project/eventing
 /prow/jobs/kyma/components/eventing-controller @kyma-project/eventing
-/prow/jobs/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/eventing
+/prow/jobs/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/prow @kyma-project/eventing
+/prow/jobs/eventing-tools/ @kyma-project/prow @kyma-project/eventing
 /prow/jobs/kyma/components/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
 /prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @pk85 @kyma-project/prow
 /prow/jobs/kyma/components/iam-kubeconfig-service @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @pk85 @kyma-project/prow
@@ -55,6 +56,7 @@
 
 /templates @kyma-project/prow
 /templates/templates @kyma-project/prow
+templates/data/eventing-tools-data.yaml @kyma-project/prow @kyma-project/eventing
 
 # All .md files
 *.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko
