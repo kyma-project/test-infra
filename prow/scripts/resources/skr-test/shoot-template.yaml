@@ -12,7 +12,7 @@ spec:
     allowPrivilegedContainers: true
     kubeAPIServer:
       enableBasicAuthentication: false
-    version: 1.24.7
+    version: 1.26.1
   provider:
     controlPlaneConfig:
       apiVersion: aws.provider.extensions.gardener.cloud/v1alpha1
@@ -33,7 +33,7 @@ spec:
     - machine:
         image:
           name: gardenlinux
-          version: 576.12.0
+          version: 934.6.0
         type: m5.xlarge
       maxSurge: 1
       maxUnavailable: 0
