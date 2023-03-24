@@ -1,55 +1,51 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: build-image
+  name: image-builder
   labels:
     app.kubernetes.io/version: "0.1"
   annotations:
     tekton.dev/pipelines.minVersion: "0.36.0"
     tekton.dev/categories: Image Build
-    tekton.dev/tags: image-build
-    tekton.dev/displayName: "build-image"
+    tekton.dev/tags: image-builder
+    tekton.dev/displayName: "image-builder"
     tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
-    The build-image Task builds an OCI image from a Dockerfile.
-    A workspace named repo stores the source code to build the image.
-    A workspace named config stores the build config file. It is mounted from a configmap.
-    A config workspace reference the kaniko-build-config configmap.
-    A workspace named signify-secret stores the signify secret. It is mounted from a secret.
-    A workspace named images-registry-credentials stores the images registry credentials. It is mounted from a secret.
+    The image-builder Task builds an OCI image from a Dockerfile.
+    Image is signed with signify and pushed to kyma repositories.
     The Task use k8s prow image-builder tool to build the image.
     Documentation of image builder image used by this Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
   workspaces:
     - name: repo
-      description: "The workspace where sources to build an image are stored."
+      description: "The workspace stores sources to build an image from. Usually this should be a shared workspace with other tasks."
       mountPath: /home/prow/go
     - name: config
-      description: "The workspace where the config file is mounted from configmap."
+      description: "The workspace stores the image-builder config file. It's mounted from configmap."
       mountPath: /config
     - name: signify-secret
-      description: "The workspace where the signify secret is mounted from secret."
+      description: "The workspace stores signify credentials. It's mounted from secret."
       mountPath: /secret
-    - name: images-registry-credentials
-      description: "The workspace where the images registry credentials are mounted from secret."
+    - name: image-registry-credentials
+      description: "The workspace storing image registry credentials. It's mounted from secret."
       mountPath: /etc/credentials/sa-kyma-push-images
   params:
     - name: name
       description: "Name of the image to be built"
       type: string
     - name: config
-      description: "Path to image-builder config file (default /config/kaniko-build-config.yaml)"
+      description: "Path to image-builder config file."
       type: string
       default: /config/kaniko-build-config.yaml
     - name: context
-      description: "Path to build context (default .)"
+      description: "Path to build context."
       type: string
       default: .
     - name: dockerfile
       description: "Path to Dockerfile file relative to context"
       type: string
     - name: JOB_TYPE
-      description: "Type of prowjob. Variable set by prow."
+      description: "Type of prowjob. Variable set by prow according."
       type: string
     - name: PULL_NUMBER
       description: "Pull request number. Variable set by prow."

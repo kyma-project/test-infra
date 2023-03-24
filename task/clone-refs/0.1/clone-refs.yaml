@@ -23,7 +23,7 @@ spec:
       mountPath: /logs
       optional: true
     - name: repo
-      description: "The workspace where the git repos will be cloned. Usually this it should be a shared workspace with other tasks."
+      description: "The workspace where the git repos will be cloned. Usually this should be a shared workspace with other tasks."
       mountPath: /home/prow/go
     - name: tmp
       mountPath: /tmp
