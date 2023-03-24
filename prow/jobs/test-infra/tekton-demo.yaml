@@ -38,7 +38,7 @@ presubmits:
             - name: signify-secret
               secret:
                 secretName: signify-dev-secret
-            - name: images-registry-credentials
+            - name: image-registry-credentials
               secret:
                 secretName: sa-kyma-push-images
           # PipelineRun provide values of params used by the pipeline.
@@ -65,7 +65,7 @@ presubmits:
                 mountPath: /home/prow/go
               - name: config
               - name: signify-secret
-              - name: images-registry-credentials
+              - name: image-registry-credentials
             # Params required by the pipeline.
             params:
               - name: JOB_SPEC
@@ -113,7 +113,7 @@ presubmits:
                     value: $(params.JOB_SPEC)
               - name: build-image
                 taskRef:
-                  name: build-image
+                  name: image-builder
                 runAfter:
                   - clone-refs
                 workspaces:
@@ -123,8 +123,8 @@ presubmits:
                     workspace: config
                   - name: signify-secret
                     workspace: signify-secret
-                  - name: images-registry-credentials
-                    workspace: images-registry-credentials
+                  - name: image-registry-credentials
+                    workspace: image-registry-credentials
                 params:
                   - name: name
                     value: $(params.name)
