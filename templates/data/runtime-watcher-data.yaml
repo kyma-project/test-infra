@@ -35,7 +35,7 @@ templates:
             jobs:
               - jobConfig:
                   run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
                   name: pull-lint-skr
                   command: "bash"
                   args:
@@ -64,7 +64,7 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
                   name: "pull-lint-listener"
                   command: "bash"
                   args:

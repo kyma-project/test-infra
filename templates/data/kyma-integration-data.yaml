@@ -66,7 +66,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-'"
+                    - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='.*'"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -291,16 +291,9 @@ templates:
             annotations:
               pipeline.platform: k3s
               pipeline.installer: kyma deploy
-              pipeline.test: helm serverless-test
-              pipeline.clusterprovisioning: k3s
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3s.sh"
-          vm_job_template_serverless_k3s_local:
-            annotations:
-              pipeline.platform: k3s
-              pipeline.installer: kyma deploy
               pipeline.test: serverless-test
               pipeline.clusterprovisioning: k3s
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3s-local.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
           vm_job_labels_template:
             labels:
               preset-kyma-guard-bot-github-token: "true"
@@ -471,7 +464,7 @@ templates:
               - jobConfig:
                   name: "pre-main-serverless-integration-k3s"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources/serverless\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     pipeline.platform: k3s
                   labels:
@@ -488,28 +481,6 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "vm_job_template_serverless_k3s"
-                    - "vm_job_labels_template"
-              - jobConfig:
-                  name: "pre-main-serverless-integration-k3s-local"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources/serverless\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  optional: true
-                  annotations:
-                    pipeline.platform: k3s
-                  labels:
-                    preset-build-pr: "true"
-                  env:
-                    INTEGRATION_SUITE: "serverless-integration"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_serverless_k3s_local"
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "serverless-function-metrics-generator"
@@ -763,7 +734,7 @@ templates:
                   labels:
                     preset-build-main: "true"
                   env:
-                    K8S_VERSION: "1.26.0"
+                    K8S_VERSION: "1.27.0"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

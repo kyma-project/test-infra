@@ -11,7 +11,7 @@ periodics:
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20230313-23dc2a84f3
+        - image: gcr.io/k8s-prow/commenter:v20230322-fad14aa00d
           command:
             - commenter
           args:
@@ -63,7 +63,7 @@ periodics:
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20230313-23dc2a84f3
+        - image: gcr.io/k8s-prow/commenter:v20230322-fad14aa00d
           command:
             - commenter
           args:

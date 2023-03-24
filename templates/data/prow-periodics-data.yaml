@@ -26,10 +26,18 @@ templates:
               - jobConfig:
                   name: eventing-tools-autobump
                   cron: "30 * * * 1-5"
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230226-ef2af11076
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230322-fad14aa00d
                   command: generic-autobumper
                   args:
-                    - --config=prow/autobump-config/eventing-tools-autobump-config.yaml
+                    - --config=ci/eventing-tools-autobump-config.yaml
+                  labels:
+                    preset-tunas-github-bot-token: "true"
+                  extra_refs:
+                    eventing-tools:
+                      - org: "kyma-project"
+                        repo: "eventing-tools"
+                        path_alias: "github.com/kyma-project/eventing-tools"
+                        base_ref: "main"
                 inheritedConfigs:
                   local:
                     - periodic_config
@@ -42,7 +50,7 @@ templates:
               - jobConfig:
                   name: ci-prow-label-sync
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20230313-23dc2a84f3
+                  image: gcr.io/k8s-prow/label_sync:v20230322-fad14aa00d
                   command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
@@ -64,7 +72,7 @@ templates:
                   name: ci-prow-autobump
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230313-23dc2a84f3
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230322-fad14aa00d
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
@@ -126,7 +134,7 @@ templates:
                   name: ci-prow-autobump-jobs
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230313-23dc2a84f3
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230322-fad14aa00d
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml

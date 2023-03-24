@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
             command:
@@ -108,7 +108,7 @@ postsubmits: # runs on main
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
             command:
@@ -147,7 +147,7 @@ postsubmits: # runs on main
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
             command:
@@ -207,7 +207,7 @@ postsubmits: # runs on main
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
             command:
@@ -244,7 +244,7 @@ postsubmits: # runs on main
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
             command:

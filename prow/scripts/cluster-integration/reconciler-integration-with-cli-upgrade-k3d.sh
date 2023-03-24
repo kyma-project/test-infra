@@ -50,13 +50,14 @@ function run_pre_upgrade_tests() {
 function run_post_upgrade_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
 
-  log::info "KYMA_SOURCE ${KYMA_SOURCE}"
+  log::info "KYMA_UPGRADE_VERSION ${KYMA_UPGRADE_VERSION}"
   git reset --hard
   if [[ ${KYMA_SOURCE} == "main" ]]
   then
     git checkout "${KYMA_SOURCE}"
   else
-    git checkout tags/"${KYMA_SOURCE}"
+    log::banner "Checkout KYMA_UPGRADE_VERSION tag ${KYMA_UPGRADE_VERSION}"
+    git checkout tags/"${KYMA_UPGRADE_VERSION}"
   fi
 
   make ci-post-upgrade

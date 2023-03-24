@@ -3,6 +3,9 @@
 set -e
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+export KYMA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/kyma"
+
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${SCRIPT_DIR}/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/log.sh
@@ -133,6 +136,10 @@ function validate_external_on_pr() {
     fi
 }
 
+function validate_crd_md() {
+    sh ${KYMA_SOURCES_DIR}/hack/verify-md.sh
+}
+
 function main() {
     read_arguments "${ARGS[@]}"
     docker::start
@@ -147,6 +154,9 @@ function main() {
         log::info "Validate external links on changed markdown files"
         validate_external_on_pr
     fi
+
+    log::info "Validate CRD documentation tables"
+    validate_crd_md
 
     exit ${OUTPUT}
 }
