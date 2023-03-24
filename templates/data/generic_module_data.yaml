@@ -125,6 +125,30 @@ templates:
                   local:
                     - job_default
               - jobConfig:
+                  name: pull-keda-module-build
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
+                    MODULE_SHA: "PR-${PULL_NUMBER}"
+                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                  local:
+                    - job_default
+              - jobConfig:
                   name: post-keda-module-build
                   labels:
                     preset-sa-kyma-push-images: "true"
@@ -145,30 +169,6 @@ templates:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
-                  local:
-                    - job_default
-              - jobConfig:
-                  name: pull-keda-module-build
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned" 
-                    IMG: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
-                    MODULE_SHA: "PR-${PULL_NUMBER}"
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "hack/ci"
-                    - "module-build"
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_presubmit
                   local:
                     - job_default
               - jobConfig:
@@ -240,6 +240,26 @@ templates:
                     - vm_job_k3d
                     - vm_job_labels
               - jobConfig:
+                  name: post-main-keda-manager-verify
+                  always_run: "true"
+                  optional: "true"
+                  env:
+                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
+                    JOB_VM_COMMAND: >-
+                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+                      && make -C hack/ci k3d-lm-integration-test
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels
+              - jobConfig:
                   name: post-main-keda-manager-upgrade-latest-to-main
                   always_run: "true"
                   optional: "true"
@@ -255,26 +275,6 @@ templates:
                       && ./kyma-unstable alpha deploy --ci --force-conflicts
                       && kubectl apply -f tmp/moduletemplate-keda.yaml
                       && make -C hack/ci upgrade-to
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
-                    - extra_refs_test-infra
-                  local:
-                    - job_default
-                    - vm_job_make
-                    - vm_job_k3d
-                    - vm_job_labels
-              - jobConfig:
-                  name: post-main-keda-manager-verify
-                  always_run: "true"
-                  optional: "true"
-                  env:
-                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-                    JOB_VM_COMMAND: >-
-                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
-                      && make -C hack/ci k3d-lm-integration-test
                 inheritedConfigs:
                   global:
                     - jobConfig_default
