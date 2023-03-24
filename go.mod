@@ -30,7 +30,7 @@ require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
-	github.com/imdario/mergo v0.3.14
+	github.com/imdario/mergo v0.3.15
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.5
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
@@ -62,7 +62,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230323044222-4f78c66b8b4c
+require k8s.io/test-infra v0.0.0-20230324183220-d09276bf79ea
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
