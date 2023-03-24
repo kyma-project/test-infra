@@ -236,40 +236,19 @@ templates:
                     - vm_job_k3d
                     - vm_job_labels
               - jobConfig:
-                  name: post-main-keda-manager-upgrade-main-to-pr
+                  name: post-main-keda-manager-upgrade-latest-to-main
                   always_run: "true"
                   optional: "true"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
                     JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin 
-                    && git checkout - 
-                    && make -C hack/local run 
-                    && git checkout - 
-                    && make ci-k3d-upgrade-test"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
-                    - extra_refs_test-infra
-                  local:
-                    - job_default
-                    - vm_job_make
-                    - vm_job_k3d
-                    - vm_job_labels
-              - jobConfig:
-                  name: post-main-keda-manager-upgrade-main-to-channel
-                  always_run: "true"
-                  optional: "true"
-                  env:
-                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin 
-                    && make kyma
-                    && ./bin/kyma-unstable provision k3d
+                    && curl -s https://storage.googleapis.com/kyma-cli-unstable/kyma-linux > kyma-unstable
+                    && chmod 0100 ./kyma-unstable 
+                    && ./kyma-unstable provision k3d
                     && mkdir tmp
-                    && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/moduletemplate-keda.yaml > tmp/moduletemplate-keda.yaml
-                    && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/kustomization.yaml > tmp/kustomization.yaml
-                    && ./bin/kyma-unstable alpha deploy --ci --force-conflicts --templates tmp/
+                    && curl -s https://github.com/kyma-project/keda-manager/releases/latest/download/keda-manager.yaml > tmp/moduletemplate-keda.yaml
+                    && ./kyma-unstable alpha deploy --ci --force-conflicts
+                    && kubectl apply -f tmp/moduletemplate-keda.yaml 
                     && make ci-k3d-upgrade-test"
                 inheritedConfigs:
                   global:
