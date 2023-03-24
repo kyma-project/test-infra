@@ -6,144 +6,137 @@ templates:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
               - jobConfig:
-                  path: components/provisioner
+                  name: pull-provisioner-test
+                  labels:
+                    preset-dind-enabled: "true"
+                    preset-kind-volume-mounts: "true"
+                  command: /bin/bash
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/components/provisioner"
+                    - -c
+                    - "service docker start && make -C components/provisioner release"
                   run_if_changed: "^components/provisioner/|^scripts/"
-                  release_since: "1.14"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
+                    - "jobConfig_presubmit"
 
       - to: ../../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
               - jobConfig:
-                  path: components/kyma-environment-broker
+                  name: pull-kyma-environment-broker-test
+                  labels:
+                    preset-dind-enabled: "true"
+                    preset-kind-volume-mounts: "true"
+                  command: /bin/bash
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/components/kyma-environment-broker"
+                    - -c
+                    - "service docker start && make -C components/kyma-environment-broker release"
                   run_if_changed: "^components/kyma-environment-broker/|^scripts/"
-                  release_since: "1.14"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
+                    - "jobConfig_presubmit"
 
       - to: ../../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
               - jobConfig:
-                  path: components/schema-migrator
+                  name: pull-schema-migrator-test
+                  labels:
+                    preset-dind-enabled: "true"
+                    preset-kind-volume-mounts: "true"
+                  command: /bin/bash
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/components/schema-migrator"
+                    - -c
+                    - "service docker start && make -C components/schema-migrator release"
                   run_if_changed: "^components/schema-migrator/|^scripts/"
-                  release_since: "1.14"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
+                    - "jobConfig_presubmit"
 
       - to: ../../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
               - jobConfig:
-                  path: components/kyma-metrics-collector
+                  name: pull-kyma-metrics-collector-test
+                  labels:
+                    preset-dind-enabled: "true"
+                    preset-kind-volume-mounts: "true"
+                  command: /bin/bash
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/components/kyma-metrics-collector"
+                    - -c
+                    - "service docker start && make -C components/kyma-metrics-collector release"
                   run_if_changed: "^components/kyma-metrics-collector/|^scripts/"
-                  release_since: "1.22"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
+                    - "jobConfig_presubmit"
 
       - to: ../../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
               - jobConfig:
-                  path: components/kubeconfig-service
+                  name: pull-kubeconfig-service-test
+                  labels:
+                    preset-dind-enabled: "true"
+                    preset-kind-volume-mounts: "true"
+                  command: /bin/bash
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/components/kubeconfig-service"
+                    - -c
+                    - "service docker start && make -C components/kubeconfig-service release"
                   run_if_changed: "^components/kubeconfig-service/|^scripts/"
-                  release_since: "1.14"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
+                    - "jobConfig_presubmit"
 
       - to: ../../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
               - jobConfig:
-                  path: tests/provisioner-tests
+                  name: pull-test-provisioner-tests
+                  labels:
+                    preset-dind-enabled: "true"
+                    preset-kind-volume-mounts: "true"
+                  command: /bin/bash
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/tests/provisioner-tests"
+                    - -c
+                    - "service docker start && make -C tests/provisioner-tests release"
                   run_if_changed: "^tests/provisioner-tests/|^scripts/"
-                  release_since: "1.14"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
+                    - "jobConfig_presubmit"
 
       - to: ../../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
               - jobConfig:
-                  path: tests/e2e/provisioning
+                  name: pull-e2e-provisioning
+                  labels:
+                    preset-dind-enabled: "true"
+                    preset-kind-volume-mounts: "true"
+                  command: /bin/bash
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/tests/e2e/provisioning"
+                    - -c
+                    - "service docker start && make -C tests/e2e/provisioning release"
                   run_if_changed: "^tests/e2e/provisioning/|^scripts/"
-                  release_since: "1.14"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
+                    - "jobConfig_presubmit"
