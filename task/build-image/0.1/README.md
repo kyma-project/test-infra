@@ -47,7 +47,7 @@ The Pipeline can be run on `linux/amd64` platform.
 See the following samples for usage:
 
 - **[`prowjob-building-image.yaml`](samples/prowjob-building-image.yaml)**: A presubmit prowjob building,signing and
-  pushin an image.
+  pushing an image.
 
 ## Contributing
 
