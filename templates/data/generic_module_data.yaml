@@ -85,7 +85,9 @@ templates:
                     GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
                     CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
                     TEST_RESULT_WINDOW_TIME: "6h"
-                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make -C hack/local run-with-lifecycle-manager"
+                    JOB_VM_COMMAND: >-
+                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+                      && make -C hack/local run-with-lifecycle-manager
                   extra_refs:
                     keda-manager:
                       - org: kyma-project
@@ -159,7 +161,7 @@ templates:
                   args:
                     - "-C"
                     - "hack/ci"
-                    - "module-build" # run test make target of operator
+                    - "module-build"
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
@@ -175,7 +177,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "make test" # run test make target of operator
+                    - "make test"
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
@@ -223,7 +225,9 @@ templates:
                   optional: "false"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make -C hack/ci k3d-integration-test"
+                    JOB_VM_COMMAND: >-
+                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+                      && make -C hack/ci k3d-integration-test
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -241,15 +245,16 @@ templates:
                   optional: "true"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin 
-                    && curl -s https://storage.googleapis.com/kyma-cli-unstable/kyma-linux > kyma-unstable
-                    && chmod 0100 ./kyma-unstable 
-                    && ./kyma-unstable provision k3d
-                    && mkdir tmp
-                    && curl -s https://github.com/kyma-project/keda-manager/releases/latest/download/keda-manager.yaml > tmp/moduletemplate-keda.yaml
-                    && ./kyma-unstable alpha deploy --ci --force-conflicts
-                    && kubectl apply -f tmp/moduletemplate-keda.yaml 
-                    && make -C hack/ci upgrade-to"
+                    JOB_VM_COMMAND: >-
+                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+                      && curl -s https://storage.googleapis.com/kyma-cli-unstable/kyma-linux > kyma-unstable
+                      && chmod 0100 ./kyma-unstable
+                      && ./kyma-unstable provision k3d
+                      && mkdir tmp
+                      && curl -s https://github.com/kyma-project/keda-manager/releases/latest/download/keda-manager.yaml > tmp/moduletemplate-keda.yaml
+                      && ./kyma-unstable alpha deploy --ci --force-conflicts
+                      && kubectl apply -f tmp/moduletemplate-keda.yaml
+                      && make -C hack/ci upgrade-to
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -267,7 +272,9 @@ templates:
                   optional: "true"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make -C hack/ci k3d-lm-integration-test"
+                    JOB_VM_COMMAND: >-
+                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+                      && make -C hack/ci k3d-lm-integration-test
                 inheritedConfigs:
                   global:
                     - jobConfig_default
