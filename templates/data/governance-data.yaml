@@ -172,7 +172,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
+                    - "image_buildpack-golang"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                   local:
@@ -226,6 +226,7 @@ templates:
                     - "jobConfig_default"
                     - "image_bootstrap"
                     - "jobConfig_presubmit"
+                    - "extra_refs_kyma"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -246,6 +247,7 @@ templates:
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                     - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
                   local:
                     - "jobConfig_default"
           - repoName: "github.com/kyma-project/website"

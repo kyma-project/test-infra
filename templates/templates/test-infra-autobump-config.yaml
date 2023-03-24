@@ -16,8 +16,6 @@ excludedConfigPaths:
 {{- $rel := . | replace "." "" }}
   - "prow/jobs/kyma/releases/kyma-release-{{ $rel }}.yaml"
 {{- end }}
-extraFiles:
-  - "development/tools/jobs/tester/tester.go"
 targetVersion: "latest"
 prefixes:
   - name: "test-infra"

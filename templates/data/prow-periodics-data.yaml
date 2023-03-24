@@ -26,7 +26,7 @@ templates:
               - jobConfig:
                   name: eventing-tools-autobump
                   cron: "30 * * * 1-5"
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230320-bf693f37b7
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230322-fad14aa00d
                   command: generic-autobumper
                   args:
                     - --config=ci/eventing-tools-autobump-config.yaml
@@ -50,7 +50,7 @@ templates:
               - jobConfig:
                   name: ci-prow-label-sync
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20230320-bf693f37b7
+                  image: gcr.io/k8s-prow/label_sync:v20230322-fad14aa00d
                   command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
@@ -72,7 +72,7 @@ templates:
                   name: ci-prow-autobump
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230320-bf693f37b7
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230322-fad14aa00d
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
@@ -134,7 +134,7 @@ templates:
                   name: ci-prow-autobump-jobs
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230320-bf693f37b7
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230322-fad14aa00d
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml
@@ -147,20 +147,3 @@ templates:
                     - "pubsub_labels"
                     - "disable_testgrid"
                     - extra_refs_test-infra
-              - jobConfig:
-                  name: "orphaned-gke-disks-cleanup"
-                  cron: "22 0 * * *"
-                  command: bash
-                  args:
-                    - -c
-                    - 'gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS} && gcloud compute disks --quiet delete $(gcloud compute disks list --filter=\"-users:*\" --format \"value(uri())\") || true'
-                  labels:
-                    preset-sa-gke-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                inheritedConfigs:
-                  global:
-                    - "pubsub_labels"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "periodic_config"

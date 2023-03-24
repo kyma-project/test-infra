@@ -10,7 +10,7 @@ presubmits:
       run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/'
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759
+          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41
             command:
               - /bin/bash
             args:
