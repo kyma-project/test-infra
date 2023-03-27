@@ -2,8 +2,7 @@
 
 A unit-test-go Task is used to run unit tests for Go code.
 The task is tailored to be triggered by Prow as a ProwJob.
-It uses a golangci-lint tool to run the tests.
-The GolangCI tool config is stored in the `.golangci.yaml` file in a repository hosting tested code.
+It uses a built-in go test command to run unit tests.
 
 ## Compatibility
 
@@ -30,7 +29,7 @@ kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/
 
 ## Platforms
 
-You can run the Pipeline on the `linux/amd64` platform.
+You can run the Task on the `linux/amd64` platform.
 
 ## Usage
 
