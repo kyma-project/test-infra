@@ -1,0 +1,6 @@
+pjNames:
+  - pjName: "skr-aws-integration-dev"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 17208
