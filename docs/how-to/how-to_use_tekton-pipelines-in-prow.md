@@ -47,7 +47,7 @@ As you can see, there are some differences between usual ProwJob, and this one. 
 ```yaml
 decorate: false # Decoration config only applies to Kubernetes-based ProwJobs
 agent: tekton-pipeline # It's a requirement to tell Prow to use Tekton as an agent
-cluster: tekton-pipelines # Name of the cluster, where Tekton is working
+cluster: tekton # Name of the cluster, where Tekton is working
 ```
 
 Then you must define a PipelineRun spec using `pipeline_run_spec`. For the information on which fields you can define in this spec, see the [Godoc of `PipelineRunSpec`](https://pkg.go.dev/github.com/tektoncd/pipeline@v0.44.0/pkg/apis/pipeline/v1beta1#PipelineRunSpec).
@@ -114,7 +114,8 @@ presubmits:
 
 ## Reusability of tasks and pipelines
 
-Kyma's Tekton pipelines and tasks are under [`tekton/catalog` directory](../../tekton/catalog). You can reuse any of the tasks and pipelines in your own ProwJob definition.
+Kyma's Tekton tasks are under [`task` directory](../../task). You can reuse any of the tasks in your own ProwJob
+definition.
 
 ### Reusing tasks
 
@@ -200,43 +201,61 @@ presubmits:
             name: echo-pipeline
 ```
 
-This uses a pre-defined pipeline that is in the Tekton cluster. 
+This uses a pre-defined pipeline that is in the Tekton cluster.
 
 ## Get repository source in a Pipeline
 
 When applying any Pipeline through Prow, a list of parameters will be propagated in `PipelineRun`.
-This list contains fields commonly found in normal ProwJobs. You can check this list in [official Prow docs](https://docs.prow.k8s.io/docs/jobs/#job-environment-variables).
+This list contains fields commonly found in normal ProwJobs. You can check this list
+in [official Prow docs](https://docs.prow.k8s.io/docs/jobs/#job-environment-variables).
 
-To get the source code, simply use [`git-clone`](https://hub.tekton.dev/tekton/task/git-clone) task, or define a similar task in your Pipeline.
+To get the source code, you can use a general purpose [`git-clone`](https://hub.tekton.dev/tekton/task/git-clone) task,
+or use a [`clone-refs`](https://github.com/kyma-project/test-infra/blob/main/task/clone-refs/0.1/clone-refs.yaml)task
+which is tailored to use with Prow.
 
-You can reuse git-clone Task available in our [Tekton instance](https://tekton.build.kyma-project.io/#/namespaces/default/tasks/git-clone?view=overview).
-Follow the official [Tekton documentation](https://tekton.dev/docs/how-to-guides/clone-repository/) to use it in your pipelines.
+You can reuse git-clone Task available in
+our [Tekton instance](https://tekton.build.kyma-project.io/#/namespaces/default/tasks/git-clone?view=overview).
+Follow the official [Tekton documentation](https://tekton.dev/docs/how-to-guides/clone-repository/) to use it in your
+pipelines.
 
-To access those parameters use `$(params.{PARAM})` directive in your scripts or params, where `{PARAM}` is the name of Prow's standard fields from Prow docs.
+To learn how to use the clone-refs task check
+its [documentation](https://github.com/kyma-project/test-infra/blob/main/task/clone-refs/0.1/README.md) and sample usage
+in
+the [prowjob](https://github.com/kyma-project/test-infra/blob/main/task/clone-refs/0.1/samples/prowjob-cloning-repositories.yaml).
+
+To access parameters use `$(params.{PARAM})` directive in your scripts or params, where `{PARAM}` is the name of Prow's
+standard fields from Prow docs.
 
 ## Known bugs
 
 Here's a list of know bugs that are most likely to be fixable in upstream Prow.
 
-* ~~Currently, it's impossible to define a custom list of parameters to the Tekton PipelineRun spec defined in a ProwJob. Prow uses this field to provide information about the Git reference on which the Pipeline has been run.~~
-* ~~It's impossible to define params in inline tasks. Prow's validation flow returns an incorrect error `Invalid value: "string": val in body must be of type object: "string"`.~~
+* ~~Currently, it's impossible to define a custom list of parameters to the Tekton PipelineRun spec defined in a
+  ProwJob. Prow uses this field to provide information about the Git reference on which the Pipeline has been run.~~
+* ~~It's impossible to define params in inline tasks. Prow's validation flow returns an incorrect
+  error `Invalid value: "string": val in body must be of type object: "string"`.~~
+* When creating a prowjob with Tekton agent and extra_refs defined it's required to specify a tekton pipeline resource
+  for each extra_ref. Otherwise, the pipeline will fail validation with the following error: invalid presubmit job
+  tekton-demo: extra_refs[0] is not used; some resource must reference PROW_EXTRA_GIT_REF_0. As a workaround just add
+  tekton pipeline resources for each extra_ref in the piplineRunSpec. Bug is reported to the
+  kubernetes/test-infra [#29144](https://github.com/kubernetes/test-infra/issues/29144).
 
-Both of the bugs have been identified and are reported to the kubernetes/test-infra repository [#28679](https://github.com/kubernetes/test-infra/issues/28679).
-Currently, a workaround that disables Tekton's PipelineRun validation on ProwJob level has been applied on kyma-prow instance.
+Bugs have been identified and are reported to the kubernetes/test-infra repository.
+[#28679](https://github.com/kubernetes/test-infra/issues/28679) Currently, a workaround that disables Tekton's
+PipelineRun validation on ProwJob level has been applied on kyma-prow instance.
 
 ## Considerations
 
 Although Tekton Pipelines provide a much more complex solution for building pipelines, it still has some drawbacks:
-* YAMLs get utterly cluttered with complex configuration fields
-* Understanding pipelines requires good knowledge of Tekton and its resources
-* As tasks work as separate Pods, this will generate an increased load on the K8s cluster, thus increasing the cost
-* Pipelines can be marginally slower to build and define than simple ProwJobs
+
+* As tasks work as separate Pods, this can generate an increased load on the K8s cluster, thus increasing the cost in
+  some scenarios.
+* Pipelines can be marginally slower to build and define than simple ProwJobs.
 
 If you want to build your pipeline with Tekton, consider the following:
+
 * Does my workflow have to do some complex stuff?
 * Can I cover my requirement with a quick Makefile step?
 
-If your pipeline only has to run some simple code tests, static checks, or work directly on the code and does not require dependencies to external services,
-consider using Kubernetes-agent based ProwJob. 
-
-ProwJobs are best suited for code-oriented tasks, whereas Tekton's Pipelines are a great way to implement a complex release or E2E pipeline with reusable tasks.
+ProwJobs are best suited for simple tasks, whereas Tekton's Pipelines are a great way to implement a multitasks
+scenarios or complex release or E2E pipeline with reusable tasks.
