@@ -8,7 +8,7 @@ spec:
   kubernetes:
     kubeAPIServer:
       enableBasicAuthentication: false
-    version: 1.26.1
+    version: 1.25.6
   provider:
     controlPlaneConfig:
       apiVersion: gcp.provider.extensions.gardener.cloud/v1alpha1
