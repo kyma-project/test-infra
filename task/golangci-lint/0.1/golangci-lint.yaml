@@ -13,21 +13,21 @@ metadata:
 spec:
   description: >-
     The golangci-lint Task runs a golang linter.
-    Task is tailored to be triggered by prow as a prowjob.
+    The task is tailored to be triggered by Prow as a ProwJob.
     It uses a golangci-lint tool.
-    The golangci tool config is stored in the .golangci.yaml file which is read from a repository hosting tested code.
+    The GolangCI tool config is stored in the .golangci.yaml file which is read from a repository hosting tested code.
     A workspace named repo stores the source code to lint.
   workspaces:
     - name: repo
-      description: "The workspace where sources to lint are stored. Usually it should be a shared workspace with other tasks. A default mount path is aligned with prowjob running under a kubernetes agent."
+      description: "The workspace where sources to lint are stored. Usually, it should be a workspace shared with other tasks. A default mount path is aligned with a ProwJob running under a Kubernetes agent."
       mountPath: /home/prow/go
   params:
     - name: REPO_OWNER
-      description: "GitHub org that triggered the job. Variable set by prow. Prow will not set this variable if the prowjob type is periodic. In that case an empty string default value will be used."
+      description: "GitHub org that triggers the job. A variable set by Prow. Prow does not set this variable if the ProwJob type is periodic. In that case, an empty string default value is used."
       type: string
       default: ""
     - name: REPO_NAME
-      description: "GitHub repo that triggered the job. Variable set by prow. Prow will not set this variable if the prowjob type is periodic. In that case an empty string default value will be used."
+      description: "GitHub repo that triggers the job. A variable set by Prow. Prow does not set this variable if the ProwJob type is periodic. In that case, an empty string default value is used."
       type: string
       default: ""
   steps:

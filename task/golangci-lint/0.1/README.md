@@ -1,13 +1,13 @@
 # Unit Tests for Go Code
 
-The golangci-lint Task runs a golang linter.
-Task is tailored to be triggered by prow as a prowjob.
+The golangci-lint Task runs a Golang linter.
+The task is tailored to be triggered by Prow as a ProwJob.
 It uses a golangci-lint tool.
-The golangci tool config is stored in the .golangci.yaml file in a repository hosting tested code.
+The GolangCI tool config is stored in the `.golangci.yaml` file in a repository hosting tested code.
 
 ## Compatibility
 
-- **Tekton** v0.36.0 and above
+- Tekton v0.36.0 and above
 
 ## Install
 
@@ -17,32 +17,32 @@ kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/
 
 ## Workspaces
 
-- **`repo`**: The workspace where sources to test are stored. Usually this it should be a shared workspace with other
+- **repo**: The workspace where tested sources are stored. Usually, this should be a workspace shared  with other
   tasks. _(REQUIRED)_
 
 ## Parameters
 
-- **`REPO_OWNER`**: GitHub org that triggered the prowjob. Variable set by prow. Prow will not set this variable if the
-  prowjob type is periodic. In that case an empty string default value will be used. _(OPTIONAL, default: "")_
-- **`REPO_NAME`**: GitHub repo that triggered the prowjob. Variable set by prow. Prow will not set this variable if the
-  prowjob type is periodic. In that case an empty string default value will be used. _(OPTIONAL, default: "")_
+- **`REPO_OWNER`**: GitHub org that triggers the ProwJob. A variable set by Prow. Prow does not set this variable if the
+  ProwJob type is periodic. In that case, an empty string default value is used.  _(OPTIONAL, default: "")_
+- **`REPO_NAME`**: GitHub repo that triggers the ProwJob. A variable set by Prow. Prow does not set this variable if the
+  ProwJob type is periodic. In that case, an empty string default value is used. _(OPTIONAL, default: "")_
 
 ## Platforms
 
-The Pipeline can be run on `linux/amd64` platform.
+You can run the Pipeline on the `linux/amd64` platform.
 
 ## Usage
 
 See the following samples for usage:
 
-- **[`prowjob-linting-go-code.yaml`](samples/prowjob-linting-go-code.yaml)**: A presubmit prowjob configured to run
-  golang linter.
+- [`prowjob-linting-go-code.yaml`](samples/prowjob-linting-go-code.yaml): A presubmit ProwJob configured to run
+  a Golang linter.
 
 ## Contributing
 
 We ❤ contributions.
 
-This task is maintained at [kyma-project/test-infra](https://github.com/kyma-project/test-infra). Issues, pull requests
+This task is maintained in the [`Test Infra`](https://github.com/kyma-project/test-infra) repository. Issues, pull requests
 and other contributions can be made there.
 
 To learn more, read the [CONTRIBUTING][contributing] document.
