@@ -12,23 +12,23 @@ metadata:
     tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
-    A unit-test-go Task is used to run unit tests for go code.
-    Task is tailored to be triggered by prow as a prowjob.
+    A unit-test-go Task is used to run unit tests for Go code.
+    The task is tailored to be triggered by Prow as a ProwJob.
   workspaces:
     - name: repo
-      description: "The workspace where sources to test are stored. Usually this it should be a shared workspace with other tasks."
+      description: "The workspace where tested sources are stored. Usually, this should be a workspace shared with other tasks."
       mountPath: /home/prow/go
   params:
     - name: path-to-test
-      description: "The path to go code to test."
+      description: "The path to tested Go code."
       type: string
       default: "./..."
     - name: REPO_OWNER
-      description: "GitHub org that triggered the prowjob. Variable set by prow. Prow will not set this variable if the prowjob type is periodic. In that case an empty string default value will be used."
+      description: "GitHub org that triggers the ProwJob. A variable set by Prow. Prow does not set this variable if the ProwJob type is periodic. In that case, an empty string default value is used."
       type: string
       default: ""
     - name: REPO_NAME
-      description: "GitHub repo that triggered the prowjob. Variable set by prow. Prow will not set this variable if the prowjob type is periodic. In that case an empty string default value will be used."
+      description: "GitHub repo that triggered the ProwJob. A variable set by Prow. Prow does not set this variable if the ProwJob type is periodic. In that case, an empty string default value is used."
       type: string
       default: ""
   steps:
