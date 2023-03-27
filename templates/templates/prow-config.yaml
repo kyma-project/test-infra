@@ -406,7 +406,7 @@ presets:
       - name: GKE_CLUSTER_VERSION
         value: "1.26"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.26.1"
+        value: "1.25"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
