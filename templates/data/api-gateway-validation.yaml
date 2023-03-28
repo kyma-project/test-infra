@@ -57,13 +57,14 @@ templates:
                   name: pull-api-gateway-cc-guard
                   always_run: true
                   request_cpu: 500m
-                  command:
-                    - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/code-coverage-guard.sh"
+                  command: "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/code-coverage-guard.sh"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - testing
+                  local:
+                    - jobConfig_default
               - jobConfig:
                   name: pull-api-gateway-integration-test
                   always_run: true
