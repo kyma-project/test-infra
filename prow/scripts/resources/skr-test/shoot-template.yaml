@@ -9,7 +9,7 @@ spec:
   purpose: evaluation
   cloudProfileName: aws
   kubernetes:
-    allowPrivilegedContainers: true
+    allowPrivilegedContainers: false
     kubeAPIServer:
       enableBasicAuthentication: false
     version: 1.25.6
