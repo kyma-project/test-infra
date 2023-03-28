@@ -23,11 +23,11 @@ spec:
       mountPath: /home/prow/go
   params:
     - name: REPO_OWNER
-      description: "GitHub org that triggers the job. A variable set by Prow. Prow does not set this variable if the ProwJob type is periodic. In that case, an empty string default value is used."
+      description: "GitHub organization that triggers the job. A variable set by Prow. Prow does not set this variable if the ProwJob type is periodic. In that case, an empty string default value is used."
       type: string
       default: ""
     - name: REPO_NAME
-      description: "GitHub repo that triggers the job. A variable set by Prow. Prow does not set this variable if the ProwJob type is periodic. In that case, an empty string default value is used."
+      description: "GitHub repository that triggers the job. A variable set by Prow. Prow does not set this variable if the ProwJob type is periodic. In that case, an empty string default value is used."
       type: string
       default: ""
   steps:
