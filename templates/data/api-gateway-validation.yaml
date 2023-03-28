@@ -58,9 +58,6 @@ templates:
                   always_run: true
                   request_cpu: 500m
                   command:
-                    - "/bin/sh"
-                  args:
-                    - "-c"
                     - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/code-coverage-guard.sh"
                 inheritedConfigs:
                   global:
