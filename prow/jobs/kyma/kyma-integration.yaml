@@ -977,7 +977,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230327-84b7d5fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
               privileged: true
             command:
@@ -1019,7 +1019,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230327-84b7d5fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
               privileged: true
             command:
@@ -1061,7 +1061,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230327-84b7d5fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
               privileged: true
             command:
@@ -1103,7 +1103,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230327-84b7d5fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
               privileged: true
             command:
@@ -1145,7 +1145,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230327-84b7d5fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
               privileged: true
             command:
@@ -1187,7 +1187,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230327-84b7d5fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
               privileged: true
             command:
@@ -1230,7 +1230,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230327-84b7d5fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
               privileged: true
             command:
@@ -1271,7 +1271,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230327-84b7d5fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
               privileged: true
             command:
@@ -1314,7 +1314,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230327-84b7d5fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
               privileged: true
             command:
@@ -1740,4 +1740,3 @@ periodics: # runs on schedule
           - name: sa-stability-fluentd-storage-writer
             secret:
               secretName: sa-stability-fluentd-storage-writer
-  
