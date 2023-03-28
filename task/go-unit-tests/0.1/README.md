@@ -22,9 +22,9 @@ kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/
 ## Parameters
 
 - **path-to-test**: The path to tested Go code. _(OPTIONAL, default: "./...")_
-- **REPO_OWNER**: GitHub org that triggers the ProwJob. A variable set by Prow. Prow does not set this variable if the
+- **REPO_OWNER**: GitHub organization that triggers the ProwJob. A variable set by Prow. Prow does not set this variable if the
   ProwJob type is periodic. In that case, an empty string default value is used. _(OPTIONAL, default: "")_
-- **REPO_NAME**: GitHub repo that triggers the ProwJob. A variable set by Prow. Prow does not set this variable if the
+- **REPO_NAME**: GitHub repository that triggers the ProwJob. A variable set by Prow. Prow does not set this variable if the
   ProwJob type is periodic. In that case, an empty string default value is used. _(OPTIONAL, default: "")_
 
 ## Platforms
