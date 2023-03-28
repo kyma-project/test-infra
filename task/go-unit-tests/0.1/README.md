@@ -2,7 +2,7 @@
 
 A go-unit-tests Task is used to run unit tests for Go code.
 The task is tailored to be triggered by Prow as a ProwJob.
-It uses a built-in go test command to run unit tests.
+It uses a built-in `go test` command to run unit tests.
 
 ## Compatibility
 
