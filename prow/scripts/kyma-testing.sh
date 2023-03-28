@@ -86,7 +86,7 @@ function main() {
   echo "- Testing Kyma..."
   echo "----------------------------"
 
-  kyma::install_cli
+  kyma::install_old_cli
 
   cts::check_crd_exist
 

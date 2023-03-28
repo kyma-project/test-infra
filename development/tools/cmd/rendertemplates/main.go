@@ -117,7 +117,7 @@ func main() {
 		*dataDirPath = path.Dir(*dataFilePath)
 	} else if *dataFilePath == "" && *dataDirPath != "" {
 		// read all template data from data files
-		err = filepath.Walk(*dataDirPath, getFileWalkFunc(*dataDirPath, &dataFiles))
+		err = filepath.Walk(*dataDirPath, getFileWalkFunc(&dataFiles))
 		if err != nil {
 			log.Fatalf("Cannot read data file directory: %s", err)
 		}
@@ -204,7 +204,7 @@ func getTemplateFromGithub(ghClient *github.Client, templateFileName string) (st
 }
 
 // getFileWalkFunc returns walk function that will recursively find YAML files and will return list of path to these files
-func getFileWalkFunc(dataFilesDir string, dataFiles *[]string) filepath.WalkFunc {
+func getFileWalkFunc(dataFiles *[]string) filepath.WalkFunc {
 	return func(path string, info fs.FileInfo, err error) error {
 		// pass the error further, this shouldn't ever happen
 		if err != nil {

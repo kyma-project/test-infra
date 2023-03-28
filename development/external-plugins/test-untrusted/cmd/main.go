@@ -25,7 +25,7 @@ var ghClient githubClient
 
 // EventHandler handles PullRequest opened events.
 // It will label PR with ok-to-test to make PR trusted and comment with /test all to trigger tests for opened action.
-func EventHandler(server *externalplugin.Plugin, event externalplugin.Event) {
+func EventHandler(_ *externalplugin.Plugin, event externalplugin.Event) {
 	l := externalplugin.NewLogger()
 	defer l.Sync()
 	l = l.With(externalplugin.EventTypeField, event.EventType,

@@ -99,10 +99,7 @@ func run(o options, name, repo, tag string, subs map[string]string) error {
 	cmd.Stdout = io.MultiWriter(outw...)
 	cmd.Stderr = io.MultiWriter(errw...)
 
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-	return nil
+	return cmd.Run()
 }
 
 // getImageNames returns aggregated string with a list of images that were built
