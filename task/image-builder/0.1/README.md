@@ -3,8 +3,7 @@
 The image-builder Task builds an OCI image from a Dockerfile.
 Image is signed with signify and pushed to kyma repositories.
 The Task use k8s prow image-builder tool to build the image.
-Documentation of image builder image used by this
-Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
+Documentation of image builder image used by this task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
 
 ## Compatibility
 

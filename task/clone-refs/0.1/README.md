@@ -1,9 +1,9 @@
-# Unit Tests for Go Code
+# Clone Repositories Task
 
-The clonerefs Task clone repositories references defined by prowjob refs and extra-refs.
+The clone-refs Task clone repositories references defined by prowjob refs and extra-refs.
 Prowjob refs and extra-refs are read from the environment variable JOB_SPEC.
 JOB_SPEC is a JSON-encoded prowjob specification and is set by prow.
-The Task will clone the repositories in to workspace repo.
+The Task will clone the repositories in to workspace named repo.
 The Task use k8s prow clonerefs tool to clone the repositories.
 
 ## Compatibility
