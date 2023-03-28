@@ -3,9 +3,10 @@
 The golangci-lint Task runs a Golang linter.
 The task is tailored to be triggered by Prow as a ProwJob.
 It uses a golangci-lint tool.
-The GolangCI tool config is stored in the `.golangci.yaml` file in a repository hosting tested code.
+The GolangCI tool config is read from the `.golangci.yaml` file located in a root of repository hosting tested code.
 The task does not accept additional parameters to configure the linter. By default, it runs linter against all modules
 found under task working directory.
+The task was designed to be used against monorepos, but it can be used against repositories with single module as well.
 
 ## Compatibility
 
