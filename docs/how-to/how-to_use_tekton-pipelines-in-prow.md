@@ -1,18 +1,20 @@
 # Use Tekton Pipelines with Prow
 
-Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use
-Kubernetes-native implementation of CI/CD pipelines, where every task is a self-contained set of commands.
+Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to
+use Kubernetes-native implementation of CI/CD pipelines, where every task is a self-contained set of commands.
 
-**DISCLAIMER: This document is not complete documentation of Tekton's functionality. This guide is meant only to let you start using Tekton with Prow. 
-For complete information about Tekton's features, read [Tekton official documentation](https://tekton.dev/docs/).**
+**DISCLAIMER: This document is not complete documentation of Tekton's functionality. This guide is meant only to let you
+start using Tekton with Prow. For complete information about Tekton's features,
+read [Tekton official documentation](https://tekton.dev/docs/).**
 
-Tekton can't trigger pipelines natively without an external hook. Prow acts as such a trigger and executes pipeline definition
-when it receives a webhook event from GitHub, just like ProwJob execution does.
+Tekton can't trigger pipelines natively without an external hook. Prow acts as such a trigger and executes pipeline
+definition when it receives a webhook event from GitHub, just like ProwJob execution does.
 
 ## Defining a PipelineRun in ProwJob
 
-ProwJob's API defines a [`TektonPipelineRunSpec`](https://github.com/kubernetes/test-infra/blob/24e9f4faa85b8504dc8d30b11534a21547159c1e/prow/apis/prowjobs/v1/types.go#L201) specification
-which is compatible with `v1beta1` API version of Tekton PipelineRunSpec.
+ProwJob's API defines
+a [`TektonPipelineRunSpec`](https://github.com/kubernetes/test-infra/blob/24e9f4faa85b8504dc8d30b11534a21547159c1e/prow/apis/prowjobs/v1/types.go#L201)
+specification which is compatible with `v1beta1` API version of Tekton PipelineRunSpec.
 
 > **NOTE:** API `v1beta1` is a relatively new addition to Prow. Some bugs and missing features are expected! Raise an issue with the `kind/bug` label if some functionality is not working.
 
