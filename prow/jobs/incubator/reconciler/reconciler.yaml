@@ -1228,7 +1228,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230328-3ac8a327e1"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230328-2d2bbbf73b"
             securityContext:
               privileged: true
             command:
