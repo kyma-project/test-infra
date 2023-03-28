@@ -1,4 +1,4 @@
-# Clone Repositories Task
+# Clone Repositories
 
 The clone-refs Task clone repositories references defined by prowjob refs and extra-refs.
 Prowjob refs and extra-refs are read from the environment variable JOB_SPEC.
