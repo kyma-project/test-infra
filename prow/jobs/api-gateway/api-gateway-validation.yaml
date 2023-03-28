@@ -52,6 +52,31 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 500m
+    - name: pull-api-gateway-cc-guard
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-api-gateway-cc-guard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            command:
+              - "[/bin/sh]"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/code-coverage-guard.sh"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 500m
     - name: pull-api-gateway-integration-test
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
