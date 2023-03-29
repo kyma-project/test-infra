@@ -22,6 +22,10 @@ presubmits: # runs on PRs
         - ^main$
       extra_refs:
         - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
@@ -525,6 +529,10 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: busola
           path_alias: github.com/kyma-project/busola
+          base_ref: main
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
