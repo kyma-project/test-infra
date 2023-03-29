@@ -14,8 +14,8 @@ spec:
   description: >-
     The image-builder Task builds an OCI image from a Dockerfile.
     The image is signed with signify and pushed to Kyma repositories.
-    The Task uses the Kubernetes Prow image-builder tool to build the image.
-    Documentation of image-builder image used by this Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
+    The Task uses the image-builder tool to build the image.
+    Documentation of image-builder tool used by this Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
   workspaces:
     - name: repo
       description: "The workspace stores sources for building an image. Usually, this should be a workspace shared with other tasks."

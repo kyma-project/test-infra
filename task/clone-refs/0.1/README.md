@@ -32,7 +32,7 @@ kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/
 
 ## Platforms
 
-The Pipeline can be run on `linux/amd64` platform.
+You can run the Task on `linux/amd64` platform.
 
 ## Usage
 

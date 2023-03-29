@@ -8,7 +8,7 @@ presubmits:
       decorate: false
       # Prowjobs using Tekton pipelines must use the tekton-pipeline agent.
       agent: tekton-pipeline
-      # Tekton has its own dedicated cluster to run pipelines. Use the Tekton cluster for pipeline ProwJobs.
+      # Tekton has its own dedicated cluster to run pipelines. Use tekton cluster for pipeline ProwJobs.
       cluster: tekton
       always_run: false
       labels:

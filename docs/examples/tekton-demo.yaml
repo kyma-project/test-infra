@@ -96,7 +96,7 @@ presubmits:
                 type: git
             description: "Tekton Demo"
             # TaskRuns executed by the pipieline. TaskRuns provide values and implementation details required by Tasks executed by the pipeline.
-            # TaskRuns provide values and implementations explicitly or binding them to values and implementations provided by the pipeline.
+            # TaskRuns provide values and implementations explicitly or bind them to values and implementations provided by the pipeline.
             tasks:
               # Task name.
               - name: clone-refs
