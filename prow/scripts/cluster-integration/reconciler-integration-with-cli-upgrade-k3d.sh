@@ -35,10 +35,7 @@ function run_pre_upgrade_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
 
   log::info "KYMA_SOURCE ${KYMA_SOURCE}"
-  git reset --hard
-  log::banner "Checkout KYMA_SOURCE ${KYMA_SOURCE}"
-  git fetch
-  git checkout "${KYMA_SOURCE}"
+  git reset --hard && git remote update && git fetch --all && git switch "${KYMA_SOURCE}"
   make ci-pre-upgrade
   popd
 }
@@ -47,10 +44,7 @@ function run_post_upgrade_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
 
   log::info "KYMA_UPGRADE_VERSION ${KYMA_UPGRADE_VERSION}"
-  git reset --hard
-  log::banner "Checkout KYMA_UPGRADE_VERSION ${KYMA_UPGRADE_VERSION}"
-  git fetch
-  git checkout "${KYMA_UPGRADE_VERSION}"
+  git reset --hard && git remote update && git fetch --all && git switch "${KYMA_UPGRADE_VERSION}"
   make ci-post-upgrade
   popd
 }

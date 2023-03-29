@@ -35,9 +35,7 @@ function run_tests() {
   pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
 
   log::info "KYMA_SOURCE ${KYMA_SOURCE}"
-  git reset --hard
-  git fetch
-  git checkout "${KYMA_SOURCE}"
+  git reset --hard && git remote update && git fetch --all && git switch "${KYMA_SOURCE}"
   make ci
   popd
 }
