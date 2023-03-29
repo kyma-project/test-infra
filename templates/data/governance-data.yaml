@@ -179,6 +179,19 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
+                  name: "pre-main-kyma-crd-check-governance"
+                  path_alias: github.com/kyma-project/kyma
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-crd-docs.sh"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+              - jobConfig:
                   name: "pre-kyma-docu-2.0-governance"
                   args:
                     - "--repository"

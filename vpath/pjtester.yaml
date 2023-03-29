@@ -1,0 +1,10 @@
+pjConfigs:
+    prowJobs:
+      kyma-project:
+        kyma:
+        - pjName: "pre-main-kyma-crd-check-governance"
+          report: true
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 17198
