@@ -29,9 +29,9 @@
 /prow/jobs/incubator/varkes @kyma-project/observability @kyma-project/prow
 /prow/jobs/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish
 /prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
-/prow/jobs/kyma/components/central-application-connectivity-validator @kyma-project/Framefrog @ralikio @pk85 @kyma-project/prow
-/prow/jobs/kyma/components/central-application-gateway @ralikio @pk85 @kyma-project/prow @kyma-project/Framefrog
-/prow/jobs/kyma/components/compass-runtime-agent @ralikio @pk85 @kyma-project/prow @kyma-project/Framefrog
+/prow/jobs/kyma/components/central-application-connectivity-validator @kyma-project/Framefrog @kyma-project/prow
+/prow/jobs/kyma/components/central-application-gateway @kyma-project/prow @kyma-project/Framefrog
+/prow/jobs/kyma/components/compass-runtime-agent @kyma-project/prow @kyma-project/Framefrog
 /prow/jobs/kyma/components/event-publisher-proxy @kyma-project/eventing
 /prow/jobs/kyma/components/eventing-controller @kyma-project/eventing
 /prow/jobs/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/prow @kyma-project/eventing
