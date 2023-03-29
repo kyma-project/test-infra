@@ -13,7 +13,7 @@ presubmits:
       # The pipeline can use these environment variables to get the refs and extra-refs to clone.
       extra_refs:
         - org: kyma-project
-          repo: kyma
+          repo: keda-manager
           base_ref: main
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
