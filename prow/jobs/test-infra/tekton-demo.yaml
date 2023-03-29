@@ -145,14 +145,14 @@ presubmits:
                   - name: REPO_NAME
                     value: $(params.REPO_NAME)
                 runAfter:
-                  - go-unit-tests
-                  - golangci-lint-keda-manager
-                  - golangci-lint
+                  - clone-refs
               - name: build-image
                 taskRef:
                   name: image-builder
                 runAfter:
-                  - clone-refs
+                  - go-unit-tests
+                  - golangci-lint-keda-manager
+                  - golangci-lint
                 workspaces:
                   - name: repo
                     workspace: repo
