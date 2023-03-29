@@ -3,3 +3,10 @@ pjConfigs:
     kyma-incubator:
       reconciler:
         - pjName: "pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d"
+  prConfigs:
+    kyma-project:
+      cli:
+        prNumber: 1612
+    kyma-incubator:
+      reconciler:
+        prNumber: 1322
