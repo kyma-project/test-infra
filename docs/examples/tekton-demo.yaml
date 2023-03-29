@@ -1,0 +1,184 @@
+presubmits:
+  kyma-project/test-infra:
+    - name: tekton-demo
+      # Default Prow decoration must be disabled because the pipeline uses its own decoration.
+      decorate: false
+      # Prowjobs using Tekton pipelines must use the tekton-pipeline agent.
+      agent: tekton-pipeline
+      # Tekton has its own dedicated cluster to run pipelines. Use tekton cluster to for pipeline prowjobs.
+      cluster: tekton
+      always_run: false
+      # Prow set pipeline params according to the list of job environment variables.
+      # See https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
+      # The pipeline can use these environment variables to get the refs and extra-refs to clone.
+      extra_refs:
+        - org: kyma-project
+          repo: keda-manager
+          base_ref: main
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "tekton-demo"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      tekton_pipeline_run_spec:
+        v1beta1:
+          # PipelineRun provide implementation details of workspaces used by the pipeline.
+          workspaces:
+            - name: repo
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: premium-rwo
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
+            - name: config
+              configMap:
+                name: kaniko-build-config
+            - name: signify-secret
+              secret:
+                secretName: signify-dev-secret
+            - name: image-registry-credentials
+              secret:
+                secretName: sa-kyma-push-images
+          # PipelineRun provide values of params used by the pipeline.
+          # Prow implicitly and automatically set values of params according to the list of job environment variables.
+          params:
+            - name: name
+              value: test-infra/test-image
+            - name: config
+              value: /config/kaniko-build-config.yaml
+            - name: dockerfile
+              value: development/secrets-rotator/cloud-run/rotate-service-account/Dockerfile
+          # The following resources are not used by the pipeline, but are required by the ProwJob syntax validator.
+          # They are not used by the pipeline because the pipeline uses environment variables to get extra_refs to clone the repo in a task.
+          # This is a workaround for deprecated resource object in Tekton Pipeline api version v1beta1.
+          resources:
+            - name: extra-ref
+              resourceRef:
+                name: PROW_EXTRA_GIT_REF_0
+          # Inline pipeline specification.
+          # The pipelineSpec does not contain implementation details of workspaces and params because they are propagated from the PipelineRun.
+          pipelineSpec:
+            # The following resources are not used by the pipeline, but are required by the ProwJob syntax validator.
+            # They are not used by the pipeline because the pipeline uses environment variables to get extra_refs to clone the repo in a task.
+            # This is a workaround for deprecated resource object in Tekton Pipeline api version v1beta1.
+            resources:
+              - name: extra-ref
+                type: git
+            description: "Tekton Demo"
+            # TaskRuns executed by teh pipieline. TaskRuns provide values and implementation details required by Tasks executed by the pipeline.
+            # TaskRuns provide values and implementations explicitly or binding them to values and implementations provided by the pipeline.
+            tasks:
+              # Task name.
+              - name: clone-refs
+                # A name of a Task to execute. A Task specification must exist in the pipelines cluster.
+                taskRef:
+                  name: clone-refs
+                # Bindings of workspaces used by the Task to workspaces provided by the pipeline.
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                # Bindings of params used by the Task to params provided by the pipeline.
+                params:
+                  - name: JOB_SPEC
+                    value: $(params.JOB_SPEC)
+              # TaskRun with inline task specification.
+              # TskRuns with inline tasks can be mixed with TaskRuns referencing existing tasks by name in the same pipeline.
+              - name: golangci-lint-config
+                runAfter:
+                  - clone-refs
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                taskSpec:
+                  workspaces:
+                    - description: The workspace where sources to build an image are stored.
+                      mountPath: /home/prow/go
+                      name: repo
+                  steps:
+                    - name: config
+                      image: ubuntu
+                      # Using script is a way to run inlined script. This doesn't have to be a shell script.
+                      script: |
+                        #!/usr/bin/env bash
+                        cd /home/prow/go/src/github.com/$(params.REPO_OWNER)/keda-manager
+                        cat << EOF > .golangci.yaml
+                        run:
+                          timeout: 10m
+                        EOF
+              - name: golangci-lint
+                taskRef:
+                  name: golangci-lint
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                runAfter:
+                  - clone-refs
+              - name: golangci-lint-keda-manager
+                taskRef:
+                  name: golangci-lint
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  # Explicitly set REPO_NAME param value to keda-manager. This overrides the value set by the pipeline.
+                  - name: REPO_NAME
+                    value: keda-manager
+                runAfter:
+                  - golangci-lint-config
+              - name: go-unit-tests
+                taskRef:
+                  name: go-unit-tests
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                runAfter:
+                  - clone-refs
+              - name: build-image
+                taskRef:
+                  name: image-builder
+                runAfter:
+                  - go-unit-tests
+                  - golangci-lint-keda-manager
+                  - golangci-lint
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                  - name: config
+                    workspace: config
+                  - name: signify-secret
+                    workspace: signify-secret
+                  - name: image-registry-credentials
+                    workspace: image-registry-credentials
+                params:
+                  - name: name
+                    value: $(params.name)
+                  - name: config
+                    value: $(params.config)
+                  - name: dockerfile
+                    value: $(params.dockerfile)
+                  - name: JOB_TYPE
+                    value: $(params.JOB_TYPE)
+                  - name: PULL_NUMBER
+                    value: $(params.PULL_NUMBER)
+                  - name: PULL_BASE_SHA
+                    value: $(params.PULL_BASE_SHA)
+                  - name: CI
+                    value: $(params.CI)
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
