@@ -314,7 +314,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                    - "kaniko_buildpack"
+                    - image-builder-buildkit
               - jobConfig:
                   name: "post-main-tpi-kaniko-executer"
                   labels:
@@ -330,7 +330,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_postsubmit"
-                    - "kaniko_buildpack"
+                    - image-builder-buildkit
 
               - jobConfig:
                   name: "pre-main-tpi-kube-state-metrics"

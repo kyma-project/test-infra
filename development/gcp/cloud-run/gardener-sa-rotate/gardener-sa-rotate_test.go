@@ -16,6 +16,7 @@ import (
 	"strings"
 	"testing"
 
+	gpubsub "cloud.google.com/go/pubsub"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/iam"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/secretmanager"
@@ -435,7 +436,7 @@ func TestRotateGardenerServiceAccount(t *testing.T) {
 
 			kuberentesSecrets:         map[string]fakeKubernetesSecret{"sa-secret": {namespace: gardenerSecretNamespace, data: map[string][]byte{"serviceaccount.json": []byte(fakeSAData)}}},
 			expectedKuberentesSecrets: map[string]fakeKubernetesSecret{"sa-secret": {namespace: gardenerSecretNamespace, data: map[string][]byte{"serviceaccount.json": []byte(fakeSAData2)}}},
-			requestBody:               pubsub.Message{Message: pubsub.MessagePayload{Attributes: map[string]string{"eventType": "SECRET_ROTATE"}}},
+			requestBody:               pubsub.Message{Message: gpubsub.Message{Attributes: map[string]string{"eventType": "SECRET_ROTATE"}}},
 			requestMessageData:        pubsub.SecretRotateMessage{Name: createSecretName(testingProjectName, "sa-secret"), Labels: saSecretLabels},
 		},
 		{
@@ -454,7 +455,7 @@ func TestRotateGardenerServiceAccount(t *testing.T) {
 
 			kuberentesSecrets:         map[string]fakeKubernetesSecret{"sa-secret": {namespace: gardenerSecretNamespace, data: map[string][]byte{"serviceaccount.json": []byte(fakeSAData)}}},
 			expectedKuberentesSecrets: map[string]fakeKubernetesSecret{"sa-secret": {namespace: gardenerSecretNamespace, data: map[string][]byte{"serviceaccount.json": []byte(fakeSAData2)}}},
-			requestBody:               pubsub.Message{Message: pubsub.MessagePayload{Attributes: map[string]string{"eventType": "SECRET_ROTATE"}}},
+			requestBody:               pubsub.Message{Message: gpubsub.Message{Attributes: map[string]string{"eventType": "SECRET_ROTATE"}}},
 			requestMessageData:        pubsub.SecretRotateMessage{Name: createSecretName(testingProjectName, "sa-secret"), Labels: saSecretLabels},
 		},
 	}
@@ -503,7 +504,7 @@ func TestRotateGardenerServiceAccount(t *testing.T) {
 			RotateGardenerServiceAccount(rr, req)
 
 			if got := rr.Body.String(); got != test.expectedResponse {
-				t.Errorf("ServiceAccountCleaner(%q) = %q, want %q", test.requestBody, got, test.expectedResponse)
+				t.Errorf("ServiceAccountCleaner(%v) = %q, want %q", test.requestBody, got, test.expectedResponse)
 			}
 
 			if !reflect.DeepEqual(test.keys, test.expectedKeys) {

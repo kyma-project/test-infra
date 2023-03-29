@@ -119,7 +119,7 @@ install_kyma
 
 make_fast_integration "ci-pre-upgrade"
 
-# Upgrade kyma to main branch with latest stable cli
+# Upgrade kyma to main branch with latest cli released
 kyma::install_cli
 
 upgrade_kyma

@@ -37,17 +37,18 @@ function install_cli() {
   mkdir -p "$install_dir"
 
   local os
-  os="$(uname -s | tr '[:upper:]' '[:lower:]')"
-  if [[ -z "$os" || ! "$os" =~ ^(darwin|linux)$ ]]; then
-    echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
-    exit 1
+  os="$(uname -s)"
+  if [[ -z "$os" || ! "$os" =~ ^(Darwin|Linux)$ ]]; then
+      echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
+      exit 1
   else
-    readonly os
+      readonly os
   fi
 
   pushd "$install_dir" || exit
-  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
-  chmod +x kyma
+  curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/latest/download/kyma_${os}_x86_64.tar.gz" \
+  && tar -zxvf kyma.tar.gz && chmod +x kyma \
+  && rm -f kyma.tar.gz
   popd
 
   kyma version --client
@@ -67,24 +68,16 @@ function deploy_kyma() {
 
   kubectl version --output=yaml
 
-  local deploy
-  local deploy_commands
-  local deploy_dryrun
+  local deploy_command
 
-  deploy_commands=" --ci
+  deploy_command="kyma deploy
+   --ci
    --source=local
    --workspace ${KYMA_SOURCES_DIR}
    --value=telemetry.operator.controllers.tracing.enabled=true
    --components-file kyma-integration-k3d-telemetry-components.yaml"
-  deploy="kyma deploy -p evaluation"
-  deploy_dryrun="kyma deploy --dry-run  -p production"
 
-
-  deploy+="$deploy_commands"
-  deploy_dryrun+="$deploy_commands"
-
-  $deploy
-  $deploy_dryrun 1>/dev/null
+  $deploy_command
 
   kubectl get pods -A
 }

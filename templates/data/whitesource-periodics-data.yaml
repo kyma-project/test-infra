@@ -135,23 +135,6 @@ templates:
                     - "jobConfig_default"
                     - "product_kyma_test"
               - jobConfig:
-                  repository: "module-manager"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  subprojects: "false"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma_test"
-
-
-              - jobConfig:
                   repository: "busola"
                   language: "javascript"
                   project: "kyma-project"
@@ -252,6 +235,20 @@ templates:
                     - "product_kyma"
               - jobConfig:
                   repository: "telemetry-manager"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  base_ref: "main"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_kyma"
+              - jobConfig:
+                  repository: "directory-size-exporter"
                   language: "golang-mod"
                   project: "kyma-project"
                   base_ref: "main"
