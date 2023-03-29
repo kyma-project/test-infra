@@ -62,7 +62,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230327031154-a4ae558a7afe
+require k8s.io/test-infra v0.0.0-20230329144347-e073b2171d8a
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
@@ -189,7 +189,7 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.0-rc2 // indirect
-	github.com/opencontainers/runc v1.1.2 // indirect
+	github.com/opencontainers/runc v1.1.5 // indirect
 	github.com/opencontainers/runtime-spec v1.0.3-0.20210326190908-1c3f411f0417 // indirect
 	github.com/opencontainers/selinux v1.10.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
