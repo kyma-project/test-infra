@@ -106,6 +106,7 @@ presubmits:
                         cat << EOF > .golangci.yaml
                         run:
                           timeout: 10m
+                        EOF
               - name: golangci-lint
                 taskRef:
                   name: golangci-lint
