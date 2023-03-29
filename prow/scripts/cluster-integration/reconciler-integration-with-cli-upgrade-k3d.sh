@@ -47,7 +47,6 @@ function run_post_upgrade_tests() {
 
   log::info "KYMA_UPGRADE_VERSION ${KYMA_UPGRADE_VERSION}"
   log::info "adding remote origin"
-  git remote add origin https://github.com/kyma-project/kyma.git
   git reset --hard && git remote update && git fetch --all && git checkout "${KYMA_UPGRADE_VERSION}"
   make ci-post-upgrade
   popd
