@@ -137,7 +137,7 @@ function validate_external_on_pr() {
 }
 
 function validate_crd_md() {
-    echo ${REPOSITORY_DIR}
+    echo "repository ${REPOSITORY_DIR}"
     # if [ "${REPOSITORY_DIR}" == true ]; then
     #     sh ${KYMA_SOURCES_DIR}/hack/verify-md.sh
     # fi
