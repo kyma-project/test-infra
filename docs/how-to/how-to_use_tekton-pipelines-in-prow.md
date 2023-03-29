@@ -235,5 +235,4 @@ If you want to build your pipeline with Tekton, consider the following:
 * Does my workflow have to do some complex stuff?
 * Can I cover my requirement with a quick Makefile step?
 
-ProwJobs are best suited for simple tasks, whereas Tekton Pipelines are a great way to implement multitask
-scenarios or a complex release, or an E2E pipeline with reusable tasks.
+ProwJobs are best suited for simple tasks, whereas Tekton Pipelines are a great way to implement multitask scenarios or a complex release, or an E2E pipeline with reusable tasks.
