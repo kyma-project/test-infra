@@ -12,25 +12,25 @@ metadata:
     tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
-    The clonerefs Task clone repositories references defined by prowjob refs and extra-refs.
-    Prowjob refs and extra-refs are read from the environment variable JOB_SPEC.
-    JOB_SPEC is a JSON-encoded prowjob specification and is set by prow.
-    The Task will clone the repositories in to workspace repo.
-    The Task use k8s prow clonerefs tool to clone the repositories.
+    The clone-refs Task clones repositories references defined by ProwJob refs and extra-refs.
+    ProwJob refs and extra-refs are read from the environment variable JOB_SPEC.
+    JOB_SPEC is a JSON-encoded ProwJob specification and is set by Prow.
+    The Task clones the repositories into a workspace repository.
+    The Task uses the Kubernetes Prow clone-refs tool to clone the repositories.
   workspaces:
     - name: logs
-      description: "The workspace where the clone logs will be written."
+      description: "The workspace where the clone logs are written."
       mountPath: /logs
       optional: true
     - name: repo
-      description: "The workspace where the git repos will be cloned. Usually this should be a shared workspace with other tasks."
+      description: "The workspace where the Git repositories will be cloned. Usually, this should be a workspace shared with other tasks."
       mountPath: /home/prow/go
     - name: tmp
       mountPath: /tmp
       optional: true
   params:
     - name: JOB_SPEC
-      description: "JSON-encoded job specification. Variable set by prow."
+      description: "JSON-encoded job specification. A variable set by Prow."
       type: string
     - name: LOG
       description: "The path to the clone logs file."

@@ -13,21 +13,21 @@ metadata:
 spec:
   description: >-
     The image-builder Task builds an OCI image from a Dockerfile.
-    Image is signed with signify and pushed to kyma repositories.
-    The Task use k8s prow image-builder tool to build the image.
-    Documentation of image builder image used by this Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
+    The image is signed with signify and pushed to Kyma repositories.
+    The Task uses the Kubernetes Prow image-builder tool to build the image.
+    Documentation of image-builder image used by this Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
   workspaces:
     - name: repo
-      description: "The workspace stores sources to build an image from. Usually this should be a shared workspace with other tasks."
+      description: "The workspace stores sources for building an image. Usually, this should be a workspace shared with other tasks."
       mountPath: /home/prow/go
     - name: config
-      description: "The workspace stores the image-builder config file. It's mounted from configmap."
+      description: "The workspace stores the image-builder config file. It's mounted from ConfigMap."
       mountPath: /config
     - name: signify-secret
-      description: "The workspace stores signify credentials. It's mounted from secret."
+      description: "The workspace stores signify credentials. It's mounted from Secret."
       mountPath: /secret
     - name: image-registry-credentials
-      description: "The workspace storing image registry credentials. It's mounted from secret."
+      description: "The workspace storing image registry credentials. It's mounted from Secret."
       mountPath: /etc/credentials/sa-kyma-push-images
   params:
     - name: name
@@ -45,23 +45,23 @@ spec:
       description: "Path to Dockerfile file relative to context"
       type: string
     - name: JOB_TYPE
-      description: "Type of prowjob. Variable set by prow according."
+      description: "Type of ProwJob. Variable set by Prow according to the list of job environment variables."
       type: string
     - name: PULL_NUMBER
-      description: "Pull request number. Variable set by prow."
+      description: "Pull request number. Variable set by Prow."
       type: string
     - name: PULL_BASE_SHA
-      description: "Git SHA of the base branch. Variable set by prow."
+      description: "Git SHA of the base branch. Variable set by Prow."
       type: string
     - name: CI
-      description: "Set to true when the current environment is a CI environment. Variable set by prow."
+      description: "Set to true when the current environment is a CI environment. Variable set by Prow."
       type: string
       default: "true"
     - name: REPO_OWNER
-      description: "GitHub org that triggered the job. Variable set by prow."
+      description: "GitHub org that triggers the job. Variable set by Prow."
       type: string
     - name: REPO_NAME
-      description: "GitHub repo that triggered the job. Variable set by prow."
+      description: "GitHub repo that triggers the job. Variable set by Prow."
       type: string
   steps:
     - name: build-image

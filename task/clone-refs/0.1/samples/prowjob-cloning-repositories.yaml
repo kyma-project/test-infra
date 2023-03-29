@@ -1,14 +1,14 @@
 presubmits:
   kyma-project/test-infra:
-    # Prow set pipeline params according to the list of job environment variables.
+    # Prow sets pipeline params according to the list of job environment variables.
     # See https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
     # The pipeline can use these environment variables to get the refs and extra-refs to clone.
     - name: tekton-demo
       # Default Prow decoration must be disabled because the pipeline uses its own decoration.
       decorate: false
-      # Prowjobs using Tekton pipelines must use the tekton-pipeline agent.
+      # ProwJobs using Tekton pipelines must use the tekton-pipeline agent.
       agent: tekton-pipeline
-      # Tekton has its own dedicated cluster to run pipelines. Use tekton cluster to for pipeline prowjobs.
+      # Tekton has its own dedicated cluster to run pipelines. Use Tekton cluster for pipeline ProwJobs.
       cluster: tekton
       always_run: false
       labels:
@@ -32,7 +32,7 @@ presubmits:
               - name: repo
                 mountPath: /home/prow/go
             params:
-              # Prow set pipeline params values according to the list of job environment variables.
+              # Prow sets pipeline params values according to the list of job environment variables.
               - name: JOB_SPEC
                 type: string
               - name: REPO_OWNER
@@ -41,7 +41,7 @@ presubmits:
                 type: string
             description: "Tekton Demo"
             tasks:
-              # clone-refs must run first to clone repositories refs provided by prowjob.
+              # clone-refs must run first to clone repositories refs provided by ProwJob.
               - name: clone-refs
                 taskRef:
                   name: clone-refs

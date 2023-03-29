@@ -1,7 +1,7 @@
 // This is a usage of clonerefs tool from kubernetes/test-infra repo adjusted to work with Tekton as a Task.
-// It is used to clone git repositories specified by refs and extra-refs fields in JOB_SPEC env var.
-// JOB_SPEC env var is provided by Prow as pipeline param and contains information about the job that is currently running.
-// It is supposed to be used as a replacement for piepline git resource in a Tekton Pipeline Task that is triggered by Prow.
+// It is used to clone Git repositories specified by refs and extra-refs fields in JOB_SPEC env var.
+// JOB_SPEC env var is provided by Prow as a pipeline param and contains information about the job that is currently running.
+// It is supposed to be used as a replacement for pipeline Git resource in a Tekton Pipeline Task that is triggered by Prow.
 package main
 
 import (
@@ -27,7 +27,7 @@ func main() {
 	)
 
 	// Check if /logs directory exists. If not, create it.
-	// This makes logs location consistent with prowjobs running on kubernetes agent without requiring a dedicated workspace.
+	// This makes logs location consistent with ProwJobs running on Kubernetes agent without requiring a dedicated workspace.
 	if _, err := os.Stat("/logs"); os.IsNotExist(err) {
 		err = os.Mkdir("/logs", 0755)
 		if err != nil {

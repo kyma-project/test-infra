@@ -1,6 +1,6 @@
 presubmits:
   kyma-project/test-infra:
-    # Prow set pipeline params according to the list of job environment variables.
+    # Prow sets pipeline params according to the list of job environment variables.
     # See https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
     # The pipeline can use these environment variables to get the refs and extra-refs to clone.
     - name: tekton-demo
@@ -8,7 +8,7 @@ presubmits:
       decorate: false
       # Prowjobs using Tekton pipelines must use the tekton-pipeline agent.
       agent: tekton-pipeline
-      # Tekton has its own dedicated cluster to run pipelines. Use tekton cluster to for pipeline prowjobs.
+      # Tekton has its own dedicated cluster to run pipelines. Use the Tekton cluster for pipeline ProwJobs.
       cluster: tekton
       always_run: false
       labels:
@@ -51,7 +51,7 @@ presubmits:
               - name: signify-secret
               - name: image-registry-credentials
             params:
-              # Prow set pipeline params according to the list of job environment variables.
+              # Prow sets pipeline params according to the list of job environment variables.
               - name: JOB_SPEC
                 type: string
               - name: JOB_TYPE
