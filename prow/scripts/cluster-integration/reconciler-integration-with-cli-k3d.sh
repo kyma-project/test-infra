@@ -36,13 +36,7 @@ function run_tests() {
 
   log::info "KYMA_SOURCE ${KYMA_SOURCE}"
   git reset --hard
-  if [[ ${KYMA_SOURCE} == "main" ]]
-  then
-    git checkout "${KYMA_SOURCE}"
-  else
-    git checkout tags/"${KYMA_SOURCE}"
-  fi
-
+  git checkout "${KYMA_SOURCE}"
   make ci
   popd
 }

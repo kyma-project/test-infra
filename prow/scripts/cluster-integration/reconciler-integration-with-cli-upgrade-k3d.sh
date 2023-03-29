@@ -36,13 +36,7 @@ function run_pre_upgrade_tests() {
 
   log::info "KYMA_SOURCE ${KYMA_SOURCE}"
   git reset --hard
-  if [[ ${KYMA_SOURCE} == "main" ]]
-  then
-    git checkout "${KYMA_SOURCE}"
-  else
-    git checkout tags/"${KYMA_SOURCE}"
-  fi
-
+  git checkout "${KYMA_SOURCE}"
   make ci-pre-upgrade
   popd
 }
@@ -52,13 +46,7 @@ function run_post_upgrade_tests() {
 
   log::info "KYMA_SOURCE ${KYMA_SOURCE}"
   git reset --hard
-  if [[ ${KYMA_SOURCE} == "main" ]]
-  then
-    git checkout "${KYMA_SOURCE}"
-  else
-    git checkout tags/"${KYMA_SOURCE}"
-  fi
-
+  git checkout "${KYMA_SOURCE}"
   make ci-post-upgrade
   popd
 }
