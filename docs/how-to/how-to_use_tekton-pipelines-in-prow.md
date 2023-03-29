@@ -210,7 +210,7 @@ Follow the official [Tekton documentation](https://tekton.dev/docs/how-to-guides
 
 To learn how to use the clone-refs task check its [documentation](https://github.com/kyma-project/test-infra/blob/main/task/clone-refs/0.1/README.md) and sample usage in the [prowjob](https://github.com/kyma-project/test-infra/blob/main/task/clone-refs/0.1/samples/prowjob-cloning-repositories.yaml).
 
-To access parameters use `$(params.{PARAM})` directive in your scripts or params, where `{PARAM}` is the name of Prow's standard fields from Prow docs.
+To access parameters, use the `$(params.{PARAM})` directive in your scripts or params, where `{PARAM}` is the name of Prow's standard fields from Prow docs.
 
 ## Known bugs
 
@@ -218,7 +218,7 @@ Here's a list of know bugs that are most likely to be fixable in upstream Prow.
 
 * ~~Currently, it's impossible to define a custom list of parameters to the Tekton PipelineRun spec defined in a ProwJob. Prow uses this field to provide information about the Git reference on which the Pipeline has been run.~~
 * ~~It's impossible to define params in inline tasks. Prow's validation flow returns an incorrect error `Invalid value: "string": val in body must be of type object: "string"`.~~
-* When creating a prowjob with Tekton agent and extra_refs defined it's required to specify a tekton pipeline resource for each extra_ref. Otherwise, the pipeline will fail validation with the following error: invalid presubmit job tekton-demo: extra_refs[0] is not used; some resource must reference PROW_EXTRA_GIT_REF_0. As a workaround just add tekton pipeline resources for each extra_ref in the piplineRunSpec. Bug is reported to the kubernetes/test-infra [#29144](https://github.com/kubernetes/test-infra/issues/29144).
+* When creating a ProwJob with a Tekton agent and extra_refs defined, it's required to specify a Tekton pipeline resource for each extra_ref. Otherwise, the pipeline will fail validation with the following error: `invalid presubmit job tekton-demo: extra_refs[0] is not used; some resource must reference PROW_EXTRA_GIT_REF_0`. As a workaround just add Tekton pipeline resources for each extra_ref in the pipelineRunSpec. The bug is reported to the kubernetes/test-infra [#29144](https://github.com/kubernetes/test-infra/issues/29144).
 
 Bugs have been identified and are reported to the kubernetes/test-infra repository.
 [#28679](https://github.com/kubernetes/test-infra/issues/28679) Currently, a workaround that disables Tekton's PipelineRun validation on ProwJob level has been applied on kyma-prow instance.
@@ -227,7 +227,7 @@ Bugs have been identified and are reported to the kubernetes/test-infra reposito
 
 Although Tekton Pipelines provide a much more complex solution for building pipelines, it still has some drawbacks:
 
-* As tasks work as separate Pods, this can generate an increased load on the K8s cluster, thus increasing the cost in some scenarios.
+* As tasks work as separate Pods, this can generate an increased load on the Kubernetes cluster, thus increasing the cost in some scenarios.
 * Pipelines can be marginally slower to build and define than simple ProwJobs.
 
 If you want to build your pipeline with Tekton, consider the following:
@@ -235,5 +235,5 @@ If you want to build your pipeline with Tekton, consider the following:
 * Does my workflow have to do some complex stuff?
 * Can I cover my requirement with a quick Makefile step?
 
-ProwJobs are best suited for simple tasks, whereas Tekton's Pipelines are a great way to implement a multitasks
-scenarios or complex release or E2E pipeline with reusable tasks.
+ProwJobs are best suited for simple tasks, whereas Tekton Pipelines are a great way to implement multitask
+scenarios or a complex release, or an E2E pipeline with reusable tasks.
