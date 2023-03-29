@@ -9,4 +9,4 @@ prConfigs:
       prNumber: 1612
   kyma-incubator:
     reconciler:
-      prNumber: 1324
+      prNumber: 1326
