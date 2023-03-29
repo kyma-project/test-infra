@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      busola:
+        - pjName: "pre-main-busola-governance"
+          report: false
+prConfigs: #
+  kyma-project:
+    busola:
+      prNumber: 2413
