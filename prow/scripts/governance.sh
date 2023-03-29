@@ -138,9 +138,9 @@ function validate_external_on_pr() {
 
 function validate_crd_md() {
     echo "repository ${REPOSITORY_DIR}"
-    # if [ "${REPOSITORY_DIR}" == true ]; then
-    #     sh ${KYMA_SOURCES_DIR}/hack/verify-md.sh
-    # fi
+    if [ "${REPOSITORY_DIR}" != "/home/prow/go/src/github.com/kyma-project/kyma" ]; then
+        sh ${KYMA_SOURCES_DIR}/hack/verify-md.sh
+    fi
 }
 
 function main() {
