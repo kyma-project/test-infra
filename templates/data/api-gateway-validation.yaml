@@ -5,8 +5,6 @@ templates:
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-project/api-gateway
-            env:
-              API_GATEWAY_PROJECT_DIR: "/home/prow/go/src/github.com/api-gateway"
             labels:
               preset-debug-commando-oom: "true"
               preset-kyma-guard-bot-github-token: "true"
