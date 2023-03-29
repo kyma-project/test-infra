@@ -25,7 +25,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230308-be78ed1e"
+          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230324-34be098e"
             command:
               - "/markdown-index"
             args:
@@ -85,7 +85,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230322-fad14aa00d"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230328-15a98b0443"
             command:
               - "generic-autobumper"
             args:
@@ -105,7 +105,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230322-fad14aa00d"
+          - image: "gcr.io/k8s-prow/label_sync:v20230328-15a98b0443"
             command:
               - "label_sync"
             args:
@@ -146,7 +146,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230322-fad14aa00d"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230328-15a98b0443"
             command:
               - "generic-autobumper"
             args:
@@ -173,7 +173,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230322-fad14aa00d"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230328-15a98b0443"
             command:
               - "generic-autobumper"
             args:

@@ -9,10 +9,10 @@ spec:
   purpose: evaluation
   cloudProfileName: aws
   kubernetes:
-    allowPrivilegedContainers: true
+    allowPrivilegedContainers: false
     kubeAPIServer:
       enableBasicAuthentication: false
-    version: 1.26.1
+    version: 1.25.6
   provider:
     controlPlaneConfig:
       apiVersion: aws.provider.extensions.gardener.cloud/v1alpha1
