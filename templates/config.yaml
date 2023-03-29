@@ -34,6 +34,7 @@ global:
         - name: "btp-manager"
         - name: "telemetry-manager"
         - name: "director-size-exporter"
+        - name: "compass-manager"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
