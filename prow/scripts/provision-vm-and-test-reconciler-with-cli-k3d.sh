@@ -122,12 +122,15 @@ log::info "Define kyma version to deploy"
 export KYMA_SOURCE="main"
 if [[ "${KYMA_TEST_SOURCE}" == "latest-release" ]]; then
   # Fetch latest Kyma released version
-  kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+  kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" \
+      | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].target_commitish')
   export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
+
   log::info "### Reading latest release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 elif [[ "${KYMA_TEST_SOURCE}" == "previous-release" ]]; then
   # Fetch previous Kyma released version
-  kyma::get_previous_release_version -t "${BOT_GITHUB_TOKEN}"
+  kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" \
+      | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-2].target_commitish')
   export KYMA_SOURCE="${kyma_get_previous_release_version_return_version:?}"
   log::info "### Reading previous release version from RELEASE_VERSION file, got: ${KYMA_SOURCE}"
 fi
@@ -135,7 +138,8 @@ fi
 ### define Kyma version to upgrade to, if it is a upgrade test
 if [[ "${KYMA_UPGRADE_SOURCE}" == "latest-release" ]]; then
   # Fetch latest Kyma released version
-  kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
+  kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" \
+        | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].target_commitish')
   export KYMA_UPGRADE_VERSION="${kyma_get_last_release_version_return_version:?}"
   log::info "### Reading latest release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_VERSION}"
 fi
