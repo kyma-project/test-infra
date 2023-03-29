@@ -36,6 +36,7 @@ function run_tests() {
 
   log::info "KYMA_SOURCE ${KYMA_SOURCE}"
   git reset --hard
+  git fetch
   git checkout "${KYMA_SOURCE}"
   make ci
   popd
