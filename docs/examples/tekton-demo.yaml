@@ -3,12 +3,12 @@ presubmits:
     - name: tekton-demo
       # Default Prow decoration must be disabled because the pipeline uses its own decoration.
       decorate: false
-      # Prowjobs using Tekton pipelines must use the tekton-pipeline agent.
+      # ProwJobs using Tekton pipelines must use the tekton-pipeline agent.
       agent: tekton-pipeline
       # Tekton has its own dedicated cluster to run pipelines. Use tekton cluster to for pipeline prowjobs.
       cluster: tekton
       always_run: false
-      # Prow set pipeline params according to the list of job environment variables.
+      # Prow sets pipeline params according to the list of job environment variables.
       # See https://docs.prow.k8s.io/docs/jobs/#job-environment-variables
       # The pipeline can use these environment variables to get the refs and extra-refs to clone.
       extra_refs:
@@ -21,7 +21,7 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
       tekton_pipeline_run_spec:
         v1beta1:
-          # PipelineRun provide implementation details of workspaces used by the pipeline.
+          # PipelineRun provides implementation details of workspaces used by the pipeline.
           workspaces:
             - name: repo
               volumeClaimTemplate:
@@ -41,8 +41,8 @@ presubmits:
             - name: image-registry-credentials
               secret:
                 secretName: sa-kyma-push-images
-          # PipelineRun provide values of params used by the pipeline.
-          # Prow implicitly and automatically set values of params according to the list of job environment variables.
+          # PipelineRun provides values of params used by the pipeline.
+          # Prow implicitly and automatically sets params values according to the list of job environment variables.
           params:
             - name: name
               value: test-infra/test-image
@@ -52,7 +52,7 @@ presubmits:
               value: development/secrets-rotator/cloud-run/rotate-service-account/Dockerfile
           # The following resources are not used by the pipeline, but are required by the ProwJob syntax validator.
           # They are not used by the pipeline because the pipeline uses environment variables to get extra_refs to clone the repo in a task.
-          # This is a workaround for deprecated resource object in Tekton Pipeline api version v1beta1.
+          # This is a workaround for a deprecated resource object in Tekton Pipeline API version v1beta1.
           resources:
             - name: extra-ref
               resourceRef:
@@ -62,17 +62,17 @@ presubmits:
           pipelineSpec:
             # The following resources are not used by the pipeline, but are required by the ProwJob syntax validator.
             # They are not used by the pipeline because the pipeline uses environment variables to get extra_refs to clone the repo in a task.
-            # This is a workaround for deprecated resource object in Tekton Pipeline api version v1beta1.
+            # This is a workaround for a deprecated resource object in Tekton Pipeline API version v1beta1.
             resources:
               - name: extra-ref
                 type: git
             description: "Tekton Demo"
-            # TaskRuns executed by teh pipieline. TaskRuns provide values and implementation details required by Tasks executed by the pipeline.
-            # TaskRuns provide values and implementations explicitly or binding them to values and implementations provided by the pipeline.
+            # TaskRuns executed by the pipeline. TaskRuns provide values and implementation details required by Tasks executed by the pipeline.
+            # TaskRuns provide values and implementations explicitly or bind them to values and implementations provided by the pipeline.
             tasks:
               # Task name.
               - name: clone-refs
-                # A name of a Task to execute. A Task specification must exist in the pipelines cluster.
+                # The name of the Task to execute. The Task specification must exist in the pipeline cluster.
                 taskRef:
                   name: clone-refs
                 # Bindings of workspaces used by the Task to workspaces provided by the pipeline.
@@ -84,7 +84,7 @@ presubmits:
                   - name: JOB_SPEC
                     value: $(params.JOB_SPEC)
               # TaskRun with inline task specification.
-              # TskRuns with inline tasks can be mixed with TaskRuns referencing existing tasks by name in the same pipeline.
+              # TaskRuns with inline tasks can be mixed with TaskRuns referencing existing tasks by name in the same pipeline.
               - name: golangci-lint-config
                 runAfter:
                   - clone-refs
@@ -99,7 +99,7 @@ presubmits:
                   steps:
                     - name: config
                       image: ubuntu
-                      # Using script is a way to run inlined script. This doesn't have to be a shell script.
+                      # Using a script is a way to run an inline script. This doesn't have to be a shell script.
                       script: |
                         #!/usr/bin/env bash
                         cd /home/prow/go/src/github.com/$(params.REPO_OWNER)/keda-manager
