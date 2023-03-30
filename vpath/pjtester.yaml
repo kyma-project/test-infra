@@ -7,7 +7,3 @@ pjConfigs:
     kyma-incubator:
       reconciler:
         - pjName: "pre-main-reconciler-unit-test"
-prConfigs: #
-  kyma-incubator:
-    reconciler:
-      prNumber: 1327
