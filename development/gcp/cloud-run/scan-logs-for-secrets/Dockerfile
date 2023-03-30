@@ -5,7 +5,7 @@ COPY . .
 
 RUN  CGO_ENABLED=0 go build -o /scanlogsforsecrets -ldflags="-s -w" ./development/gcp/cloud-run/scan-logs-for-secrets
 
-FROM alpine:3.17.2
+FROM alpine:3.17.3
 
 COPY --from=builder /scanlogsforsecrets /scanlogsforsecrets
 COPY --from=builder /go/src/github.com/kyma-project/test-infra/development/gcp/cloud-run/scan-logs-for-secrets/gitleaks.toml /app/
