@@ -7,6 +7,10 @@ templates:
             run_if_changed: "milv.config.yaml|.md$"
             labels:
               preset-build-pr: "true"
+          jobConfig_kyma_crd_docs:
+            run_if_changed: ".md$"
+            labels:
+              preset-build-pr: "true"
           jobConfig_default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             labels:
@@ -179,18 +183,18 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  name: "pre-main-kyma-crd-check-governance"
+                  name: "pull-kyma-crd-governance"
                   path_alias: github.com/kyma-project/kyma
-                  command: "/home/prow/go/src/github.com/kyma-project/kyma/hack/verify-md.sh"
+                  branches:
+                    - "^main$"
+                  command: "hack/verify-md.sh"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-                    - "jobConfig_presubmit"
+                    - "jobConfig_kyma_crd_docs"
               - jobConfig:
                   name: "pre-kyma-docu-2.0-governance"
                   args:

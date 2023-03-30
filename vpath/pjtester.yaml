@@ -2,7 +2,7 @@ pjConfigs:
     prowJobs:
       kyma-project:
         kyma:
-        - pjName: "pre-main-kyma-crd-check-governance"
+        - pjName: "pull-kyma-crd-governance"
           report: true
 prConfigs:
   kyma-project:
