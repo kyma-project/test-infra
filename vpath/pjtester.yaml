@@ -1,9 +1,5 @@
 pjConfigs:
-  prConfig:
-    kyma-project:
-      test-infra:
-        prNumber: 7379
   prowJobs:
-    kyma-project:
-      control-plane:
-        - pjName: "pre-main-reconciler-unit-test"
+    kyma-incubator:
+      reconciler:
+        - pjName: "pre-main-reconciler-unit-test"      
