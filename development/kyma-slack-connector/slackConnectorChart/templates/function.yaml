@@ -1,5 +1,5 @@
 {{- if .Values.functionEnabled }}
-apiVersion: serverless.kyma-project.io/v1alpha1
+apiVersion: serverless.kyma-project.io/v1alpha2
 kind: Function
 metadata:
   name: {{ .Release.Name }}
@@ -9,10 +9,11 @@ metadata:
     release: {{ .Release.Name | quote }}
     function: {{ .Release.Name | quote }}
 spec:
-  type: git
-  source: {{ .Release.Name }}-{{ .Values.global.repositoryName }}
-  reference: {{ .Values.branch }}
-  baseDir: {{ .Values.functionBaseDir }}
+  source:
+    gitRepository:
+      url: {{ .Values.global.repositoryUrl }}
+      reference: {{ .Values.branch }}
+      baseDir: {{ .Values.functionBaseDir }}
   env:
     - name: PYTHONUNBUFFERED
       value: "TRUE"

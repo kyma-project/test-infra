@@ -4,3 +4,4 @@ flask==2.2.2
 cloudevents==1.8.0
 gunicorn==20.1.0
 pygithub==1.58.1
+pyyaml==6.0
