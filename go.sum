@@ -1144,8 +1144,8 @@ github.com/yvasiyarov/newrelic_platform_go v0.0.0-20140908184405-b21fdbd4370f/go
 github.com/zeebo/assert v1.3.0 h1:g7C04CbJuIDKNPFHmsk4hwZDO5O+kntRxzaUoNXj+IQ=
 github.com/zeebo/xxh3 v1.0.2 h1:xZmwmqxHZA8AI603jOQ0tMqmBr9lPeFwGg6d+xy9DC0=
 github.com/zeebo/xxh3 v1.0.2/go.mod h1:5NWz9Sef7zIDm2JHfFlcQvNekmcEl9ekUZQQKCYaDcA=
-github.com/zricethezav/gitleaks/v8 v8.16.1 h1:Y+x4GNIZx70fPQBJseuZydecadlgbKUJgirNeySSZw8=
-github.com/zricethezav/gitleaks/v8 v8.16.1/go.mod h1:JzsbTtA88h1ioImguqG0BL2IV2JfblVO0qj/LSwgUKQ=
+github.com/zricethezav/gitleaks/v8 v8.16.2 h1:Z2+zAMhZbAg1VH//E9798EWXR28ZK+q4r3R3cZK/Z80=
+github.com/zricethezav/gitleaks/v8 v8.16.2/go.mod h1:JzsbTtA88h1ioImguqG0BL2IV2JfblVO0qj/LSwgUKQ=
 go.etcd.io/bbolt v1.3.2/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.3/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 go.etcd.io/bbolt v1.3.5/go.mod h1:G5EMThwa9y8QZGBClrRx5EY+Yw9kAhnjy3bSjsnlVTQ=
