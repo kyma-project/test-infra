@@ -23,7 +23,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "go test -race -v -timeout 22m -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
                 memory: 1Gi
