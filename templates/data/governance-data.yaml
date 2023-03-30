@@ -181,7 +181,7 @@ templates:
               - jobConfig:
                   name: "pre-main-kyma-crd-check-governance"
                   path_alias: github.com/kyma-project/kyma
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-crd-docs.sh"
+                  command: "/home/prow/go/src/github.com/kyma-project/kyma/hack/verify-md.sh"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

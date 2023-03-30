@@ -259,7 +259,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-crd-docs.sh"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/hack/verify-md.sh"
             resources:
               requests:
                 memory: 10Mi
