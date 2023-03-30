@@ -155,7 +155,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-reconciler-unit-test"
-                  optional: true
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"

@@ -11,7 +11,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-reconciler-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       always_run: true
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -23,7 +22,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "go test -race -v -timeout 22m -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "make test"
             resources:
               requests:
                 memory: 1Gi
