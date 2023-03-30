@@ -282,7 +282,6 @@ tide:
     kyma-project/kyma-operator: squash
     kyma-project/kyma-watcher: squash
     kyma-project/manifest-operator: squash
-    kyma-project/compass-manager: merge
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
