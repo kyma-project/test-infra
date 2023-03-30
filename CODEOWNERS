@@ -28,7 +28,6 @@
 /prow/jobs/incubator/reconciler @varbanv @jeremyharisch @tobiscr @kyma-project/prow
 /prow/jobs/incubator/varkes @kyma-project/observability @kyma-project/prow
 /prow/jobs/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish
-/prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
 /prow/jobs/kyma/components/central-application-connectivity-validator @kyma-project/Framefrog @kyma-project/prow
 /prow/jobs/kyma/components/central-application-gateway @kyma-project/prow @kyma-project/Framefrog
 /prow/jobs/kyma/components/compass-runtime-agent @kyma-project/prow @kyma-project/Framefrog
@@ -38,19 +37,16 @@
 /prow/jobs/eventing-tools/ @kyma-project/prow @kyma-project/eventing
 /prow/jobs/kyma/components/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
 /prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @pk85 @kyma-project/prow
-/prow/jobs/kyma/components/iam-kubeconfig-service @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @pk85 @kyma-project/prow
-/prow/jobs/kyma/components/istio-installer @tomasz-smelcerz-sap @werdes72 @pk85 @dariusztutaj @strekm @kyma-project/prow
-/prow/jobs/kyma/components/kyma-operator @tomasz-smelcerz-sap @werdes72 @pk85 @dariusztutaj @strekm @kyma-project/prow
-/prow/jobs/kyma/components/permission-controller @pk85 @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
 /prow/jobs/telemetry-manager @kyma-project/observability @kyma-project/prow
 /prow/jobs/directory-size-exporter @kyma-project/observability @kyma-project/prow
-/prow/jobs/kyma/components/xip-patch @strekm @tomasz-smelcerz-sap @werdes72 @pk85 @dariusztutaj @kyma-project/prow
 /prow/jobs/kyma/tests/end-to-end @kyma-project/gopher @kyma-project/prow
 /prow/jobs/kyma/tests/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
-/prow/jobs/kyma/tests/integration @strekm @tomasz-smelcerz-sap @werdes72 @pk85 @dariusztutaj @kyma-project/prow
+/prow/jobs/kyma/tests/integration @kyma-project/goat @kyma-project/prow
 /prow/jobs/kyma/tests/serverless-bench @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
 /prow/jobs/kyma/tools/event-subscriber @kyma-project/eventing @kyma-project/prow
 /prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @kyma-project/prow
+/prow/jobs/istio @kyma-project/goat
+/prow/jobs/api-gateway @kyma-project/goat
 
 /prow/scripts @kyma-project/prow
 
