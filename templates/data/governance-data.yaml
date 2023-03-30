@@ -11,6 +11,9 @@ templates:
             run_if_changed: ".md$"
             labels:
               preset-build-pr: "true"
+              preset-dind-enabled: "true"
+            request_memory: "10Mi"
+            request_cpu: "100m"
           jobConfig_default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             labels:
@@ -190,11 +193,9 @@ templates:
                   command: "hack/verify-md.sh"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_kyma_crd_docs"
                   local:
-                    - "jobConfig_default"
                     - "jobConfig_kyma_crd_docs"
               - jobConfig:
                   name: "pre-kyma-docu-2.0-governance"

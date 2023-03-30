@@ -258,13 +258,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-kyma-docu-2.0-governance
       annotations:
         pipeline.trigger: "pr-submit"
