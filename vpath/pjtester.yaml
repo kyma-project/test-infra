@@ -1,9 +1,0 @@
-pjConfigs:
-  prConfig:
-    kyma-incubator:
-      reconciler:
-        prNumber: 1327
-  prowJobs:
-    kyma-incubator:
-      reconciler:
-        - pjName: "pre-main-reconciler-unit-test"
