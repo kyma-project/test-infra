@@ -38,5 +38,10 @@ spec:
         configMapKeyRef:
           name: {{ .Release.Name }}-function-config
           key: envPrefix
+    - name: TOOLS_GITHUB_BOT_TOKEN
+      valueFrom:
+        secretKeyRef:
+          name: kyma-github-sap-bot-token
+          key: token
   runtime: python39
 {{- end }}
