@@ -25,7 +25,7 @@
 /prow/jobs/incubator/kyma-showcase @cortey @lyczeq @mrcherry97 @mvshao @kyma-project/prow
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow
 /prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @dzahariev @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
-/prow/jobs/incubator/reconciler @varbanv  @kwiatekus @jeremyharisch @tobiscr @kyma-project/prow
+/prow/jobs/incubator/reconciler @varbanv @jeremyharisch @tobiscr @kyma-project/prow
 /prow/jobs/incubator/varkes @kyma-project/observability @kyma-project/prow
 /prow/jobs/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish
 /prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
