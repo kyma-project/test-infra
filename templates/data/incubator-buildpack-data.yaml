@@ -159,7 +159,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "go test -race -v -timeout 22m -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "make test"
                   always_run: true
                 inheritedConfigs:
                   global:
