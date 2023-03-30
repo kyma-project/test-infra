@@ -192,6 +192,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
+                    - "jobConfig_kyma_crd_docs"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_kyma_crd_docs"
