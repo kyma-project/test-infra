@@ -5,23 +5,19 @@ import os
 from slack_bolt import App
 from slack_sdk.errors import SlackApiError
 
+
 def main(event, context):
-	# Using SLACK_BOT_TOKEN environment variable
-	app = App(
-	)
-	slack_api_id = os.environ['SLACK_API_ID'].replace('-', '_')
+	slack_bot_token = os.environ['SLACK_BOT_TOKEN']
 	slack_channel = os.environ['NOTIFICATION_SLACK_CHANNEL']
-	env_prefix = os.environ['ENV_PREFIX']
-	base_url = os.environ['{}_SLACK_CONNECTOR_{}_GATEWAY_URL'.format(env_prefix, slack_api_id)]
-	# Set Slack API base URL to the URL of slack-connector application gateway.
-	app.client.base_url = "{}/".format(base_url)
+	app = App(token=slack_bot_token)
+
 	print("received message with id: {}".format(event["data"]["ID"]))
-	print("Slack api base URL: {}".format(app.client.base_url))
 	print("sending notification to channel: {}".format(slack_channel))
+
 	# Get cloud events data.
 	msg = json.loads(base64.b64decode(event["data"]["Data"]))
-	uploadedKubeconfig=[]
-	result=[]
+	uploaded_kubeconfig = []
+	result = []
 	
 	try:
 		# Deliver message to the channel.
@@ -67,19 +63,19 @@ def main(event, context):
 
 	try:
 		# push kubeconfig
-		kubeconfigFilename = "kubeconfig-"+msg["cluster_name"]+".yaml"
-		uploadedKubeconfig = app.client.files_upload(content=msg["kubeconfig"],
-														filename=kubeconfigFilename,
+		kubeconfig_filename = "kubeconfig-"+msg["cluster_name"]+".yaml"
+		uploaded_kubeconfig = app.client.files_upload(content=msg["kubeconfig"],
+														filename=kubeconfig_filename,
 														channels=slack_channel,
 														thread_ts=result["message"]["ts"],
 														initial_comment="Kubeconfig for the `{}` cluster: :blobwant:".format(
 	 																	msg["kyma_version"],
 	 																	msg["cluster_name"])
 		)
-		assert uploadedKubeconfig["ok"]
+		assert uploaded_kubeconfig["ok"]
 		print("uploaded kubeconfig for cluster {} for message id: {}".format(msg["cluster_name"], event["data"]["ID"]))
 	except SlackApiError as e:
-		assert uploadedKubeconfig["ok"] is False
+		assert uploaded_kubeconfig["ok"] is False
 		print(f"Got an error: {e.response['error']}")
 		print("failed upload file for message id: {}".format(event["data"]["ID"]))
 		return
