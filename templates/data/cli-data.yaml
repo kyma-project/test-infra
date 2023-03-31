@@ -98,7 +98,8 @@ templates:
                     - job_spec
               - jobConfig:
                   name: "pull-cli-lint"
-                  optional: true
+                  optional: false
+                  always_run: true
                   command: "/bin/sh"
                   args:
                     - "-c"
