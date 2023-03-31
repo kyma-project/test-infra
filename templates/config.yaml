@@ -235,22 +235,6 @@ globalSets:
       pipeline.trigger: pr-submit
     type_presubmit: "true"
     cluster: "untrusted-workload"
-  jobConfig_kyma_crd_docs:
-    annotations:
-      pipeline.trigger: pr-submit
-    type_presubmit: "true"
-    cluster: "untrusted-workload"
-    skip_report: "false"
-    max_concurrency: "10"
-    decorate: "true"
-    branches:
-      - "^main$"
-    privileged: "true"
-    request_memory: "3Gi"
-    request_cpu: "2"
-    cluster_presubmit: "untrusted-workload"
-    cluster_postsubmit: "trusted-workload"
-    <<: *pubsub_config
   jobConfig_postsubmit:
     annotations:
       pipeline.trigger: pr-merge
