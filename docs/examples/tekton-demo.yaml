@@ -3,9 +3,9 @@ presubmits:
     - name: tekton-demo
       # Default Prow decoration must be disabled because the pipeline uses its own decoration.
       decorate: false
-      # Prowjobs using Tekton pipelines must use the tekton-pipeline agent.
+      # ProwJobs using Tekton pipelines must use the tekton-pipeline agent.
       agent: tekton-pipeline
-      # Tekton has its own dedicated cluster to run pipelines. Use Tekton cluster for pipeline ProwJobs.
+      # Tekton has its own dedicated cluster to run pipelines. Use tekton cluster for pipeline ProwJobs.
       cluster: tekton
       always_run: false
       # Prow sets pipeline params according to the list of job environment variables.
@@ -13,7 +13,7 @@ presubmits:
       # The pipeline can use these environment variables to get the refs and extra-refs to clone.
       extra_refs:
         - org: kyma-project
-          repo: kyma
+          repo: keda-manager
           base_ref: main
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -41,7 +41,7 @@ presubmits:
             - name: image-registry-credentials
               secret:
                 secretName: sa-kyma-push-images
-          # PipelineRun provides params values used by the pipeline.
+          # PipelineRun provides values of params used by the pipeline.
           # Prow implicitly and automatically sets params values according to the list of job environment variables.
           params:
             - name: name
@@ -58,36 +58,8 @@ presubmits:
               resourceRef:
                 name: PROW_EXTRA_GIT_REF_0
           # Inline pipeline specification.
+          # The pipelineSpec does not contain implementation details of workspaces and params because they are propagated from the PipelineRun.
           pipelineSpec:
-            # Workspaces required by the pipeline.
-            workspaces:
-              - name: repo
-                mountPath: /home/prow/go
-              - name: config
-              - name: signify-secret
-              - name: image-registry-credentials
-            # Params required by the pipeline.
-            params:
-              - name: JOB_SPEC
-                type: string
-              - name: JOB_TYPE
-                type: string
-              - name: PULL_NUMBER
-                type: string
-              - name: PULL_BASE_SHA
-                type: string
-              - name: CI
-                type: string
-              - name: REPO_OWNER
-                type: string
-              - name: REPO_NAME
-                type: string
-              - name: name
-                type: string
-              - name: config
-                type: string
-              - name: dockerfile
-                type: string
             # The following resources are not used by the pipeline, but are required by the ProwJob syntax validator.
             # They are not used by the pipeline because the pipeline uses environment variables to get extra_refs to clone the repo in a task.
             # This is a workaround for a deprecated resource object in Tekton Pipeline API version v1beta1.
@@ -95,12 +67,12 @@ presubmits:
               - name: extra-ref
                 type: git
             description: "Tekton Demo"
-            # TaskRuns executed by the pipieline. TaskRuns provide values and implementation details required by Tasks executed by the pipeline.
+            # TaskRuns executed by the pipeline. TaskRuns provide values and implementation details required by Tasks executed by the pipeline.
             # TaskRuns provide values and implementations explicitly or bind them to values and implementations provided by the pipeline.
             tasks:
               # Task name.
               - name: clone-refs
-                # A name of a Task to execute. A Task specification must exist in the pipelines cluster.
+                # The name of the Task to execute. The Task specification must exist in the pipeline cluster.
                 taskRef:
                   name: clone-refs
                 # Bindings of workspaces used by the Task to workspaces provided by the pipeline.
@@ -111,11 +83,77 @@ presubmits:
                 params:
                   - name: JOB_SPEC
                     value: $(params.JOB_SPEC)
+              # TaskRun with inline task specification.
+              # TaskRuns with inline tasks can be mixed with TaskRuns referencing existing tasks by name in the same pipeline.
+              - name: golangci-lint-config
+                runAfter:
+                  - clone-refs
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                taskSpec:
+                  workspaces:
+                    - description: The workspace where sources to build an image are stored.
+                      mountPath: /home/prow/go
+                      name: repo
+                  steps:
+                    - name: config
+                      image: ubuntu
+                      # Using a script is a way to run an inline script. This doesn't have to be a shell script.
+                      script: |
+                        #!/usr/bin/env bash
+                        cd /home/prow/go/src/github.com/$(params.REPO_OWNER)/keda-manager
+                        cat << EOF > .golangci.yaml
+                        run:
+                          timeout: 10m
+                        EOF
+              - name: golangci-lint
+                taskRef:
+                  name: golangci-lint
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                runAfter:
+                  - clone-refs
+              - name: golangci-lint-keda-manager
+                taskRef:
+                  name: golangci-lint
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  # Explicitly set REPO_NAME param value to keda-manager. This overrides the value set by the pipeline.
+                  - name: REPO_NAME
+                    value: keda-manager
+                runAfter:
+                  - golangci-lint-config
+              - name: go-unit-tests
+                taskRef:
+                  name: go-unit-tests
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                runAfter:
+                  - clone-refs
               - name: build-image
                 taskRef:
                   name: image-builder
                 runAfter:
-                  - clone-refs
+                  - go-unit-tests
+                  - golangci-lint-keda-manager
+                  - golangci-lint
                 workspaces:
                   - name: repo
                     workspace: repo

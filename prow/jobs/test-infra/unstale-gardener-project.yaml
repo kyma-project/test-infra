@@ -21,7 +21,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/unstale-gardener-project.sh"
             env:

@@ -17,7 +17,7 @@
 /prow/jobs @kyma-project/prow
 /prow/jobs/busola @qbalukom @valentinvieriu  @akucharska @kyma-project/prow
 /prow/jobs/cli @chrkl @jeremyharisch @lindnerby @tobiscr  @lilitgh @rakesh-garimella @skhalash @kyma-project/prow
-/prow/jobs/control-plane @kyma-project/gopher @akgalwas @franpog859 @koala7659 @kyma-project/prow
+/prow/jobs/control-plane @kyma-project/gopher @kyma-project/Framefrog @kyma-project/prow
 /prow/jobs/incubator/compass @gvachkov @petartodorovv @desislavaa @dimitarpetrov @krasish @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
 /prow/jobs/incubator/compass-console @gvachkov @petartodorovv @desislavaa @dimitarpetrov @krasish @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
 /prow/jobs/incubator/documentation-component @kyma-project/prow
@@ -25,16 +25,17 @@
 /prow/jobs/incubator/kyma-showcase @cortey @lyczeq @mrcherry97 @mvshao @kyma-project/prow
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow
 /prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @dzahariev @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
-/prow/jobs/incubator/reconciler @varbanv  @kwiatekus @jeremyharisch @tobiscr @kyma-project/prow
+/prow/jobs/incubator/reconciler @varbanv @jeremyharisch @tobiscr @kyma-project/prow
 /prow/jobs/incubator/varkes @kyma-project/observability @kyma-project/prow
 /prow/jobs/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish
 /prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
-/prow/jobs/kyma/components/central-application-connectivity-validator @koala7659 @akgalwas @franpog859 @ralikio @pk85 @kyma-project/prow
-/prow/jobs/kyma/components/central-application-gateway @koala7659 @ralikio @pk85 @akgalwas @franpog859 @kyma-project/prow
-/prow/jobs/kyma/components/compass-runtime-agent @franpog859 @ralikio @pk85 @akgalwas @koala7659 @kyma-project/prow
+/prow/jobs/kyma/components/central-application-connectivity-validator @kyma-project/Framefrog @kyma-project/prow
+/prow/jobs/kyma/components/central-application-gateway @kyma-project/prow @kyma-project/Framefrog
+/prow/jobs/kyma/components/compass-runtime-agent @kyma-project/prow @kyma-project/Framefrog
 /prow/jobs/kyma/components/event-publisher-proxy @kyma-project/eventing
 /prow/jobs/kyma/components/eventing-controller @kyma-project/eventing
-/prow/jobs/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/eventing
+/prow/jobs/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/prow @kyma-project/eventing
+/prow/jobs/eventing-tools/ @kyma-project/prow @kyma-project/eventing
 /prow/jobs/kyma/components/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
 /prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @pk85 @kyma-project/prow
 /prow/jobs/kyma/components/iam-kubeconfig-service @dariusztutaj @strekm @tomasz-smelcerz-sap @werdes72 @pk85 @kyma-project/prow
@@ -55,6 +56,7 @@
 
 /templates @kyma-project/prow
 /templates/templates @kyma-project/prow
+templates/data/eventing-tools-data.yaml @kyma-project/prow @kyma-project/eventing
 
 # All .md files
 *.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko
