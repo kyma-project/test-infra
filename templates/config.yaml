@@ -34,6 +34,7 @@ global:
         - name: "btp-manager"
         - name: "telemetry-manager"
         - name: "director-size-exporter"
+        - name: "compass-manager"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
@@ -141,7 +142,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230320-fa050cb1"
+    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 200Mi
@@ -169,11 +170,11 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230321-7419f008"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
   image_buildpack-golang:
@@ -187,7 +188,7 @@ globalSets:
   image_gardener-rotate:
     image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230202-40569193"
   image_markdown_index:
-    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230308-be78ed1e"
+    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230324-34be098e"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"

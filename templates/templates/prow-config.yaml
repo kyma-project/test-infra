@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230322-fad14aa00d
-          initupload: gcr.io/k8s-prow/initupload:v20230322-fad14aa00d
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230322-fad14aa00d
-          sidecar: gcr.io/k8s-prow/sidecar:v20230322-fad14aa00d
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230329-c93d79fb7d
+          initupload: gcr.io/k8s-prow/initupload:v20230329-c93d79fb7d
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230329-c93d79fb7d
+          sidecar: gcr.io/k8s-prow/sidecar:v20230329-c93d79fb7d
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -406,7 +406,7 @@ presets:
       - name: GKE_CLUSTER_VERSION
         value: "1.26"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.26"
+        value: "1.25"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"

@@ -12,7 +12,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                  always_run: true
+                  run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -27,7 +27,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
-                  always_run: true
+                  run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack

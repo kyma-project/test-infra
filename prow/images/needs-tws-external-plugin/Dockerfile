@@ -3,7 +3,7 @@
 # then use docker build -t needs-tws .
 # NOT MEANT FOR AUTOBUILDS
 
-FROM alpine:3.17.2
+FROM alpine:3.17.3
 
 ARG commit
 ENV IMAGE_COMMIT=$commit
