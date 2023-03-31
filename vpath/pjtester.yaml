@@ -1,5 +1,13 @@
 pjConfigs:
+  prConfig:
+    kyma-project:
+      cli:
+        prNumber: 1611
   prowJobs:
     kyma-project:
       cli:
       - pjName: "pull-cli-lint"
+prConfigs: #
+  kyma-project:
+    cli:
+      prNumber: 1611
