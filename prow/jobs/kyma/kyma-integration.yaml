@@ -881,6 +881,7 @@ periodics: # runs on schedule
       path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       spec:
+        serviceAccountName: sa-prow-job-resource-cleaners
         containers:
           - image: "eu.gcr.io/kyma-project/prow/cleaner:0.0.1"
             securityContext:
@@ -908,7 +909,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "orphaned-assetstore-gcp-bucket-cleaner"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
-        preset-sa-prow-job-resource-cleaner: "true"
       cron: "00 00 * * *"
       skip_report: false
       decorate: true

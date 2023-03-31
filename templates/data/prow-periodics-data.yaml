@@ -111,14 +111,8 @@ templates:
                     - ^main$
                   run_if_changed: 'prow/cluster/components/'
                   env:
-                    GOOGLE_APPLICATION_CREDENTIALS: /etc/credentials/service-account.json
                   command: prow/cluster/deploy.sh
-                  volumes:
-                    - name: sa-prow-deploy
-                      secretName: sa-prow-deploy
-                  volumeMounts:
-                    - name: sa-prow-deploy
-                      mountPath: /etc/credentials
+                  serviceAccountName: sa-prow-deploy
                   skip_report: "false"
                   max_concurrency: "10"
                   decorate: "true"

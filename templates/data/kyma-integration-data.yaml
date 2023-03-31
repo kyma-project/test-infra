@@ -21,6 +21,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "utilities-kyma-integration-cleaner"
+                  serviceAccountName: sa-prow-job-resource-cleaners
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
                   labels:
@@ -40,7 +41,6 @@ templates:
                   name: "orphaned-assetstore-gcp-bucket-cleaner"
                   cron: "00 00 * * *" # "At 00:00 each day"
                   labels:
-                    preset-sa-prow-job-resource-cleaner: "true"
                     preset-gc-project-env: "true"
                   command: "bash"
                   args:
