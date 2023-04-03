@@ -8,7 +8,7 @@ templates:
             labels:
               preset-build-pr: "true"
           jobConfig_kyma_crd_docs:
-            run_if_changed: "^installations/resources/crds/*|^.*.md$"
+            run_if_changed: "^installations/resources/crds/|^.*.md$"
             annotations:
               pipeline.trigger: pr-submit
             type_presubmit: "true"
