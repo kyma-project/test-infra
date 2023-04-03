@@ -8,9 +8,6 @@ templates:
             path_alias: github.com/kyma-project/istio
             env:
               EXPORT_RESULTS: true
-            labels:
-              preset-debug-commando-oom: "true"
-              preset-kyma-guard-bot-github-token: "true"
         jobConfigs:
           - repoName: "kyma-project/istio"
             jobs:
@@ -33,7 +30,6 @@ templates:
                   always_run: true
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
                     - jobConfig_presubmit
                     - testing
                   local:
