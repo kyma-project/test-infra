@@ -47,7 +47,7 @@ templates:
                   name: pull-api-gateway-test
                   always_run: true
                   request_cpu: 500m
-                  command: "./tests/integration/scripts/code-coverage-guard.sh"
+                  command: "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/code-coverage-guard.sh"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -61,7 +61,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "./tests/integration/scripts/integration-gardener.sh"
+                    - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
