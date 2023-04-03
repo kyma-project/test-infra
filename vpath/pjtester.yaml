@@ -6,4 +6,4 @@ pjConfigs:
 prConfigs:
   kyma-project:
     api-gateway:
-      prNumber: 125
+      prNumber: 295

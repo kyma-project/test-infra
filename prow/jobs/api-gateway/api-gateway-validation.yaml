@@ -53,7 +53,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/code-coverage-guard.sh"
+              - "./tests/integration/scripts/code-coverage-guard.sh"
             resources:
               requests:
                 memory: 1Gi
@@ -106,10 +106,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
+              - "./tests/integration/scripts/integration-gardener.sh"
             env:
               - name: GARDENER_REGION
                 value: "europe-west4"
