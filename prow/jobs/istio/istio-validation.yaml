@@ -53,7 +53,10 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "EXPORT_RESULTS=true ./tests/integration/scripts/code-coverage-guard.sh"
+              - "./tests/integration/scripts/code-coverage-guard.sh"
+            env:
+              - name: EXPORT_RESULTS
+                value: "true"
             resources:
               requests:
                 memory: 1Gi
