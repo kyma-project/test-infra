@@ -50,7 +50,6 @@ templates:
                   command: "./tests/integration/scripts/code-coverage-guard.sh"
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
                     - jobConfig_presubmit
                     - testing
                   local:
