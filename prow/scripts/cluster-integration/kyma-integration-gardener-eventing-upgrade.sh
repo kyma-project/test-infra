@@ -152,7 +152,8 @@ gardener::deploy_kyma --source "${KYMA_SOURCE}" -p "${EXECUTION_PROFILE}"
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
 # test the default Eventing backend which comes with Kyma
-export KYMA_BRANCH="$(echo ${KYMA_SOURCE} | awk -F \. '{branch="release-"$1"."$2; print branch}')"
+export KYMA_BRANCH="$(echo "${KYMA_SOURCE}" | awk -F \. '{branch="release-"$1"."$2; print branch}')"
+log::banner "Using Kyma branch: $KYMA_BRANCH for pre-upgrade fast-integration tests"
 ENABLE_TEST_CLEANUP=true
 eventing::pre_upgrade_test_fast_integration
 

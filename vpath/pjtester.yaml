@@ -7,4 +7,4 @@ pjConfigs:
 prConfigs: #
   kyma-project:
     kyma:
-      prNumber: 17142
+      prNumber: 17203
