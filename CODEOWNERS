@@ -57,6 +57,6 @@ templates/data/eventing-tools-data.yaml @kyma-project/prow @kyma-project/eventin
 # All .md files
 *.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko
 
-# Don't require review for auto generated files
-/test-inventory-integration.md
-/docs/index.md
+# Don't require human review for auto generated files
+/test-inventory-integration.md @neighbors-dev-bot
+/docs/index.md @neighbors-dev-bot
