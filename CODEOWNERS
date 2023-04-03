@@ -22,7 +22,7 @@
 /prow/jobs/incubator/compass-console @gvachkov @petartodorovv @desislavaa @dimitarpetrov @krasish @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
 /prow/jobs/incubator/documentation-component @kyma-project/prow
 /prow/jobs/incubator/hydra-login-consent @tomasz-smelcerz-sap @dariusztutaj @piotrkpc @kyma-project/prow
-/prow/jobs/incubator/kyma-showcase @cortey @lyczeq @mrcherry97 @mvshao @kyma-project/prow
+/prow/jobs/incubator/kyma-showcase @cortey @mrcherry97 @mvshao @kyma-project/prow
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow
 /prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @dzahariev @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
 /prow/jobs/incubator/reconciler @varbanv @jeremyharisch @tobiscr @kyma-project/prow
