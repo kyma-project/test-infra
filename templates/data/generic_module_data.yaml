@@ -85,7 +85,9 @@ templates:
                     GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
                     CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
                     TEST_RESULT_WINDOW_TIME: "6h"
-                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make local-run"
+                    JOB_VM_COMMAND: >-
+                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+                      && make -C hack/local run-with-lifecycle-manager
                   extra_refs:
                     keda-manager:
                       - org: kyma-project
@@ -105,7 +107,7 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: pre-keda-manager-operator-lint
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
                   run_if_changed: "^(go.mod|go.sum|main.go)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
                     description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
@@ -123,43 +125,20 @@ templates:
                   local:
                     - job_default
               - jobConfig:
-                  name: post-keda-module-build
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned" 
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "hack/ci"
-                    - "all" 
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                  local:
-                    - job_default
-              - jobConfig:
                   name: pull-keda-module-build
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned" 
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   command: "make"
                   args:
                     - "-C"
                     - "hack/ci"
-                    - "all" # run test make target of operator
+                    - "module-build"
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
@@ -170,12 +149,35 @@ templates:
                   local:
                     - job_default
               - jobConfig:
+                  name: post-keda-module-build
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned" 
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default
+              - jobConfig:
                   name: pre-keda-manager-operator-tests
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
                   command: "bash"
                   args:
                     - "-c"
-                    - "make test" # run test make target of operator
+                    - "make test"
                   branches:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
@@ -223,58 +225,13 @@ templates:
                   optional: "false"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make ci-k3d-integration-test"
+                    JOB_VM_COMMAND: >-
+                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+                      && make -C hack/ci k3d-integration-test
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
-                    - extra_refs_test-infra
-                  local:
-                    - job_default
-                    - vm_job_make
-                    - vm_job_k3d
-                    - vm_job_labels
-              - jobConfig:
-                  name: post-main-keda-manager-upgrade-main-to-pr
-                  always_run: "true"
-                  optional: "true"
-                  env:
-                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin 
-                    && git checkout - 
-                    && make -C hack/local run 
-                    && git checkout - 
-                    && make ci-k3d-upgrade-test"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
-                    - extra_refs_test-infra
-                  local:
-                    - job_default
-                    - vm_job_make
-                    - vm_job_k3d
-                    - vm_job_labels
-              - jobConfig:
-                  name: post-main-keda-manager-upgrade-main-to-channel
-                  always_run: "true"
-                  optional: "true"
-                  env:
-                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin 
-                    && make kyma
-                    && ./bin/kyma-unstable provision k3d
-                    && mkdir tmp
-                    && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/moduletemplate-keda.yaml > tmp/moduletemplate-keda.yaml
-                    && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/kustomization.yaml > tmp/kustomization.yaml
-                    && ./bin/kyma-unstable alpha deploy --ci --force-conflicts --templates tmp/
-                    && make ci-k3d-upgrade-test"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
                     - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
@@ -288,7 +245,36 @@ templates:
                   optional: "true"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make ci-k3d-integration-test"
+                    JOB_VM_COMMAND: >-
+                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+                      && make -C hack/ci k3d-lm-integration-test
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels
+              - jobConfig:
+                  name: post-main-keda-manager-upgrade-latest-to-main
+                  always_run: "true"
+                  optional: "true"
+                  env:
+                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
+                    JOB_VM_COMMAND: >-
+                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+                      && curl -s https://storage.googleapis.com/kyma-cli-unstable/kyma-linux > kyma-unstable
+                      && chmod 0100 ./kyma-unstable
+                      && ./kyma-unstable provision k3d
+                      && mkdir tmp
+                      && curl -s https://github.com/kyma-project/keda-manager/releases/latest/download/keda-manager.yaml > tmp/moduletemplate-keda.yaml
+                      && ./kyma-unstable alpha deploy --ci --force-conflicts
+                      && kubectl apply -f tmp/moduletemplate-keda.yaml
+                      && make -C hack/ci upgrade-to
                 inheritedConfigs:
                   global:
                     - jobConfig_default
