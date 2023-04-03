@@ -1,0 +1,52 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: clone-refs
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.36.0"
+    tekton.dev/categories: Git
+    tekton.dev/tags: git
+    tekton.dev/displayName: "clone-refs"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    The clone-refs Task clones repositories references defined by ProwJob refs and extra-refs.
+    ProwJob refs and extra-refs are read from the environment variable JOB_SPEC.
+    JOB_SPEC is a JSON-encoded ProwJob specification and is set by Prow.
+    The Task clones the repositories into a workspace repository.
+    The Task uses the Kubernetes Prow clone-refs tool to clone the repositories.
+  workspaces:
+    - name: logs
+      description: "The workspace where the clone logs are written."
+      mountPath: /logs
+      optional: true
+    - name: repo
+      description: "The workspace where the Git repositories will be cloned. Usually, this should be a workspace shared with other tasks."
+      mountPath: /home/prow/go
+    - name: tmp
+      mountPath: /tmp
+      optional: true
+  params:
+    - name: JOB_SPEC
+      description: "JSON-encoded job specification. A variable set by Prow."
+      type: string
+    - name: LOG
+      description: "The path to the clone logs file."
+      type: string
+      default: "/logs/clone.json"
+    - name: SRC_ROOT
+      description: "The root path where to clone repositories."
+      type: string
+      default: "/home/prow/go"
+  steps:
+    - name: clone-refs
+      image: europe-docker.pkg.dev/kyma-project/dev/test-infra/tekton-clonerefs:latest
+      env:
+        - name: JOB_SPEC
+          value: $(params.JOB_SPEC)
+        - name: LOG
+          value: $(params.LOG)
+        - name: SRC_ROOT
+          value: $(params.SRC_ROOT)
