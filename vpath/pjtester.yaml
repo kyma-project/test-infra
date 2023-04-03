@@ -1,7 +1,7 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      api-gateway:
+      istio:
         - pjName: "pull-istio-test"
 prConfigs:
   kyma-project:
