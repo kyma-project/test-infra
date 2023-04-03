@@ -6,6 +6,8 @@ templates:
           jobConfig_default:
             optional: "false"
             path_alias: github.com/kyma-project/istio
+            env:
+              EXPORT_RESULTS: true
             labels:
               preset-debug-commando-oom: "true"
               preset-kyma-guard-bot-github-token: "true"
@@ -27,7 +29,7 @@ templates:
               - jobConfig:
                   name: pull-istio-test
                   request_cpu: 500m
-                  command: "EXPORT_RESULTS=true ./tests/integration/scripts/code-coverage-guard.sh"
+                  command: "./tests/integration/scripts/code-coverage-guard.sh"
                   always_run: true
                 inheritedConfigs:
                   global:
