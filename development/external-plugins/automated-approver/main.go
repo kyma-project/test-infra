@@ -3,6 +3,7 @@ package main
 import (
 	consolelog "github.com/kyma-project/test-infra/development/logging"
 	"github.com/kyma-project/test-infra/development/prow/externalplugin"
+	"golang.org/x/net/context"
 	"k8s.io/test-infra/prow/config"
 	"k8s.io/test-infra/prow/pluginhelp"
 )
@@ -32,6 +33,9 @@ func main() {
 		logLevel: pluginOptions.LogLevel,
 	}
 
+	// Initialize PR locks.
+	hb.prLocks = make(map[string]map[string]map[int]map[string]context.CancelFunc)
+
 	// Add client and plugin cli flags.
 	fs := pluginOptions.NewFlags()
 	fs.StringVar(&hb.configPath, "config-path", "", "Path to the configuration file.")
@@ -40,7 +44,7 @@ func main() {
 
 	atom.SetLevel(pluginOptions.LogLevel)
 
-	// Create github.com client.
+	// Create GitHub.com client.
 	ghClient, err := pluginOptions.Github.NewGithubClient()
 	if err != nil {
 		logger.Fatalw("Failed creating GitHub client", "error", err)
@@ -66,5 +70,6 @@ func main() {
 	server.Name = PluginName
 	server.WithWebhookSecret(pluginOptions.WebhookSecretPath)
 	server.RegisterWebhookHandler("pull_request", hb.pullRequestEventHandler)
+	server.RegisterWebhookHandler("pull_request_review", hb.pullRequestReviewEventHandler)
 	externalplugin.Start(&server, helpProvider, &pluginOptions)
 }
