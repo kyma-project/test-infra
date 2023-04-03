@@ -44,27 +44,15 @@ presubmits: # runs on PRs
       path_alias: github.com/kyma-project/api-gateway
       cluster: untrusted-workload
       max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            securityContext:
-              privileged: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/code-coverage-guard.sh"
+              - "./tests/integration/scripts/code-coverage-guard.sh"
             resources:
               requests:
                 memory: 1Gi
                 cpu: 500m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-api-gateway-integration-test
       annotations:
         pipeline.clusterprovisioning: "kyma cli"
@@ -106,10 +94,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
+              - "./tests/integration/scripts/integration-gardener.sh"
             env:
               - name: GARDENER_REGION
                 value: "europe-west4"
