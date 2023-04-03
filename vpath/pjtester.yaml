@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      compass-manager:
+      - pjName: "pre-main-compass-manager-trivy"
+
+prConfigs:
+  kyma-project:
+    compass-manager:
+      prNumber: 3
