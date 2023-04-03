@@ -2,6 +2,13 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/istio/istio-validation.yaml
+        localSets:
+          jobConfig_default:
+            optional: "false"
+            path_alias: github.com/kyma-project/istio
+            labels:
+              preset-debug-commando-oom: "true"
+              preset-kyma-guard-bot-github-token: "true"
         jobConfigs:
           - repoName: "kyma-project/istio"
             jobs:
@@ -20,12 +27,12 @@ templates:
               - jobConfig:
                   name: pull-istio-test
                   request_cpu: 500m
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "EXPORT_RESULTS=true make test"
+                  command: "/home/prow/go/src/github.com/kyma-project/istio/tests/integration/scripts/code-coverage-guard.sh"
                   always_run: true
                 inheritedConfigs:
                   global:
+                    - jobConfig_default
                     - jobConfig_presubmit
                     - testing
+                  local:
+                    - jobConfig_default
