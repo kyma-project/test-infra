@@ -9,7 +9,7 @@ require (
 	cloud.google.com/go/kms v1.10.0
 	cloud.google.com/go/logging v1.7.0
 	cloud.google.com/go/pubsub v1.30.0
-	cloud.google.com/go/storage v1.30.0
+	cloud.google.com/go/storage v1.30.1
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/aws/aws-sdk-go v1.42.1 // indirect
@@ -18,7 +18,7 @@ require (
 	github.com/containerd/containerd v1.6.19
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsouza/go-dockerclient v1.9.6
+	github.com/fsouza/go-dockerclient v1.9.7
 	github.com/go-playground/validator/v10 v10.12.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
 	github.com/google/go-containerregistry v0.14.0
@@ -35,7 +35,7 @@ require (
 	github.com/jinzhu/copier v0.3.5
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/onsi/ginkgo/v2 v2.9.2
-	github.com/onsi/gomega v1.27.5
+	github.com/onsi/gomega v1.27.6
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
@@ -46,7 +46,7 @@ require (
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
 	github.com/tidwall/gjson v1.14.4
-	github.com/zricethezav/gitleaks/v8 v8.16.1
+	github.com/zricethezav/gitleaks/v8 v8.16.2
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.8.0
 	golang.org/x/oauth2 v0.6.0
@@ -62,7 +62,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230324183220-d09276bf79ea
+require k8s.io/test-infra v0.0.0-20230330164349-7ee258b058d3
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
@@ -104,7 +104,7 @@ require (
 	github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1 // indirect
 	github.com/docker/cli v23.0.1+incompatible // indirect
 	github.com/docker/distribution v2.8.1+incompatible // indirect
-	github.com/docker/docker v23.0.1+incompatible // indirect
+	github.com/docker/docker v23.0.2+incompatible // indirect
 	github.com/docker/docker-credential-helpers v0.7.0 // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-events v0.0.0-20190806004212-e31b211e4f1c // indirect
@@ -189,7 +189,7 @@ require (
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.0-rc2 // indirect
-	github.com/opencontainers/runc v1.1.2 // indirect
+	github.com/opencontainers/runc v1.1.5 // indirect
 	github.com/opencontainers/runtime-spec v1.0.3-0.20210326190908-1c3f411f0417 // indirect
 	github.com/opencontainers/selinux v1.10.1 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect

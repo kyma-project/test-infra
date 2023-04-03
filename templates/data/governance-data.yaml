@@ -172,7 +172,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
+                    - "image_bootstrap"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                   local:

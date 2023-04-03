@@ -93,6 +93,7 @@ function host::patch_coredns() {
 }
 
 collect_results(){
+    set +o errexit
     echo "####################"
     echo "kubectl get pods -A"
     echo "###################"
@@ -125,5 +126,6 @@ collect_results(){
     do
       kubectl logs --namespace "${NAMESPACE}" --all-containers  --selector job-name --ignore-errors --prefix=true
     done
-echo ""
+    echo ""
+    set -o errexit
 }
