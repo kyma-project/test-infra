@@ -1,9 +1,9 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      api-gateway:
-        - pjName: "pull-api-gateway-test"
-prConfigs:
-  kyma-project:
-    api-gateway:
-      prNumber: 295
+      istio:
+        - pjName: "pull-istio-test"
+# prConfigs:
+#   kyma-project:
+#     istio:
+#       prNumber: 295
