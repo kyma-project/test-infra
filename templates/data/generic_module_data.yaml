@@ -400,7 +400,7 @@ templates:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   command: "make"
                   args:
                     - "-C"
@@ -424,7 +424,7 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/dev/serverless-manager:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   command: "make"
                   args:
                     - "-C"
