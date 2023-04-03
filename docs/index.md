@@ -182,9 +182,13 @@
 
 [Cluster](/prow/workload-cluster/README.md) - This folder contains configuration files for the Prow workload. This configuration is used during cluster provisioning.
 
+[Clone Repositories](/task/clone-refs/0.1/README.md) - The clone-refs Task clones repositories references defined by ProwJob refs and extra-refs.
+
 [Unit Tests for Go Code](/task/go-unit-tests/0.1/README.md) - A go-unit-tests Task is used to run unit tests for Go code.
 
 [Go Linters](/task/golangci-lint/0.1/README.md) - The golangci-lint Task runs a Golang linter.
+
+[Image Builder](/task/image-builder/0.1/README.md) - The image-builder Task builds an OCI image from a Dockerfile.
 
 [Templates](/templates/README.md) - Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.
 
