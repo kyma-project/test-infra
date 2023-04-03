@@ -1,10 +1,4 @@
 clusters:
-  - gke: projects/sap-kyma-prow/locations/europe-west4/clusters/tekton
-    duration: 48h
-    name: tekton-pipelines
-    gsm:
-      name: tekton-pipelines-kubeconfig
-      project: sap-kyma-prow
   - gke: projects/sap-kyma-prow/locations/europe-west3/clusters/untrusted-workload-kyma-prow
     duration: 48h
     name: untrusted-workload

@@ -23,7 +23,7 @@ func (r bucketHandle) Object(name string) ObjectHandle {
 	return r.bucketHandle.Object(name)
 }
 
-func (r bucketHandle) Objects(ctx context.Context, q Query) ObjectIterator {
+func (r bucketHandle) Objects(ctx context.Context, _ Query) ObjectIterator {
 	return objectIterator{
 		objectIterator: r.bucketHandle.Objects(ctx, nil),
 	}

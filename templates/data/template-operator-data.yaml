@@ -10,7 +10,7 @@ templates:
           - repoName: kyma-project/template-operator
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
                   name: pull-template-op-lint
                   run_if_changed: "^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile"
                   annotations:

@@ -21,6 +21,8 @@ templates:
                   optional: "false"
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=api-gateway-controller"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -36,6 +38,8 @@ templates:
                   optional: "false"
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=api-gateway-webhook-certificates"
                     - "--config=/config/kaniko-build-config.yaml"

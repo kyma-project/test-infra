@@ -22,7 +22,7 @@ templates:
                     - "./..."
                 inheritedConfigs:
                   global:
-                    - "jobConfig_presubmit"
+                    - jobConfig_presubmit
                     - testing
               - jobConfig:
                   name: "pre-main-test-infra-lint"
@@ -31,8 +31,10 @@ templates:
                   run_if_changed: 'go.mod|go.sum|.*\.go$|.golangci.yaml'
                   privileged: false
                   automountServiceAccountToken: true
+                  request_memory: 1Gi
+                  request_cpu: 500m
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - "jobConfig_presubmit"
+                    - jobConfig_presubmit
                     - linting
