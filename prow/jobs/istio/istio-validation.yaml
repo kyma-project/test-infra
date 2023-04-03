@@ -53,7 +53,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
             command:
-              - "EXPORT_RESULTS=true /home/prow/go/src/github.com/kyma-project/istio/tests/integration/scripts/code-coverage-guard.sh"
+              - "EXPORT_RESULTS=true ./tests/integration/scripts/code-coverage-guard.sh"
             resources:
               requests:
                 memory: 1Gi

@@ -27,7 +27,7 @@ templates:
               - jobConfig:
                   name: pull-istio-test
                   request_cpu: 500m
-                  command: "EXPORT_RESULTS=true /home/prow/go/src/github.com/kyma-project/istio/tests/integration/scripts/code-coverage-guard.sh"
+                  command: "EXPORT_RESULTS=true ./tests/integration/scripts/code-coverage-guard.sh"
                   always_run: true
                 inheritedConfigs:
                   global:
