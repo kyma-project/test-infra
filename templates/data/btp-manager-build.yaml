@@ -45,7 +45,7 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG_REGISTRY:  "europe-docker.pkg.dev/kyma-project/prod"
                   privileged: false
-                  command: "./hack/release.sh"
+                  command: "./scripts/release.sh"
                   args:
                     - "ci"
                   branches:
@@ -67,7 +67,7 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
                     IMG_REGISTRY:  "europe-docker.pkg.dev/kyma-project/dev"
                   privileged: false
-                  command: "./hack/create_module_image.sh"
+                  command: "./scripts/create_module_image.sh"
                   args:
                     - "ci"
                 inheritedConfigs:

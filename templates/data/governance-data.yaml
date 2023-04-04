@@ -7,6 +7,23 @@ templates:
             run_if_changed: "milv.config.yaml|.md$"
             labels:
               preset-build-pr: "true"
+          jobConfig_kyma_crd_docs:
+            run_if_changed: "^installations/resources/crds/|^.*.md$"
+            annotations:
+              pipeline.trigger: pr-submit
+            type_presubmit: "true"
+            cluster: "untrusted-workload"
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^main$"
+            request_memory: "10Mi"
+            request_cpu: "100m"
+            cluster_presubmit: "untrusted-workload"
+            cluster_postsubmit: "trusted-workload"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
           jobConfig_default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             labels:
@@ -172,12 +189,21 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
+                    - "image_bootstrap"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
+              - jobConfig:
+                  name: "pull-kyma-crd-governance"
+                  path_alias: github.com/kyma-project/kyma
+                  command: "hack/verify-md.sh"
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang"
+                  local:
+                    - "jobConfig_kyma_crd_docs"
               - jobConfig:
                   name: "pre-kyma-docu-2.0-governance"
                   args:

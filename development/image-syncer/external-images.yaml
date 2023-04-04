@@ -1,7 +1,7 @@
 targetRepoPrefix:  "eu.gcr.io/kyma-project/external/"
 images:
-- source: "alpine@sha256:69665d02cb32192e52e07644d76bc6f25abeb5410edc1c7a81a10ba3f0efb90a"
-  tag: "3.17.2"
+- source: "alpine@sha256:124c7d2707904eea7431fffe91522a01e5a861a624ee31d03372cc1d138a3126"
+  tag: "3.17.3"
 - source: "bitnami/postgres-exporter:0.11.1-debian-11-r23"
   amd64Only: true
 - source: "busybox@sha256:3b3128d9df6bbbcc92e2358e596c9fbd722a437a62bafbc51607970e9e3b8869"

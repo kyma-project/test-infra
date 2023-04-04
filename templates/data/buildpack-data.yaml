@@ -302,32 +302,6 @@ templates:
                         - "default"
                         - "postsubmit"
                   - jobConfig:
-                      name: "pre-test-infra-ci-force-bot"
-                      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-                      args:
-                        - "--name=test-infra/ci-force-bot"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=development/kyma-ci-force-bot/ciforcebot"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-ci-force-bot"
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-                      args:
-                        - "--name=test-infra/ci-force-bot"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=development/kyma-ci-force-bot/ciforcebot"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
                       name: "pre-test-infra-golangci-lint"
                       run_if_changed: "^prow/images/golangci-lint/"
                       args:
