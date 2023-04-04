@@ -237,7 +237,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-crd-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^installations/resources/crds/|^.*.md$'
+      run_if_changed: '^installation/resources/crds/|^.*.md$'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
