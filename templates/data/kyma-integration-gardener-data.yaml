@@ -95,6 +95,7 @@ templates:
                   env:
                     EXECUTION_PROFILE: "production"
                     MACHINE_TYPE: "n1-standard-8"
+                    MACHINES_MIN: "3"
                     EVENTING_UPGRADE_JOB: false
                   volumes:
                     - name: kyma-tunas-prow-event-mesh
