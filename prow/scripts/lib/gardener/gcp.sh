@@ -86,6 +86,11 @@ gardener::provision_cluster() {
         return 1
     fi
 
+    # set default value for minimum number of machines
+    if [ -z "$MACHINES_MIN" ]; then
+        export MACHINES_MIN="2"
+    fi
+
     CLEANUP_CLUSTER="true"
       # enable trap to catch kyma provision failures
       trap gardener::reprovision_cluster ERR
@@ -99,7 +104,7 @@ gardener::provision_cluster() {
         -z "${GARDENER_ZONES}" \
         -t "${MACHINE_TYPE}" \
         --scaler-max 4 \
-        --scaler-min 2 \
+        --scaler-min "${MACHINES_MIN}" \
         --kube-version="${GARDENER_CLUSTER_VERSION}" \
         --attempts 1 \
         --verbose
