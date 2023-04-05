@@ -171,7 +171,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=22m
+                    - golangci-lint run -v --timeout=20m --new-from-rev=$PULL_BASE_SHA ./... 
                   run_if_changed: '^(.*\.go$|.golangci.yaml)'
                 inheritedConfigs:
                   global:
