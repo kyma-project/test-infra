@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfig:
+    kyma-incubator:
+      reconciler:
+        prNumber: 1330
+  prowJobs:
+    kyma-incubator:
+      reconciler:
+      - pjName: "pull-reconciler-lint"
+prConfigs: #
+  kyma-incubator:
+    reconciler:
+      prNumber: 1330
