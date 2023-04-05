@@ -98,19 +98,19 @@ templates:
                     - job_spec
               - jobConfig:
                   name: "pull-cli-lint"
-                  optional: true
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m
-                  run_if_changed: '^(.*\.go$|.golangcilint.yaml)'
+                    - golangci-lint run -v --timeout=10m --new-from-rev=$PULL_BASE_SHA ./... 
+                  run_if_changed: '^(.*\.go$|.golangci.yaml)'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
                     - linting
               - jobConfig:
                   name: "pull-cli-unit-test"
-                  optional: true
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
