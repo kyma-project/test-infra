@@ -6,7 +6,7 @@ pjConfigs:
   prowJobs:
     kyma-incubator:
       reconciler:
-      - pjName: "pull-reconciler-lint"
+      - pjName: "pre-main-reconciler-lint"
 prConfigs: #
   kyma-incubator:
     reconciler:
