@@ -27,8 +27,6 @@ set -o errexit
 ENABLE_TEST_CLEANUP=false
 ENABLE_TEST_LOG_COLLECTOR=false
 
-export KYMA_DEPLOY_STATE="unknown"
-
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
@@ -89,11 +87,6 @@ function cleanupJobAssets() {
         eventing::print_troubleshooting_logs
     fi
 
-    if  [[ "${KYMA_DEPLOY_STATE}" != "deployed" ]] ; then
-        log::banner "Skipping cleaning cluster"
-        exit ${EXIT_STATUS}
-    fi
-
     log::banner "Cleaning job assets"
     if  [[ "${ENABLE_TEST_CLEANUP}" = true ]] ; then
         log::banner "Cleanup fast-integration assets"
@@ -152,13 +145,11 @@ log::info "### Provisioning Gardener cluster"
 export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
-export KYMA_DEPLOY_STATE="unknown"
 log::info "### Deploying Kyma $KYMA_SOURCE using $EXECUTION_PROFILE profile"
 gardener::deploy_kyma --source "${KYMA_SOURCE}" -p "${EXECUTION_PROFILE}"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
-export KYMA_DEPLOY_STATE="deployed"
 
 # test the default Eventing backend which comes with Kyma
 export KYMA_BRANCH="$(echo "${KYMA_SOURCE}" | awk -F \. '{branch="release-"$1"."$2; print branch}')"
@@ -172,9 +163,7 @@ export KYMA_SOURCE
 
 # uses previously set KYMA_SOURCE
 log::info "### Upgrading Kyma to $KYMA_SOURCE using $EXECUTION_PROFILE profile"
-export KYMA_DEPLOY_STATE="unknown"
 gardener::deploy_kyma --source "${KYMA_SOURCE}" -p "${EXECUTION_PROFILE}"
-export KYMA_DEPLOY_STATE="deployed"
 
 # test the eventing fi tests after the upgrade
 eventing::fast_integration_tests
