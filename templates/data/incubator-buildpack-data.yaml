@@ -156,15 +156,27 @@ templates:
               - jobConfig:
                   name: "pre-main-reconciler-unit-test"
                   optional: false
+                  always_run: true
                   command: "/bin/sh"
                   args:
                     - "-c"
                     - "make test"
-                  always_run: true
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+              - jobConfig:
+                  name: "pre-main-reconciler-lint"
+                  optional: true
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - golangci-lint run -v --timeout=20m --new-from-rev=$PULL_BASE_SHA ./...
+                  run_if_changed: '^(.*\.go$|.golangci.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - linting
               - jobConfig:
                   name: "pre-main-reconciler-integration-k3d"
                   # following regexp won't start build if only Markdown files were changed
@@ -374,20 +386,6 @@ templates:
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_gardener_integration_jobConfig
-              - jobConfig:
-                  name: "pre-main-kyma-incubator-reconciler"
-                  always_run: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-                  local:
-                    - reconciler_main_jobConfig
-                    - reconciler_jobConfig_args
               - jobConfig:
                   name: "pre-load-test-mock-kyma-incubator-reconciler"
                   always_run: true
