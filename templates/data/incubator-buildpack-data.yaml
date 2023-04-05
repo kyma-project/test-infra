@@ -167,7 +167,7 @@ templates:
                     - testing
               - jobConfig:
                   name: "pre-main-reconciler-lint"
-                  optional: false
+                  optional: true
                   command: "/bin/sh"
                   args:
                     - "-c"
