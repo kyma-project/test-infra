@@ -106,7 +106,7 @@ function cleanupJobAssets() {
 
     printDescribeOfFailingPods
 
-    if  [[ "${KYMA_DEPLOY_STATUS}" == "deployed" ]] ; then
+    if  [[ "${KYMA_DEPLOY_STATUS}" != "deployed" ]] ; then
         log::banner "Skipping cleanup"
         exit ${EXIT_STATUS}
     fi
