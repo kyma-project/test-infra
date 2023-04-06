@@ -75,6 +75,20 @@ else
     exit 1
 fi
 
+function printDescribeOfFailingPods() {
+  log::banner "printDescribeOfFailingPods"
+  for podName in $(kubectl get pods -n kyma-system -o name);
+  do
+    podState=$(kubectl get -n kyma-system "${podName}" -o json | jq -r '.status.phase')
+    log::info "Status of ${podName} is ${podState}"
+    if [[ "${podState}" == *"CrashLoopBackOff"* ]]; then
+      cmd="kubectl describe -n kyma-system ${podName}"
+      log::banner "${cmd}"
+      ${cmd}
+    fi
+  done
+}
+
 function cleanupJobAssets() {
     # Must be at the beginning
     EXIT_STATUS=$?
@@ -86,6 +100,8 @@ function cleanupJobAssets() {
     if [[ $EXIT_STATUS != "0" ]]; then
         eventing::print_troubleshooting_logs
     fi
+
+    printDescribeOfFailingPods
 
     log::banner "Cleaning job assets"
     if  [[ "${ENABLE_TEST_CLEANUP}" = true ]] ; then
@@ -146,7 +162,9 @@ export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
 log::info "### Deploying Kyma $KYMA_SOURCE using $EXECUTION_PROFILE profile"
+export KYMA_DEPLOY_STATUS="in-progress"
 gardener::deploy_kyma --source "${KYMA_SOURCE}" -p "${EXECUTION_PROFILE}"
+export KYMA_DEPLOY_STATUS="deployed"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
@@ -163,7 +181,9 @@ export KYMA_SOURCE
 
 # uses previously set KYMA_SOURCE
 log::info "### Upgrading Kyma to $KYMA_SOURCE using $EXECUTION_PROFILE profile"
+export KYMA_DEPLOY_STATUS="in-progress"
 gardener::deploy_kyma --source "${KYMA_SOURCE}" -p "${EXECUTION_PROFILE}"
+export KYMA_DEPLOY_STATUS="deployed"
 
 # test the eventing fi tests after the upgrade
 eventing::fast_integration_tests
