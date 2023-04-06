@@ -106,6 +106,11 @@ function cleanupJobAssets() {
 
     printDescribeOfFailingPods
 
+    if  [[ "${KYMA_DEPLOY_STATUS}" == "deployed" ]] ; then
+        log::banner "Skipping cleanup"
+        exit ${EXIT_STATUS}
+    fi
+
     log::banner "Cleaning job assets"
     if  [[ "${ENABLE_TEST_CLEANUP}" = true ]] ; then
         log::banner "Cleanup fast-integration assets"

@@ -118,7 +118,7 @@ gardener::provision_cluster() {
 
 
 gardener::deploy_kyma() {
-    kyma deploy --ci --timeout 90m "$@"
+    kyma deploy -v --ci --timeout 90m "$@"
 }
 
 gardener::hibernate_kyma() {
