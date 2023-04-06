@@ -81,11 +81,14 @@ function printDescribeOfFailingPods() {
   do
     podState=$(kubectl get -n kyma-system "${podName}" -o json | jq -r '.status.phase')
     log::info "Status of ${podName} is ${podState}"
-    if [[ "${podState}" == *"CrashLoopBackOff"* ]]; then
-      cmd="kubectl describe -n kyma-system ${podName}"
-      log::banner "${cmd}"
-      ${cmd}
-    fi
+    cmd="kubectl describe -n kyma-system ${podName}"
+    log::banner "${cmd}"
+    ${cmd}
+#    if [[ "${podState}" == *"CrashLoopBackOff"* ]]; then
+#      cmd="kubectl describe -n kyma-system ${podName}"
+#      log::banner "${cmd}"
+#      ${cmd}
+#    fi
   done
 }
 
