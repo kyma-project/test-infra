@@ -1,19 +1,19 @@
-presubmits: # runs on main
+postsubmits: # runs on main
   kyma-project/compass-manager:
     - name: post-main-compass-manager-build
       annotations:
-        pipeline.trigger: "pr-submit"
+        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-compass-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-        # preset-signify-prod-secret: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '.+'
       skip_report: false
       decorate: true
-      cluster: untrusted-workload
+      cluster: trusted-workload
       max_concurrency: 10
       spec:
         containers:
