@@ -49,7 +49,7 @@ require (
 	github.com/zricethezav/gitleaks/v8 v8.16.2
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.9.0
-	golang.org/x/oauth2 v0.6.0
+	golang.org/x/oauth2 v0.7.0
 	google.golang.org/api v0.116.0
 	google.golang.org/grpc v1.54.0
 	gopkg.in/yaml.v2 v2.4.0
@@ -62,7 +62,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230406183349-bf427cbc240e
+require k8s.io/test-infra v0.0.0-20230407183115-dd2df17accb8
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
