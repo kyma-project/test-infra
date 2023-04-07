@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      compass-manager:
+        - pjName: "pre-main-compass-manager-tests"
+
+prConfigs:
+  kyma-project:
+    compass-manager:
+      prNumber: 5
