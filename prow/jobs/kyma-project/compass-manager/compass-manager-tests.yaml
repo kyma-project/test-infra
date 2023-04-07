@@ -28,14 +28,7 @@ presubmits: # runs on PRs
               - "make test"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
-              tolerations:
-                - key: dedicated
-                  operator: Equal
-                  value: high-cpu
-                  effect: NoSchedule
-              nodeSelector:
-                dedicated: "high-cpu"
+                memory: 1Gi
+                cpu: 1
             securityContext:
               privileged: true
