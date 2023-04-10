@@ -40,7 +40,7 @@ require (
 	github.com/prometheus/procfs v0.7.3 // indirect
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
 	github.com/sirupsen/logrus v1.9.0
-	github.com/smartystreets/goconvey v1.7.2
+	github.com/smartystreets/goconvey v1.8.0
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.15.0
@@ -62,7 +62,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230407183115-dd2df17accb8
+require k8s.io/test-infra v0.0.0-20230410172516-67b11b3ef245
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
@@ -146,7 +146,7 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
 	github.com/googleapis/gax-go v2.0.2+incompatible // indirect
 	github.com/googleapis/gax-go/v2 v2.8.0 // indirect
-	github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1 // indirect
+	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190212212710-3befbb6ad0cc // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3 // indirect
 	github.com/h2non/filetype v1.1.3 // indirect
@@ -205,7 +205,7 @@ require (
 	github.com/rs/zerolog v1.26.1 // indirect
 	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f // indirect
-	github.com/smartystreets/assertions v1.2.0 // indirect
+	github.com/smartystreets/assertions v1.13.1 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
