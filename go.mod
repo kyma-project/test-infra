@@ -14,7 +14,7 @@ require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/aws/aws-sdk-go v1.42.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
-	github.com/cloudevents/sdk-go/v2 v2.13.0
+	github.com/cloudevents/sdk-go/v2 v2.14.0
 	github.com/containerd/containerd v1.6.19
 	github.com/containerd/typeurl v1.0.2
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
@@ -62,7 +62,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230411183113-f6a79cd8bb90
+require k8s.io/test-infra v0.0.0-20230411190306-eb86b7b98850
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
