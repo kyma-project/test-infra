@@ -1053,6 +1053,19 @@ presets:
         mountPath: /etc/credentials/sa-gke-kyma-integration
         readOnly: true
   - labels:
+      preset-sa-secret-update: "true"
+    env:
+      - name: GOOGLE_APPLICATION_CREDENTIALS
+        value: /etc/credentials/sa-secret-update/service-account.json
+    volumes:
+      - name: sa-secret-update
+        secret:
+          secretName: sa-secret-update
+    volumeMounts:
+      - name: sa-secret-update
+        mountPath: /etc/credentials/sa-secret-update
+        readOnly: true
+  - labels:
       preset-kyma-integration-compass-dev: "true"
     env:
       - name: COMPASS_TENANT
