@@ -13,14 +13,13 @@ presubmits: # runs on PRs
       run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/compass-manager
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/buildpack-golang:PR-7292"
+          - image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -30,5 +29,3 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 1
-            securityContext:
-              privileged: true
