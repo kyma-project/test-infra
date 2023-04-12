@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/eventing-tools/nats-manager-generic.yaml
+      - to: ../../prow/jobs/nats-manager/nats-manager-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/nats-manager"
             jobs:

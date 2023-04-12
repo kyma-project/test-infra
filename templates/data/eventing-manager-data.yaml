@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/eventing-tools/eventing-manager-generic.yaml
+      - to: ../../prow/jobs/eventing-manager/eventing-manager-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/eventing-manager"
             jobs:
