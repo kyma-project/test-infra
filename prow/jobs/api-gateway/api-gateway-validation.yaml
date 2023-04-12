@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
             command:
               - "/bin/sh"
             args:
@@ -35,19 +35,20 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-debug-commando-oom: "true"
+        preset-kyma-guard-bot-github-token: "true"
       always_run: true
-      optional: true
+      optional: false
       skip_report: false
       decorate: true
+      path_alias: github.com/kyma-project/api-gateway
       cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
-              - "make"
-            args:
-              - "test"
+              - "./tests/integration/scripts/code-coverage-guard.sh"
             resources:
               requests:
                 memory: 1Gi
@@ -70,6 +71,7 @@ presubmits: # runs on PRs
         preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
       always_run: true
+      optional: false
       skip_report: false
       decorate: true
       decoration_config:
@@ -88,14 +90,11 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
+              - "./tests/integration/scripts/integration-gardener.sh"
             env:
               - name: GARDENER_REGION
                 value: "europe-west4"
@@ -139,6 +138,7 @@ postsubmits: # runs on main
         preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
       always_run: true
+      optional: false
       skip_report: false
       decorate: true
       decoration_config:
@@ -157,7 +157,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:

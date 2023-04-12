@@ -11,7 +11,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
-ARG K8S_VERSION=1.25
+ARG K8S_VERSION=1.26
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
@@ -148,7 +148,7 @@ ENV PATH=$PATH:/prow-tools
 ######################## Install gcloud #########################
 #################################################################
 
-ENV CLOUD_SDK_VERSION=410.0.0 \
+ENV CLOUD_SDK_VERSION=423.0.0 \
     PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
     CLUSTER_VERSION=$K8S_VERSION

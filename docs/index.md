@@ -8,10 +8,6 @@
 
 [gcbuild](/development/gcbuild/README.md) - This tool serves as an intelligent wrapper for `gcloud builds submit`. It runs remote build jobs on Google infrastructure with setting automated substitutions, that developers can use. It's built to reduce the complexity of building the Docker images.
 
-[Rotate service account secrets using Cloud Function](/development/gcp/cloud-functions/rotateserviceaccount/README.md) - Cloud Function creates a new key for a GCP service account and updates the required secret data. The function is triggered by a  Pub/Sub message sent by a secret stored in Secret Manager.
-
-[Cleanup of service account secrets using Cloud Function](/development/gcp/cloud-functions/serviceaccountcleaner/README.md) - The Cloud Function deletes old keys for a GCP service account and updates the required secret data for all service account secrets stored in the Secret Manager. The function is triggered by a Cloud Scheduler job.
-
 [Rotate Gardener service account secrets using Cloud Run](/development/gcp/cloud-run/gardener-sa-rotate/README.md) - The Cloud Run application creates a new key for a GCP service account, updates the required secret data, and deletes old versions of a key. The function is triggered by a Pub/Sub message sent by a secret stored in Secret Manager.
 
 [Rotate KMS secrets using Cloud Run](/development/gcp/cloud-run/kms-rotate/README.md) - The Cloud Run application decrypts and encrypts files in a bucket with the latest version of a KMS key, and deletes old versions of a key. The function is triggered by a HTTP POST request sent by a Cloud Scheduler.
@@ -88,13 +84,15 @@
 
 [Add custom secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add a custom secret and use it in the Prow pipeline.
 
-[Use Tekton Pipelines with Prow](/docs/how-to/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use
+[Use Tekton Pipelines with Prow](/docs/how-to/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use Kubernetes-native implementation of CI/CD pipelines, where every task is a self-contained set of commands.
 
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
 
 [Authorization](/docs/prow/authorization.md) - To deploy a Prow cluster, configure the following service accounts in the GCP project you own.
 
 [Crier](/docs/prow/crier.md) - Crier reports the Prow Job status changes. For now, it is responsible for Slack notifications as Plank is still reporting the Prow Job statuses to GitHub.
+
+[Run K3d cluster inside ProwJobs](/docs/prow/k3d-no-ssh.md) - This document provides simple instructions, with examples, on how to prepare a ProwJob to use a K3d cluster and Docker.
 
 [Label_sync](/docs/prow/label_sync.md) - Label_sync updates or migrates GitHub labels on repositories in a GitHub organisation based on a YAML file. It is triggered as a `ci-prow-label-sync` Prow job.
 
@@ -183,6 +181,14 @@
 [#Overview](/prow/scripts/resources/README.md) - The folder contains files that are directly used by Prow pipeline scripts.
 
 [Cluster](/prow/workload-cluster/README.md) - This folder contains configuration files for the Prow workload. This configuration is used during cluster provisioning.
+
+[Clone Repositories](/task/clone-refs/0.1/README.md) - The clone-refs Task clones repositories references defined by ProwJob refs and extra-refs.
+
+[Unit Tests for Go Code](/task/go-unit-tests/0.1/README.md) - A go-unit-tests Task is used to run unit tests for Go code.
+
+[Go Linters](/task/golangci-lint/0.1/README.md) - The golangci-lint Task runs a Golang linter.
+
+[Image Builder](/task/image-builder/0.1/README.md) - The image-builder Task builds an OCI image from a Dockerfile.
 
 [Templates](/templates/README.md) - Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.
 

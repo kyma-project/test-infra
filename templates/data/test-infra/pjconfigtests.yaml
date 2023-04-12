@@ -12,7 +12,9 @@
                 - ^.*$
               skip_report: "false"
               decorate: "true"
-              request_memory: 1Gi
+              request_memory: "100M"
+              request_cpu: "200m"
+              #request_memory: 1Gi
             jobConfig_pjconfigtest:
               run_if_changed: '^.prow/|^.prow.yaml'
               image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/ginkgo:PR-6825"

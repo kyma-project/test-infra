@@ -54,7 +54,7 @@ resource "google_project_iam_binding" "pubsub_project_token_creator" {
 
 resource "google_cloud_run_service" "service_account_keys_rotator" {
   name     = var.service_name
-  location = var.location
+  location = var.region
   project  = var.project.id
 
   template {

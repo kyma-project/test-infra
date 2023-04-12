@@ -23,10 +23,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20230313-23dc2a84f3
-        initupload: gcr.io/k8s-prow/initupload:v20230313-23dc2a84f3
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20230313-23dc2a84f3
-        sidecar: gcr.io/k8s-prow/sidecar:v20230313-23dc2a84f3
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20230411-7b4f9b177a
+        initupload: gcr.io/k8s-prow/initupload:v20230411-7b4f9b177a
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20230411-7b4f9b177a
+        sidecar: gcr.io/k8s-prow/sidecar:v20230411-7b4f9b177a
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -672,11 +672,6 @@ presets:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project"
   - labels:
-      preset-docker-push-repository-gke-external-registry-integration: "true" # Needed for kyma installer image
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/sap-kyma-prow-workloads/gke-external-registry/functions"
-  - labels:
       preset-docker-push-repository-gke-integration: "true" # Needed for kyma installer image
     env:
       - name: DOCKER_PUSH_REPOSITORY
@@ -947,11 +942,6 @@ presets:
       preset-cluster-use-ssd: "true"
     env:
       - name: CLUSTER_USE_SSD
-        value: "true"
-  - labels:
-      preset-gke-pod-security-policy: "true"
-    env:
-      - name: GKE_ENABLE_POD_SECURITY_POLICY
         value: "true"
   # whitesource labels
   - labels:

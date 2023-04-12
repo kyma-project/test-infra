@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
             command:
               - "/bin/sh"
             args:
@@ -36,19 +36,20 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-istio-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       always_run: true
-      optional: true
+      optional: false
       skip_report: false
       decorate: true
+      path_alias: github.com/kyma-project/istio
       cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "EXPORT_RESULTS=true make test"
+              - "./tests/integration/scripts/code-coverage-guard.sh"
+            env:
+              - name: EXPORT_RESULTS
+                value: "true"
             resources:
               requests:
                 memory: 1Gi
