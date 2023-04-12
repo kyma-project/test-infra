@@ -14,7 +14,7 @@ postsubmits:
         serviceAccountName: gencred-refresher
         containers:
           - name: gencred
-            image: gcr.io/k8s-prow/gencred:v20230411-7b4f9b177a
+            image: gcr.io/k8s-prow/gencred:v20230412-b3e61582c8
             command:
               - gencred
             args:
@@ -39,7 +39,7 @@ periodics:
       serviceAccountName: gencred-refresher
       containers:
         - name: gencred
-          image: gcr.io/k8s-prow/gencred:v20230411-7b4f9b177a
+          image: gcr.io/k8s-prow/gencred:v20230412-b3e61582c8
           command:
             - gencred
           args:
