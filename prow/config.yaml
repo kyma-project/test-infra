@@ -305,6 +305,9 @@ tide:
     kyma-project/warden: squash
     kyma-project/telemetry-manager: squash
     kyma-project/directory-size-exporter: squash
+    kyma-project/eventing-manager: squash
+    kyma-project/eventing-tools: squash
+    kyma-project/nats-manager: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
