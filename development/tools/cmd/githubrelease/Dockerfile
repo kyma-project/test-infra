@@ -7,7 +7,7 @@ COPY . .
 RUN CGO_ENABLED=0 go build -o ./githubrelease ./development/tools/cmd/githubrelease && \
     chmod +x ./githubrelease
 
-FROM node:19.8.1-alpine
+FROM node:19.9.0-alpine
 
 LABEL source git@github.com:kyma-project/test-infra.git
 
