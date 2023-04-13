@@ -397,6 +397,7 @@ presets:
   # pjtester
   - labels:
       preset-pjtester-kubeconfig: "true"
+    serviceAccountName: sa-prow-job-resource-cleaner
     env:
       - name: KUBECONFIG_PATH
         value: /etc/kubeconfig/pjtester/config
@@ -407,19 +408,6 @@ presets:
     volumeMounts:
       - name: pjtester-kubeconfig
         mountPath: /etc/kubeconfig/pjtester
-        readOnly: true
-  - labels:
-      preset-sa-prow-job-resource-cleaner: "true"
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-prow-job-resource-cleaner/service-account.json
-    volumes:
-      - name: sa-prow-job-resource-cleaner
-        secret:
-          secretName: sa-prow-job-resource-cleaner
-    volumeMounts:
-      - name: sa-prow-job-resource-cleaner
-        mountPath: /etc/credentials/sa-prow-job-resource-cleaner
         readOnly: true
   - labels:
       preset-certificates-bucket: "true"

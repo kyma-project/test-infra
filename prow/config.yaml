@@ -442,19 +442,6 @@ presets:
         mountPath: /etc/kubeconfig/pjtester
         readOnly: true
   - labels:
-      preset-sa-prow-job-resource-cleaner: "true"
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-prow-job-resource-cleaner/service-account.json
-    volumes:
-      - name: sa-prow-job-resource-cleaner
-        secret:
-          secretName: sa-prow-job-resource-cleaner
-    volumeMounts:
-      - name: sa-prow-job-resource-cleaner
-        mountPath: /etc/credentials/sa-prow-job-resource-cleaner
-        readOnly: true
-  - labels:
       preset-certificates-bucket: "true"
     env:
       - name: CERTIFICATES_BUCKET
@@ -1336,19 +1323,6 @@ presets:
     env:
       - name: KMS_KEY_URL
         value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
-  - labels:
-      preset-prowjob-gcp-logging: "true"
-    env:
-      - name: SA_PROWJOB_GCP_LOGGING_CLIENT_KEY_PATH
-        value: "/etc/credentials/sa-prowjob-gcp-logging-client/secret.json"
-    volumes:
-      - name: sa-prowjob-gcp-logging-client-key
-        secret:
-          secretName: sa-prowjob-gcp-logging-client-key
-    volumeMounts:
-      - name: sa-prowjob-gcp-logging-client-key
-        mountPath: /etc/credentials/sa-prowjob-gcp-logging-client
-        readOnly: true
   - labels:
       preset-kyma-integration-kcp-client-credentials: "true"
     env:

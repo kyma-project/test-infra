@@ -12,9 +12,9 @@ templates:
                   cluster: "trusted-workload"
                   optional: "true"
                   imagePullPolicy: "Always"
+                  serviceAccountName: sa-prowjob-gcp-logging-client
                   labels:
                     preset-bot-github-sap-token: "true"
-                    preset-prowjob-gcp-logging: "true"
                     preset-bot-github-token: "true"
                 inheritedConfigs:
                   global:
