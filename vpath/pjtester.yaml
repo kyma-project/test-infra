@@ -2,15 +2,15 @@ pjConfigs:
   prConfig:
     kyma-project:
       kyma:
-        prNumber: 16763
+        prNumber: 17290
   prowJobs:
     kyma-project:
       kyma:
-      - pjName: "skr-aws-own-cluster-dev"
+      - pjName: "skr-aws-upgrade-integration-dev"
         report: false
 prConfigs: #
   kyma-project:
     kyma:
-      prNumber: 16763
+      prNumber: 17290
     test-infra: 
       prNumber: 6501
