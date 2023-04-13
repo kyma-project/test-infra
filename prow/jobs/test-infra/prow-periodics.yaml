@@ -49,20 +49,11 @@ postsubmits: # runs on main
         slack:
           channel: kyma-prow-alerts
       spec:
+        serviceAccountName: sa-prow-deploy
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
             command:
               - "prow/cluster/deploy.sh"
-            env:
-              - name: GOOGLE_APPLICATION_CREDENTIALS
-                value: "/etc/credentials/service-account.json"
-            volumeMounts:
-              - name: sa-prow-deploy
-                mountPath: /etc/credentials
-        volumes:
-          - name: sa-prow-deploy
-            secret:
-              secretName: sa-prow-deploy
   
 periodics: # runs on schedule
     - name: eventing-tools-autobump
