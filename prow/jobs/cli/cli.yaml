@@ -52,7 +52,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             command:
               - "/bin/sh"
             args:
