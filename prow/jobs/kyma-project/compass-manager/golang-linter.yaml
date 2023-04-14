@@ -7,7 +7,7 @@ presubmits: # runs on PRs
         pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-compass-manager-lint"
+        prow.k8s.io/pubsub.runID: "pull-compass-manager-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       optional: true
       run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
@@ -33,5 +33,3 @@ presubmits: # runs on PRs
               limits:
                 memory: 3Gi
                 cpu: 1
-            securityContext:
-              privileged: true
