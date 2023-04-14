@@ -32,7 +32,7 @@ periodics: # runs on schedule
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/cleanup-gardener.sh"
             args:
               - "--excluded-clusters"
-              - "(nbusola|nkyma|rec-night|rec-wkly-lt|rec-main-.*)"
+              - "(nbusola|nkyma|rec-night|rec-wkly-lt|rec-main-.*|persist)"
             env:
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
