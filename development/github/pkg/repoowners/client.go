@@ -87,7 +87,7 @@ func (o *OwnersClientConfig) NewRepoOwnersClient(options ...ClientOption) (*Owne
 		// OwnersDirDenylist struct contains some defaults that's required by all
 		// repos, so this function cannot return nil
 		res := &config.OwnersDirDenylist{}
-		deprecated := repoOwnersClient.configAgent.Config().OwnersDirBlacklist
+		deprecated := repoOwnersClient.configAgent.Config().OwnersDirDenylist
 		if l := repoOwnersClient.configAgent.Config().OwnersDirDenylist; l != nil {
 			res = l
 		}

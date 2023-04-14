@@ -259,6 +259,15 @@ data:
   auditlog-config-path: "/path"
   auditlog-security-path: "/path"
   auditlog-tenant: "tnt"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kcp-provisioner-database-encryption
+  namespace: kcp-system
+type: Opaque
+data:
+  secretKey: MTIzNDU2Nzg5MDEyMzQ1Njc4OTAxMjM0NTY3ODkwMTIK #gitleaks:allow
 EOF
 }
 
@@ -281,17 +290,6 @@ function applyControlPlaneOverrides() {
     --data "kyma-environment-broker.e2e.enabled=false" \
     --data "kyma-environment-broker.disableProcessOperationsInProgress=true" \
     --label "component=kcp"
-
-  if [ "${RUN_PROVISIONER_TESTS}" == "true" ]; then
-    # Change timeout for kyma test to 5h
-    export KYMA_TEST_TIMEOUT=5h
-
-    # Create Config map for Provisioner Tests
-    "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "provisioner-tests-overrides" \
-      --data "provisioner.tests.e2e.enabled=true" \
-      --data "provisioner.tests.gardener.azureSecret=$GARDENER_AZURE_SECRET_NAME" \
-      --label "component=kcp"
-  fi
 
   "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/create-config-map.sh" --namespace "${NAMESPACE}" --name "compass-auditlog-mock-tests" \
     --data "global.externalServicesMock.enabled=true" \

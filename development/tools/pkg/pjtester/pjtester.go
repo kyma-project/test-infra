@@ -22,7 +22,6 @@ import (
 
 	"github.com/go-playground/validator/v10"
 	"github.com/go-yaml/yaml"
-	ghclient "github.com/kyma-project/test-infra/development/github/pkg/client/v2"
 	"github.com/kyma-project/test-infra/development/github/pkg/git"
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	"github.com/sirupsen/logrus"
@@ -100,7 +99,7 @@ type options struct {
 	pjtesterPrOrg     string // pjtesterPrOrg is a name of organisation of pull request for pjtester prowjob.
 	pjtesterPrRepo    string // pjtesterPrRepo is a name of organisation of pull request for pjtester prowjob.
 
-	github              ghclient.GithubClientConfig
+	github              github.Client
 	githubClient        GithubClient
 	gitOptions          git.ClientConfig
 	gitClient           git.Client
@@ -171,13 +170,14 @@ func readTestCfg(testCfgFile string) (testCfg, error) {
 
 // newCommonOptions builds common options and GitHub client for all tests.
 // Options are build from PR env variables.
-func newCommonOptions(ghOptions prowflagutil.GitHubOptions) (options, error) {
+func newCommonOptions(ghOptions *prowflagutil.GitHubOptions) (options, error) {
 	var o options
 	var err error
-	o.github = ghclient.GithubClientConfig{
-		GitHubOptions: ghOptions,
-		DryRun:        false,
+	ghc, err := ghOptions.GitHubClient(false)
+	if err != nil {
+		return options{}, err
 	}
+	o.github = ghc
 	o.clonePath = defaultClonePath
 	o.pjtesterPrBaseRef = os.Getenv("PULL_BASE_REF")
 	o.pjtesterPrBaseSha = os.Getenv("PULL_BASE_SHA")
@@ -536,20 +536,33 @@ func (pjopts *testProwJobOptions) newTestPJ(pjCfg pjConfig, opt options) (prowap
 	if err != nil {
 		return prowapi.ProwJob{}, fmt.Errorf("failed set RefsGetters, error: %w", err)
 	}
+
 	log.Debugf("Loading Prow config from %s and jobs config from %s.", opt.configPath, opt.jobConfigPath)
 	// Loading Prow config and Prow Jobs config from files. If files were changed in pull request, new values will be used for test.
 	conf, err := config.Load(opt.configPath, opt.jobConfigPath, nil, "")
 	if err != nil {
 		return prowapi.ProwJob{}, fmt.Errorf("error loading prow config: %w", err)
 	}
-	_, pjSpecification, err := pjopts.genJobSpec(opt, conf, pjCfg)
+
+	log.Debug("Generating prowjob specification to test.")
+	job, pjSpecification, err := pjopts.genJobSpec(opt, conf, pjCfg)
 	if err != nil {
 		return prowapi.ProwJob{}, fmt.Errorf("failed generating prowjob specification to test: %w", err)
 	}
+
+	log.Debug("Adding pjtester labels to ProwJob.")
+	// Add pjtester labels to ProwJob.
+	job.Labels["created-by-pjtester"] = "true"
+	job.Labels["prow.k8s.io/is-optional"] = "true"
+
 	// Building ProwJob k8s resource based on generated job specifications.
-	pj := pjutil.NewProwJob(pjSpecification, map[string]string{"created-by-pjtester": "true", "prow.k8s.io/is-optional": "true"}, map[string]string{})
-	// Make sure prowjob to test will run on untrusted-workload cluster.
-	pj.Spec.Cluster = "untrusted-workload"
+	log.Debug("Generating ProwJob k8s resource.")
+	pj := pjutil.NewProwJob(pjSpecification, job.Labels, job.Annotations)
+	// Allow pjtester to run prowjob to test on tekton cluster.
+	if pj.Spec.Cluster != "tekton" {
+		// Make sure prowjob to test will run on untrusted-workload cluster.
+		pj.Spec.Cluster = "untrusted-workload"
+	}
 	// Enable all reporting, otherwise send slack messages to null channel.
 	if pjCfg.Report {
 		pj.Spec.Report = true
@@ -560,7 +573,7 @@ func (pjopts *testProwJobOptions) newTestPJ(pjCfg pjConfig, opt options) (prowap
 }
 
 // SchedulePJ will generate ProwJob for testing and create it on prow k8s cluster for execution.
-func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
+func SchedulePJ(ghOptions *prowflagutil.GitHubOptions) {
 	logrus.SetLevel(logrus.DebugLevel)
 	logrus.SetOutput(os.Stdout)
 	log.SetOutput(os.Stdout)
@@ -590,11 +603,7 @@ func SchedulePJ(ghOptions prowflagutil.GitHubOptions) {
 	prowClient := prowClientSet.ProwV1()
 
 	// build GitHub client
-	ghc, err := o.github.NewGithubClient()
-	if err != nil {
-		log.WithError(err).Fatal("Failed create GitHub client")
-	}
-	o.githubClient = ghc
+	o.githubClient = o.github
 
 	// build git client
 	o.gitOptions = git.ClientConfig{}

@@ -117,6 +117,9 @@ spec:
         - mountPath: /grafana-dashboard-definitions/0/serverless
           name: grafana-dashboard-serverless
           readOnly: false
+        - mountPath: /grafana-dashboard-definitions/0/prstats
+          name: grafana-dashboard-prstats
+          readOnly: false
       nodeSelector: {}
       securityContext: {}
       serviceAccountName: grafana
@@ -165,3 +168,6 @@ spec:
       - name: grafana-dashboard-serverless
         configMap:
           name: grafana-dashboard-serverless
+      - name: grafana-dashboard-prstats
+        configMap:
+          name: grafana-dashboard-prstats

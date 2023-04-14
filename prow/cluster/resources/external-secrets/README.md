@@ -2,11 +2,11 @@
 
 ## Overview
 
-Kubernetes Secrets are synchronized with GCP Secret Manager using [Kubernetes External Secrets](https://github.com/external-secrets/kubernetes-external-secrets).
+Kubernetes Secrets are synchronized with GCP Secret Manager using [External Secrets Operator](https://github.com/external-secrets/external-secrets).
 
 ## Installation
 
-Follow these steps to install `kubernetes-external-secrets` on an untrusted cluster in the `external-secrets` Namespace.
+Follow these steps to install `external-secrets` on an untrusted cluster in the `external-secrets` Namespace.
 
 1. Create the `external-secrets` Namespace. Run:
 
@@ -17,13 +17,13 @@ Follow these steps to install `kubernetes-external-secrets` on an untrusted clus
 2. Add the `external-secrets` Helm repository. Use the following command:
 
    ```bash
-   helm repo add external-secrets https://external-secrets.github.io/kubernetes-external-secrets/
+   helm repo add external-secrets https://charts.external-secrets.io
    ```
 
 3. Install the `external-secrets/kubernetes-external-secrets` Helm chart. Run:
 
    ```bash
-   helm install -f prow/cluster/resources/external-secrets/values_untrusted.yaml -n external-secrets kubernetes-external-secrets external-secrets/kubernetes-external-secrets
+   helm install -n external-secrets external-secrets external-secrets/external-secrets -f prow/cluster/resources/external-secrets/values_untrusted.yaml
    ```
 
 4. Map the `external-secrets/secret-manager-untrusted` Kubernetes service account to a GCP service account with permission to access Secrets. Run:
@@ -31,7 +31,10 @@ Follow these steps to install `kubernetes-external-secrets` on an untrusted clus
   ```bash
   gcloud iam service-accounts add-iam-policy-binding --role roles/iam.workloadIdentityUser --member "serviceAccount:sap-kyma-prow.svc.id.goog[external-secrets/secret-manager-untrusted]" secret-manager-untrusted@sap-kyma-prow.iam.gserviceaccount.com
   ```
-
+5. Create a new Secret Store. Run: 
+  ```bash
+  kubectl apply -f prow/cluster/resources/external-secrets/secrets_store.yaml
+  ```
 ## Configuration
 
 Secrets can be stored as text in GCP Secret Manager and be mapped to a Kubernetes Secret with one key. 
@@ -44,12 +47,17 @@ kind: ExternalSecret
 metadata:
   name: plainSecret # name of the k8s external Secret and the k8s Secret
 spec:
-  backendType: gcpSecretsManager
-  projectId: my-gcp-project
+  secretStoreRef:
+    name: gcp-secretstore # name of the Secret store
+    kind: ClusterSecretStore
+  refreshInterval: "10m" # time between secret synchronization
+  target:
+    deletionPolicy: "Delete" # delete secret when External Secret is deleted
   data:
-    - key: gcp-plain-secret # name of the GCP Secret
-      name: token # key name in the k8s Secret
-      version: latest # version of the GCP Secret
+    - secretKey: token # key name in the k8s Secret
+      remoteRef:
+        key: gcp-plain-secret # name of the GCP Secret
+        version: latest # version of the GCP Secret
 ```
 
 Secrets can also be stored as JSON in GCP Secret Manager and be mapped to a Kubernetes Secret with multiple keys. 
@@ -62,17 +70,23 @@ kind: ExternalSecret
 metadata:
   name: secretName # name of the k8s external Secret and the k8s Secret
 spec:
-  backendType: gcpSecretsManager
-  projectId: my-gcp-project
+  secretStoreRef:
+    name: gcp-secretstore # name of the Secret store
+    kind: ClusterSecretStore
+  refreshInterval: "10m" # time between secret synchronization
+  target:
+    deletionPolicy: "Delete" # delete secret when External Secret is deleted
   data:
-    - key: gcp-json-secret # name of the GCP Secret
-      name: keyName # key name in the k8s Secret
-      version: latest # version of the GCP Secret
-      property: keyName # name of the field in the GCP Secret JSON, unused for plain values
-    - key: gcp-json-secret # name of the GCP Secret
-      name: anotherKey # key name in the k8s Secret
-      version: latest # version of the GCP Secret
-      property: anotherKey # name of the field in the GCP Secret JSON, unused for plain values
+    - secretKey: keyName # key name in the k8s Secret
+      remoteRef:
+        key: gcp-json-secret # name of the GCP Secret
+        property: keyName # name of the field in the GCP Secret JSON, unused for plain values
+        version: latest # version of the GCP Secret
+    - secretKey: anotherKey # key name in the k8s Secret
+      remoteRef:
+        key: gcp-json-secret # name of the GCP Secret
+        property: anotherKey # name of the field in the GCP Secret JSON, unused for plain values
+        version: latest # version of the GCP Secret
 ```
 >**NOTE:** The trusted and untrusted files are only applied to trusted or untrusted clusters respectively. While the workload file is applied to both trusted and untrusted clusters.
    The presubmit and pj-tester jobs are executed on untrusted clusters, while the periodic jobs are run on trusted clusters. Adding a Secret to the proper file allows the user to specify which type of clusters should have access to the Secret.

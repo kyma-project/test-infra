@@ -96,6 +96,30 @@ templates:
                     - jobConfig_slack_jellyfish
                   local:
                     - job_spec
+              - jobConfig:
+                  name: "pull-cli-lint"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - golangci-lint run -v --timeout=20m --new-from-rev=$PULL_BASE_SHA ./... 
+                  run_if_changed: '^(.*\.go$|.golangci.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - linting
+              - jobConfig:
+                  name: "pull-cli-unit-test"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  always_run: true
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - testing
       - to: ../../prow/jobs/cli/cli-integration.yaml
         localSets:
           jobConfig_default:

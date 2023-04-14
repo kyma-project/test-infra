@@ -2,52 +2,6 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/addons:
-    - name: pre-main-addons-governance
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-addons-governance"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-      run_if_changed: 'milv.config.yaml|.md$'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/addons
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
-            args:
-              - "--repository"
-              - "addons"
-            resources:
-              requests:
-                memory: 10Mi
-                cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-  
   kyma-project/busola:
     - name: pre-main-busola-governance
       annotations:
@@ -73,7 +27,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -119,7 +73,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -165,7 +119,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -211,7 +165,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
             command:
@@ -257,7 +211,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -276,6 +230,30 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pull-kyma-crd-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-kyma-crd-governance"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^installation/resources/crds/|^.*.md$'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            command:
+              - "hack/verify-md.sh"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
     - name: pre-kyma-docu-2.0-governance
       annotations:
         pipeline.trigger: "pr-submit"
@@ -301,7 +279,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -340,9 +318,14 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -388,7 +371,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -434,7 +417,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -456,43 +439,40 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
   
-periodics: # runs on schedule
-    - name: addons-governance-nightly
+  kyma-project/telemetry-manager:
+    - name: pre-main-telemetry-manager-governance
       annotations:
-        pipeline.trigger: "periodic"
-        testgrid-create-test-group: "false"
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "addons-governance-nightly"
+        prow.k8s.io/pubsub.runID: "pre-main-telemetry-manager-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
         preset-dind-enabled: "true"
-      cron: "0 22 * * 1-5"
+      run_if_changed: 'milv.config.yaml|.md$'
       skip_report: false
       decorate: true
+      path_alias: github.com/kyma-project/telemetry-manager
       cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
       extra_refs:
-        - org: kyma-project
-          repo: addons
-          path_alias: github.com/kyma-project/addons
-          base_ref: master
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
               - "--repository"
-              - "addons"
-              - "--repository-dir"
-              - "/home/prow/go/src/github.com/kyma-project/addons"
-              - "--full-validation"
-              - "true"
+              - "telemetry-manager"
             resources:
               requests:
                 memory: 10Mi
@@ -505,6 +485,53 @@ periodics: # runs on schedule
         nodeSelector:
             dedicated: "high-cpu"
   
+  kyma-project/directory-size-exporter:
+    - name: pre-main-directory-size-exporter-governance
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-directory-size-exporter-governance"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-dind-enabled: "true"
+      run_if_changed: 'milv.config.yaml|.md$'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/directory-size-exporter
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+            args:
+              - "--repository"
+              - "directory-size-exporter"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+periodics: # runs on schedule
     - name: busola-governance-nightly
       annotations:
         pipeline.trigger: "periodic"
@@ -529,7 +556,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -577,7 +604,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -625,7 +652,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -673,7 +700,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -712,12 +739,16 @@ periodics: # runs on schedule
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -765,7 +796,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -813,7 +844,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -838,4 +869,6 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+  
+  
   

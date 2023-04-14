@@ -2,6 +2,56 @@
 
 
 presubmits: # runs on PRs
+  kyma-project/telemetry-manager:
+    - name: pull-telemetry-manager-lint
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-lint"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "make lint"
+            resources:
+              requests:
+                memory: 500Mi
+                cpu: 200m
+    - name: pull-telemetry-manager-unit-test
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-unit-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "make test"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 200m
+  
   kyma-project/kyma:
     - name: pull-application-operator-lint
       annotations:
@@ -18,7 +68,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             command:
               - "/bin/sh"
             args:
@@ -43,7 +93,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -68,7 +118,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -93,7 +143,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             command:
               - "/bin/sh"
             args:
@@ -118,7 +168,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -143,7 +193,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             command:
               - "/bin/sh"
             args:
@@ -168,160 +218,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
               - "-c"
               - "cd components/compass-runtime-agent && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
-    - name: pull-directory-size-exporter-lint
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-lint"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/directory-size-exporter/(.*\.go$|.golangcilint.yaml)'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/directory-size-exporter && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-    - name: pull-directory-size-exporter-unit-test
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/directory-size-exporter/.*\.go$'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/directory-size-exporter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
-    - name: pull-event-publisher-proxy-lint
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-event-publisher-proxy-lint"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/event-publisher-proxy/(.*\.go$|.golangcilint.yaml)'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/event-publisher-proxy && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-    - name: pull-event-publisher-proxy-unit-test
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-event-publisher-proxy-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/event-publisher-proxy/.*$'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
-    - name: pull-eventing-controller-lint
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-eventing-controller-lint"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/eventing-controller/(.*\.go$|.golangcilint.yaml)'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/eventing-controller && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-    - name: pull-eventing-controller-unit-test
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-eventing-controller-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/eventing-controller/.*$'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/eventing-controller && KUBEBUILDER_CONTROLPLANE_START_TIMEOUT=50s go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
                 memory: 1Gi
@@ -341,7 +243,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             command:
               - "/bin/sh"
             args:
@@ -366,7 +268,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -376,50 +278,52 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
-    - name: pull-telemetry-operator-lint
+  
+  kyma-project/directory-size-exporter:
+    - name: pull-directory-size-exporter-lint
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-telemetry-operator-lint"
+        prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/telemetry-operator/(.*\.go$|.golangcilint.yaml)'
+      run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             command:
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/telemetry-operator && make lint"
+              - "make lint"
             resources:
               requests:
                 memory: 200Mi
                 cpu: 80m
-    - name: pull-telemetry-operator-unit-test
+    - name: pull-directory-size-exporter-unit-test
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-telemetry-operator-unit-test"
+        prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/telemetry-operator/.*\.go$'
+      run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/telemetry-operator && make test-local"
+              - "make test"
             resources:
               requests:
                 memory: 1Gi

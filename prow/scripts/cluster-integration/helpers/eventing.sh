@@ -9,6 +9,9 @@ readonly BACKEND_SECRET_LABEL_VALUE=NATS
 readonly EVENTING_BACKEND_CR_NAME=eventing-backend
 readonly EVENTING_BACKEND_CR_NAMESPACE=kyma-system
 
+# shellcheck source=prow/scripts/lib/gardener/gardener.sh
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
+
 # Check if required vars are set or not
 function eventing::check_required_vars() {
   if [[ -z ${CREDENTIALS_DIR} ]]; then
@@ -162,6 +165,18 @@ function eventing::wait_for_backend_ready() {
   return 1
 }
 
+# Runs eventing specific fast-integration tests preparation
+function eventing::test_fast_integration_eventing_prep() {
+    log::info "Running Eventing script to prepare test assets"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    npm install
+    npm run eventing-test-prep
+    popd
+
+    log::success "Eventing test preparation completed"
+}
+
 # Runs eventing specific fast-integration tests
 function eventing::test_fast_integration_eventing() {
     log::info "Running Eventing E2E release tests"
@@ -205,7 +220,17 @@ function eventing::set_default_kubeconfig_env() {
 function eventing::pre_upgrade_test_fast_integration() {
     log::info "Running pre upgrade Eventing E2E release tests"
 
-    if [[ "${KYMA_SOURCE}" ]]; then
+    if [[ "${KYMA_BRANCH}" ]]; then
+      log::info "Cloning kyma repository and checking out branch:${KYMA_BRANCH}"
+      git clone https://github.com/kyma-project/kyma ~/.kyma_branch
+      pushd ~/.kyma_branch
+      git checkout "${KYMA_BRANCH}"
+      popd
+
+      pushd ~/.kyma_branch/tests/fast-integration
+      make ci-test-eventing-pre-upgrade
+      popd
+    elif [[ "${KYMA_SOURCE}" ]]; then
       log::info "Cloning kyma repository and checking out branch:${KYMA_SOURCE}"
       git clone https://github.com/kyma-project/kyma ~/.kyma_old
       pushd ~/.kyma_old
@@ -250,4 +275,85 @@ function eventing::fast_integration_test_cleanup() {
     popd
 
     log::success "Fast integration tests cleanup completed"
+}
+
+# Runs eventing copy-crd make target
+function eventing::run_copy_crds() {
+    log::info "Running eventing copy-crd make target"
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
+    make gomod-vendor-local
+    make gomod-tidy-local
+    make copy-crds
+    popd
+
+    log::success "Eventing copy-crds make target completed"
+}
+
+# deploy Kyma PR-version with the v1alpha2 Subscription CRD version
+function eventing::deploy_kyma_pr_version_with_v1alpha2_subscription() {
+    log::info "Copying the CRDs to installation/eventing"
+    export ENABLE_NEW_CRD_VERSION="true"
+
+    eventing::run_copy_crds
+
+    pushd /home/prow/go/src/github.com/kyma-project/kyma/components/eventing-controller
+    gardener::deploy_kyma --source=local -w /home/prow/go/src/github.com/kyma-project/kyma --value eventing.controller.enableNewCRDVersion=true --verbose
+    popd
+
+    log::success "Deploying of the v1alpha2 Subscription completed"
+}
+
+# Printing stored Subscription CRD versions for debugging purposes.
+function eventing::print_subscription_crd_version(){
+  log::info "Stored Subscription CRD versions:"
+  kubectl get crd subscriptions.eventing.kyma-project.io -o json | jq '.status.storedVersions'
+}
+
+function eventing::print_troubleshooting_logs() {
+    log::banner "Printing troubleshooting logs"
+
+    CMD_RUN_IMAGE="curlimages/curl"
+
+    # all pods in kyma-system
+    log::banner "Pods: kyma-system namespace"
+    kubectl get po -n kyma-system
+
+    # Eventing backend
+    log::banner "Active Eventing backend"
+    kubectl get eventingbackends -n kyma-system
+
+    # Subscriptions
+    log::banner "Subscriptions: All namespaces"
+    kubectl get subscriptions -A
+    kubectl get subscriptions -A -o yaml
+
+    # NATS health
+    log::banner "NATS Health Check"
+    log::info "eventing-nats-0"
+    kubectl run -it natscheck0 --image="${CMD_RUN_IMAGE}" --timeout=360s --restart=Never --rm -- curl http://eventing-nats-0.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
+    log::info "eventing-nats-1"
+    kubectl run -it natscheck1 --image="${CMD_RUN_IMAGE}" --timeout=360s --restart=Never --rm -- curl http://eventing-nats-1.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
+    log::info "eventing-nats-2"
+    kubectl run -it natscheck2 --image="${CMD_RUN_IMAGE}" --timeout=360s --restart=Never --rm -- curl http://eventing-nats-2.eventing-nats.kyma-system.svc.cluster.local:8222/healthz
+
+    # Logs from NATS pods
+    log::banner "Logs: eventing-nats-0"
+    kubectl logs -n kyma-system eventing-nats-0 -c nats
+    log::banner "Logs: eventing-nats-1"
+    kubectl logs -n kyma-system eventing-nats-1 -c nats
+    log::banner "Logs: eventing-nats-2"
+    kubectl logs -n kyma-system eventing-nats-2 -c nats
+
+    # Logs from EPP
+    log::banner "Logs: eventing-publisher-proxy"
+    kubectl logs -n kyma-system deployment/eventing-publisher-proxy -c eventing-publisher-proxy
+
+    # Logs from EC
+    log::banner "Logs: eventing-controller"
+    kubectl logs -n kyma-system deployment/eventing-controller -c controller
+
+    # all pods in all namespaces
+    log::banner "Pods: All namespace"
+    kubectl get po -A
 }

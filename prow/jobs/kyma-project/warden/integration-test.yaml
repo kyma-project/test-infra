@@ -1,0 +1,39 @@
+presubmits:
+  kyma-project/warden:
+    - name: pull-warden-integration-test
+      labels:
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+      cluster: untrusted-workload
+      decorate: true
+      run_if_changed: '.*\.go$|charts/'
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                service docker start
+                curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+                k3d cluster create
+                kubectl cluster-info
+                make install run-integration-tests
+                failed=$?
+                kubectl logs -l app=warden --prefix=true
+                k3d cluster delete
+                exit $failed
+            requests:
+              memory: 1Gi
+            limits:
+              memory: 1Gi
+            securityContext:
+              privileged: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+          dedicated: "high-cpu"

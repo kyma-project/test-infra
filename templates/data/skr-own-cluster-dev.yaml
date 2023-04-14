@@ -1,0 +1,60 @@
+templates:
+  - fromTo:
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma/skr-integration.yaml
+      - from: test-inventory.tmpl
+        to: ../../test-inventory-integration.md
+    render:
+      - localSets:
+          jobConfig_default:
+            annotations:
+              pipeline.clusterprovisioning: keb
+              pipeline.installer: keb
+              pipeline.test: fast-integration
+            path_alias: github.com/kyma-project/kyma
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration-own-cluster.sh"
+            cluster: "trusted-workload"
+            request_memory: 100Mi
+            request_cpu: 50m
+            labels:
+              preset-build-main: "true"
+              preset-keb-dev-credentials: "true"
+              preset-kyma-integration-compass-dev: "true"
+              preset-kyma-integration-kcp-client-credentials: "true"
+              preset-kcp-client-dev-envs: "true"
+              preset-btp-operator-stage-credentials: "true"
+              preset-gardener-aws-kyma-integration: "true"
+          kyma_integration_subaccount:
+            env:
+              KEB_SUBACCOUNT_ID: "prow-keb-integration"
+          kyma_nightly_subaccount:
+            env:
+              KEB_SUBACCOUNT_ID: "kyma-skr-nightly"
+          keb_plan_azure:
+            annotations:
+              pipeline.platform: gardener_aws
+            env:
+              KEB_PLAN_ID: "03e3cb66-a4c6-4c6a-b4b0-5d42224debea"
+          gardener_regions:
+            env:
+              GARDENER_REGION: "eu-central-1"
+              GARDENER_ZONES: "eu-central-1b"
+        jobConfigs:
+          - repoName: "kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: "skr-aws-own-cluster-dev"
+                  cron: "5 1 * * *" # "At 01:05"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_azure"
+                    - "kyma_integration_subaccount"
+                    - "gardener_regions"

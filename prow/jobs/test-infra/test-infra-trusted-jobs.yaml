@@ -1,0 +1,46 @@
+postsubmits:
+  kyma-project/test-infra:
+    - name: post-gencred-refresh-kubeconfigs
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-gencred-refresh-kubeconfigs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      cluster: trusted-workload
+      run_if_changed: '^configs/gencred-config.yaml'
+      decorate: true
+      branches:
+        - ^main$
+      spec:
+        serviceAccountName: gencred-refresher
+        containers:
+          - name: gencred
+            image: gcr.io/k8s-prow/gencred:v20230412-a86d65c3c2
+            command:
+              - gencred
+            args:
+              - --config=./configs/gencred-config.yaml
+      annotations:
+        testgrid-create-test-group: "false"
+
+periodics:
+  - cron: "17 */6 * * *"  # Every 6 hours at 17 minutes past the hour
+    name: ci-gencred-refresh-kubeconfigs
+    labels:
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-gencred-refresh-kubeconfigs"
+      prow.k8s.io/pubsub.topic: "prowjobs"
+    cluster: trusted-workload
+    extra_refs:
+      - org: kyma-project
+        repo: test-infra
+        base_ref: main
+    decorate: true
+    spec:
+      serviceAccountName: gencred-refresher
+      containers:
+        - name: gencred
+          image: gcr.io/k8s-prow/gencred:v20230412-a86d65c3c2
+          command:
+            - gencred
+          args:
+            - --config=./configs/gencred-config.yaml

@@ -1,154 +1,69 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma/components/kyma-components-static-checks.yaml
-        localSets:
-          linting:
-            skip_report: "false"
-            max_concurrency: "10"
-            optional: "true"
-            decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            request_memory: 200Mi
-            request_cpu: 80m
-          testing:
-            skip_report: "false"
-            max_concurrency: "10"
-            optional: "true"
-            decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            request_memory: 1Gi
-            request_cpu: 100m
+      - to: ../../prow/jobs/eventing-tools/nats-manager-checks.yaml
+        jobConfigs:
+          - repoName: "kyma-project/nats-manager"
+            jobs:
+              - jobConfig:
+                  name: "pull-nats-manager-unit-test"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^.*$'
+                inheritedConfigs:
+                  global:
+                    - testing
+                    - "jobConfig_presubmit"
+      - to: ../../prow/jobs/eventing-tools/eventing-manager-checks.yaml
+        jobConfigs:
+          - repoName: "kyma-project/eventing-manager"
+            jobs:
+              - jobConfig:
+                  name: "pull-eventing-manager-unit-test"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^.*$'
+                inheritedConfigs:
+                  global:
+                    - testing
+                    - "jobConfig_presubmit"
+      - to: ../../prow/jobs/eventing-tools/eventing-tools-checks.yaml
+        jobConfigs:
+          - repoName: "kyma-project/eventing-tools"
+            jobs:
+              - jobConfig:
+                  name: "pull-eventing-tools-unit-test"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^.*$'
+                inheritedConfigs:
+                  global:
+                    - testing
+                    - "jobConfig_presubmit"
+      - to: ../../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-checks.yaml
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
               - jobConfig:
-                  name: "pull-application-operator-lint"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/application-operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-                  run_if_changed: '^components/application-operator/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                  local:
-                    - linting
-              - jobConfig:
-                  name: "pull-application-operator-unit-test"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/application-operator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/application-operator/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                  local:
-                    - testing
-              - jobConfig:
-                  name: "pull-central-application-connectivity-validator-unit-test"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/central-application-connectivity-validator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/central-application-connectivity-validator/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                  local:
-                    - testing
-
-              - jobConfig:
-                  name: "pull-central-application-gateway-lint"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/central-application-gateway && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-                  run_if_changed: '^components/central-application-gateway/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                  local:
-                    - linting
-              - jobConfig:
-                  name: "pull-central-application-gateway-unit-test"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/central-application-gateway && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/central-application-gateway/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                  local:
-                    - testing
-
-              - jobConfig:
-                  name: "pull-compass-runtime-agent-lint"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/compass-runtime-agent && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-                  run_if_changed: '^components/compass-runtime-agent/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                  local:
-                    - linting
-              - jobConfig:
-                  name: "pull-compass-runtime-agent-unit-test"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/compass-runtime-agent && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/compass-runtime-agent/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                  local:
-                    - testing
-
-              - jobConfig:
-                  name: "pull-directory-size-exporter-lint"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/directory-size-exporter && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-                  run_if_changed: '^components/directory-size-exporter/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                  local:
-                    - linting
-              - jobConfig:
-                  name: "pull-directory-size-exporter-unit-test"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/directory-size-exporter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/directory-size-exporter/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                  local:
-                    - testing
-
-              - jobConfig:
                   name: "pull-event-publisher-proxy-lint"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/event-publisher-proxy && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                    - "cd components/event-publisher-proxy && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m"
                   run_if_changed: '^components/event-publisher-proxy/(.*\.go$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
                   name: "pull-event-publisher-proxy-unit-test"
@@ -160,21 +75,23 @@ templates:
                   run_if_changed: '^components/event-publisher-proxy/.*$'
                 inheritedConfigs:
                   global:
-                    - "jobConfig_presubmit"
-                  local:
                     - testing
-
+                    - "jobConfig_presubmit"
+      - to: ../../prow/jobs/kyma/components/eventing-controller/eventing-controller-checks.yaml
+        jobConfigs:
+          - repoName: "kyma-project/kyma"
+            jobs:
               - jobConfig:
                   name: "pull-eventing-controller-lint"
+                  optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/eventing-controller && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                    - "cd components/eventing-controller && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m"
                   run_if_changed: '^components/eventing-controller/(.*\.go$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
                   name: "pull-eventing-controller-unit-test"
@@ -187,7 +104,143 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
+                    - testing
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma/components/kyma-components-static-checks.yaml
+        localSets:
+          linting:
+            skip_report: "false"
+            max_concurrency: "10"
+            optional: "true"
+            decorate: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 200Mi
+            request_cpu: 80m
+          testing:
+            skip_report: "false"
+            max_concurrency: "10"
+            optional: "true"
+            decorate: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 1Gi
+            request_cpu: 100m
+        jobConfigs:
+          - repoName: "kyma-project/telemetry-manager"
+            jobs:
+              - jobConfig:
+                  name: "pull-telemetry-manager-lint"
+                  request_cpu: 200m
+                  request_memory: 500Mi
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "make lint"
+                  run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - linting
+              - jobConfig:
+                  name: "pull-telemetry-manager-unit-test"
+                  request_cpu: 200m
+                  request_memory: 1.5Gi
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "make test"
+                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - testing
+
+          - repoName: "kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: "pull-application-operator-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/application-operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/application-operator/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - linting
+              - jobConfig:
+                  name: "pull-application-operator-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/application-operator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/application-operator/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - testing
+              - jobConfig:
+                  name: "pull-central-application-connectivity-validator-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/central-application-connectivity-validator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/central-application-connectivity-validator/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - testing
+
+              - jobConfig:
+                  name: "pull-central-application-gateway-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/central-application-gateway && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/central-application-gateway/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - linting
+              - jobConfig:
+                  name: "pull-central-application-gateway-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/central-application-gateway && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/central-application-gateway/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - testing
+
+              - jobConfig:
+                  name: "pull-compass-runtime-agent-lint"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/compass-runtime-agent && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/compass-runtime-agent/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - linting
+              - jobConfig:
+                  name: "pull-compass-runtime-agent-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/compass-runtime-agent && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/compass-runtime-agent/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
                     - testing
 
               - jobConfig:
@@ -200,7 +253,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
                   name: "pull-function-controller-unit-test"
@@ -212,32 +264,31 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - testing
-
+          - repoName: "kyma-project/directory-size-exporter"
+            jobs:
               - jobConfig:
-                  name: "pull-telemetry-operator-lint"
+                  name: "pull-directory-size-exporter-lint"
                   optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/telemetry-operator && make lint"
-                  run_if_changed: '^components/telemetry-operator/(.*\.go$|.golangcilint.yaml)'
+                    - "make lint"
+                  run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - linting
               - jobConfig:
-                  name: "pull-telemetry-operator-unit-test"
+                  name: "pull-directory-size-exporter-unit-test"
                   optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/telemetry-operator && make test-local"
-                  run_if_changed: '^components/telemetry-operator/.*\.go$'
+                    - "make test"
+                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
-                  local:
                     - testing
+

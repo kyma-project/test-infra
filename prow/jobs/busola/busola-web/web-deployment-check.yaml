@@ -15,7 +15,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^core/|^core-ui/|^shared/|^package.json'
+      run_if_changed: '^public/|^src/|^scripts/|^shared/|^package.json'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -25,17 +25,13 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
       extra_refs:
-        - org: kyma-incubator
-          repo: local-kyma
-          path_alias: github.com/kyma-incubator/local-kyma
-          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:

@@ -74,6 +74,12 @@
           channel: {{ .JobConfig.slack_channel }}
       {{- end}}
       spec:
+        {{- if .JobConfig.serviceAccountName}}
+        serviceAccountName: {{.JobConfig.serviceAccountName}}
+        {{- end}}
+        {{- if .JobConfig.automountServiceAccountToken}}
+        automountServiceAccountToken: {{.JobConfig.automountServiceAccountToken}}
+        {{- end}}
         containers:
           - image: {{ if .JobConfig.image }}{{quote .JobConfig.image}}{{else}}{{ fail ".JobConfig.image is not defined" }}{{end}}
             {{- if .JobConfig.imagePullPolicy }}
@@ -85,6 +91,9 @@
             {{- if .JobConfig.privileged}}
             securityContext:
               privileged: {{.JobConfig.privileged}}
+            {{- end}}
+            {{- if .JobConfig.workingDir}}
+            workingDir: {{quote .JobConfig.workingDir}}
             {{- end}}
             command:
               {{- if .JobConfig.command }}

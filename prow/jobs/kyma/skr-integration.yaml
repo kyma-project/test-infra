@@ -36,7 +36,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -95,7 +95,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -151,7 +151,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -207,7 +207,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -263,7 +263,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -319,7 +319,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -376,7 +376,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -384,6 +384,66 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "5cb3d976-b85c-42ea-a636-79cadda109a9"
+              - name: KEB_SUBACCOUNT_ID
+                value: "prow-keb-integration"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: skr-aws-own-cluster-dev
+      annotations:
+        pipeline.clusterprovisioning: "keb"
+        pipeline.installer: "keb"
+        pipeline.platform: "gardener_aws"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "skr-aws-own-cluster-dev"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-btp-operator-stage-credentials: "true"
+        preset-build-main: "true"
+        preset-gardener-aws-kyma-integration: "true"
+        preset-kcp-client-dev-envs: "true"
+        preset-keb-dev-credentials: "true"
+        preset-kyma-integration-compass-dev: "true"
+        preset-kyma-integration-kcp-client-credentials: "true"
+      cron: "5 1 * * *"
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration-own-cluster.sh"
+            env:
+              - name: GARDENER_REGION
+                value: "eu-central-1"
+              - name: GARDENER_ZONES
+                value: "eu-central-1b"
+              - name: KEB_PLAN_ID
+                value: "03e3cb66-a4c6-4c6a-b4b0-5d42224debea"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:

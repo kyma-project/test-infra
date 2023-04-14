@@ -1,0 +1,2161 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "type": "dashboard"
+        }
+      ]
+    },
+    "description": "",
+    "editable": true,
+    "gnetId": null,
+    "graphTooltip": 0,
+    "id": 11,
+    "links": [],
+    "panels": [
+      {
+        "datasource": null,
+        "description": "",
+        "fieldConfig": {
+          "defaults": {},
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 37,
+        "options": {
+          "content": "<h1 style=\"text-align:center\"> Kyma-project pull requests statistics </h1>\n<p style=\"text-align:center\"> all data presented include DRAFT pull requests </p>\n\n         ",
+          "mode": "html"
+        },
+        "pluginVersion": "7.5.17",
+        "targets": [
+          {
+            "queryType": "randomWalk",
+            "refId": "A"
+          }
+        ],
+        "timeFrom": null,
+        "timeShift": null,
+        "type": "text"
+      },
+      {
+        "datasource": "bigquery-prow",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "Days",
+              "axisPlacement": "auto",
+              "barAlignment": 1,
+              "drawStyle": "bars",
+              "fillOpacity": 100,
+              "gradientMode": "opacity",
+              "hideFrom": {
+                "graph": false,
+                "legend": false,
+                "tooltip": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 1,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": false
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "suma"
+              },
+              "properties": [
+                {
+                  "id": "displayName",
+                  "value": "monthly average"
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 14,
+          "w": 24,
+          "x": 0,
+          "y": 3
+        },
+        "id": 30,
+        "options": {
+          "graph": {},
+          "legend": {
+            "calcs": [],
+            "displayMode": "list",
+            "placement": "bottom"
+          },
+          "tooltipOptions": {
+            "mode": "single"
+          }
+        },
+        "pluginVersion": "7.5.17",
+        "targets": [
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, avg(processing_time) as suma \nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        number,\n        labels_unpacked.name as label,\n        created_at,\n        closed_at\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`, UNNEST(labels) as labels_unpacked\n    WHERE pull_request.url != \"NULL\" AND closed_at IS NOT NULL\n  )\n)\nSELECT created_at as Time2, FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, TIMESTAMP_DIFF(closed_at, created_at, day) as processing_time from pulls \n\n)\ngroup by Time order by Time desc",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "PR processing time (monthly average)",
+        "transformations": [
+          {
+            "id": "prepareTimeSeries",
+            "options": {}
+          }
+        ],
+        "type": "timeseries"
+      },
+      {
+        "aliasColors": {},
+        "bars": true,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "bigquery-prow",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "fill": 1,
+        "fillGradient": 0,
+        "gridPos": {
+          "h": 15,
+          "w": 24,
+          "x": 0,
+          "y": 17
+        },
+        "hiddenSeries": false,
+        "id": 31,
+        "legend": {
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "total": false,
+          "values": false
+        },
+        "lines": false,
+        "linewidth": 1,
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "7.5.17",
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as testinfra\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"test-infra\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as busola\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"busola\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "B",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as kyma\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"kyma\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "C",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as console\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"console\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "D",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as website\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"website\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "E",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as control_plane\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"control-plane\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "F",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as istio\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"istio\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "G",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as lifecycle_manager\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"lifecycle-manager\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "H",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as module_manager\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"module-manager\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "I",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as btp_manager\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"btp-manager\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "J",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as template_operator\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"template-operator\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "K",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as serverless_manager\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"serverless-manager\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "L",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as warden\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"warden\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "M",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as examples\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"examples\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "N",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as keda_manager\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"keda-manager\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "O",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "Total PR count",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "transformations": [
+          {
+            "id": "prepareTimeSeries",
+            "options": {}
+          }
+        ],
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "$$hashKey": "object:67",
+            "format": "none",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "$$hashKey": "object:68",
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      },
+      {
+        "datasource": "bigquery-prow",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": null,
+              "displayMode": "auto",
+              "filterable": true
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Repository"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 144
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 19,
+          "w": 5,
+          "x": 0,
+          "y": 32
+        },
+        "id": 35,
+        "options": {
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": true,
+              "displayName": "Open_PRs_count"
+            }
+          ]
+        },
+        "pluginVersion": "7.5.17",
+        "targets": [
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT Repository, count(repository) as Open_PRs_count\nFROM (WITH pulls AS\n(\n  (\n   SELECT  \n        repository.name as repository,\n        created_at, pull_request.url as url\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE pull_request.url != \"NULL\" and closed_at is NULL\n  )\n)\nSELECT created_at, repository, url from pulls\n\n)\ngroup by repository\norder by Repository asc",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "Currently open PRs",
+        "transformations": [],
+        "type": "table"
+      },
+      {
+        "datasource": "bigquery-prow",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "custom": {
+              "align": null,
+              "displayMode": "auto",
+              "filterable": true
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "none"
+          },
+          "overrides": [
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Repository"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 126
+                }
+              ]
+            },
+            {
+              "matcher": {
+                "id": "byName",
+                "options": "Created"
+              },
+              "properties": [
+                {
+                  "id": "custom.width",
+                  "value": 177
+                }
+              ]
+            }
+          ]
+        },
+        "gridPos": {
+          "h": 19,
+          "w": 7,
+          "x": 5,
+          "y": 32
+        },
+        "id": 34,
+        "options": {
+          "showHeader": true,
+          "sortBy": [
+            {
+              "desc": false,
+              "displayName": "Created"
+            }
+          ]
+        },
+        "pluginVersion": "7.5.17",
+        "targets": [
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT Repository, created_at as Created, url\nFROM (WITH pulls AS\n(\n  (\n   SELECT  \n        repository.name as repository,\n        created_at, pull_request.url as url\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE pull_request.url != \"NULL\" and closed_at is NULL\n  )\n)\nSELECT created_at, repository, url from pulls\n\n)\n\norder by Repository asc, Created desc",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "timeFrom": null,
+        "timeShift": null,
+        "title": "Currently opened PRs",
+        "transformations": [],
+        "type": "table"
+      },
+      {
+        "aliasColors": {},
+        "bars": true,
+        "dashLength": 10,
+        "dashes": false,
+        "datasource": "bigquery-prow",
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "unit": "none"
+          },
+          "overrides": []
+        },
+        "fill": 1,
+        "fillGradient": 0,
+        "gridPos": {
+          "h": 19,
+          "w": 12,
+          "x": 12,
+          "y": 32
+        },
+        "hiddenSeries": false,
+        "id": 33,
+        "legend": {
+          "alignAsTable": true,
+          "avg": false,
+          "current": false,
+          "max": false,
+          "min": false,
+          "show": true,
+          "sort": "total",
+          "sortDesc": true,
+          "total": true,
+          "values": true
+        },
+        "lines": false,
+        "linewidth": 1,
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "7.5.17",
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": true,
+        "steppedLine": false,
+        "targets": [
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as test_infra\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"test-infra\") AND pull_request.url != \"NULL\" and closed_at is NULL\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "A",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as busola\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"busola\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "B",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as kyma\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"kyma\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "C",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as console1\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"console\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "D",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as api_gateway\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"api-gateway\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "E",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as website\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"website\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "F",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as control_plane\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"control-plane\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "G",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as istio\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"istio\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "H",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as lifecycle_manager\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"lifecycle-manager\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "I",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as cli\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"cli\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "J",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as module_manager\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"module-manager\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "K",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as btp_manager\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"btp-manager\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "L",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as template_operator\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"template-operator\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "M",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as serverless_manager\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"serverless-manager\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "N",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as keda_manager\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"keda-manager\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "O",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as warden\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"warden\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "P",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as qa_cli\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"qa-cli\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "Q",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          },
+          {
+            "cacheDurationSeconds": 300,
+            "convertToUTC": false,
+            "fields": [
+              {
+                "jsonPath": ""
+              }
+            ],
+            "format": "table",
+            "group": [],
+            "hide": false,
+            "method": "GET",
+            "metricColumn": "none",
+            "orderByCol": "1",
+            "orderBySort": "2",
+            "queryParams": "",
+            "rawQuery": true,
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as examples\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"examples\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "refId": "R",
+            "select": [
+              [
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "column"
+                },
+                {
+                  "params": [
+                    "-- value --"
+                  ],
+                  "type": "alias"
+                }
+              ]
+            ],
+            "timeColumn": "-- time --",
+            "timeColumnType": "TIMESTAMP",
+            "urlPath": "",
+            "where": [
+              {
+                "name": "$__timeFilter",
+                "params": [],
+                "type": "macro"
+              }
+            ]
+          }
+        ],
+        "thresholds": [],
+        "timeFrom": null,
+        "timeRegions": [],
+        "timeShift": null,
+        "title": "Currently Open PRs count ",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "transformations": [
+          {
+            "id": "prepareTimeSeries",
+            "options": {}
+          }
+        ],
+        "type": "graph",
+        "xaxis": {
+          "buckets": null,
+          "mode": "time",
+          "name": null,
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "$$hashKey": "object:282",
+            "format": "none",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          },
+          {
+            "$$hashKey": "object:283",
+            "format": "short",
+            "label": null,
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false,
+          "alignLevel": null
+        }
+      }
+    ],
+    "refresh": false,
+    "schemaVersion": 27,
+    "style": "light",
+    "tags": [],
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-6M",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Pull Requests statistics",
+    "uid": "kajhdkaejfndka",
+    "version": 2
+  }
+  

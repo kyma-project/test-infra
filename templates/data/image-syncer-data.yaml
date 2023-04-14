@@ -25,7 +25,6 @@ templates:
                     preset-docker-push-repository: "true"
                     preset-sa-gcr-push: "true"
                     preset-dind-enabled: "true"
-                    preset-kyma-kms-sign-key: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
                   command: "bash"
                   args:
@@ -44,7 +43,6 @@ templates:
                     preset-docker-push-repository: "true"
                     preset-dind-enabled: "true"
                     preset-sa-gcr-push: "true"
-                    preset-kyma-kms-sign-key: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
                   command: "bash"
                   args:

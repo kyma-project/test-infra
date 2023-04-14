@@ -44,7 +44,6 @@ plank:
       [Full PR test history](https://status-dev.prow.build.kyma-project.io/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
       [Your PR dashboard](https://status-dev.prow.build.kyma-project.io/pr?query=is:pr+state:open+author:{{with
       index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
-  allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
   max_concurrency: 100 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
   pod_pending_timeout: 60m
   default_decoration_configs:

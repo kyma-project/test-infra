@@ -3,13 +3,6 @@ templates:
     render:
       - to: ../../prow/jobs/busola/busola-web/web-deployment-check.yaml
         localSets:
-          extra_refs_kyma-local:
-            extra_refs:
-              local-kyma:
-                - org: "kyma-incubator"
-                  repo: "local-kyma"
-                  path_alias: "github.com/kyma-incubator/local-kyma"
-                  base_ref: "main"
           jobConfig_default:
             path_alias: github.com/kyma-project/busola
           request_small:
@@ -29,7 +22,7 @@ templates:
               - jobConfig:
                   name: "pre-busola-web-deployment-check"
                   optional: false
-                  run_if_changed: "^core/|^core-ui/|^shared/|^package.json"
+                  run_if_changed: "^public/|^src/|^scripts/|^shared/|^package.json"
                   labels:
                     preset-build-pr: "true"
                     preset-gardener-azure-kyma-integration: "true"
@@ -44,4 +37,3 @@ templates:
                     - "request_small"
                     - "vm_job_template_k3s"
                     - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"

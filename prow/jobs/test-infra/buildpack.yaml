@@ -19,7 +19,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -61,7 +61,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -103,7 +103,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -145,7 +145,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -187,7 +187,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -229,7 +229,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -271,7 +271,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -313,7 +313,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -355,7 +355,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -397,55 +397,13 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
               - "--name=test-infra/pubsub-connector-gateway"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=development/kyma-pubsub-connector/pubSubGateway"
-              - "--dockerfile=Dockerfile"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
-    - name: pre-test-infra-ci-force-bot
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-test-infra-ci-force-bot"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
-            command:
-              - "/image-builder"
-            args:
-              - "--name=test-infra/ci-force-bot"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=development/kyma-ci-force-bot/ciforcebot"
               - "--dockerfile=Dockerfile"
             resources:
               requests:
@@ -481,7 +439,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -523,7 +481,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -565,7 +523,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -607,7 +565,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -649,7 +607,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -691,7 +649,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -699,6 +657,48 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/markdown-index/Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: pull-build-ginkgo
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-build-ginkgo"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^prow/images/ginkgo/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=test-infra/ginkgo"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=prow/images/ginkgo/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -728,6 +728,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-bootstrap"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/bootstrap/'
       skip_report: false
       decorate: true
@@ -738,7 +739,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -772,6 +773,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-kyma-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/kyma-integration/'
       skip_report: false
       decorate: true
@@ -782,7 +784,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -816,6 +818,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-buildpack-golang"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/buildpack-golang/'
       skip_report: false
       decorate: true
@@ -826,7 +829,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -860,6 +863,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-buildpack-node"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/buildpack-node/'
       skip_report: false
       decorate: true
@@ -870,7 +874,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -904,6 +908,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-cleaner"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/cleaner/'
       skip_report: false
       decorate: true
@@ -914,7 +919,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -948,6 +953,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-vulnerability-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/vulnerability-scanner/'
       skip_report: false
       decorate: true
@@ -958,7 +964,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -992,6 +998,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-whitesource-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/whitesource-scanner/'
       skip_report: false
       decorate: true
@@ -1002,7 +1009,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -1036,6 +1043,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-prow-tools"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
@@ -1046,7 +1054,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -1080,6 +1088,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-github-connector-webhook-gateway"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
@@ -1090,7 +1099,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -1124,6 +1133,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-pubsub-connector-gateway"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
       skip_report: false
       decorate: true
@@ -1134,57 +1144,13 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
               - "--name=test-infra/pubsub-connector-gateway"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=development/kyma-pubsub-connector/pubSubGateway"
-              - "--dockerfile=Dockerfile"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
-    - name: post-test-infra-ci-force-bot
-      annotations:
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-test-infra-ci-force-bot"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
-            command:
-              - "/image-builder"
-            args:
-              - "--name=test-infra/ci-force-bot"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=development/kyma-ci-force-bot/ciforcebot"
               - "--dockerfile=Dockerfile"
             resources:
               requests:
@@ -1212,6 +1178,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-golangci-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/golangci-lint/'
       skip_report: false
       decorate: true
@@ -1222,7 +1189,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -1256,6 +1223,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-gardener-rotate"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/gardener-rotate/|^development/gardener-rotate/'
       skip_report: false
       decorate: true
@@ -1266,7 +1234,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -1300,6 +1268,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-gardener-sa-rotate"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^development/gcp/cloud-run/gardener-sa-rotate/'
       skip_report: false
       decorate: true
@@ -1310,7 +1279,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -1344,6 +1313,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-kms-rotate"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^development/gcp/cloud-run/kms-rotate/'
       skip_report: false
       decorate: true
@@ -1354,7 +1324,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -1388,6 +1358,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-build-githubrelease"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^changelog-generator/|^development/tools/cmd/githubrelease/'
       skip_report: false
       decorate: true
@@ -1398,7 +1369,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -1432,6 +1403,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-markdown-index"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^development/markdown-index/'
       skip_report: false
       decorate: true
@@ -1442,7 +1414,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -1450,6 +1422,51 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=development/markdown-index/Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: post-build-ginkgo
+      annotations:
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-build-ginkgo"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      run_if_changed: '^prow/images/ginkgo/'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=test-infra/ginkgo"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=prow/images/ginkgo/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi

@@ -6,13 +6,13 @@ import (
 	"math/rand"
 )
 
-// Entry defines a log entry.
+// LogEntry defines a log entry.
 type LogEntry struct {
 	Message  string `json:"message"`
 	Severity string `json:"severity,omitempty"`
 	// Trace will be the same for one function call, you can use it for filetering in logs
 	Trace  string            `json:"logging.googleapis.com/trace,omitempty"`
-	Labels map[string]string `json:"logging.googleapis.com/operation,omitempty"`
+	Labels map[string]string `json:"labels,omitempty"`
 	// Cloud Log Viewer allows filtering and display of this as `jsonPayload.component`.
 	Component string `json:"component,omitempty"`
 }
@@ -67,6 +67,13 @@ func (e LogEntry) LogCritical(format string, args ...interface{}) {
 func (e LogEntry) LogError(format string, args ...interface{}) {
 	message := fmt.Sprintf(format, args...)
 	e.Severity = "ERROR"
+	e.Message = message
+	fmt.Println(e)
+}
+
+func (e LogEntry) LogWarning(format string, args ...interface{}) {
+	message := fmt.Sprintf(format, args...)
+	e.Severity = "WARNING"
 	e.Message = message
 	fmt.Println(e)
 }

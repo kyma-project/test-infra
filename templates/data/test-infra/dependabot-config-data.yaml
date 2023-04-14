@@ -1,0 +1,233 @@
+templates:
+  - from: dependabot.tmpl
+    render:
+      - to: ../../.github/dependabot.yml
+        localSets:
+          dailyGoEcosystem:
+            packageEcosystem: "gomod"
+            scheduleInterval: "daily"
+            commitMsgPrefix: "gomod"
+            commitIncludeScope: "true"
+            labels:
+              - "go"
+              - "skip-review"
+              - "area/dependency"
+            ignore:
+              - dependencyName: "github.com/go-logr/logr"
+                versions:
+                  - "1.2.2"
+                  - "1.2.1"
+                  - "1.2.0"
+                  - "1.2.0-rc1"
+                  - "1.1.0"
+                  - "1.1.0-rc1"
+                  - "1.0.0"
+                  - "1.0.0-rc1"
+              - dependencyName: "k8s.io/apimachinery"
+                versions:
+                  - "0.2x"
+              - dependencyName: "k8s.io/api"
+                versions:
+                  - "0.2x"
+              - dependencyName: "k8s.io/client-go"
+                versions:
+                  - "0.2x"
+          dailyDockerEcosystem:
+            packageEcosystem: "docker"
+            scheduleInterval: "daily"
+            commitIncludeScope: "true"
+            labels:
+              - "docker"
+              - "skip-review"
+              - "area/dependency"
+          dailyTerraform:
+            packageEcosystem: "terraform"
+            scheduleInterval: "daily"
+            commitIncludeScope: "true"
+            commitMsgPrefix: "tf"
+            labels:
+              - "terraform"
+              - "area/dependency"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  directory: "/"
+                inheritedConfigs:
+                  local:
+                    - "dailyGoEcosystem"
+              - jobConfig:
+                  directory: "configs/terraform/secrets-leaks-log-scanner"
+                inheritedConfigs:
+                  local:
+                    - "dailyTerraform"
+              - jobConfig:
+                  directory: "configs/terraform/core"
+                inheritedConfigs:
+                  local:
+                    - "dailyTerraform"
+              - jobConfig:
+                  directory: "/prow/images/ginkgo"
+                  commitMsgPrefix: "ginkgo"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/prow-tools"
+                  commitMsgPrefix: "prow-tools"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/tools/cmd/githubrelease"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "githubrelease"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/kyma-github-connector/githubWebhookGateway"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "ghWebhookGate"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/kyma-pubsub-connector/pubSubGateway"
+                  commitMsgPrefix: "pubSubGateway"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/test-log-collector"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "test-log-coll"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/bootstrap"
+                  commitMsgPrefix: "bootstrap"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/buildpack-golang"
+                  commitMsgPrefix: "bp-golang"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/buildpack-node"
+                  commitMsgPrefix: "bp-node"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/cleaner"
+                  commitMsgPrefix: "cleaner"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/clonerefs"
+                  commitMsgPrefix: "clonerefs"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/debug-commando"
+                  commitMsgPrefix: "debug-commando"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/kyma-integration"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "kyma-integrate"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/probot-stale"
+                  commitMsgPrefix: "probot-stale"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/whitesource-scanner"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "whitesource"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/golangci-lint"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "golangci-lint"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/needs-tws-external-plugin"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "tws-plugin"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/prow/images/cla-assistant-external-plugin"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "cla-plugin"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/markdown-index"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "markdown-index"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/gcp/cloud-run/create-github-issue"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "create-gh-issue"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/gcp/cloud-run/search-github-issue"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "search-gh-issue"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/gcp/cloud-run/scan-logs-for-secrets"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "scan-logs-for-secrets"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/gcp/cloud-run/move-gcs-bucket"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "move-gcs-bucket"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/gcp/cloud-run/slack-message-sender"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "slack-msg-sender"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/secrets-rotator/cloud-run/rotate-service-account"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "docker-rotate-sa"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"

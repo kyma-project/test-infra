@@ -4,12 +4,8 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/image-builder/sign"
-	"github.com/kyma-project/test-infra/development/pkg/sets"
-	"github.com/kyma-project/test-infra/development/pkg/tags"
 	"io"
 	"io/fs"
-	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"os"
 	"os/exec"
 	"path"
@@ -17,6 +13,11 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
+	"github.com/kyma-project/test-infra/development/pkg/sets"
+	"github.com/kyma-project/test-infra/development/pkg/tags"
+	errutil "k8s.io/apimachinery/pkg/util/errors"
 )
 
 type options struct {
@@ -31,8 +32,10 @@ type options struct {
 	orgRepo    string
 	silent     bool
 	isCI       bool
-	tags       sets.Strings
+	tags       sets.Tags
+	buildArgs  sets.Tags
 	platforms  sets.Strings
+	exportTags bool
 }
 
 const (
@@ -99,10 +102,7 @@ func runInBuildKit(o options, name string, destinations, platforms []string, bui
 	cmd.Stdout = io.MultiWriter(outw...)
 	cmd.Stderr = io.MultiWriter(errw...)
 
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-	return nil
+	return cmd.Run()
 }
 
 // runInKaniko prepares command execution and handles gathering logs to file
@@ -159,10 +159,7 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 	cmd.Stdout = io.MultiWriter(outw...)
 	cmd.Stderr = io.MultiWriter(errw...)
 
-	if err := cmd.Run(); err != nil {
-		return err
-	}
-	return nil
+	return cmd.Run()
 }
 
 func runBuildJob(o options, vs Variants, envs map[string]string) error {
@@ -198,11 +195,26 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 	if err != nil {
 		return err
 	}
+
+	// Provide parsedTags as buildArgs for developers
+	var buildArgs map[string]string
+	if o.exportTags {
+		buildArgs = addTagsToEnv(parsedTags, envs)
+	} else {
+		buildArgs = envs
+	}
+
+	if buildArgs == nil {
+		buildArgs = make(map[string]string)
+	}
+
+	appendMissing(&buildArgs, o.buildArgs)
+
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
 		destinations := gatherDestinations(repo, o.name, parsedTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		err = runFunc(o, "build", destinations, o.platforms, envs)
+		err = runFunc(o, "build", destinations, o.platforms, buildArgs)
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
 		}
@@ -215,6 +227,17 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 		return nil
 	}
 	return fmt.Errorf("building variants is not supported at this moment")
+}
+
+// appendMissing appends key, values pairs from source array to target map
+func appendMissing(target *map[string]string, source []tags.Tag) {
+	if len(source) > 0 {
+		for _, arg := range source {
+			if _, exists := (*target)[arg.Name]; !exists {
+				(*target)[arg.Name] = arg.Value
+			}
+		}
+	}
 }
 
 func signImages(o *options, images []string) error {
@@ -256,16 +279,35 @@ func getSignersForOrgRepo(o *options, orgRepo string) ([]sign.Signer, error) {
 		return nil, nil
 	}
 	var enabled StrList
-
+	jobType := os.Getenv("JOB_TYPE")
 	defaultSigners := c.EnabledSigners["*"]
 	orgRepoSigners := c.EnabledSigners[orgRepo]
 	for _, s := range append(defaultSigners, orgRepoSigners...) {
 		enabled.Add(s)
 	}
-	fmt.Println("sign images using services", strings.Join(enabled.List(), ","))
+	fmt.Println("sign images using services", strings.Join(enabled.List(), ", "))
 	var signers []sign.Signer
 	for _, sc := range c.Signers {
 		if enabled.Has(sc.Name) {
+			// if signerConfig doesn't contain any jobTypes, it should be considered enabled by default
+			if len(sc.JobType) > 0 && !o.isCI {
+				fmt.Println("signer", sc.Name, "ignored, because image-builder is not running in CI mode and contains 'job-type' field defined")
+				continue
+			}
+			if len(jobType) > 0 && len(sc.JobType) > 0 && o.isCI {
+				var has bool
+				for _, t := range sc.JobType {
+					if t == jobType {
+						has = true
+						break
+					}
+				}
+				if !has {
+					// ignore signer if the jobType doesn't contain specific job type
+					fmt.Println("signer", sc.Name, "ignored, because is not enabled for a CI job of type:", jobType)
+					continue
+				}
+			}
 			s, err := sc.Config.NewSigner()
 			if err != nil {
 				return nil, fmt.Errorf("signer init: %w", err)
@@ -309,11 +351,11 @@ func (l *StrList) List() []string {
 	return n
 }
 
-func getTags(pr, sha string, templates []string) ([]string, error) {
+func getTags(pr, sha string, templates []tags.Tag) ([]tags.Tag, error) {
 	// (Ressetkk): PR tag should not be hardcoded, in the future we have to find a way to parametrize it
 	if pr != "" {
-		// assume we are using PR number, build tag as 'PR-XXXX'
-		return []string{"PR-" + pr}, nil
+		// assume we are using PR number, build default tag as 'PR-XXXX'
+		return []tags.Tag{{Name: "default_tag", Value: "PR-" + pr}}, nil
 	}
 	// build a tag from commit SHA
 	tagger, err := tags.NewTagger(templates, tags.CommitSHA(sha))
@@ -327,12 +369,12 @@ func getTags(pr, sha string, templates []string) ([]string, error) {
 	return p, nil
 }
 
-func gatherDestinations(repo []string, name string, tags []string) []string {
+func gatherDestinations(repo []string, name string, tags []tags.Tag) []string {
 	var dst []string
 	for _, t := range tags {
 		for _, r := range repo {
 			image := path.Join(r, name)
-			dst = append(dst, image+":"+strings.ReplaceAll(t, " ", "-"))
+			dst = append(dst, image+":"+strings.ReplaceAll(t.Value, " ", "-"))
 		}
 	}
 	return dst
@@ -387,26 +429,44 @@ func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
 	return vars, nil
 }
 
-func (o *options) gatherOptions(fs *flag.FlagSet) *flag.FlagSet {
-	fs.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
-	fs.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
-	fs.StringVar(&o.context, "context", ".", "Path to build directory context")
-	fs.StringVar(&o.envFile, "env-file", "", "Path to file with environment variables to be loaded in build")
-	fs.StringVar(&o.name, "name", "", "Name of the image to be built")
-	fs.StringVar(&o.dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to context")
-	fs.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
-	fs.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
-	fs.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
-	fs.Var(&o.tags, "tag", "Additional tag that the image will be tagged")
-	fs.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
-	return fs
+// Add parsed tags to environments which will be passed to dockerfile
+func addTagsToEnv(tags []tags.Tag, envs map[string]string) map[string]string {
+	m := make(map[string]string)
+
+	for _, t := range tags {
+		key := fmt.Sprintf("TAG_%s", t.Name)
+		m[key] = t.Value
+	}
+
+	for k, v := range envs {
+		m[k] = v
+	}
+
+	return m
+}
+
+func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
+	flagSet.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
+	flagSet.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
+	flagSet.StringVar(&o.context, "context", ".", "Path to build directory context")
+	flagSet.StringVar(&o.envFile, "env-file", "", "Path to file with environment variables to be loaded in build")
+	flagSet.StringVar(&o.name, "name", "", "Name of the image to be built")
+	flagSet.StringVar(&o.dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to context")
+	flagSet.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
+	flagSet.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
+	flagSet.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
+	flagSet.Var(&o.tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
+	flagSet.Var(&o.buildArgs, "build-arg", "Flag to pass additional arguments to build Dockerfile. It can be used in the name=value format.")
+	flagSet.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
+	flagSet.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
+	return flagSet
 }
 
 func main() {
-	fs := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	flagSet := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	o := options{isCI: os.Getenv("CI") == "true"}
-	o.gatherOptions(fs)
-	if err := fs.Parse(os.Args[1:]); err != nil {
+	o.gatherOptions(flagSet)
+	if err := flagSet.Parse(os.Args[1:]); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

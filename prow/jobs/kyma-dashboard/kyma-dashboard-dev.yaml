@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
+      run_if_changed: '^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-dashboard
@@ -30,7 +30,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
             command:
@@ -64,7 +64,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile'
+      run_if_changed: '^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-dashboard
@@ -80,7 +80,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
             command:

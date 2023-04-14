@@ -7,12 +7,27 @@ LOCAL_KYMA_DIR="./local-kyma"
 K3S_DOMAIN="local.kyma.dev"
 PLAYWRIGHT_IMAGE="mcr.microsoft.com/playwright:v1.15.0-focal"
 
-prepare_k3s() {
-    pushd ${LOCAL_KYMA_DIR}
-    ./create-cluster-k3s.sh
-    echo "k3s cluster created √"
-    kubectl cluster-info
-    popd
+function install_cli() {
+  local install_dir
+  declare -r install_dir="/usr/local/bin"
+  mkdir -p "$install_dir"
+
+  local os
+  os="$(uname -s)"
+  if [[ -z "$os" || ! "$os" =~ ^(Darwin|Linux)$ ]]; then
+      echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
+      exit 1
+  else
+      readonly os
+  fi
+
+  pushd "$install_dir" || exit
+  curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/latest/download/kyma_${os}_x86_64.tar.gz" \
+  && tar -zxvf kyma.tar.gz && chmod +x kyma \
+  && rm -f kyma.tar.gz
+  popd
+
+  kyma version --client
 }
 
 generate_cert(){
@@ -99,9 +114,11 @@ install_busola(){
 echo "Node.js version: $(node -v)"
 echo "NPM version: $(npm -v)"
 
+echo "STEP: Installing Kyma CLI fore easier cluster setup"
+install_cli
 
 echo "STEP: Preparing k3s cluster"
-prepare_k3s
+kyma provision k3d --ci
 
 echo "STEP: Generating certificate"
 generate_cert $K3S_DOMAIN

@@ -129,7 +129,7 @@ utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "${TMP_DIR}/k
 
 log::info "Copying Busola 'tests' folder to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests" "~/busola-tests"
+utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests/integration" "~/busola-tests"
 
 log::info "Copying Busola 'resources' folder to the instance"
 #shellcheck disable=SC2088
@@ -139,12 +139,6 @@ log::info "Copying Busola 'examples' folder to the instance"
 # normally Busola uses a symlink, here we need to copy the folder and replace it manually in "busola-integration-test-k3s.sh"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/examples" "~/busola-examples"
-
-
-log::info "Copying Kyma-Local to the instance"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "busola-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "~/local-kyma"
-
 
 log::info "Launching the busola-integration-test-k3s.sh script"
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "busola-integration-test-${RANDOM_ID}" -c "sudo SCOPE=${SCOPE} bash" -p "${SCRIPT_DIR}/cluster-integration/busola-integration-test-k3s.sh"

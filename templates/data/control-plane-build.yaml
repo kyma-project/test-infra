@@ -19,6 +19,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-provisioner-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/provisioner"
                   branches:
                     - ^main$
@@ -50,6 +52,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-schema-migrator-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/schema-migrator"
                   branches:
                     - ^main$
@@ -81,6 +85,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-kyma-metrics-collector-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-metrics-collector"
                   branches:
                     - ^main$
@@ -112,6 +118,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-kubeconfig-service-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kubeconfig-service"
                   branches:
                     - ^main$
@@ -143,6 +151,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
                   branches:
                     - ^main$
@@ -158,10 +168,12 @@ templates:
               - jobConfig:
                   name: pull-keb-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
                     - --name=control-plane/kyma-environments-cleanup-job
                     - --context=components/kyma-environment-broker
-                    - --dockerfile=Dockerfile.cleanup
+                    - --dockerfile=Dockerfile.job
+                    - --build-arg=BIN=environmentscleanup
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -169,13 +181,17 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-cleanup-job-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   branches:
                     - ^main$
                   args:
                     - --name=control-plane/kyma-environments-cleanup-job
                     - --context=components/kyma-environment-broker
-                    - --dockerfile=Dockerfile.cleanup
+                    - --dockerfile=Dockerfile.job
+                    - --build-arg=BIN=environmentscleanup
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -184,10 +200,12 @@ templates:
               - jobConfig:
                   name: pull-keb-subaccount-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
                     - --name=control-plane/kyma-environment-subaccount-cleanup-job
                     - --context=components/kyma-environment-broker
-                    - --dockerfile=Dockerfile.sac
+                    - --dockerfile=Dockerfile.job
+                    - --build-arg=BIN=accountcleanup
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -195,13 +213,17 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-subaccount-cleanup-job-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   branches:
                     - ^main$
                   args:
                     - --name=control-plane/kyma-environment-subaccount-cleanup-job
                     - --context=components/kyma-environment-broker
-                    - --dockerfile=Dockerfile.sac
+                    - --dockerfile=Dockerfile.job
+                    - --build-arg=BIN=accountcleanup
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -210,10 +232,12 @@ templates:
               - jobConfig:
                   name: pull-keb-subscription-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
                     - --name=control-plane/kyma-environment-subscription-cleanup-job
                     - --context=components/kyma-environment-broker
-                    - --dockerfile=Dockerfile.scj
+                    - --dockerfile=Dockerfile.job
+                    - --build-arg=BIN=subscriptioncleanup
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -221,13 +245,17 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-subscription-cleanup-job-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   branches:
                     - ^main$
                   args:
                     - --name=control-plane/kyma-environment-subscription-cleanup-job
                     - --context=components/kyma-environment-broker
-                    - --dockerfile=Dockerfile.scj
+                    - --dockerfile=Dockerfile.job
+                    - --build-arg=BIN=subscriptioncleanup
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -236,10 +264,12 @@ templates:
               - jobConfig:
                   name: pull-keb-trial-cleanup-job-build
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
                     - --name=control-plane/kyma-environment-trial-cleanup-job
                     - --context=components/kyma-environment-broker
-                    - --dockerfile=Dockerfile.tcj
+                    - --dockerfile=Dockerfile.job
+                    - --build-arg=BIN=trialcleanup
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:
@@ -247,13 +277,49 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-trial-cleanup-job-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   branches:
                     - ^main$
                   args:
                     - --name=control-plane/kyma-environment-trial-cleanup-job
                     - --context=components/kyma-environment-broker
-                    - --dockerfile=Dockerfile.tcj
+                    - --dockerfile=Dockerfile.job
+                    - --build-arg=BIN=trialcleanup
+                    - --config=/config/kaniko-build-config.yaml
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: pull-keb-deprovision-retrigger-job-build
+                  run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+                  args:
+                    - --name=control-plane/kyma-environment-deprovision-retrigger-job
+                    - --context=components/kyma-environment-broker
+                    - --dockerfile=Dockerfile.job
+                    - --build-arg=BIN=deprovisionretrigger
+                    - --config=/config/kaniko-build-config.yaml
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-keb-deprovision-retrigger-job-build
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^components/kyma-environment-broker"
+                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+                  branches:
+                    - ^main$
+                  args:
+                    - --name=control-plane/kyma-environment-deprovision-retrigger-job
+                    - --context=components/kyma-environment-broker
+                    - --dockerfile=Dockerfile.job
+                    - --build-arg=BIN=deprovisionretrigger
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:

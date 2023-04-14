@@ -16,6 +16,7 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^resources/|^lighthouse/|^nginx/'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -35,7 +36,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -67,7 +68,8 @@ postsubmits: # runs on main
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^resources/|^lighthouse/|^nginx/'
+      run_if_changed: '^resources/|^tests/|^lighthouse/|^nginx/'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/busola
@@ -87,7 +89,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20221130-ec3f2fc4"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:

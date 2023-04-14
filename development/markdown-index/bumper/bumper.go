@@ -5,14 +5,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/sirupsen/logrus"
 	"io"
-	"k8s.io/test-infra/prow/config/secret"
-	"k8s.io/test-infra/prow/github"
-	"k8s.io/test-infra/robots/pr-creator/updater"
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/sirupsen/logrus"
+	"k8s.io/test-infra/prow/config/secret"
+	"k8s.io/test-infra/prow/github"
+	"k8s.io/test-infra/robots/pr-creator/updater"
 )
 
 // Options is the options for autobumper operations.
@@ -128,6 +129,24 @@ func getTreeRef(stderr io.Writer, refname string) (string, error) {
 		return "", errors.New("got no otput when trying to rev-parse")
 	}
 	return fields[0], nil
+}
+
+func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
+	tmpRead, tmpWrite, err := os.Pipe()
+	if err != nil {
+		return "", err
+	}
+
+	if err := Call(tmpWrite, stderr, gitCmd, "status"); err != nil {
+		return "", fmt.Errorf("git status: %w", err)
+	}
+	tmpWrite.Close()
+	output, err := io.ReadAll(tmpRead)
+	if err != nil {
+		return "", err
+	}
+	stdout.Write(output)
+	return string(output), nil
 }
 
 func gitCommit(name, email, message string, stdout, stderr io.Writer) error {
@@ -255,7 +274,7 @@ func validateOptions(o *Options) error {
 }
 
 // Run is the entrypoint which will update index.md file based on the provided options.
-func Run(ctx context.Context, o *Options, prh PRHandler) error {
+func Run(_ context.Context, o *Options, prh PRHandler) error {
 	if err := validateOptions(o); err != nil {
 		return fmt.Errorf("validating options: %w", err)
 	}
@@ -264,18 +283,20 @@ func Run(ctx context.Context, o *Options, prh PRHandler) error {
 		logrus.Debugf("--skip-pull-request is set to true, won't create a pull request.")
 	}
 
-	return processGitHub(ctx, o, prh)
+	return processGitHub(o, prh)
 }
 
-func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
+func processGitHub(o *Options, prh PRHandler) error {
 	stdout := HideSecretsWriter{Delegate: os.Stdout, Censor: secret.Censor}
 	stderr := HideSecretsWriter{Delegate: os.Stderr, Censor: secret.Censor}
 	if err := secret.Add(o.GitHubToken); err != nil {
 		return fmt.Errorf("start secrets agent: %w", err)
 	}
 
-	gc := github.NewClient(secret.GetTokenGenerator(o.GitHubToken), secret.Censor, github.DefaultGraphQLEndpoint, github.DefaultAPIEndpoint)
-
+	gc, err := github.NewClient(secret.GetTokenGenerator(o.GitHubToken), secret.Censor, github.DefaultGraphQLEndpoint, github.DefaultAPIEndpoint)
+	if err != nil {
+		return err
+	}
 	if o.GitHubLogin == "" || o.GitName == "" || o.GitEmail == "" {
 		user, err := gc.BotUser()
 		if err != nil {
@@ -290,6 +311,15 @@ func processGitHub(ctx context.Context, o *Options, prh PRHandler) error {
 		if o.GitEmail == "" {
 			o.GitEmail = user.Email
 		}
+	}
+
+	resp, err := gitStatus(stdout, stderr)
+	if err != nil {
+		return fmt.Errorf("git status: %w", err)
+	}
+	if strings.Contains(resp, "nothing to commit, working tree clean") {
+		fmt.Println("No changes, quitting.")
+		return nil
 	}
 
 	if err := gitCommit(o.GitName, o.GitEmail, "Bumping index.md", stdout, stderr); err != nil {

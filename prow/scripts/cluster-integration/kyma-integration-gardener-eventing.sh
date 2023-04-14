@@ -64,14 +64,44 @@ elif [[ $GARDENER_PROVIDER == "aws" ]]; then
 elif [[ $GARDENER_PROVIDER == "gcp" ]]; then
     # shellcheck source=prow/scripts/lib/gardener/gcp.sh
     source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
+    # shellcheck source=prow/scripts/lib/gardener/gardener.sh
+    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 else
     ## TODO what should I put here? Is this a backend?
     log::error "GARDENER_PROVIDER ${GARDENER_PROVIDER} is not yet supported"
     exit 1
 fi
 
+function cleanupJobAssets() {
+    # Must be at the beginning
+    EXIT_STATUS=$?
+
+    set +e
+
+    log::banner "Job Exit Status:: \"${EXIT_STATUS}\""
+
+    if [[ $EXIT_STATUS != "0" ]]; then
+        eventing::print_troubleshooting_logs
+    fi
+
+    log::banner "Cleanup fast-integration assets"
+    eventing::fast_integration_test_cleanup
+
+    log::banner "Cleaning job assets"
+    if  [[ "${CLEANUP_CLUSTER}" == "true" ]] ; then
+        log::info "Deprovision cluster: \"${CLUSTER_NAME}\""
+        gardener::deprovision_cluster \
+            -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
+            -c "${CLUSTER_NAME}" \
+            -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    fi
+
+    set -e
+    exit ${EXIT_STATUS}
+}
+
 # nice cleanup on exit, be it successful or on fail
-trap gardener::cleanup EXIT INT
+trap cleanupJobAssets EXIT INT
 
 #Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
@@ -110,12 +140,9 @@ gardener::generate_overrides
 export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
-# uses previously set KYMA_SOURCE
-log::info "Deploying Kyma"
-gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}" \
-  --value eventing.controller.jetstream.retentionPolicy=limits \
-  --value eventing.controller.jetstream.consumerDeliverPolicy=all
-
+# deploy Kyma
+log::info "Deploying Kyma ${KYMA_SOURCE}"
+gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}"
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
@@ -128,11 +155,14 @@ if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::wake_up_kyma
 fi
 
+eventing::print_subscription_crd_version
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     # test the default Eventing backend which comes with Kyma
     log::banner "Execute eventing E2E fast-integration tests"
-    eventing::test_fast_integration_eventing
+    # eventing test assets cleanup will done later in cleanup script
+    eventing::test_fast_integration_eventing_prep
+    eventing::fast_integration_tests
 else
     # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
     if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then

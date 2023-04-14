@@ -25,6 +25,24 @@ components:
 EOF
 }
 
+function api-gateway::prepare_components_file_istio_only() {
+  log::info "Preparing Kyma installation with Istio and API-Gateway"
+
+cat << EOF > "$PWD/components.yaml"
+defaultNamespace: kyma-system
+prerequisites:
+  - name: "cluster-essentials"
+  - name: "istio"
+    namespace: "istio-system"
+  - name: "certificates"
+    namespace: "istio-system"
+components:
+  - name: "istio-resources"
+  - name: "api-gateway"
+  - name: "ory" # Until drop of ory oathkeeper Ory needs to be deployed for noop and OAuth2 scenarios
+EOF
+}
+
 function api-gateway::prepare_test_environments() {
   log::info "Prepare test environment variables"
 
@@ -32,11 +50,16 @@ function api-gateway::prepare_test_environments() {
   export TEST_HYDRA_ADDRESS="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com"
   export TEST_REQUEST_TIMEOUT="120"
   export TEST_REQUEST_DELAY="10"
-  export TEST_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com" 
+  export TEST_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com"
   export TEST_CLIENT_TIMEOUT=30s
   export TEST_CONCURENCY="8"
   export EXPORT_RESULT="true"
-  export KYMA_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com" 
+  export KYMA_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com"
+}
+
+function api-gateway::prepare_test_env_integration_tests() {
+  log::info "Prepare test environment variables for integration tests"
+  export KYMA_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com"
 }
 
 function api-gateway::configure_ory_hydra() {
@@ -138,6 +161,16 @@ function api-gateway::launch_tests() {
   kubectl get validatingwebhookconfigurations
   pushd "${KYMA_SOURCES_DIR}/tests/components/api-gateway"
   make test
+  popd
+
+  log::success "Tests completed"
+}
+
+function api-gateway::launch_integration_tests() {
+  log::info "Running API-Gateway integration tests"
+  pushd "${API_GATEWAY_SOURCES_DIR}"
+  make install-kyma
+  make test-integration
   popd
 
   log::success "Tests completed"

@@ -1,0 +1,37 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/test-infra/terraform-executor.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "pull-build-image-terraform-executor"
+                  run_if_changed: '^prow/images/terraform/'
+                  branches:
+                    - "^main$"
+                  args:
+                    - "--name=test-infra/terraform"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=prow/images/terraform/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "kaniko_buildpack"
+                    - "jobConfig_presubmit"
+              - jobConfig:
+                  name: "post-build-image-terraform-executor"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: '^prow/images/terraform/'
+                  branches:
+                    - "^main$"
+                  args:
+                    - "--name=test-infra/terraform"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=prow/images/terraform/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "kaniko_buildpack"
+                    - "jobConfig_postsubmit"

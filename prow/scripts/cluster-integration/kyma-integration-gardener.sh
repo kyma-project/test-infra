@@ -25,6 +25,7 @@ ENABLE_TEST_LOG_COLLECTOR=false
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+export API_GATEWAY_SOURCES_DIR="${KYMA_PROJECT_DIR}/api-gateway"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
 # shellcheck source=prow/scripts/lib/log.sh
@@ -125,13 +126,11 @@ fi
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
     sleep 120
     gardener::wake_up_kyma
 fi
-
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma

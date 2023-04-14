@@ -7,6 +7,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "api-gateway-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -29,7 +32,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -55,6 +58,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "control-plane-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -77,7 +83,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -103,6 +109,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -125,7 +134,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -151,6 +160,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "lifecycle-manager-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -173,7 +185,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -199,6 +211,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "runtime-watcher-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -221,7 +236,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -242,59 +257,14 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: module-manager-whitesource-scan
-      annotations:
-        pipeline.trigger: "periodic"
-        testgrid-create-test-group: "false"
-      labels:
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-kyma-encryption-key: "true"
-        preset-kyma-keyring: "true"
-        preset-whitesource-product-kyma-test: "true"
-        preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-      cron: "0 4 * * *"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-        - org: kyma-project
-          repo: module-manager
-          path_alias: github.com/kyma-project/module-manager
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
-            securityContext:
-              privileged: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-            env:
-              - name: DRYRUN
-                value: "false"
-              - name : REPOSITORY
-                value: module-manager
-              - name: CREATE_SUBPROJECTS
-                value: "false"
-              - name: SCAN_LANGUAGE
-                value: golang-mod
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
     - name: busola-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "busola-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -317,7 +287,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -343,6 +313,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "cli-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -365,7 +338,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -391,6 +364,9 @@ periodics: # runs on schedule
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "hydroform-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -413,7 +389,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -436,61 +412,14 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: podpreset-whitesource-scan
-      annotations:
-        pipeline.trigger: "periodic"
-        testgrid-create-test-group: "false"
-      labels:
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-kyma-encryption-key: "true"
-        preset-kyma-keyring: "true"
-        preset-whitesource-product-kyma: "true"
-        preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-incubator-whitesource: "true"
-      cron: "0 4 * * *"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-        - org: kyma-incubator
-          repo: podpreset-crd
-          path_alias: github.com/kyma-incubator/podpreset-crd
-          base_ref: master
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
-            securityContext:
-              privileged: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
-            env:
-              - name: DRYRUN
-                value: "false"
-              - name : REPOSITORY
-                value: podpreset-crd
-              - name: CREATE_SUBPROJECTS
-                value: "false"
-              - name: CUSTOM_PROJECTNAME
-                value: podpreset
-              - name: SCAN_LANGUAGE
-                value: golang-mod
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
     - name: reconciler-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "reconciler-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -513,7 +442,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -534,13 +463,220 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-  
-#-------------Release-----------------------------
-    - name: kyma-2.9-whitesource-scan
+    - name: warden-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "warden-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kms-gc-project-env: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kyma-keyring: "true"
+        preset-whitesource-product-control-plane: "true"
+        preset-wssagent-keys: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+      cron: "0 4 * * *"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+        - org: kyma-project
+          repo: warden
+          path_alias: github.com/kyma-project/warden
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            env:
+              - name: DRYRUN
+                value: "false"
+              - name : REPOSITORY
+                value: warden
+              - name: CREATE_SUBPROJECTS
+                value: "false"
+              - name: SCAN_LANGUAGE
+                value: golang-mod
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+    - name: keda-manager-whitesource-scan
+      annotations:
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "keda-manager-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kms-gc-project-env: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kyma-keyring: "true"
+        preset-whitesource-product-kyma: "true"
+        preset-wssagent-keys: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+      cron: "0 4 * * *"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+        - org: kyma-project
+          repo: keda-manager
+          path_alias: github.com/kyma-project/keda-manager
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            env:
+              - name: DRYRUN
+                value: "false"
+              - name : REPOSITORY
+                value: keda-manager
+              - name: CREATE_SUBPROJECTS
+                value: "false"
+              - name: SCAN_LANGUAGE
+                value: golang-mod
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+    - name: telemetry-manager-whitesource-scan
+      annotations:
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "telemetry-manager-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kms-gc-project-env: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kyma-keyring: "true"
+        preset-whitesource-product-kyma: "true"
+        preset-wssagent-keys: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+      cron: "0 4 * * *"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+        - org: kyma-project
+          repo: telemetry-manager
+          path_alias: github.com/kyma-project/telemetry-manager
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            env:
+              - name: DRYRUN
+                value: "false"
+              - name : REPOSITORY
+                value: telemetry-manager
+              - name: CREATE_SUBPROJECTS
+                value: "false"
+              - name: SCAN_LANGUAGE
+                value: golang-mod
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+    - name: directory-size-exporter-whitesource-scan
+      annotations:
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "directory-size-exporter-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kms-gc-project-env: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kyma-keyring: "true"
+        preset-whitesource-product-kyma: "true"
+        preset-wssagent-keys: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+      cron: "0 4 * * *"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+        - org: kyma-project
+          repo: directory-size-exporter
+          path_alias: github.com/kyma-project/directory-size-exporter
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+            securityContext:
+              privileged: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+            env:
+              - name: DRYRUN
+                value: "false"
+              - name : REPOSITORY
+                value: directory-size-exporter
+              - name: CREATE_SUBPROJECTS
+                value: "false"
+              - name: SCAN_LANGUAGE
+                value: golang-mod
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+  
+#-------------Release-----------------------------
+    - name: kyma-2.13-whitesource-scan
+      annotations:
+        pipeline.trigger: "periodic"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-2.13-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -560,10 +696,10 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: release-2.9
+          base_ref: release-2.13
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -584,11 +720,14 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: cli-2.9-whitesource-scan
+    - name: cli-2.13-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "cli-2.13-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -608,10 +747,10 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: cli
           path_alias: github.com/kyma-project/cli
-          base_ref: release-2.9
+          base_ref: release-2.13
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -635,11 +774,14 @@ periodics: # runs on schedule
   
 
 #-------------Previous Release--------------------
-    - name: kyma-2.8-whitesource-scan
+    - name: kyma-2.12-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-2.12-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -659,10 +801,10 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: release-2.8
+          base_ref: release-2.12
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -683,11 +825,14 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: cli-2.8-whitesource-scan
+    - name: cli-2.12-whitesource-scan
       annotations:
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "cli-2.12-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
@@ -707,10 +852,10 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: cli
           path_alias: github.com/kyma-project/cli
-          base_ref: release-2.8
+          base_ref: release-2.12
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/wssagent:v20220809-6dd2faf75"
+          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:

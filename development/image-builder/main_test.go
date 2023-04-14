@@ -2,27 +2,30 @@ package main
 
 import (
 	"flag"
-	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"os"
 	"reflect"
 	"testing"
 	"testing/fstest"
+
+	"github.com/kyma-project/test-infra/development/image-builder/sign"
+	"github.com/kyma-project/test-infra/development/pkg/sets"
+	"github.com/kyma-project/test-infra/development/pkg/tags"
 )
 
 func Test_gatherDestinations(t *testing.T) {
 	tc := []struct {
 		name     string
 		repos    []string
-		tags     []string
+		tags     []tags.Tag
 		expected []string
 	}{
 		{
 			name:  "subdirectory/test-image",
 			repos: []string{"dev.kyma.io", "dev2.kyma.io"},
-			tags: []string{
-				"20222002-abcd1234",
-				"latest",
-				"cookie",
+			tags: []tags.Tag{
+				{Name: "TestName", Value: "20222002-abcd1234"},
+				{Name: "", Value: "latest"},
+				{Name: "cookie", Value: "cookie"},
 			},
 			expected: []string{
 				"dev.kyma.io/subdirectory/test-image:20222002-abcd1234",
@@ -34,9 +37,11 @@ func Test_gatherDestinations(t *testing.T) {
 			},
 		},
 		{
-			name:     "test-no-directory",
-			repos:    []string{"kyma.dev"},
-			tags:     []string{"latest"},
+			name:  "test-no-directory",
+			repos: []string{"kyma.dev"},
+			tags: []tags.Tag{
+				{Name: "", Value: "latest"},
+			},
 			expected: []string{"kyma.dev/test-no-directory:latest"},
 		},
 	}
@@ -162,8 +167,11 @@ func TestFlags(t *testing.T) {
 			name:        "parsed config, pass",
 			expectedErr: false,
 			expectedOpts: options{
-				name:       "test-image",
-				tags:       []string{"latest", "cookie"},
+				name: "test-image",
+				tags: []tags.Tag{
+					{Name: "latest", Value: "latest"},
+					{Name: "cookie", Value: "cookie"},
+				},
 				context:    "prow/build",
 				configPath: "config.yaml",
 				dockerfile: "Dockerfile",
@@ -177,10 +185,40 @@ func TestFlags(t *testing.T) {
 				"--repo=kyma-project/test-infra",
 				"--name=test-image",
 				"--tag=latest",
-				"--tag=cookie",
+				"--tag=cookie=cookie",
 				"--context=prow/build",
 				"--log-dir=prow/logs",
 				"--silent",
+			},
+		},
+		{
+			name: "export tag, pass",
+			expectedOpts: options{
+				context:    ".",
+				configPath: "/config/image-builder-config.yaml",
+				dockerfile: "Dockerfile",
+				logDir:     "/logs/artifacts",
+				exportTags: true,
+			},
+			args: []string{
+				"--export-tags",
+			},
+		},
+		{
+			name: "build args, pass",
+			expectedOpts: options{
+				context:    ".",
+				configPath: "/config/image-builder-config.yaml",
+				dockerfile: "Dockerfile",
+				logDir:     "/logs/artifacts",
+				buildArgs: sets.Tags{
+					tags.Tag{Name: "BIN", Value: "test"},
+					tags.Tag{Name: "BIN2", Value: "test2"},
+				},
+			},
+			args: []string{
+				"--build-arg=BIN=test",
+				"--build-arg=BIN2=test2",
 			},
 		},
 	}
@@ -204,16 +242,16 @@ func Test_gatTags(t *testing.T) {
 		name           string
 		pr             string
 		sha            string
-		tagTemplate    string
+		tagTemplate    tags.Tag
 		env            map[string]string
-		additionalTags []string
+		additionalTags []tags.Tag
 		expectErr      bool
-		expectResult   []string
+		expectResult   []tags.Tag
 	}{
 		{
 			name:         "pr variable is present",
 			pr:           "1234",
-			expectResult: []string{"PR-1234"},
+			expectResult: []tags.Tag{{Name: "default_tag", Value: "PR-1234"}},
 		},
 		{
 			name:      "sha is empty",
@@ -223,16 +261,27 @@ func Test_gatTags(t *testing.T) {
 			name:        "bad tagTemplate",
 			expectErr:   true,
 			sha:         "abcd1234",
-			tagTemplate: `v{{ .ASD }}`,
+			tagTemplate: tags.Tag{Name: "TagTemplate", Value: `v{{ .ASD }}`},
 		},
 		{
-			name:           "custom template, additional fields, env variable",
-			expectErr:      false,
-			sha:            "da39a3ee5e6b4b0d3255bfef95601890afd80709",
-			tagTemplate:    `{{ .ShortSHA }}`,
-			env:            map[string]string{"CUSTOM_ENV": "customEnvValue"},
-			additionalTags: []string{"latest", "cookie", `{{ .CommitSHA }}`, `{{ .Env "CUSTOM_ENV" }}`},
-			expectResult:   []string{"latest", "cookie", "da39a3ee5e6b4b0d3255bfef95601890afd80709", "customEnvValue", "da39a3ee"},
+			name:        "custom template, additional fields, env variable",
+			expectErr:   false,
+			sha:         "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+			tagTemplate: tags.Tag{Name: "TagTemplate", Value: `{{ .ShortSHA }}`},
+			env:         map[string]string{"CUSTOM_ENV": "customEnvValue"},
+			additionalTags: []tags.Tag{
+				{Name: "latest", Value: "latest"},
+				{Name: "Test", Value: "cookie"},
+				{Name: "AnotherTest", Value: `{{ .CommitSHA }}`},
+				{Name: "TestEnv", Value: `{{ .Env "CUSTOM_ENV" }}`},
+			},
+			expectResult: []tags.Tag{
+				{Name: "latest", Value: "latest"},
+				{Name: "Test", Value: "cookie"},
+				{Name: "AnotherTest", Value: `da39a3ee5e6b4b0d3255bfef95601890afd80709`},
+				{Name: "TestEnv", Value: "customEnvValue"},
+				{Name: "TagTemplate", Value: "da39a3ee"},
+			},
 		},
 	}
 	for _, c := range tc {
@@ -286,6 +335,8 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 		expectErr     bool
 		expectSigners int
 		orgRepo       string
+		jobType       string
+		ci            bool
 	}{
 		{
 			name:          "1 notary signer org/repo, pass",
@@ -305,14 +356,38 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 			expectSigners: 1,
 			orgRepo:       "org/repo-empty",
 		},
+		{
+			name:          "1 global signer for presubmit job",
+			expectErr:     false,
+			expectSigners: 1,
+			orgRepo:       "ci-org/ci-repo",
+			jobType:       "presubmit",
+			ci:            true,
+		},
+		{
+			name:          "2 signers for postsubmit job",
+			expectErr:     false,
+			expectSigners: 2,
+			orgRepo:       "ci-org/ci-repo",
+			jobType:       "postsubmit",
+			ci:            true,
+		},
+		{
+			name:          "1 signer in non-CI environment",
+			expectErr:     false,
+			expectSigners: 1,
+			orgRepo:       "ci-org/ci-repo",
+		},
 	}
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			o := &options{Config: Config{SignConfig: SignConfig{
+			t.Setenv("JOB_TYPE", c.jobType)
+			o := &options{isCI: c.ci, Config: Config{SignConfig: SignConfig{
 				EnabledSigners: map[string][]string{
-					"*":         {"test-notary"},
-					"org/repo":  {"test-notary"},
-					"org/repo2": {"test-notary2"},
+					"*":              {"test-notary"},
+					"org/repo":       {"test-notary"},
+					"org/repo2":      {"test-notary2"},
+					"ci-org/ci-repo": {"ci-notary"},
 				},
 				Signers: []sign.SignerConfig{
 					{
@@ -325,6 +400,12 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 						Type:   sign.TypeNotaryBackend,
 						Config: sign.NotaryConfig{},
 					},
+					{
+						Name:    "ci-notary",
+						Type:    sign.TypeNotaryBackend,
+						Config:  sign.NotaryConfig{},
+						JobType: []string{"postsubmit"},
+					},
 				},
 			}}}
 			got, err := getSignersForOrgRepo(o, c.orgRepo)
@@ -335,5 +416,87 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 				t.Errorf("wrong number of requested signers %v != %v", len(got), c.expectSigners)
 			}
 		})
+	}
+}
+
+func Test_addTagsToEnv(t *testing.T) {
+	tc := []struct {
+		name         string
+		envs         map[string]string
+		tags         []tags.Tag
+		expectedEnvs map[string]string
+	}{
+		{
+			name: "multiple envs and tags",
+			envs: map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2"},
+			tags: []tags.Tag{
+				{Name: "latest", Value: "latest"},
+				{Name: "ShortSHA", Value: "dca515151"},
+				{Name: "test", Value: "test-tag"},
+			},
+			expectedEnvs: map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2", "TAG_latest": "latest", "TAG_ShortSHA": "dca515151", "TAG_test": "test-tag"},
+		},
+		{
+			name:         "no tags",
+			envs:         map[string]string{"KEY": "VAL"},
+			tags:         []tags.Tag{},
+			expectedEnvs: map[string]string{"KEY": "VAL"},
+		},
+		{
+			name: "no envs",
+			envs: map[string]string{},
+			tags: []tags.Tag{
+				{Name: "Test", Value: "latest"},
+			},
+			expectedEnvs: map[string]string{"TAG_Test": "latest"},
+		},
+	}
+
+	for _, c := range tc {
+		actualEnv := addTagsToEnv(c.tags, c.envs)
+
+		for k, v := range c.expectedEnvs {
+			if actualEnv[k] != v {
+				t.Errorf("%v != %v", actualEnv[k], v)
+			}
+		}
+	}
+}
+
+func Test_appendMissing(t *testing.T) {
+	tc := []struct {
+		name         string
+		existing     map[string]string
+		newTags      []tags.Tag
+		expectedEnvs map[string]string
+	}{
+		{
+			name: "multiple source and targets",
+			existing: map[string]string{
+				"KEY_1": "VAL1",
+				"KEY_2": "VAL2",
+				"KEY_3": "VAL3",
+			},
+			newTags: []tags.Tag{
+				{Name: "KEY_3", Value: "VAL5"},
+				{Name: "KEY_4", Value: "VAL4"},
+			},
+			expectedEnvs: map[string]string{
+				"KEY_1": "VAL1",
+				"KEY_2": "VAL2",
+				"KEY_3": "VAL3",
+				"KEY_4": "VAL4",
+			},
+		},
+	}
+
+	for _, c := range tc {
+		appendMissing(&c.existing, c.newTags)
+
+		for k, v := range c.expectedEnvs {
+			if c.existing[k] != v {
+				t.Errorf("%v != %v", c.existing[k], v)
+			}
+		}
 	}
 }

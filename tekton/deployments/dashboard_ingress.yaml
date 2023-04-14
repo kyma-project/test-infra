@@ -1,0 +1,31 @@
+apiVersion: networking.gke.io/v1beta1
+kind: FrontendConfig
+metadata:
+  name: tekton-frontend-config
+  namespace: tekton-pipelines
+spec:
+  sslPolicy: custom-ssl-policy
+#  redirectToHttps:
+#    enabled: true
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: gce
+    kubernetes.io/ingress.global-static-ip-name: tekton-static-ip
+    networking.gke.io/managed-certificates: tekton-kyma-prow
+    networking.gke.io/v1beta1.FrontendConfig: tekton-frontend-config
+  name: tekton-tls
+  namespace: tekton-pipelines
+spec:
+  rules:
+    - host: tekton.build.kyma-project.io
+      http:
+        paths:
+          - backend:
+              service:
+                name: tekton-dashboard
+                port:
+                  number: 9097
+            pathType: ImplementationSpecific

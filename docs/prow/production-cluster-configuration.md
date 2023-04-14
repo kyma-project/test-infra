@@ -113,19 +113,19 @@ When you use the [`install-prow.sh`](../../prow/scripts/install-prow.sh) script 
 
 The `config.yaml` file contains the basic Prow configuration. When you create a particular Prow job, it uses the Preset definitions from this file. See the example of such a file [here](../../prow/config.yaml).
 
-For more details, see the [Kubernetes documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/Legacy%20Snapshot/prow/getting_started_deploy.md#adding-more-jobs).
+For more details, see the [Kubernetes documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/getting-started-deploy.md#adding-more-jobs).
 
 ### The plugins.yaml file
 
 The `plugins.yaml` file contains the list of [plugins](https://status.build.kyma-project.io/plugins) you enable on a given repository. See the example of such a file [here](../../prow/plugins.yaml).
 
-For more details, see the [Kubernetes documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/Legacy%20Snapshot/prow/plugins/README.md#plugins).
+For more details, see the [Kubernetes documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/components/plugins/_index.md).
 
 ### The jobs directory
 
 The `jobs` directory contains the Prow jobs configuration. See the example of such a file [here](../../prow/jobs).
 
-For more details, see the [Kubernetes documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/Legacy%20Snapshot/prow/getting_started_deploy.md#adding-more-jobs).
+For more details, see the [Kubernetes documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/getting-started-deploy.md#adding-more-jobs).
 
 ### Verify the configuration
 

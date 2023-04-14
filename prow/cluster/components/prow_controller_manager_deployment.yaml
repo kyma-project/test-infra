@@ -34,17 +34,24 @@ spec:
       serviceAccountName: prow-controller-manager
       containers:
       - name: prow-controller-manager
-        image: gcr.io/k8s-prow/prow-controller-manager:v20221130-091b4b6d0e
+        image: gcr.io/k8s-prow/prow-controller-manager:v20230412-a86d65c3c2
         args:
         - --config-path=/etc/config/config.yaml
         - --dry-run=false
         - --enable-controller=plank
         - --job-config-path=/etc/job-config
-        - --kubeconfig=/etc/kubeconfig/config
+        env:
+          - name: KUBECONFIG
+            value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config:/etc/tekton-pipelines-kubeconfig/config"
         volumeMounts:
-        - mountPath: /etc/kubeconfig
-          name: kubeconfig
+        - mountPath: /etc/untrusted-workload-kubeconfig
+          name: untrusted-workload-kubeconfig
           readOnly: true
+        - mountPath: /etc/trusted-workload-kubeconfig
+          name: trusted-workload-kubeconfig
+          readOnly: true
+        - mountPath: /etc/tekton-pipelines-kubeconfig
+          name: tekton-pipelines-kubeconfig
         - name: config
           mountPath: /etc/config
           readOnly: true
@@ -52,10 +59,18 @@ spec:
           mountPath: /etc/job-config
           readOnly: true
       volumes:
-      - name: kubeconfig
+      - name: untrusted-workload-kubeconfig
         secret:
           defaultMode: 420
-          secretName: workload-clusters-kubeconfig
+          secretName: untrusted-workload-kubeconfig
+      - name: trusted-workload-kubeconfig
+        secret:
+          defaultMode: 420
+          secretName: trusted-workload-kubeconfig
+      - name: tekton-pipelines-kubeconfig
+        secret:
+          defaultMode: 420
+          secretName: tekton-pipelines-kubeconfig
       - name: config
         configMap:
           name: config

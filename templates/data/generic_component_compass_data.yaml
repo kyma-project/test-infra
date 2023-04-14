@@ -15,7 +15,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -30,6 +30,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-operations-controller-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-operations-controller"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -38,7 +40,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -76,7 +78,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -91,6 +93,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-connector-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-connector"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -99,7 +103,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -137,10 +141,10 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
-                  request_cpu: 1000m
+                  request_cpu: 2000m
                   run_if_changed: "^components/director/"
                   branches:
                     - ^main$
@@ -152,6 +156,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-director-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-director"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -160,10 +166,10 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
-                  request_cpu: 1000m
+                  request_cpu: 2000m
                   run_if_changed: "^components/director/"
                   branches:
                     - ^main$
@@ -209,7 +215,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -224,6 +230,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-hydrator-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-hydrator"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -232,7 +240,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -256,6 +264,69 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+      - to: ../../prow/jobs/incubator/compass/components/ias-adapter/ias-adapter-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
+              - jobConfig:
+                  name: pull-ias-adapter-build
+                  args:
+                    - "--name=incubator/compass-ias-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/ias-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/ias-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-ias-adapter-build
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-ias-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/ias-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/ias-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-ias-adapter-unit-test"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/ias-adapter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/ias-adapter/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
       - to: ../../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -270,7 +341,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -285,6 +356,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-system-broker-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-system-broker"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -293,7 +366,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -331,7 +404,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -346,6 +419,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-external-services-mock-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-external-services-mock"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -354,7 +429,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -392,7 +467,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -407,6 +482,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-connectivity-adapter-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-connectivity-adapter"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -415,7 +492,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -453,7 +530,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -468,6 +545,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-pairing-adapter-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-pairing-adapter"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -476,7 +555,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -514,7 +593,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -529,6 +608,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-gateway-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-gateway"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -537,7 +618,7 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -574,7 +655,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--platform=linux/amd64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -589,6 +670,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-schema-migrator-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-schema-migrator"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -596,7 +679,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--platform=linux/amd64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
                   request_cpu: 1000m
@@ -624,10 +707,10 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
-                  request_cpu: 1000m
+                  request_cpu: 2000m
                   run_if_changed: "^tests/"
                   branches:
                     - ^main$
@@ -639,6 +722,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-tests-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
                     - "--name=incubator/compass-e2e-tests"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -647,10 +732,10 @@ templates:
                     - "--platform=linux/amd64"
                     - "--platform=linux/arm64"
                   decoration_config:
-                    timeout: 60m
+                    timeout: 20m
                     grace_period: 1m
                   request_memory: 1Gi
-                  request_cpu: 1000m
+                  request_cpu: 2000m
                   run_if_changed: "^tests/"
                   branches:
                     - ^main$
@@ -660,4 +745,3 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
-

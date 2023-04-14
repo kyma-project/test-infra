@@ -12,7 +12,6 @@ plank:
       [Full PR test history](https://status.build.kyma-project.io/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
       [Your PR dashboard](https://status.build.kyma-project.io/pr?query=is:pr+state:open+author:{{with
       index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
-  allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
   max_concurrency: 100 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
   pod_pending_timeout: 60m
   default_decoration_configs:
@@ -24,10 +23,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20221130-091b4b6d0e
-        initupload: gcr.io/k8s-prow/initupload:v20221130-091b4b6d0e
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20221130-091b4b6d0e
-        sidecar: gcr.io/k8s-prow/sidecar:v20221130-091b4b6d0e
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20230412-a86d65c3c2
+        initupload: gcr.io/k8s-prow/initupload:v20230412-a86d65c3c2
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20230412-a86d65c3c2
+        sidecar: gcr.io/k8s-prow/sidecar:v20230412-a86d65c3c2
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -294,7 +293,6 @@ tide:
     kyma-incubator/terraform-provider-gardener: squash
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
-    kyma-incubator/podpreset-crd: squash
     kyma-incubator/kymart: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
@@ -399,6 +397,7 @@ presets:
   # pjtester
   - labels:
       preset-pjtester-kubeconfig: "true"
+    serviceAccountName: sa-prow-job-resource-cleaner
     env:
       - name: KUBECONFIG_PATH
         value: /etc/kubeconfig/pjtester/config
@@ -409,19 +408,6 @@ presets:
     volumeMounts:
       - name: pjtester-kubeconfig
         mountPath: /etc/kubeconfig/pjtester
-        readOnly: true
-  - labels:
-      preset-sa-prow-job-resource-cleaner: "true"
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-prow-job-resource-cleaner/service-account.json
-    volumes:
-      - name: sa-prow-job-resource-cleaner
-        secret:
-          secretName: sa-prow-job-resource-cleaner
-    volumeMounts:
-      - name: sa-prow-job-resource-cleaner
-        mountPath: /etc/credentials/sa-prow-job-resource-cleaner
         readOnly: true
   - labels:
       preset-certificates-bucket: "true"
@@ -673,11 +659,6 @@ presets:
     env:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project"
-  - labels:
-      preset-docker-push-repository-gke-external-registry-integration: "true" # Needed for kyma installer image
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/sap-kyma-prow-workloads/gke-external-registry/functions"
   - labels:
       preset-docker-push-repository-gke-integration: "true" # Needed for kyma installer image
     env:
@@ -949,11 +930,6 @@ presets:
       preset-cluster-use-ssd: "true"
     env:
       - name: CLUSTER_USE_SSD
-        value: "true"
-  - labels:
-      preset-gke-pod-security-policy: "true"
-    env:
-      - name: GKE_ENABLE_POD_SECURITY_POLICY
         value: "true"
   # whitesource labels
   - labels:

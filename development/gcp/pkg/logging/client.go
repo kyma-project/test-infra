@@ -14,8 +14,8 @@ import (
 const (
 	// ErrorReportingType holds log message payload value for Type expected by google cloud logging to report message as error in Error Reporting.
 	ErrorReportingType = "type.googleapis.com/google.devtools.clouderrorreporting.v1beta1.ReportedErrorEvent"
-	// LogsProjectID is a default project to store logs.
-	LogsProjectID       = "sap-kyma-prow"
+	// ProwLogsProjectID is a default project to store logs.
+	ProwLogsProjectID   = "sap-kyma-prow"
 	CredentialsFilePath = "/etc/gcpLoggingServiceAccountKey/key"
 	// ProwjobsLogName is a default Google Cloud Logging log filename for messages sent by prowjobs.
 	ProwjobsLogName = "prowjobs"
@@ -41,7 +41,7 @@ func NewClient(ctx context.Context, options ...ClientOption) (*Client, error) {
 		AppName:             "",
 		LogName:             "",
 		Component:           "",
-		ProjectID:           LogsProjectID,
+		ProjectID:           ProwLogsProjectID,
 		credentialsFilePath: CredentialsFilePath,
 	}
 
@@ -83,8 +83,8 @@ func WithCredentialsFilePath(credentialsFilePath string) ClientOption {
 // TODO: preset-prowjob-gcp-logging should be changed to preset-gcp-logging
 // Prow preset with service account credentials for logging to gcp: preset-prowjob-gcp-logging
 // It provides default Google logging log name for logging from prowjobs.
-func NewProwjobClient(ctx context.Context, credentialsFilePath string) (*Client, error) {
-	c, err := newClient(ctx, credentialsFilePath, ProwjobsLogName)
+func NewProwjobClient(ctx context.Context, credentialsFilePath, gcpproject string) (*Client, error) {
+	c, err := newClient(ctx, credentialsFilePath, gcpproject)
 	if err != nil {
 		return nil, fmt.Errorf("got error while creating prowjob gcp logging client, error: %w", err)
 	}
@@ -122,7 +122,7 @@ func (c *Client) NewLogger(options ...LoggerOption) (*Logger, error) {
 		AppName:             "",
 		LogName:             "",
 		Component:           "",
-		ProjectID:           LogsProjectID,
+		ProjectID:           ProwLogsProjectID,
 		credentialsFilePath: CredentialsFilePath,
 		commonLabels:        nil,
 		trace:               "",

@@ -138,7 +138,7 @@ reconciler::wait_until_kyma_reconciled
 
 # run the fast integration test before reconciliation
 log::banner "Executing pre-upgrade test"
-gardener::pre_upgrade_test_fast_integration_kyma
+gardener::pre_upgrade_test_fast_integration_kyma -d "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
 
 ## ---------------------------------------------------------------------------------------
 ## Reconcile and test Kyma2 main
@@ -161,7 +161,7 @@ reconciler::wait_until_kyma_reconciled
 
 # run the fast integration test after reconciliation
 log::banner "Executing post-upgrade test"
-gardener::post_upgrade_test_fast_integration_kyma
+gardener::post_upgrade_test_fast_integration_kyma -d "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
 
 # Must be at the end of the script
 ERROR_LOGGING_GUARD="false"

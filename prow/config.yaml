@@ -12,35 +12,34 @@ plank:
       [Full PR test history](https://status.build.kyma-project.io/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
       [Your PR dashboard](https://status.build.kyma-project.io/pr?query=is:pr+state:open+author:{{with
       index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
-  allow_cancellations: true # AllowCancellations enables aborting presubmit jobs for commits that have been superseded by newer commits in Github pull requests.
   max_concurrency: 100 # Limit of concurrent ProwJobs. Need to be adjusted depending of the cluster size.
   pod_pending_timeout: 60m
   default_decoration_config_entries:
-  - config:
-      timeout: 3h
-      grace_period: 10m
-      censor_secrets: true
-      censoring_options:
-        censoring_concurrency: 2 # 2 concurrent censoring
-        censoring_buffer_size: 3092 # 3kB
-      utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20221130-091b4b6d0e
-        initupload: gcr.io/k8s-prow/initupload:v20221130-091b4b6d0e
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20221130-091b4b6d0e
-        sidecar: gcr.io/k8s-prow/sidecar:v20221130-091b4b6d0e
-      gcs_configuration:
-        bucket: kyma-prow-logs
-        path_strategy: "explicit"
-      gcs_credentials_secret: ""
-      default_service_account_name: prowjob-default-sa
-  - cluster: "untrusted-workload"
-    config:
-      gcs_credentials_secret: ""
-      default_service_account_name: prowjob-default-sa
-  - cluster: "trusted-workload"
-    config:
-      gcs_credentials_secret: ""
-      default_service_account_name: prowjob-default-sa
+    - config:
+        timeout: 3h
+        grace_period: 10m
+        censor_secrets: true
+        censoring_options:
+          censoring_concurrency: 2 # 2 concurrent censoring
+          censoring_buffer_size: 3092 # 3kB
+        utility_images:
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230412-a86d65c3c2
+          initupload: gcr.io/k8s-prow/initupload:v20230412-a86d65c3c2
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230412-a86d65c3c2
+          sidecar: gcr.io/k8s-prow/sidecar:v20230412-a86d65c3c2
+        gcs_configuration:
+          bucket: kyma-prow-logs
+          path_strategy: "explicit"
+        gcs_credentials_secret: ""
+        default_service_account_name: prowjob-default-sa
+    - cluster: "untrusted-workload"
+      config:
+        gcs_credentials_secret: ""
+        default_service_account_name: prowjob-default-sa
+    - cluster: "trusted-workload"
+      config:
+        gcs_credentials_secret: ""
+        default_service_account_name: prowjob-default-sa
 
 deck:
   spyglass:
@@ -281,12 +280,13 @@ branch-protection:
 tide:
   sync_period: 2m
   batch_size_limit:
-    '*': -1 # disable batch merging for all repos
+    "*": -1 # disable batch merging for all repos
   merge_method:
     kyma-project/kyma: squash
     kyma-project/website: squash
     kyma-project/test-infra: squash
     kyma-project/busola: squash
+    kyma-project/kyma-dashboard: squash
     kyma-project/control-plane: squash
     kyma-project/third-party-images: squash
     kyma-project/hydroform: squash
@@ -300,6 +300,14 @@ tide:
     kyma-project/module-manager: squash
     kyma-project/api-gateway: squash
     kyma-project/organization-and-operations: squash
+    kyma-project/btp-manager: squash
+    kyma-project/istio: squash
+    kyma-project/warden: squash
+    kyma-project/telemetry-manager: squash
+    kyma-project/directory-size-exporter: squash
+    kyma-project/eventing-manager: squash
+    kyma-project/eventing-tools: squash
+    kyma-project/nats-manager: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
@@ -309,7 +317,6 @@ tide:
     kyma-incubator/documentation-component: squash
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
-    kyma-incubator/podpreset-crd: squash
     kyma-incubator/kymart: squash
     kyma-incubator/varkes: squash
     #    kyma-incubator/marketplaces: squash
@@ -390,21 +397,21 @@ presets:
       preset-cluster-version-old: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.23"
+        value: "1.25"
       - name: GKE_CLUSTER_VERSION
-        value: "1.23"
+        value: "1.25"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.23"
+        value: "1.25"
   # cluster version
   - labels:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.26"
       - name: GKE_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.25"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.25"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
@@ -433,19 +440,6 @@ presets:
     volumeMounts:
       - name: pjtester-kubeconfig
         mountPath: /etc/kubeconfig/pjtester
-        readOnly: true
-  - labels:
-      preset-sa-prow-job-resource-cleaner: "true"
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-prow-job-resource-cleaner/service-account.json
-    volumes:
-      - name: sa-prow-job-resource-cleaner
-        secret:
-          secretName: sa-prow-job-resource-cleaner
-    volumeMounts:
-      - name: sa-prow-job-resource-cleaner
-        mountPath: /etc/credentials/sa-prow-job-resource-cleaner
         readOnly: true
   - labels:
       preset-certificates-bucket: "true"
@@ -720,11 +714,6 @@ presets:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project"
   - labels:
-      preset-docker-push-repository-gke-external-registry-integration: "true" # Needed for kyma installer image
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/sap-kyma-prow-workloads/gke-external-registry/functions"
-  - labels:
       preset-docker-push-repository-gke-integration: "true" # Needed for kyma installer image
     env:
       - name: DOCKER_PUSH_REPOSITORY
@@ -830,6 +819,15 @@ presets:
         value: "kyma.bot@sap.com"
       - name: BOT_GITHUB_USER
         value: "Kyma Bot"
+  # BTP-Manager Bot
+  - labels:
+      preset-kyma-btp-manager-bot-github-token: "true"
+    env:
+      - name: BOT_GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-btp-manager-bot-github-token
+            key: token
   # Kyma Guard Bot
   - labels:
       preset-kyma-guard-bot-github-token: "true"
@@ -1000,11 +998,6 @@ presets:
       preset-cluster-use-ssd: "true"
     env:
       - name: CLUSTER_USE_SSD
-        value: "true"
-  - labels:
-      preset-gke-pod-security-policy: "true"
-    env:
-      - name: GKE_ENABLE_POD_SECURITY_POLICY
         value: "true"
   # whitesource labels
   - labels:
@@ -1331,19 +1324,6 @@ presets:
       - name: KMS_KEY_URL
         value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
   - labels:
-      preset-prowjob-gcp-logging: "true"
-    env:
-      - name: SA_PROWJOB_GCP_LOGGING_CLIENT_KEY_PATH
-        value: "/etc/credentials/sa-prowjob-gcp-logging-client/secret.json"
-    volumes:
-      - name: sa-prowjob-gcp-logging-client-key
-        secret:
-          secretName: sa-prowjob-gcp-logging-client-key
-    volumeMounts:
-      - name: sa-prowjob-gcp-logging-client-key
-        mountPath: /etc/credentials/sa-prowjob-gcp-logging-client
-        readOnly: true
-  - labels:
       preset-kyma-integration-kcp-client-credentials: "true"
     env:
       - name: KCP_TECH_USER_LOGIN
@@ -1397,3 +1377,46 @@ presets:
         value: "https://mothership-reconciler.cp.dev.kyma.cloud.sap/v1"
       - name: KCP_OIDC_ISSUER_URL
         value: "https://kymatest.accounts400.ondemand.com"
+  - labels:
+      preset-api-gateway-int-test-client-creds: "true"
+    env:
+      - name: OIDC_ISSUER_URL
+        value: "https://kymagoattest.accounts400.ondemand.com"
+      - name: CLIENT_ID
+        valueFrom:
+          secretKeyRef:
+            name: kyma-api-gateway-int-test-client-id
+            key: token
+      - name: CLIENT_SECRET
+        valueFrom:
+          secretKeyRef:
+            name: kyma-api-gateway-int-test-client-secret
+            key: token
+  - labels:
+      preset-signify-prod-secret: "true"
+    volumes:
+      - name: signify-prod-secret
+        secret:
+          secretName: signify-prod-secret
+    volumeMounts:
+      - name: signify-prod-secret
+        mountPath: /secret-prod
+        readOnly: true
+  - labels:
+      preset-azure-devops-sa-token: "true"
+    env:
+      - name: AZURE_DEVOPS_SA_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: azure-devops-token
+            key: azure-devops-token
+  - labels:
+      preset-tunas-github-bot-token: "true"
+    volumes:
+      - name: tunas-github-bot-token
+        secret:
+          secretName: tunas-github-bot-token
+    volumeMounts:
+      - name: tunas-github-bot-token
+        mountPath: /tunas-bot
+        readOnly: true

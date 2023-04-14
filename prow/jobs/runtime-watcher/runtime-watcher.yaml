@@ -19,7 +19,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             securityContext:
               privileged: true
             command:
@@ -57,7 +57,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
             command:
@@ -92,7 +92,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20221025-25ddc121"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             securityContext:
               privileged: true
             command:
@@ -130,7 +130,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221121-3622f3a5"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
             command:
@@ -166,7 +166,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -178,10 +178,16 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/runtime-watcher:
@@ -193,6 +199,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "main-build-skr"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -202,7 +209,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20221109-d1ac84d4b"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
@@ -215,8 +222,14 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   

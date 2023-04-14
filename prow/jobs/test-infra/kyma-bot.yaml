@@ -12,7 +12,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-sap-token: "true"
         preset-bot-github-token: "true"
-        preset-prowjob-gcp-logging: "true"
       always_run: true
       optional: true
       skip_report: false
@@ -28,8 +27,9 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
+        serviceAccountName: sa-prowjob-gcp-logging-client
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20221124-ce0a9db7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
             securityContext:
               privileged: true

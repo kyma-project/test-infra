@@ -16,12 +16,6 @@ updates:
       prefix: "gomod"
       include: "scope"
     ignore:
-      - dependency-name: "github.com/onsi/ginkgo/v2"
-        versions:
-          - "2.x"
-      - dependency-name: "github.com/onsi/gomega"
-        versions:
-          - "1.2x"
       - dependency-name: "github.com/go-logr/logr"
         versions:
           - "1.2.2"
@@ -32,6 +26,46 @@ updates:
           - "1.1.0-rc1"
           - "1.0.0"
           - "1.0.0-rc1"
+      - dependency-name: "k8s.io/apimachinery"
+        versions:
+          - "0.2x"
+      - dependency-name: "k8s.io/api"
+        versions:
+          - "0.2x"
+      - dependency-name: "k8s.io/client-go"
+        versions:
+          - "0.2x"
+  - package-ecosystem: "terraform"
+    directory: "configs/terraform/secrets-leaks-log-scanner"
+    labels:
+      - "terraform"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "tf"
+      include: "scope"
+  - package-ecosystem: "terraform"
+    directory: "configs/terraform/core"
+    labels:
+      - "terraform"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "tf"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/prow/images/ginkgo"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "ginkgo"
+      include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/prow-tools"
     labels:
@@ -53,17 +87,6 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "githubrelease"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/development/kyma-ci-force-bot/ciforcebot"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "ciforcebot"
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/development/kyma-github-connector/githubWebhookGateway"
@@ -240,5 +263,71 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "markdown-index"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/development/gcp/cloud-run/create-github-issue"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "create-gh-issue"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/development/gcp/cloud-run/search-github-issue"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "search-gh-issue"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/development/gcp/cloud-run/scan-logs-for-secrets"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "scan-logs-for-secrets"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/development/gcp/cloud-run/move-gcs-bucket"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "move-gcs-bucket"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/development/gcp/cloud-run/slack-message-sender"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "slack-msg-sender"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/development/secrets-rotator/cloud-run/rotate-service-account"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "docker-rotate-sa"
       include: "scope"
 
