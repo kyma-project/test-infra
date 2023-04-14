@@ -114,7 +114,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
+            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 200Mi
