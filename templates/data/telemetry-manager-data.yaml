@@ -1,0 +1,50 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/telemetry-manager/telemetry-manager-generic.yaml
+        localSets:
+          job_default:
+            privileged: false
+          vm_job_make:
+            path_alias: github.com/kyma-project/telemetry-manager
+            command: "bash"
+            env:
+              JOB_REPO_NAME: "telemetry-manager"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
+            request_memory: 200Mi
+            request_cpu: 80m
+          vm_job_labels:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-sa-vm-kyma-integration: "true"
+              preset-gc-project-env: "true"
+          vm_job_k3d:
+            annotations:
+              pipeline.platform: k3d
+              pipeline.installer: kyma deploy
+              pipeline.clusterprovisioning: k3d
+        jobConfigs:
+          - repoName: "github.com/kyma-project/telemetry-manager"
+            jobs:
+              - jobConfig:
+                  name: pre-main-telemetry-module-verify
+                  always_run: "true"
+                  optional: "false"
+                  env:
+                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
+                    JOB_VM_COMMAND: >-
+                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
+                      && make run-with-lm-using-local-images
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_kyma-integration
+                    - extra_refs_test-infra
+                  local:
+                    - job_default
+                    - vm_job_make
+                    - vm_job_k3d
+                    - vm_job_labels
