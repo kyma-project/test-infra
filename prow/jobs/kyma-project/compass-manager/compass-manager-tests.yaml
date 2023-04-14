@@ -7,7 +7,7 @@ presubmits: # runs on PRs
         pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-compass-manager-tests"
+        prow.k8s.io/pubsub.runID: "pull-compass-manager-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
       optional: false
       run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)'
