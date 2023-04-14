@@ -33,3 +33,15 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - "disable_testgrid"
+              - jobConfig:
+                  name: "pull-eventing-tools-unit-test"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: "\\.go$|^go.(sum|mod)"
+                inheritedConfigs:
+                  global:
+                    - testing
+                    - "jobConfig_presubmit"

@@ -304,6 +304,7 @@ tide:
     kyma-project/telemetry-manager: squash
     kyma-project/directory-size-exporter: squash
     kyma-project/eventing-manager: squash
+    kyma-project/eventing-auth-manager: squash
     kyma-project/eventing-tools: squash
     kyma-project/nats-manager: squash
 

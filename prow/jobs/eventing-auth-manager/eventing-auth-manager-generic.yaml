@@ -2,13 +2,13 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/eventing-tools:
-    - name: pull-eventing-tools-build
+  kyma-project/eventing-auth-manager:
+    - name: pull-eventing-auth-manager-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-eventing-tools-build"
+        prow.k8s.io/pubsub.runID: "pull-eventing-auth-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^Dockerfile|\.go$|^go.(sum|mod)'
@@ -22,7 +22,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=eventing-tools"
+              - "--name=eventing-auth-manager"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
@@ -44,12 +44,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-eventing-tools-unit-test
+    - name: pull-eventing-auth-manager-unit-test
       annotations:
         pipeline.trigger: "pr-submit"
+        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-eventing-tools-unit-test"
+        prow.k8s.io/pubsub.runID: "pull-eventing-auth-manager-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '\.go$|^go.(sum|mod)'
       skip_report: false
@@ -70,14 +71,13 @@ presubmits: # runs on PRs
                 cpu: 100m
   
 postsubmits: # runs on main
-  kyma-project/eventing-tools:
-    - name: post-eventing-tools-build
+  kyma-project/eventing-auth-manager:
+    - name: post-eventing-auth-manager-build
       annotations:
         pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-eventing-tools-build"
+        prow.k8s.io/pubsub.runID: "post-eventing-auth-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -92,7 +92,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=eventing-tools"
+              - "--name=eventing-auth-manager"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
