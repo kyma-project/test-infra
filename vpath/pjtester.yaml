@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      telemetry-manager:
+        - pjName: "pre-main-telemetry-module-verify"
+
+prConfigs:
+  kyma-project:
+    telemetry-manager:
+      prNumber: 129
