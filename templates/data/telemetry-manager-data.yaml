@@ -48,3 +48,22 @@ templates:
                     - vm_job_make
                     - vm_job_k3d
                     - vm_job_labels
+              - jobConfig:
+                  name: release-telemetry-module
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned" 
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/telemetry-manager:${PULL_BASE_SHA}"
+                  command: "make"
+                  args:
+                    - "release"
+                  branches:
+                    - "^release-\\d+\\.\\d+$"
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default
