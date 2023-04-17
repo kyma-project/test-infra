@@ -4,7 +4,9 @@ pjConfigs:
       telemetry-manager:
         - pjName: "pre-main-telemetry-module-verify"
         - pjName: "post-telemetry-manager-build"
-        - pjName: "release-telemetry-module"
+        - pjName: "release-telemetry-module" 
+        - pjName: "pull-directory-size-exporter-build"
+        - pjName: "post-directory-size-exporter-build"
 
 prConfigs:
   kyma-project:
