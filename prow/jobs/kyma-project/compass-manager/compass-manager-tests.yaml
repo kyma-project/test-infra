@@ -1,6 +1,6 @@
 presubmits: # runs on PRs
   kyma-project/compass-manager:
-    - name: pre-main-compass-manager-tests
+    - name: pull-compass-manager-tests
       annotations:
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
