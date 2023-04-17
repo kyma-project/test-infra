@@ -2,9 +2,9 @@ pjConfigs:
   prowJobs:
     kyma-project:
       telemetry-manager:
-        - pjName: "release-telemetry-module"
         - pjName: "pre-main-telemetry-module-verify"
-        # - pjName: "post-telemetry-manager-build"
+        - pjName: "post-telemetry-manager-build"
+        - pjName: "release-telemetry-module"
 
 prConfigs:
   kyma-project:
