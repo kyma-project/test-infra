@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/telemetry-manager/telemetry-manager-generic.yaml
+      - to: ../../prow/jobs/telemetry-manager/telemetry-manager.yaml
         localSets:
           job_default:
             privileged: false

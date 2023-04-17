@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/directory-size-exporter/directory-size-exporter-generic.yaml
+      - to: ../../prow/jobs/directory-size-exporter/directory-size-exporter.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/directory-size-exporter"
             jobs:
