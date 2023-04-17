@@ -453,6 +453,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                    - "--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
