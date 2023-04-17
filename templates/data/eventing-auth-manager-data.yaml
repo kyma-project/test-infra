@@ -1,14 +1,14 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/eventing-manager/eventing-manager-generic.yaml
+      - to: ../../prow/jobs/eventing-auth-manager/eventing-auth-manager-generic.yaml
         jobConfigs:
-          - repoName: "github.com/kyma-project/eventing-manager"
+          - repoName: "github.com/kyma-project/eventing-auth-manager"
             jobs:
               - jobConfig:
-                  name: pull-eventing-manager-build
+                  name: pull-eventing-auth-manager-build
                   args:
-                    - "--name=eventing-manager"
+                    - "--name=eventing-auth-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
@@ -18,11 +18,11 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-eventing-manager-build
+                  name: post-eventing-auth-manager-build
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
-                    - "--name=eventing-manager"
+                    - "--name=eventing-auth-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
@@ -32,9 +32,8 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - "disable_testgrid"
               - jobConfig:
-                  name: "pull-eventing-manager-unit-test"
+                  name: "pull-eventing-auth-manager-unit-test"
                   optional: false
                   command: "/bin/sh"
                   args:
@@ -45,3 +44,4 @@ templates:
                   global:
                     - testing
                     - "jobConfig_presubmit"
+                    - "disable_testgrid"
