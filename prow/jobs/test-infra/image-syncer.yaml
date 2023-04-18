@@ -67,7 +67,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer dry-run"
+              - "make -C development/image-syncer dry-run"
             resources:
               requests:
                 memory: 3Gi
@@ -108,7 +108,7 @@ postsubmits: # runs on main
               - "bash"
             args:
               - "-c"
-              - "source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer run"
+              - "make -C development/image-syncer run"
             resources:
               requests:
                 memory: 3Gi

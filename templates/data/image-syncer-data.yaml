@@ -29,7 +29,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - 'source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer dry-run'
+                    - 'make -C development/image-syncer dry-run'
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -45,7 +45,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - 'source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer run'
+                    - 'make -C development/image-syncer run'
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
