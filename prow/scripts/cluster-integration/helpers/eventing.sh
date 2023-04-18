@@ -221,10 +221,10 @@ function eventing::pre_upgrade_test_fast_integration() {
     log::info "Running pre upgrade Eventing E2E release tests"
 
     if [[ "${KYMA_BRANCH}" ]]; then
-      log::info "Cloning mfaizanse kyma repository and checking out branch:${KYMA_BRANCH}"
-      git clone https://github.com/mfaizanse/kyma.git ~/.kyma_branch
+      log::info "Cloning kyma repository and checking out branch:${KYMA_BRANCH}"
+      git clone https://github.com/kyma-project/kyma ~/.kyma_branch
       pushd ~/.kyma_branch
-      git checkout "fi_edvc"
+      git checkout "${KYMA_BRANCH}"
       popd
 
       pushd ~/.kyma_branch/tests/fast-integration
