@@ -34,7 +34,7 @@ spec:
       default: ""
   steps:
     - name: run-unit-tests
-      image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65
+      image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db
       workingDir: /home/prow/go/src/github.com/$(params.REPO_OWNER)/$(params.REPO_NAME)
       command:
         - "go"

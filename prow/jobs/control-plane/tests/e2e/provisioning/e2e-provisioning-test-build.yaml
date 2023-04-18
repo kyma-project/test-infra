@@ -2,16 +2,16 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/eventing-tools:
-    - name: pull-eventing-tools-build
+  kyma-project/control-plane:
+    - name: pull-e2e-provisioning-test-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-eventing-tools-build"
+        prow.k8s.io/pubsub.runID: "pull-e2e-provisioning-test-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^Dockerfile|\.go$|^go.(sum|mod)'
+      run_if_changed: '^tests/e2e/provisioning/|^scripts/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -22,10 +22,10 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=eventing-tools"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=."
+              - "--name=control-plane/e2e-provisioning-test"
+              - "--context=tests/e2e/provisioning"
               - "--dockerfile=Dockerfile"
+              - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
                 memory: 1.5Gi
@@ -44,59 +44,35 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-eventing-tools-unit-test
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-eventing-tools-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '\.go$|^go.(sum|mod)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
   
 postsubmits: # runs on main
-  kyma-project/eventing-tools:
-    - name: post-eventing-tools-build
+  kyma-project/control-plane:
+    - name: post-e2e-provisioning-test-build
       annotations:
         pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-eventing-tools-build"
+        prow.k8s.io/pubsub.runID: "post-e2e-provisioning-test-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^Dockerfile|\.go$|^go.(sum|mod)'
+      run_if_changed: '^tests/e2e/provisioning/|^scripts/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      branches:
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
-              - "--name=eventing-tools"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=."
+              - "--name=control-plane/e2e-provisioning-test"
+              - "--context=tests/e2e/provisioning"
               - "--dockerfile=Dockerfile"
-              - "--tag=latest"
+              - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
                 memory: 1.5Gi

@@ -25,7 +25,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230324-34be098e"
+          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
             command:
               - "/markdown-index"
             args:
@@ -51,7 +51,7 @@ postsubmits: # runs on main
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             command:
               - "prow/cluster/deploy.sh"
   
@@ -76,7 +76,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230412-a86d65c3c2"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230417-e4f4057e6e"
             command:
               - "generic-autobumper"
             args:
@@ -96,7 +96,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230412-a86d65c3c2"
+          - image: "gcr.io/k8s-prow/label_sync:v20230417-e4f4057e6e"
             command:
               - "label_sync"
             args:
@@ -137,7 +137,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230412-a86d65c3c2"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230417-e4f4057e6e"
             command:
               - "generic-autobumper"
             args:
@@ -164,7 +164,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230412-a86d65c3c2"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230417-e4f4057e6e"
             command:
               - "generic-autobumper"
             args:
