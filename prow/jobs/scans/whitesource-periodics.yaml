@@ -679,7 +679,7 @@ periodics: # runs on schedule
         preset-kms-gc-project-env: "true"
         preset-kyma-encryption-key: "true"
         preset-kyma-keyring: "true"
-        preset-whitesource-product-kyma: "true"
+        preset-whitesource-product-control-plane: "true"
         preset-wssagent-keys: "true"
         preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
       cron: "0 4 * * *"
