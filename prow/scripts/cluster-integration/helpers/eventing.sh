@@ -224,7 +224,7 @@ function eventing::pre_upgrade_test_fast_integration() {
       log::info "Cloning mfaizanse kyma repository and checking out branch:${KYMA_BRANCH}"
       git clone https://github.com/mfaizanse/kyma.git ~/.kyma_branch
       pushd ~/.kyma_branch
-      git checkout "enable_fi_recreated_test"
+      git checkout "fi_edvc"
       popd
 
       pushd ~/.kyma_branch/tests/fast-integration
