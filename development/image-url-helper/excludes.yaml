@@ -2,6 +2,9 @@ excludes:
   - filename: "monitoring/charts/grafana/values.yaml"
     images:
       - "bats/bats"
+  - filename: "monitoring/charts/prometheus-pushgateway/values.yaml"
+    images:
+      - "prom/pushgateway"
   - filename: "monitoring/charts/grafana/templates/image-renderer-deployment.yaml"
     images:
      - "{{ .Values.imageRenderer.image.repository }}:{{ .Values.imageRenderer.image.tag }}@sha256:{{ .Values.imageRenderer.image.sha }}"
