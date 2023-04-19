@@ -677,7 +677,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
-        preset-kyma-encryption-key: "true"
         preset-kyma-keyring: "true"
         preset-whitesource-product-control-plane: "true"
         preset-wssagent-keys: "true"
