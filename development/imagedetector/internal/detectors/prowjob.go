@@ -4,30 +4,27 @@ import (
 	"k8s.io/test-infra/prow/config"
 )
 
-type ProwJob struct {
-}
-
-func (p *ProwJob) Check(path string) bool {
+func Check(path string) bool {
 	_, err := config.ReadJobConfig(path)
 	return err == nil
 }
 
-func (p *ProwJob) Extract(path string) ([]string, error) {
-	config, err := config.ReadJobConfig(path)
+func Extract(path string) ([]string, error) {
+	cfg, err := config.ReadJobConfig(path)
 	if err != nil {
 		return nil, err
 	}
 
-	images := extract(config)
+	images := extract(cfg)
 
 	return images, nil
 }
 
 func extract(config config.JobConfig) []string {
 	images := []string{}
-	images = append(images, extractPeriodics(config.Periodics)...)
-	images = append(images, extractPresubmits(config.PresubmitsStatic)...)
-	images = append(images, extractPostsubmits(config.PostsubmitsStatic)...)
+	images = appendIfMissing(images, extractPeriodics(config.Periodics)...)
+	images = appendIfMissing(images, extractPresubmits(config.PresubmitsStatic)...)
+	images = appendIfMissing(images, extractPostsubmits(config.PostsubmitsStatic)...)
 
 	return images
 }
@@ -67,4 +64,20 @@ func extractPostsubmits(postsubmits map[string][]config.Postsubmit) []string {
 	}
 
 	return images
+}
+
+func appendIfMissing[T comparable](slice []T, elements ...T) []T {
+	cache := make(map[T]T)
+
+	for _, el := range slice {
+		cache[el] = el
+	}
+
+	for _, el := range elements {
+		if _, ok := cache[el]; !ok {
+			slice = append(slice, el)
+		}
+	}
+
+	return slice
 }

@@ -11,11 +11,12 @@ import (
 func TestExtract(t *testing.T) {
 	tc := []struct {
 		name           string
-		jobConfig      config.JobConfig
 		expectedImages []string
+		jobConfig      config.JobConfig
 	}{
 		{
-			name: "basic periodic prowjob, pass",
+			name:           "basic periodic prowjob, pass",
+			expectedImages: []string{"nginx:1.14.2"},
 			jobConfig: config.JobConfig{
 				Periodics: []config.Periodic{
 					{
@@ -29,10 +30,10 @@ func TestExtract(t *testing.T) {
 					},
 				},
 			},
-			expectedImages: []string{"nginx:1.14.2"},
 		},
 		{
-			name: "basic prowjobs file, pass",
+			name:           "basic prowjobs file, pass",
+			expectedImages: []string{"nginx:1.14.2", "test.com/test-org/test-repo/image:test-tag"},
 			jobConfig: config.JobConfig{
 				Periodics: []config.Periodic{
 					{
@@ -59,10 +60,10 @@ func TestExtract(t *testing.T) {
 					},
 				},
 			},
-			expectedImages: []string{"nginx:1.14.2", "test.com/test-org/test-repo/image:test-tag"},
 		},
 		{
-			name: "postsubmits prowjob, pass",
+			name:           "postsubmits prowjob, pass",
+			expectedImages: []string{"test.com/test-org/test-repo/image:test-tag"},
 			jobConfig: config.JobConfig{
 				PostsubmitsStatic: map[string][]config.Postsubmit{
 					"test-org/test-repo": {
@@ -78,12 +79,54 @@ func TestExtract(t *testing.T) {
 					},
 				},
 			},
-			expectedImages: []string{"test.com/test-org/test-repo/image:test-tag"},
 		},
 		{
 			name:           "empty prowjob, pass no images",
 			jobConfig:      config.JobConfig{},
 			expectedImages: []string{},
+		},
+		{
+			name:           "duplicated container images, pass unique list",
+			expectedImages: []string{"test.com/test-org/test-repo/image:test-tag"},
+			jobConfig: config.JobConfig{
+				PostsubmitsStatic: map[string][]config.Postsubmit{
+					"test-org/test-repo": {
+						{
+							JobBase: config.JobBase{
+								Spec: &v1.PodSpec{
+									Containers: []v1.Container{
+										{Image: "test.com/test-org/test-repo/image:test-tag"},
+									},
+								},
+							},
+						},
+					},
+				},
+				PresubmitsStatic: map[string][]config.Presubmit{
+					"test-org/test-repo": {
+						{
+							JobBase: config.JobBase{
+								Spec: &v1.PodSpec{
+									Containers: []v1.Container{
+										{Image: "test.com/test-org/test-repo/image:test-tag"},
+									},
+								},
+							},
+						},
+					},
+				},
+				Periodics: []config.Periodic{
+					{
+						JobBase: config.JobBase{
+							Spec: &v1.PodSpec{
+								Containers: []v1.Container{
+									{Image: "test.com/test-org/test-repo/image:test-tag"},
+								},
+							},
+						},
+					},
+				},
+			},
 		},
 	}
 
