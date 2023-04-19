@@ -27,6 +27,7 @@ func extract(config config.JobConfig) []string {
 	var images []string
 	images = append(images, extractPeriodics(config.Periodics)...)
 	images = append(images, extractPresubmits(config.PresubmitsStatic)...)
+	images = append(images, extractPostsubmits(config.PostsubmitsStatic)...)
 
 	return images
 }
@@ -45,6 +46,19 @@ func extractPeriodics(periodics []config.Periodic) []string {
 func extractPresubmits(presubmits map[string][]config.Presubmit) []string {
 	var images []string
 	for _, repo := range presubmits {
+		for _, job := range repo {
+			for _, container := range job.Spec.Containers {
+				images = append(images, container.Image)
+			}
+		}
+	}
+
+	return images
+}
+
+func extractPostsubmits(postsubmits map[string][]config.Postsubmit) []string {
+	var images []string
+	for _, repo := range postsubmits {
 		for _, job := range repo {
 			for _, container := range job.Spec.Containers {
 				images = append(images, container.Image)
