@@ -24,7 +24,7 @@ func (p *ProwJob) Extract(path string) ([]string, error) {
 }
 
 func extract(config config.JobConfig) []string {
-	var images []string
+	images := []string{}
 	images = append(images, extractPeriodics(config.Periodics)...)
 	images = append(images, extractPresubmits(config.PresubmitsStatic)...)
 	images = append(images, extractPostsubmits(config.PostsubmitsStatic)...)

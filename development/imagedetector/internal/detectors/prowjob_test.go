@@ -80,6 +80,11 @@ func TestExtract(t *testing.T) {
 			},
 			expectedImages: []string{"test.com/test-org/test-repo/image:test-tag"},
 		},
+		{
+			name:           "empty prowjob, pass no images",
+			jobConfig:      config.JobConfig{},
+			expectedImages: []string{},
+		},
 	}
 
 	for _, c := range tc {
