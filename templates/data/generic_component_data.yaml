@@ -475,7 +475,6 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -508,7 +507,6 @@ templates:
                     preset-bot-github-token: "true"
                   env:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned" 
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/telemetry-manager:${PULL_BASE_SHA}"
                   command: "make"
                   args:
                     - "release"
