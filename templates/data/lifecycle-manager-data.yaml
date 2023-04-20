@@ -6,6 +6,8 @@ templates:
           jobConfig_default:
             imagePullPolicy: "Always"
             privileged: "false"
+            request_memory: 2Gi
+            request_cpu: 500m
         jobConfigs:
           - repoName: kyma-project/lifecycle-manager
             jobs:

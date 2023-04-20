@@ -323,6 +323,13 @@ globalSets:
           repo: "reconciler"
           path_alias: "github.com/kyma-incubator/reconciler"
           base_ref: "main"
+  extra_refs_lifecycle-manager:
+    extra_refs:
+      lifecycle-manager:
+        - org: "kyma-project"
+          repo: "lifecycle-manager"
+          path_alias: "github.com/kyma-project/lifecycle-manager"
+          base_ref: "main"
   extra_refs_control-plane:
     extra_refs:
       control-plane:
