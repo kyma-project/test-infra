@@ -19,6 +19,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-api-gateway-build
+                  slack_channel: goat-int
                   labels:
                     preset-signify-prod-secret: "true"
                   always_run: true
@@ -48,6 +49,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-api-gateway-webhook-certificates-build
+                  slack_channel: goat-int
                   labels:
                     preset-signify-prod-secret: "true"
                   always_run: true
