@@ -502,6 +502,7 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: release-telemetry-module
+                  always_run: "true"
                   labels:
                     preset-sa-kyma-push-images: "true"
                     preset-bot-github-token: "true"
