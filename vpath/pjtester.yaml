@@ -2,7 +2,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       control-plane:
-        - pjName: "pull-provisioner-test-build"
+        - pjName: "pull-provisioner-tests-build"
 
 prConfigs:
   kyma-project:
