@@ -511,7 +511,7 @@ templates:
                   args:
                     - "release"
                   branches:
-                    - "^release-\\d+\\.\\d+$"
+                    - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Regex for release tag
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang
