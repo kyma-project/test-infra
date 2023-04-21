@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      control-plane:
+        - pjName: "pull-provisioner-test-build"
+
+prConfigs:
+  kyma-project:
+    control-plane:
+      prNumber: 5
