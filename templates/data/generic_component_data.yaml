@@ -483,7 +483,6 @@ templates:
               - jobConfig:
                   name: verify-telemetry-module
                   always_run: "true"
-                  optional: "false"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
                     JOB_VM_COMMAND: >-
