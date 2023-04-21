@@ -1,4 +1,4 @@
-targetRepoPrefix:  "eu.gcr.io/kyma-project/external/"
+targetRepoPrefix:  "europe-docker.pkg.dev/kyma-project/prod/external/"
 images:
 - source: "alpine@sha256:124c7d2707904eea7431fffe91522a01e5a861a624ee31d03372cc1d138a3126"
   tag: "3.17.3"
@@ -45,8 +45,8 @@ images:
 - source: "quay.io/prometheus-operator/prometheus-operator:v0.61.1"
 - source: "quay.io/prometheus/alertmanager:v0.24.0"
 - source: "quay.io/prometheus/prometheus:v2.40.7"
-- source: "nats@sha256:0158c030a6be61a98a76e10101dc3f48fa328b362806d18930162e7a1ac2c6a8"
-  tag: "v20230314-2.9.15-alpine3.17"
+- source: "nats@sha256:887f0193c5b72b66ff4795b807f3e9e324c34ffafbce612e54b2be8140a06de1"
+  tag: "v20230418-2.9.16-alpine3.17"
 - source: "natsio/nats-server-config-reloader:0.10.1"
 - source: "natsio/prometheus-nats-exporter:0.10.1"
 - source: "mockserver/mockserver:mockserver-5.11.2"

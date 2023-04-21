@@ -2,17 +2,16 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
-    - name: pull-event-subscriber-tools-build
+  kyma-project/control-plane:
+    - name: pull-e2e-provisioning-test-build
       annotations:
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-event-subscriber-tools-build"
+        prow.k8s.io/pubsub.runID: "pull-e2e-provisioning-test-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^tools/event-subscriber-tools'
-      optional: true
+      run_if_changed: '^tests/e2e/provisioning/|^scripts/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -23,10 +22,10 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=event-subscriber-tools"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=tools/event-subscriber-tools"
+              - "--name=control-plane/e2e-provisioning-test"
+              - "--context=tests/e2e/provisioning"
               - "--dockerfile=Dockerfile"
+              - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
                 memory: 1.5Gi
@@ -47,32 +46,33 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
   
 postsubmits: # runs on main
-  kyma-project/kyma:
-    - name: post-event-subscriber-tools-build
+  kyma-project/control-plane:
+    - name: post-e2e-provisioning-test-build
       annotations:
         pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-event-subscriber-tools-build"
+        prow.k8s.io/pubsub.runID: "post-e2e-provisioning-test-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^tools/event-subscriber-tools/'
+      run_if_changed: '^tests/e2e/provisioning/|^scripts/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      branches:
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
-              - "--name=event-subscriber-tools"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=tools/event-subscriber-tools"
+              - "--name=control-plane/e2e-provisioning-test"
+              - "--context=tests/e2e/provisioning"
               - "--dockerfile=Dockerfile"
+              - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
                 memory: 1.5Gi

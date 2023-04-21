@@ -309,6 +309,8 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-deprovision-retrigger-job-build
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   branches:
@@ -318,6 +320,39 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=deprovisionretrigger
+                    - --config=/config/kaniko-build-config.yaml
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+
+      - to: ../../prow/jobs/control-plane/tests/e2e/provisioning/e2e-provisioning-test-build.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/control-plane"
+            jobs:
+              - jobConfig:
+                  name: pull-e2e-provisioning-test-build
+                  run_if_changed: "^tests/e2e/provisioning/|^scripts/"
+                  args:
+                    - --name=control-plane/e2e-provisioning-test
+                    - --context=tests/e2e/provisioning
+                    - --dockerfile=Dockerfile
+                    - --config=/config/kaniko-build-config.yaml
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-e2e-provisioning-test-build
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^tests/e2e/provisioning/|^scripts/"
+                  branches:
+                    - ^main$
+                  args:
+                    - --name=control-plane/e2e-provisioning-test
+                    - --context=tests/e2e/provisioning
+                    - --dockerfile=Dockerfile
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:

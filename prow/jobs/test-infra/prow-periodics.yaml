@@ -25,7 +25,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230324-34be098e"
+          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
             command:
               - "/markdown-index"
             args:
@@ -49,20 +49,11 @@ postsubmits: # runs on main
         slack:
           channel: kyma-prow-alerts
       spec:
+        serviceAccountName: sa-prow-deploy
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             command:
               - "prow/cluster/deploy.sh"
-            env:
-              - name: GOOGLE_APPLICATION_CREDENTIALS
-                value: "/etc/credentials/service-account.json"
-            volumeMounts:
-              - name: sa-prow-deploy
-                mountPath: /etc/credentials
-        volumes:
-          - name: sa-prow-deploy
-            secret:
-              secretName: sa-prow-deploy
   
 periodics: # runs on schedule
     - name: eventing-tools-autobump
@@ -85,7 +76,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230411-7b4f9b177a"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230420-b19d170351"
             command:
               - "generic-autobumper"
             args:
@@ -105,7 +96,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230411-7b4f9b177a"
+          - image: "gcr.io/k8s-prow/label_sync:v20230420-b19d170351"
             command:
               - "label_sync"
             args:
@@ -146,7 +137,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230411-7b4f9b177a"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230420-b19d170351"
             command:
               - "generic-autobumper"
             args:
@@ -173,7 +164,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230411-7b4f9b177a"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230420-b19d170351"
             command:
               - "generic-autobumper"
             args:

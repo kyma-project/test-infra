@@ -67,7 +67,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer dry-run"
+              - "make -C development/image-syncer dry-run"
             resources:
               requests:
                 memory: 3Gi
@@ -90,9 +90,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-test-infra-image-syncer-run"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^(development/image-syncer/external-images.yaml)'
       skip_report: false
       decorate: true
@@ -110,7 +108,7 @@ postsubmits: # runs on main
               - "bash"
             args:
               - "-c"
-              - "source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer run"
+              - "make -C development/image-syncer run"
             resources:
               requests:
                 memory: 3Gi
