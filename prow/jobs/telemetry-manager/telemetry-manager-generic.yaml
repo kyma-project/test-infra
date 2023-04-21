@@ -58,15 +58,14 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       always_run: true
-      optional: false
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/telemetry-manager
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-\d+\.\d+$
       extra_refs:
         - org: kyma-project
           repo: test-infra
