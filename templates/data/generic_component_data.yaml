@@ -489,6 +489,9 @@ templates:
                     JOB_VM_COMMAND: >-
                       export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
                       && make run-with-lm
+                  branches:
+                    - "^main$"
+                    - "^release-\\d+\\.\\d+$"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
