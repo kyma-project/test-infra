@@ -7,4 +7,4 @@ pjConfigs:
 prConfigs:
   kyma-project:
     control-plane:
-      prNumber: 5
+      prNumber: 2699
