@@ -481,7 +481,7 @@ templates:
                     - jobConfig_postsubmit
                     - "disable_testgrid"
               - jobConfig:
-                  name: pre-main-telemetry-module-verify
+                  name: verify-telemetry-module
                   always_run: "true"
                   optional: "false"
                   env:
