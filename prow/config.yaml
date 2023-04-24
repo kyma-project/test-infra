@@ -23,10 +23,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230417-e4f4057e6e
-          initupload: gcr.io/k8s-prow/initupload:v20230417-e4f4057e6e
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230417-e4f4057e6e
-          sidecar: gcr.io/k8s-prow/sidecar:v20230417-e4f4057e6e
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230420-b19d170351
+          initupload: gcr.io/k8s-prow/initupload:v20230420-b19d170351
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230420-b19d170351
+          sidecar: gcr.io/k8s-prow/sidecar:v20230420-b19d170351
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -169,7 +169,7 @@ deck:
         - 3108790 # cluster-access GH team in Kyma organization
 
 sinker:
-  max_prowjob_age: 48h
+  max_prowjob_age: 8h
   max_pod_age: 5h
   resync_period: 1m
   terminated_pod_ttl: 30m
