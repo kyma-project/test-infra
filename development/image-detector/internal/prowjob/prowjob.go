@@ -1,4 +1,4 @@
-package detectors
+package prowjob
 
 import (
 	"k8s.io/test-infra/prow/config"
