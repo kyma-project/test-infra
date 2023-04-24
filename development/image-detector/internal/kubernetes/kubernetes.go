@@ -1,6 +1,7 @@
 package kubernetes
 
 import (
+	"errors"
 	"io"
 	"os"
 
@@ -37,16 +38,31 @@ func Extract(path string) ([]string, error) {
 }
 
 func extract(reader io.Reader) ([]string, error) {
-	var file DeploymentFile
-	err := yaml.NewDecoder(reader).Decode(&file)
-	if err != nil {
-		return nil, err
-	}
+	images := []string{}
 
+	decoder := yaml.NewDecoder(reader)
+	for {
+		var file DeploymentFile
+		err := decoder.Decode(&file)
+
+		if errors.Is(err, io.EOF) {
+			break
+		}
+
+		if err != nil {
+			return nil, err
+		}
+
+		images = append(images, extractImagesFromStruct(file)...)
+	}
+	return images, nil
+}
+
+func extractImagesFromStruct(file DeploymentFile) []string {
 	images := []string{}
 	for _, image := range file.Spec.Template.Spec.Containers {
 		images = append(images, image.Image)
 	}
 
-	return images, nil
+	return images
 }
