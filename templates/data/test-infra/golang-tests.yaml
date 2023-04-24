@@ -18,6 +18,7 @@ templates:
                   command: "go"
                   args:
                     - "test"
+                    - "-v"
                     - "-cover"
                     - "./..."
                 inheritedConfigs:

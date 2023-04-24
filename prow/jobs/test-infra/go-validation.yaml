@@ -24,6 +24,7 @@ presubmits: # runs on PRs
               - "go"
             args:
               - "test"
+              - "-v"
               - "-cover"
               - "./..."
             resources:
