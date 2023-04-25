@@ -128,7 +128,7 @@ function provisionKyma2(){
 
 function provisionBusolaE2ECleaner(){
     log::info "Installing Busola e2e cleaner"
-    kubectl apply -f "${BUSOLA_SOURCES_DIR}/tests/busola-e2e-cleaner.yaml"
+    kubectl apply -f "${BUSOLA_SOURCES_DIR}/tests/integration/busola-e2e-cleaner.yaml"
 }
 
 function undeployKyma(){
