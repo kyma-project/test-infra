@@ -366,47 +366,6 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
   
-  kyma-project/module-manager:
-    - name: pull-module-manager-pjconfigtest
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-module-manager-pjconfigtest"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/ginkgo:PR-6825"
-            imagePullPolicy: Always
-            securityContext:
-              privileged: false
-            command:
-              - "/ginkgo"
-            args:
-              - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
-            resources:
-              requests:
-                memory: 100M
-                cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-  
   kyma-project/hydroform:
     - name: pull-hydroform-pjconfigtest
       labels:
