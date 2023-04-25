@@ -14,7 +14,7 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
             command: /image-builder
             labels:
               preset-sa-kyma-push-images: "true"
@@ -35,7 +35,7 @@ templates:
             jobs:
               - jobConfig:
                   run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
                   name: pull-lint-skr
                   command: "bash"
                   args:
@@ -64,7 +64,7 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
                   name: "pull-lint-listener"
                   command: "bash"
                   args:

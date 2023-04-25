@@ -1,7 +1,6 @@
 presubmits:
   kyma-project/warden:
     - name: pull-warden-integration-test
-      optional: true
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -10,7 +9,7 @@ presubmits:
       run_if_changed: '.*\.go$|charts/'
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759
+          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
             command:
               - /bin/bash
             args:

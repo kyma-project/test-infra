@@ -11,7 +11,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
-ARG K8S_VERSION=1.25
+ARG K8S_VERSION=1.26
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
@@ -148,7 +148,7 @@ ENV PATH=$PATH:/prow-tools
 ######################## Install gcloud #########################
 #################################################################
 
-ENV CLOUD_SDK_VERSION=410.0.0 \
+ENV CLOUD_SDK_VERSION=423.0.0 \
     PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
     CLUSTER_VERSION=$K8S_VERSION
@@ -195,7 +195,7 @@ RUN curl -fLSs -o /usr/local/bin/cosign https://github.com/sigstore/cosign/relea
 #################################################################
 
 # Note: kcp-cli doesn't provide releases
-ENV KCPCLI_VERSION=master-8a4162fd
+ENV KCPCLI_VERSION=master
 RUN curl -fLSs -o /usr/local/bin/kcp https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux &&\
     chmod +x /usr/local/bin/kcp
 

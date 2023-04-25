@@ -4,6 +4,7 @@ templates:
       - to: ../../prow/jobs/api-gateway/api-gateway-validation.yaml
         localSets:
           jobConfig_default:
+            optional: "false"
             path_alias: github.com/kyma-project/api-gateway
             labels:
               preset-debug-commando-oom: "true"
@@ -46,20 +47,17 @@ templates:
                   name: pull-api-gateway-test
                   always_run: true
                   request_cpu: 500m
-                  command: "make"
-                  args:
-                    - "test"
+                  command: "./tests/integration/scripts/code-coverage-guard.sh"
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
                     - testing
+                  local:
+                    - jobConfig_default
               - jobConfig:
                   name: pull-api-gateway-integration-test
                   always_run: true
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
+                  command: "./tests/integration/scripts/integration-gardener.sh"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min

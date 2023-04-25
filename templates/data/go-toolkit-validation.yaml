@@ -66,7 +66,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 200Mi
@@ -76,7 +76,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -86,6 +86,8 @@ templates:
             jobs:
               - jobConfig:
                   name: "pull-telemetry-manager-lint"
+                  request_cpu: 200m
+                  request_memory: 500Mi
                   optional: false
                   command: "/bin/sh"
                   args:
@@ -98,6 +100,8 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-telemetry-manager-unit-test"
+                  request_cpu: 200m
+                  request_memory: 1.5Gi
                   optional: false
                   command: "/bin/sh"
                   args:
@@ -190,28 +194,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
-              - jobConfig:
-                  name: "pull-directory-size-exporter-lint"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/directory-size-exporter && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-                  run_if_changed: '^components/directory-size-exporter/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - linting
-              - jobConfig:
-                  name: "pull-directory-size-exporter-unit-test"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/directory-size-exporter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/directory-size-exporter/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
+
               - jobConfig:
                   name: "pull-function-controller-lint"
                   command: "/bin/sh"
@@ -230,6 +213,32 @@ templates:
                     - "-c"
                     - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
                   run_if_changed: '^components/function-controller/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - testing
+          - repoName: "kyma-project/directory-size-exporter"
+            jobs:
+              - jobConfig:
+                  name: "pull-directory-size-exporter-lint"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "make lint"
+                  run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - linting
+              - jobConfig:
+                  name: "pull-directory-size-exporter-unit-test"
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "make test"
+                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"

@@ -23,10 +23,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230226-ef2af11076
-          initupload: gcr.io/k8s-prow/initupload:v20230226-ef2af11076
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230226-ef2af11076
-          sidecar: gcr.io/k8s-prow/sidecar:v20230226-ef2af11076
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230424-4981841b2f
+          initupload: gcr.io/k8s-prow/initupload:v20230424-4981841b2f
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230424-4981841b2f
+          sidecar: gcr.io/k8s-prow/sidecar:v20230424-4981841b2f
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -169,7 +169,7 @@ deck:
         - 3108790 # cluster-access GH team in Kyma organization
 
 sinker:
-  max_prowjob_age: 48h
+  max_prowjob_age: 8h
   max_pod_age: 5h
   resync_period: 1m
   terminated_pod_ttl: 30m
@@ -297,13 +297,17 @@ tide:
     kyma-project/addons: squash
     kyma-project/lifecycle-manager: squash
     kyma-project/runtime-watcher: squash
-    kyma-project/module-manager: squash
     kyma-project/api-gateway: squash
     kyma-project/organization-and-operations: squash
     kyma-project/btp-manager: squash
     kyma-project/istio: squash
     kyma-project/warden: squash
     kyma-project/telemetry-manager: squash
+    kyma-project/directory-size-exporter: squash
+    kyma-project/eventing-manager: squash
+    kyma-project/eventing-auth-manager: squash
+    kyma-project/eventing-tools: squash
+    kyma-project/nats-manager: squash
 
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
@@ -393,17 +397,17 @@ presets:
       preset-cluster-version-old: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.25"
       - name: GKE_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.25"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.24"
+        value: "1.25"
   # cluster version
   - labels:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.25"
+        value: "1.26"
       - name: GKE_CLUSTER_VERSION
         value: "1.25"
       - name: GARDENER_CLUSTER_VERSION
@@ -436,19 +440,6 @@ presets:
     volumeMounts:
       - name: pjtester-kubeconfig
         mountPath: /etc/kubeconfig/pjtester
-        readOnly: true
-  - labels:
-      preset-sa-prow-job-resource-cleaner: "true"
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-prow-job-resource-cleaner/service-account.json
-    volumes:
-      - name: sa-prow-job-resource-cleaner
-        secret:
-          secretName: sa-prow-job-resource-cleaner
-    volumeMounts:
-      - name: sa-prow-job-resource-cleaner
-        mountPath: /etc/credentials/sa-prow-job-resource-cleaner
         readOnly: true
   - labels:
       preset-certificates-bucket: "true"
@@ -722,11 +713,6 @@ presets:
     env:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/kyma-project"
-  - labels:
-      preset-docker-push-repository-gke-external-registry-integration: "true" # Needed for kyma installer image
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/sap-kyma-prow-workloads/gke-external-registry/functions"
   - labels:
       preset-docker-push-repository-gke-integration: "true" # Needed for kyma installer image
     env:
@@ -1012,11 +998,6 @@ presets:
       preset-cluster-use-ssd: "true"
     env:
       - name: CLUSTER_USE_SSD
-        value: "true"
-  - labels:
-      preset-gke-pod-security-policy: "true"
-    env:
-      - name: GKE_ENABLE_POD_SECURITY_POLICY
         value: "true"
   # whitesource labels
   - labels:
@@ -1343,19 +1324,6 @@ presets:
       - name: KMS_KEY_URL
         value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
   - labels:
-      preset-prowjob-gcp-logging: "true"
-    env:
-      - name: SA_PROWJOB_GCP_LOGGING_CLIENT_KEY_PATH
-        value: "/etc/credentials/sa-prowjob-gcp-logging-client/secret.json"
-    volumes:
-      - name: sa-prowjob-gcp-logging-client-key
-        secret:
-          secretName: sa-prowjob-gcp-logging-client-key
-    volumeMounts:
-      - name: sa-prowjob-gcp-logging-client-key
-        mountPath: /etc/credentials/sa-prowjob-gcp-logging-client
-        readOnly: true
-  - labels:
       preset-kyma-integration-kcp-client-credentials: "true"
     env:
       - name: KCP_TECH_USER_LOGIN
@@ -1442,3 +1410,13 @@ presets:
           secretKeyRef:
             name: azure-devops-token
             key: azure-devops-token
+  - labels:
+      preset-tunas-github-bot-token: "true"
+    volumes:
+      - name: tunas-github-bot-token
+        secret:
+          secretName: tunas-github-bot-token
+    volumeMounts:
+      - name: tunas-github-bot-token
+        mountPath: /tunas-bot
+        readOnly: true

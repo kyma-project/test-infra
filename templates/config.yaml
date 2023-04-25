@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.12"
+  nextRelease: "2.14"
   releases:
+    - "2.13"
+    - "2.12"
     - "2.11"
-    - "2.10"
-    - "2.9"
   orgs:
     - name: "kyma-project"
       repos:
@@ -16,7 +16,6 @@ global:
         - name: "lifecycle-manager"
         - name: "third-party-images"
         - name: "community"
-        - name: "module-manager"
         - name: "hydroform"
         - name: "istio-operator"
         - name: "addons"
@@ -33,6 +32,8 @@ global:
         - name: "rafter"
         - name: "btp-manager"
         - name: "telemetry-manager"
+        - name: "director-size-exporter"
+        - name: "compass-manager"
     - name: "kyma-incubator"
       repos:
         - name: "compass"
@@ -77,7 +78,7 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -108,7 +109,7 @@ globalSets:
         value: high-cpu
         operator: Equal
         effect: NoSchedule
-    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c-buildkit
+    image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     command: "/image-builder"
     request_memory: "1.5Gi"
     request_cpu: "1"
@@ -140,7 +141,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 200Mi
@@ -150,7 +151,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -168,25 +169,25 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
   image_prow-tools:
-    image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20230228-390ddc18"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
   image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
   image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
   image_gardener-rotate:
-    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230202-40569193"
+    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230330-3213bd39"
   image_markdown_index:
-    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230220-55aefaf0"
+    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -355,9 +356,6 @@ globalSets:
       pipeline.platform: gardener_gcp
 
 templates:
-  - from: releases.go.tmpl
-    render:
-      - to: ../../development/tools/jobs/releases/releases.go
   - from: prow-config.yaml
     render:
       - to: ../../prow/config.yaml

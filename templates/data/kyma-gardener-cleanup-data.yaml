@@ -7,7 +7,7 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/cleanup-gardener.sh"
             args:
               - "--excluded-clusters"
-              - '(nbusola|nkyma|rec-night|rec-wkly-lt|rec-main-.*)'
+              - '(nbusola|nkyma|rec-night|rec-wkly-lt|rec-main-.*|persist)'
             labels:
               preset-gardener-gcp-kyma-integration: "true"
             env:

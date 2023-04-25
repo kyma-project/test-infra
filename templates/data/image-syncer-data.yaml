@@ -29,7 +29,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - 'source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer dry-run'
+                    - 'make -C development/image-syncer dry-run'
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -40,14 +40,12 @@ templates:
                   annotations:
                     testgrid-dashboards: kyma_experimental
                   labels:
-                    preset-docker-push-repository: "true"
-                    preset-dind-enabled: "true"
-                    preset-sa-gcr-push: "true"
+                    preset-sa-kyma-push-images: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
                   command: "bash"
                   args:
                     - "-c"
-                    - 'source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer run'
+                    - 'make -C development/image-syncer run'
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

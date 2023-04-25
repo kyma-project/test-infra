@@ -12,7 +12,7 @@ templates:
                   - "^main$"
                 pubsub_project: "sap-kyma-prow"
                 pubsub_topic: "prowjobs"
-                image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c
+                image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                 command: /image-builder
                 request_memory: "1.5Gi"
                 request_cpu: "1"
@@ -296,32 +296,6 @@ templates:
                         - "--name=test-infra/pubsub-connector-gateway"
                         - "--config=/config/kaniko-build-config.yaml"
                         - "--context=development/kyma-pubsub-connector/pubSubGateway"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-ci-force-bot"
-                      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-                      args:
-                        - "--name=test-infra/ci-force-bot"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=development/kyma-ci-force-bot/ciforcebot"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-ci-force-bot"
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: '^development/kyma-ci-force-bot/ciforcebot/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-                      args:
-                        - "--name=test-infra/ci-force-bot"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=development/kyma-ci-force-bot/ciforcebot"
                         - "--dockerfile=Dockerfile"
                     inheritedConfigs:
                       local:
