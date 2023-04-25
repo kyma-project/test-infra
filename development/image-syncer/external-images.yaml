@@ -48,7 +48,7 @@ images:
 - source: "nats@sha256:887f0193c5b72b66ff4795b807f3e9e324c34ffafbce612e54b2be8140a06de1"
   tag: "v20230418-2.9.16-alpine3.17"
 - source: "natsio/nats-server-config-reloader:0.10.1"
-- source: "natsio/prometheus-nats-exporter:0.10.1"
+- source: "natsio/prometheus-nats-exporter:0.11.0"
 - source: "mockserver/mockserver:mockserver-5.11.2"
   amd64Only: true
 - source: "i331641/kyma-perf:v1"
