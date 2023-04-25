@@ -16,6 +16,8 @@ const (
 	TestInfraDefaultClonePath  = "/home/prow/go/src/github.com/kyma-project/test-infra"
 	ProwConfigDefaultClonePath = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/config.yaml"
 	JobConfigDefaultClonePath  = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs"
+	OwnerAnnotationName        = "owner"
+	DescriptionAnnotationName  = "description"
 )
 
 // NotPresubmitError provides way to inform caller that prowjob is not a presubmit type.
@@ -85,4 +87,15 @@ func GetProwjobsConfigForProwjob(orgName, repoName, prowConfigPath, staticJobCon
 		postsubmits = append(postsubmits, prowYAML.Postsubmits...)
 	}
 	return presubmits, postsubmits, periodics, nil
+}
+
+func CheckRequiredAnnotations(name string, a map[string]string) []error {
+	var errs []error
+	if _, ok := a[OwnerAnnotationName]; !ok {
+		errs = append(errs, fmt.Errorf("%s: does not contain required label '%s'", name, OwnerAnnotationName))
+	}
+	if _, ok := a[DescriptionAnnotationName]; !ok {
+		errs = append(errs, fmt.Errorf("%s: does not contain required label '%s'", name, DescriptionAnnotationName))
+	}
+	return errs
 }
