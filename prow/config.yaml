@@ -297,7 +297,6 @@ tide:
     kyma-project/addons: squash
     kyma-project/lifecycle-manager: squash
     kyma-project/runtime-watcher: squash
-    kyma-project/module-manager: squash
     kyma-project/api-gateway: squash
     kyma-project/organization-and-operations: squash
     kyma-project/btp-manager: squash

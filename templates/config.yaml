@@ -16,7 +16,6 @@ global:
         - name: "lifecycle-manager"
         - name: "third-party-images"
         - name: "community"
-        - name: "module-manager"
         - name: "hydroform"
         - name: "istio-operator"
         - name: "addons"
