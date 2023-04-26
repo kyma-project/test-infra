@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/api-gateway/api-gateway-build.yaml
+      - to: ../../prow/jobs/eventing-webhook/eventing-webhook-certificates-build.yaml
         jobConfigs:
           - repoName: kyma-project/api-gateway
             jobs:
@@ -19,7 +19,6 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-eventing-webhook-certificates-build
-                  slack_channel: goat-int
                   labels:
                     preset-signify-prod-secret: "true"
                   always_run: true
