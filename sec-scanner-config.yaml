@@ -1,0 +1,3 @@
+module-name: test-infra
+whitesource:
+  language: golang-mod
