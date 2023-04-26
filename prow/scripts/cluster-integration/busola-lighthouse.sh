@@ -132,7 +132,7 @@ install_busola $K3S_DOMAIN
 kubectl wait \
 --for=condition=ready pod \
 --all \
---timeout=120s
+--timeout=1200s
 
 mkdir -p "$PWD/busola-tests/fixtures"
 mkdir -p "$PWD/busola-tests/test-results"
