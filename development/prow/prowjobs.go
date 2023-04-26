@@ -70,15 +70,23 @@ func GetOrgForPresubmit() (string, error) {
 }
 
 func GetProwjobsConfigForProwjob(orgName, repoName, prowConfigPath, staticJobConfigPath, inrepoConfigPath string) ([]config.Presubmit, []config.Postsubmit, []config.Periodic, error) {
+	var (
+		presubmits  []config.Presubmit
+		postsubmits []config.Postsubmit
+		periodics   []config.Periodic
+	)
 	repoIdentifier := orgName + "/" + repoName
 	conf, err := config.Load(prowConfigPath, staticJobConfigPath, nil, "")
 	if err != nil {
 		return nil, nil, nil, fmt.Errorf("error loading prow configs, got error: %w", err)
 	}
-	presubmits := conf.GetPresubmitsStatic(repoIdentifier)
-	postsubmits := conf.GetPostsubmitsStatic(repoIdentifier)
-	periodics := conf.AllPeriodics()
-	if orgName != "kyma-project" && repoName != "test-infra" {
+	if orgName == "kyma-project" && repoName == "test-infra" {
+		presubmits = conf.AllStaticPresubmits([]string{})
+		postsubmits = conf.AllStaticPostsubmits([]string{})
+		periodics = conf.AllPeriodics()
+	} else {
+		presubmits = conf.GetPresubmitsStatic(repoIdentifier)
+		postsubmits = conf.GetPostsubmitsStatic(repoIdentifier)
 		prowYAML, err := config.ReadProwYAML(logrus.WithField("repo", repoIdentifier), inrepoConfigPath, false)
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("error loading inrepo config, got error: %w", err)
