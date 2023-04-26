@@ -18,6 +18,9 @@ var (
 )
 
 func TestProwjobsConfig(t *testing.T) {
+	if os.Getenv("CI") != "true" {
+		t.Skip()
+	}
 	RegisterFailHandler(Fail)
 
 	var err error
