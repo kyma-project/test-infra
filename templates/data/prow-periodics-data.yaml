@@ -26,7 +26,7 @@ templates:
               - jobConfig:
                   name: eventing-tools-autobump
                   cron: "30 * * * 1-5"
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230328-f9f449cfb7
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230424-4981841b2f
                   command: generic-autobumper
                   args:
                     - --config=ci/eventing-tools-autobump-config.yaml
@@ -50,7 +50,7 @@ templates:
               - jobConfig:
                   name: ci-prow-label-sync
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20230328-f9f449cfb7
+                  image: gcr.io/k8s-prow/label_sync:v20230424-4981841b2f
                   command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
@@ -72,7 +72,7 @@ templates:
                   name: ci-prow-autobump
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230328-f9f449cfb7
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230424-4981841b2f
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
@@ -111,14 +111,8 @@ templates:
                     - ^main$
                   run_if_changed: 'prow/cluster/components/'
                   env:
-                    GOOGLE_APPLICATION_CREDENTIALS: /etc/credentials/service-account.json
                   command: prow/cluster/deploy.sh
-                  volumes:
-                    - name: sa-prow-deploy
-                      secretName: sa-prow-deploy
-                  volumeMounts:
-                    - name: sa-prow-deploy
-                      mountPath: /etc/credentials
+                  serviceAccountName: sa-prow-deploy
                   skip_report: "false"
                   max_concurrency: "10"
                   decorate: "true"
@@ -134,7 +128,7 @@ templates:
                   name: ci-prow-autobump-jobs
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230328-f9f449cfb7
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230424-4981841b2f
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml

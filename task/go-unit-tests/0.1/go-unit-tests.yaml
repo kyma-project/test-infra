@@ -1,0 +1,53 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: go-unit-tests
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.36.0"
+    tekton.dev/categories: Code Quality
+    tekton.dev/tags: test
+    tekton.dev/displayName: "unit-tests-go"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    A go-unit-tests Task is used to run unit tests for Go code.
+    The task is tailored to be triggered by Prow as a ProwJob.
+    It uses a built-in go test command to run unit tests.
+  workspaces:
+    - name: repo
+      description: "The workspace where tested sources are stored. Usually, this should be a workspace shared with other tasks."
+      mountPath: /home/prow/go
+  params:
+    - name: path-to-test
+      description: "The path to tested Go code."
+      type: string
+      default: "./..."
+    - name: REPO_OWNER
+      description: "GitHub organization that triggers the ProwJob. A variable set by Prow. Prow does not set this variable if the ProwJob type is periodic. In that case, an empty string default value is used."
+      type: string
+      default: ""
+    - name: REPO_NAME
+      description: "GitHub repository that triggers the ProwJob. A variable set by Prow. Prow does not set this variable if the ProwJob type is periodic. In that case, an empty string default value is used."
+      type: string
+      default: ""
+  steps:
+    - name: run-unit-tests
+      image: eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db
+      workingDir: /home/prow/go/src/github.com/$(params.REPO_OWNER)/$(params.REPO_NAME)
+      command:
+        - "go"
+      args:
+        - "test"
+        - "-cover"
+        - "$(params.path-to-test)"
+      env:
+        - name: REPO_OWNER
+          value: $(params.REPO_OWNER)
+        - name: REPO_NAME
+          value: $(params.REPO_NAME)
+      resources:
+        requests:
+          memory: 500M
+          cpu: 500m

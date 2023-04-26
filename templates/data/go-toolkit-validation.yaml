@@ -1,22 +1,6 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/eventing-tools/eventing-tools-checks.yaml
-        jobConfigs:
-          - repoName: "kyma-project/eventing-tools"
-            jobs:
-              - jobConfig:
-                  name: "pull-eventing-tools-unit-test"
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^.*$'
-                inheritedConfigs:
-                  global:
-                    - testing
-                    - "jobConfig_presubmit"
       - to: ../../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-checks.yaml
         jobConfigs:
           - repoName: "kyma-project/kyma"
@@ -82,7 +66,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
+            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 200Mi

@@ -39,7 +39,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -47,6 +47,8 @@ presubmits: # runs on PRs
             env:
               - name: CREDENTIALS_DIR
                 value: "/etc/credentials/kyma-tunas-prow-event-mesh"
+              - name: EVENTING_JS_RECREATED_TEST
+                value: "true"
               - name: EVENTING_UPGRADE_JOB
                 value: "true"
               - name: EXECUTION_PROFILE
@@ -57,6 +59,8 @@ presubmits: # runs on PRs
                 value: "europe-west4-b"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
+              - name: MACHINES_MIN
+                value: "3"
               - name: MACHINE_TYPE
                 value: "n1-standard-8"
             resources:
@@ -113,7 +117,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:

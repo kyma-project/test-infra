@@ -5,7 +5,14 @@ metadata:
   namespace: tekton-pipelines
 data:
   default-service-account: "tekton"
-  default-timeout-minutes: "60"
+  default-timeout-minutes: "120"
   default-managed-by-label-value: "kyma-tekton"
   default-task-run-workspace-binding: |
-    emptyDir: {}
+    volumeClaimTemplate:
+      spec:
+        storageClassName: "premium-rwo"
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

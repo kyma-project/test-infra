@@ -122,7 +122,8 @@ gardener::provision_cluster() {
                 --disk-type StandardSSD_LRS \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
                 --attempts 1 \
-                --verbose
+                --verbose \
+                --hibernation-start ""
     else
             # enable trap to catch kyma provision failures
             trap gardener::reprovision_cluster ERR
@@ -140,7 +141,8 @@ gardener::provision_cluster() {
                 --scaler-min 2 \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
                 --attempts 1 \
-                --verbose
+                --verbose \
+                --hibernation-start ""
     fi
     # trap cleanup we want other errors fail pipeline immediately
     trap - ERR

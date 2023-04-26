@@ -209,29 +209,6 @@ presubmits: # runs on PRs
               - "-c"
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
-  kyma-project/module-manager:
-    - name: pre-module-manager-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-module-manager-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
   kyma-project/hydroform:
     - name: pre-hydroform-presubmit-scanner
       annotations:
@@ -607,6 +584,29 @@ presubmits: # runs on PRs
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-director-size-exporter-presubmit-scanner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/compass-manager:
+    - name: pre-compass-manager-presubmit-scanner
+      annotations:
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-compass-manager-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       always_run: true
       optional: true
