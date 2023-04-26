@@ -626,6 +626,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -712,6 +715,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -756,6 +762,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -800,6 +809,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -844,6 +856,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -888,6 +903,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -991,6 +1009,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -1035,6 +1056,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"

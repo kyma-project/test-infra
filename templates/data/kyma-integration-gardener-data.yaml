@@ -272,64 +272,6 @@ templates:
             jobs:
               # presubmits
               - jobConfig:
-                  name: pre-main-kyma-gardener-azure-fast-integration
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - command_integration
-                    - gardener_azure_job
-                    - evaluation_profile
-              - jobConfig:
-                  name: pre-main-kyma-gardener-azure-alpha-eval
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - command_integration
-                    - gardener_azure_job
-                    - evaluation_profile
-                    - installer_2
-              - jobConfig:
-                  name: pre-main-kyma-gardener-azure-alpha-prod
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - command_integration
-                    - gardener_azure_job
-                    - production_profile
-                    - installer_2
-              # postsubmits
-              - jobConfig:
                   name: pre-main-kyma-gardener-gcp-goats-api-gateway
                   optional: false
                   labels:
@@ -354,14 +296,15 @@ templates:
 
               # periodics
               - jobConfig:
-                  name: kyma-alpha-integration-evaluation-gardener-azure
+                  name: kyma-integration-evaluation-gardener-azure
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Evaluation profile for Kyma 2 Azure Gardener integration job.
+                    description: Evaluation profile for Kyma Azure Gardener integration job.
                   decoration_config:
                     timeout: 7200000000000 # 2h
                     grace_period: 600000000000 # 10min
-                  cron: "5 * * * *"
+                  cron: "0 2,14 * * *"
+                  slack_channel: huskies-notifications
                   labels:
                     preset-log-collector-slack-token: "true"
                 inheritedConfigs:
@@ -379,14 +322,15 @@ templates:
                     - evaluation_profile
                     - installer_2
               - jobConfig:
-                  name: kyma-alpha-integration-production-gardener-azure
+                  name: kyma-integration-production-gardener-azure
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Production profile for Kyma 2 Azure Gardener integration job.
+                    description: Production profile for Kyma Azure Gardener integration job.
                   decoration_config:
                     timeout: 7200000000000 # 2h
                     grace_period: 600000000000 # 10min
-                  cron: "5 * * * *"
+                  cron: "0 1,13 * * *"
+                  slack_channel: huskies-notifications
                   labels:
                     preset-log-collector-slack-token: "true"
                 inheritedConfigs:
