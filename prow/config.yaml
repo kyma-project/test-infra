@@ -1168,6 +1168,8 @@ presets:
           secretKeyRef:
             name: keb-dev-credentials
             key: KEB_CLIENT_SECRET
+      - name: KEB_TOKEN_URL
+        value: "https://kymatest.accounts400.ondemand.com/oauth2/token"
       - name: KEB_GLOBALACCOUNT_ID
         valueFrom:
           secretKeyRef:
