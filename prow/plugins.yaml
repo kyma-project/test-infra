@@ -165,4 +165,4 @@ require_matching_label:
       - `/area <area>`
     missing_label: needs-area
     prs: true
-    regexp: ^kind/
+    regexp: ^area/
