@@ -156,3 +156,13 @@ require_matching_label:
     missing_label: needs-kind
     prs: true
     regexp: ^kind/
+  - org: kyma-project
+    branch: main
+    grace_period: 5s
+    issues: true
+    missing_comment: |
+      There are no `area/` labels present. Please add one by using the following command:
+      - `/area <area>`
+    missing_label: needs-area
+    prs: true
+    regexp: ^area/
