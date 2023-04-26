@@ -5,6 +5,8 @@ postsubmits: # runs on main
   kyma-project/api-gateway:
     - name: rel-eventing-webhook-certificates-build
       annotations:
+        description: "Image to generate certificates for eventing webhooks."
+        owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

@@ -18,6 +18,9 @@ templates:
             jobs:
               - jobConfig:
                   name: rel-eventing-webhook-certificates-build
+                  annotations:
+                    owner: skydivingtunas
+                    description: Image to generate certificates for eventing webhooks.
                   optional: "false"
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'

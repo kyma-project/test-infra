@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-eventing-webhook-certificates-build
+                  annotations:
+                    owner: skydivingtunas
+                    description: Image to generate certificates for eventing webhooks.
                   always_run: true
                   args:
                     - "--name=eventing-webhook-certificates"
@@ -19,6 +22,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-eventing-webhook-certificates-build
+                  annotations:
+                    owner: skydivingtunas
+                    description: Image to generate certificates for eventing webhooks.
                   labels:
                     preset-signify-prod-secret: "true"
                   always_run: true
