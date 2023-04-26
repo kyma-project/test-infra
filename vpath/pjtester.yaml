@@ -1,0 +1,13 @@
+pjConfigs:
+  # prConfig:
+  #   kyma-project:
+  #     kyma:
+  #       prNumber: 1313
+  prowJobs:
+    kyma-project:
+      busola:
+      - pjName: "pre-busola-lighthouse"
+prConfigs: #
+  kyma-project:
+    busola:
+      prNumber: 2435
