@@ -24,6 +24,36 @@ const (
 // It provides brief error messages about it.
 type NotPresubmitError struct{}
 
+type MissingRequiredAnnotations struct {
+	Owner       bool
+	Description bool
+	PjName      string
+}
+
+// ColorableString for ReportEntry to use
+func (s MissingRequiredAnnotations) ColorableString() string {
+	if s.Owner && s.Description {
+		return fmt.Sprintf("{{red}}{{bold}}%s{{/bold}} is missing required annotations: %s, %s{{/}}", s.PjName, OwnerAnnotationName, DescriptionAnnotationName)
+	} else if s.Owner {
+		return fmt.Sprintf("{{red}}{{bold}}%s{{/bold}} is missing owner annotation: %s{{/}}", s.PjName, OwnerAnnotationName)
+	} else if s.Description {
+		return fmt.Sprintf("{{red}}{{bold}}%s{{/bold}} is missing description annotation: %s{{/}}", s.PjName, DescriptionAnnotationName)
+	}
+	return ""
+}
+
+// non-colorable String() is used by go's string formatting support but ignored by ReportEntry
+func (s MissingRequiredAnnotations) String() string {
+	if s.Owner && s.Description {
+		return fmt.Sprintf("Prowjob %s is missing required annotations: %s, %s", s.PjName, OwnerAnnotationName, DescriptionAnnotationName)
+	} else if s.Owner {
+		return fmt.Sprintf("Prowjob %s is missing owner annotation: %s", s.PjName, OwnerAnnotationName)
+	} else if s.Description {
+		return fmt.Sprintf("Prowjob %s is missing description annotation: %s", s.PjName, DescriptionAnnotationName)
+	}
+	return ""
+}
+
 func (e *NotPresubmitError) Error() string { return "prowjob is not a presubmit type" }
 
 // IsNotPresubmitError checks if error is of type NotPresubmitError.
@@ -97,13 +127,17 @@ func GetProwjobsConfigForProwjob(orgName, repoName, prowConfigPath, staticJobCon
 	return presubmits, postsubmits, periodics, nil
 }
 
-func CheckRequiredAnnotations(name string, a map[string]string) []error {
-	var errs []error
+func CheckRequiredAnnotations(name string, a map[string]string) MissingRequiredAnnotations {
+	var missingAnnotations MissingRequiredAnnotations
 	if _, ok := a[OwnerAnnotationName]; !ok {
-		errs = append(errs, fmt.Errorf("%s: does not contain required label '%s'", name, OwnerAnnotationName))
+		missingAnnotations.Owner = true
 	}
 	if _, ok := a[DescriptionAnnotationName]; !ok {
-		errs = append(errs, fmt.Errorf("%s: does not contain required label '%s'", name, DescriptionAnnotationName))
+		missingAnnotations.Description = true
 	}
-	return errs
+	if missingAnnotations.Owner || missingAnnotations.Description {
+		missingAnnotations.PjName = name
+		return missingAnnotations
+	}
+	return MissingRequiredAnnotations{}
 }

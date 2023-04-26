@@ -1,8 +1,6 @@
 package pjconfigtests_test
 
 import (
-	"fmt"
-
 	kprow "github.com/kyma-project/test-infra/development/prow"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -21,14 +19,9 @@ var _ = Describe("Prowjob,", func() {
 				}), "Presubmit %s is missing pubsub required config.", pj.Name)
 			})
 			It("has ownership annotation", func() {
-				var errs []error
-				errs = append(errs, kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)...)
-				if len(errs) > 0 {
-					// for now not fail the job, only return information
-					// t.Fail()
-					for _, e := range errs {
-						AddReportEntry(fmt.Sprintf("Prowjob %s is missing required annotations: %s", pj.Name, e.Error()))
-					}
+				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
+				if missingAnnotations.PjName != "" {
+					AddReportEntry("Missing required annotations:", missingAnnotations)
 				}
 			})
 		}
@@ -43,6 +36,12 @@ var _ = Describe("Prowjob,", func() {
 					"prow.k8s.io/pubsub.topic":   Equal("prowjobs"),
 				}), "Postsubmit %s is missing pubsub required config.", pj.Name)
 			})
+			It("has ownership annotation", func() {
+				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
+				if missingAnnotations.PjName != "" {
+					AddReportEntry("Missing required annotations:", missingAnnotations)
+				}
+			})
 		}
 	})
 	Context("of periodic type,", func() {
@@ -54,6 +53,12 @@ var _ = Describe("Prowjob,", func() {
 					"prow.k8s.io/pubsub.runID":   Not(BeZero()),
 					"prow.k8s.io/pubsub.topic":   Equal("prowjobs"),
 				}), "Periodic %s is missing pubsub required config.", pj.Name)
+			})
+			It("has ownership annotation", func() {
+				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
+				if missingAnnotations.PjName != "" {
+					AddReportEntry("Missing required annotations:", missingAnnotations)
+				}
 			})
 		}
 	})
