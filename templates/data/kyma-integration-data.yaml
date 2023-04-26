@@ -511,7 +511,6 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
-                    preset-kyma-integration-telemetry-tracing-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -741,7 +740,6 @@ templates:
                   labels:
                     preset-build-main: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
-                    preset-kyma-integration-telemetry-tracing-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

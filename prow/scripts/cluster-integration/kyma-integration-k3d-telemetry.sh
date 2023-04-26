@@ -74,7 +74,6 @@ function deploy_kyma() {
    --ci
    --source=local
    --workspace ${KYMA_SOURCES_DIR}
-   --value=telemetry.operator.controllers.tracing.enabled=true
    --components-file kyma-integration-k3d-telemetry-components.yaml"
 
   $deploy_command

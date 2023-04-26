@@ -93,11 +93,6 @@ function deploy_kyma() {
   if [[ -v  APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY ]]; then
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-app-connector-components-os.yaml"
   fi
-
-  if [[ -v TELEMETRY_TRACING_ENABLED ]]; then
-    kyma_deploy_cmd+=" --value=telemetry.operator.controllers.tracing.enabled=true"
-  fi
-
   if [[ -v TELEMETRY_ENABLED ]]; then
     kyma_deploy_cmd+=" --value=global.telemetry.enabled=true"
     kyma_deploy_cmd+=" --components-file kyma-integration-k3d-telemetry-components.yaml"
