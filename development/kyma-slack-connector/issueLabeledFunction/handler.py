@@ -13,8 +13,12 @@ USERS_MAP_FILE_REF = "main"
 
 def get_slack_username(github_username: str, users_map: list) -> str:
     for item in users_map:
-        if github_username == item["sap.tools.github.username"]:
-            return item["com.slack.enterprise.sap.username"]
+        try:
+            if github_username == item["sap.tools.github.username"]:
+                return item["com.slack.enterprise.sap.username"]
+        except KeyError:
+            print(f"KeyError: sap.tools.github.username or com.slack.enterprise.sap.username not found in {item}")
+            pass
     return None
 
 
