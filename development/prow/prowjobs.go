@@ -33,11 +33,11 @@ type MissingRequiredAnnotations struct {
 // ColorableString for ReportEntry to use
 func (s MissingRequiredAnnotations) ColorableString() string {
 	if s.Owner && s.Description {
-		return fmt.Sprintf("{{red}}{{bold}}%s{{/bold}} is missing required annotations: %s, %s{{/}}", s.PjName, OwnerAnnotationName, DescriptionAnnotationName)
+		return fmt.Sprintf("{{red}}{{bold}}%s{{/}} {{red}}is missing required annotations: %s, %s{{/}}", s.PjName, OwnerAnnotationName, DescriptionAnnotationName)
 	} else if s.Owner {
-		return fmt.Sprintf("{{red}}{{bold}}%s{{/bold}} is missing owner annotation: %s{{/}}", s.PjName, OwnerAnnotationName)
+		return fmt.Sprintf("{{red}}{{bold}}%s{{/}} {{red}}is missing owner annotation: %s{{/}}", s.PjName, OwnerAnnotationName)
 	} else if s.Description {
-		return fmt.Sprintf("{{red}}{{bold}}%s{{/bold}} is missing description annotation: %s{{/}}", s.PjName, DescriptionAnnotationName)
+		return fmt.Sprintf("{{red}}{{bold}}%s{{/}} {{red}}is missing description annotation: %s{{/}}", s.PjName, DescriptionAnnotationName)
 	}
 	return ""
 }
