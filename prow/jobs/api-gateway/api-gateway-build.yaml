@@ -105,6 +105,9 @@ postsubmits: # runs on main
       branches:
         - ^main$
         - ^release-\d+\.\d+$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -150,6 +153,9 @@ postsubmits: # runs on main
       branches:
         - ^main$
         - ^release-\d+\.\d+$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"

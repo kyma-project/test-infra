@@ -2,6 +2,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-integration-k3d-runtime-agent
       annotations:
+        description: "Kyma integration job on k3d for testing compass runtime agent."
+        owner: Framefrog
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"
@@ -24,7 +26,49 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            command:
+              - tests/components/application-connector/scripts/test-cra.sh
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 500m
+              limits:
+                memory: 1Gi
+                cpu: 1
+            securityContext:
+              privileged: true
+postsubmits: # runs on main
+  kyma-project/kyma:
+    - name: post-main-kyma-integration-k3d-runtime-agent
+      annotations:
+        description: "Kyma integration job on k3d for testing compass runtime agent."
+        owner: Framefrog
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-merge"
+        pipeline.type: "integration"
+        testgrid-dashboards: "kyma_integration"
+        testgrid-days-of-results: "60"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-runtime-agent"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-compass-dev: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+      run_if_changed: '^((resources/compass-runtime-agent\S+|installation\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             command:
               - tests/components/application-connector/scripts/test-cra.sh
             resources:

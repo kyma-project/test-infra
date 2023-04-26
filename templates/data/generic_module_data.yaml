@@ -107,7 +107,7 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: pre-keda-manager-operator-lint
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
                   run_if_changed: "^(go.mod|go.sum|main.go)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
                     description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
@@ -267,14 +267,7 @@ templates:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
                     JOB_VM_COMMAND: >-
                       export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin
-                      && curl -s https://storage.googleapis.com/kyma-cli-unstable/kyma-linux > kyma-unstable
-                      && chmod 0100 ./kyma-unstable
-                      && ./kyma-unstable provision k3d
-                      && mkdir tmp
-                      && curl -s https://github.com/kyma-project/keda-manager/releases/latest/download/keda-manager.yaml > tmp/moduletemplate-keda.yaml
-                      && ./kyma-unstable alpha deploy --ci --force-conflicts
-                      && kubectl apply -f tmp/moduletemplate-keda.yaml
-                      && make -C hack/ci upgrade-to
+                      && make -C hack/ci k3d-upgrade-test
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -400,7 +393,7 @@ templates:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   command: "make"
                   args:
                     - "-C"
@@ -424,7 +417,7 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/dev/serverless-manager:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   command: "make"
                   args:
                     - "-C"

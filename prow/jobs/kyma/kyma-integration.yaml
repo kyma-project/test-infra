@@ -40,7 +40,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -95,7 +95,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -150,7 +150,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -205,7 +205,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -253,7 +253,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -306,7 +306,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -355,7 +355,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -404,7 +404,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -454,7 +454,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -506,7 +506,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -567,9 +567,12 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -625,7 +628,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -681,7 +684,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -690,114 +693,6 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-main-kyma-integration-k3d-runtime-agent
-      annotations:
-        description: "Kyma integration job on k3d for testing compass runtime agent."
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-merge"
-        pipeline.type: "integration"
-        testgrid-dashboards: "kyma_integration"
-        testgrid-days-of-results: "60"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-runtime-agent"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-main: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-app-connector-tests-runtime-agent: "true"
-        preset-kyma-integration-central-app-connectivity-enabled: "true"
-        preset-kyma-integration-compass-dev: "true"
-        preset-sa-vm-kyma-integration: "true"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-incubator
-          repo: local-kyma
-          path_alias: github.com/kyma-incubator/local-kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            resources:
-              requests:
-                memory: 100Mi
-                cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: post-main-kyma-integration-k3d-telemetry
-      annotations:
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-merge"
-        pipeline.type: "integration"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-telemetry"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-main: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-telemetry-enabled: "true"
-        preset-kyma-integration-telemetry-tracing-enabled: "true"
-        preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
@@ -843,7 +738,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -881,6 +776,7 @@ periodics: # runs on schedule
       path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       spec:
+        serviceAccountName: sa-prow-job-resource-cleaners
         containers:
           - image: "eu.gcr.io/kyma-project/prow/cleaner:0.0.1"
             securityContext:
@@ -908,7 +804,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "orphaned-assetstore-gcp-bucket-cleaner"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
-        preset-sa-prow-job-resource-cleaner: "true"
       cron: "00 00 * * *"
       skip_report: false
       decorate: true
@@ -1054,7 +949,7 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22"
+              - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22,persist"
             resources:
               requests:
                 memory: 100Mi
@@ -1303,7 +1198,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -1359,7 +1254,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -1421,7 +1316,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -1479,7 +1374,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -1514,7 +1409,7 @@ periodics: # runs on schedule
         preset-kyma-integration-telemetry-enabled: "true"
         preset-kyma-integration-telemetry-tracing-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      cron: "0 */2 * * *"
+      cron: "0 1,13 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -1528,60 +1423,14 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: kyma-integration-k3d-telemetry-alpha
-      annotations:
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-integration-k3d-telemetry-alpha"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-main: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-telemetry-alpha-enabled: "true"
-        preset-kyma-integration-telemetry-tracing-enabled: "true"
-        preset-sa-vm-kyma-integration: "true"
-      cron: "0 */2 * * *"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -1640,7 +1489,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:

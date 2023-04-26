@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.13"
+  nextRelease: "2.14"
   releases:
+    - "2.13"
     - "2.12"
     - "2.11"
-    - "2.10"
   orgs:
     - name: "kyma-project"
       repos:
@@ -16,7 +16,6 @@ global:
         - name: "lifecycle-manager"
         - name: "third-party-images"
         - name: "community"
-        - name: "module-manager"
         - name: "hydroform"
         - name: "istio-operator"
         - name: "addons"
@@ -142,7 +141,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
+    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 200Mi
@@ -174,7 +173,7 @@ globalSets:
   image_prow-tools:
     image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
   image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
   image_buildpack-golang:
@@ -186,9 +185,9 @@ globalSets:
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
   image_gardener-rotate:
-    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230202-40569193"
+    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230330-3213bd39"
   image_markdown_index:
-    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230324-34be098e"
+    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
