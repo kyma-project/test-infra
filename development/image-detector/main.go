@@ -10,8 +10,8 @@ import (
 	"regexp"
 
 	"github.com/kyma-project/test-infra/development/image-detector/internal/prowjob"
-	"github.com/kyma-project/test-infra/development/image-detector/internal/securityconfig"
 	"github.com/kyma-project/test-infra/development/image-detector/internal/terraform"
+	"github.com/kyma-project/test-infra/development/pkg/securityconfig"
 	"k8s.io/test-infra/prow/config"
 )
 
