@@ -21,7 +21,7 @@ func extract(reader io.Reader) ([]string, error) {
 		return nil, err
 	}
 
-	re := regexp.MustCompile("image[ ]+=[ ]+\"(.*[[a-z/-]+:[a-z0-9.]+?)\"")
+	re := regexp.MustCompile("image[ ]+=[ ]+\"(.*[[a-z/-]+:[a-z0-9.-]+?)\"")
 	substrings := re.FindAllStringSubmatch(string(data), -1)
 
 	var images []string
