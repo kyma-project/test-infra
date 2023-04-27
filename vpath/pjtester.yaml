@@ -8,6 +8,10 @@ pjConfigs:
       api-gateway:
         - pjName: "pull-eventing-webhook-certificates-build"
           report: true
+        - pjName: "post-eventing-webhook-certificates-build"
+          report: true
+        - pjName: rel-eventing-webhook-certificates-build
+          report: true
 # prConfigs: #
   # kyma-project:
     # kyma:
