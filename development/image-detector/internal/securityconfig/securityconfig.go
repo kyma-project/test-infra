@@ -8,15 +8,15 @@ import (
 )
 
 type Whitesource struct {
-	Language    string   `yaml:"language"`
-	SubProjects bool     `yaml:"subprojects"`
-	Exclude     []string `yaml:"exclude"`
+	Language    string   `yaml:"language,omitempty"`
+	SubProjects bool     `yaml:"subprojects,omitempty"`
+	Exclude     []string `yaml:"exclude,omitempty"`
 }
 
 type SecurityConfig struct {
-	ModuleName  string      `yaml:"module-name"`
+	ModuleName  string      `yaml:"module-name,omitempty"`
 	Images      []string    `yaml:"protecode"`
-	Whitesource Whitesource `yaml:"whitesource"`
+	Whitesource Whitesource `yaml:"whitesource,omitempty"`
 }
 
 func LoadSecurityConfig(path string) (*SecurityConfig, error) {
