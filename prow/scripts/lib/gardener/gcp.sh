@@ -107,7 +107,8 @@ gardener::provision_cluster() {
         --scaler-min "${MACHINES_MIN}" \
         --kube-version="${GARDENER_CLUSTER_VERSION}" \
         --attempts 1 \
-        --verbose
+        --verbose \
+        --hibernation-start ""
     # trap cleanup we want other errors fail pipeline immediately
     trap - ERR
     if [ "$DEBUG_COMMANDO_OOM" = "true" ]; then

@@ -23,10 +23,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230420-b19d170351
-          initupload: gcr.io/k8s-prow/initupload:v20230420-b19d170351
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230420-b19d170351
-          sidecar: gcr.io/k8s-prow/sidecar:v20230420-b19d170351
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230424-4981841b2f
+          initupload: gcr.io/k8s-prow/initupload:v20230424-4981841b2f
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230424-4981841b2f
+          sidecar: gcr.io/k8s-prow/sidecar:v20230424-4981841b2f
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -297,7 +297,6 @@ tide:
     kyma-project/addons: squash
     kyma-project/lifecycle-manager: squash
     kyma-project/runtime-watcher: squash
-    kyma-project/module-manager: squash
     kyma-project/api-gateway: squash
     kyma-project/organization-and-operations: squash
     kyma-project/btp-manager: squash
@@ -1169,6 +1168,8 @@ presets:
           secretKeyRef:
             name: keb-dev-credentials
             key: KEB_CLIENT_SECRET
+      - name: KEB_TOKEN_URL
+        value: "https://kymatest.accounts400.ondemand.com/oauth2/token"
       - name: KEB_GLOBALACCOUNT_ID
         valueFrom:
           secretKeyRef:

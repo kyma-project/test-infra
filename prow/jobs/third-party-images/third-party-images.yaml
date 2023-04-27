@@ -129,48 +129,6 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pre-main-tpi-jaeger-operator
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-tpi-jaeger-operator"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      run_if_changed: '^jaeger-operator/'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
-            command:
-              - "/image-builder"
-            args:
-              - "--name=tpi/jaeger-operator"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=jaeger-operator"
-              - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: pre-main-tpi-k8s-tools
       annotations:
         pipeline.trigger: "pr-submit"
@@ -668,6 +626,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -680,50 +641,6 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"FLB_VERSION\" }}-{{ .ShortSHA }}"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
-    - name: post-main-tpi-jaeger-operator
-      annotations:
-        pipeline.trigger: "pr-merge"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-tpi-jaeger-operator"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
-      run_if_changed: '^jaeger-operator/'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
-            command:
-              - "/image-builder"
-            args:
-              - "--name=tpi/jaeger-operator"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=jaeger-operator"
-              - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
-              - "--tag={{ .Env \"JAEGER_OPERATOR_VERSION\" }}-{{ .ShortSHA }}"
             resources:
               requests:
                 memory: 1.5Gi
@@ -798,6 +715,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -842,6 +762,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -886,6 +809,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -930,6 +856,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -974,6 +903,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -1077,6 +1009,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -1121,6 +1056,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"

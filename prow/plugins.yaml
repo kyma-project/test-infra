@@ -25,6 +25,7 @@ plugins:
   kyma-project/test-infra:
     plugins:
       - config-updater
+      - require-matching-label
   kyma-incubator/compass:
     plugins:
       - approve
@@ -140,3 +141,28 @@ approve:
       - kyma-incubator/compass
     require_self_approval: true # ignore authors of the PRs to be able to auto-approve their PR if they are owners
     ignore_review_state: false
+
+require_matching_label:
+  - org: kyma-project
+    branch: main
+    grace_period: 5s
+    issues: true
+    missing_comment: |
+      There is no `kind/` label present. Please add one by using the following command:
+      - `/kind <kind>
+      
+      Available kinds:
+      `deprecation`, `bug`, `feature`, `flake`, `cleanup`, `missing-test`, `failing-test`
+    missing_label: needs-kind
+    prs: true
+    regexp: ^kind/
+  - org: kyma-project
+    branch: main
+    grace_period: 5s
+    issues: true
+    missing_comment: |
+      There are no `area/` labels present. Please add one by using the following command:
+      - `/area <area>`
+    missing_label: needs-area
+    prs: true
+    regexp: ^area/

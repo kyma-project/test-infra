@@ -82,6 +82,7 @@ templates:
                   name: "post-main-tpi-fluent-bit"
                   labels:
                     preset-signify-prod-secret: "true"
+                  slack_channel: huskies-notifications
                   run_if_changed: "^fluent-bit/"
                   args:
                     - "--name=tpi/fluent-bit"
@@ -90,36 +91,6 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--env-file=envs"
                     - '--tag={{`{{ .Env \"FLB_VERSION\" }}-{{ .ShortSHA }}`}}'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_postsubmit"
-                    - "kaniko_buildpack"
-
-              - jobConfig:
-                  name: "pre-main-tpi-jaeger-operator"
-                  run_if_changed: "^jaeger-operator/"
-                  args:
-                    - "--name=tpi/jaeger-operator"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=jaeger-operator"
-                    - "--dockerfile=Dockerfile"
-                    - "--env-file=envs"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - "kaniko_buildpack"
-              - jobConfig:
-                  name: "post-main-tpi-jaeger-operator"
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^jaeger-operator/"
-                  args:
-                    - "--name=tpi/jaeger-operator"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=jaeger-operator"
-                    - "--dockerfile=Dockerfile"
-                    - "--env-file=envs"
-                    - '--tag={{`{{ .Env \"JAEGER_OPERATOR_VERSION\" }}-{{ .ShortSHA }}`}}'
                 inheritedConfigs:
                   global:
                     - "jobConfig_postsubmit"
@@ -167,6 +138,7 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-loki"
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^loki/"
@@ -197,6 +169,7 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-oauth2-proxy"
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^oauth2-proxy/"
@@ -227,6 +200,7 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-kiwigrid-sidecar"
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^kiwigrid-sidecar/"
@@ -257,6 +231,7 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-node-exporter"
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^prometheus-node-exporter/"
@@ -287,6 +262,7 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-grafana"
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^grafana/"
@@ -347,6 +323,7 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-kube-state-metrics"
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^kube-state-metrics/"
@@ -377,6 +354,7 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-otel-collector"
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^otel-collector/"
