@@ -577,7 +577,7 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: pre-main-kyma-api-gateway-integration-k3d
-                  optional: true
+                  optional: false
                   labels:
                     preset-build-pr: "true"
                   run_if_changed: "^((tests/components/api-gateway\\S+|resources/api-gateway\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
