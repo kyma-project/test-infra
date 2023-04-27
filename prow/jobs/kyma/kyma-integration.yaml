@@ -288,7 +288,6 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-telemetry-enabled: "true"
-        preset-kyma-integration-telemetry-tracing-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/'
       skip_report: false
@@ -1406,7 +1405,6 @@ periodics: # runs on schedule
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-telemetry-enabled: "true"
-        preset-kyma-integration-telemetry-tracing-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       cron: "0 1,13 * * *"
       skip_report: false

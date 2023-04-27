@@ -1136,11 +1136,6 @@ presets:
       - name: TELEMETRY_ENABLED
         value: "true"
   - labels:
-      preset-kyma-integration-telemetry-tracing-enabled: "true"
-    env:
-      - name: TELEMETRY_TRACING_ENABLED
-        value: "true"
-  - labels:
       preset-kyma-integration-subaccounnt: "true"
     env:
       - name: KEB_SUBACCOUNT_ID
