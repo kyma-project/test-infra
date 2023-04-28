@@ -18,6 +18,8 @@ templates:
                     preset-sa-kyma-push-images: "true"
                     preset-dind-enabled: "true"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  env:
+                    DOCKER_PUSH_REPOSITORY: europe-docker.pkg.dev/kyma-project
                   path: dev
                   args:
                     - "."
@@ -28,7 +30,6 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component_kyma-dashboard"
                     - "extra_refs_test-infra"
                   preConfigs:
                     local:
@@ -58,6 +59,8 @@ templates:
                     preset-sa-kyma-push-images: "true"
                     preset-dind-enabled: "true"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  env:
+                    DOCKER_PUSH_REPOSITORY: europe-docker.pkg.dev/kyma-project
                   path: stage
                   args:
                     - "."
@@ -68,7 +71,6 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component_kyma-dashboard"
                     - "extra_refs_test-infra"
                   preConfigs:
                     local:
@@ -98,6 +100,8 @@ templates:
                     preset-sa-kyma-push-images: "true"
                     preset-dind-enabled: "true"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  env:
+                    DOCKER_PUSH_REPOSITORY: europe-docker.pkg.dev/kyma-project
                   path: prod
                   args:
                     - "."
@@ -108,7 +112,6 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component_kyma-dashboard"
                     - "extra_refs_test-infra"
                   preConfigs:
                     local:
