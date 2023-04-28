@@ -30,26 +30,14 @@ type MissingRequiredAnnotations struct {
 	PjName      string
 }
 
-// ColorableString for ReportEntry to use
-func (s MissingRequiredAnnotations) ColorableString() string {
-	if s.Owner && s.Description {
-		return fmt.Sprintf("{{red}}{{bold}}%s{{/}} {{red}}is missing required annotations: %s, %s{{/}}", s.PjName, OwnerAnnotationName, DescriptionAnnotationName)
-	} else if s.Owner {
-		return fmt.Sprintf("{{red}}{{bold}}%s{{/}} {{red}}is missing owner annotation: %s{{/}}", s.PjName, OwnerAnnotationName)
-	} else if s.Description {
-		return fmt.Sprintf("{{red}}{{bold}}%s{{/}} {{red}}is missing description annotation: %s{{/}}", s.PjName, DescriptionAnnotationName)
-	}
-	return ""
-}
-
 // non-colorable String() is used by go's string formatting support but ignored by ReportEntry
 func (s MissingRequiredAnnotations) String() string {
 	if s.Owner && s.Description {
 		return fmt.Sprintf("Prowjob %s is missing required annotations: %s, %s", s.PjName, OwnerAnnotationName, DescriptionAnnotationName)
 	} else if s.Owner {
-		return fmt.Sprintf("Prowjob %s is missing owner annotation: %s", s.PjName, OwnerAnnotationName)
+		return fmt.Sprintf("Prowjob %s is missing required annotation: %s", s.PjName, OwnerAnnotationName)
 	} else if s.Description {
-		return fmt.Sprintf("Prowjob %s is missing description annotation: %s", s.PjName, DescriptionAnnotationName)
+		return fmt.Sprintf("Prowjob %s is missing reuired annotation: %s", s.PjName, DescriptionAnnotationName)
 	}
 	return ""
 }

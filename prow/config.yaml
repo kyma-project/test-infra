@@ -133,6 +133,8 @@ deck:
               - '"status": "Vulns"' # protecode guard
               - "command not found"
               - '\[ERROR\]'
+              # This highlights non failing prowjobconfigtests warnings about missing annotations.
+              - "Prowjob.+is missing required annotations:"
         required_files:
           - ^.*build-log\.txt$
       - lens:
