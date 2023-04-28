@@ -14,6 +14,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js'
       skip_report: false
       decorate: true
@@ -64,6 +65,7 @@ postsubmits: # runs on main
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js'
       skip_report: false
       decorate: true
