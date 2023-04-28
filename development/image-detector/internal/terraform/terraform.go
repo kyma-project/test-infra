@@ -21,12 +21,12 @@ func extract(reader io.Reader) ([]string, error) {
 		return nil, err
 	}
 
-	re := regexp.MustCompile("image[ ]+=[ ]+\"(.*[[a-z/-]+:[a-z0-9.-]+?)\"")
+	re := regexp.MustCompile(`([a-z0-9]+(?:[.-][a-z0-9]+)*/)*([a-z0-9]+(?:[.-][a-z0-9]+)*)(?::[a-z0-9.-]+)?/([a-z0-9-]+)/([a-z0-9-]+)(?::[a-z0-9.-]+)?`)
 	substrings := re.FindAllStringSubmatch(string(data), -1)
 
 	var images []string
 	for _, substr := range substrings {
-		images = append(images, substr[1:]...)
+		images = append(images, substr[0])
 	}
 
 	return images, nil
