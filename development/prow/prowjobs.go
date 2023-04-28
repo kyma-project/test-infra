@@ -13,7 +13,6 @@ import (
 
 const (
 	OrgDefaultClonePath        = "/home/prow/go/src/github.com"
-	TestInfraDefaultClonePath  = "/home/prow/go/src/github.com/kyma-project/test-infra"
 	ProwConfigDefaultClonePath = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/config.yaml"
 	JobConfigDefaultClonePath  = "/home/prow/go/src/github.com/kyma-project/test-infra/prow/jobs"
 	OwnerAnnotationName        = "owner"

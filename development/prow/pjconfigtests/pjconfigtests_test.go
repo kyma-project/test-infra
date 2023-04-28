@@ -23,7 +23,7 @@ var _ = Describe("Prowjob,", func() {
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
 				if missingAnnotations.PjName != "" {
-					fmt.Print(missingAnnotations)
+					fmt.Printf("%s\n", missingAnnotations)
 				}
 			})
 		}
@@ -41,7 +41,7 @@ var _ = Describe("Prowjob,", func() {
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
 				if missingAnnotations.PjName != "" {
-					fmt.Print(missingAnnotations)
+					fmt.Printf("%s\n", missingAnnotations)
 				}
 			})
 		}
@@ -59,7 +59,7 @@ var _ = Describe("Prowjob,", func() {
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
 				if missingAnnotations.PjName != "" {
-					fmt.Print(missingAnnotations)
+					fmt.Printf("%s\n", missingAnnotations)
 				}
 			})
 		}
