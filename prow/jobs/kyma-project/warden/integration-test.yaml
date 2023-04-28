@@ -4,6 +4,9 @@ presubmits:
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-warden-integration-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
       cluster: untrusted-workload
       decorate: true
       run_if_changed: '.*\.go$|charts/'
