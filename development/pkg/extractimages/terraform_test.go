@@ -1,4 +1,4 @@
-package terraform
+package extractimages
 
 import (
 	"reflect"
@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestExtract(t *testing.T) {
+func TestFromTerraform(t *testing.T) {
 	tc := []struct {
 		Name           string
 		FileContent    string
@@ -113,13 +113,13 @@ resource "google_cloud_run_service" "run_service" {
 
 	for _, c := range tc {
 		t.Run(c.Name, func(t *testing.T) {
-			actual, err := extract(strings.NewReader(c.FileContent))
+			actual, err := extractDockerImagesFromTerraform(strings.NewReader(c.FileContent))
 			if err != nil && !c.WantErr {
 				t.Errorf("Unexpected error occurred %s", err)
 			}
 
 			if !reflect.DeepEqual(actual, c.ExpectedImages) {
-				t.Errorf("%v != %v", actual, c.ExpectedImages)
+				t.Errorf("Got images list %v, expected %v", actual, c.ExpectedImages)
 			}
 		})
 	}
