@@ -11,6 +11,9 @@ templates:
           - repoName: "kyma-project/kyma-dashboard"
             jobs:
               - jobConfig:
+                  annotations:
+                    owner: "hasselhoff"
+                    description: "Kyma Dashboard Dev Job"
                   labels: 
                     preset-sa-kyma-push-images: "true"
                   path: dev
@@ -47,6 +50,9 @@ templates:
           - repoName: "kyma-project/kyma-dashboard"
             jobs:
               - jobConfig:
+                  annotations:
+                    owner: "hasselhoff"
+                    description: "Kyma Dashboard Stage Job"
                   labels: 
                     preset-sa-kyma-push-images: "true"
                   path: stage
@@ -83,6 +89,9 @@ templates:
           - repoName: "kyma-project/kyma-dashboard"
             jobs:
               - jobConfig:
+                  annotations:
+                    owner: "hasselhoff"
+                    description: "Kyma Dashboard Prod Job"
                   labels: 
                     preset-sa-kyma-push-images: "true"
                   path: prod
