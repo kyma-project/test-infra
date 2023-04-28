@@ -115,8 +115,6 @@ func GetProwjobsConfigForProwjob(orgName, repoName, prowConfigPath, staticJobCon
 		postsubmits = conf.AllStaticPostsubmits([]string{})
 		periodics = conf.AllPeriodics()
 	} else {
-		presubmits = conf.GetPresubmitsStatic(repoIdentifier)
-		postsubmits = conf.GetPostsubmitsStatic(repoIdentifier)
 		prowYAML, err := config.ReadProwYAML(logrus.WithField("repo", repoIdentifier), inrepoConfigPath, false)
 		if err != nil {
 			return nil, nil, nil, fmt.Errorf("error loading inrepo config, got error: %w", err)
