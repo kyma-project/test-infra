@@ -122,6 +122,13 @@
                 {{- if .JobConfig.request_cpu}}
                 cpu: {{.JobConfig.request_cpu}}
                 {{- end}}
+              limits:
+                {{- if .JobConfig.limits_memory}}
+                memory: {{.JobConfig.limits_memory}}
+                {{- end}}
+                {{- if .JobConfig.limits_cpu}}
+                cpu: {{.JobConfig.limits_cpu}}
+                {{- end}}
             {{- end}}
             {{- if .JobConfig.volumeMounts}}
             volumeMounts:
