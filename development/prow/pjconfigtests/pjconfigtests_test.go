@@ -1,6 +1,8 @@
 package pjconfigtests_test
 
 import (
+	"fmt"
+
 	kprow "github.com/kyma-project/test-infra/development/prow"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -21,7 +23,8 @@ var _ = Describe("Prowjob,", func() {
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
 				if missingAnnotations.PjName != "" {
-					AddReportEntry("Missing required annotations:", missingAnnotations)
+					fmt.Printf("Missing required annotations: %s\n", missingAnnotations)
+					// AddReportEntry("Missing required annotations:", missingAnnotations)
 				}
 			})
 		}
@@ -39,7 +42,8 @@ var _ = Describe("Prowjob,", func() {
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
 				if missingAnnotations.PjName != "" {
-					AddReportEntry("Missing required annotations:", missingAnnotations)
+					fmt.Printf("Missing required annotations: %s\n", missingAnnotations)
+					// AddReportEntry("Missing required annotations:", missingAnnotations)
 				}
 			})
 		}
@@ -57,7 +61,8 @@ var _ = Describe("Prowjob,", func() {
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
 				if missingAnnotations.PjName != "" {
-					AddReportEntry("Missing required annotations:", missingAnnotations)
+					fmt.Printf("Missing required annotations: %s\n", missingAnnotations)
+					// AddReportEntry("Missing required annotations:", missingAnnotations)
 				}
 			})
 		}
