@@ -73,19 +73,24 @@ func GetPrAuthorForPresubmit() ([]string, error) {
 	return nil, &NotPresubmitError{}
 }
 
+// GetOrgForPresubmit will provide organization name for prowjob of type presubmit.
 func GetOrgForPresubmit() (string, error) {
 	// Get data, about prowjob specification from prowjob environment variables set by prow.
 	jobSpec, err := downwardapi.ResolveSpecFromEnv()
 	if err != nil {
 		return "", fmt.Errorf("failed to read JOB_SPEC env, got error: %w", err)
 	}
-	// Get authors for presubmits only.
+	// Get org name for presubmits only.
 	if jobSpec.Type == prowapi.PresubmitJob {
 		return jobSpec.Refs.Org, nil
 	}
 	return "", &NotPresubmitError{}
 }
 
+// GetProwjobsConfigForProwjob will provide all prowjobs configuration stored in repository described by orgName and repoName.
+// If orgName and repoName are set to "kyma-project" and "test-infra" respectively, then static prowjobs configuration will be returned.
+// Otherwise, inrepo prowjobs configuration will be returned.
+// Prowjobs configuration is read from local repository clone.
 func GetProwjobsConfigForProwjob(orgName, repoName, prowConfigPath, staticJobConfigPath, inrepoConfigPath string) ([]config.Presubmit, []config.Postsubmit, []config.Periodic, error) {
 	var (
 		presubmits  []config.Presubmit

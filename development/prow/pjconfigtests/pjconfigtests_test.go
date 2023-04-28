@@ -18,7 +18,7 @@ var _ = Describe("Prowjob,", func() {
 					"prow.k8s.io/pubsub.project": Equal("sap-kyma-prow"),
 					"prow.k8s.io/pubsub.runID":   Not(BeZero()),
 					"prow.k8s.io/pubsub.topic":   Equal("prowjobs"),
-				}), "Presubmit %s is missing pubsub required config.", pj.Name)
+				}), "Presubmit %s is missing pubsub required labels.", pj.Name)
 			})
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
@@ -36,7 +36,7 @@ var _ = Describe("Prowjob,", func() {
 					"prow.k8s.io/pubsub.project": Equal("sap-kyma-prow"),
 					"prow.k8s.io/pubsub.runID":   Not(BeZero()),
 					"prow.k8s.io/pubsub.topic":   Equal("prowjobs"),
-				}), "Postsubmit %s is missing pubsub required config.", pj.Name)
+				}), "Postsubmit %s is missing pubsub required labels.", pj.Name)
 			})
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
@@ -54,7 +54,7 @@ var _ = Describe("Prowjob,", func() {
 					"prow.k8s.io/pubsub.project": Equal("sap-kyma-prow"),
 					"prow.k8s.io/pubsub.runID":   Not(BeZero()),
 					"prow.k8s.io/pubsub.topic":   Equal("prowjobs"),
-				}), "Periodic %s is missing pubsub required config.", pj.Name)
+				}), "Periodic %s is missing pubsub required labels.", pj.Name)
 			})
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
