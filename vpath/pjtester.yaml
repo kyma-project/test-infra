@@ -4,6 +4,7 @@ pjConfigs:
       telemetry-manager:
         - pjName: "verify-telemetry-module"
         - pjName: "release-telemetry-module"
+
 prConfigs:
   kyma-project:
     telemetry-manager:
