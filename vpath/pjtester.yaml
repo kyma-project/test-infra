@@ -2,7 +2,7 @@ pjConfigs:
   prConfig:
     kyma-project:
       kyma:
-        prNumber: 17435
+        prNumber: 17436
   prowJobs:
     kyma-project:
       kyma:
@@ -11,6 +11,6 @@ pjConfigs:
 prConfigs: #
   kyma-project:
     kyma:
-      prNumber: 17435
+      prNumber: 17436
     test-infra: 
       prNumber: 6501
