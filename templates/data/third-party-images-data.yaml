@@ -6,6 +6,38 @@ templates:
           - repoName: "kyma-project/third-party-images"
             jobs:
               - jobConfig:
+                  name: "pre-main-tpi-alertmanager"
+                  run_if_changed: "^alertmanager/"
+                  args:
+                    - "--name=tpi/alertmanager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=alertmanager"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "kaniko_buildpack"
+
+              - jobConfig:
+                  name: "post-main-tpi-alertmanager"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  slack_channel: huskies-notifications
+                  run_if_changed: "^alertmanager/"
+                  args:
+                    - "--name=tpi/alertmanager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=alertmanager"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag=v{{`{{ .Env \"ALERTMANAGER_VERSION\" }}-{{ .ShortSHA }}`}}'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_postsubmit"
+                    - "kaniko_buildpack"
+
+              - jobConfig:
                   name: "pre-main-tpi-cloudsql-proxy"
                   run_if_changed: "^cloudsql-proxy/"
                   args:
