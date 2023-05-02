@@ -43,7 +43,8 @@ ENV CGO_ENABLED=0
 ARG K3D_VERSION=v5.4.9
 
 RUN curl -Lso install.sh https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh && \
-    TAG=${K3D_VERSION} install.sh &&\
+    chmod +x ./install.sh &&\
+    TAG=${K3D_VERSION} ./install.sh &&\
     rm install.sh
 
 ARG KIND_VERSION=v0.18.0
