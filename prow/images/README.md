@@ -1,6 +1,6 @@
 # Images
 
-> DEPRECATED: Use [/images](../../images) directory instead.
+> DEPRECATED: Use the [`images`](../../images) directory instead.
 
 ## Overview
 

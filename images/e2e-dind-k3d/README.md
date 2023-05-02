@@ -1,9 +1,9 @@
 # E2E DinD K3d
 
 This image contains common tools for all jobs/tasks that test Kyma modules in K3d.
-K3d runs in docker-in-docker mode. Image is alpine-based.
+K3d runs in docker-in-docker mode. The image is Alpine-based.
 
-Usage of this image is restricted only for running K3d/kind workloads for testing.
+The usage of this image is restricted only to running K3d/kind workloads for testing.
 
 It contains the following binaries:
 
@@ -33,8 +33,8 @@ It contains the following binaries:
 
 ## Usage
 
-1. Use `securityContext: privileged: true` for this image to be running correctly.
-2. Do not define `command` directive in ProwJob or Pod definition. If you have to do it, use `/init.sh` as a value.
+1. Use `securityContext: privileged: true` for this image to run correctly.
+2. Do not define the `command` directive in ProwJob or Pod definition. If you have to do it, use `/init.sh` as a value.
 3. Pay attention to scripts that run inside the container.
 4. To enable Docker-in-Docker you need to use the following presets:
     ```yaml
