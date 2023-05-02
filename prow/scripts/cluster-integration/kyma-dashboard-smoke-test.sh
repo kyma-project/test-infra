@@ -19,7 +19,7 @@ load_env
 echo DOCKER_TAG "${DOCKER_TAG}"
 echo IMAGE_NAME "${IMAGE_NAME}"
 # shellcheck disable=SC2086
-docker run -d --rm --net=host --pid=host --name kyma-dashboard eu.gcr.io/kyma-project/kyma-dashboard-local-${IMAGE_NAME}:${DOCKER_TAG}
+docker run -d --rm --net=host --pid=host --name kyma-dashboard europe-docker.pkg.dev/kyma-project/dev/kyma-dashboard-local-${IMAGE_NAME}:${DOCKER_TAG}
 
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/kyma-dashboard-tests/fixtures/kubeconfig.yaml"
 
