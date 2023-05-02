@@ -505,6 +505,7 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: release-telemetry-module
+                  slack_channel: huskies-notifications
                   always_run: "true"
                   labels:
                     preset-sa-kyma-push-images: "true"
