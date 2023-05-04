@@ -50,7 +50,7 @@ require (
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.9.0
 	golang.org/x/oauth2 v0.7.0
-	google.golang.org/api v0.120.0
+	google.golang.org/api v0.121.0
 	google.golang.org/grpc v1.54.0
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -62,7 +62,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230504024042-9050e0e46b6a
+require k8s.io/test-infra v0.0.0-20230504103449-c49b3331e168
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
@@ -142,7 +142,7 @@ require (
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/gofuzz v1.2.1-0.20210504230335-f78f29fc09ea // indirect
 	github.com/google/pprof v0.0.0-20210720184732-4bb14d4b1be1 // indirect
-	github.com/google/s2a-go v0.1.2 // indirect
+	github.com/google/s2a-go v0.1.3 // indirect
 	github.com/google/wire v0.5.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.3 // indirect
 	github.com/googleapis/gax-go v2.0.2+incompatible // indirect
