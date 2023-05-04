@@ -10,6 +10,7 @@ updates:
       - "go"
       - "skip-review"
       - "area/dependency"
+      - "kind/cleanup"
     schedule:
       interval: "daily"
     commit-message:
