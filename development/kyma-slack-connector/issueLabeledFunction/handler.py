@@ -18,7 +18,6 @@ def get_slack_username(github_username: str, users_map: list) -> str:
                 return item["com.slack.enterprise.sap.username"]
         except KeyError:
             print(f"KeyError: sap.tools.github.username or com.slack.enterprise.sap.username not found in {item}")
-            pass
     return None
 
 
