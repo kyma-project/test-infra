@@ -12,7 +12,7 @@ templates:
               - "go"
               - "skip-review"
               - "area/dependency"
-              - "kind/cleanup"
+              - "kind/chore"
             ignore:
               - dependencyName: "github.com/go-logr/logr"
                 versions:
