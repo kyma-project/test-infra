@@ -76,6 +76,7 @@ templates:
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
+                    - --labels-override=kind/chore,area/prow
                 inheritedConfigs:
                   local:
                     - periodic_config
@@ -96,6 +97,7 @@ templates:
                   command: /markdown-index
                   args:
                     - --config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml
+                    - --labels-override=kind/chore,area/documentation
                 inheritedConfigs:
                   local:
                     - github_token_mounts
@@ -132,7 +134,7 @@ templates:
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml
-                    - --labels-override=skip-review # This label marks PR to auto merge
+                    - --labels-override=skip-review,area/ci,kind/chore
                 inheritedConfigs:
                   local:
                     - periodic_config
