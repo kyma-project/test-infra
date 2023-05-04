@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230504-c36e3c5f46
-          initupload: gcr.io/k8s-prow/initupload:v20230504-c36e3c5f46
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230504-c36e3c5f46
-          sidecar: gcr.io/k8s-prow/sidecar:v20230504-c36e3c5f46
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230504-9f7a9db577
+          initupload: gcr.io/k8s-prow/initupload:v20230504-9f7a9db577
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230504-9f7a9db577
+          sidecar: gcr.io/k8s-prow/sidecar:v20230504-9f7a9db577
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
