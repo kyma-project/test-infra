@@ -30,6 +30,7 @@ postsubmits: # runs on main
               - "/markdown-index"
             args:
               - "--config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml"
+              - "--labels-override=kind/chore,area/documentation"
     - name: post-test-infra-deploy-prow
       annotations:
         pipeline.trigger: "pr-merge"
@@ -142,6 +143,7 @@ periodics: # runs on schedule
               - "generic-autobumper"
             args:
               - "--config=prow/autobump-config/prow-cluster-autobump-config.yaml"
+              - "--labels-override=kind/chore,area/prow"
     - name: ci-prow-autobump-jobs
       annotations:
         testgrid-create-test-group: "false"
@@ -169,5 +171,5 @@ periodics: # runs on schedule
               - "generic-autobumper"
             args:
               - "--config=prow/autobump-config/test-infra-autobump-config.yaml"
-              - "--labels-override=skip-review"
+              - "--labels-override=skip-review,area/ci,kind/chore"
   
