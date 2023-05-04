@@ -9,8 +9,7 @@ import (
 	"path/filepath"
 	"regexp"
 
-	"github.com/kyma-project/test-infra/development/image-detector/internal/prowjob"
-	"github.com/kyma-project/test-infra/development/image-detector/internal/terraform"
+	"github.com/kyma-project/test-infra/development/pkg/extractimages"
 	"github.com/kyma-project/test-infra/development/pkg/securityconfig"
 	"k8s.io/test-infra/prow/config"
 )
@@ -88,7 +87,7 @@ func main() {
 		log.Fatalf("Failed to load prow job config: %s", err)
 	}
 
-	images = append(images, prowjob.ExtractFromJobConfig(cfg.JobConfig)...)
+	images = append(images, extractimages.FromProwJobConfig(cfg.JobConfig)...)
 
 	// terraform
 	files, err := findFilesInDirectory(o.TerraformDir, ".*.(tf|tfvars)")
@@ -96,20 +95,45 @@ func main() {
 		log.Fatalf("failed to find files in terraform directory %s: %s", o.TerraformDir, err)
 	}
 
-	for _, file := range files {
-		imgs, err := terraform.Extract(file)
-		if err != nil {
-			log.Fatalf("failed to extract images from terraform: %s", err)
-		}
-
-		images = append(images, imgs...)
+	img, err := extractImagesFromFiles(files, extractimages.FromTerraform)
+	if err != nil {
+		log.Fatalf("failed to extract images from terraform files: %s", err)
 	}
+
+	images = append(images, img...)
+
+	// kubernetes
+	files, err = findFilesInDirectory(o.KubernetesFiles, ".*.(yaml|yml)")
+	if err != nil {
+		log.Fatalf("failed to find files in kubernetes directory %s: %s", o.KubernetesFiles, err)
+	}
+
+	img, err = extractImagesFromFiles(files, extractimages.FromKubernetesDeployments)
+	if err != nil {
+		log.Fatalf("failed to extract images from kubernetes files: %s", err)
+	}
+
+	images = append(images, img...)
 
 	images = uniqueImages(images)
 
 	// Write images to security-config
 	config.Images = images
 	config.SaveToFile(o.SecScannerConfig)
+}
+
+func extractImagesFromFiles(files []string, extract func(path string) ([]string, error)) ([]string, error) {
+	var images []string
+	for _, file := range files {
+		img, err := extract(file)
+		if err != nil {
+			return nil, fmt.Errorf("failed to extract images from file %s: %s", file, err)
+		}
+
+		images = append(images, img...)
+	}
+
+	return images, nil
 }
 
 func loadJobConfigs(o options) (*config.Config, error) {
