@@ -71,6 +71,7 @@ external_plugins:
     - name: automated-approver
       events:
         - pull_request
+        - pull_request_review
 
 config_updater:
   maps:
