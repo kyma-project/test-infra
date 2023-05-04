@@ -356,19 +356,6 @@ globalSets:
       pipeline.platform: gardener_gcp
 
 templates:
-  - from: prow-config.yaml
-    render:
-      - to: ../../prow/config.yaml
-        values:
-          cluster:
-            presubmit: untrusted-workload
-            postsubmit: trusted-workload
-            periodic: trusted-workload
-          contexts:
-            - name: kyma-integration
-            - name: kyma-gke-integration
-            - name: kyma-gke-upgrade
-            - name: kyma-artifacts
   - from : test-infra-autobump-config.yaml
     render:
       - to: ../../prow/autobump-config/test-infra-autobump-config.yaml
