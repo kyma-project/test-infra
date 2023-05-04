@@ -30,8 +30,6 @@
 # Exit on error, and raise error when variable is not set when used
 set -e
 
-ENABLE_TEST_LOG_COLLECTOR=false
-
 # Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
