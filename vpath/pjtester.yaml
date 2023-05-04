@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      control-plane:
+        - pjName: "pull-keb-runtime-reconciler-job-build"
+
+prConfigs:
+  kyma-project:
+    control-plane:
+      prNumber: 2675
