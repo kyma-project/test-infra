@@ -295,7 +295,8 @@ presubmits: # runs on PRs
               name: kaniko-build-config
           - name: signify-secret
             secret:
-              secretName: signify-dev-secret  
+              secretName: signify-dev-secret
+  
 postsubmits: # runs on main
   kyma-project/control-plane:
     - name: post-keb-build
@@ -612,3 +613,4 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+  
