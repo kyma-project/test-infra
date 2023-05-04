@@ -3,7 +3,7 @@ module github.com/kyma-project/test-infra
 go 1.19
 
 require (
-	cloud.google.com/go/bigquery v1.51.0
+	cloud.google.com/go/bigquery v1.51.1
 	cloud.google.com/go/compute/metadata v0.2.3
 	cloud.google.com/go/firestore v1.9.0
 	cloud.google.com/go/kms v1.10.1
@@ -62,7 +62,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230504103449-c49b3331e168
+require k8s.io/test-infra v0.0.0-20230504183243-5467e7008f31
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
@@ -86,7 +86,7 @@ require (
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/andygrunwald/go-jira v1.14.0 // indirect
-	github.com/apache/arrow/go/v11 v11.0.0 // indirect
+	github.com/apache/arrow/go/v12 v12.0.0 // indirect
 	github.com/apache/thrift v0.16.0 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/blendle/zapdriver v1.3.1 // indirect
@@ -167,7 +167,7 @@ require (
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/mattn/go-isatty v0.0.16 // indirect
+	github.com/mattn/go-isatty v0.0.17 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/mattn/go-zglob v0.0.2 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.4 // indirect
