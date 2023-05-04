@@ -1,4 +1,4 @@
-package prowjob
+package extractimages
 
 import (
 	"reflect"
@@ -8,7 +8,7 @@ import (
 	"k8s.io/test-infra/prow/config"
 )
 
-func TestExtractFromProwJob(t *testing.T) {
+func TestFromProwJobConfig(t *testing.T) {
 	tc := []struct {
 		name           string
 		expectedImages []string
@@ -89,10 +89,10 @@ func TestExtractFromProwJob(t *testing.T) {
 
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
-			images := extract(c.jobConfig)
+			images := FromProwJobConfig(c.jobConfig)
 
 			if !reflect.DeepEqual(images, c.expectedImages) {
-				t.Errorf("%v != %v", images, c.expectedImages)
+				t.Errorf("ExtractImagesFromProwJobs(): Got %v, but expected %v", images, c.expectedImages)
 			}
 		})
 	}
