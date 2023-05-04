@@ -348,6 +348,8 @@ tide:
         - lgtm
       missingLabels:
         - needs-rebase
+        - needs-kind
+        - needs-area
         - do-not-merge/hold
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
