@@ -3,6 +3,11 @@ variable "project_id" {
   description = "Google Cloud project ID to deploy the secret rotator application to."
 }
 
+variable "project_workloads_id" {
+  type        = string
+  description = "Google Cloud project ID to add the IAM access to."
+}
+
 variable "application_name" {
   type        = string
   description = "Name of the application."
