@@ -8,7 +8,7 @@ require (
 	cloud.google.com/go/firestore v1.9.0
 	cloud.google.com/go/kms v1.10.1
 	cloud.google.com/go/logging v1.7.0
-	cloud.google.com/go/pubsub v1.30.0
+	cloud.google.com/go/pubsub v1.30.1
 	cloud.google.com/go/storage v1.30.1
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
