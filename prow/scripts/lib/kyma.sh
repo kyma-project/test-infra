@@ -259,7 +259,7 @@ kyma::install_old_cli() {
         curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_${os}_x86_64.tar.gz"
         tar xvzf kyma.tar.gz
     else
-        curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-${os}?alt=media"
+        curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
     fi
 
     chmod +x kyma
