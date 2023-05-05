@@ -47,7 +47,8 @@ module "service_account_keys_rotator" {
     id     = data.google_project.project.project_id
     number = data.google_project.project.number
   }
-  region = var.region
+  project_workloads_id = var.project_workloads_id
+  region               = var.region
 
   service_account_keys_rotator_account_id            = var.service_account_keys_rotator_account_id
   service_account_keys_rotator_dead_letter_topic_uri = google_pubsub_topic.secrets_rotator_dead_letter.id
