@@ -477,7 +477,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         preset-cluster-version: "true"
         preset-gardener-gcp-kyma-integration: "true"
-        preset-kyma-cli-stable: "true"
+        preset-kyma-cli-unstable: "true"
         preset-kyma-guard-bot-github-token: "true"
       run_if_changed: '^((pkg/reconciler/instances/ory\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
@@ -1272,7 +1272,7 @@ periodics: # runs on schedule
         preset-bot-github-token: "true"
         preset-cluster-version: "true"
         preset-gardener-gcp-kyma-integration: "true"
-        preset-kyma-cli-stable: "true"
+        preset-kyma-cli-unstable: "true"
         preset-log-collector-slack-token: "true"
       cron: "0 0 * * 1-5"
       skip_report: false
@@ -1335,7 +1335,7 @@ periodics: # runs on schedule
         preset-bot-github-token: "true"
         preset-cluster-version: "true"
         preset-gardener-gcp-kyma-integration: "true"
-        preset-kyma-cli-stable: "true"
+        preset-kyma-cli-unstable: "true"
         preset-log-collector-slack-token: "true"
       cron: "0 3-23/2 * * 1-5"
       skip_report: false

@@ -79,24 +79,6 @@ templates:
                     - jobConfig_reconciler_publish_unstable_cli
                     - extra_refs_reconciler
               - jobConfig:
-                  name: stable-kyma-cli
-                  branches:
-                    - "^stable$"
-                  args:
-                    - "ci-main"
-                  labels:
-                    preset-kyma-cli-stable: "true"
-                    preset-sa-kyma-artifacts: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - disable_testgrid
-                    - image_buildpack-golang-toolbox
-                    - jobConfig_slack_jellyfish
-                  local:
-                    - job_spec
-              - jobConfig:
                   name: "pull-cli-lint"
                   optional: false
                   command: "/bin/sh"
