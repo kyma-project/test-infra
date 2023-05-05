@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         preset-bot-github-token: "true"
         preset-cluster-version: "true"
         preset-gardener-gcp-kyma-integration: "true"
-        preset-kyma-cli-unstable: "true"
+        preset-kyma-cli-stable: "true"
       run_if_changed: '^resources/kcp/values.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/'
       optional: true
       skip_report: false

@@ -13,7 +13,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-cluster-version: "true"
         preset-gardener-gcp-kyma-integration: "true"
-        preset-kyma-cli-unstable: "true"
+        preset-kyma-cli-stable: "true"
       run_if_changed: '^resources/kcp/values.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/'
       optional: true
       skip_report: false
@@ -73,7 +73,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-cluster-version: "true"
         preset-gardener-gcp-kyma-integration: "true"
-        preset-kyma-cli-unstable: "true"
+        preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
       run_if_changed: '^resources/kcp/values.yaml|^resources/kcp/charts/mothership-reconciler/|^resources/kcp/charts/component-reconcilers/'
       optional: true

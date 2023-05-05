@@ -68,7 +68,7 @@ presubmits: # runs on PRs
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
-        preset-kyma-cli-unstable: "true"
+        preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
       always_run: true
       optional: false
@@ -135,7 +135,7 @@ postsubmits: # runs on main
         preset-cluster-version: "true"
         preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
-        preset-kyma-cli-unstable: "true"
+        preset-kyma-cli-stable: "true"
         preset-kyma-guard-bot-github-token: "true"
       always_run: true
       optional: false
