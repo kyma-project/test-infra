@@ -78,8 +78,6 @@
 
 [GitHub.com and Azure Pipeline (ADO) integration](/docs/how-to/ado/how-to_integrate-githubcom-azurepipeline.md) - We have to verify that the integration of an SAP Azure DevopsPipeline as a quality gate for github.com works.
 
-[Add custom secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add a custom secret and use it in the Prow pipeline.
-
 [Use Tekton Pipelines with Prow](/docs/how-to/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use Kubernetes-native implementation of CI/CD pipelines, where every task is a self-contained set of commands.
 
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
