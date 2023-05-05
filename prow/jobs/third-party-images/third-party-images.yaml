@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/third-party-images:
     - name: pre-main-tpi-alertmanager
       annotations:
+        description: "Pre-submit job to build alertmanager image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -89,6 +91,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-configmap-reload
       annotations:
+        description: "Pre-submit job to build configmap-reload image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -173,6 +177,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-fluent-bit
       annotations:
+        description: "Pre-submit job to build Fluent Bit image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -256,6 +262,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-loki
       annotations:
+        description: "Pre-submit job to build Loki image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -298,6 +306,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-oauth2-proxy
       annotations:
+        description: "Pre-submit job to build OAuth2 Proxy image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -340,6 +350,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-kiwigrid-sidecar
       annotations:
+        description: "Pre-submit job to build Kiwigrid-sidecar image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -382,6 +394,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-node-exporter
       annotations:
+        description: "Pre-submit job to build node_exporter image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -424,6 +438,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-grafana
       annotations:
+        description: "Pre-submit job to build Grafana image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -523,6 +539,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-kube-state-metrics
       annotations:
+        description: "Pre-submit job to build kube-state-metrics image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -565,6 +583,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-otel-collector
       annotations:
+        description: "Pre-submit job to build OpenTelemetry Collector image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -610,6 +630,8 @@ postsubmits: # runs on main
   kyma-project/third-party-images:
     - name: post-main-tpi-alertmanager
       annotations:
+        description: "Post-submit job to build alertmanager image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -701,6 +723,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-configmap-reload
       annotations:
+        description: "Post-submit job to build configmap-reload image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -792,6 +816,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-fluent-bit
       annotations:
+        description: "Post-submit job to build Fluent Bit image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -881,6 +907,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-loki
       annotations:
+        description: "Post-submit job to build Loki image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -928,6 +956,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-oauth2-proxy
       annotations:
+        description: "Post-submit job to build OAuth2 Proxy image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -975,6 +1005,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-kiwigrid-sidecar
       annotations:
+        description: "Post-submit job to build Kiwigrid-sidecar image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1022,6 +1054,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-node-exporter
       annotations:
+        description: "Post-submit job to build node_exporter image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1069,6 +1103,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-grafana
       annotations:
+        description: "Post-submit job to build Grafana image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1175,6 +1211,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-kube-state-metrics
       annotations:
+        description: "Post-submit job to build kube-state-metrics image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1222,6 +1260,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-otel-collector
       annotations:
+        description: "Post-submit job to build OpenTelemetry Collector image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
