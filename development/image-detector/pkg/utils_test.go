@@ -1,4 +1,4 @@
-package main
+package pkg
 
 import (
 	"reflect"
@@ -30,7 +30,7 @@ func TestUniqueImages(t *testing.T) {
 
 	for _, c := range tc {
 		t.Run(c.Name, func(t *testing.T) {
-			actual := uniqueImages(c.GivenImages)
+			actual := UniqueImages(c.GivenImages)
 
 			if !reflect.DeepEqual(actual, c.ExpectedImages) {
 				t.Errorf("UniqueImages(): Got %v, but expected %v", actual, c.ExpectedImages)
