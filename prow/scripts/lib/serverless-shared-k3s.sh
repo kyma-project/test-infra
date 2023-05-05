@@ -47,7 +47,7 @@ install::kyma_cli() {
 
     echo "Install kyma CLI ${os} locally to /usr/local/bin..."
 
-    curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-${os}?alt=media"
+    curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
     chmod +x kyma
     kyma_version=$(kyma version --client)
     echo "Kyma CLI version: ${kyma_version}"
