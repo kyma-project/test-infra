@@ -70,6 +70,7 @@ module "service_account_keys_cleaner" {
     id     = data.google_project.project.project_id
     number = data.google_project.project.number
   }
+  project_workloads_id                       = var.project_workloads_id
   region                                     = var.region
   service_account_keys_cleaner_account_id    = var.service_account_keys_cleaner_account_id
   service_account_keys_cleaner_image         = var.service_account_keys_cleaner_image

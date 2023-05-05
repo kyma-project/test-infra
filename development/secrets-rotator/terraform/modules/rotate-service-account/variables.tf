@@ -6,6 +6,12 @@ variable "project" {
   description = "Google Cloud project ID to deploy the service account keys rotator to."
 }
 
+variable "project_workloads_id" {
+  type        = string
+  description = "Google Cloud project ID to add the IAM access to."
+}
+
+
 variable "region" {
   type        = string
   description = "Google Cloud region to deploy the service account keys rotator to."
