@@ -28,6 +28,7 @@ type Container struct {
 	Image string `yaml:"image"`
 }
 
+// FromKubernetesDeployments returns list of images found in provided file
 func FromKubernetesDeployments(path string) ([]string, error) {
 	f, err := os.Open(path)
 	if err != nil {
