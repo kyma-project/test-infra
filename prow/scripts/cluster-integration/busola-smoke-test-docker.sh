@@ -18,7 +18,7 @@ function load_env() {
 load_env
 echo DOCKER_TAG "${DOCKER_TAG}"
 # shellcheck disable=SC2086
-docker run -d --rm --net=host --pid=host --name busola eu.gcr.io/kyma-project/busola:${DOCKER_TAG}
+docker run -d --rm --net=host --pid=host --name busola europe-docker.pkg.dev/kyma-project/dev/busola:${DOCKER_TAG}
 
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/busola-tests/fixtures/kubeconfig.yaml"
 

@@ -51,7 +51,7 @@ templates:
                     - --dockerfile=Dockerfile
                     - --config=/config/kaniko-build-config.yaml
                     - --export-tags
-                  run_if_changed: '^backend/'
+                  run_if_changed: '^backend/|^package.json'
                   privileged: false
                 inheritedConfigs:
                   global:

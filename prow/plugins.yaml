@@ -59,6 +59,11 @@ external_plugins:
     - name: cla-assistant
       events:
         - issue_comment
+  kyma-project/test-infra:
+    - name: automated-approver
+      events:
+        - pull_request
+        - pull_request_review
   kyma-incubator:
     - name: cla-assistant
       events:
@@ -152,7 +157,7 @@ require_matching_label:
       - `/kind <kind>
       
       Available kinds:
-      `deprecation`, `bug`, `feature`, `flake`, `cleanup`, `missing-test`, `failing-test`
+      `deprecation`, `bug`, `chore`, `feature`, `flake`, `cleanup`, `missing-test`, `failing-test`
     missing_label: needs-kind
     prs: true
     regexp: ^kind/

@@ -5,6 +5,51 @@ default:
       description: Looks good to me!
       target: prs
       prowPlugin: lgtm
+    - color: 7057ff
+      description: Denotes an issue ready for a new contributor, according to the "help wanted" guidelines.
+      name: 'good first issue'
+      target: issues
+      prowPlugin: help
+      addedBy: anyone
+    - color: 006b75
+      description: Denotes an issue that needs help from a contributor. Must meet "help wanted" guidelines.
+      name: 'help wanted'
+      target: issues
+      prowPlugin: help
+      addedBy: anyone
+    - color: 00ff00
+      description: Denotes a PR that is trusted and should be build.
+      name: 'ok-to-test'
+      target: prs
+      prowPlugin: test-untrusted
+      isExternalPlugin: yes
+      addedBy: org-members
+    - color: 0ffa16
+      description: Indicates a PR is trusted, used by tide for auto-merging PRs.
+      name: skip-review
+      target: prs
+      addedBy: autobump bot
+    - color: f9d0c4
+      description: ¯\\\_(ツ)_/¯
+      name: "¯\\_(ツ)_/¯"
+      target: both
+      prowPlugin: shrug
+      addedBy: humans
+    - color: 0ffa16
+      description: Indicates a PR has been approved by an approver from all required OWNERS files.
+      name: approved
+      previously:
+        - name: ":heavy_check_mark: Approved"
+      target: prs
+      prowPlugin: approve
+      addedBy: approvers
+    - color: fef2c0
+      description: Indicates an approved PR into a release branch has been approved by the release branch manager.
+      name: release-pr-approved
+      target: prs
+      addedBy: humans
+
+      # size labels
     - color: ee9900
       description: Denotes a PR that changes 100-499 lines, ignoring generated files.
       name: size/L
@@ -41,6 +86,8 @@ default:
       target: prs
       prowPlugin: size
       addedBy: prow
+
+      # tide labels
     - color: ffaa00
       description: Denotes a PR that should be squashed by tide when it merges.
       name: tide/merge-method-squash
@@ -61,25 +108,8 @@ default:
       name: tide/merge-blocker
       target: issues
       addedBy: humans
-    - color: f9d0c4
-      description: ¯\\\_(ツ)_/¯
-      name: "¯\\_(ツ)_/¯"
-      target: both
-      prowPlugin: shrug
-      addedBy: humans
-    - color: 0ffa16
-      description: Indicates a PR has been approved by an approver from all required OWNERS files.
-      name: approved
-      previously:
-        - name: ":heavy_check_mark: Approved"
-      target: prs
-      prowPlugin: approve
-      addedBy: approvers
-    - color: fef2c0
-      description: Indicates an approved PR into a release branch has been approved by the release branch manager.
-      name: release-pr-approved
-      target: prs
-      addedBy: humans
+
+      # do-not-merge labels
     - color: e11d21
       description: Indicates that a PR should not merge because someone has issued a /hold command.
       name: do-not-merge/hold
@@ -115,30 +145,6 @@ default:
       previously:
         - name: WIP
         - name: ":construction: WIP :construction:"
-    - color: 7057ff
-      description: Denotes an issue ready for a new contributor, according to the "help wanted" guidelines.
-      name: 'good first issue'
-      target: issues
-      prowPlugin: help
-      addedBy: anyone
-    - color: 006b75
-      description: Denotes an issue that needs help from a contributor. Must meet "help wanted" guidelines.
-      name: 'help wanted'
-      target: issues
-      prowPlugin: help
-      addedBy: anyone
-    - color: 00ff00
-      description: Denotes a PR that is trusted and should be build.
-      name: 'ok-to-test'
-      target: prs
-      prowPlugin: test-untrusted
-      isExternalPlugin: yes
-      addedBy: org-members
-    - color: 0ffa16
-      description: Indicates a PR is trusted, used by tide for auto-merging PRs.
-      name: skip-review
-      target: prs
-      addedBy: autobump bot
 
     # area labels
     - color: 0052cc
@@ -265,11 +271,6 @@ default:
       name: area/tools/event-subscriber
       target: both
       addedBy: label
-    - color: 0052cc
-      description: Issues or PRs related to gitserver tool
-      name: area/tools/gitserver
-      target: both
-      addedBy: label
 
     # kind labels
     # some of them will replace the current labels across the organizations
@@ -323,6 +324,12 @@ default:
     - color: f7c6c7
       description: Categorizes issue or PR as related to a flaky test.
       name: kind/flake
+      target: both
+      prowPlugin: label
+      addedBy: anyone
+    - color: b34ee6
+      description: Categorizes issue or PR as related to a chore.
+      name: kind/chore
       target: both
       prowPlugin: label
       addedBy: anyone
@@ -392,18 +399,22 @@ default:
       target: both
       prowPlugin: label
       addedBy: anyone
-    - color: 0ffa16
-      description: Denotes a PR that was approved by automation.
-      name: auto-approved
-      target: both
-      addedBy: anyone
-    - color: 0052cc
-      description: Issues or PRs related to automation.
-      name: area/automation
-      target: both
-      addedBy: anyone
-    - color: 0052cc
-      description: Issues or PRs related to terraform.
-      name: terraform
-      target: both
-      addedBy: anyone
+
+repos: # repo-specific labels
+  kyma-project/test-infra:
+    labels:
+      - color: 0ffa16
+        description: Denotes a PR that was approved by automation.
+        name: auto-approved
+        target: both
+        addedBy: anyone
+      - color: 0052cc
+        description: Issues or PRs related to automation.
+        name: area/automation
+        target: both
+        addedBy: anyone
+      - color: 0052cc
+        description: Issues or PRs related to terraform.
+        name: terraform
+        target: both
+        addedBy: anyone

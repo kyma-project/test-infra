@@ -113,8 +113,9 @@
                 value: "{{$value}}"
               {{- end}}
             {{- end}}
-            {{- if or .JobConfig.request_memory .JobConfig.request_cpu false}}
+            {{- if or .JobConfig.request_memory .JobConfig.request_cpu .JobConfig.limits_memory .JobConfig.limits_cpu false}}
             resources:
+              {{- if or .JobConfig.request_memory .JobConfig.request_cpu false}}
               requests:
                 {{- if .JobConfig.request_memory}}
                 memory: {{.JobConfig.request_memory}}
@@ -122,6 +123,16 @@
                 {{- if .JobConfig.request_cpu}}
                 cpu: {{.JobConfig.request_cpu}}
                 {{- end}}
+              {{- end}}
+              {{- if or .JobConfig.limits_memory .JobConfig.limits_cpu false}}
+              limits:
+                {{- if .JobConfig.limits_memory}}
+                memory: {{.JobConfig.limits_memory}}
+                {{- end}}
+                {{- if .JobConfig.limits_cpu}}
+                cpu: {{.JobConfig.limits_cpu}}
+                {{- end}}
+              {{- end}}
             {{- end}}
             {{- if .JobConfig.volumeMounts}}
             volumeMounts:

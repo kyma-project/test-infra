@@ -17,7 +17,7 @@ This tutorial shows how to add a custom secret and use it in the Prow pipeline.
 
 4. Apply the Secrets manually in the Prow cluster as Kubernetes External Secret.
 
-5. Create ProwJob Preset in [prow-config.yaml ](https://github.com/kyma-project/test-infra/blob/main/templates/templates/prow-config.yaml) that maps the Secret to the variable or to the file.
+5. Create ProwJob Preset in [prow-config.yaml ](../../prow/config.yaml) that maps the Secret to the variable or to the file.
 
     For example:
 

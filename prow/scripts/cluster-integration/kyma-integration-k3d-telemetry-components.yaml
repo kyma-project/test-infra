@@ -11,4 +11,3 @@ components:
   - name: "logging"
   - name: "monitoring"
   - name: "telemetry"
-  - name: "tracing"

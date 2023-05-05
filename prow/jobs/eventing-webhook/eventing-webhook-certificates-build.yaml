@@ -2,61 +2,44 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/busola:
-    - name: pull-busola-backend-build
+  kyma-project/api-gateway:
+    - name: pull-eventing-webhook-certificates-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
+        description: "Image to generate certificates for eventing webhooks."
+        owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-busola-backend-build"
+        prow.k8s.io/pubsub.runID: "pull-eventing-webhook-certificates-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^backend/|^package.json'
+      always_run: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
-              - "--name=busola-backend"
-              - "--context=backend"
-              - "--dockerfile=Dockerfile"
+              - "--name=eventing-webhook-certificates"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--export-tags"
-            env:
-              - name: BUILDKITD_FLAGS
-                value: "--oci-worker-no-process-sandbox"
+              - "--context=."
+              - "--dockerfile=Dockerfile-certificates"
             resources:
               requests:
                 memory: 1.5Gi
                 cpu: 1
             volumeMounts:
-              - name: share
-                mountPath: /home/user/.local/share/buildkit
               - name: config
                 mountPath: /config
                 readOnly: true
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
-          - name: share
           - name: config
             configMap:
               name: kaniko-build-config
@@ -65,64 +48,48 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
   
 postsubmits: # runs on main
-  kyma-project/busola:
-    - name: post-busola-backend-build
+  kyma-project/api-gateway:
+    - name: post-eventing-webhook-certificates-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
+        description: "Image to generate certificates for eventing webhooks."
+        owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-busola-backend-build"
+        prow.k8s.io/pubsub.runID: "post-eventing-webhook-certificates-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^backend/'
+      always_run: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             command:
               - "/image-builder"
             args:
-              - "--name=busola-backend"
-              - "--context=backend"
-              - "--dockerfile=Dockerfile"
+              - "--name=eventing-webhook-certificates"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--export-tags"
-              - "--tag=latest"
-            env:
-              - name: BUILDKITD_FLAGS
-                value: "--oci-worker-no-process-sandbox"
+              - "--context=."
+              - "--dockerfile=Dockerfile-certificates"
             resources:
               requests:
                 memory: 1.5Gi
                 cpu: 1
             volumeMounts:
-              - name: share
-                mountPath: /home/user/.local/share/buildkit
               - name: config
                 mountPath: /config
                 readOnly: true
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
-          - name: share
           - name: config
             configMap:
               name: kaniko-build-config
