@@ -79,7 +79,7 @@ Environments may call modules from any locations, not only modules defined under
 - `main.tf` file contains the definition of resources that are created by the environment. Resources definition can be split into multiple files. Calls to the modules should be defined in these files. Outputs returned by the environments can be defined in these files instead of `output.tf` file.
 - `variables.tf` file contains the definition of variables that are passed to the environment and used for applying the environment. Variables defined in the `variables.tf` file define the environment's external API. Variables defined in `variables.tf` file must be documented using the description attribute. Values of the variables defined in `variables.tf` file should be provided in the `terraform.tfvars` file.
 - `backend.tf` file contains the definition of the backend that is used by the module. Terraform modules must use Google Cloud (gcp) as a remote state storage.
-- `terraform.tfvars` file is used to define the values of the variables that are used by the environment. The `terraform.tfvars` file should be created for each environment and should be stored in the environment directory. The path to the `terraform.tfvars` file is passed to the terraform cli command.
+- `terraform.tfvars` file is used to define the values of the variables that are used by the environment. The `terraform.tfvars` file should be created for each environment and should be stored in the environment directory. The path to the `terraform.tfvars` file is passed to the `terraform` cli command.
 - `provider.tf` file contains the definition of the provider that is used by the environment.
 
 ## Terraform config usage
