@@ -510,8 +510,6 @@ templates:
                   labels:
                     preset-sa-kyma-push-images: "true"
                     preset-bot-github-token: "true"
-                  env:
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned" 
                   command: "make"
                   args:
                     - "release"
