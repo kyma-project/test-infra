@@ -45,7 +45,6 @@ module "service_account_keys_rotator" {
     id     = data.google_project.project.project_id
     number = data.google_project.project.number
   }
-
   region = var.region
 
   service_account_keys_rotator_account_id            = var.service_account_keys_rotator_account_id
@@ -59,6 +58,7 @@ module "service_account_keys_rotator" {
 output "service_account_keys_rotator" {
   value = module.service_account_keys_rotator
 }
+
 resource "google_project_iam_member" "service_account_keys_rotator_workloads_project" {
   project = var.workloads_project_id
   role    = "roles/iam.serviceAccountKeyAdmin"
@@ -74,7 +74,6 @@ module "service_account_keys_cleaner" {
     id     = data.google_project.project.project_id
     number = data.google_project.project.number
   }
-
   region                                     = var.region
   service_account_keys_cleaner_account_id    = var.service_account_keys_cleaner_account_id
   service_account_keys_cleaner_image         = var.service_account_keys_cleaner_image
