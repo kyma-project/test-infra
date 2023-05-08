@@ -1419,3 +1419,13 @@ presets:
       - name: tunas-github-bot-token
         mountPath: /tunas-bot
         readOnly: true
+  - labels:
+      preset-sa-kyma-dns-serviceuser: "true"
+    volumes:
+      - name: sa-kyma-dns-serviceuser
+        secret:
+          secretName: sa-kyma-dns-serviceuser
+    volumeMounts:
+      - name: sa-kyma-dns-serviceuser
+        mountPath: /sa-kyma-dns-serviceuser
+        readOnly: true
