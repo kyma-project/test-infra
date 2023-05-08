@@ -9,7 +9,7 @@ It copies images **only when they are not present** in the target repo. That gua
 
 Syncing process steps:
 1. Pull image from source.
-2. Check if image name contains multi-platform SHA256 digest. To get this digest you can run `docker run mplatform/manifest-tool inspect {your-image}:{image-version}` and copy the first Digest this command returns. For the non-multiplatform images supporting only amd64 architecture, use their amd64 digest and add the `amd64only: true` param. 
+2. Check if image name contains multi-platform SHA256 digest. To get this digest you can run `docker run mplatform/manifest-tool inspect {your-image}:{image-version}` and copy the first Digest this command returns. For the non multi-platform images supporting only amd64 architecture, use their amd64 digest and add the `amd64only: true` param. 
 3. If image name contains digest, re-tag target image with the tag instead of SHA256 digest.
 4. Check if image exists in target.
 5. If image does not exist, re-tag image and push to target registry.  
@@ -37,7 +37,8 @@ images:
 - source: "bitnami/keycloak-gatekeeper:9.0.3"
 - source: "bitnami/postgres-exporter:0.8.0-debian-10-r28"
 - source: "busybox@sha256:31a54a0cf86d7354788a8265f60ae6acb4b348a67efbcf7c1007dd3cf7af05ab"
-  tag: "1.32.0-v1"
+  tag: "1.32.0-v1
+  arm64only: false"
 ```
 
 ### Flags
