@@ -46,8 +46,6 @@ fi
 
 export DOCKER_TAG
 echo DOCKER_TAG "${DOCKER_TAG}"
-export PULL_NUMBER
-echo PULL_NUMBER "${PULL_NUMBER}"
 
 cleanup() {
     
