@@ -9,7 +9,7 @@ It copies images **only when they are not present** in the target repo. That gua
 
 Syncing process steps:
 1. Pull image from source.
-2. Check if image name contains multi-platform SHA256 digest. To get this digest you can run `docker run mplatform/manifest-tool inspect {your-image}:{image-version}` and copy the first Digest this command returns. 
+2. Check if image name contains multi-platform SHA256 digest. To get this digest you can run `docker run mplatform/manifest-tool inspect {your-image}:{image-version}` and copy the first Digest this command returns. For the non-multiplatform images supporting only amd64 architecture, use their amd64 digest and add the `amd64only: true` param. 
 3. If image name contains digest, re-tag target image with the tag instead of SHA256 digest.
 4. Check if image exists in target.
 5. If image does not exist, re-tag image and push to target registry.  
