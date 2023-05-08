@@ -38,7 +38,11 @@ images:
 - source: "bitnami/postgres-exporter:0.8.0-debian-10-r28"
 - source: "busybox@sha256:31a54a0cf86d7354788a8265f60ae6acb4b348a67efbcf7c1007dd3cf7af05ab"
   tag: "1.32.0-v1"
-  arm64only: false
+- source: "bitnami/postgres-exporter:0.11.1-debian-11-r69"
+  amd64Only: true
+- source: "postgres@sha256:9d7ec48fe46e8bbce55deafff58080e49d161a3ed92e67f645014bb50dc599fd"
+  tag: "v20230508-11.19-alpine3.17"
+  amd64Only: true
 ```
 
 ### Flags
