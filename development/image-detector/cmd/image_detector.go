@@ -62,9 +62,9 @@ var rootCmd = &cobra.Command{
 		images = append(images, imgs...)
 
 		// get images from kubernetes
-		files, err = pkg.FindFilesInDirectory(TerraformDir, ".*.(yaml|yml)")
+		files, err = pkg.FindFilesInDirectory(KubernetesFiles, ".*.(yaml|yml)")
 		if err != nil {
-			log.Fatalf("failed to find files in kubernetes directory %s: %s", TerraformDir, err)
+			log.Fatalf("failed to find files in kubernetes directory %s: %s", KubernetesFiles, err)
 		}
 
 		imgs, err = pkg.ExtractImagesFromFiles(files, extractimages.FromKubernetesDeployments)
