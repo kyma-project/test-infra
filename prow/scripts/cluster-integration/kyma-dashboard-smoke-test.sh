@@ -19,8 +19,12 @@ load_env
 echo DOCKER_TAG "${DOCKER_TAG}"
 echo IMAGE_NAME "${IMAGE_NAME}"
 # shellcheck disable=SC2086
-docker run -d --rm --net=host --pid=host --name kyma-dashboard europe-docker.pkg.dev/kyma-project/dev/kyma-dashboard-local-${IMAGE_NAME}:${DOCKER_TAG}
-
+if ["$(JOB_TYPE) = postsubmit"]
+then
+  docker run -d --rm --net=host --pid=host --name kyma-dashboard europe-docker.pkg.dev/kyma-project/dev/kyma-dashboard-local-${IMAGE_NAME}:${DOCKER_TAG}
+else 
+  docker run -d --rm --net=host --pid=host --name kyma-dashboard europe-docker.pkg.dev/kyma-project/prod/kyma-dashboard-local-${IMAGE_NAME}:${DOCKER_TAG}
+fi
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/kyma-dashboard-tests/fixtures/kubeconfig.yaml"
 
 echo "STEP: Running Cypress smoke tests inside Docker"
