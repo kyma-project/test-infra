@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go/bigquery v1.51.1
 	cloud.google.com/go/compute/metadata v0.2.3
 	cloud.google.com/go/firestore v1.9.0
-	cloud.google.com/go/kms v1.10.1
+	cloud.google.com/go/kms v1.10.2
 	cloud.google.com/go/logging v1.7.0
 	cloud.google.com/go/pubsub v1.30.1
 	cloud.google.com/go/storage v1.30.1
@@ -62,7 +62,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230505184513-76deff34044a
+require k8s.io/test-infra v0.0.0-20230508185251-3daa336a4dea
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
@@ -205,7 +205,6 @@ require (
 	github.com/prometheus/statsd_exporter v0.21.0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/rs/zerolog v1.26.1 // indirect
-	github.com/satori/go.uuid v1.2.0 // indirect
 	github.com/shurcooL/graphql v0.0.0-20181231061246-d48a9a75455f // indirect
 	github.com/smartystreets/assertions v1.13.1 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
