@@ -37,8 +37,8 @@ images:
 - source: "bitnami/keycloak-gatekeeper:9.0.3"
 - source: "bitnami/postgres-exporter:0.8.0-debian-10-r28"
 - source: "busybox@sha256:31a54a0cf86d7354788a8265f60ae6acb4b348a67efbcf7c1007dd3cf7af05ab"
-  tag: "1.32.0-v1
-  arm64only: false"
+  tag: "1.32.0-v1"
+  arm64only: false
 ```
 
 ### Flags
