@@ -17,7 +17,7 @@ function load_env() {
 
 load_env
 echo DOCKER_TAG "${DOCKER_TAG}"
-echo JOB_TYPE "${JOB_TYPE}"
+
 # shellcheck disable=SC2086
 if [ -n "${PULL_NUMBER}" ]; then
   docker run -d --rm --net=host --pid=host --name kyma-dashboard europe-docker.pkg.dev/kyma-project/dev/kyma-dashboard-local-dev:${DOCKER_TAG}
