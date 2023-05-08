@@ -11,12 +11,6 @@ resource "google_project_iam_member" "service_account_keys_cleaner_sa_keys_admin
   member  = "serviceAccount:${google_service_account.service_account_keys_cleaner.email}"
 }
 
-resource "google_project_iam_member" "service_account_keys_cleaner_sa_keys_admin_workloads" {
-  project = var.workloads_project_id
-  role    = "roles/iam.serviceAccountKeyAdmin"
-  member  = "serviceAccount:${google_service_account.service_account_keys_cleaner.email}"
-}
-
 // Allow the service account to delete secret versions in the secret manager.
 resource "google_project_iam_member" "service_account_keys_cleaner_secrets_versions_manager" {
   project = var.project.id

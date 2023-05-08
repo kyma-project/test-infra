@@ -11,12 +11,6 @@ resource "google_project_iam_member" "service_account_keys_rotator" {
   member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
 }
 
-resource "google_project_iam_member" "service_account_keys_rotator_workloads" {
-  project = var.workloads_project_id
-  role    = "roles/iam.serviceAccountKeyAdmin"
-  member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
-}
-
 // roles/secretmanager.secretAccessor is required to be able to access the secret version payload in secret manager
 resource "google_project_iam_member" "service_account_keys_rotator_secret_version_accessor" {
   project = var.project.id

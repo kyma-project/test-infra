@@ -47,8 +47,8 @@ module "service_account_keys_rotator" {
     id     = data.google_project.project.project_id
     number = data.google_project.project.number
   }
-  workloads_project_id = var.workloads_project_id
-  region               = var.region
+
+  region = var.region
 
   service_account_keys_rotator_account_id            = var.service_account_keys_rotator_account_id
   service_account_keys_rotator_dead_letter_topic_uri = google_pubsub_topic.secrets_rotator_dead_letter.id
@@ -71,7 +71,7 @@ module "service_account_keys_cleaner" {
     id     = data.google_project.project.project_id
     number = data.google_project.project.number
   }
-  workloads_project_id                       = var.workloads_project_id
+
   region                                     = var.region
   service_account_keys_cleaner_account_id    = var.service_account_keys_cleaner_account_id
   service_account_keys_cleaner_image         = var.service_account_keys_cleaner_image

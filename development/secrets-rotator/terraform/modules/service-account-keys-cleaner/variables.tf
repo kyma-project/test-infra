@@ -6,11 +6,6 @@ variable "project" {
   description = "Google Cloud project ID to deploy the service account keys cleaner to."
 }
 
-variable "workloads_project_id" {
-  type        = string
-  description = "Additional Google Cloud project ID to grant the IAM permissions to keys rotator service account."
-}
-
 variable "region" {
   type        = string
   description = "Google Cloud region to deploy the service account keys cleaner to."

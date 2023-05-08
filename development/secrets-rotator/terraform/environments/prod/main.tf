@@ -45,8 +45,8 @@ module "service_account_keys_rotator" {
     id     = data.google_project.project.project_id
     number = data.google_project.project.number
   }
-  workloads_project_id = var.workloads_project_id
-  region               = var.region
+
+  region = var.region
 
   service_account_keys_rotator_account_id            = var.service_account_keys_rotator_account_id
   service_account_keys_rotator_dead_letter_topic_uri = google_pubsub_topic.secrets_rotator_dead_letter.id
@@ -59,6 +59,11 @@ module "service_account_keys_rotator" {
 output "service_account_keys_rotator" {
   value = module.service_account_keys_rotator
 }
+resource "google_project_iam_member" "service_account_keys_rotator_workloads_project" {
+  project = var.workloads_project_id
+  role    = "roles/iam.serviceAccountKeyAdmin"
+  member  = "serviceAccount:${module.service_account_keys_rotator.service_account_keys_rotator_service_account.email}"
+}
 
 module "service_account_keys_cleaner" {
   source = "../../modules/service-account-keys-cleaner"
@@ -69,7 +74,7 @@ module "service_account_keys_cleaner" {
     id     = data.google_project.project.project_id
     number = data.google_project.project.number
   }
-  workloads_project_id                       = var.workloads_project_id
+
   region                                     = var.region
   service_account_keys_cleaner_account_id    = var.service_account_keys_cleaner_account_id
   service_account_keys_cleaner_image         = var.service_account_keys_cleaner_image
@@ -82,4 +87,10 @@ module "service_account_keys_cleaner" {
 
 output "service_account_keys_cleaner" {
   value = module.service_account_keys_cleaner
+}
+
+resource "google_project_iam_member" "service_account_keys_cleaner_workloads_project" {
+  project = var.workloads_project_id
+  role    = "roles/iam.serviceAccountKeyAdmin"
+  member  = "serviceAccount:${module.service_account_keys_cleaner.service_account_keys_cleaner_service_account.email}"
 }
