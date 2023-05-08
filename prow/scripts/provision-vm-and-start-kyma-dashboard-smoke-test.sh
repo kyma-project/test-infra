@@ -153,6 +153,7 @@ log::info "Preparing environment variables for the instance"
 envVars=(
   DOCKER_TAG
   IMAGE_NAME
+  PULL_NUMBER
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088

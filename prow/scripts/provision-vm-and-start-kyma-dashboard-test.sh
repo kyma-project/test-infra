@@ -152,6 +152,7 @@ utils::compress_send_to_vm "${ZONE}" "kyma-dashboard-test-${RANDOM_ID}" "/home/p
 log::info "Preparing environment variables for the instance"
 envVars=(
   DOCKER_TAG
+  PULL_NUMBER
 )
 utils::save_env_file "${envVars[@]}"
 #shellcheck disable=SC2088
