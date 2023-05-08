@@ -17,8 +17,13 @@ function load_env() {
 
 load_env
 echo DOCKER_TAG "${DOCKER_TAG}"
+
 # shellcheck disable=SC2086
-docker run -d --rm --net=host --pid=host --name kyma-dashboard europe-docker.pkg.dev/kyma-project/dev/kyma-dashboard-local-dev:${DOCKER_TAG}
+if [ -n "${PULL_NUMBER}" ]; then
+  docker run -d --rm --net=host --pid=host --name kyma-dashboard europe-docker.pkg.dev/kyma-project/dev/kyma-dashboard-local-dev:${DOCKER_TAG}
+else 
+  docker run -d --rm --net=host --pid=host --name kyma-dashboard europe-docker.pkg.dev/kyma-project/prod/kyma-dashboard-local-dev:${DOCKER_TAG}
+fi
 
 cp "$PWD/kubeconfig-kyma.yaml" "$PWD/kyma-dashboard-tests/fixtures/kubeconfig.yaml"
 
