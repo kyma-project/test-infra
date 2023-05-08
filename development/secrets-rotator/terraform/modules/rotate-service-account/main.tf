@@ -12,7 +12,7 @@ resource "google_project_iam_member" "service_account_keys_rotator" {
 }
 
 resource "google_project_iam_member" "service_account_keys_rotator_workloads" {
-  project = var.project_workloads_id
+  project = var.workloads_project_id
   role    = "roles/iam.serviceAccountKeyAdmin"
   member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
 }

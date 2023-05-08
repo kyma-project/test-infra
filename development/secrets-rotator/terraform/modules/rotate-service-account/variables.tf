@@ -6,9 +6,9 @@ variable "project" {
   description = "Google Cloud project ID to deploy the service account keys rotator to."
 }
 
-variable "project_workloads_id" {
+variable "workloads_project_id" {
   type        = string
-  description = "Google Cloud project ID to add the IAM access to."
+  description = "Additional Google Cloud project ID to grant the IAM permissions to keys rotator service account."
 }
 
 
