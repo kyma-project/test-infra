@@ -65,3 +65,29 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - goreleaser
+              - jobConfig:
+                  name: rel-api-gateway-custom-domain-integration
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+                  privileged: false
+                  cluster: untrusted-workload
+                  branches:
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  annotations:
+                    owner: goat
+                    description: Runs integration tests with custom domain handling on Gardener cluster
+                  labels:
+                    preset-gardener-gcp-kyma-integration: "true"
+                    preset-cluster-version: "true"
+                    preset-api-gateway-int-test-client-creds: "true"
+                    preset-sa-kyma-dns-serviceuser: "true"
+                    preset-kyma-guard-bot-github-token: "true"
+                  env:
+                    TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "tests/integration/scripts/integration-gardener-custom-domain.sh"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - jobConfig_default
