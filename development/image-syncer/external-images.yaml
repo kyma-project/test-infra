@@ -12,9 +12,8 @@ images:
 - source: "gcr.io/google-containers/pause:3.2"
 - source: "goreleaser/goreleaser:v1.11.5"
 # Golang image is pinned because it is force updated in the upstream
-- source: "golang@sha256:4ee203ff3933e7a6f18d3574fd6661a73b58c60f028d2927274400f4774aaa41"
+- source: "golang@sha256:913de96707b0460bcfdfe422796bb6e559fc300f6c53286777805a9a3010a5ea"
   tag: "1.20.4-alpine3.17"
-  amd64Only: true  
 - source: "grafana/loki:2.2.1"
 - source: "grafana/grafana-image-renderer:3.2.1"
   amd64Only: true
