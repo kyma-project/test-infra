@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-directory-size-exporter-build
+                  annotations:
+                    owner: huskies
+                    description: Pre-submit job to build directory-size-exporter image.
                   always_run: true
                   args:
                     - "--name=directory-size-exporter"
@@ -19,6 +22,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-directory-size-exporter-build
+                  annotations:
+                    owner: huskies
+                    description: Post-submit job to build directory-size-exporter image.                  
                   branches:
                     - "^main$"
                   always_run: true

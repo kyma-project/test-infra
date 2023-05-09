@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/telemetry-manager:
     - name: pull-telemetry-manager-build
       annotations:
+        description: "Pre-submit job to build telemetry-manager image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -46,6 +48,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-telemetry-manager-verify-module
       annotations:
+        description: "Pre-submit job to verify successful deployment of telemetry module."
+        owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -100,6 +104,8 @@ postsubmits: # runs on main
   kyma-project/telemetry-manager:
     - name: post-telemetry-manager-build
       annotations:
+        description: "Post-submit job to build telemetry-manager image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -149,6 +155,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-telemetry-manager-release-module
       annotations:
+        description: "Post-submit job to release telemetry module."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
