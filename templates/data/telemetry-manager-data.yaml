@@ -60,7 +60,7 @@ templates:
                     - jobConfig_postsubmit
                     - "disable_testgrid"
               - jobConfig:
-                  name: verify-telemetry-module
+                  name: pull-telemetry-manager-verify-module
                   always_run: "true"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
@@ -82,7 +82,7 @@ templates:
                     - vm_job_k3d
                     - vm_job_labels
               - jobConfig:
-                  name: release-telemetry-module
+                  name: post-telemetry-manager-release-module
                   slack_channel: huskies-notifications
                   always_run: "true"
                   labels:

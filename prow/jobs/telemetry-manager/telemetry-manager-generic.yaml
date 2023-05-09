@@ -44,7 +44,7 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: verify-telemetry-module
+    - name: pull-telemetry-manager-verify-module
       annotations:
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
@@ -52,7 +52,7 @@ presubmits: # runs on PRs
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "verify-telemetry-module"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-verify-module"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -147,12 +147,12 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: release-telemetry-module
+    - name: post-telemetry-manager-release-module
       annotations:
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "release-telemetry-module"
+        prow.k8s.io/pubsub.runID: "post-telemetry-manager-release-module"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-sa-kyma-push-images: "true"
