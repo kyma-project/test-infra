@@ -41,6 +41,7 @@ updates:
     labels:
       - "terraform"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -51,6 +52,7 @@ updates:
     labels:
       - "terraform"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -62,6 +64,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -73,6 +76,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -84,6 +88,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -95,6 +100,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -106,6 +112,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -117,6 +124,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -128,6 +136,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -139,6 +148,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -150,6 +160,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -161,6 +172,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -172,6 +184,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -183,6 +196,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -194,6 +208,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -205,6 +220,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -216,6 +232,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -227,6 +244,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -238,6 +256,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -249,6 +268,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -260,6 +280,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -271,6 +292,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -282,6 +304,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -293,6 +316,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -304,6 +328,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -315,6 +340,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -326,6 +352,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:

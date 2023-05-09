@@ -80,6 +80,8 @@
 
 [Add custom secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add a custom secret and use it in the Prow pipeline.
 
+[Standard Terraform configuration](/docs/how-to/how-to-create-standard-terraform-config.md) - This document describes the standard Terraform configuration that is used in `test-infra` repository. 
+
 [Use Tekton Pipelines with Prow](/docs/how-to/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use Kubernetes-native implementation of CI/CD pipelines, where every task is a self-contained set of commands.
 
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
@@ -132,6 +134,12 @@
 
 [Prow Workload Clusters](/docs/prow/workload-clusters.md) - This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` GCP project. We use two workload clusters for trusted and untrusted Prow jobs.
 
+[Prow runtime images](/images/README.md) - This directory contains images that can be used as runtime images for all ProwJobs in Kyma's Prow Instance.
+
+[buildpack-go](/images/buildpack-go/README.md) - This image contains a common toolchain for building and running Go-based applications and container images.
+
+[E2E DinD K3d](/images/e2e-dind-k3d/README.md) - This image contains common tools for all jobs/tasks that test Kyma modules in K3d.
+
 [Prow](/prow/README.md) - Prow is a Kubernetes-developed system that you can use as a Continuous Integration (CI) tool for validating your GitHub repositories and components, managing automatic validation of pull requests (PRs), applying and removing labels, or opening and closing issues.
 
 [Cluster](/prow/cluster/README.md) - This folder contains files related to the configuration of the Prow production cluster that are used during the cluster provisioning.
@@ -144,7 +152,7 @@
 
 [Probot Stale](/prow/cluster/resources/probot-stale/README.md) - This chart contains the `probot-stale` configuration.
 
-[Images](/prow/images/README.md) - This folder contains a list of images used in Prow jobs.
+[Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](../../images) directory instead.
 
 [Bootstrap Docker Image](/prow/images/bootstrap/README.md) - This folder contains the Bootstrap image for Prow infrastructure. Use it for a root image for other Prow images and for generic builds.
 
