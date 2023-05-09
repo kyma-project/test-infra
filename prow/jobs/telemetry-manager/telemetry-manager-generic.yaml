@@ -83,7 +83,7 @@ presubmits: # runs on PRs
               - name: JOB_REPO_NAME
                 value: "telemetry-manager"
               - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make run-with-lm"
+                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make deploy-with-lifecycle-manager"
             resources:
               requests:
                 memory: 200Mi
@@ -173,9 +173,6 @@ postsubmits: # runs on main
               - "make"
             args:
               - "release"
-            env:
-              - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
             resources:
               requests:
                 memory: 3Gi
