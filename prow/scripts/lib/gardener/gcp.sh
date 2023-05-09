@@ -132,9 +132,14 @@ gardener::wake_up_kyma() {
 
 gardener::test_fast_integration_kyma() {
     log::info "Running Kyma Fast Integration tests"
+    log::info "KYMA_UPGRADE_SOURCE == ${KYMA_UPGRADE_SOURCE}"
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    git status
+    git checkout "${KYMA_UPGRADE_SOURCE}"
+    git status
     make ci
+    git checkout -
     popd
 
     log::success "Tests completed"
