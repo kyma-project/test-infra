@@ -27,10 +27,11 @@ presubmits:
                 kubectl logs -l app=warden --prefix=true
                 k3d cluster delete
                 exit $failed
-            requests:
-              memory: 1Gi
-            limits:
-              memory: 1Gi
+            resources:
+              requests:
+                memory: 1Gi
+              limits:
+                memory: 1Gi
             securityContext:
               privileged: true
         tolerations:
