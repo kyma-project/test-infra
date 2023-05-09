@@ -19,7 +19,6 @@ spec:
         enabled: true
   kubernetes:
     kubeAPIServer:
-      enableBasicAuthentication: false
       oidcConfig:
         clientID: 9bd05ed7-a930-44e6-8c79-e6defeb7dec9
         groupsClaim: groups
