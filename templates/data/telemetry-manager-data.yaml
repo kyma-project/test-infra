@@ -61,7 +61,7 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-telemetry-manager-verify-module
-                  always_run: "true"
+                  run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/|sec-scanners-config.yaml'
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
                     JOB_VM_COMMAND: >-
