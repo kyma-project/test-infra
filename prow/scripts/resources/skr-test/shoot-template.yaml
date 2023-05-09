@@ -9,8 +9,6 @@ spec:
   purpose: evaluation
   cloudProfileName: aws
   kubernetes:
-    kubeAPIServer:
-      enableBasicAuthentication: false
     version: 1.25.6
   provider:
     controlPlaneConfig:
@@ -29,21 +27,21 @@ spec:
             internal: 10.180.48.0/20
     type: aws
     workers:
-    - machine:
-        image:
-          name: gardenlinux
-          version: 934.6.0
-        type: m5.xlarge
-      maxSurge: 1
-      maxUnavailable: 0
-      maximum: 4
-      minimum: 2
-      name: worker-dev
-      volume:
-        size: 20Gi
-        type: gp3
-      zones:
-      - $GARDENER_ZONES
+      - machine:
+          image:
+            name: gardenlinux
+            version: 934.6.0
+          type: m5.xlarge
+        maxSurge: 1
+        maxUnavailable: 0
+        maximum: 4
+        minimum: 2
+        name: worker-dev
+        volume:
+          size: 20Gi
+          type: gp3
+        zones:
+          - $GARDENER_ZONES
   networking:
     nodes: 10.180.0.0/16
     type: calico
@@ -56,4 +54,3 @@ spec:
     enabled: false
   region: $GARDENER_REGION
   secretBindingName: $GARDENER_KYMA_PROW_PROVIDER_SECRET_NAME
-
