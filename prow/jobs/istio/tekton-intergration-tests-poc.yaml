@@ -1,0 +1,112 @@
+presubmits:
+  kyma-project/istio:
+    - name: pull-istio-pipeline-pr
+      annotation:
+        owner: goat
+        description: "PR pipeline for kyma-project/istio"
+      decorate: false
+      agent: tekton-pipeline
+      cluster: tekton
+      always_run: true
+      tekton_pipeline_run_spec:
+        v1beta1:
+          workspaces:
+            - name: repo
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: premium-rwo
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
+          pipelineSpec:
+            description: "PR pipeline for kyma-project/istio"
+            tasks:
+              - name: clone-refs
+                taskRef:
+                  name: clone-refs
+                params:
+                  - name: JOB_SPEC
+                    value: $(params.JOB_SPEC)
+                workspaces:
+                  - name: repo
+                    workspace: repo
+              - name: golangci-lint
+                runAfter:
+                  - clone-refs
+                taskRef:
+                  name: golangci-lint
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                workspaces:
+                  - name: repo
+                    workspace: repo
+              - name: go-unit-tests
+                runAfter:
+                  - clone-refs
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                taskRef:
+                  name: go-unit-tests
+                workspaces:
+                  - name: repo
+                    workspace: repo
+              - name: integration-test
+                runAfter:
+                  - clone-refs
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                taskSpec:
+                  workspaces:
+                    - name: repo
+                      description: "The workspace where the Git repositories will be cloned. Usually, this should be a workspace shared with other tasks."
+                      mountPath: /home/prow/go
+                  volumes:
+                    - name: dind-certs
+                      emptyDir: {}
+                  sidecars:
+                    - image: docker:dind
+                      name: dind
+                      args:
+                        - --storage-driver=vfs
+                        - --userland-proxy=false
+                        - --debug
+                      resources:
+                        requests:
+                          memory: "512Mi"
+                      securityContext:
+                        privileged: true
+                      env:
+                        - name: DOCKER_TLS_CERTDIR
+                          value: /certs
+                      volumeMounts:
+                        - mountPath: /certs/client
+                          name: dind-certs
+                      readinessProbe:
+                        periodSeconds: 1
+                        exec:
+                          command: [ 'ls', '/certs/client/ca.pem' ]
+                  steps:
+                    - name: build
+                      image: docker:latest
+                      workingDir: /home/prow/go/src/github.com/$(params.REPO_OWNER)/$(params.REPO_NAME)
+                      volumeMounts:
+                        - mountPath: /certs/client
+                          name: dind-certs
+                      env:
+                        - name: DOCKER_HOST
+                          value: tcp://localhost:2376
+                        - name: DOCKER_TLS_VERIFY
+                          value: '1'
+                        - name: DOCKER_CERT_PATH
+                          value: /certs/client
+                      script: |
+                        docker build -t istio .
