@@ -6,8 +6,6 @@ spec:
   purpose: development
   cloudProfileName: gcp
   kubernetes:
-    kubeAPIServer:
-      enableBasicAuthentication: false
     version: 1.25.6
   provider:
     controlPlaneConfig:
