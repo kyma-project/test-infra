@@ -1,8 +1,4 @@
 pjConfigs:
-  prConfig:
-    kyma-project:
-      control-plane:
-        prNumber: 2743
   prowJobs:
     kyma-project:
       control-plane:
