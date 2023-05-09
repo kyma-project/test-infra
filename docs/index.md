@@ -80,6 +80,8 @@
 
 [Add custom secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add a custom secret and use it in the Prow pipeline.
 
+[Standard Terraform configuration](/docs/how-to/how-to-create-standard-terraform-config.md) - This document describes the standard Terraform configuration that is used in `test-infra` repository. 
+
 [Use Tekton Pipelines with Prow](/docs/how-to/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use Kubernetes-native implementation of CI/CD pipelines, where every task is a self-contained set of commands.
 
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
