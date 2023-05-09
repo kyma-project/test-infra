@@ -1,0 +1,7 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      control-plane:
+      - pjName: "pre-main-control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener"
+        report: false
+
