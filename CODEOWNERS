@@ -61,4 +61,7 @@ templates/data/eventing-webhook-certificates-release.yaml @kyma-project/prow @ky
 
 # Don't require human review for auto generated files
 /test-inventory-integration.md
-/docs/index.md @neighbors-dev-bot
+
+# File index.md must be owned by prow group in case it will get changes in a pull request which is not allowed to be approved by approval bot.
+# In such case a human approver from prow group must approve the pull request.
+/docs/index.md @kyma-project/prow
