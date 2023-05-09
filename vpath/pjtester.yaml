@@ -3,7 +3,8 @@ pjConfigs:
     kyma-project:
       telemetry-manager:
         - pjName: "pull-telemetry-manager-verify-module"
-        - pjName: "post-telemetry-manager-release-module" 
+        - pjName: "post-telemetry-manager-release-module"
+        - pjName: "pull-telemetry-manager-e2e-test"
 
 prConfigs:
   kyma-project:
