@@ -3,4 +3,4 @@ pjConfigs:
     kyma-project:
       control-plane:
       - pjName: "pre-main-control-plane-reconciler-e2e-latest-release"
-        report: true
+        report: false
