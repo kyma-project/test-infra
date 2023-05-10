@@ -3,8 +3,8 @@ set -e
 
 KYMA_PROJECT_DIR="/home/prow/go/src/github.com/kyma-project"
 KLM_SOURCES_DIR="$KYMA_PROJECT_DIR/lifecycle-manager/"
-#KCP_KUBECONFIG="$KYMA_PROJECT_DIR/kcp.yaml"
-#SKR_KUBECONFIG="$KYMA_PROJECT_DIR/skr.yaml"
+export KCP_KUBECONFIG="$KYMA_PROJECT_DIR/kcp.yaml"
+export SKR_KUBECONFIG="$KYMA_PROJECT_DIR/skr.yaml"
 
 #shellcheck source=prow/scripts/lib/log.sh
 source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/log.sh"
@@ -51,17 +51,17 @@ function provision_k3d() {
 
   k3d version
   kyma provision k3d --name=kcp -p 9080:80@loadbalancer -p 9443:443@loadbalancer --ci
-  k3d kubeconfig get kcp > kcp.yaml
+  k3d kubeconfig get kcp > $KCP_KUBECONFIG
   log::success "Kyma K3d cluster provisioned: kcp"
 
   k3d cluster create skr -p 10080:80@loadbalancer -p 10443:443@loadbalancer
-  k3d kubeconfig get skr > skr.yaml
+  k3d kubeconfig get skr > $SKR_KUBECONFIG
   log::success "Base K3d cluster provisioned: skr"
 
 
   FILE=/etc/hosts
   if [ -f "$FILE" ]; then
-      echo "127.0.0.1 k3d-registry.localhost" >> my_file.txt
+      echo "127.0.0.1 k3d-registry.localhost" >> $FILE
   else
       log::error "$FILE does not exist."
       exit 1

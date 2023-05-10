@@ -42,6 +42,9 @@ periodics: # runs on schedule
             requests:
               memory: 3Gi
               cpu: 2
+            limits:
+              cpu: 1
+              memory: 4Gi
       tolerations:
         - key: dedicated
           operator: Equal
