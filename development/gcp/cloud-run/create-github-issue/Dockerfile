@@ -5,7 +5,7 @@ COPY . .
 
 RUN  CGO_ENABLED=0 go build -o /creategithubissue -ldflags="-s -w" ./development/gcp/cloud-run/create-github-issue
 
-FROM alpine:3.17.3
+FROM alpine:3.18.0
 
 COPY --from=builder /creategithubissue /creategithubissue
 RUN apk add --no-cache ca-certificates && \
