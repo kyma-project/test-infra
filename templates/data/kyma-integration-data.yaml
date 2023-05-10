@@ -459,30 +459,6 @@ templates:
                     - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "serverless-function-metrics-generator"
-                  cron: "0 0,12 * * *" # twice a day, midnight and noon, everyday
-                  annotations:
-                    description: Serverless function metrics generator
-                    pipeline.platform: gke
-                  labels:
-                    preset-gc-compute-envs: "true"
-                    preset-gc-project-env: "true"
-                  env:
-                    PROVISION_REGIONAL_CLUSTER: "true"
-                    INPUT_CLUSTER_NAME: "nightly"
-                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-                    CLUSTER_PROVIDER: "gcp"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_kyma-integration"
-                    - "extra_refs_kyma"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "serverless_metrics_template"
-              - jobConfig:
                   name: "serverless-git-auth-integration-k3s-nightly"
                   cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
                   annotations:
@@ -648,28 +624,6 @@ templates:
                     preset-build-main: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
                     preset-kyma-integration-app-connector-tests-app-validator: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "post-main-k3d-k8s-preview"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d to test kyma on latest k8s version.
-                    testgrid-days-of-results: "60"
-                  labels:
-                    preset-build-main: "true"
-                  env:
-                    K8S_VERSION: "1.27.0"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
