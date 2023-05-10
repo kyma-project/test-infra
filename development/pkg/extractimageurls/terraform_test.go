@@ -113,7 +113,7 @@ resource "google_cloud_run_service" "run_service" {
 
 	for _, c := range tc {
 		t.Run(c.Name, func(t *testing.T) {
-			actual, err := extractDockerImagesFromTerraform(strings.NewReader(c.FileContent))
+			actual, err := FromTerraform(strings.NewReader(c.FileContent))
 			if err != nil && !c.WantErr {
 				t.Errorf("Unexpected error occurred %s", err)
 			}

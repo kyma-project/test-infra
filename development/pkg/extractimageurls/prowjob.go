@@ -4,19 +4,7 @@ import (
 	"k8s.io/test-infra/prow/config"
 )
 
-// FromProwJobConfigFile find images from prow job config file and returns it as slice
-func FromProwJobConfigFile(path string) ([]string, error) {
-	cfg, err := config.ReadJobConfig(path)
-	if err != nil {
-		return nil, err
-	}
-
-	images := extractImagesFromProwJobConfig(cfg)
-
-	return images, nil
-}
-
-// FromProwJobConfig parses JobConfig from prow library and returns it as slice
+// FromProwJobConfig parses JobConfig from prow library and returns a slice of image urls
 func FromProwJobConfig(config config.JobConfig) []string {
 	return extractImagesFromProwJobConfig(config)
 }

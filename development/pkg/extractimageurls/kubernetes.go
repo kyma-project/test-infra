@@ -3,7 +3,6 @@ package extractimageurls
 import (
 	"errors"
 	"io"
-	"os"
 
 	"gopkg.in/yaml.v3"
 )
@@ -29,16 +28,7 @@ type Container struct {
 }
 
 // FromKubernetesDeployments returns list of images found in provided file
-func FromKubernetesDeployments(path string) ([]string, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-
-	return fromKubernetesDeployments(f)
-}
-
-func fromKubernetesDeployments(reader io.Reader) ([]string, error) {
+func FromKubernetesDeployments(reader io.Reader) ([]string, error) {
 	images := []string{}
 
 	decoder := yaml.NewDecoder(reader)

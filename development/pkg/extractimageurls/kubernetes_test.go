@@ -195,7 +195,7 @@ spec:
 
 	for _, c := range tc {
 		t.Run(c.Name, func(t *testing.T) {
-			images, err := fromKubernetesDeployments(strings.NewReader(c.FileContent))
+			images, err := FromKubernetesDeployments(strings.NewReader(c.FileContent))
 			if err != nil && !c.WantErr {
 				t.Errorf("Got unexpected error: %v", err)
 			}
