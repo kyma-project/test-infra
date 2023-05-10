@@ -1,12 +1,15 @@
 presubmits:
   kyma-project/telemetry-manager:
-    - name: pull-telemetry-manager-integration-test
+    - name: pull-telemetry-manager-e2e-test
+      annotations:
+        description: "Pre-submit job to execute e2e test."
+        owner: "huskies"
       optional: false
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-integration-test"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-e2e-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       cluster: untrusted-workload
       decorate: true

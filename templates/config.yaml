@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.14"
+  nextRelease: "2.15"
   releases:
+    - "2.14"
     - "2.13"
     - "2.12"
-    - "2.11"
   orgs:
     - name: "kyma-project"
       repos:
@@ -63,14 +63,12 @@ global:
         - name: "sc-removal"
         - name: "service-catalog-tester"
         - name: "service-catalog"
-        
-
 
 # global configSet variables
 pubsub_config: &pubsub_config
   pubsub_project: "sap-kyma-prow"
   pubsub_topic: "prowjobs"
-  
+
 globalSets:
   kaniko_buildpack:
     skip_report: "false"
@@ -204,10 +202,10 @@ globalSets:
     nodeSelector:
       dedicated: high-cpu
     tolerations:
-    - key: dedicated
-      value: high-cpu
-      operator: Equal
-      effect: NoSchedule
+      - key: dedicated
+        value: high-cpu
+        operator: Equal
+        effect: NoSchedule
     <<: *pubsub_config
   jobConfig_kyma20_docu:
     skip_report: "false"
@@ -356,6 +354,6 @@ globalSets:
       pipeline.platform: gardener_gcp
 
 templates:
-  - from : test-infra-autobump-config.yaml
+  - from: test-infra-autobump-config.yaml
     render:
       - to: ../../prow/autobump-config/test-infra-autobump-config.yaml
