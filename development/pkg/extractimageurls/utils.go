@@ -1,16 +1,25 @@
-package pkg
+package extractimageurls
 
 import (
 	"fmt"
+	"io"
 	"io/fs"
+	"os"
 	"path/filepath"
 	"regexp"
 )
 
-func ExtractImagesFromFiles(files []string, extract func(path string) ([]string, error)) ([]string, error) {
+type ExtractFunc func(reader io.Reader) ([]string, error)
+
+func ExtractImagesFromFiles(files []string, extract ExtractFunc) ([]string, error) {
 	var images []string
 	for _, file := range files {
-		img, err := extract(file)
+		reader, err := os.Open(file)
+		if err != nil {
+			return nil, err
+		}
+
+		img, err := extract(reader)
 		if err != nil {
 			return nil, fmt.Errorf("failed to extract images from file %s: %s", file, err)
 		}
