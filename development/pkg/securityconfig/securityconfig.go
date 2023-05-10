@@ -19,16 +19,7 @@ type SecurityConfig struct {
 	Whitesource Whitesource `yaml:"whitesource,omitempty"`
 }
 
-func LoadSecurityConfig(path string) (*SecurityConfig, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-
-	return parseSecurityConfig(f)
-}
-
-func parseSecurityConfig(reader io.Reader) (*SecurityConfig, error) {
+func ParseSecurityConfig(reader io.Reader) (*SecurityConfig, error) {
 	var securityConfig SecurityConfig
 	err := yaml.NewDecoder(reader).Decode(&securityConfig)
 	if err != nil {
