@@ -135,10 +135,13 @@ gardener::test_fast_integration_kyma() {
     log::info "KYMA_UPGRADE_SOURCE == ${KYMA_UPGRADE_SOURCE}"
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    log::info "Getting current git status"
     git status
+    log::info "Switching to the correct Kyma version"
     git checkout "${KYMA_UPGRADE_SOURCE}"
     git status
     make ci
+    log::info "Restoring git configuration"
     git checkout -
     popd
 
