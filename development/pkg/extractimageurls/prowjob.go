@@ -6,10 +6,6 @@ import (
 
 // FromProwJobConfig parses JobConfig from prow library and returns a slice of image urls
 func FromProwJobConfig(config config.JobConfig) []string {
-	return extractImagesFromProwJobConfig(config)
-}
-
-func extractImagesFromProwJobConfig(config config.JobConfig) []string {
 	images := []string{}
 	images = append(images, extractImagesFromPeriodicsProwJobs(config.Periodics)...)
 	images = append(images, extractImagesFromPresubmitsProwJobs(config.PresubmitsStatic)...)
