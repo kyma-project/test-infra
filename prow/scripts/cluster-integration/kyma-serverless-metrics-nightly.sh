@@ -17,7 +17,7 @@ source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/serverless-shared-k3s.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/serverless-shared-k3s.sh"
 # shellcheck source=prow/scripts/cluster-integration/kyma-serverless-run-test.sh
-source "${SCRIPT_DIR}/kyma-serverless-run-test.sh"
+source "${SCRIPT_DIR}/prow/scripts/kyma-serverless-run-test.sh"
 
 
 
