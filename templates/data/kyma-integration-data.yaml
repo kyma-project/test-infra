@@ -459,6 +459,30 @@ templates:
                     - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
               - jobConfig:
+                  name: "serverless-function-metrics-generator"
+                  cron: "0 0,12 * * *" # twice a day, midnight and noon, everyday
+                  annotations:
+                    description: Serverless function metrics generator
+                    pipeline.platform: gke
+                  labels:
+                    preset-gc-compute-envs: "true"
+                    preset-gc-project-env: "true"
+                  env:
+                    PROVISION_REGIONAL_CLUSTER: "true"
+                    INPUT_CLUSTER_NAME: "nightly"
+                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
+                    CLUSTER_PROVIDER: "gcp"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "image_kyma-integration"
+                    - "extra_refs_kyma"
+                    - "extra_refs_test-infra"
+                    - "disable_testgrid"
+                  local:
+                    - "serverless_metrics_template"
+              - jobConfig:
                   name: "serverless-git-auth-integration-k3s-nightly"
                   cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
                   annotations:
