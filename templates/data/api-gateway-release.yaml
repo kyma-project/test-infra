@@ -8,16 +8,21 @@ templates:
             max_concurrency: "10"
             optional: "false"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/external/goreleaser/goreleaser:v1.11.5"
+            image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
             request_cpu: 500m
+            limits_cpu: 1
+            limits_memory: 2Gi
         jobConfigs:
           - repoName: kyma-project/api-gateway
             jobs:
               - jobConfig:
                   name: rel-api-gateway-build
+                  annotations:
+                    owner: goat
+                    description: builds api-gateway image
                   optional: "false"
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
@@ -35,6 +40,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: rel-api-gateway-webhook-certificates-build
+                  annotations:
+                    owner: goat
+                    description: builds webhook certificates image
                   optional: "false"
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
@@ -52,14 +60,17 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: rel-api-gateway-goreleaser
+                  annotations:
+                    owner: goat
+                    description: Runs api-gateway release
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
                     preset-bot-github-token: "true"
-                  command: "/bin/sh"
+                  command: "/bin/bash"
                   args:
                     - "-c"
-                    - "git remote add origin https://github.com/kyma-project/api-gateway && goreleaser release"
+                    - hack/release.sh
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
