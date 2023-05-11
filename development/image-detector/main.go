@@ -58,7 +58,7 @@ var rootCmd = &cobra.Command{
 			log.Fatalf("failed to find files in terraform directory %s: %s", TerraformDir, err)
 		}
 
-		imgs, err := extractimageurls.ExtractImagesFromFiles(files, extractimageurls.FromTerraform)
+		imgs, err := extractimageurls.FromFiles(files, extractimageurls.FromTerraform)
 		if err != nil {
 			log.Fatalf("failed to extract images from terraform files: %s", err)
 		}
@@ -71,7 +71,7 @@ var rootCmd = &cobra.Command{
 			log.Fatalf("failed to find files in kubernetes directory %s: %s", KubernetesFiles, err)
 		}
 
-		imgs, err = extractimageurls.ExtractImagesFromFiles(files, extractimageurls.FromKubernetesDeployments)
+		imgs, err = extractimageurls.FromFiles(files, extractimageurls.FromKubernetesDeployments)
 		if err != nil {
 			log.Fatalf("failed to extract images from kubernetes files: %s", err)
 		}
