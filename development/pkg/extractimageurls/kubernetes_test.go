@@ -6,7 +6,7 @@ import (
 	"testing"
 )
 
-func TestExtract(t *testing.T) {
+func TestFromKubernetesDeployments(t *testing.T) {
 	tc := []struct {
 		Name           string
 		FileContent    string
@@ -51,7 +51,7 @@ spec:
 		{
 			Name:           "valid service file, fail",
 			WantErr:        true,
-			ExpectedImages: []string{},
+			ExpectedImages: nil,
 			FileContent: `apiVersion: v1
 kind: Service
 metadata:
@@ -190,6 +190,45 @@ spec:
       containers:
         - name: test2
           image: test-image:test2`,
+		},
+		{
+			Name:           "deployment with resource quantity, pass",
+			WantErr:        false,
+			ExpectedImages: []string{"test.gcr.io/test:test"},
+			FileContent: `apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test
+  labels:
+    app: test
+spec:
+  replica: 2
+  selector:
+    matchLabels:
+      app: test
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: test
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+        - name: test
+          image: test.gcr.io/test:test
+          args:
+            - -tets-arg
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi`,
 		},
 	}
 

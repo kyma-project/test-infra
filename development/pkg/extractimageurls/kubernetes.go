@@ -1,21 +1,30 @@
 package extractimageurls
 
 import (
+	"bytes"
 	"errors"
 	"io"
 
-	"gopkg.in/yaml.v3"
 	v1 "k8s.io/api/apps/v1"
+	"sigs.k8s.io/yaml"
 )
 
 // FromKubernetesDeployments returns list of images found in provided file
 func FromKubernetesDeployments(reader io.Reader) ([]string, error) {
-	images := []string{}
+	var images []string
 
-	decoder := yaml.NewDecoder(reader)
-	for {
+	// Read all data from reader
+	data, err := io.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	// Split file into sections
+	sections := bytes.Split(data, []byte("---\n"))
+
+	for _, section := range sections {
 		var file v1.Deployment
-		err := decoder.Decode(&file)
+		err := yaml.Unmarshal(section, &file)
 
 		if errors.Is(err, io.EOF) {
 			break
@@ -25,12 +34,13 @@ func FromKubernetesDeployments(reader io.Reader) ([]string, error) {
 			return nil, err
 		}
 
-		images = append(images, extractImagesFromStruct(file)...)
+		images = append(images, extractImageUrlsFromStruct(file)...)
 	}
 	return images, nil
 }
 
-func extractImagesFromStruct(file v1.Deployment) []string {
+// extract
+func extractImageUrlsFromStruct(file v1.Deployment) []string {
 	images := []string{}
 	for _, image := range file.Spec.Template.Spec.Containers {
 		images = append(images, image.Image)
