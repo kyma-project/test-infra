@@ -129,34 +129,6 @@ templates:
             request_memory: 1Gi
             request_cpu: 400m
         jobConfigs:
-          - repoName: "github.com/kyma-project/cli"
-            jobs:
-              - jobConfig:
-                  path: integration-kyma-2
-                  release_since: "2.0"
-                  branches:
-                    - ^main$
-                    - ^release-2.*$
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "kyma_2_template"
-                    - "jobConfig_submit"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                    local:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-                    local:
-                      - "jobConfig_postsubmit"
       - to: ../../prow/jobs/cli/cli-compatibility.yaml
         localSets:
           jobConfig_default:
@@ -177,21 +149,3 @@ templates:
           kyma_2_template:
             env:
               KUBERNETES_RUNTIME: "k3d"
-        jobConfigs:
-          - repoName: kyma-project/cli
-            jobs:
-              - jobConfig:
-                  name: "kyma-cli-compatibility-1"
-                  cron: "00 00 * * *" # "At 00:00 daily"
-                  env:
-                    COMPAT_BACKTRACK: "1"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_buildpack-golang-kubebuilder2"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "kyma_2_template"
