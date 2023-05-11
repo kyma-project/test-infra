@@ -2,7 +2,6 @@ package extractimageurls
 
 import (
 	"bytes"
-	"errors"
 	"io"
 
 	v1 "k8s.io/api/apps/v1"
@@ -25,11 +24,6 @@ func FromKubernetesDeployments(reader io.Reader) ([]string, error) {
 	for _, section := range sections {
 		var file v1.Deployment
 		err := yaml.Unmarshal(section, &file)
-
-		if errors.Is(err, io.EOF) {
-			break
-		}
-
 		if err != nil {
 			return nil, err
 		}
