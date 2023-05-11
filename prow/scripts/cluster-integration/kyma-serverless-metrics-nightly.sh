@@ -5,7 +5,7 @@ set -o pipefail  # Fail a pipe if any sub-command fails.
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 
-export KYMA_SOURCES_DIR="./kyma"
+export KYMA_SOURCES_DIR="/home/prow/go/src/github.com/kyma-project/kyma"
 export COLLECTOR_NAMESPACE="serverless-integration"
 export TEST_JOB_NAME="serverless-tests"
 
