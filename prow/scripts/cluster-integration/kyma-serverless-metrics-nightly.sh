@@ -86,7 +86,6 @@ function create_collector_namespace() {
     kubectl create ns "${COLLECTOR_NAMESPACE}"
     kubectl label ns "${COLLECTOR_NAMESPACE}" created-by=serverless-controller-manager-test
     git checkout -
-    popd
 }
 
 function run_serverless_metrics_collector() {
