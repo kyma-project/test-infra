@@ -13,11 +13,11 @@ export TEST_JOB_NAME="serverless-tests"
 # shellcheck source=prow/scripts/lib/utils.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/serverless-shared-k3s.sh
-source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/serverless-shared-k3s.sh"
+source "{$TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/serverless-shared-k3s.sh"
 # shellcheck source=prow/scripts/cluster-integration/kyma-serverless-run-test.sh
-source "${SCRIPT_DIR}/prow/scripts/cluster-integration/kyma-serverless-run-test.sh"
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/kyma-serverless-run-test.sh"
 
 
 
