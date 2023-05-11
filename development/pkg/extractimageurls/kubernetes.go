@@ -5,27 +5,8 @@ import (
 	"io"
 
 	"gopkg.in/yaml.v3"
+	v1 "k8s.io/api/apps/v1"
 )
-
-type DeploymentFile struct {
-	Spec SpecField `yaml:"spec"`
-}
-
-type SpecField struct {
-	Template Template `yaml:"template"`
-}
-
-type Template struct {
-	Spec PodSpec `yaml:"spec"`
-}
-
-type PodSpec struct {
-	Containers []Container `yaml:"containers"`
-}
-
-type Container struct {
-	Image string `yaml:"image"`
-}
 
 // FromKubernetesDeployments returns list of images found in provided file
 func FromKubernetesDeployments(reader io.Reader) ([]string, error) {
@@ -33,7 +14,7 @@ func FromKubernetesDeployments(reader io.Reader) ([]string, error) {
 
 	decoder := yaml.NewDecoder(reader)
 	for {
-		var file DeploymentFile
+		var file v1.Deployment
 		err := decoder.Decode(&file)
 
 		if errors.Is(err, io.EOF) {
@@ -49,7 +30,7 @@ func FromKubernetesDeployments(reader io.Reader) ([]string, error) {
 	return images, nil
 }
 
-func extractImagesFromStruct(file DeploymentFile) []string {
+func extractImagesFromStruct(file v1.Deployment) []string {
 	images := []string{}
 	for _, image := range file.Spec.Template.Spec.Containers {
 		images = append(images, image.Image)
