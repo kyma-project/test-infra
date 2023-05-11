@@ -1,11 +1,11 @@
 pjConfigs:
-  prConfig:
-    kyma-project:
-      control-plane:
-        prNumber: 2743
   prowJobs:
     kyma-project:
       control-plane:
       - pjName: "pre-main-control-plane-reconciler-e2e-latest-release"
         report: false
+prConfigs:
+  kyma-project:
+    control-plane:
+      prNumber: 2743
 
