@@ -6,7 +6,7 @@ import (
 )
 
 // FromTerraform extracts docker images from terraform files.
-// It receives path to single terraform file and returns list of images or error if any.
+// It receives reader with terraform file content and returns list of images or error if any.
 func FromTerraform(reader io.Reader) ([]string, error) {
 	data, err := io.ReadAll(reader)
 	if err != nil {

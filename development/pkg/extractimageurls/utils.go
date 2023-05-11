@@ -9,9 +9,11 @@ import (
 	"regexp"
 )
 
+// ExtractFunc is standard type for function used to return image urls from reader
 type ExtractFunc func(reader io.Reader) ([]string, error)
 
-func ExtractImagesFromFiles(files []string, extract ExtractFunc) ([]string, error) {
+// FromFiles uses given extract function to return image urls from given files
+func FromFiles(files []string, extract ExtractFunc) ([]string, error) {
 	var images []string
 	for _, file := range files {
 		reader, err := os.Open(file)
@@ -30,6 +32,7 @@ func ExtractImagesFromFiles(files []string, extract ExtractFunc) ([]string, erro
 	return images, nil
 }
 
+// FindFilesInDirectory returns list of files that match regexp under specified directory
 func FindFilesInDirectory(rootPath, regex string) ([]string, error) {
 	var files []string
 	err := filepath.Walk(rootPath, func(path string, info fs.FileInfo, err error) error {
@@ -48,6 +51,7 @@ func FindFilesInDirectory(rootPath, regex string) ([]string, error) {
 	return files, nil
 }
 
+// UniqueImages returns list of unique image urls from given list of image urls
 func UniqueImages(images []string) []string {
 	keys := make(map[string]bool)
 	list := []string{}

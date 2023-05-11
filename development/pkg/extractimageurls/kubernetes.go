@@ -39,7 +39,7 @@ func FromKubernetesDeployments(reader io.Reader) ([]string, error) {
 	return images, nil
 }
 
-// extract
+// extractImageUrlsFromStruct extracts image urls from given struct and returns it as slice of strings
 func extractImageUrlsFromStruct(file v1.Deployment) []string {
 	images := []string{}
 	for _, image := range file.Spec.Template.Spec.Containers {
