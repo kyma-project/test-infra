@@ -142,6 +142,7 @@ gardener::test_fast_integration_kyma() {
     git status
     make ci
     log::info "Restoring git configuration"
+    git checkout .
     git checkout -
     popd
 
