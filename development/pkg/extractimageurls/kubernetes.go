@@ -1,7 +1,6 @@
 package extractimageurls
 
 import (
-	"bytes"
 	"io"
 
 	v1 "k8s.io/api/apps/v1"
@@ -19,7 +18,7 @@ func FromKubernetesDeployments(reader io.Reader) ([]string, error) {
 	}
 
 	// Split file into sections
-	sections := bytes.Split(data, []byte("---\n"))
+	sections := SplitYamlIntoSections(data)
 
 	for _, section := range sections {
 		var file v1.Deployment

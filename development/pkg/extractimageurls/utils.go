@@ -65,3 +65,17 @@ func UniqueImages(images []string) []string {
 
 	return list
 }
+
+// SplitYamlIntoSections split yaml into separated section based --- according to yaml specification
+func SplitYamlIntoSections(data []byte) [][]byte {
+	re := regexp.MustCompile("(?m)^---\n")
+
+	strings := re.Split(string(data), -1)
+
+	var result [][]byte
+	for _, str := range strings {
+		result = append(result, []byte(str))
+	}
+
+	return result
+}

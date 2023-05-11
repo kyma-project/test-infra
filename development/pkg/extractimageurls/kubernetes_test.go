@@ -49,8 +49,8 @@ spec:
               protocol: TCP`,
 		},
 		{
-			Name:           "valid service file, fail",
-			WantErr:        true,
+			Name:           "valid service file, pass",
+			WantErr:        false,
 			ExpectedImages: nil,
 			FileContent: `apiVersion: v1
 kind: Service
@@ -229,6 +229,40 @@ spec:
             requests:
               cpu: 100m
               memory: 100Mi`,
+		},
+		{
+			Name:           "config map with yaml file, pass",
+			WantErr:        false,
+			ExpectedImages: nil,
+			FileContent: `apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: prow-monitoring
+  name: grafana-datasources
+data:
+  datasources.yaml: |
+    ---
+    apiVersion: 1
+    datasources:
+      - name: prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus.prow-monitoring.svc:9090
+        version: 1
+        orgId: 1
+        editable: false
+      - name: bigquery-prow
+        type: doitintl-bigquery-datasource
+        access: proxy
+        jsonData:
+            authenticationType: jwt
+            clientEmail: ${GF_PLUGINS_BIGQUERY_DATASOURCE_EMAIL}
+            defaultProject: sap-kyma-prow
+            tokenUri: https://oauth2.googleapis.com/token
+        secureJsonData:
+            privateKey: "${GF_PLUGINS_BIGQUERY_DATASOURCE_PRIVATE_KEY}"
+        version: 2
+        readOnly: false`,
 		},
 	}
 
