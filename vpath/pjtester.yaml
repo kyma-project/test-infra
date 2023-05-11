@@ -1,0 +1,6 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "serverless-function-metrics-generator"
+          report: false
