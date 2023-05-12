@@ -135,6 +135,7 @@ reconciler::trigger_kyma_reconcile
 reconciler::wait_until_kyma_reconciled
 
 ### Once Kyma is installed run the fast integration test
+log::banner "Executing test"
 gardener::test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
