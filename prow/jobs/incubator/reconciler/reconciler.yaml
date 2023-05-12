@@ -528,52 +528,6 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-load-test-mock-kyma-incubator-reconciler
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-load-test-mock-kyma-incubator-reconciler"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^load-test-mock$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
-            env:
-              - name: GO11MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-dev-reconciler-integration-k3d
       annotations:
         pipeline.platform: "k3d"
@@ -1040,52 +994,6 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-load-test-mock-kyma-incubator-reconciler
-      annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-load-test-mock-kyma-incubator-reconciler"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^load-test-mock$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
-            env:
-              - name: GO11MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-dev-kyma-incubator-reconciler
       annotations:
         pipeline.trigger: "pr-merge"
@@ -1230,7 +1138,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230509-1757d0d69f"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230511-0acaf3965c"
             securityContext:
               privileged: true
             command:
