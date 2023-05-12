@@ -1,4 +1,4 @@
-package extractimages
+package extractimageurls
 
 import (
 	"io"
