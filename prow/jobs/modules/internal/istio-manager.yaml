@@ -11,7 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$'
+      optional: false
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -55,7 +55,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-istio-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$'
+      optional: false
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -105,7 +105,6 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$'
       optional: true
       skip_report: false
       decorate: true
@@ -157,13 +156,16 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$'
+      optional: false
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^main$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
@@ -200,7 +202,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$'
+      optional: false
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -208,6 +210,9 @@ postsubmits: # runs on main
       branches:
         - ^master$
         - ^main$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -251,7 +256,6 @@ postsubmits: # runs on main
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$'
       optional: true
       skip_report: false
       decorate: true
@@ -266,6 +270,9 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"

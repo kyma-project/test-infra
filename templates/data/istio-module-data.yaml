@@ -4,7 +4,10 @@ templates:
       - to: ../../prow/jobs/modules/internal/istio-manager.yaml
         localSets:
           job_default:
+            optional: "false"
             privileged: false
+          job_post:
+            slack_channel: goat-int
           job_build:
             skip_report: "false"
             max_concurrency: "10"
@@ -59,7 +62,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-istio-module-build
-                  run_if_changed: "^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -83,7 +86,7 @@ templates:
                     - job_default
               - jobConfig:
                   name: post-istio-module-build
-                  run_if_changed: "^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -104,10 +107,10 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - job_default
+                    - job_post
               - jobConfig:
                   name: pull-istio-operator-build
-                  run_if_changed: "^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
-                  always_run: true
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   args:
                     - "--name=istio-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -121,8 +124,7 @@ templates:
                     - job_build
               - jobConfig:
                   name: post-istio-operator-build
-                  run_if_changed: "^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
-                  always_run: true
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -136,11 +138,11 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - job_default
+                    - job_post
                     - job_build
               - jobConfig:
                   name: pull-istio-manager-verify
-                  run_if_changed: "^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
-                  always_run: "true"
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   optional: "true"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
@@ -158,8 +160,7 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: post-istio-manager-verify
-                  run_if_changed: "^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
-                  always_run: "true"
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   optional: "true"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
@@ -172,6 +173,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - job_default
+                    - job_post
                     - vm_job_make
                     - vm_job_k3d
                     - vm_job_labels
