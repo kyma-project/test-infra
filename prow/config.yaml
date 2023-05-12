@@ -796,6 +796,14 @@ presets:
           secretKeyRef:
             name: kyma-bot-github-token
             key: token
+    volumeMounts:
+      - name: kyma-bot-token-path
+        mountPath: /etc/github
+        readOnly: true
+    volumes:
+      - name: kyma-bot-token-path
+        secret:
+          secretName: kyma-bot-github-token
   - labels:
       preset-autobump-bot-github-token: "true"
     volumes:
