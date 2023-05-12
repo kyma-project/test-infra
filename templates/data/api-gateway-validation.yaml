@@ -33,6 +33,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-api-gateway-lint
+                  run_if_changed: "^config/.*$|^hack/.*$|^controllers/.*$|^api/.*$|^internal/.*$|^cmd/.*|^tests/.*$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
                   request_cpu: 500m
                   command: "/bin/sh"
                   args:
@@ -45,6 +46,7 @@ templates:
                     - linting
               - jobConfig:
                   name: pull-api-gateway-test
+                  run_if_changed: "^config/.*$|^hack/.*$|^controllers/.*$|^api/.*$|^internal/.*$|^cmd/.*|^tests/.*$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
                   always_run: true
                   request_cpu: 500m
                   command: "./tests/integration/scripts/code-coverage-guard.sh"
@@ -56,6 +58,7 @@ templates:
                     - jobConfig_default
               - jobConfig:
                   name: pull-api-gateway-integration-test
+                  run_if_changed: "^config/.*$|^hack/.*$|^controllers/.*$|^api/.*$|^internal/.*$|^cmd/.*|^tests/.*$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
                   always_run: true
                   command: "./tests/integration/scripts/integration-gardener.sh"
                   decoration_config:
@@ -77,6 +80,8 @@ templates:
                     - command_integration
               - jobConfig:
                   name: post-api-gateway-integration-test
+                  run_if_changed: "^config/.*$|^hack/.*$|^controllers/.*$|^api/.*$|^internal/.*$|^cmd/.*|^tests/.*$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
+                  slack_channel: goat-int
                   always_run: true
                   branches:
                     - ^main$

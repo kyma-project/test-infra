@@ -7,6 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-api-gateway-build
+                  run_if_changed: "^config/.*$|^hack/.*$|^controllers/.*$|^api/.*$|^internal/.*$|^cmd/.*|^tests/.*$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
                   always_run: true
                   args:
                     - "--name=api-gateway-controller"
@@ -19,6 +20,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-api-gateway-build
+                  run_if_changed: "^config/.*$|^hack/.*$|^controllers/.*$|^api/.*$|^internal/.*$|^cmd/.*|^tests/.*$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
                   slack_channel: goat-int
                   labels:
                     preset-signify-prod-secret: "true"
@@ -37,6 +39,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-api-gateway-webhook-certificates-build
+                  run_if_changed: "^config/.*$|^hack/.*$|^controllers/.*$|^api/.*$|^internal/.*$|^cmd/.*|^tests/.*$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
                   always_run: true
                   args:
                     - "--name=api-gateway-webhook-certificates"
@@ -49,6 +52,7 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-api-gateway-webhook-certificates-build
+                  run_if_changed: "^config/.*$|^hack/.*$|^controllers/.*$|^api/.*$|^internal/.*$|^cmd/.*|^tests/.*$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
                   slack_channel: goat-int
                   labels:
                     preset-signify-prod-secret: "true"

@@ -13,6 +13,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-istio-lint
+                  run_if_changed: "^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
                   request_cpu: 500m
                   command: "/bin/sh"
                   args:
@@ -24,6 +25,7 @@ templates:
                     - jobConfig_presubmit
                     - linting
               - jobConfig:
+                  run_if_changed: "^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$"
                   name: pull-istio-test
                   request_cpu: 500m
                   command: "./tests/integration/scripts/code-coverage-guard.sh"

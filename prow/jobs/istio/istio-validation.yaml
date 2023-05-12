@@ -10,7 +10,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
+      run_if_changed: '^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$'
       optional: true
       skip_report: false
       decorate: true
@@ -35,7 +35,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
+      run_if_changed: '^config/.*$|^hack/ci/.*$|^pkg/.*$|^controllers/.*$|^manifests/.*$|^api/.*$|^internal/.*$|^tests/.*$|^config.yaml$|^Makefile|Dockerfile$|^(go.mod|go.sum)$|(.*.go|.*.sh)|^PROJECT$'
       optional: false
       skip_report: false
       decorate: true
