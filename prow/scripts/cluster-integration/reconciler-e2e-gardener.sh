@@ -91,7 +91,14 @@ if [[ $KYMA_TEST_SOURCE == "latest-release" ]]; then
   # Fetch latest Kyma2 release
   kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
   export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
+
   log::info "### Reading release version from RELEASE_VERSION file, got: ${KYMA_UPGRADE_SOURCE}"
+
+  log::info "### switching local Kyma sources to the ${KYMA_UPGRADE_SOURCE}"
+  pushd "${KYMA_PROJECT_DIR}/kyma"
+  git reset --hard
+  git checkout tags/"${KYMA_UPGRADE_SOURCE}"
+  popd
 fi
 
 ## ---------------------------------------------------------------------------------------
@@ -128,7 +135,6 @@ reconciler::trigger_kyma_reconcile
 reconciler::wait_until_kyma_reconciled
 
 ### Once Kyma is installed run the fast integration test
-log::banner "Executing test"
 gardener::test_fast_integration_kyma
 
 #!!! Must be at the end of the script !!!
