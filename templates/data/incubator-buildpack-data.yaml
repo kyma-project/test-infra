@@ -387,20 +387,6 @@ templates:
                     - reconciler_main_jobConfig
                     - reconciler_component_gardener_integration_jobConfig
               - jobConfig:
-                  name: "pre-load-test-mock-kyma-incubator-reconciler"
-                  always_run: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-                  local:
-                    - reconciler_load-test-mock_jobConfig
-                    - reconciler_jobConfig_args
-              - jobConfig:
                   name: "pre-dev-reconciler-integration-k3d"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -546,20 +532,6 @@ templates:
                     - jobConfig_postsubmit
                     - kaniko_buildpack
               - jobConfig:
-                  name: post-load-test-mock-kyma-incubator-reconciler
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - disable_testgrid
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-                  local:
-                    - reconciler_load-test-mock_jobConfig
-                    - reconciler_jobConfig_args
-              - jobConfig:
                   name: post-dev-kyma-incubator-reconciler
                 inheritedConfigs:
                   global:
@@ -607,7 +579,7 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230424-4981841b2f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230511-0acaf3965c
                   command: generic-autobumper
                   args:
                     - --config=/home/prow/go/src/github.com/kyma-project/test-infra/prow/autobump-config/control-plane-autobump-reconciler-config.yaml

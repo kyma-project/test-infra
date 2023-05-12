@@ -18,7 +18,7 @@
 | post-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-app-gateway | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-app-conn-validator | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
-| post-main-k3d-k8s-preview | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
+| post-main-kyma-k3d-k8s-preview | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | kyma-upgrade-k3d-kyma2-to-main | k3d | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
 | kyma-integration-k3d | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
@@ -31,7 +31,6 @@
 | kyma-weekly-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-upgrade-gardener-kyma2-to-main-reconciler-main | gardener_azure | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
 | kyma-upgrade-gardener-kyma2-minor-versions | gardener_azure | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
-| skr-azure-nightly | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-integration-dev | gardener_azure | keb | keb |  | periodic |  fast-integration  |
 | skr-azure-lite-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |
 | skr-aws-integration-dev | gardener_aws | keb | keb |  | periodic |  fast-integration  |

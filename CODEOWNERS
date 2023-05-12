@@ -12,16 +12,16 @@
 /prow @kyma-project/prow
 /prow/cluster @kyma-project/prow
 /prow/images @kyma-project/prow
-/prow/images/buildpack-node @kyma-project/prow @akucharska  @a-thaler @lilitgh @valentinvieriu @qbalukom
+/prow/images/buildpack-node @kyma-project/prow @akucharska  @a-thaler @lilitgh @valentinvieriu
 
 /prow/jobs @kyma-project/prow
-/prow/jobs/busola @qbalukom @valentinvieriu  @akucharska @kyma-project/prow
+/prow/jobs/busola @valentinvieriu  @akucharska @kyma-project/prow
 /prow/jobs/cli @chrkl @jeremyharisch @lindnerby @tobiscr  @lilitgh @rakesh-garimella @skhalash @kyma-project/prow
 /prow/jobs/control-plane @kyma-project/gopher @kyma-project/Framefrog @kyma-project/prow
 /prow/jobs/incubator/compass @gvachkov @petartodorovv @desislavaa @dimitarpetrov @krasish @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
 /prow/jobs/incubator/compass-console @gvachkov @petartodorovv @desislavaa @dimitarpetrov @krasish @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
 /prow/jobs/incubator/documentation-component @kyma-project/prow
-/prow/jobs/incubator/hydra-login-consent @tomasz-smelcerz-sap @dariusztutaj @piotrkpc @kyma-project/prow
+/prow/jobs/incubator/hydra-login-consent @tomasz-smelcerz-sap @piotrkpc @kyma-project/prow
 /prow/jobs/incubator/kyma-showcase @cortey @mrcherry97 @mvshao @kyma-project/prow
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow
 /prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @dzahariev @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
@@ -35,6 +35,7 @@
 /prow/jobs/kyma/components/eventing-controller @kyma-project/eventing
 /prow/jobs/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/prow @kyma-project/eventing
 /prow/jobs/eventing-tools/ @kyma-project/prow @kyma-project/eventing
+/prow/jobs/eventing-webhook/ @kyma-project/prow @kyma-project/eventing
 /prow/jobs/kyma/components/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
 /prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @pk85 @kyma-project/prow
 /prow/jobs/telemetry-manager @kyma-project/observability @kyma-project/prow
@@ -52,10 +53,15 @@
 /templates @kyma-project/prow
 /templates/templates @kyma-project/prow
 templates/data/eventing-tools-data.yaml @kyma-project/prow @kyma-project/eventing
+templates/data/eventing-webhook-certificates-build.yaml @kyma-project/prow @kyma-project/eventing
+templates/data/eventing-webhook-certificates-release.yaml @kyma-project/prow @kyma-project/eventing
 
 # All .md files
 *.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko
 
 # Don't require human review for auto generated files
 /test-inventory-integration.md
-/docs/index.md @neighbors-dev-bot
+
+# File index.md must be owned by prow group in case it will get changes in a pull request which is not allowed to be approved by approval bot.
+# In such case a human approver from prow group must approve the pull request.
+/docs/index.md @kyma-project/prow

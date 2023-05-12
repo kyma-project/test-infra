@@ -164,10 +164,6 @@ if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == 
     eventing::test_fast_integration_eventing_prep
     eventing::fast_integration_tests
 else
-    # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-    if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-      export ENABLE_TEST_LOG_COLLECTOR=true
-    fi
     gardener::test_kyma
 fi
 

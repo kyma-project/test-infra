@@ -511,7 +511,6 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
-                    preset-kyma-integration-telemetry-tracing-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -577,7 +576,7 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: pre-main-kyma-api-gateway-integration-k3d
-                  optional: true
+                  optional: false
                   labels:
                     preset-build-pr: "true"
                   run_if_changed: "^((tests/components/api-gateway\\S+|resources/api-gateway\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -662,15 +661,17 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-k3d-k8s-preview"
+                  name: "post-main-kyma-k3d-k8s-preview"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d to test kyma on latest k8s version.
+                    description: Post-submit job to validate kyma compatibility with next kubernetes version on K3D.
                     testgrid-days-of-results: "60"
+                    owner: huskies
+                  slack_channel: huskies-notifications
                   labels:
                     preset-build-main: "true"
                   env:
-                    K8S_VERSION: "1.27.0"
+                    K8S_VERSION: "1.27.1"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -741,7 +742,6 @@ templates:
                   labels:
                     preset-build-main: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
-                    preset-kyma-integration-telemetry-tracing-enabled: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

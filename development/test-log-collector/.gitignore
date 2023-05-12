@@ -1,6 +1,0 @@
-.idea
-.vscode
-*.logs
-joblogs
-resources/secret.yaml
-chart/test-log-collector/templates/secret.yaml

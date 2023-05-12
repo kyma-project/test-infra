@@ -2,10 +2,24 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-dev.yaml
+        localSets:
+          trustedWorkload:
+            cluster: trusted-workload
+          unTrustedWorkload:
+            cluster: untrusted-workload
         jobConfigs:
           - repoName: "kyma-project/kyma-dashboard"
             jobs:
               - jobConfig:
+                  annotations:
+                    owner: "hasselhoff"
+                    description: "Kyma Dashboard Dev Job"
+                  labels: 
+                    preset-sa-kyma-push-images: "true"
+                    preset-dind-enabled: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  env:
+                    DOCKER_PUSH_REPOSITORY: europe-docker.pkg.dev/kyma-project
                   path: dev
                   args:
                     - "."
@@ -16,21 +30,37 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma-dashboard"
                     - "extra_refs_test-infra"
                   preConfigs:
+                    local:
+                      - "unTrustedWorkload"
                     global:
                       - "jobConfig_presubmit"
                   postConfigs:
+                    local:
+                      - "trustedWorkload"
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
       - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-stage.yaml
+        localSets:
+          trustedWorkload:
+            cluster: trusted-workload
+          unTrustedWorkload:
+            cluster: untrusted-workload
         jobConfigs:
           - repoName: "kyma-project/kyma-dashboard"
             jobs:
               - jobConfig:
+                  annotations:
+                    owner: "hasselhoff"
+                    description: "Kyma Dashboard Stage Job"
+                  labels: 
+                    preset-sa-kyma-push-images: "true"
+                    preset-dind-enabled: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  env:
+                    DOCKER_PUSH_REPOSITORY: europe-docker.pkg.dev/kyma-project
                   path: stage
                   args:
                     - "."
@@ -41,21 +71,37 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma-dashboard"
                     - "extra_refs_test-infra"
                   preConfigs:
+                    local:
+                      - "unTrustedWorkload"
                     global:
                       - "jobConfig_presubmit"
                   postConfigs:
+                    local:
+                      - "trustedWorkload"
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
       - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-prod.yaml
+        localSets:
+          trustedWorkload:
+            cluster: trusted-workload
+          unTrustedWorkload:
+            cluster: untrusted-workload
         jobConfigs:
           - repoName: "kyma-project/kyma-dashboard"
             jobs:
               - jobConfig:
+                  annotations:
+                    owner: "hasselhoff"
+                    description: "Kyma Dashboard Prod Job"
+                  labels: 
+                    preset-sa-kyma-push-images: "true"
+                    preset-dind-enabled: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  env:
+                    DOCKER_PUSH_REPOSITORY: europe-docker.pkg.dev/kyma-project
                   path: prod
                   args:
                     - "."
@@ -66,13 +112,15 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_kyma-dashboard"
                     - "extra_refs_test-infra"
                   preConfigs:
+                    local:
+                      - "unTrustedWorkload"
                     global:
                       - "jobConfig_presubmit"
                   postConfigs:
+                    local:
+                      - "trustedWorkload"
                     global:
                       - "jobConfig_postsubmit"
                       - "disable_testgrid"
