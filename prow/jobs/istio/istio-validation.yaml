@@ -10,7 +10,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true

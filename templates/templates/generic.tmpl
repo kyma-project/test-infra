@@ -23,6 +23,8 @@
         {{- else}}{{fail ".JobConfig.cron and .JobConfig.interval are not defined"}}{{end}}
       {{- else if .JobConfig.run_if_changed}}
       run_if_changed: {{squote .JobConfig.run_if_changed}}
+      {{- else if .JobConfig.skip_if_only_changed}}
+      skip_if_only_changed: {{squote .JobConfig.skip_if_only_changed}}
       {{- else if .JobConfig.always_run}}
       always_run: {{.JobConfig.always_run}}
       {{- end}}

@@ -11,6 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -55,6 +56,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-istio-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -105,6 +107,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: true
       skip_report: false
       decorate: true
@@ -156,6 +159,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -202,6 +206,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -256,6 +261,7 @@ postsubmits: # runs on main
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: true
       skip_report: false
       decorate: true
