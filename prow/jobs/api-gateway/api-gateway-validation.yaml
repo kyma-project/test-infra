@@ -37,7 +37,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-debug-commando-oom: "true"
         preset-kyma-guard-bot-github-token: "true"
-      always_run: true
       optional: false
       skip_report: false
       decorate: true
