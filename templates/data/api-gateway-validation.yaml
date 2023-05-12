@@ -49,7 +49,6 @@ templates:
               - jobConfig:
                   name: pull-api-gateway-test
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
-                  always_run: true
                   request_cpu: 500m
                   command: "./tests/integration/scripts/code-coverage-guard.sh"
                 inheritedConfigs:
