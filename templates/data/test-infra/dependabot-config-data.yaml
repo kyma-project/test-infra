@@ -41,6 +41,7 @@ templates:
               - "docker"
               - "skip-review"
               - "area/dependency"
+              - "kind/chore"
           dailyTerraform:
             packageEcosystem: "terraform"
             scheduleInterval: "daily"
@@ -49,6 +50,7 @@ templates:
             labels:
               - "terraform"
               - "area/dependency"
+              - "kind/chore"
         jobConfigs:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:

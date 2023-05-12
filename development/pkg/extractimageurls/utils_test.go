@@ -1,4 +1,4 @@
-package pkg
+package extractimageurls
 
 import (
 	"reflect"

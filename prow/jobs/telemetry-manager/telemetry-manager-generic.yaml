@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/telemetry-manager:
     - name: pull-telemetry-manager-build
       annotations:
+        description: "Pre-submit job to build telemetry-manager image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -44,20 +46,22 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: verify-telemetry-module
+    - name: pull-telemetry-manager-verify-module
       annotations:
+        description: "Pre-submit job to verify successful deployment of telemetry module."
+        owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "verify-telemetry-module"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-verify-module"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      always_run: true
+      run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/|sec-scanners-config.yaml|config.yaml'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/telemetry-manager
@@ -83,7 +87,7 @@ presubmits: # runs on PRs
               - name: JOB_REPO_NAME
                 value: "telemetry-manager"
               - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make run-with-lm"
+                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make e2e-deploy-module"
             resources:
               requests:
                 memory: 200Mi
@@ -100,6 +104,8 @@ postsubmits: # runs on main
   kyma-project/telemetry-manager:
     - name: post-telemetry-manager-build
       annotations:
+        description: "Post-submit job to build telemetry-manager image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -147,12 +153,14 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: release-telemetry-module
+    - name: post-telemetry-manager-release-module
       annotations:
+        description: "Post-submit job to release telemetry module."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "release-telemetry-module"
+        prow.k8s.io/pubsub.runID: "post-telemetry-manager-release-module"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-sa-kyma-push-images: "true"
@@ -173,9 +181,6 @@ postsubmits: # runs on main
               - "make"
             args:
               - "release"
-            env:
-              - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
             resources:
               requests:
                 memory: 3Gi

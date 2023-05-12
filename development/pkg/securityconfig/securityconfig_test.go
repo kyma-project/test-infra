@@ -44,7 +44,7 @@ whitesource:
 
 	for _, c := range tc {
 		t.Run(c.Name, func(t *testing.T) {
-			config, err := parseSecurityConfig(strings.NewReader(c.FileContent))
+			config, err := ParseSecurityConfig(strings.NewReader(c.FileContent))
 			if err != nil && !c.WantErr {
 				t.Errorf("unexpected error occurred: %s", err)
 			}

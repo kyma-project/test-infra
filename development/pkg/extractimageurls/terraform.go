@@ -1,23 +1,13 @@
-package extractimages
+package extractimageurls
 
 import (
 	"io"
-	"os"
 	"regexp"
 )
 
 // FromTerraform extracts docker images from terraform files.
-// It receives path to single terraform file and returns list of images or error if any.
-func FromTerraform(path string) ([]string, error) {
-	f, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-
-	return extractDockerImagesFromTerraform(f)
-}
-
-func extractDockerImagesFromTerraform(reader io.Reader) ([]string, error) {
+// It receives reader with terraform file content and returns list of images or error if any.
+func FromTerraform(reader io.Reader) ([]string, error) {
 	data, err := io.ReadAll(reader)
 	if err != nil {
 		return nil, err

@@ -39,7 +39,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "make test-only"
                   run_if_changed: "^\\.go$|^go.(sum|mod)"
                 inheritedConfigs:
                   global:
