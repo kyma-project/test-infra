@@ -4,7 +4,10 @@ templates:
       - to: ../../prow/jobs/modules/internal/istio-manager.yaml
         localSets:
           job_default:
+            optional: "false"
             privileged: false
+          job_post:
+            slack_channel: goat-int
           job_build:
             skip_report: "false"
             max_concurrency: "10"
@@ -58,38 +61,15 @@ templates:
           - repoName: github.com/kyma-project/istio
             jobs:
               - jobConfig:
-                  name: post-istio-module-build
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned" 
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_SHA}"
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "hack/ci"
-                    - "all" 
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                  local:
-                    - job_default
-              - jobConfig:
                   name: pull-istio-module-build
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned" 
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/dev/istio-manager:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
-                  run_if_changed: "^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   command: "make"
                   args:
                     - "-C"
@@ -105,8 +85,32 @@ templates:
                   local:
                     - job_default
               - jobConfig:
+                  name: post-istio-module-build
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_SHA}"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "all"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default
+                    - job_post
+              - jobConfig:
                   name: pull-istio-operator-build
-                  always_run: true
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   args:
                     - "--name=istio-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -120,7 +124,7 @@ templates:
                     - job_build
               - jobConfig:
                   name: post-istio-operator-build
-                  always_run: true
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -134,10 +138,11 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - job_default
+                    - job_post
                     - job_build
               - jobConfig:
                   name: pull-istio-manager-verify
-                  always_run: "true"
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   optional: "true"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
@@ -155,7 +160,7 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: post-istio-manager-verify
-                  always_run: "true"
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   optional: "true"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
@@ -168,6 +173,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - job_default
+                    - job_post
                     - vm_job_make
                     - vm_job_k3d
                     - vm_job_labels

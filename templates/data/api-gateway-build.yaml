@@ -2,12 +2,17 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/api-gateway/api-gateway-build.yaml
+        localSets:
+          job_default:
+            optional: "false"
+          job_post:
+            slack_channel: goat-int
         jobConfigs:
           - repoName: kyma-project/api-gateway
             jobs:
               - jobConfig:
                   name: pull-api-gateway-build
-                  always_run: true
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   args:
                     - "--name=api-gateway-controller"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -17,12 +22,13 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - job_default
               - jobConfig:
                   name: post-api-gateway-build
-                  slack_channel: goat-int
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-signify-prod-secret: "true"
-                  always_run: true
                   branches:
                     - ^main$
                     - "^release-\\d+\\.\\d+$"
@@ -35,9 +41,12 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                  local:
+                    - job_default
+                    - job_post
               - jobConfig:
                   name: pull-api-gateway-webhook-certificates-build
-                  always_run: true
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   args:
                     - "--name=api-gateway-webhook-certificates"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -47,12 +56,13 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - job_default
               - jobConfig:
                   name: post-api-gateway-webhook-certificates-build
-                  slack_channel: goat-int
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-signify-prod-secret: "true"
-                  always_run: true
                   branches:
                     - ^main$
                     - "^release-\\d+\\.\\d+$"
@@ -65,3 +75,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                  local:
+                    - job_default
+                    - job_post
