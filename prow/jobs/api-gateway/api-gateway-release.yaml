@@ -14,6 +14,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -21,6 +22,9 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^\d+\.\d+\.\d+(?:-.*)?$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -61,6 +65,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -68,6 +73,9 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^\d+\.\d+\.\d+(?:-.*)?$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -107,6 +115,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "rel-api-gateway-goreleaser"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -114,6 +123,9 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^\d+\.\d+\.\d+(?:-.*)?$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -143,12 +155,17 @@ postsubmits: # runs on main
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-kyma-dns-serviceuser: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      optional: false
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^\d+\.\d+\.\d+(?:-.*)?$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"

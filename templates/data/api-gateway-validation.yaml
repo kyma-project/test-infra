@@ -3,12 +3,14 @@ templates:
     render:
       - to: ../../prow/jobs/api-gateway/api-gateway-validation.yaml
         localSets:
-          jobConfig_default:
+          job_default:
             optional: "false"
             path_alias: github.com/kyma-project/api-gateway
             labels:
               preset-debug-commando-oom: "true"
               preset-kyma-guard-bot-github-token: "true"
+          job_post:
+            slack_channel: goat-int
           with_ias_credentials:
             labels:
               preset-api-gateway-int-test-client-creds: "true"
@@ -33,6 +35,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-api-gateway-lint
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "/bin/sh"
                   args:
@@ -45,7 +48,7 @@ templates:
                     - linting
               - jobConfig:
                   name: pull-api-gateway-test
-                  always_run: true
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "./tests/integration/scripts/code-coverage-guard.sh"
                 inheritedConfigs:
@@ -53,9 +56,10 @@ templates:
                     - jobConfig_presubmit
                     - testing
                   local:
-                    - jobConfig_default
+                    - job_default
               - jobConfig:
                   name: pull-api-gateway-integration-test
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   always_run: true
                   command: "./tests/integration/scripts/integration-gardener.sh"
                   decoration_config:
@@ -71,12 +75,13 @@ templates:
                     - extra_refs_kyma
                     - image_kyma-integration
                   local:
-                    - jobConfig_default
+                    - job_default
                     - gardener_gcp_job
                     - with_ias_credentials
                     - command_integration
               - jobConfig:
                   name: post-api-gateway-integration-test
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   always_run: true
                   branches:
                     - ^main$
@@ -98,7 +103,8 @@ templates:
                     - extra_refs_kyma
                     - image_kyma-integration
                   local:
-                    - jobConfig_default
+                    - job_default
+                    - job_post
                     - gardener_gcp_job
                     - with_ias_credentials
                     - command_integration

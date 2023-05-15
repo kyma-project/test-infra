@@ -3,7 +3,7 @@ templates:
     render:
       - to: ../../prow/jobs/istio/istio-validation.yaml
         localSets:
-          jobConfig_default:
+          job_default:
             optional: "false"
             path_alias: github.com/kyma-project/istio
             env:
@@ -13,6 +13,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-istio-lint
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "/bin/sh"
                   args:
@@ -23,8 +24,11 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - linting
+                  local:
+                    - job_default
               - jobConfig:
                   name: pull-istio-test
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "./tests/integration/scripts/code-coverage-guard.sh"
                   always_run: true
@@ -33,4 +37,4 @@ templates:
                     - jobConfig_presubmit
                     - testing
                   local:
-                    - jobConfig_default
+                    - job_default

@@ -6,7 +6,6 @@ templates:
           goreleaser:
             skip_report: "false"
             max_concurrency: "10"
-            optional: "false"
             decorate: "true"
             image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             pubsub_project: "sap-kyma-prow"
@@ -15,6 +14,10 @@ templates:
             request_cpu: 500m
             limits_cpu: 1
             limits_memory: 2Gi
+          job_default:
+            optional: "false"
+          job_post:
+            slack_channel: goat-int
         jobConfigs:
           - repoName: kyma-project/api-gateway
             jobs:
@@ -23,7 +26,7 @@ templates:
                   annotations:
                     owner: goat
                     description: builds api-gateway image
-                  optional: "false"
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
@@ -38,12 +41,15 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                  local:
+                    - job_default
+                    - job_post
               - jobConfig:
                   name: rel-api-gateway-webhook-certificates-build
                   annotations:
                     owner: goat
                     description: builds webhook certificates image
-                  optional: "false"
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
@@ -58,11 +64,15 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                  local:
+                    - job_default
+                    - job_post
               - jobConfig:
                   name: rel-api-gateway-goreleaser
                   annotations:
                     owner: goat
                     description: Runs api-gateway release
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
@@ -76,8 +86,11 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - goreleaser
+                    - job_default
+                    - job_post
               - jobConfig:
                   name: rel-api-gateway-custom-domain-integration
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
                   privileged: false
                   cluster: untrusted-workload
@@ -102,3 +115,6 @@ templates:
                   global:
                     - jobConfig_postsubmit
                     - jobConfig_default
+                  local:
+                    - job_default
+                    - job_post
