@@ -4,4 +4,8 @@ pjConfigs:
       control-plane:
       - pjName: "pre-main-control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener"
         report: false
+prConfigs
+  kyma-project:
+    control-plane:
+      prNumber: 2771
 
