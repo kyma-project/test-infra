@@ -523,6 +523,9 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-eval-istio-integration-k3d"
+                  annotations:
+                    owner: goat
+                    description: runs istio component tests
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
                   optional: false
                   labels:
@@ -540,6 +543,9 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-prod-istio-integration-k3d"
+                  annotations:
+                    owner: goat
+                    description: runs istio component tests
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
                   optional: false
                   labels:
@@ -557,6 +563,9 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-istio-reconcilation-k3d"
+                  annotations:
+                    owner: goat
+                    description: runs istio component tests
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
                   optional: true
                   env:
@@ -576,6 +585,9 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: pre-main-kyma-api-gateway-integration-k3d
+                  annotations:
+                    owner: goat
+                    description: runs api-gateway component tests
                   optional: false
                   labels:
                     preset-build-pr: "true"

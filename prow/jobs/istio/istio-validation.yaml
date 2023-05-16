@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/istio:
     - name: pull-istio-lint
       annotations:
+        description: "runs istio linting"
+        owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -34,6 +36,8 @@ presubmits: # runs on PRs
                 cpu: 500m
     - name: pull-istio-test
       annotations:
+        description: "runs api-gateway unit tests"
+        owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

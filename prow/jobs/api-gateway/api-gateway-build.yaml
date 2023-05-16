@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/api-gateway:
     - name: pull-api-gateway-build
       annotations:
+        description: "builds api-gateway image"
+        owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -47,6 +49,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-api-gateway-webhook-certificates-build
       annotations:
+        description: "builds webhook certificates image"
+        owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -92,6 +96,8 @@ postsubmits: # runs on main
   kyma-project/api-gateway:
     - name: post-api-gateway-build
       annotations:
+        description: "builds api-gateway image"
+        owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -141,6 +147,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-api-gateway-webhook-certificates-build
       annotations:
+        description: "builds webhook certificates image"
+        owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

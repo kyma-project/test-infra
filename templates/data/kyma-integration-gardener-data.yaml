@@ -273,6 +273,9 @@ templates:
               # presubmits
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-goats-api-gateway
+                  annotations:
+                    owner: goat
+                    description: runs api-gateway component tests on Gardener cluster
                   optional: false
                   labels:
                     preset-build-pr: "true"

@@ -303,13 +303,15 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-latest-istio-reconciler-integration
+    - name: pre-latest-istio-reconciler-integration-k3d
       annotations:
+        description: "runs istio reconciler integration tests"
+        owner: "goat"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-latest-istio-reconciler-integration"
+        prow.k8s.io/pubsub.runID: "pre-latest-istio-reconciler-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -356,13 +358,15 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-istio-reconciler-integration
+    - name: pre-main-istio-reconciler-integration-k3d
       annotations:
+        description: "runs istio reconciler integration tests"
+        owner: "goat"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-istio-reconciler-integration"
+        prow.k8s.io/pubsub.runID: "pre-main-istio-reconciler-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -411,13 +415,15 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-ory-reconciler-eval-integration
+    - name: pre-main-ory-reconciler-eval-integration-k3d
       annotations:
+        description: "runs ory reconciler integration tests"
+        owner: "goat"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-ory-reconciler-eval-integration"
+        prow.k8s.io/pubsub.runID: "pre-main-ory-reconciler-eval-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -466,13 +472,15 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-ory-reconciler-prod-integration
+    - name: pre-main-ory-reconciler-prod-integration-gcp
       annotations:
+        description: "runs ory reconciler integration tests"
+        owner: "goat"
         pipeline.platform: "gardener_gcp"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-ory-reconciler-prod-integration"
+        prow.k8s.io/pubsub.runID: "pre-main-ory-reconciler-prod-integration-gcp"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-version: "true"
@@ -796,13 +804,15 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-incubator/reconciler:
-    - name: post-latest-istio-reconciler-integration
+    - name: post-latest-istio-reconciler-integration-k3d
       annotations:
+        description: "runs istio reconciler integration tests"
+        owner: "goat"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-latest-istio-reconciler-integration"
+        prow.k8s.io/pubsub.runID: "post-latest-istio-reconciler-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -849,13 +859,15 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-main-istio-reconciler-integration
+    - name: post-main-istio-reconciler-integration-k3d
       annotations:
+        description: "runs istio reconciler integration tests"
+        owner: "goat"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-istio-reconciler-integration"
+        prow.k8s.io/pubsub.runID: "post-main-istio-reconciler-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"

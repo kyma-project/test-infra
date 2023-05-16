@@ -12,6 +12,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-api-gateway-build
+                  annotations:
+                    owner: goat
+                    description: builds api-gateway image
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   args:
                     - "--name=api-gateway-controller"
@@ -26,6 +29,9 @@ templates:
                     - job_default
               - jobConfig:
                   name: post-api-gateway-build
+                  annotations:
+                    owner: goat
+                    description: builds api-gateway image
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-signify-prod-secret: "true"
@@ -46,6 +52,9 @@ templates:
                     - job_post
               - jobConfig:
                   name: pull-api-gateway-webhook-certificates-build
+                  annotations:
+                    owner: goat
+                    description: builds webhook certificates image
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   args:
                     - "--name=api-gateway-webhook-certificates"
@@ -60,6 +69,9 @@ templates:
                     - job_default
               - jobConfig:
                   name: post-api-gateway-webhook-certificates-build
+                  annotations:
+                    owner: goat
+                    description: builds webhook certificates image
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-signify-prod-secret: "true"

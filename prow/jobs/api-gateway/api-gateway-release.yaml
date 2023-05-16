@@ -107,7 +107,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: rel-api-gateway-goreleaser
       annotations:
-        description: "Runs api-gateway release"
+        description: "runs api-gateway release"
         owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:
@@ -143,7 +143,7 @@ postsubmits: # runs on main
                 cpu: 1
     - name: rel-api-gateway-custom-domain-integration
       annotations:
-        description: "Runs integration tests with custom domain handling on Gardener cluster"
+        description: "runs api-gateway integration tests with custom domain handling on Gardener cluster"
         owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:

@@ -71,7 +71,7 @@ templates:
                   name: rel-api-gateway-goreleaser
                   annotations:
                     owner: goat
-                    description: Runs api-gateway release
+                    description: runs api-gateway release
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
@@ -98,7 +98,7 @@ templates:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   annotations:
                     owner: goat
-                    description: Runs integration tests with custom domain handling on Gardener cluster
+                    description: runs api-gateway integration tests with custom domain handling on Gardener cluster
                   labels:
                     preset-gardener-gcp-kyma-integration: "true"
                     preset-cluster-version: "true"
