@@ -8,4 +8,3 @@ prConfigs:
   kyma-project:
     control-plane:
       prNumber: 2771
-
