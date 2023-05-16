@@ -136,6 +136,11 @@ reconciler::wait_until_kyma_reconciled
 
 # run the fast integration test before reconciliation
 log::banner "Executing pre-upgrade test"
+log::info "### switching local Kyma sources to the ${KYMA_UPGRADE_SOURCE}"
+pushd "${KYMA_PROJECT_DIR}/kyma"
+git reset --hard
+git checkout tags/"${KYMA_UPGRADE_SOURCE}"
+popd
 gardener::pre_upgrade_test_fast_integration_kyma -d "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
 
 ## ---------------------------------------------------------------------------------------
@@ -159,6 +164,12 @@ reconciler::wait_until_kyma_reconciled
 
 # run the fast integration test after reconciliation
 log::banner "Executing post-upgrade test"
+log::info "### switching local Kyma sources to the ${KYMA_UPGRADE_SOURCE}"
+pushd "${KYMA_PROJECT_DIR}/kyma"
+git reset --hard
+git checkout "${KYMA_UPGRADE_SOURCE}"
+popd
+
 gardener::post_upgrade_test_fast_integration_kyma -d "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
 
 # Must be at the end of the script
