@@ -1,4 +1,4 @@
-FROM golang:1.20.3-alpine as base
+FROM golang:1.20.4-alpine as base
 
 RUN set -eux; \
     apk add --no-cache \
@@ -29,7 +29,7 @@ RUN adduser -D prow
 
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
 ENV PATH=/google-cloud-sdk/bin:${PATH}
-ARG GCLOUD_CLI_VERSION=426.0.0
+ARG GCLOUD_CLI_VERSION=430.0.0
 
 RUN curl -fLSs -o gc-sdk.tar.gz "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_CLI_VERSION}-linux-$(uname -m).tar.gz" && \
     tar xzf gc-sdk.tar.gz -C / && \
@@ -41,8 +41,8 @@ RUN curl -fLSs -o gc-sdk.tar.gz "https://dl.google.com/dl/cloudsdk/channels/rapi
     gcloud --version; \
     kubectl version --client
 
-ARG HELM_VERSION=v3.11.3
-RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-v3.11.3-linux-$(go env GOARCH).tar.gz" && \
+ARG HELM_VERSION=v3.12.0
+RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go env GOARCH).tar.gz" && \
     tar -xzOf helm.tar.gz linux-amd64/helm > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm
 
