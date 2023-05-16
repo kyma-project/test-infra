@@ -23,7 +23,7 @@ source "$KYMA_PROJECT_DIR/test-infra/prow/scripts/lib/gardener/gardener.sh"
 
 
 function prereq_install() {
-  log::info "Install Kyma CLI"
+  log::info "Install latest released Kyma CLI"
   kyma::install_cli
 
   log::info "Install k3d"
@@ -43,6 +43,7 @@ function prereq_install() {
 function prereq_test() {
   command -v k3d >/dev/null 2>&1 || { echo >&2 "k3d not found"; exit 1; }
   command -v kyma >/dev/null 2>&1 || { echo >&2 "kyma not found"; exit 1; }
+  command -v istioctl >/dev/null 2>&1 || { echo >&2 "istioctl not found"; exit 1; }
   command -v kubectl >/dev/null 2>&1 || { echo >&2 "kubectl not found"; exit 1; }
 }
 
@@ -90,5 +91,14 @@ installKcpComponents
 pwd
 cd $KLM_SOURCES_DIR
 pwd
-make local-deploy-with-watcher IMG=eu.gcr.io/kyma-project/lifecycle-manager:latest
+if make local-deploy-with-watcher IMG=jaythedevil666/klm:klme2e; then
+  log::success "KLM deployed successfully"
+else
+  log::error "Deploy encountered some error, will retry"
+  sleep 20
+  make local-deploy-with-watcher IMG=jaythedevil666/klm:klme2e
+fi
+
+cd tests/e2e_test
+make test
 

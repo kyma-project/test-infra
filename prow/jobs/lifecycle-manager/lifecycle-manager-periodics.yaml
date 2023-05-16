@@ -27,6 +27,10 @@ periodics: # runs on schedule
         path_alias: github.com/kyma-project/test-infra
         base_ref: main
     spec:
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+            - "k3d-registry.localhost"
       containers:
         - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
           securityContext:
@@ -41,7 +45,7 @@ periodics: # runs on schedule
           resources:
             requests:
               memory: 3Gi
-              cpu: 2
+              cpu: 1
             limits:
               cpu: 1
               memory: 4Gi
