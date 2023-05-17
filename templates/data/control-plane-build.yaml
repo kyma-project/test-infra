@@ -330,7 +330,7 @@ templates:
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
-                    - "--name=control-plane/kyma-environment-runtime-reconciler-job"
+                    - "--name=control-plane/kyma-environment-runtime-reconciler"
                     - "--context=components/kyma-environment-broker"
                     - "--dockerfile=Dockerfile.runtimereconciler"
                     - "--build-arg=BIN=runtime-reconciler"
@@ -348,7 +348,7 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - "--name=control-plane/kyma-environment-runtime-reconciler-job"
+                    - "--name=control-plane/kyma-environment-runtime-reconciler"
                     - "--context=components/kyma-environment-broker"
                     - "--dockerfile=Dockerfile.runtimereconciler"
                     - "--build-arg=BIN=runtime-reconciler"
