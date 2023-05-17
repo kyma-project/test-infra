@@ -275,7 +275,7 @@ templates:
                   name: pre-main-kyma-gardener-gcp-goats-api-gateway
                   annotations:
                     owner: goat
-                    description: runs api-gateway component tests on Gardener cluster
+                    description: runs api-gateway component tests on Gardener GCP cluster
                   optional: false
                   labels:
                     preset-build-pr: "true"
