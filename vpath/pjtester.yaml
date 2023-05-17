@@ -6,4 +6,4 @@ prConfigs: #
   prowJobs:
     kyma-project:
       kyma:
-        - pjName: ""
+        - pjName: "unstable-cli"
