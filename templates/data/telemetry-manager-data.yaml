@@ -70,7 +70,7 @@ templates:
                   annotations:
                     owner: huskies
                     description: Pre-submit job to verify successful deployment of telemetry module.
-                  run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/|sec-scanners-config.yaml|config.yaml'
+                  run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/|sec-scanners-config.yaml'
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
                     JOB_VM_COMMAND: >-
