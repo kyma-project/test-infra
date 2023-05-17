@@ -187,6 +187,7 @@ templates:
               - jobConfig:
                   name: "pull-function-controller-unit-test"
                   command: "/bin/sh"
+                  optional: false
                   args:
                     - "-c"
                     - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."

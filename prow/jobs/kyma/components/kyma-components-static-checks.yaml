@@ -211,7 +211,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-function-controller-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/function-controller/.*\.go$'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
