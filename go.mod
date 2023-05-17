@@ -21,7 +21,7 @@ require (
 	github.com/fsouza/go-dockerclient v1.9.7
 	github.com/go-playground/validator/v10 v10.13.0
 	github.com/go-yaml/yaml v2.1.0+incompatible
-	github.com/google/go-containerregistry v0.15.1
+	github.com/google/go-containerregistry v0.15.2
 	github.com/google/go-github/v40 v40.0.0
 	github.com/google/go-github/v42 v42.0.0
 	github.com/google/go-github/v48 v48.2.0
@@ -62,7 +62,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230515183328-af7272ab0e75
+require k8s.io/test-infra v0.0.0-20230517105434-f5f92ef685cf
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
