@@ -1,9 +1,5 @@
 pjConfigs:
-#  prConfig:
-#    kyma-project:
-#      cli:
-#        prNumber: 7710
   prowJobs:
     kyma-project:
-      cli:
+      reconciler:
         - pjName: "nightly-main-reconciler-publish-unstable-cli"
