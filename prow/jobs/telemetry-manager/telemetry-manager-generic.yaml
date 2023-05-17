@@ -61,7 +61,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/|sec-scanners-config.yaml|config.yaml'
+      run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/|sec-scanners-config.yaml'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/telemetry-manager
