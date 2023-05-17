@@ -36,7 +36,7 @@ presubmits: # runs on PRs
                 cpu: 500m
     - name: pull-istio-test
       annotations:
-        description: "runs api-gateway unit tests"
+        description: "runs istio unit tests"
         owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
