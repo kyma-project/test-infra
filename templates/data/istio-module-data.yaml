@@ -153,10 +153,10 @@ templates:
                     - job_post
                     - job_build
               - jobConfig:
-                  name: pull-istio-manager-integration-k3d
+                  name: pull-istio-operator-integration-k3d
                   annotations:
                     owner: goat
-                    description: run istio operator integration tests
+                    description: run istio operator integration tests on k3d
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   optional: "true"
                   env:
@@ -174,10 +174,10 @@ templates:
                     - vm_job_k3d
                     - vm_job_labels
               - jobConfig:
-                  name: post-istio-manager-integration-k3d
+                  name: post-istio-operator-integration-k3d
                   annotations:
                     owner: goat
-                    description: run istio operator integration tests
+                    description: run istio operator integration tests on k3d
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   optional: "true"
                   env:

@@ -305,7 +305,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-latest-istio-reconciler-integration-k3d
       annotations:
-        description: "runs istio reconciler integration tests"
+        description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
@@ -360,7 +360,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-istio-reconciler-integration-k3d
       annotations:
-        description: "runs istio reconciler integration tests"
+        description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
@@ -417,7 +417,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-ory-reconciler-eval-integration-k3d
       annotations:
-        description: "runs ory reconciler integration tests"
+        description: "runs ory reconciler integration tests with evaluation profile on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
@@ -474,7 +474,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-ory-reconciler-prod-integration-gcp
       annotations:
-        description: "runs ory reconciler integration tests"
+        description: "runs ory reconciler integration tests with production profile on Gardener GCP cluster"
         owner: "goat"
         pipeline.platform: "gardener_gcp"
         pipeline.trigger: "pr-submit"
@@ -806,7 +806,7 @@ postsubmits: # runs on main
   kyma-incubator/reconciler:
     - name: post-latest-istio-reconciler-integration-k3d
       annotations:
-        description: "runs istio reconciler integration tests"
+        description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-merge"
@@ -861,7 +861,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-istio-reconciler-integration-k3d
       annotations:
-        description: "runs istio reconciler integration tests"
+        description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-merge"

@@ -71,7 +71,7 @@ templates:
                   name: rel-api-gateway-goreleaser
                   annotations:
                     owner: goat
-                    description: runs api-gateway release
+                    description: creates api-gateway GitHub release with artifacts
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'

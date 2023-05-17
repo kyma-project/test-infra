@@ -59,7 +59,7 @@ presubmits: # runs on PRs
                 cpu: 500m
     - name: pull-api-gateway-integration-gcp
       annotations:
-        description: "runs api-gateway integration tests"
+        description: "runs api-gateway integration tests on Gardener GCP cluster"
         owner: "goat"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
@@ -128,7 +128,7 @@ postsubmits: # runs on main
   kyma-project/api-gateway:
     - name: post-api-gateway-integration-gcp
       annotations:
-        description: "runs api-gateway integration tests"
+        description: "runs api-gateway integration tests on Gardener GCP cluster"
         owner: "goat"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"

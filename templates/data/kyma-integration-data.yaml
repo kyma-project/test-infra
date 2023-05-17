@@ -350,13 +350,15 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d"
+                  annotations:
+                    owner: goat
+                    description: Kyma integration job on k3d
+                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
-                  annotations:
-                    pipeline.platform: k3d
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -525,7 +527,7 @@ templates:
                   name: "pre-main-kyma-eval-istio-integration-k3d"
                   annotations:
                     owner: goat
-                    description: runs istio component tests
+                    description: runs istio integration tests with evaluation profile on k3d
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
                   optional: false
                   labels:
@@ -545,7 +547,7 @@ templates:
                   name: "pre-main-kyma-prod-istio-integration-k3d"
                   annotations:
                     owner: goat
-                    description: runs istio component tests
+                    description: runs istio integration tests with production profile on k3d
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
                   optional: false
                   labels:
@@ -565,7 +567,7 @@ templates:
                   name: "pre-main-kyma-istio-reconcilation-k3d"
                   annotations:
                     owner: goat
-                    description: runs istio component tests
+                    description: runs istio reconcilation tests with production profile on k3d
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
                   optional: true
                   env:
@@ -587,7 +589,7 @@ templates:
                   name: pre-main-kyma-api-gateway-integration-k3d
                   annotations:
                     owner: goat
-                    description: runs api-gateway component tests
+                    description: runs api-gateway integration tests on k3d
                   optional: false
                   labels:
                     preset-build-pr: "true"
@@ -727,8 +729,9 @@ templates:
               - jobConfig:
                   name: "kyma-integration-k3d"
                   annotations:
+                    owner: goat
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration periodic job on k3d.
+                    description: Kyma integration periodic job on k3d
                   cron: "5 * * * *"
                   labels:
                     preset-build-main: "true"

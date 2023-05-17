@@ -5,7 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-gardener-gcp-goats-api-gateway
       annotations:
-        description: "runs api-gateway component tests on Gardener cluster"
+        description: "runs api-gateway integration tests on Gardener GCP cluster"
         owner: "goat"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"

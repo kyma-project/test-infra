@@ -290,7 +290,7 @@ templates:
                   name: "pre-latest-istio-reconciler-integration-k3d"
                   annotations:
                     owner: goat
-                    description: runs istio reconciler integration tests
+                    description: runs istio reconciler integration tests on k3d
                     pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
@@ -316,7 +316,7 @@ templates:
                   name: "pre-main-istio-reconciler-integration-k3d"
                   annotations:
                     owner: goat
-                    description: runs istio reconciler integration tests
+                    description: runs istio reconciler integration tests on k3d
                     pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
@@ -343,7 +343,7 @@ templates:
                   name: "pre-main-ory-reconciler-eval-integration-k3d"
                   annotations:
                     owner: goat
-                    description: runs ory reconciler integration tests
+                    description: runs ory reconciler integration tests with evaluation profile on k3d
                     pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/ory\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -370,7 +370,7 @@ templates:
                   name: "pre-main-ory-reconciler-prod-integration-gcp"
                   annotations:
                     owner: goat
-                    description: runs ory reconciler integration tests
+                    description: runs ory reconciler integration tests with production profile on Gardener GCP cluster
                     pipeline.platform: gardener_gcp
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/ory\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -432,7 +432,7 @@ templates:
                   name: "post-latest-istio-reconciler-integration-k3d"
                   annotations:
                     owner: goat
-                    description: runs istio reconciler integration tests
+                    description: runs istio reconciler integration tests on k3d
                     pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
@@ -458,7 +458,7 @@ templates:
                   name: "post-main-istio-reconciler-integration-k3d"
                   annotations:
                     owner: goat
-                    description: runs istio reconciler integration tests
+                    description: runs istio reconciler integration tests on k3d
                     pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
