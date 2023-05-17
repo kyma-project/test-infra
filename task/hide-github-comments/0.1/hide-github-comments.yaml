@@ -1,0 +1,50 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: hide-github-comments
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.36.0"
+    tekton.dev/categories: Image Build
+    tekton.dev/tags: hide-github-comments
+    tekton.dev/displayName: "hide-github-comments"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    The image-builder Task builds an OCI image from a Dockerfile.
+    The image is signed with signify and pushed to Kyma repositories.
+    The Task uses the image-builder tool to build the image.
+    Documentation of image-builder tool used by this Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
+  params:
+    - name: PULL_NUMBER
+      description: "Pull request number. Variable set by Prow."
+      type: string
+    - name: PULL_PULL_SHA
+      description: "Git SHA of the base branch. Variable set by Prow."
+      type: string
+    - name: REPO_OWNER
+      description: "GitHub org that triggers the job. Variable set by Prow."
+      type: string
+    - name: REPO_NAME
+      description: "GitHub repo that triggers the job. Variable set by Prow."
+      type: string
+  steps:
+    - name: hide-github-comments
+      image: europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
+      command:
+        - /ghcomment/github-comment
+      args:
+        - hide
+        - --org
+        - $(params.REPO_OWNER)
+        - -repo
+        - $(params.REPO_NAME)
+        - -pr
+        - ${params.PULL_NUMBER}
+        - -sha1
+        - $(params.PULL_PULL_SHA)
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 200m

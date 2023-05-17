@@ -1,0 +1,72 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: image-builder
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.36.0"
+    tekton.dev/categories: Image Build
+    tekton.dev/tags: image-builder
+    tekton.dev/displayName: "image-builder"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    The image-builder Task builds an OCI image from a Dockerfile.
+    The image is signed with signify and pushed to Kyma repositories.
+    The Task uses the image-builder tool to build the image.
+    Documentation of image-builder tool used by this Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
+  workspaces:
+    - name: repo
+      description: "The workspace stores sources for building an image. Usually, this should be a workspace shared with other tasks."
+      mountPath: /home/prow/go
+  params:
+    - name: module_path
+      description: "Name of the image to be built"
+      type: string
+    - name: input
+      description: "Path to image-builder config file."
+      type: string
+      default: "false"
+    - name: SHA
+      description: "Git SHA of the base branch. Variable set by Prow."
+      type: string
+    - name: REPO_OWNER
+      description: "GitHub org that triggers the job. Variable set by Prow."
+      type: string
+    - name: REPO_NAME
+      description: "GitHub repo that triggers the job. Variable set by Prow."
+      type: string
+  steps:
+    - name: terraform-init
+      image: europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
+      workingDir: /home/prow/go/src/github.com/$(params.REPO_OWNER)/$(params.REPO_NAME)
+      command:
+        - /bin/terraform
+      args:
+        - -chdir=$(params.module_path)
+        - -input=$(params.input)
+      resources:
+        requests:
+          memory: 500Mi
+          cpu: 300m
+    - name: terraform-execute
+      image: europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
+      workingDir: /home/prow/go/src/github.com/$(params.REPO_OWNER)/$(params.REPO_NAME)
+      command:
+        - /tfcmt/tfcmt
+      args:
+        - -owner=$(params.REPO_OWNER)
+        - -repo=$(params.REPO_NAME)
+        - -sha=$(params.SHA)
+        - ${params.terraform_action}
+        - --
+        - terraform
+        - -chdir=$(params.module_path)
+        - $(params.terraform_action)
+        - -input=$(params.input)
+        - -auto-approve
+      resources:
+        requests:
+          memory: 500Mi
+          cpu: 300m
