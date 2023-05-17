@@ -1,4 +1,4 @@
-FROM golang:1.20.3-alpine as base
+FROM golang:1.20.4-alpine as base
 
 
 RUN set -eux; \
@@ -10,7 +10,6 @@ RUN set -eux; \
     jq \
     yq \
     docker \
-    docker-compose \
     btrfs-progs \
     e2fsprogs \
     e2fsprogs-extra \
@@ -52,8 +51,8 @@ RUN go install sigs.k8s.io/kind@${KIND_VERSION}
 
 #RUN go install github.com/kyma-project/control-plane/tools/cli/cmd/kcp@main
 
-ARG HELM_VERSION=v3.11.3
-RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-v3.11.3-linux-$(go env GOARCH).tar.gz" && \
+ARG HELM_VERSION=v3.12.0
+RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go env GOARCH).tar.gz" && \
     tar -xzOf helm.tar.gz linux-amd64/helm > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm
 

@@ -1,4 +1,4 @@
-FROM golang:1.20.3-alpine as base
+FROM golang:1.20.4-alpine as base
 RUN set -eux; \
     apk add --no-cache \
     bash \
@@ -17,9 +17,9 @@ RUN adduser -D prow
 
 FROM base AS deps
 
-ARG KUSTOMIZE_VERSION=v5.0.1
-ARG KUBEBUILDER_VERSION=v3.9.1
-ARG KO_VERSION=88c316065c6991ba8d1afd1e4a4242d3c9a85581
+ARG KUSTOMIZE_VERSION=v5.0.3
+ARG KUBEBUILDER_VERSION=v3.10.0
+ARG KO_VERSION=cbb93deee1953c1e9d5f974abd62a96676aa68f9
 ARG DOCKER_CREDENTIAL_GCR_VERSION=2.1.8
 
 RUN set -eux; \
