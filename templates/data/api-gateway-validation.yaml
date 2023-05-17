@@ -67,7 +67,7 @@ templates:
                   name: pull-api-gateway-integration-gcp
                   annotations:
                     owner: goat
-                    description: runs api-gateway integration tests
+                    description: runs api-gateway integration tests on Gardener GCP cluster
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   always_run: true
                   command: "./tests/integration/scripts/integration-gardener.sh"
