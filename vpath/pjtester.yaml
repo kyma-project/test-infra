@@ -1,10 +1,4 @@
-pjConfigs:
-  prowJobs:
-    kyma-project:
-      control-plane:
-        - pjName: "unstable-cli"
-
 prConfigs:
   kyma-project:
-    control-plane:
+    kyma-cli:
       prNumber: 7710
