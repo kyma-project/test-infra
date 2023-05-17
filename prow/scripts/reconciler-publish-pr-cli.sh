@@ -1,5 +1,4 @@
 #!/bin/bash
-log::banner "Reconciler Publish PR-CLI"
 
 set -o errexit
 
@@ -14,6 +13,8 @@ source "${SCRIPT_DIR}/lib/log.sh"
 source "${SCRIPT_DIR}/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$SCRIPT_DIR/lib/gcp.sh"
+
+log::banner "Reconciler Publish PR-CLI"
 
 cd "${KYMA_CLI_PROJECT_DIR}"
 
