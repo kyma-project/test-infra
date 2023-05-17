@@ -6,4 +6,4 @@ pjConfigs:
   prowJobs:
     kyma-project:
       cli:
-        - pjName: "unstable-cli"
+        - pjName: "nightly-main-reconciler-publish-unstable-cli"
