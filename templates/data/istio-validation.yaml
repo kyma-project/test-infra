@@ -33,7 +33,7 @@ templates:
                   name: pull-istio-test
                   annotations:
                     owner: goat
-                    description: runs api-gateway unit tests
+                    description: runs istio unit tests
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "./tests/integration/scripts/code-coverage-guard.sh"
