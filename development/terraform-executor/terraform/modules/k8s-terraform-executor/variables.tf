@@ -14,12 +14,29 @@ variable "terraform_executor_gcp_service_account" {
   description = "Terraform executor gcp service account details."
 }
 
-variable "k8s_config_path" {
-  type        = string
-  description = "Path to kubeconfig file ot use to connect to managed k8s cluster."
+variable "managed_k8s_cluster" {
+  type = object({
+    name     = string
+    location = string
+  })
+  description = "Name and location of the managed k8s cluster to apply the manifest to."
 }
 
-variable "k8s_config_context" {
-  type        = string
-  description = "Context to use to connect to managed k8s cluster."
+variable "gcp_region" {
+  type = string
 }
+
+variable "gcp_project_id" {
+  type = string
+}
+
+#variable "k8s_config_path" {
+#  type        = string
+#  description = "Path to kubeconfig file ot use to connect to managed k8s cluster."
+#}
+#
+#variable "k8s_config_context" {
+#  type        = string
+#  description = "Context to use to connect to managed k8s cluster."
+#}
+#

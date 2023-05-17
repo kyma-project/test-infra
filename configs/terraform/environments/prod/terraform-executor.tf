@@ -1,5 +1,5 @@
 module "terraform_executor_gcp_service_account" {
-  source = "../../modules/gcp-terraform-executor"
+  source = "../../../../development/terraform-executor/terraform/modules/gcp-terraform-executor"
 
   terraform_executor_gcp_service_account = {
     id         = var.terraform_executor_gcp_service_account.id
@@ -20,7 +20,7 @@ resource "google_project_iam_member" "terraform_executor_owner" {
 }
 
 module "tekton_terraform_executor_k8s_service_account" {
-  source = "../../modules/k8s-terraform-executor"
+  source = "../../../../development/terraform-executor/terraform/modules/k8s-terraform-executor"
 
   terraform_executor_gcp_service_account = {
     id         = var.terraform_executor_gcp_service_account.id
@@ -30,12 +30,15 @@ module "tekton_terraform_executor_k8s_service_account" {
     name      = var.terraform_executor_k8s_service_account.name,
     namespace = var.terraform_executor_k8s_service_account.namespace
   }
-  k8s_config_path    = var.tekton_k8s_config_path
-  k8s_config_context = var.tekton_k8s_config_context
+
+  managed_k8s_cluster = var.tekton_k8s_cluster
+
+  gcp_region     = var.gcp_region
+  gcp_project_id = var.gcp_project_id
 }
 
 module "trusted_workloads_terraform_executor_k8s_service_account" {
-  source = "../../modules/k8s-terraform-executor"
+  source = "../../../../development/terraform-executor/terraform/modules/k8s-terraform-executor"
 
   terraform_executor_gcp_service_account = {
     id         = var.terraform_executor_gcp_service_account.id
@@ -45,12 +48,15 @@ module "trusted_workloads_terraform_executor_k8s_service_account" {
     name      = var.terraform_executor_k8s_service_account.name,
     namespace = var.terraform_executor_k8s_service_account.namespace
   }
-  k8s_config_path    = var.trusted_workloads_k8s_config_path
-  k8s_config_context = var.trusted_workloads_k8s_config_context
+
+  managed_k8s_cluster = var.trusted_workload_k8s_cluster
+
+  gcp_region     = var.gcp_region
+  gcp_project_id = var.gcp_project_id
 }
 
 module "untrusted_workloads_terraform_executor_k8s_service_account" {
-  source = "../../modules/k8s-terraform-executor"
+  source = "../../../../development/terraform-executor/terraform/modules/k8s-terraform-executor"
 
   terraform_executor_gcp_service_account = {
     id         = var.terraform_executor_gcp_service_account.id
@@ -60,6 +66,9 @@ module "untrusted_workloads_terraform_executor_k8s_service_account" {
     name      = var.terraform_executor_k8s_service_account.name,
     namespace = var.terraform_executor_k8s_service_account.namespace
   }
-  k8s_config_path    = var.untrusted_workloads_k8s_config_path
-  k8s_config_context = var.untrusted_workloads_k8s_config_context
+
+  managed_k8s_cluster = var.untrusted_workload_k8s_cluster
+
+  gcp_region     = var.gcp_region
+  gcp_project_id = var.gcp_project_id
 }
