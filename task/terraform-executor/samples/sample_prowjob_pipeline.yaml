@@ -4,13 +4,13 @@ presubmits:
       decorate: false
       agent: tekton-pipeline
       cluster: tekton
-      always_run: false
+      run_if_changed: "^configs/terraform/environments/prod"
       annotations:
         owner: "neighbors"
         description: "Run terraform plan for prod environment."
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "tekton-demo"
+        prow.k8s.io/pubsub.runID: "pull-plan-prod-terraform"
         prow.k8s.io/pubsub.topic: "prowjobs"
       tekton_pipeline_run_spec:
         v1beta1:
@@ -87,10 +87,13 @@ postsubmits:
       decorate: false
       agent: tekton-pipeline
       cluster: tekton
-      always_run: false
+      run_if_changed: "^configs/terraform/environments/prod"
+      annotations:
+        owner: "neighbors"
+        description: "Run terraform apply for prod environment."
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "tekton-demo"
+        prow.k8s.io/pubsub.runID: "post-apply-prod-terraform"
         prow.k8s.io/pubsub.topic: "prowjobs"
       tekton_pipeline_run_spec:
         v1beta1:
