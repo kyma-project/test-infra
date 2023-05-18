@@ -29,6 +29,7 @@ presubmits:
           taskRunSpecs:
             - pipelineTaskName: terraform-executor
               taskServiceAccountName: terraform-executor
+              automountServiceAccountToken: true
           pipelineSpec:
             description: "Tekton Demo"
             tasks:

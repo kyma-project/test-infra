@@ -27,10 +27,6 @@ spec:
     - name: module_path
       description: "Path to the terraform config files."
       type: string
-    - name: input
-      description: "Flag to enable terraform input."
-      type: string
-      default: "false"
     - name: SHA
       description: "Commit hash with terraform config files."
       type: string
@@ -44,6 +40,10 @@ spec:
       type: string
       description: Name of the secret holding the kyma bot github token.
       default: kyma-bot-github-token
+    - name: additional_terraform_args
+      description: "Additional terraform arguments."
+      type: array
+      default: ["-no-color"]
   steps:
     - name: terraform-init
       image: europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
@@ -53,7 +53,7 @@ spec:
       args:
         - -chdir=$(params.module_path)
         - init
-        - -input=$(params.input)
+        - -input=false
       resources:
         requests:
           memory: 500Mi
@@ -72,9 +72,8 @@ spec:
         - terraform
         - -chdir=$(params.module_path)
         - $(params.terraform_action)
-        - -input=$(params.input)
-        - -auto-approve
-        - -no-color
+        - -input=false
+        - "$(params.additional_terraform_args[*])"
       env:
         - name: GITHUB_TOKEN
           valueFrom:
