@@ -62,7 +62,10 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230509183758-470d08f401d8
+require (
+	github.com/tektoncd/pipeline v0.36.0
+	k8s.io/test-infra v0.0.0-20230509183758-470d08f401d8
+)
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
@@ -212,7 +215,6 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/stretchr/objx v0.5.0 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
-	github.com/tektoncd/pipeline v0.36.0 // indirect
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/trivago/tgo v1.0.7 // indirect
