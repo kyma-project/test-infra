@@ -257,6 +257,8 @@ presubmits: # runs on PRs
     - name: pull-keb-runtime-reconciler-job-build
       annotations:
         pipeline.trigger: "pr-submit"
+        owner: "gophers"
+        description: "Job to build runtime-reconciler image on PR submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keb-runtime-reconciler-job-build"
@@ -573,6 +575,8 @@ postsubmits: # runs on main
     - name: post-keb-runtime-reconciler-job-build
       annotations:
         pipeline.trigger: "pr-merge"
+        owner: "gophers"
+        description: "Job to build runtime-reconciler image after PR merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-keb-runtime-reconciler-job-build"
