@@ -12,7 +12,98 @@ func TestFromTektonTask(t *testing.T) {
 		ExpectedImages []string
 		WantErr        bool
 		FileContent    string
-	}{}
+	}{
+		{
+			Name:           "simple task definition, pass",
+			ExpectedImages: []string{"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.40.2"},
+			WantErr:        false,
+			FileContent: `apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: some-task
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.36.0"
+    tekton.dev/categories: Git
+    tekton.dev/tags: git
+    tekton.dev/displayName: "some-task"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: some description
+  workspaces:
+    - name: logs
+      description: "workspace description"
+      mountPath: /path/to/logs
+      optional: true
+  steps:
+    - name: clone
+      image: gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.40.2`,
+		},
+		{
+			Name:           "image url in param default, pass",
+			ExpectedImages: []string{"gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.40.2"},
+			WantErr:        false,
+			FileContent: `apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: some-task
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.36.0"
+    tekton.dev/categories: Git
+    tekton.dev/tags: git
+    tekton.dev/displayName: "some-task"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: some description
+  workspaces:
+    - name: logs
+      description: "workspace description"
+      mountPath: /path/to/logs
+      optional: true
+  params:
+    - name: gitInitImage
+      description: The image providing the git-init binary that this Task runs.
+      type: string
+      default: "gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.40.2"
+  steps:
+    - name: clone
+      image: "$(params.gitInitImage)"`,
+		},
+		{
+			Name:           "image url in param, no default value, pass with empty images",
+			ExpectedImages: nil,
+			WantErr:        false,
+			FileContent: `apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: some-task
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.36.0"
+    tekton.dev/categories: Git
+    tekton.dev/tags: git
+    tekton.dev/displayName: "some-task"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: some description
+  workspaces:
+    - name: logs
+      description: "workspace description"
+      mountPath: /path/to/logs
+      optional: true
+  params:
+    - name: gitInitImage
+      description: The image providing the git-init binary that this Task runs.
+      type: string
+  steps:
+    - name: clone
+      image: "$(params.gitInitImage)"`,
+		},
+	}
 
 	for _, c := range tc {
 		t.Run(c.Name, func(t *testing.T) {
