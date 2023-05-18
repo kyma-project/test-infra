@@ -38,7 +38,7 @@ variable "untrusted_workloads_k8s_config_context" {
 
 variable "constraint_templates_path" {
   type    = string
-  default = "../../../gatekeeper/constraint-templates"
+  default = "../../../../opa/gatekeeper/constraint-templates"
 }
 
 variable "var.tekton_constraints_path" {
