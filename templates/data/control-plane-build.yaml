@@ -329,6 +329,8 @@ templates:
                   name: pull-keb-runtime-reconciler-job-build
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+                  branches:
+                    - ^main$
                   args:
                     - "--name=control-plane/kyma-environment-runtime-reconciler"
                     - "--context=components/kyma-environment-broker"
