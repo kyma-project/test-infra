@@ -84,7 +84,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - golangci-lint run -v --timeout=20m --new-from-rev=$PULL_BASE_SHA ./... 
+                    - golangci-lint run -v --timeout=20m --new-from-rev=$PULL_BASE_SHA ./...
                   run_if_changed: '^(.*\.go$|.golangci.yaml)'
                 inheritedConfigs:
                   global:
@@ -102,50 +102,3 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
-      - to: ../../prow/jobs/cli/cli-integration.yaml
-        localSets:
-          jobConfig_default:
-            optional: false
-            always_run: true
-            path_alias: github.com/kyma-project/cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-cli.sh"
-            env:
-              GO111MODULE: "on"
-          jobConfig_submit:
-            privileged: "false"
-            labels:
-              preset-sa-vm-kyma-integration: "true"
-              preset-gc-project-env: "true"
-          jobConfig_presubmit:
-            labels:
-              preset-build-pr: "true"
-          jobConfig_postsubmit:
-            labels:
-              preset-build-main: "true"
-          kyma_2_template:
-            env:
-              KUBERNETES_RUNTIME: "k3d"
-          smaller_cluster:
-            request_memory: 1Gi
-            request_cpu: 400m
-        jobConfigs:
-      - to: ../../prow/jobs/cli/cli-compatibility.yaml
-        localSets:
-          jobConfig_default:
-            labels:
-              preset-sa-vm-kyma-integration: "true"
-              preset-gc-project-env: "true"
-            always_run: true
-            skip_report: true # Temporarily do not report to ci-force, until compatibility is stable.
-            path_alias: github.com/kyma-project/cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/compatibility-cli.sh"
-            cluster: untrusted-workload
-            extra_refs:
-              cli:
-                - org: "kyma-project"
-                  repo: "cli"
-                  path_alias: "github.com/kyma-project/cli"
-                  base_ref: "main"
-          kyma_2_template:
-            env:
-              KUBERNETES_RUNTIME: "k3d"
