@@ -327,6 +327,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-runtime-reconciler-job-build
+                  annotations:
+                    owner: "gophers"
+                    description: "Job to build runtime-reconciler image on PR submit"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   branches:
@@ -343,6 +346,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-runtime-reconciler-job-build
+                  annotations:
+                    owner: "gophers"
+                    description: "Job to build runtime-reconciler image after PR merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
