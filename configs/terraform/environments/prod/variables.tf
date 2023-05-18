@@ -1,3 +1,13 @@
+variable "gcp_region" {
+  type    = string
+  default = "europe-west4"
+}
+
+variable "gcp_project_id" {
+  type    = string
+  default = "sap-kyma-prow"
+}
+
 variable "tekton_k8s_config_path" {
   type        = string
   default     = "/kubeconfigs/tekton-config"
