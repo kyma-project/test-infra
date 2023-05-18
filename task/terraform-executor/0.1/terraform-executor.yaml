@@ -43,7 +43,7 @@ spec:
     - name: github-token-secret
       type: string
       description: Name of the secret holding the kyma bot github token.
-      default: github-token
+      default: kyma-bot-github-token
   steps:
     - name: terraform-init
       image: europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
@@ -75,6 +75,12 @@ spec:
         - -input=$(params.input)
         - -auto-approve
         - -no-color
+      env:
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: $(params.github-token-secret)
+              key: token
       resources:
         requests:
           memory: 500Mi
