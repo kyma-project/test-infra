@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-integration-k3d
       annotations:
+        description: "Kyma integration job on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -323,6 +325,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-eval-istio-integration-k3d
       annotations:
+        description: "runs istio integration tests with evaluation profile on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -372,6 +376,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-prod-istio-integration-k3d
       annotations:
+        description: "runs istio integration tests with production profile on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -421,6 +427,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-istio-reconcilation-k3d
       annotations:
+        description: "runs istio reconcilation tests with production profile on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -474,6 +482,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-api-gateway-integration-k3d
       annotations:
+        description: "runs api-gateway integration tests on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -1339,7 +1349,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: kyma-integration-k3d
       annotations:
-        description: "Kyma integration periodic job on k3d."
+        description: "Kyma integration periodic job on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
