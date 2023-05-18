@@ -8,7 +8,7 @@ import (
 	"sigs.k8s.io/yaml"
 )
 
-// FromTektonTask extracts list of image urls from tekton task defintion
+// FromTektonTask extracts list of image urls from tekton task definition
 func FromTektonTask(reader io.Reader) ([]string, error) {
 	data, err := io.ReadAll(reader)
 	if err != nil {
