@@ -12,16 +12,14 @@ metadata:
     tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
-    The image-builder Task builds an OCI image from a Dockerfile.
-    The image is signed with signify and pushed to Kyma repositories.
-    The Task uses the image-builder tool to build the image.
-    Documentation of image-builder tool used by this Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
+    The hide-github-comments task hide comments which belong to old commit.
+    A tool detect old comments by reading a github-comments metadata in GitHub comments.
   params:
     - name: PULL_NUMBER
       description: "Pull request number. Variable set by Prow."
       type: string
     - name: PULL_PULL_SHA
-      description: "Git SHA of the head branch. Variable set by Prow."
+      description: "Git SHA of the pull request head branch. Variable set by Prow."
       type: string
     - name: REPO_OWNER
       description: "GitHub org that triggers the job. Variable set by Prow."
@@ -30,8 +28,8 @@ spec:
       description: "GitHub repo that triggers the job. Variable set by Prow."
       type: string
     - name: github-token-secret
+      description: "Name of the secret holding the kyma bot github token."
       type: string
-      description: Name of the secret holding the kyma bot github token.
       default: kyma-bot-github-token
   steps:
     - name: hide-github-comments

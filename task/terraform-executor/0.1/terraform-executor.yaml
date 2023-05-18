@@ -12,20 +12,29 @@ metadata:
     tekto.dev/platforms: "linux/amd64"
 spec:
   description: >-
-    The image-builder Task builds an OCI image from a Dockerfile.
-    The image is signed with signify and pushed to Kyma repositories.
-    The Task uses the image-builder tool to build the image.
-    Documentation of image-builder tool used by this Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
+    The terraform-executor task initialise locally terraform state and run actions for provided terraform config.
+    Usually, actions are plan and apply. Authentication to the Google Cloud is done through k8s service account with
+    workload identity configured. A parameter additional_terraform_args allows defining terraform cli arguments in
+    pipelines. When this parameter value is set in pipeline, a default value -no-color must be added to the list.
+    The task uses tfcmt tool to run terraform actions and post results to GitHubPR.
+    tfcmt tool use a github-comments metadata in GitHub comments, so github-comments can be used later for processing tfcmt comments.
   workspaces:
     - name: repo
       description: "The workspace stores sources to apply. Usually, this should be a workspace shared with other tasks."
       mountPath: /home/prow/go
   params:
     - name: terraform_action
-      description: "Terraform action to execute."
+      description: "Terraform action to execute on provided config files."
       type: string
     - name: module_path
       description: "Path to the terraform config files."
+      type: string
+    - name: additional_terraform_args
+      description: "Additional terraform arguments. Add -no-color flag if you override default value."
+      type: array
+      default: [ "-no-color" ]
+    - name: PULL_NUMBER
+      description: "Pull request number. Variable set by Prow."
       type: string
     - name: SHA
       description: "Commit hash with terraform config files."
@@ -37,13 +46,9 @@ spec:
       description: "GitHub repo that triggers the job. Variable set by Prow."
       type: string
     - name: github-token-secret
+      description: "Name of the secret holding the kyma bot github token."
       type: string
-      description: Name of the secret holding the kyma bot github token.
       default: kyma-bot-github-token
-    - name: additional_terraform_args
-      description: "Additional terraform arguments."
-      type: array
-      default: ["-no-color"]
   steps:
     - name: terraform-init
       image: europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
@@ -56,8 +61,8 @@ spec:
         - -input=false
       resources:
         requests:
-          memory: 500Mi
-          cpu: 300m
+          memory: 300Mi
+          cpu: 200m
     - name: terraform-execute
       image: europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
       workingDir: /home/prow/go/src/github.com/$(params.REPO_OWNER)/$(params.REPO_NAME)
@@ -66,6 +71,7 @@ spec:
       args:
         - -owner=$(params.REPO_OWNER)
         - -repo=$(params.REPO_NAME)
+        - -pr=$(params.PULL_NUMBER)
         - -sha=$(params.SHA)
         - $(params.terraform_action)
         - --
@@ -82,5 +88,5 @@ spec:
               key: token
       resources:
         requests:
-          memory: 500Mi
-          cpu: 300m
+          memory: 300Mi
+          cpu: 200m
