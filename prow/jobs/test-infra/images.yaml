@@ -2,16 +2,18 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
-    - name: pull-function-java17-jvm-alpha-build
+  kyma-project/test-infra:
+    - name: pull-test-infra-buildpack-go
       annotations:
+        description: "Pre-submit job to build buildpack-go image."
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-java17-jvm-alpha-build"
+        prow.k8s.io/pubsub.runID: "pull-test-infra-buildpack-go"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/java17'
+      run_if_changed: '^images/buildpack-go/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -22,132 +24,9 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-java17-jvm-alpha"
+              - "--name=testimages/buildpack-go"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/function-runtimes/java17"
-              - "--dockerfile=Dockerfile-jvm-runtime"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
-    - name: pull-function-runtimes-nodejs-v16-build
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-runtimes-nodejs-v16-build"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/nodejs'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
-            command:
-              - "/image-builder"
-            args:
-              - "--name=function-runtime-nodejs16"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/function-runtimes/nodejs"
-              - "--dockerfile=nodejs16/Dockerfile"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
-    - name: pull-function-runtimes-nodejs-v18-build
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-runtimes-nodejs-v18-build"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/nodejs'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
-            command:
-              - "/image-builder"
-            args:
-              - "--name=function-runtime-nodejs18"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/function-runtimes/nodejs"
-              - "--dockerfile=nodejs18/Dockerfile"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
-    - name: pull-function-runtimes-python39-build
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-runtimes-python39-build"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/function-runtimes/python39'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
-            command:
-              - "/image-builder"
-            args:
-              - "--name=function-runtime-python39"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/function-runtimes/python39"
+              - "--context=images/buildpack-go"
               - "--dockerfile=Dockerfile"
             resources:
               requests:
@@ -167,23 +46,20 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-  
-postsubmits: # runs on main
-  kyma-project/kyma:
-    - name: post-function-java17-jvm-alpha-build
+    - name: post-test-infra-buildpack-go
       annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
+        description: "post-submit job to build buildpack-go image."
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-java17-jvm-alpha-build"
+        prow.k8s.io/pubsub.runID: "post-test-infra-buildpack-go"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
-      run_if_changed: '^components/function-runtimes/java17'
+      run_if_changed: '^images/buildpack-go/'
       skip_report: false
       decorate: true
-      cluster: trusted-workload
+      cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
@@ -191,10 +67,10 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-java17-jvm-alpha"
+              - "--name=testimages/buildpack-go"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/function-runtimes/java17"
-              - "--dockerfile=Dockerfile-jvm-runtime"
+              - "--context=images/buildpack-go"
+              - "--dockerfile=Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -213,20 +89,20 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-function-runtimes-nodejs-v16-build
+    - name: pull-test-infra-e2e-dind-k3d
       annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
+        description: "Pre-submit job to build e2e-dind-k3d image."
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-runtimes-nodejs-v16-build"
+        prow.k8s.io/pubsub.runID: "pull-test-infra-e2e-dind-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
-      run_if_changed: '^components/function-runtimes/nodejs'
+      run_if_changed: '^images/e2e-dind-k3d/'
       skip_report: false
       decorate: true
-      cluster: trusted-workload
+      cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
@@ -234,10 +110,10 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-nodejs16"
+              - "--name=testimages/e2e-dind-k3d"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/function-runtimes/nodejs"
-              - "--dockerfile=nodejs16/Dockerfile"
+              - "--context=images/e2e-dind-k3d"
+              - "--dockerfile=Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -256,20 +132,20 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-function-runtimes-nodejs-v18-build
+    - name: post-test-infra-e2e-dind-k3d
       annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
+        description: "post-submit job to build e2e-dind-k3d image."
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-runtimes-nodejs-v18-build"
+        prow.k8s.io/pubsub.runID: "post-test-infra-e2e-dind-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
-      run_if_changed: '^components/function-runtimes/nodejs'
+      run_if_changed: '^images/e2e-dind-k3d/'
       skip_report: false
       decorate: true
-      cluster: trusted-workload
+      cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
@@ -277,10 +153,10 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-nodejs18"
+              - "--name=testimages/e2e-dind-k3d"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/function-runtimes/nodejs"
-              - "--dockerfile=nodejs18/Dockerfile"
+              - "--context=images/e2e-dind-k3d"
+              - "--dockerfile=Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -299,20 +175,20 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-function-controller-python39-build
+    - name: pull-test-infra-e2e-garden
       annotations:
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
+        description: "Pre-submit job to build e2e-garden image."
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-controller-python39-build"
+        prow.k8s.io/pubsub.runID: "pull-test-infra-e2e-garden"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
-      run_if_changed: '^components/function-runtimes/python39'
+      run_if_changed: '^images/e2e-garden/'
       skip_report: false
       decorate: true
-      cluster: trusted-workload
+      cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
@@ -320,9 +196,138 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=function-runtime-python39"
+              - "--name=testimages/e2e-garden"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/function-runtimes/python39"
+              - "--context=images/e2e-garden"
+              - "--dockerfile=Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: post-test-infra-e2e-garden
+      annotations:
+        description: "post-submit job to build e2e-garden image."
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-e2e-garden"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^images/e2e-garden/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=testimages/e2e-garden"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=images/e2e-garden"
+              - "--dockerfile=Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: pull-test-infra-e2e-gcloud
+      annotations:
+        description: "Pre-submit job to build e2e-gcloud image."
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-test-infra-e2e-gcloud"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^images/e2e-gcloud/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=testimages/e2e-gcloud"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=images/e2e-gcloud"
+              - "--dockerfile=Dockerfile"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: post-test-infra-e2e-gcloud
+      annotations:
+        description: "post-submit job to build e2e-gcloud image."
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-e2e-gcloud"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^images/e2e-gcloud/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=testimages/e2e-gcloud"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=images/e2e-gcloud"
               - "--dockerfile=Dockerfile"
             resources:
               requests:

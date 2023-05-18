@@ -45,6 +45,9 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-cloudsql-proxy"
+                  annotations:
+                    owner: goat
+                    description: builds cloudsql-proxy image
                   run_if_changed: "^cloudsql-proxy/"
                   args:
                     - "--name=tpi/cloudsql-docker/gce-proxy"
@@ -58,6 +61,9 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-cloudsql-proxy"
+                  annotations:
+                    owner: goat
+                    description: builds cloudsql-proxy image
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^cloudsql-proxy/"

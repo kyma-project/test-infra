@@ -173,40 +173,6 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-test-infra-validate-prow-installer-files
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prow-installer-files"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-      run_if_changed: '^development/prow-installer/cmd/|^development/prow-installer/pkg/'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            securityContext:
-              privileged: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-installer/before-commit.sh"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-test-infra-validate-dockerfiles
       annotations:
         pipeline.trigger: "pr-submit"

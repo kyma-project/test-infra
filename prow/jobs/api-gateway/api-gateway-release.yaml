@@ -5,6 +5,8 @@ postsubmits: # runs on main
   kyma-project/api-gateway:
     - name: rel-api-gateway-build
       annotations:
+        description: "builds api-gateway image"
+        owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -12,6 +14,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -19,6 +22,9 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^\d+\.\d+\.\d+(?:-.*)?$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -50,6 +56,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: rel-api-gateway-webhook-certificates-build
       annotations:
+        description: "builds webhook certificates image"
+        owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -57,6 +65,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -64,6 +73,9 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^\d+\.\d+\.\d+(?:-.*)?$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -95,12 +107,15 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: rel-api-gateway-goreleaser
       annotations:
+        description: "creates api-gateway GitHub release with artifacts"
+        owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-api-gateway-goreleaser"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -108,21 +123,27 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^\d+\.\d+\.\d+(?:-.*)?$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/external/goreleaser/goreleaser:v1.11.5"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             command:
-              - "/bin/sh"
+              - "/bin/bash"
             args:
               - "-c"
-              - "git remote add origin https://github.com/kyma-project/api-gateway && goreleaser release"
+              - "hack/release.sh"
             resources:
               requests:
                 memory: 1Gi
                 cpu: 500m
+              limits:
+                memory: 2Gi
+                cpu: 1
     - name: rel-api-gateway-custom-domain-integration
       annotations:
-        description: "Runs integration tests with custom domain handling on Gardener cluster"
+        description: "runs api-gateway integration tests with custom domain handling on Gardener cluster"
         owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:
@@ -134,12 +155,17 @@ postsubmits: # runs on main
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-kyma-dns-serviceuser: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      optional: false
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^\d+\.\d+\.\d+(?:-.*)?$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"

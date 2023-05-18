@@ -5,13 +5,16 @@ presubmits: # runs on PRs
   kyma-project/istio:
     - name: pull-istio-module-build
       annotations:
+        description: "build istio module image"
+        owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      optional: false
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -49,13 +52,16 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pull-istio-operator-build
       annotations:
+        description: "build istio operator image"
+        owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      optional: false
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -91,8 +97,10 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-istio-manager-verify
+    - name: pull-istio-operator-integration-k3d
       annotations:
+        description: "run istio operator integration tests on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -100,12 +108,12 @@ presubmits: # runs on PRs
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-istio-manager-verify"
+        prow.k8s.io/pubsub.runID: "pull-istio-operator-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: true
       skip_report: false
       decorate: true
@@ -151,19 +159,25 @@ postsubmits: # runs on main
   kyma-project/istio:
     - name: post-istio-module-build
       annotations:
+        description: "build istio module image"
+        owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      optional: false
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^main$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
@@ -193,6 +207,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-istio-operator-build
       annotations:
+        description: "build istio operator image"
+        owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -200,7 +216,8 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      optional: false
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -208,6 +225,9 @@ postsubmits: # runs on main
       branches:
         - ^master$
         - ^main$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -237,8 +257,10 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-istio-manager-verify
+    - name: post-istio-operator-integration-k3d
       annotations:
+        description: "run istio operator integration tests on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -246,12 +268,12 @@ postsubmits: # runs on main
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-istio-manager-verify"
+        prow.k8s.io/pubsub.runID: "post-istio-operator-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: true
       skip_report: false
       decorate: true
@@ -266,6 +288,9 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"

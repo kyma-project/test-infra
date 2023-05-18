@@ -5,15 +5,18 @@ presubmits: # runs on PRs
   kyma-project/istio:
     - name: pull-istio-lint
       annotations:
+        description: "runs istio linting"
+        owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      optional: false
       skip_report: false
       decorate: true
+      path_alias: github.com/kyma-project/istio
       cluster: untrusted-workload
       max_concurrency: 10
       spec:
@@ -24,18 +27,23 @@ presubmits: # runs on PRs
             args:
               - "-c"
               - "golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
+            env:
+              - name: EXPORT_RESULTS
+                value: "true"
             resources:
               requests:
                 memory: 200Mi
                 cpu: 500m
     - name: pull-istio-test
       annotations:
+        description: "runs istio unit tests"
+        owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true

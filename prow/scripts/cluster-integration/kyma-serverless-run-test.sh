@@ -5,7 +5,7 @@ set -o pipefail # Fail a pipe if any sub-command fails.
 run_tests() {
   export SERVERLESS_OVERRIDES_DIR="./overrides"
   export INTEGRATION_SUITE=${1:-serverless-integration}
-  export KYMA_SOURCES_DIR=${2:-serverless-integration}
+  export KYMA_SOURCES_DIR=${2:-./kyma}
 
   date
 

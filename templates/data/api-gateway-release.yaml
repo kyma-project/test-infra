@@ -6,19 +6,27 @@ templates:
           goreleaser:
             skip_report: "false"
             max_concurrency: "10"
-            optional: "false"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/external/goreleaser/goreleaser:v1.11.5"
+            image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
             request_cpu: 500m
+            limits_cpu: 1
+            limits_memory: 2Gi
+          job_default:
+            optional: "false"
+          job_post:
+            slack_channel: goat-int
         jobConfigs:
           - repoName: kyma-project/api-gateway
             jobs:
               - jobConfig:
                   name: rel-api-gateway-build
-                  optional: "false"
+                  annotations:
+                    owner: goat
+                    description: builds api-gateway image
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
@@ -33,9 +41,15 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                  local:
+                    - job_default
+                    - job_post
               - jobConfig:
                   name: rel-api-gateway-webhook-certificates-build
-                  optional: "false"
+                  annotations:
+                    owner: goat
+                    description: builds webhook certificates image
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
@@ -50,23 +64,33 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                  local:
+                    - job_default
+                    - job_post
               - jobConfig:
                   name: rel-api-gateway-goreleaser
+                  annotations:
+                    owner: goat
+                    description: creates api-gateway GitHub release with artifacts
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
                     preset-bot-github-token: "true"
-                  command: "/bin/sh"
+                  command: "/bin/bash"
                   args:
                     - "-c"
-                    - "git remote add origin https://github.com/kyma-project/api-gateway && goreleaser release"
+                    - hack/release.sh
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
                   local:
                     - goreleaser
+                    - job_default
+                    - job_post
               - jobConfig:
                   name: rel-api-gateway-custom-domain-integration
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
                   privileged: false
                   cluster: untrusted-workload
@@ -74,7 +98,7 @@ templates:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   annotations:
                     owner: goat
-                    description: Runs integration tests with custom domain handling on Gardener cluster
+                    description: runs api-gateway integration tests with custom domain handling on Gardener cluster
                   labels:
                     preset-gardener-gcp-kyma-integration: "true"
                     preset-cluster-version: "true"
@@ -91,3 +115,6 @@ templates:
                   global:
                     - jobConfig_postsubmit
                     - jobConfig_default
+                  local:
+                    - job_default
+                    - job_post
