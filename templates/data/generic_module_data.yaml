@@ -107,6 +107,9 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: post-keda-manager-module-build
+                  annotations:
+                    owner: otters
+                    description: Job to build keda module for a release.
                   always_run: true
                   labels:
                     preset-bot-github-token: "true"
