@@ -1,8 +1,4 @@
 pjConfigs:
-  prConfig: 
-    kyma-project:
-      kyma:
-        prNumber: 17504
   prowJobs:
     kyma-project:
       kyma:

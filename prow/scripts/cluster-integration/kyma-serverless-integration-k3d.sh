@@ -37,7 +37,7 @@ if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
     --value global.ingress.domainName="$DOMAIN" \
     --value "serverless.webhook.values.function.resources.defaultPreset=M" \
     --value "serverless.webhook.values.featureFlags.java17AlphaEnabled=true" \
-    -s main
+    -s PR-17504
 else
   echo "--> Deploying Serverless from $KYMA_SOURCES_DIR"
   kyma deploy -p evaluation --ci \
