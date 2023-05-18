@@ -62,6 +62,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-istio-module-build
+                  annotations:
+                    owner: goat
+                    description: build istio module image
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-sa-kyma-push-images: "true"
@@ -86,6 +89,9 @@ templates:
                     - job_default
               - jobConfig:
                   name: post-istio-module-build
+                  annotations:
+                    owner: goat
+                    description: build istio module image
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-sa-kyma-push-images: "true"
@@ -110,6 +116,9 @@ templates:
                     - job_post
               - jobConfig:
                   name: pull-istio-operator-build
+                  annotations:
+                    owner: goat
+                    description: build istio operator image
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   args:
                     - "--name=istio-manager"
@@ -124,6 +133,9 @@ templates:
                     - job_build
               - jobConfig:
                   name: post-istio-operator-build
+                  annotations:
+                    owner: goat
+                    description: build istio operator image
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-signify-prod-secret: "true"
@@ -141,7 +153,10 @@ templates:
                     - job_post
                     - job_build
               - jobConfig:
-                  name: pull-istio-manager-verify
+                  name: pull-istio-operator-integration-k3d
+                  annotations:
+                    owner: goat
+                    description: run istio operator integration tests on k3d
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   optional: "true"
                   env:
@@ -159,7 +174,10 @@ templates:
                     - vm_job_k3d
                     - vm_job_labels
               - jobConfig:
-                  name: post-istio-manager-verify
+                  name: post-istio-operator-integration-k3d
+                  annotations:
+                    owner: goat
+                    description: run istio operator integration tests on k3d
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   optional: "true"
                   env:
