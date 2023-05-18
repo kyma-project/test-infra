@@ -1,0 +1,76 @@
+presubmits:
+  kyma-project/test-infra:
+    - name: pull-plan-prod-terraform
+      decorate: false
+      agent: tekton-pipeline
+      cluster: tekton
+      always_run: false
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "tekton-demo"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      tekton_pipeline_run_spec:
+        v1beta1:
+          workspaces:
+            - name: repo
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: premium-rwo
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
+          params:
+            - name: terraform_action
+              value: plan
+            - name: module_path
+              value: configs/terraform/environments/prod
+          taskRunSpecs:
+            - pipelineTaskName: terraform-executor
+              taskServiceAccountName: terraform-executor
+          pipelineSpec:
+            description: "Tekton Demo"
+            tasks:
+              - name: clone-refs
+                taskRef:
+                  name: clone-refs
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: JOB_SPEC
+                    value: $(params.JOB_SPEC)
+              - name: terraform-executor
+                taskRef:
+                  name: terraform-executor
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                  - name: terraform_action
+                    value: $(params.terraform_action)
+                  - name: module_path
+                    value: $(params.module_path)
+                  - name: SHA
+                    value: $(params.PULL_PULL_SHA)
+                runAfter:
+                  - clone-refs
+              - name: hide-github-comments
+                taskRef:
+                  name: hide-github-comments
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                  - name: PULL_NUMBER
+                    value: $(params.PULL_NUMBER)
+                  - name: PULL_PULL_SHA
+                    value: $(params.PULL_PULL_SHA)
+                runAfter:
+                  - terraform-executor

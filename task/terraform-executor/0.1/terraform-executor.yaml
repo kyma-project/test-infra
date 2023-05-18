@@ -1,15 +1,15 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: image-builder
+  name: terraform-executor
   labels:
     app.kubernetes.io/version: "0.1"
   annotations:
     tekton.dev/pipelines.minVersion: "0.36.0"
-    tekton.dev/categories: Image Build
-    tekton.dev/tags: image-builder
-    tekton.dev/displayName: "image-builder"
-    tekton.dev/platforms: "linux/amd64"
+    tekton.dev/categories: IaC
+    tekton.dev/tags: terraform
+    tekton.dev/displayName: "terraform-executor"
+    tekto.dev/platforms: "linux/amd64"
 spec:
   description: >-
     The image-builder Task builds an OCI image from a Dockerfile.
@@ -18,18 +18,21 @@ spec:
     Documentation of image-builder tool used by this Task : https://github.com/kyma-project/test-infra/tree/main/development/image-builder
   workspaces:
     - name: repo
-      description: "The workspace stores sources for building an image. Usually, this should be a workspace shared with other tasks."
+      description: "The workspace stores sources to apply. Usually, this should be a workspace shared with other tasks."
       mountPath: /home/prow/go
   params:
+    - name: terraform_action
+      description: "Terraform action to execute."
+      type: string
     - name: module_path
-      description: "Name of the image to be built"
+      description: "Path to the terraform config files."
       type: string
     - name: input
-      description: "Path to image-builder config file."
+      description: "Flag to enable terraform input."
       type: string
       default: "false"
     - name: SHA
-      description: "Git SHA of the base branch. Variable set by Prow."
+      description: "Commit hash with terraform config files."
       type: string
     - name: REPO_OWNER
       description: "GitHub org that triggers the job. Variable set by Prow."
@@ -37,6 +40,10 @@ spec:
     - name: REPO_NAME
       description: "GitHub repo that triggers the job. Variable set by Prow."
       type: string
+    - name: github-token-secret
+      type: string
+      description: Name of the secret holding the kyma bot github token.
+      default: github-token
   steps:
     - name: terraform-init
       image: europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
@@ -45,6 +52,7 @@ spec:
         - /bin/terraform
       args:
         - -chdir=$(params.module_path)
+        - init
         - -input=$(params.input)
       resources:
         requests:
@@ -59,13 +67,14 @@ spec:
         - -owner=$(params.REPO_OWNER)
         - -repo=$(params.REPO_NAME)
         - -sha=$(params.SHA)
-        - ${params.terraform_action}
+        - $(params.terraform_action)
         - --
         - terraform
         - -chdir=$(params.module_path)
         - $(params.terraform_action)
         - -input=$(params.input)
         - -auto-approve
+        - -no-color
       resources:
         requests:
           memory: 500Mi
