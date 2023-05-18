@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/api-gateway:
     - name: pull-api-gateway-lint
       annotations:
+        description: "runs api-gateway linting"
+        owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -30,6 +32,8 @@ presubmits: # runs on PRs
                 cpu: 500m
     - name: pull-api-gateway-test
       annotations:
+        description: "runs api-gateway unit tests"
+        owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -53,8 +57,10 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 500m
-    - name: pull-api-gateway-integration-test
+    - name: pull-api-gateway-integration-gcp
       annotations:
+        description: "runs api-gateway integration tests on Gardener GCP cluster"
+        owner: "goat"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
         pipeline.platform: "gardener_gcp"
@@ -62,7 +68,7 @@ presubmits: # runs on PRs
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-api-gateway-integration-test"
+        prow.k8s.io/pubsub.runID: "pull-api-gateway-integration-gcp"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-api-gateway-int-test-client-creds: "true"
         preset-cluster-version: "true"
@@ -120,8 +126,10 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/api-gateway:
-    - name: post-api-gateway-integration-test
+    - name: post-api-gateway-integration-gcp
       annotations:
+        description: "runs api-gateway integration tests on Gardener GCP cluster"
+        owner: "goat"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
         pipeline.platform: "gardener_gcp"
@@ -129,7 +137,7 @@ postsubmits: # runs on main
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-api-gateway-integration-test"
+        prow.k8s.io/pubsub.runID: "post-api-gateway-integration-gcp"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-api-gateway-int-test-client-creds: "true"
         preset-cluster-version: "true"
