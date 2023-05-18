@@ -29,6 +29,7 @@ provider "kubernetes" {
   cluster_ca_certificate = base64decode(
     data.google_container_cluster.managed_k8s_cluster.master_auth[0].cluster_ca_certificate,
   )
+  load_config_file = false
 }
 
 provider "kubectl" {
@@ -37,6 +38,7 @@ provider "kubectl" {
   cluster_ca_certificate = base64decode(
     data.google_container_cluster.managed_k8s_cluster.master_auth[0].cluster_ca_certificate,
   )
+  load_config_file = false
 }
 
 provider "google" {
