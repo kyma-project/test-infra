@@ -23,7 +23,6 @@
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow @kyma-bot
 /prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @dzahariev @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow @kyma-bot
 /prow/jobs/incubator/reconciler @varbanv @jeremyharisch @tobiscr @kyma-project/prow @kyma-bot
-
 /prow/jobs/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish @kyma-bot
 /prow/jobs/kyma/components/central-application-connectivity-validator @kyma-project/Framefrog @kyma-project/prow @kyma-bot
 /prow/jobs/kyma/components/central-application-gateway @kyma-project/prow @kyma-project/Framefrog @kyma-bot
@@ -33,20 +32,15 @@
 /prow/jobs/kyma/components/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow @kyma-bot
 /prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @pk85 @kyma-project/prow @kyma-bot
 /prow/jobs/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/prow @kyma-project/eventing @kyma-bot
-
 /prow/jobs/eventing-tools/ @kyma-project/prow @kyma-project/eventing @kyma-bot
 /prow/jobs/eventing-webhook/ @kyma-project/prow @kyma-project/eventing @kyma-bot
-
 /prow/jobs/telemetry-manager @kyma-project/observability @kyma-project/prow @kyma-bot
 /prow/jobs/directory-size-exporter @kyma-project/observability @kyma-project/prow @kyma-bot
-
 /prow/jobs/kyma/tests/fast-integration @kyma-project/prow @kyma-bot
 /prow/jobs/kyma/tests/serverless-bench @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow @kyma-bot
-
 /prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @kyma-project/prow @kyma-bot
 /prow/jobs/istio/ @kyma-project/goat @kyma-bot
 /prow/jobs/api-gateway/ @kyma-project/goat @kyma-bot
-
 /prow/scripts @kyma-project/prow @kyma-bot
 
 /templates @kyma-project/prow @kyma-bot
