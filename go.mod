@@ -44,7 +44,7 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.15.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.3
 	github.com/tidwall/gjson v1.14.4
 	github.com/zricethezav/gitleaks/v8 v8.16.3
 	go.uber.org/zap v1.24.0
@@ -62,7 +62,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230518183234-1e99c65d75bf
+require k8s.io/test-infra v0.0.0-20230519184630-797f68f0919e
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
