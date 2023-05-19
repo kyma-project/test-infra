@@ -243,8 +243,8 @@ postsubmits: # runs on main
             args:
               - "ci"
             env:
-              - name: IMG_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/prod"
+              - name: IMG
+                value: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
