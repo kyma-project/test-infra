@@ -43,7 +43,7 @@
 /prow/jobs/api-gateway/ @kyma-project/goat @neighbors-dev-bot
 /prow/scripts @kyma-project/prow @neighbors-dev-bot
 
-/templates @kyma-project/prow @kyma-bot
+/templates @kyma-project/prow @neighbors-dev-bot
 /templates/templates @kyma-project/prow @neighbors-dev-bot
 templates/data/eventing-tools-data.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
 templates/data/eventing-webhook-certificates-build.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
