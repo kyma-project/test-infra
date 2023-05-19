@@ -36,7 +36,7 @@ periodics: # runs on schedule
           securityContext:
             privileged: true
           command:
-            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/klm-e2e.sh"
+            - "/home/prow/go/src/github.com/kyma-project/lifecycle-manager/tests/scripts/klm-e2e.sh"
           env:
             - name: KYMA_VERSION
               value: "main"
