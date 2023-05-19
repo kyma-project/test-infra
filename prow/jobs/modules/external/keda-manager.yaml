@@ -253,6 +253,9 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
+              limits:
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal

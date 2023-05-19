@@ -32,6 +32,9 @@ templates:
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
+          limits:
+            limits_memory: 3Gi
+            limits_cpu: 2
           vm_job_make:
             path_alias: github.com/kyma-project/keda-manager
             command: "bash"
@@ -129,6 +132,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - job_default
+                    - limits
               - jobConfig:
                   name: pre-keda-manager-operator-lint
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
