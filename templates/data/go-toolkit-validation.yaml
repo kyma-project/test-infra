@@ -186,6 +186,9 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-function-controller-unit-test"
+                  annotations:
+                    owner: otters
+                    description: "run unit tests for function controller"
                   command: "/bin/sh"
                   optional: false
                   args:

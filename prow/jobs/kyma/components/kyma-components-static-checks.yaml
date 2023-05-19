@@ -205,6 +205,8 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-function-controller-unit-test
       annotations:
+        description: "run unit tests for function controller"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
