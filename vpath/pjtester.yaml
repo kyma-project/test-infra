@@ -6,4 +6,4 @@ pjConfigs:
   prowJobs:
     kyma-project:
       test-infra:
-        - pjName: "pre-test-infra--presubmit-scanner"
+        - pjName: "pre-test-infra-presubmit-scanner"
