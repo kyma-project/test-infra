@@ -1,4 +1,8 @@
 pjConfigs:
+  prConfig:
+    kyma-project:
+      test-infra:
+        prNumber: 7728
   prowJobs:
     kyma-project:
       kyma:
