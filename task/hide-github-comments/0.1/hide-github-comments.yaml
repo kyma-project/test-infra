@@ -12,7 +12,7 @@ metadata:
     tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
-    The hide-github-comments task hides comments which belong to an old commit.
+    The hide-github-comments Task hides comments which belong to an old commit.
     The tool detects old comments by reading github-comments metadata in GitHub comments.
   params:
     - name: PULL_NUMBER

@@ -1,7 +1,7 @@
 # Terraform Executor
 
 The terraform-executor Task initializes Terraform state locally and runs actions for the provided terraform config.
-Usually, actions are plan and apply. Authentication to Google Cloud is done through the Kubernetes service account with the
+The usual actions are `plan` and `apply`. Authentication to Google Cloud is done through the Kubernetes service account with the
 workload identity configured. The parameter **additional_terraform_args** allows defining Terraform CLI arguments in pipelines.
 When this parameter value is set in a pipeline, you must add the default value `-no-color` to the list.
 The task uses the tfcmt tool to run Terraform actions and post the results to GitHub PRs.
