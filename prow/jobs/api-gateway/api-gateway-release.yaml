@@ -141,14 +141,14 @@ postsubmits: # runs on main
               limits:
                 memory: 2Gi
                 cpu: 1
-    - name: rel-api-gateway-custom-domain-integration
+    - name: rel-api-gateway-custom-domain-integration-gcp
       annotations:
-        description: "runs api-gateway integration tests with custom domain handling on Gardener cluster"
+        description: "runs api-gateway integration tests with custom domain handling on Gardener GCP cluster"
         owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "rel-api-gateway-custom-domain-integration"
+        prow.k8s.io/pubsub.runID: "rel-api-gateway-custom-domain-integration-gcp"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-api-gateway-int-test-client-creds: "true"
         preset-cluster-version: "true"
@@ -175,6 +175,69 @@ postsubmits: # runs on main
               - "-c"
               - "tests/integration/scripts/integration-gardener-custom-domain.sh"
             env:
+              - name: GARDENER_PROVIDER
+                value: "gcp"
+              - name: GARDENER_REGION
+                value: "europe-west4"
+              - name: GARDENER_ZONES
+                value: "europe-west4-b"
+              - name: MACHINE_TYPE
+                value: "n1-standard-4"
+              - name: TEST_SA_ACCESS_KEY_PATH
+                value: "/sa-kyma-dns-serviceuser/service-account.json"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: rel-api-gateway-custom-domain-integration-aws
+      annotations:
+        description: "runs api-gateway integration tests with custom domain handling on Gardener AWS cluster"
+        owner: "goat"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "rel-api-gateway-custom-domain-integration-aws"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-api-gateway-int-test-client-creds: "true"
+        preset-cluster-version: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-kyma-dns-serviceuser: "true"
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      optional: false
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^\d+\.\d+\.\d+(?:-.*)?$
+      reporter_config:
+        slack:
+          channel: goat-int
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "tests/integration/scripts/integration-gardener-custom-domain.sh"
+            env:
+              - name: GARDENER_PROVIDER
+                value: "aws"
+              - name: GARDENER_REGION
+                value: "eu-central-1"
+              - name: GARDENER_ZONES
+                value: "eu-central-1b"
+              - name: MACHINE_TYPE
+                value: "m5.xlarge"
               - name: TEST_SA_ACCESS_KEY_PATH
                 value: "/sa-kyma-dns-serviceuser/service-account.json"
             resources:
