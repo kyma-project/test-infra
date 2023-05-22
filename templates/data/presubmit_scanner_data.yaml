@@ -12,7 +12,7 @@ templates:
             always_run: "true"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/control-plane/.git/objects/pack"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
               # - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
         jobConfigs:
             {{/* Iterate over orgs and repos in config.yaml global field. */}}
