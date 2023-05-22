@@ -1,0 +1,6 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      test-infra:
+        - pjName: "pull-build-image-rotate-service-account"
+        - pjName: "post-build-image-rotate-service-account"
