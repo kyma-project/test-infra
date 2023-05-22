@@ -1,0 +1,37 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/test-infra/image-detector.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "pull-build-image-image-detector"
+                  run_if_changed: '^development/(pkg/extractimageurls|image-detector)/(Dockerfile|.*\.go)$'
+                  branches:
+                   - "^main$"
+                  args:
+                    - "--name=test-infra/image-detector"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/image-detector/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "kaniko_buildpack"
+                    - "jobConfig_presubmit"
+              - jobConfig:
+                  name: "post-build-image-image-detector"
+                  run_if_changed: '^development/(pkg/extractimageurls|image-detector)/(Dockerfile|.*\.go)$'
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  branches:
+                   - "^main$"
+                  args:
+                    - "--name=test-infra/image-detector"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/image-detector/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "kaniko_buildpack"
+                    - "jobConfig_postsubmit"
