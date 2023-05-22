@@ -8,7 +8,7 @@ templates:
             max_concurrency: "10"
             decorate: "true"
             command: "/bin/sh"
-            image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            image: "docker.io/zricethezav/gitleaks:v8.16.3"
             always_run: "true"
             args:
               - "-c"
