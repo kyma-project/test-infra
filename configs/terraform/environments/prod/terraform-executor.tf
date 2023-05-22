@@ -26,6 +26,10 @@ resource "google_project_iam_member" "terraform_executor_owner" {
 }
 
 module "tekton_terraform_executor_k8s_service_account" {
+  providers = {
+    google     = google
+    kubernetes = kubernetes.tekton_k8s_cluster
+  }
   source = "../../../../development/terraform-executor/terraform/modules/k8s-terraform-executor"
 
   terraform_executor_gcp_service_account = {
@@ -37,13 +41,17 @@ module "tekton_terraform_executor_k8s_service_account" {
     namespace = var.terraform_executor_k8s_service_account.namespace
   }
 
-  managed_k8s_cluster = var.tekton_k8s_cluster
-
-  gcp_region     = var.gcp_region
-  gcp_project_id = var.gcp_project_id
+  #  managed_k8s_cluster = var.tekton_k8s_cluster
+  #
+  #  gcp_region     = var.gcp_region
+  #  gcp_project_id = var.gcp_project_id
 }
 
-module "trusted_workloads_terraform_executor_k8s_service_account" {
+module "trusted_workload_terraform_executor_k8s_service_account" {
+  providers = {
+    google     = google
+    kubernetes = kubernetes.trusted_workload_k8s_cluster
+  }
   source = "../../../../development/terraform-executor/terraform/modules/k8s-terraform-executor"
 
   terraform_executor_gcp_service_account = {
@@ -55,13 +63,17 @@ module "trusted_workloads_terraform_executor_k8s_service_account" {
     namespace = var.terraform_executor_k8s_service_account.namespace
   }
 
-  managed_k8s_cluster = var.trusted_workload_k8s_cluster
-
-  gcp_region     = var.gcp_region
-  gcp_project_id = var.gcp_project_id
+  #  managed_k8s_cluster = var.trusted_workload_k8s_cluster
+  #
+  #  gcp_region     = var.gcp_region
+  #  gcp_project_id = var.gcp_project_id
 }
 
-module "untrusted_workloads_terraform_executor_k8s_service_account" {
+module "untrusted_workload_terraform_executor_k8s_service_account" {
+  providers = {
+    google     = google
+    kubernetes = kubernetes.untrusted_workload_k8s_cluster
+  }
   source = "../../../../development/terraform-executor/terraform/modules/k8s-terraform-executor"
 
   terraform_executor_gcp_service_account = {
@@ -73,8 +85,8 @@ module "untrusted_workloads_terraform_executor_k8s_service_account" {
     namespace = var.terraform_executor_k8s_service_account.namespace
   }
 
-  managed_k8s_cluster = var.untrusted_workload_k8s_cluster
-
-  gcp_region     = var.gcp_region
-  gcp_project_id = var.gcp_project_id
+  #  managed_k8s_cluster = var.untrusted_workload_k8s_cluster
+  #
+  #  gcp_region     = var.gcp_region
+  #  gcp_project_id = var.gcp_project_id
 }

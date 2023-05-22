@@ -14,20 +14,20 @@ variable "terraform_executor_gcp_service_account" {
   description = "Details of terraform executor gcp service account."
 }
 
-variable "managed_k8s_cluster" {
-  type = object({
-    name     = string
-    location = string
-  })
-  description = "Details of the managed k8s cluster to apply the manifest to."
-}
+#variable "managed_k8s_cluster" {
+#  type = object({
+#    name     = string
+#    location = string
+#  })
+#  description = "Details of the managed k8s cluster to apply the manifest to."
+#}
 
-variable "gcp_region" {
-  type        = string
-  description = "Default Google Cloud region to create resources."
-}
-
-variable "gcp_project_id" {
-  type        = string
-  description = "Google Cloud project to create resources."
-}
+#variable "gcp_region" {
+#  type        = string
+#  description = "Default Google Cloud region to create resources."
+#}
+#
+#variable "gcp_project_id" {
+#  type        = string
+#  description = "Google Cloud project to create resources."
+#}
