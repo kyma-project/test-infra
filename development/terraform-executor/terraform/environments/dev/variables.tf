@@ -9,7 +9,7 @@ variable "terraform_executor_k8s_service_account" {
     namespace = "default"
   }
 
-  description = "Terraform executor k8s service account details."
+  description = "Details of terraform executor k8s service account."
 }
 
 variable "terraform_executor_gcp_service_account" {
@@ -23,26 +23,26 @@ variable "terraform_executor_gcp_service_account" {
     project_id = "sap-kyma-neighbors-dev"
   }
 
-  description = "Terraform executor gcp service account details."
+  description = "Details of terraform executor gcp service account."
+}
+
+variable "managed_k8s_cluster" {
+  type = object({
+    name     = string
+    location = string
+  })
+
+  description = "Details of the managed k8s cluster."
 }
 
 variable "gcp_region" {
-  type    = string
-  default = "europe-west4"
+  type        = string
+  default     = "europe-west4"
+  description = "Default Google Cloud region to create resources."
 }
 
 variable "gcp_project_id" {
-  type    = string
-  default = "sap-kyma-neighbors-dev"
-}
-
-variable "k8s_config_path" {
   type        = string
-  default     = "~/.kube/config"
-  description = "Path to kubeconfig file ot use to connect to managed k8s cluster."
-}
-
-variable "k8s_config_context" {
-  type        = string
-  description = "Context to use to connect to managed k8s cluster."
+  default     = "sap-kyma-neighbors-dev"
+  description = "Google Cloud project to create resources."
 }

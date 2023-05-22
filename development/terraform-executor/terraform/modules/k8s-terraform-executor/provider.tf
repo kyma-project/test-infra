@@ -11,9 +11,13 @@ terraform {
   }
 }
 
+# Configure the Google Cloud client to configure the k8s provider.
+# Client provides the access token to authenticate to the k8s cluster.
 data "google_client_config" "gcp" {
 }
 
+# Get the k8s cluster details to configure the k8s provider.
+# Cluster details provide the endpoint and cluster certificate to authenticate to the k8s cluster.
 data "google_container_cluster" "managed_k8s_cluster" {
   name     = var.managed_k8s_cluster.name
   location = var.managed_k8s_cluster.location

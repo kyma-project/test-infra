@@ -1,3 +1,5 @@
+# This file deploys gatekeeper to the prow workloads and tekton clusters.
+
 module "tekton_gatekeeper" {
   source = "../../../../opa/terraform/modules/gatekeeper"
 

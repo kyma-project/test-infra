@@ -1,3 +1,8 @@
+# This file creates the terraform executor Google Cloud service account and k8s service accounts need to run terraform.
+# k8s service accounts are created in the prow workloads and tekton clusters.
+# It grants required permissions to the Google Cloud service account and setup workload identity.
+# It also grants the terraform executor service account the owner role in the workloads project.
+
 module "terraform_executor_gcp_service_account" {
   source = "../../../../development/terraform-executor/terraform/modules/gcp-terraform-executor"
 
@@ -12,7 +17,8 @@ module "terraform_executor_gcp_service_account" {
   }
 }
 
-# Grant owner role to terraform executor service account in the workloads project.
+# Grant owner role to terraform executor service account in the workloads project. The owner role is required to let
+# the terraform executor manage all the resources in the Google Cloud project.
 resource "google_project_iam_member" "terraform_executor_owner" {
   project = var.workloads_project_id
   role    = "roles/owner"

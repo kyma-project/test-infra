@@ -1,3 +1,7 @@
+# This module creates a GCP service account and binds it to a k8s service account through workload identity.
+# The GCP service account gets owner role on the project.
+
+# Create workload identity principal name.
 locals {
   terraform_workload_identity_gcp_service_account = format("%s.svc.id.goog[%s/%s]", var
     .terraform_executor_gcp_service_account.project_id,
@@ -17,6 +21,7 @@ resource "google_project_iam_member" "terraform_executor_owner" {
   member  = "serviceAccount:${google_service_account.terraform_executor.email}"
 }
 
+# Bind the workload identity principal to the GCP service account.
 resource "google_service_account_iam_binding" "terraform_workload_identity" {
   members            = ["serviceAccount:${local.terraform_workload_identity_gcp_service_account}"]
   role               = "roles/iam.workloadIdentityUser"

@@ -1,22 +1,25 @@
 variable "gcp_region" {
-  type    = string
-  default = "europe-west4"
+  type        = string
+  default     = "europe-west4"
+  description = "Default Google Cloud region to create resources."
 }
 
 variable "gcp_project_id" {
-  type    = string
-  default = "sap-kyma-prow"
+  type        = string
+  default     = "sap-kyma-prow"
+  description = "Google Cloud project to create resources."
 }
 
 variable "workloads_project_id" {
   type        = string
   default     = "sap-kyma-prow-workloads"
-  description = "Additional Google Cloud project ID to grant the IAM permissions to terraform-executor service account."
+  description = "Additional Google Cloud project ID."
 }
 
 variable "tekton_gatekeeper_manifest_path" {
-  type    = string
-  default = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
+  type        = string
+  default     = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
+  description = "Path to the Tekton Gatekeeper yaml manifest file. This file will be applied to the tekton k8s cluster to install gatekeeper."
 }
 
 variable "tekton_k8s_cluster" {
@@ -30,12 +33,13 @@ variable "tekton_k8s_cluster" {
     location = "europe-west4"
   }
 
-  description = "Name of the managed k8s cluster to apply the manifest to."
+  description = "Details of the tekton k8s cluster."
 }
 
 variable "trusted_workload_gatekeeper_manifest_path" {
-  type    = string
-  default = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
+  type        = string
+  default     = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
+  description = "Path to the Tekton Gatekeeper yaml manifest file. This file will be applied to the trusted-workload k8s cluster to install gatekeeper."
 }
 
 variable "trusted_workload_k8s_cluster" {
@@ -49,12 +53,13 @@ variable "trusted_workload_k8s_cluster" {
     location = "europe-west3"
   }
 
-  description = "Name of the managed k8s cluster to apply the manifest to."
+  description = "Details of the trusted-workload k8s cluster."
 }
 
 variable "untrusted_workload_gatekeeper_manifest_path" {
-  type    = string
-  default = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
+  type        = string
+  default     = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
+  description = "Path to the Tekton Gatekeeper yaml manifest file. This file will be applied to the untrusted-workload k8s cluster to install gatekeeper."
 }
 
 variable "untrusted_workload_k8s_cluster" {
@@ -68,7 +73,7 @@ variable "untrusted_workload_k8s_cluster" {
     location = "europe-west3"
   }
 
-  description = "Name of the managed k8s cluster to apply the manifest to."
+  description = "Details of the untrusted-workload k8s cluster."
 }
 
 variable "terraform_executor_k8s_service_account" {
@@ -82,7 +87,7 @@ variable "terraform_executor_k8s_service_account" {
     namespace = "default"
   }
 
-  description = "Terraform executor k8s service account details."
+  description = "Details of terraform executor k8s service account."
 }
 
 variable "terraform_executor_gcp_service_account" {
@@ -96,5 +101,5 @@ variable "terraform_executor_gcp_service_account" {
     project_id = "sap-kyma-prow"
   }
 
-  description = "Terraform executor gcp service account details."
+  description = "Details of terraform executor gcp service account."
 }

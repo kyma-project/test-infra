@@ -1,3 +1,4 @@
+# Create the secret with the terraform executor service account token.
 resource "kubernetes_secret" "terraform_executor" {
   metadata {
     name      = var.terraform_executor_k8s_service_account.name
@@ -10,6 +11,7 @@ resource "kubernetes_secret" "terraform_executor" {
 }
 
 
+# Create the terraform executor k8s service account with annotations for workload identity.
 resource "kubernetes_service_account" "terraform_executor" {
   metadata {
     namespace = var.terraform_executor_k8s_service_account.namespace

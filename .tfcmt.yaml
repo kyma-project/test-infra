@@ -1,1 +1,7 @@
+# Configuration file for tfcmt tool used to run terraform commands and post results to github.
+
+# plan_patch option enables patching existing tfcmt comments instead of creating new ones.
+# This is useful when you want to keep the comment history clean. This option is valid for the tfcmt plan command only.
+# Setting it in configuration file instead of a command line argument will make it default for all plan commands without
+# need to define separate arguments list for the apply command. This makes the tekton terraform-executor task definition simpler and more readable.
 plan_patch: true
