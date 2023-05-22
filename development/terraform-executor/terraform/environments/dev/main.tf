@@ -26,9 +26,4 @@ module "terraform_executor_k8s_service_account" {
     name      = var.terraform_executor_k8s_service_account.name,
     namespace = var.terraform_executor_k8s_service_account.namespace
   }
-
-  #  managed_k8s_cluster = var.managed_k8s_cluster
-
-  #  gcp_region     = var.gcp_region
-  #  gcp_project_id = var.gcp_project_id
 }

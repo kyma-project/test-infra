@@ -15,18 +15,21 @@ terraform {
   }
 }
 
+# data.google_client_config configures Google Cloud client.
+# Google Cloud client provides the access token to authenticate to the k8s cluster.
+# Access token is used to configure the k8s and kubectl providers.
+# data.google_container_cluster gets the k8s cluster details.
+# Cluster details provides the endpoint and cluster certificate to authenticate to the k8s cluster.
+# Cluster details are used to configure the k8s and kubectl providers.
+
 provider "google" {
   project = var.gcp_project_id
   region  = var.gcp_region
 }
 
-# Configure the Google Cloud client to configure the k8s provider.
-# Client provides the access token to authenticate to the k8s cluster.
 data "google_client_config" "gcp" {
 }
 
-# Get the k8s cluster details to configure the k8s provider.
-# Cluster details provide the endpoint and cluster certificate to authenticate to the k8s cluster.
 data "google_container_cluster" "tekton_k8s_cluster" {
   name     = var.tekton_k8s_cluster.name
   location = var.tekton_k8s_cluster.location
@@ -51,8 +54,6 @@ provider "kubectl" {
   load_config_file = false
 }
 
-# Get the k8s cluster details to configure the k8s provider.
-# Cluster details provide the endpoint and cluster certificate to authenticate to the k8s cluster.
 data "google_container_cluster" "trusted_workload_k8s_cluster" {
   name     = var.trusted_workload_k8s_cluster.name
   location = var.trusted_workload_k8s_cluster.location
@@ -77,8 +78,6 @@ provider "kubectl" {
   load_config_file = false
 }
 
-# Get the k8s cluster details to configure the k8s provider.
-# Cluster details provide the endpoint and cluster certificate to authenticate to the k8s cluster.
 data "google_container_cluster" "untrusted_workload_k8s_cluster" {
   name     = var.untrusted_workload_k8s_cluster.name
   location = var.untrusted_workload_k8s_cluster.location

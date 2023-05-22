@@ -41,10 +41,6 @@ module "tekton_terraform_executor_k8s_service_account" {
     namespace = var.terraform_executor_k8s_service_account.namespace
   }
 
-  #  managed_k8s_cluster = var.tekton_k8s_cluster
-  #
-  #  gcp_region     = var.gcp_region
-  #  gcp_project_id = var.gcp_project_id
 }
 
 module "trusted_workload_terraform_executor_k8s_service_account" {
@@ -63,10 +59,6 @@ module "trusted_workload_terraform_executor_k8s_service_account" {
     namespace = var.terraform_executor_k8s_service_account.namespace
   }
 
-  #  managed_k8s_cluster = var.trusted_workload_k8s_cluster
-  #
-  #  gcp_region     = var.gcp_region
-  #  gcp_project_id = var.gcp_project_id
 }
 
 module "untrusted_workload_terraform_executor_k8s_service_account" {
@@ -85,8 +77,4 @@ module "untrusted_workload_terraform_executor_k8s_service_account" {
     namespace = var.terraform_executor_k8s_service_account.namespace
   }
 
-  #  managed_k8s_cluster = var.untrusted_workload_k8s_cluster
-  #
-  #  gcp_region     = var.gcp_region
-  #  gcp_project_id = var.gcp_project_id
 }

@@ -13,7 +13,3 @@ variable "terraform_executor_gcp_service_account" {
   })
   description = "Terraform executor gcp service account details."
 }
-
-#variable "gcp_project_id" {
-#  type = string
-#}
