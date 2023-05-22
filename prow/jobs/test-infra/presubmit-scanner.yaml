@@ -23,9 +23,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/kyma:
     - name: pre-kyma-presubmit-scanner
@@ -48,9 +46,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/busola:
     - name: pre-busola-presubmit-scanner
@@ -73,9 +69,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/control-plane:
     - name: pre-control-plane-presubmit-scanner
@@ -98,9 +92,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/cli:
     - name: pre-cli-presubmit-scanner
@@ -123,9 +115,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/website:
     - name: pre-website-presubmit-scanner
@@ -148,9 +138,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/lifecycle-manager:
     - name: pre-lifecycle-manager-presubmit-scanner
@@ -173,9 +161,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/third-party-images:
     - name: pre-third-party-images-presubmit-scanner
@@ -198,9 +184,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/community:
     - name: pre-community-presubmit-scanner
@@ -223,9 +207,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/hydroform:
     - name: pre-hydroform-presubmit-scanner
@@ -248,9 +230,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/istio-operator:
     - name: pre-istio-operator-presubmit-scanner
@@ -273,9 +253,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/addons:
     - name: pre-addons-presubmit-scanner
@@ -298,9 +276,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/private-fn-for-e2e-serverless-tests:
     - name: pre-private-fn-for-e2e-serverless-tests-presubmit-scanner
@@ -323,9 +299,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/charts:
     - name: pre-charts-presubmit-scanner
@@ -348,9 +322,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/examples:
     - name: pre-examples-presubmit-scanner
@@ -373,9 +345,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/api-gateway:
     - name: pre-api-gateway-presubmit-scanner
@@ -398,9 +368,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/istio:
     - name: pre-istio-presubmit-scanner
@@ -423,9 +391,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/runtime-watcher:
     - name: pre-runtime-watcher-presubmit-scanner
@@ -448,9 +414,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/keda-manager:
     - name: pre-keda-manager-presubmit-scanner
@@ -473,9 +437,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/kyma-dashboard:
     - name: pre-kyma-dashboard-presubmit-scanner
@@ -498,9 +460,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/application-connector-manager:
     - name: pre-application-connector-manager-presubmit-scanner
@@ -523,9 +483,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/template-repository:
     - name: pre-template-repository-presubmit-scanner
@@ -548,9 +506,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/rafter:
     - name: pre-rafter-presubmit-scanner
@@ -573,9 +529,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/btp-manager:
     - name: pre-btp-manager-presubmit-scanner
@@ -598,9 +552,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/telemetry-manager:
     - name: pre-telemetry-manager-presubmit-scanner
@@ -623,9 +575,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/director-size-exporter:
     - name: pre-director-size-exporter-presubmit-scanner
@@ -648,9 +598,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-project/compass-manager:
     - name: pre-compass-manager-presubmit-scanner
@@ -673,9 +621,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/compass:
     - name: pre-compass-presubmit-scanner
@@ -698,9 +644,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/ord-service:
     - name: pre-ord-service-presubmit-scanner
@@ -723,9 +667,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/reconciler:
     - name: pre-reconciler-presubmit-scanner
@@ -748,9 +690,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/bullseye-showcase:
     - name: pre-bullseye-showcase-presubmit-scanner
@@ -773,9 +713,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/documentation-component:
     - name: pre-documentation-component-presubmit-scanner
@@ -798,9 +736,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/compass-console:
     - name: pre-compass-console-presubmit-scanner
@@ -823,9 +759,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/sap-btp-service-operator:
     - name: pre-sap-btp-service-operator-presubmit-scanner
@@ -848,9 +782,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/milv:
     - name: pre-milv-presubmit-scanner
@@ -873,9 +805,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/varkes:
     - name: pre-varkes-presubmit-scanner
@@ -898,9 +828,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/slack-bot:
     - name: pre-slack-bot-presubmit-scanner
@@ -923,9 +851,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/migrate:
     - name: pre-migrate-presubmit-scanner
@@ -948,9 +874,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/github-dashboard:
     - name: pre-github-dashboard-presubmit-scanner
@@ -973,9 +897,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/website-vuepress:
     - name: pre-website-vuepress-presubmit-scanner
@@ -998,9 +920,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/kitbag:
     - name: pre-kitbag-presubmit-scanner
@@ -1023,9 +943,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/kyma-showcase:
     - name: pre-kyma-showcase-presubmit-scanner
@@ -1048,9 +966,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/hydra-login-consent:
     - name: pre-hydra-login-consent-presubmit-scanner
@@ -1073,9 +989,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/kymart:
     - name: pre-kymart-presubmit-scanner
@@ -1098,9 +1012,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/examples:
     - name: pre-examples-presubmit-scanner
@@ -1123,9 +1035,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/vstudio-extension:
     - name: pre-vstudio-extension-presubmit-scanner
@@ -1148,9 +1058,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/wordpress-connector:
     - name: pre-wordpress-connector-presubmit-scanner
@@ -1173,9 +1081,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/connector-tools:
     - name: pre-connector-tools-presubmit-scanner
@@ -1198,9 +1104,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/artwork:
     - name: pre-artwork-presubmit-scanner
@@ -1223,9 +1127,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/opensap:
     - name: pre-opensap-presubmit-scanner
@@ -1248,9 +1150,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/testdrape:
     - name: pre-testdrape-presubmit-scanner
@@ -1273,9 +1173,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/sc-removal:
     - name: pre-sc-removal-presubmit-scanner
@@ -1298,9 +1196,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/service-catalog-tester:
     - name: pre-service-catalog-tester-presubmit-scanner
@@ -1323,9 +1219,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
   kyma-incubator/service-catalog:
     - name: pre-service-catalog-presubmit-scanner
@@ -1348,7 +1242,5 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack"
-              - "whoami"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+              - "ls -la /home/prow/go/src/github.com/kyma-project/test-infra/.git/objects/pack; whoami; gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
