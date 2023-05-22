@@ -5,5 +5,5 @@ pjConfigs:
         prNumber: 7728
   prowJobs:
     kyma-project:
-      kyma:
+      test-infra:
         - pjName: "pre-test-infra--presubmit-scanner"
