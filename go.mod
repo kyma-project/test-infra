@@ -5,7 +5,7 @@ go 1.19
 require (
 	cloud.google.com/go/bigquery v1.51.2
 	cloud.google.com/go/compute/metadata v0.2.3
-	cloud.google.com/go/firestore v1.9.0
+	cloud.google.com/go/firestore v1.10.0
 	cloud.google.com/go/kms v1.10.2
 	cloud.google.com/go/logging v1.7.0
 	cloud.google.com/go/pubsub v1.30.1
@@ -62,13 +62,13 @@ require (
 	sigs.k8s.io/yaml v1.3.0
 )
 
-require k8s.io/test-infra v0.0.0-20230519184630-797f68f0919e
+require k8s.io/test-infra v0.0.0-20230522183058-82638cc6b32e
 
 require (
-	cloud.google.com/go v0.110.0 // indirect
+	cloud.google.com/go v0.110.2 // indirect
 	cloud.google.com/go/compute v1.19.1 // indirect
 	cloud.google.com/go/iam v0.13.0 // indirect
-	cloud.google.com/go/longrunning v0.4.1 // indirect
+	cloud.google.com/go/longrunning v0.4.2 // indirect
 	contrib.go.opencensus.io/exporter/ocagent v0.7.1-0.20200907061046-05415f1de66d // indirect
 	contrib.go.opencensus.io/exporter/prometheus v0.4.0 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20210617225240-d185dfc1b5a1 // indirect
