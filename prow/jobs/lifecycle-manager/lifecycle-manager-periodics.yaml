@@ -13,7 +13,7 @@ periodics: # runs on schedule
       preset-docker-push-repository-kyma: "true"
       preset-kind-volume-mounts: "true"
       preset-sa-gcr-push: "true"
-    cron: "0 0 * * *"
+    cron: "0 7 * * *"
     skip_report: false
     decorate: true
     cluster: untrusted-workload
@@ -36,7 +36,7 @@ periodics: # runs on schedule
           securityContext:
             privileged: true
           command:
-            - "/home/prow/go/src/github.com/kyma-project/lifecycle-manager/tests/scripts/klm-e2e.sh"
+            - "/home/prow/go/src/github.com/kyma-project/lifecycle-manager/tests/e2e_test/scripts/klm-e2e.sh"
           env:
             - name: KYMA_VERSION
               value: "main"

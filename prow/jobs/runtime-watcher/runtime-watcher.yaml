@@ -38,8 +38,6 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  
-  kyma-project/runtime-watcher:
     - name: pull-tests-skr
       annotations:
         pipeline.trigger: "pr-submit"
@@ -192,8 +190,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
   
 postsubmits: # runs on main
-  kyma-project/runtime-watcher:
-  
   kyma-project/runtime-watcher:
     - name: main-build-skr
       annotations:
