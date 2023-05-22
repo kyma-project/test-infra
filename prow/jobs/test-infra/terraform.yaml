@@ -4,7 +4,8 @@ presubmits:
       decorate: false
       agent: tekton-pipeline
       cluster: tekton
-      run_if_changed: "^configs/terraform/environments/prod"
+      # Run on any change in terraform config files, terraform variable values files or resource yaml files.
+      run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
       annotations:
         owner: "neighbors"
         description: "Run terraform plan for prod environment."
@@ -87,7 +88,8 @@ postsubmits:
       decorate: false
       agent: tekton-pipeline
       cluster: tekton
-      run_if_changed: "^configs/terraform/environments/prod"
+      # Run on any change in terraform config files, terraform variable values files or resource yaml files.
+      run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
       annotations:
         owner: "neighbors"
         description: "Run terraform apply for prod environment."
