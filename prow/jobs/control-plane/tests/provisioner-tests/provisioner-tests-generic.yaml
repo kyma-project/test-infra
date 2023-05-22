@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-control-plane: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/provisioner-tests/|^scripts/'
+      run_if_changed: '^tests/provisioner-tests/|^scripts/|^resources/kcp/charts/provisioner/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/control-plane
@@ -59,7 +59,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-control-plane: "true"
         preset-kyma-kms-sign-key: "true"
         preset-sa-gcr-push: "true"
-      run_if_changed: '^tests/provisioner-tests/|^scripts/'
+      run_if_changed: '^tests/provisioner-tests/|^scripts/|^resources/kcp/charts/provisioner/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/control-plane
