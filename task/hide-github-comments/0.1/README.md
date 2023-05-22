@@ -1,7 +1,7 @@
 # Hide GitHub Comments
 
-The hide-github-comments task hide comments which belong to old commit.
-A tool detect old comments by reading a github-comments metadata in GitHub comments.
+The hide-github-comments Task hides comments which belong to an old commit.
+The tool detects old comments by reading github-comments metadata in GitHub comments.
 
 ## Compatibility
 
@@ -15,7 +15,7 @@ kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/
 
 ## Parameters
 
-- **github-token-secret**: Name of the secret holding the kyma bot github token. _(OPTIONAL, default: 'kyma-bot-github-token')_
+- **github-token-secret**: Name of the secret holding the Kyma bot GitHub token. _(OPTIONAL, default: 'kyma-bot-github-token')_
 - **PULL_NUMBER**: Pull request number. A variable set by Prow. _(REQUIRED)_
 - **PULL_PULL_SHA**: Git SHA of the pull request head branch. A variable set by Prow.  _(REQUIRED)_
 - **REPO_OWNER**: The GitHub organization that triggers the job. A variable set by Prow.  _(REQUIRED)_
@@ -23,19 +23,19 @@ kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/
 
 ## Platforms
 
-You can run the Task on `linux/amd64` platform.
+You can run the Task on the `linux/amd64` platform.
 
 ## Usage
 
 See the following samples for usage:
 
-- [`prowjob-building-image.yaml`](samples/sample_prowjob_pipeline.yaml): A presubmit ProwJob that builds,signs and pushes an image.
+- [`prowjob-building-image.yaml`](samples/sample_prowjob_pipeline.yaml): A presubmit ProwJob that builds, signs, and pushes an image.
 
 ## Contributing
 
 We ❤ contributions.
 
-This task is maintained in the [Test Infra](https://github.com/kyma-project/test-infra) repository. Issues, pull requests and other contributions can be made there.
+This task is maintained in the [`Test Infra`](https://github.com/kyma-project/test-infra) repository. Issues, pull requests and other contributions can be made there.
 
 To learn more, read the [CONTRIBUTING][contributing] document.
 

@@ -46,7 +46,7 @@ spec:
       description: "GitHub repo that triggers the job. Variable set by Prow."
       type: string
     - name: github-token-secret
-      description: "Name of the secret holding the kyma bot github token."
+      description: "Name of the secret holding the Kyma bot GitHub token."
       type: string
       default: kyma-bot-github-token
   steps:

@@ -12,8 +12,8 @@ metadata:
     tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
-    The hide-github-comments task hide comments which belong to old commit.
-    A tool detect old comments by reading a github-comments metadata in GitHub comments.
+    The hide-github-comments task hides comments which belong to an old commit.
+    The tool detects old comments by reading github-comments metadata in GitHub comments.
   params:
     - name: PULL_NUMBER
       description: "Pull request number. Variable set by Prow."
@@ -28,7 +28,7 @@ spec:
       description: "GitHub repo that triggers the job. Variable set by Prow."
       type: string
     - name: github-token-secret
-      description: "Name of the secret holding the kyma bot github token."
+      description: "Name of the secret holding the Kyma bot GitHub token."
       type: string
       default: kyma-bot-github-token
   steps:

@@ -1,11 +1,11 @@
 # Terraform Executor
 
 The terraform-executor task initialise locally terraform state and run actions for provided terraform config.
-Usually, actions are plan and apply. Authentication to the Google Cloud is done through k8s service account with
-workload identity configured. A parameter additional_terraform_args allows defining terraform cli arguments in pipelines.
-When this parameter value is set in pipeline, a default value -no-color must be added to the list.
-The task uses tfcmt tool to run terraform actions and post results to GitHubPR.
-tfcmt tool use a github-comments metadata in GitHub comments, so github-comments can be used later for processing tfcmt comments.
+Usually, actions are plan and apply. Authentication to Google Cloud is done through the Kubernetes service account with the
+workload identity configured. The parameter **additional_terraform_args** allows defining Terraform CLI arguments in pipelines.
+When this parameter value is set in a pipeline, you must add the default value `-no-color` to the list.
+The task uses the tfcmt tool to run Terraform actions and post the results to GitHub PRs.
+The tfcmt tool uses github-comments metadata in GitHub comments, so github-comments can be used later for processing tfcmt comments.
 
 ## Compatibility
 
@@ -19,35 +19,35 @@ kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/
 
 ## Workspaces
 
-- **repo**: The workspace stores sources for building an image. Usually, this should be a workspace shared with other
+- **repo**: The workspace stores sources for building an image. Usually, this workspace should be shared with other
   tasks. _(REQUIRED)_
 
 ## Parameters
 
 - **terraform_action**: Terraform action to execute on provided config files. _(REQUIRED)_
-- **module_path**: Path to the terraform config files. _(REQUIRED)_
-- **additional_terraform_args**: Additional terraform arguments. Add -no-color flag if you override default value. _(OPTIONAL, default: '[ "-no-color" ]')_
-- **github-token-secret**: Name of the secret holding the kyma bot github token. _(OPTIONAL, default: 'kyma-bot-github-token')_
+- **module_path**: Path to the Terraform config files. _(REQUIRED)_
+- **additional_terraform_args**: Additional Terraform arguments. Add `-no-color` flag if you override the default value. _(OPTIONAL, default: '[ "-no-color" ]')_
+- **github-token-secret**: Name of the secret holding the Kyma bot GitHub token. _(OPTIONAL, default: 'kyma-bot-github-token')_
 - **PULL_NUMBER**: Pull request number. A variable set by Prow. _(REQUIRED)_
-- **SHA**: Commit hash with terraform config files.  _(REQUIRED)_
+- **SHA**: Commit hash with Terraform config files.  _(REQUIRED)_
 - **REPO_OWNER**: The GitHub organization that triggers the job. A variable set by Prow.  _(REQUIRED)_
 - **REPO_NAME**: The GitHub repository that triggers the job. A variable set by Prow.  _(REQUIRED)_
 
 ## Platforms
 
-You can run the Task on `linux/amd64` platform.
+You can run the Task on the `linux/amd64` platform.
 
 ## Usage
 
 See the following samples for usage:
 
-- [`prowjob-building-image.yaml`](samples/sample_prowjob_pipeline.yaml): A presubmit ProwJob that builds,signs and pushes an image.
+- [`prowjob-building-image.yaml`](samples/sample_prowjob_pipeline.yaml): The presubmit ProwJob that builds, signs, and pushes an image.
 
 ## Contributing
 
 We ❤ contributions.
 
-This task is maintained in the [Test Infra](https://github.com/kyma-project/test-infra) repository. Issues, pull requests and other contributions can be made there.
+This task is maintained in the [`Test Infra`](https://github.com/kyma-project/test-infra) repository. Issues, pull requests and other contributions can be made there.
 
 To learn more, read the [CONTRIBUTING][contributing] document.
 
