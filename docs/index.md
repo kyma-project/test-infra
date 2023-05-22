@@ -32,10 +32,6 @@
 
 [Cleanup of service account secrets](/development/secrets-rotator/cloud-run/service-account-keys-cleaner/README.md) - The Cloud Run service deletes old keys for a GCP service account and updates the required secret data for all service account secrets stored in the Secret Manager. The service is triggered by a Cloud Scheduler job.
 
-[Test Log Collector](/development/test-log-collector/README.md) - The purpose of the Test Log Collector is to gather logs from the testing Pods and to send them to the appropriate Slack channels.
-
-[Octopus Types](/development/test-log-collector/pkg/resources/clustertestsuite/types/README.md) - Types in that package has been copied from https://github.com/kyma-incubator/octopus/tree/master/pkg/apis/testing/v1alpha1 in order to solve problems with older dependencies in `octopus` project.
-
 [Tools](/development/tools/README.md) - This project contains Go applications for the `test-infra` repository.
 
 [certbotauthenticator](/development/tools/cmd/certbotauthenticator/README.md) - Certbotauthenticator is a binary called by the certbot when it generates the certificate. The binary is used in during manual DNS challenge authentication. In the manual mode, the certbot passes the domain name and the authentication token as environment variables to the certbotauthenticator to create a TXT record in the domain. This way, the Let's Encrypt system can validate the domain ownership. After the validation completes, the certbotauthenticator is called again to clean the TXT records.
@@ -83,6 +79,8 @@
 [GitHub.com and Azure Pipeline (ADO) integration](/docs/how-to/ado/how-to_integrate-githubcom-azurepipeline.md) - We have to verify that the integration of an SAP Azure DevopsPipeline as a quality gate for github.com works.
 
 [Add custom secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add a custom secret and use it in the Prow pipeline.
+
+[Standard Terraform configuration](/docs/how-to/how-to-create-standard-terraform-config.md) - This document describes the standard Terraform configuration that is used in `test-infra` repository. 
 
 [Use Tekton Pipelines with Prow](/docs/how-to/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use Kubernetes-native implementation of CI/CD pipelines, where every task is a self-contained set of commands.
 
@@ -136,6 +134,12 @@
 
 [Prow Workload Clusters](/docs/prow/workload-clusters.md) - This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` GCP project. We use two workload clusters for trusted and untrusted Prow jobs.
 
+[Prow runtime images](/images/README.md) - This directory contains images that can be used as runtime images for all ProwJobs in Kyma's Prow Instance.
+
+[buildpack-go](/images/buildpack-go/README.md) - This image contains a common toolchain for building and running Go-based applications and container images.
+
+[E2E DinD K3d](/images/e2e-dind-k3d/README.md) - This image contains common tools for all jobs/tasks that test Kyma modules in K3d.
+
 [Prow](/prow/README.md) - Prow is a Kubernetes-developed system that you can use as a Continuous Integration (CI) tool for validating your GitHub repositories and components, managing automatic validation of pull requests (PRs), applying and removing labels, or opening and closing issues.
 
 [Cluster](/prow/cluster/README.md) - This folder contains files related to the configuration of the Prow production cluster that are used during the cluster provisioning.
@@ -148,7 +152,7 @@
 
 [Probot Stale](/prow/cluster/resources/probot-stale/README.md) - This chart contains the `probot-stale` configuration.
 
-[Images](/prow/images/README.md) - This folder contains a list of images used in Prow jobs.
+[Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](../../images) directory instead.
 
 [Bootstrap Docker Image](/prow/images/bootstrap/README.md) - This folder contains the Bootstrap image for Prow infrastructure. Use it for a root image for other Prow images and for generic builds.
 

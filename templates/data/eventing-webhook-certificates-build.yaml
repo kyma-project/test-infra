@@ -1,0 +1,42 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/eventing-webhook/eventing-webhook-certificates-build.yaml
+        jobConfigs:
+          - repoName: kyma-project/api-gateway
+            jobs:
+              - jobConfig:
+                  name: pull-eventing-webhook-certificates-build
+                  annotations:
+                    owner: skydivingtunas
+                    description: Image to generate certificates for eventing webhooks.
+                  always_run: true
+                  args:
+                    - "--name=eventing-webhook-certificates"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile-certificates"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-eventing-webhook-certificates-build
+                  annotations:
+                    owner: skydivingtunas
+                    description: Image to generate certificates for eventing webhooks.
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  always_run: true
+                  branches:
+                    - ^main$
+                    - "^release-\\d+\\.\\d+$"
+                  args:
+                    - "--name=eventing-webhook-certificates"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile-certificates"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit

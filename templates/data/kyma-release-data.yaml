@@ -49,6 +49,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "post-rel{{ $relShort }}-kyma-integration-k3d"
+                  slack_channel: kyma-skr-release
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   branches:
@@ -93,6 +94,7 @@ templates:
                     - "bot_token"
               - jobConfig:
                   name: post-rel{{ $relShort }}-kyma-release-candidate
+                  slack_channel: kyma-skr-release
                   branches:
                     - '^{{ $rel }}\.\d+(?:-.*)?$' # release tags
                   annotations:
@@ -143,6 +145,7 @@ templates:
                     - "test-infra"
               - jobConfig:
                   name: "kyma-gke-nightly-rel{{ $relShort }}"
+                  slack_channel: kyma-skr-release
                   cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
                   annotations:
                     description: Kyma GKE nightly build (release-{{ $rel }})

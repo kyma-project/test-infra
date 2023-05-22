@@ -116,28 +116,6 @@ templates:
           - repoName: "kyma-project/kyma"
             jobs:
               - jobConfig:
-                  name: "pull-application-operator-lint"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/application-operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-                  run_if_changed: '^components/application-operator/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - linting
-              - jobConfig:
-                  name: "pull-application-operator-unit-test"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/application-operator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/application-operator/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
-              - jobConfig:
                   name: "pull-central-application-connectivity-validator-unit-test"
                   command: "/bin/sh"
                   args:
@@ -208,7 +186,11 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-function-controller-unit-test"
+                  annotations:
+                    owner: otters
+                    description: "run unit tests for function controller"
                   command: "/bin/sh"
+                  optional: false
                   args:
                     - "-c"
                     - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."

@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
-      run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((tests/fast-integration/eventing-test\S+|tests/fast-integration/utils\S+|tests/fast-integration/monitoring\S+|tests/fast-integration/test/fixtures/commerce-mock\S+|resources/eventing\S+|installation/resources/crds/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
       decoration_config:
@@ -47,8 +47,10 @@ presubmits: # runs on PRs
             env:
               - name: CREDENTIALS_DIR
                 value: "/etc/credentials/kyma-tunas-prow-event-mesh"
+              - name: EVENTING_JS_RECREATED_TEST
+                value: "true"
               - name: EVENTING_UPGRADE_JOB
-                value: "false"
+                value: "true"
               - name: EXECUTION_PROFILE
                 value: "production"
               - name: GARDENER_REGION

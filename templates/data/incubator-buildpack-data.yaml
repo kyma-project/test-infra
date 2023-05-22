@@ -287,7 +287,11 @@ templates:
                     - reconciler_main_jobConfig
                     - reconciler_cli_integration_jobConfig
               - jobConfig:
-                  name: "pre-latest-istio-reconciler-integration"
+                  name: "pre-latest-istio-reconciler-integration-k3d"
+                  annotations:
+                    owner: goat
+                    description: runs istio reconciler integration tests on k3d
+                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:
@@ -295,8 +299,6 @@ templates:
                     preset-kyma-guard-bot-github-token: "true"
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
-                  annotations:
-                    pipeline.platform: k3d
                   env:
                     TEST_NAME: istio
                     EXECUTION_PROFILE: evaluation
@@ -311,7 +313,11 @@ templates:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
-                  name: "pre-main-istio-reconciler-integration"
+                  name: "pre-main-istio-reconciler-integration-k3d"
+                  annotations:
+                    owner: goat
+                    description: runs istio reconciler integration tests on k3d
+                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:
@@ -319,8 +325,6 @@ templates:
                     preset-kyma-guard-bot-github-token: "true"
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
-                  annotations:
-                    pipeline.platform: k3d
                   env:
                     TEST_NAME: istio
                     EXECUTION_PROFILE: evaluation
@@ -336,7 +340,11 @@ templates:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
-                  name: "pre-main-ory-reconciler-eval-integration"
+                  name: "pre-main-ory-reconciler-eval-integration-k3d"
+                  annotations:
+                    owner: goat
+                    description: runs ory reconciler integration tests with evaluation profile on k3d
+                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/ory\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -344,8 +352,6 @@ templates:
                     preset-kyma-guard-bot-github-token: "true"
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
-                  annotations:
-                    pipeline.platform: k3d
                   env:
                     TEST_NAME: ory
                     EXECUTION_PROFILE: evaluation
@@ -361,7 +367,11 @@ templates:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
-                  name: "pre-main-ory-reconciler-prod-integration"
+                  name: "pre-main-ory-reconciler-prod-integration-gcp"
+                  annotations:
+                    owner: goat
+                    description: runs ory reconciler integration tests with production profile on Gardener GCP cluster
+                    pipeline.platform: gardener_gcp
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/ory\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -369,8 +379,6 @@ templates:
                     preset-kyma-guard-bot-github-token: "true"
                     preset-gardener-gcp-kyma-integration: "true"
                     preset-cluster-version: "true"
-                  annotations:
-                    pipeline.platform: gardener_gcp
                   env:
                     TEST_NAME: ory
                     EXECUTION_PROFILE: production
@@ -386,20 +394,6 @@ templates:
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_gardener_integration_jobConfig
-              - jobConfig:
-                  name: "pre-load-test-mock-kyma-incubator-reconciler"
-                  always_run: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-                  local:
-                    - reconciler_load-test-mock_jobConfig
-                    - reconciler_jobConfig_args
               - jobConfig:
                   name: "pre-dev-reconciler-integration-k3d"
                   # following regexp won't start build if only Markdown files were changed
@@ -435,7 +429,11 @@ templates:
                     - reconciler_dev_jobConfig
                     - reconciler_jobConfig_args
               - jobConfig:
-                  name: "post-latest-istio-reconciler-integration"
+                  name: "post-latest-istio-reconciler-integration-k3d"
+                  annotations:
+                    owner: goat
+                    description: runs istio reconciler integration tests on k3d
+                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:
@@ -443,8 +441,6 @@ templates:
                     preset-kyma-guard-bot-github-token: "true"
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
-                  annotations:
-                    pipeline.platform: k3d
                   env:
                     TEST_NAME: istio
                     EXECUTION_PROFILE: evaluation
@@ -459,7 +455,11 @@ templates:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
-                  name: "post-main-istio-reconciler-integration"
+                  name: "post-main-istio-reconciler-integration-k3d"
+                  annotations:
+                    owner: goat
+                    description: runs istio reconciler integration tests on k3d
+                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:
@@ -467,8 +467,6 @@ templates:
                     preset-kyma-guard-bot-github-token: "true"
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
-                  annotations:
-                    pipeline.platform: k3d
                   env:
                     TEST_NAME: istio
                     EXECUTION_PROFILE: evaluation
@@ -546,20 +544,6 @@ templates:
                     - jobConfig_postsubmit
                     - kaniko_buildpack
               - jobConfig:
-                  name: post-load-test-mock-kyma-incubator-reconciler
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - disable_testgrid
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-                  local:
-                    - reconciler_load-test-mock_jobConfig
-                    - reconciler_jobConfig_args
-              - jobConfig:
                   name: post-dev-kyma-incubator-reconciler
                 inheritedConfigs:
                   global:
@@ -607,7 +591,7 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230418-23b5d25059
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230519-bb3c69e522
                   command: generic-autobumper
                   args:
                     - --config=/home/prow/go/src/github.com/kyma-project/test-infra/prow/autobump-config/control-plane-autobump-reconciler-config.yaml

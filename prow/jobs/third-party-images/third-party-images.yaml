@@ -3,8 +3,54 @@
 
 presubmits: # runs on PRs
   kyma-project/third-party-images:
+    - name: pre-main-tpi-alertmanager
+      annotations:
+        description: "Pre-submit job to build alertmanager image."
+        owner: "huskies"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-alertmanager"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^alertmanager/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=tpi/alertmanager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=alertmanager"
+              - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pre-main-tpi-cloudsql-proxy
       annotations:
+        description: "builds cloudsql-proxy image"
+        owner: "goat"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -25,6 +71,50 @@ presubmits: # runs on PRs
               - "--name=tpi/cloudsql-docker/gce-proxy"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=cloudsql-proxy"
+              - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: pre-main-tpi-configmap-reload
+      annotations:
+        description: "Pre-submit job to build configmap-reload image."
+        owner: "huskies"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-tpi-configmap-reload"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^configmap-reload/'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=tpi/configmap-reload"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=configmap-reload"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
             resources:
@@ -89,6 +179,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-fluent-bit
       annotations:
+        description: "Pre-submit job to build Fluent Bit image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -109,48 +201,6 @@ presubmits: # runs on PRs
               - "--name=tpi/fluent-bit"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=fluent-bit"
-              - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
-    - name: pre-main-tpi-jaeger-operator
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-tpi-jaeger-operator"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-      run_if_changed: '^jaeger-operator/'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
-            command:
-              - "/image-builder"
-            args:
-              - "--name=tpi/jaeger-operator"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=jaeger-operator"
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
             resources:
@@ -214,6 +264,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-loki
       annotations:
+        description: "Pre-submit job to build Loki image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -256,6 +308,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-oauth2-proxy
       annotations:
+        description: "Pre-submit job to build OAuth2 Proxy image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -298,6 +352,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-kiwigrid-sidecar
       annotations:
+        description: "Pre-submit job to build Kiwigrid-sidecar image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -340,6 +396,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-node-exporter
       annotations:
+        description: "Pre-submit job to build node_exporter image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -382,6 +440,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-grafana
       annotations:
+        description: "Pre-submit job to build Grafana image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -481,6 +541,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-kube-state-metrics
       annotations:
+        description: "Pre-submit job to build kube-state-metrics image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -523,6 +585,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-otel-collector
       annotations:
+        description: "Pre-submit job to build OpenTelemetry Collector image."
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -566,8 +630,59 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/third-party-images:
+    - name: post-main-tpi-alertmanager
+      annotations:
+        description: "Post-submit job to build alertmanager image."
+        owner: "huskies"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-alertmanager"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      run_if_changed: '^alertmanager/'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=tpi/alertmanager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=alertmanager"
+              - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
+              - "--tag=v{{ .Env \"ALERTMANAGER_VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-tpi-cloudsql-proxy
       annotations:
+        description: "builds cloudsql-proxy image"
+        owner: "goat"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -592,6 +707,55 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"VERSION\" }}-{{ .ShortSHA }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: post-main-tpi-configmap-reload
+      annotations:
+        description: "Post-submit job to build configmap-reload image."
+        owner: "huskies"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-tpi-configmap-reload"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      run_if_changed: '^configmap-reload/'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=tpi/configmap-reload"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=configmap-reload"
+              - "--dockerfile=Dockerfile"
+              - "--env-file=envs"
+              - "--tag=v{{ .Env \"CONFIGMAP_RELOAD_VERSION\" }}-{{ .ShortSHA }}"
             resources:
               requests:
                 memory: 1.5Gi
@@ -656,6 +820,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-fluent-bit
       annotations:
+        description: "Post-submit job to build Fluent Bit image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -668,6 +834,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -680,50 +849,6 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"FLB_VERSION\" }}-{{ .ShortSHA }}"
-            resources:
-              requests:
-                memory: 1.5Gi
-                cpu: 1
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
-    - name: post-main-tpi-jaeger-operator
-      annotations:
-        pipeline.trigger: "pr-merge"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-tpi-jaeger-operator"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
-      run_if_changed: '^jaeger-operator/'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
-            command:
-              - "/image-builder"
-            args:
-              - "--name=tpi/jaeger-operator"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=jaeger-operator"
-              - "--dockerfile=Dockerfile"
-              - "--env-file=envs"
-              - "--tag={{ .Env \"JAEGER_OPERATOR_VERSION\" }}-{{ .ShortSHA }}"
             resources:
               requests:
                 memory: 1.5Gi
@@ -786,6 +911,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-loki
       annotations:
+        description: "Post-submit job to build Loki image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -798,6 +925,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -830,6 +960,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-oauth2-proxy
       annotations:
+        description: "Post-submit job to build OAuth2 Proxy image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -842,6 +974,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -874,6 +1009,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-kiwigrid-sidecar
       annotations:
+        description: "Post-submit job to build Kiwigrid-sidecar image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -886,6 +1023,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -918,6 +1058,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-node-exporter
       annotations:
+        description: "Post-submit job to build node_exporter image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -930,6 +1072,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -962,6 +1107,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-grafana
       annotations:
+        description: "Post-submit job to build Grafana image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -974,6 +1121,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -1065,6 +1215,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-kube-state-metrics
       annotations:
+        description: "Post-submit job to build kube-state-metrics image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1077,6 +1229,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -1109,6 +1264,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-otel-collector
       annotations:
+        description: "Post-submit job to build OpenTelemetry Collector image."
+        owner: "huskies"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1121,6 +1278,9 @@ postsubmits: # runs on main
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"

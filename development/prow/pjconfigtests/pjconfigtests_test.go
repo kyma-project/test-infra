@@ -1,6 +1,9 @@
 package pjconfigtests_test
 
 import (
+	"fmt"
+
+	kprow "github.com/kyma-project/test-infra/development/prow"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"
@@ -15,7 +18,13 @@ var _ = Describe("Prowjob,", func() {
 					"prow.k8s.io/pubsub.project": Equal("sap-kyma-prow"),
 					"prow.k8s.io/pubsub.runID":   Not(BeZero()),
 					"prow.k8s.io/pubsub.topic":   Equal("prowjobs"),
-				}), "Presubmit %s is missing pubsub required config.", pj.Name)
+				}), "Presubmit %s is missing pubsub required labels.", pj.Name)
+			})
+			It("has ownership annotation", func() {
+				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
+				if missingAnnotations.PjName != "" {
+					fmt.Printf("%s\n", missingAnnotations)
+				}
 			})
 		}
 	})
@@ -27,7 +36,13 @@ var _ = Describe("Prowjob,", func() {
 					"prow.k8s.io/pubsub.project": Equal("sap-kyma-prow"),
 					"prow.k8s.io/pubsub.runID":   Not(BeZero()),
 					"prow.k8s.io/pubsub.topic":   Equal("prowjobs"),
-				}), "Postsubmit %s is missing pubsub required config.", pj.Name)
+				}), "Postsubmit %s is missing pubsub required labels.", pj.Name)
+			})
+			It("has ownership annotation", func() {
+				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
+				if missingAnnotations.PjName != "" {
+					fmt.Printf("%s\n", missingAnnotations)
+				}
 			})
 		}
 	})
@@ -39,7 +54,13 @@ var _ = Describe("Prowjob,", func() {
 					"prow.k8s.io/pubsub.project": Equal("sap-kyma-prow"),
 					"prow.k8s.io/pubsub.runID":   Not(BeZero()),
 					"prow.k8s.io/pubsub.topic":   Equal("prowjobs"),
-				}), "Periodic %s is missing pubsub required config.", pj.Name)
+				}), "Periodic %s is missing pubsub required labels.", pj.Name)
+			})
+			It("has ownership annotation", func() {
+				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
+				if missingAnnotations.PjName != "" {
+					fmt.Printf("%s\n", missingAnnotations)
+				}
 			})
 		}
 	})

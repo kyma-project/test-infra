@@ -1,0 +1,130 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/test-infra/images.yaml
+        jobConfigs:
+          - repoName: "kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "pull-test-infra-buildpack-go"
+                  annotations:
+                    owner: neighbors
+                    description: Pre-submit job to build buildpack-go image.
+                  run_if_changed: "^images/buildpack-go/"
+                  args:
+                    - "--name=testimages/buildpack-go"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=images/buildpack-go"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "kaniko_buildpack"
+              - jobConfig:
+                  name: "post-test-infra-buildpack-go"
+                  annotations:
+                    owner: neighbors
+                    description: post-submit job to build buildpack-go image.
+                  run_if_changed: "^images/buildpack-go/"
+                  args:
+                    - "--name=testimages/buildpack-go"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=images/buildpack-go"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "kaniko_buildpack"
+
+              - jobConfig:
+                  name: "pull-test-infra-e2e-dind-k3d"
+                  annotations:
+                    owner: neighbors
+                    description: Pre-submit job to build e2e-dind-k3d image.
+                  run_if_changed: "^images/e2e-dind-k3d/"
+                  args:
+                    - "--name=testimages/e2e-dind-k3d"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=images/e2e-dind-k3d"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "kaniko_buildpack"
+              - jobConfig:
+                  name: "post-test-infra-e2e-dind-k3d"
+                  annotations:
+                    owner: neighbors
+                    description: post-submit job to build e2e-dind-k3d image.
+                  run_if_changed: "^images/e2e-dind-k3d/"
+                  args:
+                    - "--name=testimages/e2e-dind-k3d"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=images/e2e-dind-k3d"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "kaniko_buildpack"
+
+              - jobConfig:
+                  name: "pull-test-infra-e2e-garden"
+                  annotations:
+                    owner: neighbors
+                    description: Pre-submit job to build e2e-garden image.
+                  run_if_changed: "^images/e2e-garden/"
+                  args:
+                    - "--name=testimages/e2e-garden"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=images/e2e-garden"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "kaniko_buildpack"
+              - jobConfig:
+                  name: "post-test-infra-e2e-garden"
+                  annotations:
+                    owner: neighbors
+                    description: post-submit job to build e2e-garden image.
+                  run_if_changed: "^images/e2e-garden/"
+                  args:
+                    - "--name=testimages/e2e-garden"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=images/e2e-garden"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "kaniko_buildpack"
+
+              - jobConfig:
+                  name: "pull-test-infra-e2e-gcloud"
+                  annotations:
+                    owner: neighbors
+                    description: Pre-submit job to build e2e-gcloud image.
+                  run_if_changed: "^images/e2e-gcloud/"
+                  args:
+                    - "--name=testimages/e2e-gcloud"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=images/e2e-gcloud"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "kaniko_buildpack"
+              - jobConfig:
+                  name: "post-test-infra-e2e-gcloud"
+                  annotations:
+                    owner: neighbors
+                    description: post-submit job to build e2e-gcloud image.
+                  run_if_changed: "^images/e2e-gcloud/"
+                  args:
+                    - "--name=testimages/e2e-gcloud"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=images/e2e-gcloud"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "kaniko_buildpack"

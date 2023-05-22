@@ -1,5 +1,4 @@
 #!/bin/bash
-log::banner "Bump reconciler version used by CLI and publish the unstable CLI binaries"
 
 set -o errexit
 
@@ -12,6 +11,8 @@ source "${SCRIPT_DIR}/lib/log.sh"
 source "${SCRIPT_DIR}/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$SCRIPT_DIR/lib/gcp.sh"
+
+log::banner "Bump reconciler version used by CLI and publish the unstable CLI binaries"
 
 cleanup() {
     ARG=$?

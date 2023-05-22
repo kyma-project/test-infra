@@ -32,6 +32,9 @@ templates:
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
+          limits:
+            limits_memory: 3Gi
+            limits_cpu: 2
           vm_job_make:
             path_alias: github.com/kyma-project/keda-manager
             command: "bash"
@@ -105,6 +108,31 @@ templates:
                     - vm_job_make
                     - vm_job_k3d
                     - vm_job_labels
+              - jobConfig:
+                  name: post-keda-manager-module-build
+                  annotations:
+                    owner: otters
+                    description: Job to build keda module for a release.
+                  always_run: true
+                  labels:
+                    preset-bot-github-token: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
+                  command: "./scripts/release.sh"
+                  args:
+                    - "ci"
+                  branches:
+                    - ^\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default
+                    - limits
               - jobConfig:
                   name: pre-keda-manager-operator-lint
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"

@@ -53,56 +53,6 @@ presubmits: # runs on PRs
                 cpu: 200m
   
   kyma-project/kyma:
-    - name: pull-application-operator-lint
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-application-operator-lint"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/application-operator/(.*\.go$|.golangcilint.yaml)'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/application-operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-    - name: pull-application-operator-unit-test
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-application-operator-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/application-operator/.*\.go$'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/application-operator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
     - name: pull-central-application-connectivity-validator-unit-test
       annotations:
         pipeline.trigger: "pr-submit"
@@ -255,13 +205,14 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-function-controller-unit-test
       annotations:
+        description: "run unit tests for function controller"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-function-controller-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/function-controller/.*\.go$'
-      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload

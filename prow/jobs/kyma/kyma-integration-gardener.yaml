@@ -3,226 +3,10 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-main-kyma-gardener-azure-fast-integration
-      annotations:
-        pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma install"
-        pipeline.platform: "gardener_azure"
-        pipeline.profile: "evaluation"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-azure-fast-integration"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-az-kyma-prow-credentials: "true"
-        preset-build-pr: "true"
-        preset-cluster-version: "true"
-        preset-debug-commando-oom: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-gke-integration: "true"
-        preset-gardener-azure-kyma-integration: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-cli-stable: "true"
-        preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
-      optional: true
-      skip_report: false
-      decorate: true
-      decoration_config:
-        grace_period: 600000000000
-        timeout: 14400000000000
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
-            env:
-              - name: EXECUTION_PROFILE
-                value: "evaluation"
-              - name: GARDENER_REGION
-                value: "northeurope"
-              - name: GARDENER_ZONES
-                value: "1"
-              - name: KYMA_PROJECT_DIR
-                value: "/home/prow/go/src/github.com/kyma-project"
-              - name: REGION
-                value: "northeurope"
-              - name: RS_GROUP
-                value: "kyma-gardener-azure"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-main-kyma-gardener-azure-alpha-eval
-      annotations:
-        pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
-        pipeline.profile: "evaluation"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-azure-alpha-eval"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-az-kyma-prow-credentials: "true"
-        preset-build-pr: "true"
-        preset-cluster-version: "true"
-        preset-debug-commando-oom: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-gke-integration: "true"
-        preset-gardener-azure-kyma-integration: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-cli-stable: "true"
-        preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
-      run_if_changed: '^((resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
-      skip_report: false
-      decorate: true
-      decoration_config:
-        grace_period: 600000000000
-        timeout: 14400000000000
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
-            env:
-              - name: EXECUTION_PROFILE
-                value: "evaluation"
-              - name: GARDENER_REGION
-                value: "northeurope"
-              - name: GARDENER_ZONES
-                value: "1"
-              - name: KYMA_PROJECT_DIR
-                value: "/home/prow/go/src/github.com/kyma-project"
-              - name: REGION
-                value: "northeurope"
-              - name: RS_GROUP
-                value: "kyma-gardener-azure"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-main-kyma-gardener-azure-alpha-prod
-      annotations:
-        pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
-        pipeline.profile: "production"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-azure-alpha-prod"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-az-kyma-prow-credentials: "true"
-        preset-build-pr: "true"
-        preset-cluster-version: "true"
-        preset-debug-commando-oom: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-gke-integration: "true"
-        preset-gardener-azure-kyma-integration: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-cli-stable: "true"
-        preset-sa-gardener-logs: "true"
-        preset-sa-test-gcr-push: "true"
-      run_if_changed: '^((resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
-      skip_report: false
-      decorate: true
-      decoration_config:
-        grace_period: 600000000000
-        timeout: 14400000000000
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
-            env:
-              - name: EXECUTION_PROFILE
-                value: "production"
-              - name: GARDENER_REGION
-                value: "northeurope"
-              - name: GARDENER_ZONES
-                value: "1"
-              - name: KYMA_PROJECT_DIR
-                value: "/home/prow/go/src/github.com/kyma-project"
-              - name: REGION
-                value: "northeurope"
-              - name: RS_GROUP
-                value: "kyma-gardener-azure"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-gardener-gcp-goats-api-gateway
       annotations:
+        description: "runs api-gateway integration tests on Gardener GCP cluster"
+        owner: "goat"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma install"
         pipeline.platform: "gardener_gcp"
@@ -285,9 +69,9 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
   
 periodics: # runs on schedule
-    - name: kyma-alpha-integration-evaluation-gardener-azure
+    - name: kyma-integration-evaluation-gardener-azure
       annotations:
-        description: "Evaluation profile for Kyma 2 Azure Gardener integration job."
+        description: "Evaluation profile for Kyma Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_azure"
@@ -297,7 +81,7 @@ periodics: # runs on schedule
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-alpha-integration-evaluation-gardener-azure"
+        prow.k8s.io/pubsub.runID: "kyma-integration-evaluation-gardener-azure"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-cluster-version: "true"
@@ -311,7 +95,7 @@ periodics: # runs on schedule
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
-      cron: "5 * * * *"
+      cron: "0 2,14 * * *"
       skip_report: false
       decorate: true
       decoration_config:
@@ -332,6 +116,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -363,9 +150,9 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: kyma-alpha-integration-production-gardener-azure
+    - name: kyma-integration-production-gardener-azure
       annotations:
-        description: "Production profile for Kyma 2 Azure Gardener integration job."
+        description: "Production profile for Kyma Azure Gardener integration job."
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_azure"
@@ -375,7 +162,7 @@ periodics: # runs on schedule
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-alpha-integration-production-gardener-azure"
+        prow.k8s.io/pubsub.runID: "kyma-integration-production-gardener-azure"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-az-kyma-prow-credentials: "true"
         preset-cluster-version: "true"
@@ -389,7 +176,7 @@ periodics: # runs on schedule
         preset-log-collector-slack-token: "true"
         preset-sa-gardener-logs: "true"
         preset-sa-test-gcr-push: "true"
-      cron: "5 * * * *"
+      cron: "0 1,13 * * *"
       skip_report: false
       decorate: true
       decoration_config:
@@ -410,6 +197,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
