@@ -9,7 +9,7 @@ module "tekton-gatekeeper-constraints" {
   constraints_path          = [var.tekton_constraints_path]
 }
 
-module "untrusted-gatekeeper-constraints" {
+module "untrusted_gatekeeper_constraints" {
   providers = {
     kubectl = kubectl.untrusted_workload_k8s_cluster
   }
@@ -23,7 +23,7 @@ module "untrusted-gatekeeper-constraints" {
   ]
 }
 
-module "trusted-gatekeeper-constraints" {
+module "trusted_gatekeeper_constraints" {
   providers = {
     kubectl = kubectl.trusted_workload_k8s_cluster
   }
