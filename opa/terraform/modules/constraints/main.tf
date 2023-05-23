@@ -10,8 +10,7 @@ resource "kubectl_manifest" "constraint_templates" {
 resource "kubectl_manifest" "constraints" {
   for_each = flatten([
     for constraints_path in var.constraints_path : fileset(constraints_path, "**.yaml")
-  ]) #fileset(var.constraints_path, "**.yaml")
+  ])
   yaml_body = each.value
   # wait_for_rollout = false
-
 }
