@@ -1,4 +1,4 @@
-module "tekton-gatekeeper-constraints" {
+module "tekton_gatekeeper_constraints" {
   providers = {
     kubectl = kubectl.tekton_k8s_cluster
   }

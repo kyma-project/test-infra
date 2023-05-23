@@ -16,6 +16,12 @@ variable "workloads_project_id" {
   description = "Additional Google Cloud project ID."
 }
 
+variable "tekton_gatekeeper_manifest_path" {
+  type        = string
+  default     = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
+  description = "Path to the Tekton Gatekeeper yaml manifest file. This file will be applied to the tekton k8s cluster to install gatekeeper."
+}
+
 variable "tekton_k8s_cluster" {
   type = object({
     name     = string
@@ -70,6 +76,33 @@ variable "untrusted_workload_k8s_cluster" {
   description = "Details of the untrusted-workload k8s cluster."
 }
 
+variable "terraform_executor_k8s_service_account" {
+  type = object({
+    name      = string
+    namespace = string
+  })
+
+  default = {
+    name      = "terraform-executor"
+    namespace = "default"
+  }
+
+  description = "Details of terraform executor k8s service account."
+}
+
+variable "terraform_executor_gcp_service_account" {
+  type = object({
+    id         = string
+    project_id = string
+  })
+
+  default = {
+    id         = "terraform-executor"
+    project_id = "sap-kyma-prow"
+  }
+
+  description = "Details of terraform executor gcp service account."
+}
 
 variable "constraint_templates_path" {
   type    = string

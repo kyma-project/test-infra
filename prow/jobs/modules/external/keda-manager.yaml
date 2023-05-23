@@ -218,6 +218,51 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/keda-manager:
+    - name: post-keda-manager-module-build
+      annotations:
+        description: "Job to build keda module for a release."
+        owner: "otters"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-keda-manager-module-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^\d+\.\d+\.\d+(?:-.*)?$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            command:
+              - "./scripts/release.sh"
+            args:
+              - "ci"
+            env:
+              - name: IMG
+                value: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
+              - name: KUSTOMIZE_VERSION
+                value: "v4.5.6"
+              - name: MODULE_REGISTRY
+                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+              limits:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: post-keda-module-build
       annotations:
         pipeline.trigger: "pr-merge"

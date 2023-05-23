@@ -35,6 +35,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-api-gateway-lint
+                  annotations:
+                    owner: goat
+                    description: runs api-gateway linting
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "/bin/sh"
@@ -48,6 +51,9 @@ templates:
                     - linting
               - jobConfig:
                   name: pull-api-gateway-test
+                  annotations:
+                    owner: goat
+                    description: runs api-gateway unit tests
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "./tests/integration/scripts/code-coverage-guard.sh"
@@ -58,7 +64,10 @@ templates:
                   local:
                     - job_default
               - jobConfig:
-                  name: pull-api-gateway-integration-test
+                  name: pull-api-gateway-integration-gcp
+                  annotations:
+                    owner: goat
+                    description: runs api-gateway integration tests on Gardener GCP cluster
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   always_run: true
                   command: "./tests/integration/scripts/integration-gardener.sh"
@@ -80,7 +89,10 @@ templates:
                     - with_ias_credentials
                     - command_integration
               - jobConfig:
-                  name: post-api-gateway-integration-test
+                  name: post-api-gateway-integration-gcp
+                  annotations:
+                    owner: goat
+                    description: runs api-gateway integration tests on Gardener GCP cluster
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   always_run: true
                   branches:
