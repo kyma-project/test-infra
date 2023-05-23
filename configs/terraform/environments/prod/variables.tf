@@ -1,49 +1,74 @@
 variable "gcp_region" {
-  type    = string
-  default = "europe-west4"
+  type        = string
+  default     = "europe-west4"
+  description = "Default Google Cloud region to create resources."
 }
 
 variable "gcp_project_id" {
-  type    = string
-  default = "sap-kyma-prow"
-}
-
-variable "tekton_k8s_config_path" {
   type        = string
-  default     = "/kubeconfigs/tekton-config"
-  description = "Path to kubeconfig file ot use to connect to tekton k8s cluster."
+  default     = "sap-kyma-prow"
+  description = "Google Cloud project to create resources."
 }
 
-variable "tekton_k8s_config_context" {
+variable "workloads_project_id" {
   type        = string
-  default     = "gke_sap-kyma-prow_europe-west4_tekton"
-  description = "Context to use to connect to tekton k8s cluster."
+  default     = "sap-kyma-prow-workloads"
+  description = "Additional Google Cloud project ID."
 }
 
-variable "trusted_workloads_k8s_config_path" {
+variable "tekton_k8s_cluster" {
+  type = object({
+    name     = string
+    location = string
+  })
+
+  default = {
+    name     = "tekton"
+    location = "europe-west4"
+  }
+
+  description = "Details of the tekton k8s cluster."
+}
+
+variable "trusted_workload_gatekeeper_manifest_path" {
   type        = string
-  default     = "/kubeconfigs/trusted-workloads-config"
-  description = "Path to kubeconfig file ot use to connect to trusted workloads k8s cluster."
+  default     = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
+  description = "Path to the Tekton Gatekeeper yaml manifest file. This file will be applied to the trusted-workload k8s cluster to install gatekeeper."
 }
 
-variable "trusted_workloads_k8s_config_context" {
+variable "trusted_workload_k8s_cluster" {
+  type = object({
+    name     = string
+    location = string
+  })
+
+  default = {
+    name     = "trusted-workload-kyma-prow"
+    location = "europe-west3"
+  }
+
+  description = "Details of the trusted-workload k8s cluster."
+}
+
+variable "untrusted_workload_gatekeeper_manifest_path" {
   type        = string
-  default     = "gke_sap-kyma-prow_europe-west3_trusted-workload-kyma-prow"
-  description = "Context to use to connect to trusted workloads k8s cluster."
+  default     = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
+  description = "Path to the Tekton Gatekeeper yaml manifest file. This file will be applied to the untrusted-workload k8s cluster to install gatekeeper."
 }
 
-variable "untrusted_workloads_k8s_config_path" {
-  type        = string
-  default     = "/kubeconfigs/untrusted-workloads-config"
-  description = "Path to kubeconfig file ot use to connect to untrusted workloads k8s cluster."
-}
+variable "untrusted_workload_k8s_cluster" {
+  type = object({
+    name     = string
+    location = string
+  })
 
-variable "untrusted_workloads_k8s_config_context" {
-  type        = string
-  default     = "gke_sap-kyma-prow_europe-west3_untrusted-workload-kyma-prow"
-  description = "Context to use to connect to untrusted workloads k8s cluster."
-}
+  default = {
+    name     = "untrusted-workload-kyma-prow"
+    location = "europe-west3"
+  }
 
+  description = "Details of the untrusted-workload k8s cluster."
+}
 
 
 variable "constraint_templates_path" {
@@ -51,22 +76,22 @@ variable "constraint_templates_path" {
   default = "../../../../opa/gatekeeper/constraint-templates"
 }
 
-variable "var.tekton_constraints_path" {
+variable "tekton_constraints_path" {
   type    = string
   default = "../../../../tekton/deployments/gatekeeper-constraints"
 }
 
-variable "var.trusted_workloads_constraints_path" {
+variable "trusted_workloads_constraints_path" {
   type    = string
   default = "../../../../prow/cluster/resources/gatekeeper-constraints/trusted"
 }
 
-variable "var.untrusted_workloads_constraints_path" {
+variable "untrusted_workloads_constraints_path" {
   type    = string
   default = "../../../../prow/cluster/resources/gatekeeper-constraints/untrusted"
 }
 
-variable "var.workloads_constraints_path" {
+variable "workloads_constraints_path" {
   type    = string
   default = "../../../../prow/cluster/resources/gatekeeper-constraints/workloads"
 }
