@@ -90,7 +90,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&ProwConfig, "prow-config", "", "path to the prow config file")
 	rootCmd.PersistentFlags().StringVar(&JobsConfigDir, "prow-jobs-dir", "", "path to the directory which contains prow job files")
 	rootCmd.PersistentFlags().StringVar(&TerraformDir, "terraform-dir", "", "path to the directory containing terraform files")
-	rootCmd.PersistentFlags().StringVar(&SecScannerConfig, "sec-scanner-config", "", "path to the security scanner config fiel")
+	rootCmd.PersistentFlags().StringVar(&SecScannerConfig, "sec-scanner-config", "", "path to the security scanner config field")
 	rootCmd.PersistentFlags().StringVar(&KubernetesFiles, "kubernetes-dir", "", "path to the directory containing kubernetes deployments")
 
 	rootCmd.MarkFlagRequired("prow-config")
