@@ -1,0 +1,23 @@
+apiVersion: tekton.dev/v1beta1
+kind: TaskRun
+metadata:
+  generateName: test-k3d-
+spec:
+  podTemplate:
+    hostAliases:
+      - ip: 127.0.0.1
+        hostnames:
+          - "k3d-registry.localhost"
+  params:
+    - name: image
+      value: europe-docker.pkg.dev/kyma-project/dev/testimages/e2e-dind-k3d:PR-7701
+    - name: script
+      value: |
+        kubectl cluster-info
+        kubectl run --image=nginx:latest nginx-pod
+        sleep 30
+        kubectl get pods
+  workspaces:
+    - name: source
+  taskRef:
+    name: e2e-k3d

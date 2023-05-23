@@ -1,0 +1,141 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: e2e-k3d
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/pipelines.minVersion: "0.36.0"
+    tekton.dev/categories: Testing
+    tekton.dev/tags: test
+    tekton.dev/displayName: "e2e-k3d"
+    tekton.dev/platforms: "linux/amd64,linux/arm64"
+spec:
+  description: >-
+    This task runs a custom script with local k3d cluster.
+    
+    See https://k3d.io/
+  workspaces:
+    - name: source
+      description: Directory where application source is stored
+  params:
+    - name: image
+      type: string
+      description: Image to be used in a script
+    - name: script
+      type: string
+      description: Script to run after k3d provisioning
+    - name: registryPort
+      type: string
+      description: K3d registry port
+      default: "5000"
+    - name: provisionRegistry
+      type: string
+      description: Enable registry provisioning
+      default: true
+    - name: k3dVersion
+      type: string
+      description: K3d version to run
+      default: "5.5.1"
+    - name: trace
+      type: string
+      description: Enable trace logging
+      default: false
+  volumes:
+    - name: dind-certs
+      emptyDir: {}
+    - name: k3d-kubeconfig
+      emptyDir: {}
+    - name: docker-graph
+      emptyDir: {}
+    - name: modules
+      hostPath:
+        path: /lib/modules
+        type: Directory
+    - name: cgroup
+      hostPath:
+        path: /sys/fs/cgroup
+        type: Directory
+  steps:
+    - image: ghcr.io/k3d-io/k3d:$(params.k3dVersion)-dind
+      name: setup-k3d
+      volumeMounts:
+        - mountPath: /certs/client
+          name: dind-certs
+        - name: k3d-kubeconfig
+          mountPath: /kube
+      env:
+        - name: DOCKER_HOST
+          value: tcp://localhost:2376
+        - name: DOCKER_TLS_VERIFY
+          value: '1'
+        - name: DOCKER_CERT_PATH
+          value: /certs/client
+      script: |
+        #!/usr/bin/env bash
+        set -e
+        ARGS=()
+        if [[ "$(params.trace)" == "true" ]]; then
+          ARGS+=( "--trace" )
+        fi
+        echo -n "[* * *] Provisioning k3d cluster"
+        if [[ "$(params.provisionRegistry)" == "true" ]]; then
+          echo " with Registry k3d-registry.localhost on port $(params.registryPort)"
+          k3d registry create registry.localhost --port "$(params.registryPort)" "${ARGS[@]}"
+          ARGS+=( "--registry-use=k3d-registry.localhost:$(params.registryPort)" )
+        else
+          echo
+        fi
+        
+        k3d cluster create k3d "${ARGS[@]}"
+        k3d kubeconfig get k3d > /kube/config.yaml
+        sleep 5
+    - image: $(params.image)
+      name: run-script
+      workingDir: $(workspaces.source.path)
+      volumeMounts:
+        - mountPath: /certs/client
+          name: dind-certs
+        - name: k3d-kubeconfig
+          mountPath: /kube
+      env:
+        - name: DOCKER_HOST
+          value: tcp://localhost:2376
+        - name: DOCKER_TLS_VERIFY
+          value: '1'
+        - name: DOCKER_CERT_PATH
+          value: /certs/client
+        - name: KUBECONFIG
+          value: /kube/config.yaml
+      script: "$(params.script)"
+  sidecars:
+    - image: docker:23.0.6-dind
+      name: dind
+      args:
+        - --userland-proxy=false
+        - --debug
+      resources:
+        requests:
+          memory: "512Mi"
+        limits:
+          memory: 2Gi
+          cpu: 2
+      securityContext:
+        privileged: true
+      env:
+        - name: DOCKER_TLS_CERTDIR
+          value: /certs
+      volumeMounts:
+        - mountPath: /certs/client
+          name: dind-certs
+        - mountPath: /var/lib/docker
+          name: docker-graph
+        - mountPath: /lib/modules
+          name: modules
+          readOnly: true
+        - mountPath: /sys/fs/cgroup
+          name: cgroup
+      readinessProbe:
+        periodSeconds: 1
+        exec:
+          command: [ 'ls', '/certs/client/ca.pem' ]
