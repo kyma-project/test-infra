@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-central-application-gateway-build
       annotations:
+        description: "Build the component image"
+        owner: "framefrog"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
