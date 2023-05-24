@@ -1,8 +1,10 @@
+# Constraint to allow only image-builder tool trusted usage on tekton cluster run as image-builder service account identity.
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: ServiceAccountTrustedUsage
 metadata:
   name: tekton-image-builder-sa-trusted-usage
 spec:
+  enforcementAction: warn
   match:
     kinds:
       - apiGroups: [""]
