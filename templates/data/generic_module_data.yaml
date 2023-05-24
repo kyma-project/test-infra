@@ -124,7 +124,7 @@ templates:
                   args:
                     - "ci"
                   branches:
-                    - ^\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
