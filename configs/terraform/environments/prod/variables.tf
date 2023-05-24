@@ -106,25 +106,25 @@ variable "terraform_executor_gcp_service_account" {
 
 variable "constraint_templates_path" {
   type    = string
-  default = "../../../../opa/gatekeeper/constraint-templates"
+  default = "../../../../opa/gatekeeper/constraint-templates/**.yaml"
 }
 
 variable "tekton_constraints_path" {
   type    = string
-  default = "../../../../tekton/deployments/gatekeeper-constraints"
+  default = "../../../../tekton/deployments/gatekeeper-constraints/**.yaml"
 }
 
 variable "trusted_workloads_constraints_path" {
   type    = string
-  default = "../../../../prow/cluster/resources/gatekeeper-constraints/trusted"
+  default = "../../../../prow/cluster/resources/gatekeeper-constraints/trusted/**.yaml"
 }
 
 variable "untrusted_workloads_constraints_path" {
   type    = string
-  default = "../../../../prow/cluster/resources/gatekeeper-constraints/untrusted"
+  default = "../../../../prow/cluster/resources/gatekeeper-constraints/untrusted/**.yaml"
 }
 
 variable "workloads_constraints_path" {
   type    = string
-  default = "../../../../prow/cluster/resources/gatekeeper-constraints/workloads"
+  default = "../../../../prow/cluster/resources/gatekeeper-constraints/workloads/**.yaml"
 }
