@@ -1,15 +1,15 @@
 # E2E K3d task
 
-This task runs custom script with automatic provisioning of K3d cluster with registry running in Docker-in-Docker.
+This task runs a custom script with automatic provisioning of the K3d cluster with the registry running in Docker-in-Docker.
 
 ### Parameters
 
 * **image**: script base image
 * **script**: runtime script
-* **provisionRegistry**: enable registry provisioning (default: true)
-* **registryPort**: port used during registry provisioning (default: 5000)
-* **k3dVersion**: define which k3d version to use (default: 5.5.1)
-* **trace** enable k3d trace output (default: false)
+* **provisionRegistry**: enables registry provisioning (default: `true`)
+* **registryPort**: port used during registry provisioning (default: `5000`)
+* **k3dVersion**: defines which k3d version to use (default: `5.5.1`)
+* **trace** enables k3d trace output (default: `false`)
 
 ### Workspaces
 
@@ -17,7 +17,7 @@ This task runs custom script with automatic provisioning of K3d cluster with reg
 
 ## Using internal registry
 
-To use internal registry, PipelineRun spec needs to contain the following `podTemplate`:
+To use the internal registry, the PipelineRun spec needs to contain the following `podTemplate`:
 ```yaml
   podTemplate:
     hostAliases:
@@ -28,4 +28,4 @@ To use internal registry, PipelineRun spec needs to contain the following `podTe
 
 ## Usage
 
-For usage examples see files in [samples](./samples).
+For usage examples, see the files in [samples](./samples).
