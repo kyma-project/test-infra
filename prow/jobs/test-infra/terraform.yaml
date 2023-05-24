@@ -61,10 +61,8 @@ presubmits:
                     value: $(params.terraform_action)
                   - name: module_path
                     value: $(params.module_path)
-                  - name: SHA
-                    value: $(params.PULL_PULL_SHA)
-                  - name: PULL_NUMBER
-                    value: $(params.PULL_NUMBER)
+                  - name: additional_tfcmt_args
+                    value: [ "-sha=$(params.PULL_PULL_SHA)", "-pr=$(params.PULL_NUMBER)" ]
                 runAfter:
                   - clone-refs
               - name: hide-github-comments
@@ -146,24 +144,8 @@ postsubmits:
                   - name: module_path
                     value: $(params.module_path)
                   - name: additional_terraform_args
-                    value: ["-auto-approve", "-no-color"]
-                  - name: SHA
-                    value: $(params.PULL_BASE_SHA)
-                  - name: PULL_NUMBER
-                    value: $(params.PULL_NUMBER)
+                    value: ["-no-color", "-auto-approve"]
+                  - name: additional_tfcmt_args
+                    value: [ "-sha=$(params.PULL_BASE_SHA)" ]
                 runAfter:
                   - clone-refs
-              - name: hide-github-comments
-                taskRef:
-                  name: hide-github-comments
-                params:
-                  - name: REPO_OWNER
-                    value: $(params.REPO_OWNER)
-                  - name: REPO_NAME
-                    value: $(params.REPO_NAME)
-                  - name: PULL_NUMBER
-                    value: $(params.PULL_NUMBER)
-                  - name: PULL_PULL_SHA
-                    value: $(params.PULL_PULL_SHA)
-                runAfter:
-                  - terraform-executor
