@@ -6,6 +6,8 @@ presubmits: # runs on PRs
     - name: pull-application-connector-gateway-test-build
       annotations:
         pipeline.trigger: "pr-submit"
+        description: "Building the images using in acceptance test"
+        owner: framefrog
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-gateway-test-build"
@@ -48,6 +50,8 @@ presubmits: # runs on PRs
     - name: pull-application-connector-connectivity-validator-test-build
       annotations:
         pipeline.trigger: "pr-submit"
+        description: "Building the images using in acceptance test"
+        owner: framefrog
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-connectivity-validator-test-build"
@@ -90,6 +94,8 @@ presubmits: # runs on PRs
     - name: pull-application-connector-compass-runtime-agent-test-build
       annotations:
         pipeline.trigger: "pr-submit"
+        description: "Building the images using in acceptance test"
+        owner: framefrog
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-compass-runtime-agent-test-build"
@@ -132,6 +138,8 @@ presubmits: # runs on PRs
     - name: pull-application-connector-mock-app-build
       annotations:
         pipeline.trigger: "pr-submit"
+        description: "Building the images using in acceptance test"
+        owner: framefrog
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-mock-app-build"
@@ -178,6 +186,8 @@ postsubmits: # runs on main
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
+        description: "Building the images using in acceptance test. The same thing, as the `pull-` job but on the main braich."
+        owner: framefrog
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-application-connector-gateway-test-build"
@@ -264,6 +274,8 @@ postsubmits: # runs on main
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
+        description: "Building the images using in acceptance test. The same thing, as the `pull-` job but on the main braich."
+        owner: framefrog
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-application-connector-compass-runtime-agent-test-build"
@@ -307,6 +319,8 @@ postsubmits: # runs on main
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
+        description: "Building the images using in acceptance test. The same thing, as the `pull-` job but on the main braich."
+        owner: framefrog
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-application-connector-mock-app-build"

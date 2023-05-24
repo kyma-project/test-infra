@@ -6,6 +6,8 @@ presubmits: # runs on PRs
     - name: pre-control-plane-tests-provisioner-tests
       annotations:
         pipeline.trigger: "pr-submit"
+        description: "It tests the acceptance criteria of the Provisioner component"
+        owner: framefrog
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-control-plane-tests-provisioner-tests"

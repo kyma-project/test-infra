@@ -3,7 +3,7 @@ presubmits: # runs on PRs
     - name: pre-main-compass-manager-trivy
       annotations:
         description: "Scans the component for security vulnerabilities"
-        owner: "framefrog"
+        owner: framefrog
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"

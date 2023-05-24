@@ -3,7 +3,7 @@ presubmits: # runs on PRs
     - name: pull-compass-manager-lint
       annotations:
         description: "Linting the code, error checking"
-        owner: "framefrog"
+        owner: framefrog
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"

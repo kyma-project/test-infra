@@ -60,6 +60,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-app-gateway
       annotations:
+        description: "It tests the acceptance criteria of the (Central) Application Gateway component"
+        owner: framefrog
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -115,6 +117,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-app-conn-validator
       annotations:
+        description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component"
+        owner: framefrog
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -170,6 +174,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-central-app-connectivity-compass
       annotations:
+        description: "It tests Compass integration. It won't be needed after the implementation of this issue - https://github.com/kyma-project/kyma/issues/15037 "
+        owner: framefrog
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -598,7 +604,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-kyma-integration-k3d-app-gateway
       annotations:
-        description: "Kyma integration job on k3d for testing application gateway."
+        description: "It tests the acceptance criteria of the (Central) Application Gateway component. The same thing, as the `pre-` job but on the main braich"
+        owner: framefrog
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -654,7 +661,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-kyma-integration-k3d-app-conn-validator
       annotations:
-        description: "Kyma integration job on k3d for testing application connectivity validator."
+        description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component. The same thing, as the `pre-` job but on the main branch"
+        owner: framefrog
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"

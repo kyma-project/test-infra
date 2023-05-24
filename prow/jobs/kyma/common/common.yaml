@@ -6,6 +6,8 @@ presubmits: # runs on PRs
     - name: pre-main-kyma-common
       annotations:
         pipeline.trigger: "pr-submit"
+        description: "Build the image used in Application Connector components for logging purposes"
+        owner: framefrog
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-common"
@@ -47,6 +49,8 @@ postsubmits: # runs on main
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
+        description: "Build the image used in Application Connector components for logging purposes"
+        owner: framefrog
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kyma-common"
