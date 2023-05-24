@@ -109,6 +109,29 @@ templates:
                     - vm_job_k3d
                     - vm_job_labels
               - jobConfig:
+                  name: post-keda-manager-build
+                  annotations:
+                    owner: otters
+                    description: Job to build keda module for a release.
+                  always_run: true
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=keda-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
+                  branches:
+                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default
+                    - job_build
+                    - limits
+              - jobConfig:
                   name: post-keda-manager-module-build
                   annotations:
                     owner: otters
@@ -119,7 +142,7 @@ templates:
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
                   command: "./scripts/release.sh"
                   args:
                     - "ci"
