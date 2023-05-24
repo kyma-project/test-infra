@@ -14,9 +14,9 @@ We decided to build an infrastructure as code because the IaC approach makes the
 
 ## Terraform config structure
 
-Our standard structure for Terraform config is based on the [Google Terraform best practices](https://cloud.google.com/docs/terraform/best-practices-for-terraform) and [Hashicorp Creating Terraform Modules](https://developer.hashicorp.com/terraform/language/modules/develop) articles. Thus we can easily reuse Terraform modules and share them between different projects. We can also easily test the modules on development environment before applying them to the production environment. 
+Our standard structure for Terraform config is based on the [Google Terraform best practices](https://cloud.google.com/docs/terraform/best-practices-for-terraform) and [Hashicorp Creating Terraform Modules](https://developer.hashicorp.com/terraform/language/modules/develop) articles. Thus, we can easily reuse Terraform modules and share them between different projects. We can also easily test the modules on development environment before applying them to the production environment.
 
-Terraform config should be stored in the `terraform` directory in the location specific for use case. See directory structure for [secrets-rotator](https://github.com/kyma-project/test-infra/tree/main/development/secrets-rotator) application in `test-infra` repository.
+Terraform config should be stored in the `terraform` directory in the location specific for use case. See directory structure for [open policy agent](https://github.com/kyma-project/test-infra/tree/main/opa) in `test-infra` repository.
 
 ```bash
 
@@ -30,7 +30,7 @@ Example structure of the Terraform config is the following:
 │   │   ├── provider.tf
 │   │   ├── terraform.tfvars
 │   │   └── variables.tf
-│   └── prod
+│   └── dev2
 │       ├── backend.tf
 │       ├── main.tf
 │       ├── provider.tf
@@ -72,7 +72,11 @@ In general, a module should consist of resources unique to the component for whi
 
 The `environments` directory contains the Terraform config for different use cases. The environments separate the infrastructure for different use cases like development, staging and production projects or multiple instances of the same application. 
 The name of directories modules defined in `modules` directories are called by the config defined in the `environments` directory. Resources and variables specific for environments are passed to the modules as variables values. 
-Environments may call modules from any locations, not only modules defined under the same parent directory. That way, any module existing in `test-infra` and outside of it, can be reused. It's perfectly fine to have a Terraform config with `environments` directory only. Such config simply uses modules defined in other locations and provides the definition of resources specific for use case. Outputs returned by environments are published to the Terraform remote state. It's recommended to output all resources from an environment, so that other environments can consume it and use it as a dependency. 
+Environments may call modules from any locations, not only modules defined under the same parent directory. That way, any module existing in `test-infra` and outside of it, can be reused. It's perfectly fine to have a Terraform config with `environments` directory only. Such config simply uses modules defined in other locations and provides the definition of resources specific for use case. Outputs returned by environments are published to the Terraform remote state. It's recommended to output all resources from an environment, so that other environments can consume it and use it as a dependency.
+
+The Terraform config for our production environment is stored in test-infra repository in [location](https://github.com/kyma-project/test-infra/tree/main/configs/terraform/environments/prod). This is the root module for production usage. Maintaining only one root module for production usage makes config simpler and reduce dependencies to other modules, limiting it to the calls to the modules defined in the `modules` directory. It also let us avoid duplication in the Terraform config. This makes simpler to maintain resource and data definitions specific for production environment which doesn't belong to any module specifically.
+
+The Terraform config for development environment is usually stored in the same `terraform` directory as module. This architecture allows us to easily test the modules on development environment independent of the production environment.
 
 #### Environment directory structure
 
