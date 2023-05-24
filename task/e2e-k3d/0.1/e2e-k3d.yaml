@@ -22,6 +22,10 @@ spec:
     - name: image
       type: string
       description: Image to be used in a script
+    - name: context
+      type: string
+      description: Subpath inside workspace
+      default: "."
     - name: script
       type: string
       description: Script to run after k3d provisioning
@@ -92,7 +96,7 @@ spec:
         sleep 5
     - image: $(params.image)
       name: run-script
-      workingDir: $(workspaces.source.path)
+      workingDir: $(workspaces.source.path)/$(params.context)
       volumeMounts:
         - mountPath: /certs/client
           name: dind-certs
