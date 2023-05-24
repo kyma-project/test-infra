@@ -53,7 +53,7 @@ spec:
     - name: fix-permissions
       image: alpine:edge
       workingDir: $(workspaces.repo.path)
-      script:
+      script: |
         chmod -R 777 .
         chown 1000:1000 -R .
         ls -la .

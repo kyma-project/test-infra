@@ -1,0 +1,93 @@
+presubmits:
+  kyma-project/istio:
+    - name: pull-istio-pipeline-pr
+      annotations:
+        owner: goat
+        description: "PR pipeline for kyma-project/istio"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-istio-pipeline-pr"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      decorate: false
+      agent: tekton-pipeline
+      cluster: tekton
+      always_run: true
+      tekton_pipeline_run_spec:
+        v1beta1:
+          podTemplate:
+            hostAliases:
+              - ip: "127.0.0.1"
+                hostnames:
+                  - "k3d-registry.localhost"
+          workspaces:
+            - name: repo
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: premium-rwo
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
+          pipelineSpec:
+            workspaces:
+              - name: repo
+            description: "PR pipeline for kyma-project/istio"
+            tasks:
+              - name: clone-refs
+                taskRef:
+                  name: clone-refs
+                params:
+                  - name: JOB_SPEC
+                    value: "$(params.JOB_SPEC)"
+                workspaces:
+                  - name: repo
+                    workspace: repo
+              - name: golangci-lint
+                runAfter:
+                  - clone-refs
+                workspaces:
+                  - name: source
+                    workspace: repo
+                    subPath: src/github.com/kyma-project/istio
+                params:
+                  - name: package
+                    value: github.com/kyma-project/istio
+                  - name: flags
+                    value: "--new-from-rev=$(params.PULL_BASE_SHA) --timeout=10m --verbose"
+                  - name: version
+                    value: "v1.52"
+                taskRef:
+                  name: golangci-lint
+              - name: operator-test
+                runAfter:
+                  - clone-refs
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                    subPath: src/github.com/kyma-project/istio
+                taskSpec:
+                  workspaces:
+                    - name: repo
+                  steps:
+                    - name: test
+                      image: europe-docker.pkg.dev/kyma-project/dev/testimages/buildpack-go:PR-7701
+                      workingDir: "$(workspaces.repo.path)"
+                      script: |
+                        make test
+              - name: integration-test
+                runAfter:
+                  - operator-test
+                  - golangci-lint
+                workspaces:
+                  - name: source
+                    workspace: repo
+                    subPath: src/github.com/kyma-project/istio
+                params:
+                  - name: image
+                    value: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
+                  - name: script
+                    value: |
+                      IMG=k3d-registry.localhost:5000/istio-operator:latest make docker-build docker-push istio-integration-test
+                taskRef:
+                  name: e2e-k3d
