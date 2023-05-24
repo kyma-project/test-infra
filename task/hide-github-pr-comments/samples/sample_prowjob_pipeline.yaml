@@ -64,9 +64,9 @@ presubmits:
                     value: [ "-sha=$(params.PULL_PULL_SHA)", "-pr=$(params.PULL_NUMBER)" ]
                 runAfter:
                   - clone-refs
-              - name: hide-github-comments
+              - name: hide-github-pr-comments
                 taskRef:
-                  name: hide-github-comments
+                  name: hide-github-pr-comments
                 params:
                   - name: REPO_OWNER
                     value: $(params.REPO_OWNER)
