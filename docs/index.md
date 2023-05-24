@@ -192,7 +192,7 @@
 
 [Go Linters](/task/golangci-lint/0.1/README.md) - The golangci-lint Task runs a Golang linter.
 
-[Hide GitHub Comments](/task/hide-github-pr-comments/0.1/README.md) - The hide-github-comments Task hides comments which belong to an old commit.
+[Hide GitHub Pull Request Comments](/task/hide-github-pr-comments/0.1/README.md) - The hide-github-pr-comments Task hides comments which belong to an old commit.
 
 [Image Builder](/task/image-builder/0.1/README.md) - The image-builder Task builds an OCI image from a Dockerfile.
 
