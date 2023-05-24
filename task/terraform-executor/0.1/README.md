@@ -41,7 +41,7 @@ You can run the Task on the `linux/amd64` platform.
 
 See the following samples for usage:
 
-- [`prowjob-building-image.yaml`](samples/sample_prowjob_pipeline.yaml): The presubmit ProwJob that builds, signs, and pushes an image.
+- [`prowjob-building-image.yaml`](../samples/sample_prowjob_pipeline.yaml): The presubmit ProwJob that builds, signs, and pushes an image.
 
 ## Contributing
 
