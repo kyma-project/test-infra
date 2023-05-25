@@ -25,6 +25,9 @@ var (
 
 	// KubernetesFiles contains root path to directory containing kubernetes deployments file
 	KubernetesFiles string
+
+	// TektonCatalog contains root path to tekton catalog directory
+	TektonCatalog string
 )
 
 var rootCmd = &cobra.Command{
@@ -78,6 +81,19 @@ var rootCmd = &cobra.Command{
 
 		images = append(images, imgs...)
 
+		// get images from tekton catalog
+		files, err = extractimageurls.FindFilesInDirectory(TektonCatalog, ".*.(yaml|yml)")
+		if err != nil {
+			log.Fatalf("failed to find files in tekton catalog directory %s: %s", TektonCatalog, err)
+		}
+
+		imgs, err = extractimageurls.FromFiles(files, extractimageurls.FromTektonTask)
+		if err != nil {
+			log.Fatalf("failed to extract image urls from tekton tasks files: %s", err)
+		}
+
+		images = append(images, imgs...)
+
 		images = extractimageurls.UniqueImages(images)
 
 		// write images to security config
@@ -92,12 +108,14 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&TerraformDir, "terraform-dir", "", "path to the directory containing terraform files")
 	rootCmd.PersistentFlags().StringVar(&SecScannerConfig, "sec-scanner-config", "", "path to the security scanner config field")
 	rootCmd.PersistentFlags().StringVar(&KubernetesFiles, "kubernetes-dir", "", "path to the directory containing kubernetes deployments")
+	rootCmd.PersistentFlags().StringVar(&TektonCatalog, "tekton-catalog", "", "path to the tekton catalog directory")
 
 	rootCmd.MarkFlagRequired("prow-config")
 	rootCmd.MarkFlagRequired("prow-jobs-dir")
 	rootCmd.MarkFlagRequired("terraform-dir")
 	rootCmd.MarkFlagRequired("sec-scanner-config")
 	rootCmd.MarkFlagRequired("kubernetes-dir")
+	rootCmd.MarkFlagRequired("tekton-catalog")
 }
 
 func main() {
