@@ -17,7 +17,7 @@ spec:
     workload identity configured. The parameter **additional_terraform_args** allows defining Terraform CLI arguments in pipelines.
     When this parameter value is set in a pipeline, you must add the default value `-no-color` to the list.
     The parameter **additional_tfcmt_args** allows defining additional variable tfcmt CLI arguments in pipelines.
-    This parameter must at least provide -sha and/or -pr arguments together with its values. See example pipeline for parameters values example.
+    This parameter must at least provide -sha and/or -pr arguments together with its values. See the example pipeline for the parameters' values example
     The task uses the tfcmt tool to run Terraform actions and post the results to GitHub PRs.
     The tfcmt tool uses github-comments metadata in GitHub comments, so github-comments can be used later for processing tfcmt comments.
   workspaces:
