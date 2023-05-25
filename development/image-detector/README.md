@@ -12,16 +12,16 @@ Image Detector is a tool used to update security scanner config with list of ima
 ```
 Usage of image-detector:
   --prow-config string
-    path to the prow config file
+    path to the prow config file (Required)
   --prow-jobs-dir string
-    path to the directory which contains prow job files
+    path to the directory which contains prow job files (Required)
   --terraform-dir string
-    path to the directory containing terraform files
+    path to the directory containing terraform files (Required)
   --sec-scanner-config
-    path to the security scanner config field
+    path to the security scanner config field (Required)
   --kubernetes-dir string
-    path to the directory containing kubernetes deployments
+    path to the directory containing kubernetes deployments (Required)
   --tekton-catalog string
-    path to the tekton catalog directory
+    path to the tekton catalog directory (Required)
 ```
 
