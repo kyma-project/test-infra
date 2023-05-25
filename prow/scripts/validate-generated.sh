@@ -14,7 +14,16 @@ log::info "Running jobs generator tool..."
 
 cd "${TEST_INFRA_SOURCES_DIR}"
 # TODO use rendertemplates binary instead of building one
-go run development/tools/cmd/rendertemplates/main.go --config "${TEST_INFRA_SOURCES_DIR}"/templates/config.yaml --templates "${TEST_INFRA_SOURCES_DIR}"/templates/templates --data "${TEST_INFRA_SOURCES_DIR}"/templates/data
+DUPLICATES=$(go run development/tools/cmd/rendertemplates/main.go --config "${TEST_INFRA_SOURCES_DIR}"/templates/config.yaml --templates "${TEST_INFRA_SOURCES_DIR}"/templates/templates --data "${TEST_INFRA_SOURCES_DIR}"/templates/data)
+
+log::info "Looking for duplicate target files..."
+
+if [[ -n "${DUPLICATES}" ]]; then
+  log::error "Rendered jobs has duplicated target files:"
+  log::info "${DUPLICATES}"
+
+  exit 1
+fi
 
 log::info "Looking for job definition and rendered job files inconsistency..."
 
