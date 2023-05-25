@@ -120,6 +120,13 @@ variable "tekton_constraints_path" {
   description = "Path to the tekton cluster constraints directory."
 }
 
+variable "prow_constraints_path" {
+  type    = string
+  default = "../../../../prow/cluster/resources/gatekeeper-constraints/prow/**.yaml"
+
+  description = "Path to the trusted workloads cluster constraints directory."
+}
+
 variable "trusted_workloads_constraints_path" {
   type    = string
   default = "../../../../prow/cluster/resources/gatekeeper-constraints/trusted/**.yaml"

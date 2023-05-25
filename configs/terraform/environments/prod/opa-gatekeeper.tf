@@ -10,6 +10,9 @@ module "prow_gatekeeper" {
   source = "../../../../opa/terraform/modules/gatekeeper"
 
   manifests_path = var.gatekeeper_manifest_path
+
+  constraint_templates_path = [var.constraint_templates_path]
+  constraints_path          = [var.prow_constraints_path]
 }
 
 module "tekton_gatekeeper" {
