@@ -192,7 +192,10 @@
 
 [Go Linters](/task/golangci-lint/0.1/README.md) - The golangci-lint Task runs a Golang linter.
 
+[Hide GitHub Pull Request Comments](/task/hide-github-pr-comments/0.1/README.md) - The hide-github-pr-comments Task hides comments which belong to an old commit.
+
 [Image Builder](/task/image-builder/0.1/README.md) - The image-builder Task builds an OCI image from a Dockerfile.
 
-[Templates](/templates/README.md) - Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.
+[Terraform Executor](/task/terraform-executor/0.1/README.md) - The terraform-executor Task initializes Terraform state locally and runs actions for the provided terraform config.
 
+[Templates](/templates/README.md) - Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.

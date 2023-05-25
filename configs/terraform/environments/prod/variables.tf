@@ -16,10 +16,24 @@ variable "workloads_project_id" {
   description = "Additional Google Cloud project ID."
 }
 
-variable "tekton_gatekeeper_manifest_path" {
+variable "gatekeeper_manifest_path" {
   type        = string
   default     = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
-  description = "Path to the Tekton Gatekeeper yaml manifest file. This file will be applied to the tekton k8s cluster to install gatekeeper."
+  description = "Path to the Gatekeeper yaml manifest file. This file will be applied to the k8s cluster to install gatekeeper."
+}
+
+variable "prow_k8s_cluster" {
+  type = object({
+    name     = string
+    location = string
+  })
+
+  default = {
+    name     = "prow"
+    location = "europe-west3-a"
+  }
+
+  description = "Details of the prow k8s cluster."
 }
 
 variable "tekton_k8s_cluster" {
@@ -36,12 +50,6 @@ variable "tekton_k8s_cluster" {
   description = "Details of the tekton k8s cluster."
 }
 
-variable "trusted_workload_gatekeeper_manifest_path" {
-  type        = string
-  default     = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
-  description = "Path to the Tekton Gatekeeper yaml manifest file. This file will be applied to the trusted-workload k8s cluster to install gatekeeper."
-}
-
 variable "trusted_workload_k8s_cluster" {
   type = object({
     name     = string
@@ -54,12 +62,6 @@ variable "trusted_workload_k8s_cluster" {
   }
 
   description = "Details of the trusted-workload k8s cluster."
-}
-
-variable "untrusted_workload_gatekeeper_manifest_path" {
-  type        = string
-  default     = "../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
-  description = "Path to the Tekton Gatekeeper yaml manifest file. This file will be applied to the untrusted-workload k8s cluster to install gatekeeper."
 }
 
 variable "untrusted_workload_k8s_cluster" {
