@@ -7,3 +7,4 @@ prConfigs: #
   kyma-project:
     lifecycle-manager:
       prNumber: 592
+
