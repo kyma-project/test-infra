@@ -29,19 +29,3 @@ output "trusted_workload_terraform_executor_k8s_service_account" {
 output "untrusted_workload_terraform_executor_k8s_service_account" {
   value = module.untrusted_workload_terraform_executor_k8s_service_account
 }
-
-
-output "tekton_gatekeeper_constraints" {
-  value     = module.tekton_gatekeeper_constraints
-  sensitive = true
-}
-
-output "trusted_gatekeeper_constraints" {
-  value     = module.trusted_gatekeeper_constraints
-  sensitive = true
-}
-
-output "untrusted_gatekeeper_constraints" {
-  value     = module.untrusted_gatekeeper_constraints
-  sensitive = true
-}

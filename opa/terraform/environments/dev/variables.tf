@@ -26,10 +26,10 @@ variable "gcp_project_id" {
 
 variable "constraint_templates_path" {
   type    = string
-  default = "../../../gatekeeper/constraint-templates"
+  default = "../../../gatekeeper/constraint-templates/**.yaml"
 }
 
 variable "tekton_constraints_path" {
   type    = string
-  default = "../../../../tekton/deployments/gatekeeper-constraints"
+  default = "../../../../tekton/deployments/gatekeeper-constraints/**.yaml"
 }
