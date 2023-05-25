@@ -33,7 +33,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_presubmit"
+                    - "jobConfig_postsubmit"
                     - "kaniko_buildpack"
 
               - jobConfig:
@@ -64,7 +64,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_presubmit"
+                    - "jobConfig_postsubmit"
                     - "kaniko_buildpack"
 
               - jobConfig:
@@ -95,7 +95,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_presubmit"
+                    - "jobConfig_postsubmit"
                     - "kaniko_buildpack"
 
               - jobConfig:
@@ -126,5 +126,5 @@ templates:
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_presubmit"
+                    - "jobConfig_postsubmit"
                     - "kaniko_buildpack"
