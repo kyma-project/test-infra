@@ -71,7 +71,7 @@ presubmits:
                     - name: repo
                   steps:
                     - name: test
-                      image: europe-docker.pkg.dev/kyma-project/dev/testimages/buildpack-go:PR-7701
+                      image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230525-75242ac0
                       workingDir: "$(workspaces.repo.path)"
                       script: |
                         make test
@@ -85,7 +85,7 @@ presubmits:
                     subPath: src/github.com/kyma-project/istio
                 params:
                   - name: image
-                    value: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
+                    value: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230525-75242ac0
                   - name: script
                     value: |
                       IMG=k3d-registry.localhost:5000/istio-operator:latest make docker-build docker-push istio-integration-test
