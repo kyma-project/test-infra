@@ -27,7 +27,7 @@ kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/
 - **terraform_action**: Terraform action to execute on provided config files. _(REQUIRED)_
 - **module_path**: Path to the Terraform config files. _(REQUIRED)_
 - **additional_terraform_args**: Additional Terraform arguments. Add `-no-color` flag if you override the default value. _(OPTIONAL, default: '[ "-no-color" ]')_
-- **additional_tfcmt_args**: Additional tfcmt arguments. Allows defining different set of arguments depending on the use case. Parameter must provide at least -sha and/or -pr arguments with values._(REQUIRED)_
+- **additional_tfcmt_args**: Additional tfcmt arguments. Allows defining a different set of arguments depending on the use case. The parameter must provide at least `-sha` and/or `-pr` arguments with values._(REQUIRED)_
 - **github-token-secret**: Name of the secret holding the Kyma bot GitHub token. _(OPTIONAL, default: 'kyma-bot-github-token')_
 - **REPO_OWNER**: The GitHub organization that triggers the job. A variable set by Prow.  _(REQUIRED)_
 - **REPO_NAME**: The GitHub repository that triggers the job. A variable set by Prow.  _(REQUIRED)_
