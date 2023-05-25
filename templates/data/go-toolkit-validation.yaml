@@ -13,6 +13,9 @@ templates:
                     - "-c"
                     - "cd components/event-publisher-proxy && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m"
                   run_if_changed: '^components/event-publisher-proxy/(.*\.go$|.golangcilint.yaml)'
+                  annotations:
+                    owner: skydivingtunas
+                    description: lint the EPP
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
@@ -25,6 +28,9 @@ templates:
                     - "-c"
                     - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
                   run_if_changed: '^components/event-publisher-proxy/.*$'
+                  annotations:
+                    owner: skydivingtunas
+                    description: run unit tests for EPP
                 inheritedConfigs:
                   global:
                     - testing
@@ -41,6 +47,9 @@ templates:
                     - "-c"
                     - "cd components/eventing-controller && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m"
                   run_if_changed: '^components/eventing-controller/(.*\.go$|.golangcilint.yaml)'
+                  annotations:
+                    owner: skydivingtunas
+                    description: lint the EC
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
@@ -53,6 +62,9 @@ templates:
                     - "-c"
                     - "cd components/eventing-controller && KUBEBUILDER_CONTROLPLANE_START_TIMEOUT=50s go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
                   run_if_changed: '^components/eventing-controller/.*$'
+                  annotations:
+                    owner: skydivingtunas
+                    description: run unit tests for EC
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
