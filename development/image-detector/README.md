@@ -21,5 +21,7 @@ Usage of image-detector:
     path to the security scanner config field
   --kubernetes-dir string
     path to the directory containing kubernetes deployments
+  --tekton-catalog string
+    path to the tekton catalog directory
 ```
 
