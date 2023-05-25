@@ -33,7 +33,7 @@ variable "prow_k8s_cluster" {
     location = "europe-west3-a"
   }
 
-  description = "Details of the tekton k8s cluster."
+  description = "Details of the prow k8s cluster."
 }
 
 variable "tekton_k8s_cluster" {
