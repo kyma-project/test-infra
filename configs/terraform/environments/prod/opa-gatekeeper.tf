@@ -10,6 +10,9 @@ module "prow_gatekeeper" {
   source = "../../../../opa/terraform/modules/gatekeeper"
 
   manifests_path = var.gatekeeper_manifest_path
+
+  constraint_templates_path = [var.constraint_templates_path]
+  constraints_path          = [var.prow_constraints_path]
 }
 
 module "tekton_gatekeeper" {
@@ -21,7 +24,9 @@ module "tekton_gatekeeper" {
 
   source = "../../../../opa/terraform/modules/gatekeeper"
 
-  manifests_path = var.gatekeeper_manifest_path
+  manifests_path            = var.gatekeeper_manifest_path
+  constraint_templates_path = [var.constraint_templates_path]
+  constraints_path          = [var.tekton_constraints_path]
 }
 
 module "trusted_workload_gatekeeper" {
@@ -32,7 +37,12 @@ module "trusted_workload_gatekeeper" {
   }
   source = "../../../../opa/terraform/modules/gatekeeper"
 
-  manifests_path = var.gatekeeper_manifest_path
+  manifests_path            = var.gatekeeper_manifest_path
+  constraint_templates_path = [var.constraint_templates_path]
+  constraints_path = [
+    var.trusted_workloads_constraints_path,
+    var.workloads_constraints_path
+  ]
 }
 
 module "untrusted_workload_gatekeeper" {
@@ -44,4 +54,10 @@ module "untrusted_workload_gatekeeper" {
   source = "../../../../opa/terraform/modules/gatekeeper"
 
   manifests_path = var.gatekeeper_manifest_path
+
+  constraint_templates_path = [var.constraint_templates_path]
+  constraints_path = [
+    var.untrusted_workloads_constraints_path,
+    var.workloads_constraints_path
+  ]
 }
