@@ -1100,34 +1100,6 @@ presets:
         mountPath: "/gardener"
         readOnly: true
   - labels:
-      preset-btp-operator-stage-credentials: "true"
-    env:
-      - name: BTP_OPERATOR_CLIENTID
-        valueFrom:
-          secretKeyRef:
-            name: btp-operator-credentials
-            key: clientid
-      - name: BTP_OPERATOR_CLIENTSECRET
-        valueFrom:
-          secretKeyRef:
-            name: btp-operator-credentials
-            key: clientsecret
-      - name: BTP_OPERATOR_URL
-        valueFrom:
-          secretKeyRef:
-            name: btp-operator-credentials
-            key: url
-      - name: BTP_OPERATOR_TOKENURL
-        valueFrom:
-          secretKeyRef:
-            name: btp-operator-credentials
-            key: tokenurl
-      - name: BTP_OPERATOR_CLUSTERID
-        valueFrom:
-          secretKeyRef:
-            name: btp-operator-credentials
-            key: clusterid
-  - labels:
       preset-btp-admin-stage-credentials: "true"
     env:
       - name: BTP_SM_ADMIN_CLIENTID
