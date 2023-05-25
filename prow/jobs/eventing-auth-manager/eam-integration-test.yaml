@@ -1,0 +1,43 @@
+presubmits: # runs on PRs
+  kyma-project/eventing-auth-manager:
+    - name: pull-eventing-auth-manager-integration-test
+      annotations:
+        owner: tunas
+        description: Runs integration suite for Eventing Auth Manager
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-eventing-auth-manager-integration-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
+      cluster: untrusted-workload
+      decorate: true
+      always_run: true
+      spec:
+        hostAliases:
+          - ip: "127.0.0.1"
+            hostnames:
+              - "k3d-registry.localhost"
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
+            command: ["/bin/bash"]
+            securityContext:
+              privileged: true
+            args:
+              - -c
+              - |
+                service docker start
+                echo "Waiting for Docker to be up..." && sleep 30
+                set -e
+                curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+                k3d registry create registry.localhost --port 5000
+                k3d cluster create k3d --registry-use k3d-registry.localhost:5000
+                IMG="k3d-registry.localhost:5000/eventing-auth-manager:latest" make docker-build docker-push test
+                k3d cluster delete k3d
+            resources:
+              requests:
+                cpu: 1
+                memory: 1Gi
+              limits:
+                cpu: 1.5
+                memory: 2Gi
