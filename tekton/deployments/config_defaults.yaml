@@ -4,7 +4,7 @@ metadata:
   name: config-defaults
   namespace: tekton-pipelines
 data:
-  default-service-account: "tekton"
+  default-service-account: "default"
   default-timeout-minutes: "120"
   default-managed-by-label-value: "kyma-tekton"
   default-task-run-workspace-binding: |

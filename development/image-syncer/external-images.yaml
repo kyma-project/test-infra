@@ -56,3 +56,5 @@ images:
 - source: "ghcr.io/kedacore/keda:2.10.1"
 - source: "ghcr.io/kedacore/keda-admission-webhooks:2.10.1"
 - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.10.1"
+- source: "nginx:1.23.3"
+  amd64Only: true
