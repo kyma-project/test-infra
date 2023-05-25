@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "klm-e2e"
+prConfigs: #
+  kyma-project:
+    lifecycle-manager:
+      prNumber: 592

@@ -30,7 +30,7 @@ periodics: # runs on schedule
       hostAliases:
         - ip: "127.0.0.1"
           hostnames:
-            - "k3d-registry.localhost"
+            - "k3d-kcp-local-registry"
       containers:
         - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
           securityContext:
