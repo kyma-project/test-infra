@@ -154,11 +154,11 @@ func main() {
 		rtConfig.TemplatesConfigs = append(rtConfig.TemplatesConfigs, dataFileConfig.TemplatesConfigs...)
 	}
 
-	// check there is no duplicates (see: https://github.com/kyma-project/test-infra/issues/6694)
+	// check there is no duplicated target files (see: https://github.com/kyma-project/test-infra/issues/6694)
 	duplicates := findDuplicatedTargetFiles(rtConfig.TemplatesConfigs)
 	if duplicates != nil {
 		// print list of duplicated files
-		log.Fatalf("Duplicates target files found: %v", duplicates)
+		log.Fatalf("Error: Duplicate target files found: %v", duplicates)
 	}
 
 	rtConfig.Merge(mergoConfig)
