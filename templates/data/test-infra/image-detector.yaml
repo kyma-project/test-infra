@@ -8,6 +8,9 @@ templates:
               - jobConfig:
                   name: "pull-build-image-image-detector"
                   run_if_changed: '^development/(pkg/extractimageurls|image-detector)/(Dockerfile|.*\.go)$'
+                  annotations:
+                    description: "Job to build image-detector image on PR submit"
+                    owner: "neighbors"
                   branches:
                    - "^main$"
                   args:
@@ -21,6 +24,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "post-build-image-image-detector"
+                  annotations:
+                    description: "Job to build image-detector image on PR merge"
+                    owner: "neighbors"
                   run_if_changed: '^development/(pkg/extractimageurls|image-detector)/(Dockerfile|.*\.go)$'
                   labels:
                     preset-signify-prod-secret: "true"
