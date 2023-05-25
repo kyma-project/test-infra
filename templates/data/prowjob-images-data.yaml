@@ -25,6 +25,8 @@ templates:
                   annotations:
                     owner: neighbors
                     description: post-submit job to build buildpack-go image.
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^images/buildpack-go/"
                   args:
                     - "--name=testimages/buildpack-go"
@@ -56,6 +58,8 @@ templates:
                   annotations:
                     owner: neighbors
                     description: post-submit job to build e2e-dind-k3d image.
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^images/e2e-dind-k3d/"
                   args:
                     - "--name=testimages/e2e-dind-k3d"
@@ -87,6 +91,8 @@ templates:
                   annotations:
                     owner: neighbors
                     description: post-submit job to build e2e-garden image.
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^images/e2e-garden/"
                   args:
                     - "--name=testimages/e2e-garden"
@@ -118,6 +124,8 @@ templates:
                   annotations:
                     owner: neighbors
                     description: post-submit job to build e2e-gcloud image.
+                  labels:
+                    preset-signify-prod-secret: "true"
                   run_if_changed: "^images/e2e-gcloud/"
                   args:
                     - "--name=testimages/e2e-gcloud"
