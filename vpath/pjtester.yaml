@@ -6,7 +6,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma:
-      - pjName: "kyma-integration-production-gardener-azure"
+      - pjName: "kyma-integration-evaluation-gardener-azure"
 prConfigs:
   kyma-project:
     kyma:
