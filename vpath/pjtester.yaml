@@ -1,0 +1,15 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      kyma:
+        prNumber: 7759
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "pull-eventing-auth-manager-integration-test"
+          report: true
+        - pjName: "orphaned-disks-cleaner"
+prConfigs: #
+  kyma-project:
+    eventing-auth-manager:
+      prNumber: 18
