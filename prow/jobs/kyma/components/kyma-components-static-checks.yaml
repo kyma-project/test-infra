@@ -55,9 +55,9 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-central-application-connectivity-validator-unit-test
       annotations:
-        pipeline.trigger: "pr-submit"
         description: "It unit tests the component"
-        owner: framefrog
+        owner: "framefrog"
+        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-central-application-connectivity-validator-unit-test"
@@ -83,7 +83,7 @@ presubmits: # runs on PRs
     - name: pull-central-application-gateway-lint
       annotations:
         description: "Linting the code, error checking"
-        owner: framefrog
+        owner: "framefrog"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -137,7 +137,7 @@ presubmits: # runs on PRs
     - name: pull-compass-runtime-agent-lint
       annotations:
         description: "Linting the code, error checking"
-        owner: framefrog
+        owner: "framefrog"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -164,7 +164,7 @@ presubmits: # runs on PRs
     - name: pull-compass-runtime-agent-unit-test
       annotations:
         description: "It tests the component source code"
-        owner: framefrog
+        owner: "framefrog"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

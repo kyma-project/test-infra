@@ -373,6 +373,10 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-app-gateway"
+                  annotations:
+                    pipeline.platform: k3d
+                    owner: framefrog
+                    description: "It tests the acceptance criteria of the (Central) Application Gateway component"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   optional: "false"
@@ -380,8 +384,6 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
                     preset-kyma-integration-app-connector-tests-app-gateway: "true"
-                  annotations:
-                    pipeline.platform: k3d
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -396,6 +398,10 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-app-conn-validator"
+                  annotations:
+                    pipeline.platform: k3d
+                    owner: framefrog
+                    description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   optional: "false"
@@ -403,8 +409,6 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
                     preset-kyma-integration-app-connector-tests-app-validator: "true"
-                  annotations:
-                    pipeline.platform: k3d
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -419,6 +423,9 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
+                  annotations:
+                    owner: framefrog
+                    description: "It tests Compass integration. It won't be needed after the implementation of this issue - https://github.com/kyma-project/kyma/issues/15037"
                   # following regexp won't start build if only Markdown files were changed
                   always_run: false
                   optional: "true"
@@ -634,7 +641,8 @@ templates:
                   name: "post-main-kyma-integration-k3d-app-gateway"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d for testing application gateway.
+                    onwer: framefrog
+                    description: "Kyma integration job on k3d for testing application gateway."
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
@@ -656,7 +664,8 @@ templates:
                   name: "post-main-kyma-integration-k3d-app-conn-validator"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d for testing application connectivity validator.
+                    owner: framefrog
+                    description: "Kyma integration job on k3d for testing application connectivity validator."
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"

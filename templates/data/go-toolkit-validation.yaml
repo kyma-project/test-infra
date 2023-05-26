@@ -117,6 +117,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pull-central-application-connectivity-validator-unit-test"
+                  annotations:
+                    owner: framefrog
+                    description: "It unit tests the component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -129,6 +132,9 @@ templates:
 
               - jobConfig:
                   name: "pull-central-application-gateway-lint"
+                  annotations:
+                    owner: framefrog
+                    description: "Linting the code, error checking"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -140,6 +146,9 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-central-application-gateway-unit-test"
+                  annotations:
+                    owner: framefrog
+                    description: "It unit tests the central-application-gateway source code"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -152,6 +161,9 @@ templates:
 
               - jobConfig:
                   name: "pull-compass-runtime-agent-lint"
+                  annotations:
+                    owner: framefrog
+                    description: "Linting the code, error checking"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -163,6 +175,9 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-compass-runtime-agent-unit-test"
+                  annotations:
+                    owner: framefrog
+                    description: "It tests the component source code"
                   command: "/bin/sh"
                   args:
                     - "-c"
