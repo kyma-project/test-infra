@@ -6,4 +6,4 @@ pjConfigs:
 prConfigs: #
   kyma-project:
     eventing-auth-manager:
-      prNumber: 18
+      prNumber: 25
