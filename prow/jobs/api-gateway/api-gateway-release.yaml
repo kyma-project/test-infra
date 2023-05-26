@@ -179,8 +179,6 @@ postsubmits: # runs on main
                 value: "50"
               - name: DISK_TYPE
                 value: "pd-standard"
-              - name: GARDENER_PROVIDER
-                value: "gcp"
               - name: GARDENER_REGION
                 value: "europe-west3"
               - name: GARDENER_ZONES
@@ -215,7 +213,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-api-gateway-int-test-client-creds: "true"
         preset-cluster-version: "true"
-        preset-gardener-gcp-kyma-integration: "true"
+        preset-gardener-aws-kyma-integration: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-kyma-dns-serviceuser: "true"
       skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
@@ -242,8 +240,6 @@ postsubmits: # runs on main
                 value: "50"
               - name: DISK_TYPE
                 value: "gp2"
-              - name: GARDENER_PROVIDER
-                value: "aws"
               - name: GARDENER_REGION
                 value: "eu-central-1"
               - name: GARDENER_ZONES
