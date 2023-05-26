@@ -8,6 +8,7 @@ pjConfigs:
       kyma:
       - pjName: "kyma-integration-evaluation-gardener-azure"
       - pjName: "kyma-integration-production-gardener-azure"
+
 prConfigs:
   kyma-project:
     kyma:
