@@ -2,7 +2,7 @@
 
 ## Overview
 
-Image Detector is a tool for updating the security scanner config with the list of images in Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its components.
+Image Detector is a tool for updating the security scanner config with the list of images in the Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its components.
 
 ## Key features:
 
