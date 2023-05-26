@@ -8,7 +8,7 @@ Image Detector is a tool for updating the security scanner config with the list 
 
 Image Detector:
 * Extracts image URLs from various file types
-* Updates the list of image URLs in the security scanners config file
+* Updates the list of image URLs in the security scanner config file
 
 ## Usage
 
