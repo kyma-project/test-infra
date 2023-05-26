@@ -1,11 +1,11 @@
 pjConfigs:
   prConfig:
     kyma-project:
-      kyma:
+      test-infra:
         prNumber: 7759
   prowJobs:
     kyma-project:
-      kyma:
+      test-infra:
         - pjName: "pull-eventing-auth-manager-integration-test"
           report: true
         - pjName: "orphaned-disks-cleaner"
