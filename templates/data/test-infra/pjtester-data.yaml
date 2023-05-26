@@ -43,6 +43,9 @@
                   jobs:
                     - jobConfig:
                         name: "pull-{{$repo.name}}-pjtester"
+                        annotations:
+                          description: "Schedule prowjobs tests using pjtester for {{$repo.name}}"
+                          owner: "neighbors"
                       inheritedConfigs:
                         local:
                           - "jobConfig_default"
@@ -57,6 +60,9 @@
                           {{- end}}
                     - jobConfig:
                         name: "pull-{{$repo.name}}-vpathguard"
+                        annotations:
+                          description: "Run pjtester vpathguard for {{$repo.name}}"
+                          owner: "neighbors"
                       inheritedConfigs:
                         local:
                           - "jobConfig_default"
