@@ -85,6 +85,8 @@ periodics: # runs on schedule
   
     - name: ci-prow-label-sync
       annotations:
+        description: "Periodic sync of labels in GitHub"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -118,6 +120,8 @@ periodics: # runs on schedule
               name: label-config
     - name: ci-prow-autobump
       annotations:
+        description: "Autobump prow components image versions"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -146,6 +150,8 @@ periodics: # runs on schedule
               - "--labels-override=kind/chore,area/prow"
     - name: ci-prow-autobump-jobs
       annotations:
+        description: "Autobump image versions in prow jobs"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

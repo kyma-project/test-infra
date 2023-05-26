@@ -49,6 +49,9 @@ templates:
             jobs:
               - jobConfig:
                   name: ci-prow-label-sync
+                  annotations:
+                    owner: neighbors
+                    description: "Periodic sync of labels in GitHub"
                   cron: "17 * * * *"
                   image: gcr.io/k8s-prow/label_sync:v20230523-2834e18241
                   command: label_sync
@@ -70,6 +73,9 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: ci-prow-autobump
+                  annotations:
+                    owner: neighbors
+                    description: "Autobump prow components image versions"
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
                   image: gcr.io/k8s-prow/generic-autobumper:v20230523-2834e18241
@@ -128,6 +134,9 @@ templates:
                     - pubsub_labels
               - jobConfig:
                   name: ci-prow-autobump-jobs
+                  annotations:
+                    owner: neighbors
+                    description: "Autobump image versions in prow jobs"
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
                   image: gcr.io/k8s-prow/generic-autobumper:v20230523-2834e18241
