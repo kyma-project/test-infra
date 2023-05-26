@@ -175,14 +175,22 @@ postsubmits: # runs on main
               - "-c"
               - "tests/integration/scripts/integration-gardener-custom-domain.sh"
             env:
+              - name: DISK_SIZE
+                value: "50"
+              - name: DISK_TYPE
+                value: "pd-standard"
               - name: GARDENER_PROVIDER
                 value: "gcp"
               - name: GARDENER_REGION
-                value: "europe-west4"
+                value: "europe-west3"
               - name: GARDENER_ZONES
-                value: "europe-west4-b"
+                value: "europe-west3-c,europe-west3-b,europe-west3-a"
               - name: MACHINE_TYPE
-                value: "n1-standard-4"
+                value: "n2-standard-4"
+              - name: SCALER_MAX
+                value: "20"
+              - name: SCALER_MIN
+                value: "3"
               - name: TEST_SA_ACCESS_KEY_PATH
                 value: "/sa-kyma-dns-serviceuser/service-account.json"
             resources:
@@ -230,14 +238,22 @@ postsubmits: # runs on main
               - "-c"
               - "tests/integration/scripts/integration-gardener-custom-domain.sh"
             env:
+              - name: DISK_SIZE
+                value: "50"
+              - name: DISK_TYPE
+                value: "gp2"
               - name: GARDENER_PROVIDER
                 value: "aws"
               - name: GARDENER_REGION
                 value: "eu-central-1"
               - name: GARDENER_ZONES
-                value: "eu-central-1b"
+                value: "eu-central-1b,eu-central-1c,eu-central-1a"
               - name: MACHINE_TYPE
                 value: "m5.xlarge"
+              - name: SCALER_MAX
+                value: "20"
+              - name: SCALER_MIN
+                value: "3"
               - name: TEST_SA_ACCESS_KEY_PATH
                 value: "/sa-kyma-dns-serviceuser/service-account.json"
             resources:
