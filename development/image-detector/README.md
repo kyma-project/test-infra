@@ -1,27 +1,30 @@
-# image-detector
+# Image Detector
 
-Image Detector is a tool used to update security scanner config with list of images that lives in our prow cluster. To achive that it receives paths to files used to deploy prow or it's components.
+## Overview
 
-### Key Features:
+Image Detector is a tool for updating the security scanner config with the list of images in Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its components.
 
-* Extract image urls from various file types
-* Update list of image urls in security scanners config file
+## Key features:
+
+Image Detector:
+* Extracts image URLs from various file types
+* Updates the list of image URLs in the security scanners config file
 
 ## Usage
 
 ```
 Usage of image-detector:
   --prow-config string
-    path to the prow config file (Required)
+    path to the Prow config file (Required)
   --prow-jobs-dir string
-    path to the directory which contains prow job files (Required)
+    path to the directory which contains Prow job files (Required)
   --terraform-dir string
-    path to the directory containing terraform files (Required)
+    path to the directory containing Terraform files (Required)
   --sec-scanner-config
     path to the security scanner config field (Required)
   --kubernetes-dir string
-    path to the directory containing kubernetes deployments (Required)
+    path to the directory containing Kubernetes deployments (Required)
   --tekton-catalog string
-    path to the tekton catalog directory (Required)
+    path to the Tekton catalog directory (Required)
 ```
 
