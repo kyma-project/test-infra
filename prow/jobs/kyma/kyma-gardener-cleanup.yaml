@@ -4,6 +4,8 @@
 periodics: # runs on schedule
     - name: kyma-gardener-cleanup
       annotations:
+        description: "Periodic cleanup of Gardener clusters"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:

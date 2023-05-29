@@ -32,6 +32,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-{{$repo.name}}-validate-inrepo-prow-configs"
+                  annotations:
+                    description: "Validate inrepo prow configs for {{$repo.name}}"
+                    owner: "neighbors"
                 inheritedConfigs:
                   local:
                     - "default"
