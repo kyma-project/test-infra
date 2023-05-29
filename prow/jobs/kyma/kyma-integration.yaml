@@ -276,6 +276,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-telemetry
       annotations:
+        description: "runs telemetry integration tests on k3d"
+        owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -1405,6 +1407,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: kyma-integration-k3d-telemetry
       annotations:
+        description: "runs telemetry integration tests on k3d"
+        owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"

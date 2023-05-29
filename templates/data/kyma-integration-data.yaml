@@ -509,6 +509,9 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-telemetry"
+                  annotations:
+                    owner: huskies
+                    description: runs telemetry integration tests on k3d
                   run_if_changed: "^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/"
                   labels:
                     preset-build-pr: "true"
@@ -752,6 +755,9 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "kyma-integration-k3d-telemetry"
+                  annotations:
+                    owner: huskies
+                    description: runs telemetry integration tests on k3d
                   cron: "0 1,13 * * *"
                   slack_channel: huskies-notifications
                   labels:
