@@ -1,6 +1,9 @@
 postsubmits:
   kyma-project/test-infra:
     - name: post-gencred-refresh-kubeconfigs
+      annotations:
+        owner: neighbors
+        description: "Refresh kubeconfigs for workload clusters after config change"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-gencred-refresh-kubeconfigs"
@@ -14,7 +17,7 @@ postsubmits:
         serviceAccountName: gencred-refresher
         containers:
           - name: gencred
-            image: gcr.io/k8s-prow/gencred:v20230523-2834e18241
+            image: gcr.io/k8s-prow/gencred:v20230526-bc91fd978b
             command:
               - gencred
             args:
@@ -25,6 +28,9 @@ postsubmits:
 periodics:
   - cron: "17 */6 * * *"  # Every 6 hours at 17 minutes past the hour
     name: ci-gencred-refresh-kubeconfigs
+    annotations:
+      owner: neighbors
+      description: "Periodic refresh kubeconfigs for workload clusters"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "ci-gencred-refresh-kubeconfigs"
@@ -39,7 +45,7 @@ periodics:
       serviceAccountName: gencred-refresher
       containers:
         - name: gencred
-          image: gcr.io/k8s-prow/gencred:v20230523-2834e18241
+          image: gcr.io/k8s-prow/gencred:v20230526-bc91fd978b
           command:
             - gencred
           args:
