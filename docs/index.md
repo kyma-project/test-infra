@@ -14,6 +14,8 @@
 
 [image-builder](/development/image-builder/README.md) - This tool serves as an intelligent wrapper for `kaniko-project/executor`. It reduces the complexity of building Docker images and removes the need of using Docker in Docker when building images in K8s infrastructure.
 
+[Image Detector](/development/image-detector/README.md) - Image Detector is a tool for updating the security scanner config with the list of images in the Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its components.
+
 [image-syncer](/development/image-syncer/README.md) - image-syncer is used to copy container images from one registry to another.
 
 [Image URL Helper](/development/image-url-helper/README.md) - Image URL Helper is a tool that provides the following subcommands:
