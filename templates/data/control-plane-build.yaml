@@ -79,6 +79,9 @@ templates:
                     - --context=components/kyma-metrics-collector
                     - --dockerfile=Dockerfile
                     - --config=/config/kaniko-build-config.yaml
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the kmc image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -95,6 +98,9 @@ templates:
                     - --context=components/kyma-metrics-collector
                     - --dockerfile=Dockerfile
                     - --config=/config/kaniko-build-config.yaml
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the kmc image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
