@@ -46,7 +46,7 @@ templates:
                   args:
                     - "-c"
                     - "make test-only"
-                  run_if_changed: "^\\.go$|^go.(sum|mod)"
+                  run_if_changed: "^\\S+\\.go$|^go\\.(sum|mod)$"
                 annotations:
                   owner: skydivingtunas
                   description: ran nats manager unit tests

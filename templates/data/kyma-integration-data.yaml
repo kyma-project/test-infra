@@ -39,6 +39,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-assetstore-gcp-bucket-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
                   cron: "00 00 * * *" # "At 00:00 each day"
                   labels:
                     preset-gc-project-env: "true"
@@ -59,6 +62,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-disks-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud disks"
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -80,6 +86,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-ips-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud IPs"
                   cron: "0 1 * * *" # "At 1:00 each day"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -101,6 +110,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-clusters-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud clusters"
                   cron: "0 * * * *" # "At 0 minute every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -122,6 +134,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-vms-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud VMs"
                   cron: "15,45 * * * *" # "At 15 and 45 past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -143,6 +158,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-loadbalancer-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud load balancers"
                   cron: "15 * * * *" # "At 15 past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -185,6 +203,9 @@ templates:
               #                    - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-dns-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud DNS records"
                   cron: "30 * * * *" # "At minute 30 past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -207,6 +228,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "gcr-cleaner-prow-workloads"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Cleans up GCR images older than 7 days in eu.gcr.io/sap-kyma-prow-workloads"
                   cron: "0 1 * * *" # "At 1:00am every day"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -509,6 +533,9 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-telemetry"
+                  annotations:
+                    owner: huskies
+                    description: runs telemetry integration tests on k3d
                   run_if_changed: "^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/"
                   labels:
                     preset-build-pr: "true"
@@ -752,6 +779,9 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "kyma-integration-k3d-telemetry"
+                  annotations:
+                    owner: huskies
+                    description: runs telemetry integration tests on k3d
                   cron: "0 1,13 * * *"
                   slack_channel: huskies-notifications
                   labels:
@@ -775,6 +805,7 @@ templates:
                   cron: "0 2 * * 1-5" # "At 02:00 UTC on every weekday Monday through Friday"
                   annotations:
                     description: Kyma GKE nightly build (depraceted, needed for sec scans)
+                    owner: "neighbors"
                     pipeline.platform: gke
                     pipeline.installer: kyma deploy
                     pipeline.clusterprovisioning: gcloud cli

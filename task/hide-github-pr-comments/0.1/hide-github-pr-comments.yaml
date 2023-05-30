@@ -1,19 +1,19 @@
 apiVersion: tekton.dev/v1beta1
 kind: Task
 metadata:
-  name: hide-github-comments
+  name: hide-github-pr-comments
   labels:
     app.kubernetes.io/version: "0.1"
   annotations:
     tekton.dev/pipelines.minVersion: "0.36.0"
     tekton.dev/categories: GitHub
-    tekton.dev/tags: hide-github-comments
-    tekton.dev/displayName: "hide-github-comments"
+    tekton.dev/tags: hide-github-pr-comments
+    tekton.dev/displayName: "hide-github-pr-comments"
     tekton.dev/platforms: "linux/amd64"
 spec:
   description: >-
-    The hide-github-comments Task hides comments which belong to an old commit.
-    The tool detects old comments by reading github-comments metadata in GitHub comments.
+    The hide-github-pr-comments Task hides pull request comments which belong to an old commit.
+    The tool detects old comments by reading github-comments metadata in GitHub PR comments.
   params:
     - name: PULL_NUMBER
       description: "Pull request number. Variable set by Prow."
@@ -32,7 +32,7 @@ spec:
       type: string
       default: kyma-bot-github-token
   steps:
-    - name: hide-github-comments
+    - name: hide-comments
       image: europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
       command:
         - /ghcomment/github-comment

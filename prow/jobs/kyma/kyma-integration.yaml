@@ -276,6 +276,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-telemetry
       annotations:
+        description: "runs telemetry integration tests on k3d"
+        owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -808,6 +810,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-assetstore-gcp-bucket-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -849,6 +853,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-disks-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud disks"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -891,6 +897,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-ips-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud IPs"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -933,6 +941,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-clusters-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud clusters"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -975,6 +985,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-vms-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud VMs"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -1017,6 +1029,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-loadbalancer-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud load balancers"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -1059,6 +1073,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-dns-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud DNS records"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -1102,6 +1118,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: gcr-cleaner-prow-workloads
       annotations:
+        description: "Cleans up GCR images older than 7 days in eu.gcr.io/sap-kyma-prow-workloads"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -1405,6 +1423,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: kyma-integration-k3d-telemetry
       annotations:
+        description: "runs telemetry integration tests on k3d"
+        owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -1459,6 +1479,7 @@ periodics: # runs on schedule
     - name: kyma-gke-nightly
       annotations:
         description: "Kyma GKE nightly build (depraceted, needed for sec scans)"
+        owner: "neighbors"
         pipeline.clusterprovisioning: "gcloud cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gke"

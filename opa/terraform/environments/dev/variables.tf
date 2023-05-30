@@ -23,3 +23,13 @@ variable "gcp_project_id" {
   default     = "sap-kyma-neighbors-dev"
   description = "Google Cloud project to create resources."
 }
+
+variable "constraint_templates_path" {
+  type    = string
+  default = "../../../gatekeeper/constraint-templates/**.yaml"
+}
+
+variable "tekton_constraints_path" {
+  type    = string
+  default = "../../../../tekton/deployments/gatekeeper-constraints/**.yaml"
+}

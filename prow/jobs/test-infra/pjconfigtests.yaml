@@ -4,11 +4,14 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pull-test-infra-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for test-infra"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-test-infra-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -44,7 +47,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -85,7 +88,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-busola-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -126,7 +129,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-control-plane-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -167,7 +170,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-cli-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -208,7 +211,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -249,7 +252,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-lifecycle-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -290,7 +293,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-third-party-images-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -331,7 +334,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-community-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -372,7 +375,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydroform-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -413,7 +416,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-operator-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -454,7 +457,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-addons-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -495,7 +498,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-private-fn-for-e2e-serverless-tests-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -536,7 +539,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-charts-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -577,7 +580,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -618,7 +621,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -659,7 +662,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -700,7 +703,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-runtime-watcher-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -741,7 +744,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keda-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -782,7 +785,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -823,7 +826,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -864,7 +867,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-rafter-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -905,7 +908,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-btp-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -946,7 +949,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -987,7 +990,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-director-size-exporter-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1028,7 +1031,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1069,7 +1072,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1110,7 +1113,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-ord-service-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1151,7 +1154,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-reconciler-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1192,7 +1195,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-bullseye-showcase-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1233,7 +1236,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-documentation-component-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1274,7 +1277,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-console-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1315,7 +1318,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sap-btp-service-operator-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1356,7 +1359,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-milv-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1397,7 +1400,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-varkes-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1438,7 +1441,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-slack-bot-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1479,7 +1482,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-migrate-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1520,7 +1523,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-github-dashboard-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1561,7 +1564,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-vuepress-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1602,7 +1605,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kitbag-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1643,7 +1646,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-showcase-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1684,7 +1687,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydra-login-consent-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1725,7 +1728,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kymart-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1766,7 +1769,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1807,7 +1810,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-vstudio-extension-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1848,7 +1851,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-wordpress-connector-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1889,7 +1892,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-connector-tools-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1930,7 +1933,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-artwork-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1971,7 +1974,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-opensap-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -2012,7 +2015,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-testdrape-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -2053,7 +2056,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sc-removal-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -2094,7 +2097,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -2135,7 +2138,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload

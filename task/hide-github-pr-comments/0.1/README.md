@@ -1,6 +1,6 @@
-# Hide GitHub Comments
+# Hide GitHub Pull Request Comments
 
-The hide-github-comments Task hides comments which belong to an old commit.
+The hide-github-pr-comments Task hides comments which belong to an old commit.
 The tool detects old comments by reading github-comments metadata in GitHub comments.
 
 ## Compatibility
@@ -10,7 +10,7 @@ The tool detects old comments by reading github-comments metadata in GitHub comm
 ## Install
 
 ```shell
-kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/task/hide-github-comments/0.1/hide-github-comments.yaml
+kubectl apply -f https://raw.githubusercontent.com/kyma-project/test-infra/main/task/hide-github-pr-comments/0.1/hide-github-pr-comments.yaml
 ```
 
 ## Parameters

@@ -98,6 +98,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pull-telemetry-manager-lint"
+                  annotations:
+                    owner: huskies
+                    description: runs linting on telemetry-manager repo
                   request_cpu: 200m
                   request_memory: 500Mi
                   optional: false
@@ -112,6 +115,9 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-telemetry-manager-unit-test"
+                  annotations:
+                    owner: huskies
+                    description: runs unit tests telemetry-manager repo
                   request_cpu: 200m
                   request_memory: 1.5Gi
                   optional: false
@@ -214,6 +220,9 @@ templates:
           - repoName: "kyma-project/directory-size-exporter"
             jobs:
               - jobConfig:
+                  annotations:
+                    owner: huskies
+                    description: runs linting on the repo
                   name: "pull-directory-size-exporter-lint"
                   optional: false
                   command: "/bin/sh"
@@ -227,6 +236,9 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-directory-size-exporter-unit-test"
+                  annotations:
+                    owner: huskies
+                    description: runs unit tests on the repo
                   optional: false
                   command: "/bin/sh"
                   args:

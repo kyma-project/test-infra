@@ -188,6 +188,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-buildpack-go"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^images/buildpack-go/'
       skip_report: false
       decorate: true
@@ -231,6 +232,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-e2e-dind-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^images/e2e-dind-k3d/'
       skip_report: false
       decorate: true
@@ -274,6 +276,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-e2e-garden"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^images/e2e-garden/'
       skip_report: false
       decorate: true
@@ -317,6 +320,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-test-infra-e2e-gcloud"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       run_if_changed: '^images/e2e-gcloud/'
       skip_report: false
       decorate: true

@@ -37,6 +37,7 @@
 /prow/jobs/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/prow @kyma-project/eventing
 /prow/jobs/eventing-tools/ @kyma-project/prow @kyma-project/eventing
 /prow/jobs/eventing-webhook/ @kyma-project/prow @kyma-project/eventing
+/prow/jobs/nats-manager/ @kyma-project/prow @kyma-project/eventing
 /prow/jobs/telemetry-manager @kyma-project/observability @kyma-project/prow
 /prow/jobs/directory-size-exporter @kyma-project/observability @kyma-project/prow
 /prow/jobs/kyma/tests/fast-integration @kyma-project/prow
@@ -51,6 +52,7 @@
 templates/data/eventing-tools-data.yaml @kyma-project/prow @kyma-project/eventing
 templates/data/eventing-webhook-certificates-build.yaml @kyma-project/prow @kyma-project/eventing
 templates/data/eventing-webhook-certificates-release.yaml @kyma-project/prow @kyma-project/eventing
+templates/data/nats-manager-data.yaml @kyma-project/prow @kyma-project/eventing
 
 # All .md files
 *.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko

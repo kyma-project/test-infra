@@ -16,6 +16,8 @@ spec:
     The usual actions are `plan` and `apply`. Authentication to Google Cloud is done through the Kubernetes service account with the
     workload identity configured. The parameter **additional_terraform_args** allows defining Terraform CLI arguments in pipelines.
     When this parameter value is set in a pipeline, you must add the default value `-no-color` to the list.
+    The parameter **additional_tfcmt_args** allows defining additional variable tfcmt CLI arguments in pipelines.
+    This parameter must at least provide -sha and/or -pr arguments together with its values. See the example pipeline for the parameters' values example
     The task uses the tfcmt tool to run Terraform actions and post the results to GitHub PRs.
     The tfcmt tool uses github-comments metadata in GitHub comments, so github-comments can be used later for processing tfcmt comments.
   workspaces:
@@ -33,12 +35,9 @@ spec:
       description: "Additional terraform arguments. Add -no-color flag if you override default value."
       type: array
       default: [ "-no-color" ]
-    - name: PULL_NUMBER
-      description: "Pull request number. Variable set by Prow."
-      type: string
-    - name: SHA
-      description: "Commit hash with terraform config files."
-      type: string
+    - name: additional_tfcmt_args
+      description: "Additional tfcmt arguments. Provide at least -sha and/or -pr arguments as parameter value."
+      type: array
     - name: REPO_OWNER
       description: "GitHub org that triggers the job. Variable set by Prow."
       type: string
@@ -71,15 +70,14 @@ spec:
       args:
         - -owner=$(params.REPO_OWNER)
         - -repo=$(params.REPO_NAME)
-        - -pr=$(params.PULL_NUMBER)
-        - -sha=$(params.SHA)
+        - $(params.additional_tfcmt_args[*])
         - $(params.terraform_action)
         - --
         - terraform
         - -chdir=$(params.module_path)
         - $(params.terraform_action)
         - -input=false
-        - "$(params.additional_terraform_args[*])"
+        - $(params.additional_terraform_args[*])
       env:
         - name: GITHUB_TOKEN
           valueFrom:

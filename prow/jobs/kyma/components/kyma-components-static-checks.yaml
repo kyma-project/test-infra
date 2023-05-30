@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/telemetry-manager:
     - name: pull-telemetry-manager-lint
       annotations:
+        description: "runs linting on telemetry-manager repo"
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -29,6 +31,8 @@ presubmits: # runs on PRs
                 cpu: 200m
     - name: pull-telemetry-manager-unit-test
       annotations:
+        description: "runs unit tests telemetry-manager repo"
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -233,6 +237,8 @@ presubmits: # runs on PRs
   kyma-project/directory-size-exporter:
     - name: pull-directory-size-exporter-lint
       annotations:
+        description: "runs linting on the repo"
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -257,6 +263,8 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-directory-size-exporter-unit-test
       annotations:
+        description: "runs unit tests on the repo"
+        owner: "huskies"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

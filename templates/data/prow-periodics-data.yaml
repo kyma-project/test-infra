@@ -26,7 +26,7 @@ templates:
               - jobConfig:
                   name: eventing-tools-autobump
                   cron: "30 * * * 1-5"
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230523-2834e18241
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230526-bc91fd978b
                   command: generic-autobumper
                   args:
                     - --config=ci/eventing-tools-autobump-config.yaml
@@ -49,8 +49,11 @@ templates:
             jobs:
               - jobConfig:
                   name: ci-prow-label-sync
+                  annotations:
+                    owner: neighbors
+                    description: "Periodic sync of labels in GitHub"
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20230523-2834e18241
+                  image: gcr.io/k8s-prow/label_sync:v20230526-bc91fd978b
                   command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
@@ -70,9 +73,12 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: ci-prow-autobump
+                  annotations:
+                    owner: neighbors
+                    description: "Autobump prow components image versions"
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230523-2834e18241
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230526-bc91fd978b
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
@@ -128,9 +134,12 @@ templates:
                     - pubsub_labels
               - jobConfig:
                   name: ci-prow-autobump-jobs
+                  annotations:
+                    owner: neighbors
+                    description: "Autobump image versions in prow jobs"
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230523-2834e18241
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230526-bc91fd978b
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml
