@@ -34,8 +34,8 @@ images:
 - source: "oryd/oathkeeper-maester:v0.1.5"
   amd64Only: true
 - source: "oryd/oathkeeper:v0.38.25-beta.1"
-- source: "postgres@sha256:d733042ebc13cfb92c14f516ea1e5ceb95a1644e95fc9b02faea2f1c7567cf06"
-  tag: "v20230427-11.19-alpine3.17"
+- source: "postgres@sha256:45800340cfea631af4c8c3870e8d7f1ae888907e39def41a3b7608ff8f16b28c"
+  tag: "11.20-alpine3.18"
 - source: "prom/pushgateway:v1.4.3"
 - source: "k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.5.0"
 - source: "quay.io/jetstack/cert-manager-controller:v1.1.0"
@@ -56,3 +56,5 @@ images:
 - source: "ghcr.io/kedacore/keda:2.10.1"
 - source: "ghcr.io/kedacore/keda-admission-webhooks:2.10.1"
 - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.10.1"
+- source: "nginx:1.23.3"
+  amd64Only: true

@@ -218,6 +218,56 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/keda-manager:
+    - name: post-keda-manager-build
+      annotations:
+        description: "Job to build keda module for a release."
+        owner: "otters"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-keda-manager-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^\w+\d+\.\d+\.\d+(?:-.*)?$
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=keda-manager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=Dockerfile"
+              - "--tag={{ .Env \"PULL_BASE_SHA\" }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+              limits:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-keda-manager-module-build
       annotations:
         description: "Job to build keda module for a release."
@@ -234,7 +284,7 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\d+\.\d+\.\d+(?:-.*)?$
+        - ^\w+\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
@@ -244,7 +294,7 @@ postsubmits: # runs on main
               - "ci"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
+                value: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY

@@ -234,3 +234,10 @@ templates:
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/image-detector"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "image-detector"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"

@@ -9,7 +9,7 @@ templates:
             max_concurrency: "10"
             decorate: "true"
             command: checkconfig
-            image: gcr.io/k8s-prow/checkconfig:v20230522-3eb206f68f
+            image: gcr.io/k8s-prow/checkconfig:v20230526-bc91fd978b
           jobConfig_inrepo:
             run_if_changed: "(^.prow/.*.yaml|^.prow.yaml)"
             args:
@@ -32,6 +32,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-{{$repo.name}}-validate-inrepo-prow-configs"
+                  annotations:
+                    description: "Validate inrepo prow configs for {{$repo.name}}"
+                    owner: "neighbors"
                 inheritedConfigs:
                   local:
                     - "default"

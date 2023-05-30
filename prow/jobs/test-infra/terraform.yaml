@@ -1,0 +1,151 @@
+presubmits:
+  kyma-project/test-infra:
+    - name: pull-plan-prod-terraform
+      decorate: false
+      agent: tekton-pipeline
+      cluster: tekton
+      # Run on any change in terraform config files, terraform variable values files or resource yaml files.
+      run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
+      annotations:
+        owner: "neighbors"
+        description: "Run terraform plan for prod environment."
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-plan-prod-terraform"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      tekton_pipeline_run_spec:
+        v1beta1:
+          workspaces:
+            - name: repo
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: premium-rwo
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
+          params:
+            - name: terraform_action
+              value: plan
+            - name: module_path
+              value: configs/terraform/environments/prod
+          taskRunSpecs:
+            - pipelineTaskName: terraform-executor
+              taskServiceAccountName: terraform-executor
+              automountServiceAccountToken: true
+          pipelineSpec:
+            description: "Run terraform plan for prod environment."
+            tasks:
+              - name: clone-refs
+                taskRef:
+                  name: clone-refs
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: JOB_SPEC
+                    value: $(params.JOB_SPEC)
+              - name: terraform-executor
+                taskRef:
+                  name: terraform-executor
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                  - name: terraform_action
+                    value: $(params.terraform_action)
+                  - name: module_path
+                    value: $(params.module_path)
+                  - name: additional_tfcmt_args
+                    value: [ "-sha=$(params.PULL_PULL_SHA)", "-pr=$(params.PULL_NUMBER)" ]
+                runAfter:
+                  - clone-refs
+              - name: hide-github-pr-comments
+                taskRef:
+                  name: hide-github-pr-comments
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                  - name: PULL_NUMBER
+                    value: $(params.PULL_NUMBER)
+                  - name: PULL_PULL_SHA
+                    value: $(params.PULL_PULL_SHA)
+                runAfter:
+                  - terraform-executor
+
+postsubmits:
+  kyma-project/test-infra:
+    - name: post-apply-prod-terraform
+      decorate: false
+      agent: tekton-pipeline
+      cluster: tekton
+      # Run on any change in terraform config files, terraform variable values files or resource yaml files.
+      run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
+      annotations:
+        owner: "neighbors"
+        description: "Run terraform apply for prod environment."
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-apply-prod-terraform"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      tekton_pipeline_run_spec:
+        v1beta1:
+          workspaces:
+            - name: repo
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: premium-rwo
+                  accessModes:
+                    - ReadWriteOnce
+                  resources:
+                    requests:
+                      storage: 1Gi
+          params:
+            - name: terraform_action
+              value: apply
+            - name: module_path
+              value: configs/terraform/environments/prod
+          taskRunSpecs:
+            - pipelineTaskName: terraform-executor
+              taskServiceAccountName: terraform-executor
+              automountServiceAccountToken: true
+          pipelineSpec:
+            description: "Run terraform apply for prod environment."
+            tasks:
+              - name: clone-refs
+                taskRef:
+                  name: clone-refs
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: JOB_SPEC
+                    value: $(params.JOB_SPEC)
+              - name: terraform-executor
+                taskRef:
+                  name: terraform-executor
+                workspaces:
+                  - name: repo
+                    workspace: repo
+                params:
+                  - name: REPO_OWNER
+                    value: $(params.REPO_OWNER)
+                  - name: REPO_NAME
+                    value: $(params.REPO_NAME)
+                  - name: terraform_action
+                    value: $(params.terraform_action)
+                  - name: module_path
+                    value: $(params.module_path)
+                  - name: additional_terraform_args
+                    value: ["-no-color", "-auto-approve"]
+                  - name: additional_tfcmt_args
+                    value: [ "-sha=$(params.PULL_BASE_SHA)" ]
+                runAfter:
+                  - clone-refs
