@@ -10,4 +10,12 @@ spec:
     nanespaces: ["default"]
   parameters:
     exemptImages:
-      - "eu.gcr.ajo"
+      - "eu.gcr.io/kyma-project/test-infra/buildpack-golang:*"
+      - "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"
+      - "eu.gcr.io/kyma-project/test-infra/gardener-rotate:*"
+      - "eu.gcr.io/kyma-project/test-infra/kyma-integration:*"
+      - "eu.gcr.io/kyma-project/test-infra/golangci-lint:*"
+      - "aquasec/trivy:*"
+      - "eu.gcr.io/kyma-project/test-infra/bootstrap:*"
+      - "eu.gcr.io/kyma-project/prow/cleaner:*"
+      - "gcr.io/k8s-prow/generic-autobumper:*"
