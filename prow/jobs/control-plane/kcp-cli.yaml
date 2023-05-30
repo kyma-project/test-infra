@@ -6,6 +6,8 @@ presubmits: # runs on PRs
     - name: pre-main-kcp-cli
       annotations:
         pipeline.trigger: "pr-submit"
+        owner: sre
+        description: "Builds and validates KCP CLI before merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kcp-cli"
@@ -51,13 +53,15 @@ presubmits: # runs on PRs
           - name: sa-kyma-artifacts
             secret:
               secretName: sa-kyma-artifacts
-  
+
 postsubmits: # runs on main
   kyma-project/control-plane:
     - name: post-main-kcp-cli
       annotations:
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
+        owner: sre
+        description: "Builds KCP CLI after merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kcp-cli"
@@ -103,4 +107,3 @@ postsubmits: # runs on main
           - name: sa-kyma-artifacts
             secret:
               secretName: sa-kyma-artifacts
-  
