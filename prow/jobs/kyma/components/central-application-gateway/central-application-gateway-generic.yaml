@@ -51,7 +51,7 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-central-application-gateway-build
       annotations:
-        description: "Building the images used in acceptance test. The same thing, as the `pull-` job but on the main braich."
+        description: "Building the images used in acceptance test. The same thing, as the `pull-` job but on the main branch."
         owner: "framefrog"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"

@@ -24,7 +24,7 @@ templates:
                   name: post-compass-runtime-agent-build
                   annotations:
                     owner: framefrog
-                    description: "Building the images using in acceptance test. The same thing, as the `pull-` job but on the main braich."
+                    description: "Building the images used in acceptance test. The same thing, as the `pull-` job but on the main branch."
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -363,7 +363,7 @@ templates:
                   name: post-central-application-gateway-build
                   annotations:
                     owner: framefrog
-                    description: "Building the images using in acceptance test. The same thing, as the `pull-` job but on the main braich."
+                    description: "Building the images used in acceptance test. The same thing, as the `pull-` job but on the main branch."
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/central-application-gateway/"
@@ -400,7 +400,7 @@ templates:
                   name: post-central-application-connectivity-validator-build
                   annotations:
                     owner: framefrog
-                    description: "Building the images using in acceptance test. The same thing, as the `pull-` job but on the main braich."
+                    description: "Building the images used in acceptance test. The same thing, as the `pull-` job but on the main branch."
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/central-application-connectivity-validator/"
