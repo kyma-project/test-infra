@@ -21,6 +21,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-compass-smoke-test"
+                  annotations:
+                    owner: compass
+                    description: "Compass smoke test"
                   run_if_changed: "^(chart|installation)/"
                   labels:
                     preset-build-pr: "true"
