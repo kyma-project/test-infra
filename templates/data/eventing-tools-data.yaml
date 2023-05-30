@@ -13,10 +13,14 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                   run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the eventing tools (eventing test suite)
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+        
               - jobConfig:
                   name: post-eventing-tools-build
                   labels:
@@ -28,6 +32,9 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
                   run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the eventing tools (eventing test suite)
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -41,6 +48,9 @@ templates:
                     - "-c"
                     - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
                   run_if_changed: "\\.go$|^go.(sum|mod)"
+                  annotations:
+                    owner: skydivingtunas
+                    description: run unit tests for eventing tools
                 inheritedConfigs:
                   global:
                     - testing
