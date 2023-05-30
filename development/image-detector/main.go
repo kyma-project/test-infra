@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 
+	"github.com/kyma-project/test-infra/development/image-detector/bumper"
 	"github.com/kyma-project/test-infra/development/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/development/pkg/securityconfig"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 	"k8s.io/test-infra/prow/config"
 )
 
@@ -28,6 +31,9 @@ var (
 
 	// TektonCatalog contains root path to tekton catalog directory
 	TektonCatalog string
+
+	// AutobumpConfig contains root path to config for autobumper for sec-scanner-config
+	AutobumpConfig string
 )
 
 var rootCmd = &cobra.Command{
@@ -99,27 +105,84 @@ var rootCmd = &cobra.Command{
 		// write images to security config
 		securityConfig.Images = images
 		securityConfig.SaveToFile(SecScannerConfig)
+
+		// Run autbumper if autobump config provided
+		if AutobumpConfig != "" {
+			err := runAutobumper(AutobumpConfig)
+			if err != nil {
+				log.Fatalf("failed to run bumper: %s", err)
+			}
+		}
 	},
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVar(&ProwConfig, "prow-config", "", "path to the Prow config file (Required)")
-	rootCmd.PersistentFlags().StringVar(&JobsConfigDir, "prow-jobs-dir", "", "path to the directory which contains Prow job files (Required)")
-	rootCmd.PersistentFlags().StringVar(&TerraformDir, "terraform-dir", "", "path to the directory containing Terraform files (Required)")
-	rootCmd.PersistentFlags().StringVar(&SecScannerConfig, "sec-scanner-config", "", "path to the security scanner config field (Required)")
-	rootCmd.PersistentFlags().StringVar(&KubernetesFiles, "kubernetes-dir", "", "path to the directory containing Kubernetes deployments (Required)")
-	rootCmd.PersistentFlags().StringVar(&TektonCatalog, "tekton-catalog", "", "path to the Tekton catalog directory (Required)")
+	rootCmd.PersistentFlags().StringVar(&ProwConfig, "prow-config", "", "path to the Prow config file")
+	rootCmd.PersistentFlags().StringVar(&JobsConfigDir, "prow-jobs-dir", "", "path to the directory which contains Prow job files")
+	rootCmd.PersistentFlags().StringVar(&TerraformDir, "terraform-dir", "", "path to the directory containing Terraform files")
+	rootCmd.PersistentFlags().StringVar(&SecScannerConfig, "sec-scanner-config", "", "path to the security scanner config field")
+	rootCmd.PersistentFlags().StringVar(&KubernetesFiles, "kubernetes-dir", "", "path to the directory containing Kubernetes deployments")
+	rootCmd.PersistentFlags().StringVar(&TektonCatalog, "tekton-catalog", "", "path to the Tekton catalog directory")
+	rootCmd.PersistentFlags().StringVar(&AutobumpConfig, "autobump-config", "", "path to the config for autobumper for security scanner config")
 
-	rootCmd.MarkFlagRequired("prow-config")
-	rootCmd.MarkFlagRequired("prow-jobs-dir")
-	rootCmd.MarkFlagRequired("terraform-dir")
-	rootCmd.MarkFlagRequired("sec-scanner-config")
-	rootCmd.MarkFlagRequired("kubernetes-dir")
-	rootCmd.MarkFlagRequired("tekton-catalog")
 }
 
 func main() {
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalf("failed to run command: %s", err)
 	}
+}
+
+// client is bumper client
+type client struct {
+	o *options
+}
+
+// Changes returns a slice of functions, each one does some stuff, and
+// returns commit message for the changes
+func (c *client) Changes() []func(context.Context) (string, error) {
+	return []func(context.Context) (string, error){
+		func(ctx context.Context) (string, error) {
+			return "Bumping sec-scanner-config.yml", nil
+		},
+	}
+}
+
+// PRTitleBody returns the body of the PR, this function runs after each commit
+func (c *client) PRTitleBody() (string, string, error) {
+	return "Update sec-scanner-config.yml" + "\n", "", nil
+}
+
+// options is the options for autobumper operations.
+type options struct {
+	GitHubRepo      string   `yaml:"gitHubRepo"`
+	FoldersToFilter []string `yaml:"foldersToFilter"`
+	FilesToFilter   []string `yaml:"filesToFilter"`
+}
+
+// runAutobumper is wrapper for bumper API -> ACL
+func runAutobumper(autoBumperCfg string) error {
+	f, err := os.Open(autoBumperCfg)
+	if err != nil {
+		return err
+	}
+
+	decoder := yaml.NewDecoder(f)
+
+	var bumperClientOpt options
+	err = decoder.Decode(&bumperClientOpt)
+	if err != nil {
+		return err
+	}
+
+	var opts bumper.Options
+	err = decoder.Decode(&opts)
+	if err != nil {
+		return err
+	}
+
+	ctx := context.Background()
+	bumper.Run(ctx, &opts, &client{o: &bumperClientOpt})
+
+	return nil
 }
