@@ -2,7 +2,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       api-gateway:
-        - pjName: "rel-api-gateway-custom-domain-integration-aws"
+        - pjName: "rel-api-gateway-custom-domain-integration-gcp"
 prConfigs:
   kyma-project:
     api-gateway:
