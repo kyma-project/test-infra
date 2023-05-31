@@ -506,7 +506,7 @@ templates:
                   name: post-application-connector-compass-runtime-agent-test-build
                   annotations:
                     owner: framefrog
-                    description: "Building the images using in acceptance test"
+                    description: "Building the images used in acceptance test"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^tests/components/application-connector/"
