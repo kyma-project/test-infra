@@ -13,5 +13,4 @@ spec:
     allowedProfiles:
       - runtime/default
     exemptImages:
-      # technically only :*-buildkit images need "unconfined" profile
       - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*
