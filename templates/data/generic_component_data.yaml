@@ -456,7 +456,7 @@ templates:
                   name: pull-application-connector-connectivity-validator-test-build
                   annotations:
                     owner: framefrog
-                    description: "Building the images using in acceptance test"
+                    description: "Building the images used in acceptance test"
                   args:
                     - "--name=connectivity-validator-test"
                     - "--config=/config/kaniko-build-config.yaml"
