@@ -182,13 +182,13 @@ postsubmits: # runs on main
               - name: GARDENER_REGION
                 value: "europe-west3"
               - name: GARDENER_ZONES
-                value: "europe-west3-c,europe-west3-b,europe-west3-a"
+                value: "europe-west3-c"
               - name: MACHINE_TYPE
                 value: "n2-standard-4"
               - name: SCALER_MAX
-                value: "20"
-              - name: SCALER_MIN
                 value: "3"
+              - name: SCALER_MIN
+                value: "1"
               - name: TEST_SA_ACCESS_KEY_PATH
                 value: "/sa-kyma-dns-serviceuser/service-account.json"
             resources:
@@ -243,13 +243,13 @@ postsubmits: # runs on main
               - name: GARDENER_REGION
                 value: "eu-central-1"
               - name: GARDENER_ZONES
-                value: "eu-central-1b,eu-central-1c,eu-central-1a"
+                value: "eu-central-1b"
               - name: MACHINE_TYPE
                 value: "m5.xlarge"
               - name: SCALER_MAX
-                value: "20"
-              - name: SCALER_MIN
                 value: "3"
+              - name: SCALER_MIN
+                value: "1"
               - name: TEST_SA_ACCESS_KEY_PATH
                 value: "/sa-kyma-dns-serviceuser/service-account.json"
             resources:
