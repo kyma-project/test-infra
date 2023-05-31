@@ -145,12 +145,12 @@ templates:
                   env:
                     TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
                     GARDENER_REGION: "eu-central-1"
-                    GARDENER_ZONES: "eu-central-1b,eu-central-1c,eu-central-1a"
+                    GARDENER_ZONES: "eu-central-1b"
                     MACHINE_TYPE: "m5.xlarge"
                     DISK_SIZE: 50
                     DISK_TYPE: "gp2"
-                    SCALER_MAX: 20
-                    SCALER_MIN: 3
+                    SCALER_MAX: 3
+                    SCALER_MIN: 1
                   command: "/bin/sh"
                   args:
                     - "-c"
