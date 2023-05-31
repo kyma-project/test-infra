@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-compass-runtime-agent-build
+                  annotations:
+                    owner: framefrog
+                    description: "Build the component image"
                   args:
                     - "--name=compass-runtime-agent"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -19,6 +22,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-compass-runtime-agent-build
+                  annotations:
+                    owner: framefrog
+                    description: "Building the images used in acceptance test. The same thing, as the `pull-` job but on the main branch."
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -352,6 +358,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-central-application-gateway-build
+                  annotations:
+                    owner: framefrog
+                    description: "Build the component image"
                   run_if_changed: "^components/central-application-gateway/"
                   args:
                     - "--name=central-application-gateway"
@@ -364,6 +373,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-central-application-gateway-build
+                  annotations:
+                    owner: framefrog
+                    description: "Building the images used in acceptance test. The same thing, as the `pull-` job but on the main branch."
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/central-application-gateway/"
@@ -383,6 +395,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-central-application-connectivity-validator-build
+                  annotations:
+                    description: "Build the component image"
+                    owner: framefrog
                   run_if_changed: "^components/central-application-connectivity-validator/"
                   args:
                     - "--name=central-application-connectivity-validator"
@@ -395,6 +410,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-central-application-connectivity-validator-build
+                  annotations:
+                    owner: framefrog
+                    description: "Building the images used in acceptance test. The same thing, as the `pull-` job but on the main branch."
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/central-application-connectivity-validator/"
@@ -414,6 +432,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-application-connector-gateway-test-build
+                  annotations:
+                    owner: framefrog
+                    description: "Building the images used in acceptance test"
                   args:
                     - "--name=gateway-test"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -427,6 +448,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-application-connector-gateway-test-build
+                  annotations:
+                    owner: framefrog
+                    description: "Building the images used in acceptance test"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^tests/components/application-connector/"
@@ -442,6 +466,9 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-application-connector-connectivity-validator-test-build
+                  annotations:
+                    owner: framefrog
+                    description: "Building the images used in acceptance test"
                   args:
                     - "--name=connectivity-validator-test"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -455,6 +482,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-application-connector-connectivity-validator-test-build
+                  annotations:
+                    owner: framefrog
+                    description: "Building the images used in acceptance test"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^tests/components/application-connector/"
@@ -470,6 +500,9 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-application-connector-compass-runtime-agent-test-build
+                  annotations:
+                    owner: framefrog
+                    description: "Building the images used in acceptance test"
                   args:
                     - "--name=compass-runtime-agent-test"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -483,6 +516,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-application-connector-compass-runtime-agent-test-build
+                  annotations:
+                    owner: framefrog
+                    description: "Building the images used in acceptance test"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^tests/components/application-connector/"
@@ -511,6 +547,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-application-connector-mock-app-build
+                  annotations:
+                    owner: framefrog
+                    description: "Building the images used in acceptance test"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^tests/components/application-connector/"

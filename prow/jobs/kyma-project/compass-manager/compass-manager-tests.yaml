@@ -2,6 +2,8 @@ presubmits: # runs on PRs
   kyma-project/compass-manager:
     - name: pull-compass-manager-tests
       annotations:
+        description: "It tests the component's correctness"
+        owner: framefrog
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"

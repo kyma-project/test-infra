@@ -3,7 +3,7 @@ presubmits: # runs on PRs
     - name: pre-main-kyma-integration-k3d-runtime-agent
       annotations:
         description: "Kyma integration job on k3d for testing compass runtime agent."
-        owner: Framefrog
+        owner: framefrog
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"
@@ -42,8 +42,8 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-main-kyma-integration-k3d-runtime-agent
       annotations:
-        description: "Kyma integration job on k3d for testing compass runtime agent."
-        owner: Framefrog
+        description: "It tests the acceptance criteria of the Compass Runtime Agent component. The same thing, as the `pre-` job but on the main braich"
+        owner: framefrog
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
         pipeline.type: "integration"

@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-provisioner-build
+                  annotations:
+                    owner: framefrog
+                    description: "It builds the pull request Provisioner image"
                   run_if_changed: "^components/provisioner"
                   args:
                     - --name=control-plane/provisioner
@@ -19,6 +22,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-provisioner-build
+                  annotations:
+                    owner: framefrog
+                    description: "It builds the post commit Provisioner's image"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/provisioner"
