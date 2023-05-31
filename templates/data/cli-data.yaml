@@ -6,6 +6,8 @@ templates:
           job_spec:
             command: "make"
             privileged: "false"
+            request_memory: 2Gi
+            request_cpu: 500m
         jobConfigs:
           - repoName: kyma-project/cli
             jobs:
