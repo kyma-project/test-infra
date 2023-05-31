@@ -7,7 +7,8 @@ spec:
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
-    nanespaces: ["default"]
+    nanespaces:
+      - "default"
   parameters:
     exemptImages:
       - "aquasec/trivy:*"

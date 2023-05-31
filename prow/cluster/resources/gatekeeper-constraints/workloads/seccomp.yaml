@@ -1,0 +1,18 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPSeccomp
+metadata:
+  name: psp-seccomp
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces:
+      - "default"
+  parameters:
+    allowedProfiles:
+      - runtime/default
+      - docker/default
+    exemptImages:
+      # technically only :*-buildkit images need "unconfined" profile
+      - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*

@@ -1,7 +1,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: K8sPSPAllowPrivilegeEscalationContainer
+kind: K8sPSPHostNamespace
 metadata:
-  name: psp-allow-privilege-escalation-container
+  name: psp-host-namespace
 spec:
   match:
     kinds:

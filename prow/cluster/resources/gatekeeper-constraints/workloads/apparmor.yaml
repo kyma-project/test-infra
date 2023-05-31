@@ -1,0 +1,17 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPAppArmor
+metadata:
+  name: psp-apparmor
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces:
+      - "default"
+  parameters:
+    allowedProfiles:
+      - runtime/default
+    exemptImages:
+      # technically only :*-buildkit images need "unconfined" profile
+      - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*

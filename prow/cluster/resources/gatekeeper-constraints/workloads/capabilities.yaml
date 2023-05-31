@@ -1,7 +1,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: K8sPSPAllowPrivilegeEscalationContainer
+kind: K8sPSPCapabilities
 metadata:
-  name: psp-allow-privilege-escalation-container
+  name: capabilities
 spec:
   match:
     kinds:
@@ -9,3 +9,4 @@ spec:
         kinds: ["Pod"]
     namespaces:
       - "default"
+  # we're not using capabilities
