@@ -120,7 +120,7 @@ templates:
                     - "tests/integration/scripts/integration-gardener-custom-domain.sh"
                 inheritedConfigs:
                   global:
-                    - jobConfig_presubmit
+                    - jobConfig_postsubmit
                     - jobConfig_default
                   local:
                     - job_default
@@ -157,7 +157,7 @@ templates:
                     - "tests/integration/scripts/integration-gardener-custom-domain.sh"
                 inheritedConfigs:
                   global:
-                    - jobConfig_presubmit
+                    - jobConfig_postsubmit
                     - jobConfig_default
                   local:
                     - job_default
