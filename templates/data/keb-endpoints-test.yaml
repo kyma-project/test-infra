@@ -1,0 +1,39 @@
+templates:
+  - fromTo:
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma/keb-endpoints-test.yaml
+    render:
+      - localSets:
+          jobConfig_default:
+            annotations:
+              pipeline.test: fast-integration
+            path_alias: github.com/kyma-project/kyma
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/keb-endpoints-test.sh"
+            cluster: "trusted-workload"
+            request_memory: 100Mi
+            request_cpu: 50m
+            labels:
+              preset-keb-dev-credentials: "true"
+          kyma_integration_subaccount:
+            env:
+              KEB_SUBACCOUNT_ID: "prow-keb-integration"
+        jobConfigs:
+          - repoName: "kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: "keb-endpoints-test"
+                  cron: "5 1 * * *" # "At 01:05"
+                  annotations:
+                    owner: "gophers"
+                    description: "Periodic job to check if KEB endpoints require authorization"
+                inheritedConfigs:
+                  global:
+                    - "image_kyma-integration"
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "kyma_integration_subaccount"
