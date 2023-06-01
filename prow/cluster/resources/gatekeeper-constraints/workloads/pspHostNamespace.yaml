@@ -3,6 +3,7 @@ kind: K8sPSPHostNamespace
 metadata:
   name: psp-host-namespace
 spec:
+  enforcementAction: warn
   match:
     kinds:
       - apiGroups: [""]

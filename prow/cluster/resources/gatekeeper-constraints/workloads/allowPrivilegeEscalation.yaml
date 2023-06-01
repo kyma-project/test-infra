@@ -3,6 +3,7 @@ kind: K8sPSPAllowPrivilegeEscalationContainer
 metadata:
   name: psp-allow-privilege-escalation-container
 spec:
+  enforcementAction: warn
   match:
     kinds:
       - apiGroups: [""]

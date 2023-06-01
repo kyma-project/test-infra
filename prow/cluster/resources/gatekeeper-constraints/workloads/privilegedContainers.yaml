@@ -3,6 +3,7 @@ kind: K8sPSPPrivilegedContainer
 metadata:
   name: psp-privileged-container
 spec:
+  enforcementAction: warn
   match:
     kinds:
       - apiGroups: [""]

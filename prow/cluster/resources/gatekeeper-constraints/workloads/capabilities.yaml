@@ -3,6 +3,7 @@ kind: K8sPSPCapabilities
 metadata:
   name: capabilities
 spec:
+  enforcementAction: warn
   match:
     kinds:
       - apiGroups: [""]

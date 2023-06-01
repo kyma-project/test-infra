@@ -3,6 +3,7 @@ kind: K8sPSPAppArmor
 metadata:
   name: psp-apparmor
 spec:
+  enforcementAction: warn
   match:
     kinds:
       - apiGroups: [""]

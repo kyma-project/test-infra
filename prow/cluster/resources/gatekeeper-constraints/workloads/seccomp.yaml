@@ -3,6 +3,7 @@ kind: K8sPSPSeccomp
 metadata:
   name: psp-seccomp
 spec:
+  enforcementAction: warn
   match:
     kinds:
       - apiGroups: [""]

@@ -3,6 +3,7 @@ kind: K8sPSPHostFilesystem
 metadata:
   name: psp-host-filesystem
 spec:
+  enforcementAction: warn
   match:
     kinds:
       - apiGroups: [""]
