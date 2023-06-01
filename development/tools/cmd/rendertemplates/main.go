@@ -10,6 +10,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -155,6 +156,11 @@ func main() {
 	}
 
 	rtConfig.Merge(mergoConfig)
+
+	// sort template configs by value of FromTo (see: https://github.com/kyma-project/test-infra/issues/6694)
+	sort.Slice(rtConfig.TemplatesConfigs, func(i, j int) bool {
+		return rtConfig.TemplatesConfigs[i].FromTo[0].String() < rtConfig.TemplatesConfigs[j].FromTo[0].String()
+	})
 
 	// generate final .yaml files
 	for _, templateConfig := range rtConfig.TemplatesConfigs {
