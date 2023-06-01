@@ -3,7 +3,6 @@ pjConfigs:
     kyma-project:
       eventing-auth-manager:
         - pjName: "pull-eventing-auth-manager-integration-test"
-
 prConfigs: #
   kyma-project:
     eventing-auth-manager:
