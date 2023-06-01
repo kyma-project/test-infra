@@ -126,6 +126,7 @@ func generateFromTo(templatesConfigs []*TemplateConfig) []*TemplateConfig {
 			tmpls = append(tmpls, templateConfig)
 		}
 	}
+
 	return tmpls
 }
 

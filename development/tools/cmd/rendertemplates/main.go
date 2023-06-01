@@ -10,6 +10,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -154,14 +155,12 @@ func main() {
 		rtConfig.TemplatesConfigs = append(rtConfig.TemplatesConfigs, dataFileConfig.TemplatesConfigs...)
 	}
 
-	// check there is no duplicated target files (see: https://github.com/kyma-project/test-infra/issues/6694)
-	duplicates := findDuplicatedTargetFiles(rtConfig.TemplatesConfigs)
-	if duplicates != nil {
-		// print list of duplicated files
-		log.Fatalf("Error: Duplicate target files found: %v", duplicates)
-	}
-
 	rtConfig.Merge(mergoConfig)
+
+	// sort template configs by value of FromTo (see: https://github.com/kyma-project/test-infra/issues/6694)
+	sort.Slice(rtConfig.TemplatesConfigs, func(i, j int) bool {
+		return rtConfig.TemplatesConfigs[i].FromTo[0].String() < rtConfig.TemplatesConfigs[j].FromTo[0].String()
+	})
 
 	// generate final .yaml files
 	for _, templateConfig := range rtConfig.TemplatesConfigs {
@@ -407,23 +406,4 @@ func getRunID(name interface{}) string {
 		}
 	}
 	return "\"" + jobName + "\""
-}
-
-// dindDuplicatedTargetFiles returns list of duplicated target files
-// for template configs or nil if no duplicates
-func findDuplicatedTargetFiles(templates []*rt.TemplateConfig) []string {
-	isDuplicateMap := make(map[string]bool)
-
-	var duplicates []string
-	for _, template := range templates {
-		for _, fromTo := range template.FromTo {
-			if isDuplicateMap[fromTo.To] {
-				duplicates = append(duplicates, fromTo.To)
-			} else {
-				isDuplicateMap[fromTo.To] = true
-			}
-		}
-	}
-
-	return duplicates
 }
