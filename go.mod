@@ -44,7 +44,7 @@ require (
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.16.0
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.8.4
 	github.com/tidwall/gjson v1.14.4
 	github.com/zricethezav/gitleaks/v8 v8.16.3
 	go.uber.org/zap v1.24.0
@@ -64,7 +64,7 @@ require (
 
 require (
 	github.com/tektoncd/pipeline v0.36.0
-	k8s.io/test-infra v0.0.0-20230531175345-6c1fdc02922a
+	k8s.io/test-infra v0.0.0-20230601085146-72cf872d5670
 )
 
 require (
