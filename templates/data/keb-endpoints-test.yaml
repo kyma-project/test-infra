@@ -14,6 +14,7 @@ templates:
             request_cpu: 50m
             labels:
               preset-keb-dev-credentials: "true"
+              preset-keb-plan-azure: "true"
           kyma_integration_subaccount:
             env:
               KEB_SUBACCOUNT_ID: "prow-keb-integration"
