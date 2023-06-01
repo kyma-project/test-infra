@@ -838,6 +838,18 @@ presets:
           secretKeyRef:
             name: kyma-btp-manager-bot-github-token
             key: token
+  - labels:
+      preset-kyma-eventing-auth-ias-creds: "true"
+    env:
+      - name: TEST_EVENTING_AUTH_IAS_URL
+        value: "https://tunas.accounts400.ondemand.com"
+      - name: TEST_EVENTING_AUTH_IAS_USER
+        value: "skydiving-tunas@groups.sap.com"
+      - name: TEST_EVENTING_AUTH_IAS_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: kyma-eventing-auth-ias-creds
+            key: token
   # Kyma Guard Bot
   - labels:
       preset-kyma-guard-bot-github-token: "true"
