@@ -30,7 +30,7 @@ echo "--> Deploying Serverless"
 
 if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
   echo "--> Deploying Serverless from Kyma main"
-  kyma deploy -p evaluation --ci \
+  kyma deploy --ci \
     --component cluster-essentials \
     --component serverless \
     --value "$REGISTRY_VALUES" \
