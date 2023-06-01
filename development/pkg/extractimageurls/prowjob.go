@@ -31,6 +31,9 @@ func extractImageUrlsFromPresubmitsProwJobs(presubmits map[string][]config.Presu
 	var images []string
 	for _, repo := range presubmits {
 		for _, job := range repo {
+			if job.Spec == nil {
+				continue
+			}
 			for _, container := range job.Spec.Containers {
 				images = append(images, container.Image)
 			}
@@ -45,6 +48,9 @@ func extractImageUrlsFromPostsubmitsJobs(postsubmits map[string][]config.Postsub
 	var images []string
 	for _, repo := range postsubmits {
 		for _, job := range repo {
+			if job.Spec == nil {
+				continue
+			}
 			for _, container := range job.Spec.Containers {
 				images = append(images, container.Image)
 			}
