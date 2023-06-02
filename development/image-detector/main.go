@@ -54,51 +54,59 @@ var rootCmd = &cobra.Command{
 		images := securityConfig.Images
 
 		// get images from prow jobs
-		prowConfig, err := config.Load(ProwConfig, JobsConfigDir, nil, "")
-		if err != nil {
-			log.Fatalf("failed to load prow job config: %s", err)
-		}
+		if ProwConfig != "" && JobsConfigDir != "" {
+			prowConfig, err := config.Load(ProwConfig, JobsConfigDir, nil, "")
+			if err != nil {
+				log.Fatalf("failed to load prow job config: %s", err)
+			}
 
-		images = append(images, extractimageurls.FromProwJobConfig(prowConfig.JobConfig)...)
+			images = append(images, extractimageurls.FromProwJobConfig(prowConfig.JobConfig)...)
+		}
 
 		// get images from terraform
-		files, err := extractimageurls.FindFilesInDirectory(TerraformDir, ".*.(tf|tfvars)")
-		if err != nil {
-			log.Fatalf("failed to find files in terraform directory %s: %s", TerraformDir, err)
-		}
+		if TerraformDir != "" {
+			files, err := extractimageurls.FindFilesInDirectory(TerraformDir, ".*.(tf|tfvars)")
+			if err != nil {
+				log.Fatalf("failed to find files in terraform directory %s: %s", TerraformDir, err)
+			}
 
-		imgs, err := extractimageurls.FromFiles(files, extractimageurls.FromTerraform)
-		if err != nil {
-			log.Fatalf("failed to extract images from terraform files: %s", err)
-		}
+			imgs, err := extractimageurls.FromFiles(files, extractimageurls.FromTerraform)
+			if err != nil {
+				log.Fatalf("failed to extract images from terraform files: %s", err)
+			}
 
-		images = append(images, imgs...)
+			images = append(images, imgs...)
+		}
 
 		// get images from kubernetes
-		files, err = extractimageurls.FindFilesInDirectory(KubernetesFiles, ".*.(yaml|yml)")
-		if err != nil {
-			log.Fatalf("failed to find files in kubernetes directory %s: %s", KubernetesFiles, err)
-		}
+		if KubernetesFiles != "" {
+			files, err := extractimageurls.FindFilesInDirectory(KubernetesFiles, ".*.(yaml|yml)")
+			if err != nil {
+				log.Fatalf("failed to find files in kubernetes directory %s: %s", KubernetesFiles, err)
+			}
 
-		imgs, err = extractimageurls.FromFiles(files, extractimageurls.FromKubernetesDeployments)
-		if err != nil {
-			log.Fatalf("failed to extract images from kubernetes files: %s", err)
-		}
+			imgs, err := extractimageurls.FromFiles(files, extractimageurls.FromKubernetesDeployments)
+			if err != nil {
+				log.Fatalf("failed to extract images from kubernetes files: %s", err)
+			}
 
-		images = append(images, imgs...)
+			images = append(images, imgs...)
+		}
 
 		// get images from tekton catalog
-		files, err = extractimageurls.FindFilesInDirectory(TektonCatalog, ".*.(yaml|yml)")
-		if err != nil {
-			log.Fatalf("failed to find files in tekton catalog directory %s: %s", TektonCatalog, err)
-		}
+		if TektonCatalog != "" {
+			files, err := extractimageurls.FindFilesInDirectory(TektonCatalog, ".*.(yaml|yml)")
+			if err != nil {
+				log.Fatalf("failed to find files in tekton catalog directory %s: %s", TektonCatalog, err)
+			}
 
-		imgs, err = extractimageurls.FromFiles(files, extractimageurls.FromTektonTask)
-		if err != nil {
-			log.Fatalf("failed to extract image urls from tekton tasks files: %s", err)
-		}
+			imgs, err := extractimageurls.FromFiles(files, extractimageurls.FromTektonTask)
+			if err != nil {
+				log.Fatalf("failed to extract image urls from tekton tasks files: %s", err)
+			}
 
-		images = append(images, imgs...)
+			images = append(images, imgs...)
+		}
 
 		images = extractimageurls.UniqueImages(images)
 
@@ -125,6 +133,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&TektonCatalog, "tekton-catalog", "", "path to the Tekton catalog directory")
 	rootCmd.PersistentFlags().StringVar(&AutobumpConfig, "autobump-config", "", "path to the config for autobumper for security scanner config")
 
+	rootCmd.MarkFlagRequired("sec-scanner-config")
 }
 
 func main() {
