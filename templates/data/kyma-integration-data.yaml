@@ -363,7 +363,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
@@ -386,7 +386,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
@@ -409,7 +409,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
@@ -431,7 +431,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
@@ -453,7 +453,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
@@ -478,7 +478,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-gcloud"
                     - "extra_refs_kyma"
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
@@ -499,7 +499,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
@@ -516,7 +516,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                     - "jobConfig_presubmit"
                   local:
@@ -536,7 +536,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                     - "jobConfig_presubmit"
                   local:
@@ -556,7 +556,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                     - "jobConfig_presubmit"
                   local:
@@ -578,7 +578,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                     - "jobConfig_presubmit"
                   local:
@@ -600,7 +600,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                     - "jobConfig_presubmit"
                   local:
@@ -622,7 +622,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
@@ -644,7 +644,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
@@ -666,7 +666,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
@@ -690,7 +690,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
@@ -715,7 +715,7 @@ templates:
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
-                    - image_kyma-integration
+                    - image_kyma-integration-dind-k3d
                     - jobConfig_slack_jellyfish
                   local:
                     - "jobConfig_default"
@@ -740,7 +740,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                   local:
@@ -761,7 +761,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "disable_testgrid"
@@ -810,7 +810,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-gcloud"
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "disable_testgrid"

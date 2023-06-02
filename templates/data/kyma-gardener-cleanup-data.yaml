@@ -27,7 +27,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration"
+                    - "image_kyma-integration-garden"
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:

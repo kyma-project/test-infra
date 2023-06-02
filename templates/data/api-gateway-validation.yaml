@@ -82,7 +82,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_kyma
-                    - image_kyma-integration
+                    - image_kyma-integration-garden
                   local:
                     - job_default
                     - gardener_gcp_job
@@ -113,7 +113,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - extra_refs_kyma
-                    - image_kyma-integration
+                    - image_kyma-integration-garden
                   local:
                     - job_default
                     - job_post

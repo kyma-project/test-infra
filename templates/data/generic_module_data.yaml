@@ -101,7 +101,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
-                    - image_kyma-integration
+                    - image_kyma-integration-dind-k3d
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -260,7 +260,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - image_kyma-integration-dind-k3d    # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -280,7 +280,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - image_kyma-integration-dind-k3d   # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -300,7 +300,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - image_kyma-integration-dind-k3d   # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -406,7 +406,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
-                    - image_kyma-integration
+                    - image_kyma-integration-dind-k3d
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -542,7 +542,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration
+                    - image_kyma-integration-dind-k3d
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -563,7 +563,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration
+                    - image_kyma-integration-dind-k3d
                     - extra_refs_test-infra
                   local:
                     - job_default
