@@ -41,3 +41,7 @@ templates:
                   global:
                     - "kaniko_buildpack"
                     - "jobConfig_postsubmit"
+  - from: image-detector-inrepo.tmpl
+    render:
+      - to: "../../prow/image-detector/inrepo-config.yaml"
+      
