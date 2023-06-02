@@ -9,7 +9,7 @@ import (
 	"github.com/kyma-project/test-infra/development/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/development/pkg/securityconfig"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"k8s.io/test-infra/prow/config"
 )
 
@@ -34,6 +34,9 @@ var (
 
 	// AutobumpConfig contains root path to config for autobumper for sec-scanner-config
 	AutobumpConfig string
+
+	// InRepoConfig contains path to the configuration of repositories with Prow inrepo config enabled
+	InRepoConfig string
 )
 
 var rootCmd = &cobra.Command{
@@ -108,6 +111,34 @@ var rootCmd = &cobra.Command{
 			images = append(images, imgs...)
 		}
 
+		// get prow jobs configuration from in-repo configuration
+		if InRepoConfig != "" {
+			// load InRepo configuration
+			file, err := os.Open(InRepoConfig)
+			if err != nil {
+				log.Fatalf("failed to load inrepo configuration: %s", err)
+			}
+
+			// parse configuration
+			var cfg []extractimageurls.Repository
+			err = yaml.NewDecoder(file).Decode(&cfg)
+			if err != nil {
+				log.Fatalf("failed to decode inrepo configuration: %s", err)
+			}
+
+			// load github token from env
+			ghToken := os.Getenv("BOT_GITHUB_TOKEN")
+
+			for _, repo := range cfg {
+				imgs, err := extractimageurls.FromInRepoConfig(repo, ghToken)
+				if err != nil {
+					log.Fatalf("failed to exract image urls from repository %s: %v", &repo, err)
+				}
+
+				images = append(images, imgs...)
+			}
+		}
+
 		images = extractimageurls.UniqueImages(images)
 
 		// write images to security config
@@ -121,6 +152,7 @@ var rootCmd = &cobra.Command{
 				log.Fatalf("failed to run bumper: %s", err)
 			}
 		}
+
 	},
 }
 
@@ -132,6 +164,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&KubernetesFiles, "kubernetes-dir", "", "path to the directory containing Kubernetes deployments")
 	rootCmd.PersistentFlags().StringVar(&TektonCatalog, "tekton-catalog", "", "path to the Tekton catalog directory")
 	rootCmd.PersistentFlags().StringVar(&AutobumpConfig, "autobump-config", "", "path to the config for autobumper for security scanner config")
+	rootCmd.PersistentFlags().StringVar(&InRepoConfig, "inrepo-config", "", "the configuration of repositories with Prow inrepo config enabled. Requires BOT_GITHUB_TOKEN env variable")
 
 	rootCmd.MarkFlagRequired("sec-scanner-config")
 }

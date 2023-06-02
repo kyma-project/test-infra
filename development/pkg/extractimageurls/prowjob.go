@@ -1,8 +1,27 @@
 package extractimageurls
 
 import (
+	"context"
+	"fmt"
+
+	"github.com/google/go-github/v42/github"
+	"github.com/kyma-project/test-infra/development/github/pkg/client"
 	"k8s.io/test-infra/prow/config"
+	"sigs.k8s.io/yaml"
 )
+
+// Repository contains information about github repository used by FromInRepoConfig
+type Repository struct {
+	// Name is repository name
+	Name string
+
+	// Owner is a owner of the repository
+	Owner string
+}
+
+func (repo *Repository) String() string {
+	return fmt.Sprintf("%s/%s", repo.Owner, repo.Name)
+}
 
 // FromProwJobConfig parses JobConfig from prow library and returns a slice of image urls
 func FromProwJobConfig(config config.JobConfig) []string {
@@ -12,6 +31,73 @@ func FromProwJobConfig(config config.JobConfig) []string {
 	images = append(images, extractImageUrlsFromPostsubmitsJobs(config.PostsubmitsStatic)...)
 
 	return images
+}
+
+// FromInRepoConfig fetch prowjobs from .prow directory or .prow.yaml file
+// on specified gihub repository and main branch, then extract image urls from them
+func FromInRepoConfig(repository Repository, ghToken string) ([]string, error) {
+	// Create github authenticated client
+	ctx := context.Background()
+	ghClient, err := client.NewClient(ctx, ghToken)
+	if err != nil {
+		return nil, err
+	}
+
+	// fetch files from .prow, failback to .prow.yaml if not exists
+	repositoryContent, directoryContent, resp, err := ghClient.Repositories.GetContents(ctx, repository.Owner, repository.Name, ".prow", &github.RepositoryContentGetOptions{Ref: "main"})
+	if resp.StatusCode == 404 {
+		repositoryContent, _, resp, err = ghClient.Repositories.GetContents(ctx, repository.Owner, repository.Name, ".prow.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	// ignore not found
+	if ok, err := client.IsStatusOK(resp); !ok {
+		return nil, err
+	}
+
+	var images []string
+	if directoryContent != nil {
+		for _, fileContent := range directoryContent {
+			imgs, err := extractImageUrlsFromRepositoryContent(fileContent)
+			if err != nil {
+				return nil, err
+			}
+
+			images = append(images, imgs...)
+		}
+	} else {
+		imgs, err := extractImageUrlsFromRepositoryContent(repositoryContent)
+		if err != nil {
+			return nil, err
+		}
+
+		images = append(images, imgs...)
+	}
+
+	return images, nil
+}
+
+// extractImageUrlsFromRepositoryContent return image urls from given repository content
+func extractImageUrlsFromRepositoryContent(content *github.RepositoryContent) ([]string, error) {
+	file, err := content.GetContent()
+	if err != nil {
+		return nil, err
+	}
+
+	var cfg config.JobConfig
+	err = yaml.Unmarshal([]byte(file), &cfg)
+	if err != nil {
+		return nil, err
+	}
+
+	var images []string
+	images = append(images, extractImageUrlsFromPeriodicsProwJobs(cfg.Periodics)...)
+	images = append(images, extractImageUrlsFromPostsubmitsJobs(cfg.PostsubmitsStatic)...)
+	images = append(images, extractImageUrlsFromPresubmitsProwJobs(cfg.PresubmitsStatic)...)
+
+	return images, nil
 }
 
 // extractImageUrlsFromPeriodicsProwJobs returns slice of image urls from given periodic prow jobs
