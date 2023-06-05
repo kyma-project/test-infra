@@ -52,7 +52,6 @@ func FromInRepoConfig(repository Repository, ghToken string) ([]string, error) {
 		return nil, err
 	}
 
-	// ignore not found
 	if ok, err := client.IsStatusOK(resp); !ok {
 		return nil, err
 	}
