@@ -30,6 +30,7 @@ data "kubectl_path_documents" "constraints_path" {
 }
 
 resource "kubectl_manifest" "constraints" {
+  depends_on = [kubectl_manifest.constraint_templates]
   for_each = toset(flatten([
     for kpd in data.kubectl_path_documents.constraints_path : kpd.documents
   ]))
