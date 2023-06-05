@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"log"
 	"os"
 
@@ -37,6 +38,9 @@ var (
 
 	// InRepoConfig contains path to the configuration of repositories with Prow inrepo config enabled
 	InRepoConfig string
+
+	// GithubTokenPath path to file containing github token for fetching inrepo config
+	GithubTokenPath string
 )
 
 var rootCmd = &cobra.Command{
@@ -127,7 +131,10 @@ var rootCmd = &cobra.Command{
 			}
 
 			// load github token from env
-			ghToken := os.Getenv("BOT_GITHUB_TOKEN")
+			ghToken, err := loadGithubToken(GithubTokenPath)
+			if err != nil {
+				log.Fatalf("failed to load github token from %s: %s", GithubTokenPath, err)
+			}
 
 			for _, repo := range cfg {
 				imgs, err := extractimageurls.FromInRepoConfig(repo, ghToken)
@@ -164,7 +171,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&KubernetesFiles, "kubernetes-dir", "", "path to the directory containing Kubernetes deployments")
 	rootCmd.PersistentFlags().StringVar(&TektonCatalog, "tekton-catalog", "", "path to the Tekton catalog directory")
 	rootCmd.PersistentFlags().StringVar(&AutobumpConfig, "autobump-config", "", "path to the config for autobumper for security scanner config")
-	rootCmd.PersistentFlags().StringVar(&InRepoConfig, "inrepo-config", "", "the configuration of repositories with Prow inrepo config enabled. Requires BOT_GITHUB_TOKEN env variable")
+	rootCmd.PersistentFlags().StringVar(&InRepoConfig, "inrepo-config", "", "the configuration of repositories with Prow inrepo config enabled")
+	rootCmd.PersistentFlags().StringVar(&InRepoConfig, "github-token-path", "/etc/github/token", "path to github token for fetching inrepo config")
 
 	rootCmd.MarkFlagRequired("sec-scanner-config")
 }
@@ -173,6 +181,21 @@ func main() {
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalf("failed to run command: %s", err)
 	}
+}
+
+// loadGithubToken read github token from given file
+func loadGithubToken(path string) (string, error) {
+	f, err := os.Open(path)
+	if err != nil {
+		return "", err
+	}
+
+	data, err := io.ReadAll(f)
+	if err != nil {
+		return "", err
+	}
+
+	return string(data), nil
 }
 
 // client is bumper client
