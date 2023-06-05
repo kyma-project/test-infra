@@ -1,0 +1,6 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "pre-main-serverless-git-auth-integration-k3s"
+        - pjName: "pre-main-serverless-integration-k3s"
