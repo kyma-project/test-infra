@@ -15,10 +15,10 @@
 /prow @kyma-project/prow
 /prow/cluster @kyma-project/prow
 /prow/images @kyma-project/prow
-/prow/images/buildpack-node @kyma-project/prow @akucharska @a-thaler @lilitgh @valentinvieriu
+/prow/images/buildpack-node @kyma-project/prow @akucharska @a-thaler @lilitgh @valentinvieriu @mrcherry97
 
 /prow/jobs @kyma-project/prow
-/prow/jobs/busola @valentinvieriu  @akucharska @kyma-project/prow
+/prow/jobs/busola @kyma-project/hasselhoff @kyma-project/prow
 /prow/jobs/cli @chrkl @jeremyharisch @lindnerby @tobiscr  @lilitgh @rakesh-garimella @skhalash @kyma-project/prow
 /prow/jobs/control-plane @kyma-project/gopher @kyma-project/Framefrog @kyma-project/prow
 /prow/jobs/incubator/compass @gvachkov @petartodorovv @desislavaa @dimitarpetrov @krasish @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow
