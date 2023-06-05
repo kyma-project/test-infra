@@ -3,7 +3,7 @@ pjConfigs:
     kyma-project:
       istio:
         - pjName: "pull-istio-operator-integration-gcp"
-  prConfigs:
-    kyma-project:
-      istio:
-        prNumber: 166
+prConfigs:
+  kyma-project:
+    istio:
+      prNumber: 163
