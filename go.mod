@@ -31,7 +31,7 @@ require (
 	github.com/onsi/gomega v1.27.7
 	github.com/pkg/errors v0.9.1
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
-	github.com/sirupsen/logrus v1.9.2
+	github.com/sirupsen/logrus v1.9.3
 	github.com/smartystreets/goconvey v1.8.0
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
@@ -54,7 +54,7 @@ require (
 
 require (
 	github.com/tektoncd/pipeline v0.36.0
-	k8s.io/test-infra v0.0.0-20230601171346-9859a898861b
+	k8s.io/test-infra v0.0.0-20230605183327-cca007bb4077
 )
 
 require (
