@@ -50,3 +50,10 @@ spec:
           value: $(params.LOG)
         - name: SRC_ROOT
           value: $(params.SRC_ROOT)
+    - name: fix-permissions
+      image: alpine:edge
+      workingDir: $(workspaces.repo.path)
+      script:
+        chmod -R 777 .
+        chown 1000:1000 -R .
+        ls -la .

@@ -51,7 +51,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-nats-manager-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^\.go$|^go.(sum|mod)'
+      run_if_changed: '^\S+\.go$|^go\.(sum|mod)$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload

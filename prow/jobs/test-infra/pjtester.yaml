@@ -4,6 +4,9 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pull-test-infra-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for test-infra"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-test-infra-pjtester"
@@ -46,6 +49,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-test-infra-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for test-infra"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-test-infra-vpathguard"
@@ -83,6 +89,9 @@ presubmits: # runs on PRs
   
   kyma-project/kyma:
     - name: pull-kyma-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for kyma"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-pjtester"
@@ -130,6 +139,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-kyma-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for kyma"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-vpathguard"
@@ -167,6 +179,9 @@ presubmits: # runs on PRs
   
   kyma-project/busola:
     - name: pull-busola-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for busola"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-busola-pjtester"
@@ -214,6 +229,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-busola-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for busola"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-busola-vpathguard"
@@ -251,6 +269,9 @@ presubmits: # runs on PRs
   
   kyma-project/control-plane:
     - name: pull-control-plane-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for control-plane"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-control-plane-pjtester"
@@ -298,6 +319,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-control-plane-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for control-plane"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-control-plane-vpathguard"
@@ -335,6 +359,9 @@ presubmits: # runs on PRs
   
   kyma-project/cli:
     - name: pull-cli-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for cli"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-cli-pjtester"
@@ -382,6 +409,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-cli-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for cli"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-cli-vpathguard"
@@ -419,6 +449,9 @@ presubmits: # runs on PRs
   
   kyma-project/website:
     - name: pull-website-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for website"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-pjtester"
@@ -466,6 +499,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-website-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for website"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-vpathguard"
@@ -503,6 +539,9 @@ presubmits: # runs on PRs
   
   kyma-project/lifecycle-manager:
     - name: pull-lifecycle-manager-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for lifecycle-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-lifecycle-manager-pjtester"
@@ -550,6 +589,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-lifecycle-manager-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for lifecycle-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-lifecycle-manager-vpathguard"
@@ -587,6 +629,9 @@ presubmits: # runs on PRs
   
   kyma-project/third-party-images:
     - name: pull-third-party-images-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for third-party-images"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-third-party-images-pjtester"
@@ -634,6 +679,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-third-party-images-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for third-party-images"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-third-party-images-vpathguard"
@@ -671,6 +719,9 @@ presubmits: # runs on PRs
   
   kyma-project/community:
     - name: pull-community-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for community"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-community-pjtester"
@@ -718,6 +769,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-community-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for community"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-community-vpathguard"
@@ -755,6 +809,9 @@ presubmits: # runs on PRs
   
   kyma-project/hydroform:
     - name: pull-hydroform-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for hydroform"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydroform-pjtester"
@@ -802,6 +859,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-hydroform-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for hydroform"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydroform-vpathguard"
@@ -839,6 +899,9 @@ presubmits: # runs on PRs
   
   kyma-project/istio-operator:
     - name: pull-istio-operator-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for istio-operator"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-operator-pjtester"
@@ -886,6 +949,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-istio-operator-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for istio-operator"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-operator-vpathguard"
@@ -923,6 +989,9 @@ presubmits: # runs on PRs
   
   kyma-project/addons:
     - name: pull-addons-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for addons"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-addons-pjtester"
@@ -970,6 +1039,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-addons-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for addons"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-addons-vpathguard"
@@ -1007,6 +1079,9 @@ presubmits: # runs on PRs
   
   kyma-project/private-fn-for-e2e-serverless-tests:
     - name: pull-private-fn-for-e2e-serverless-tests-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for private-fn-for-e2e-serverless-tests"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-private-fn-for-e2e-serverless-tests-pjtester"
@@ -1054,6 +1129,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-private-fn-for-e2e-serverless-tests-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for private-fn-for-e2e-serverless-tests"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-private-fn-for-e2e-serverless-tests-vpathguard"
@@ -1091,6 +1169,9 @@ presubmits: # runs on PRs
   
   kyma-project/charts:
     - name: pull-charts-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for charts"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-charts-pjtester"
@@ -1138,6 +1219,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-charts-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for charts"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-charts-vpathguard"
@@ -1175,6 +1259,9 @@ presubmits: # runs on PRs
   
   kyma-project/examples:
     - name: pull-examples-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for examples"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-pjtester"
@@ -1222,6 +1309,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-examples-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for examples"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-vpathguard"
@@ -1259,6 +1349,9 @@ presubmits: # runs on PRs
   
   kyma-project/api-gateway:
     - name: pull-api-gateway-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for api-gateway"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-pjtester"
@@ -1306,6 +1399,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-api-gateway-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for api-gateway"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-vpathguard"
@@ -1343,6 +1439,9 @@ presubmits: # runs on PRs
   
   kyma-project/istio:
     - name: pull-istio-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for istio"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-pjtester"
@@ -1390,6 +1489,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-istio-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for istio"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-vpathguard"
@@ -1427,6 +1529,9 @@ presubmits: # runs on PRs
   
   kyma-project/runtime-watcher:
     - name: pull-runtime-watcher-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for runtime-watcher"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-runtime-watcher-pjtester"
@@ -1474,6 +1579,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-runtime-watcher-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for runtime-watcher"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-runtime-watcher-vpathguard"
@@ -1511,6 +1619,9 @@ presubmits: # runs on PRs
   
   kyma-project/keda-manager:
     - name: pull-keda-manager-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for keda-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keda-manager-pjtester"
@@ -1558,6 +1669,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-keda-manager-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for keda-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keda-manager-vpathguard"
@@ -1595,6 +1709,9 @@ presubmits: # runs on PRs
   
   kyma-project/kyma-dashboard:
     - name: pull-kyma-dashboard-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for kyma-dashboard"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-pjtester"
@@ -1642,6 +1759,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-kyma-dashboard-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for kyma-dashboard"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-vpathguard"
@@ -1679,6 +1799,9 @@ presubmits: # runs on PRs
   
   kyma-project/application-connector-manager:
     - name: pull-application-connector-manager-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for application-connector-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-manager-pjtester"
@@ -1726,6 +1849,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-application-connector-manager-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for application-connector-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-manager-vpathguard"
@@ -1763,6 +1889,9 @@ presubmits: # runs on PRs
   
   kyma-project/rafter:
     - name: pull-rafter-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for rafter"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-rafter-pjtester"
@@ -1810,6 +1939,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-rafter-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for rafter"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-rafter-vpathguard"
@@ -1847,6 +1979,9 @@ presubmits: # runs on PRs
   
   kyma-project/btp-manager:
     - name: pull-btp-manager-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for btp-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-btp-manager-pjtester"
@@ -1894,6 +2029,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-btp-manager-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for btp-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-btp-manager-vpathguard"
@@ -1931,6 +2069,9 @@ presubmits: # runs on PRs
   
   kyma-project/telemetry-manager:
     - name: pull-telemetry-manager-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for telemetry-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-pjtester"
@@ -1978,6 +2119,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-telemetry-manager-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for telemetry-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-vpathguard"
@@ -2015,6 +2159,9 @@ presubmits: # runs on PRs
   
   kyma-project/director-size-exporter:
     - name: pull-director-size-exporter-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for director-size-exporter"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-director-size-exporter-pjtester"
@@ -2062,6 +2209,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-director-size-exporter-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for director-size-exporter"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-director-size-exporter-vpathguard"
@@ -2099,6 +2249,9 @@ presubmits: # runs on PRs
   
   kyma-project/compass-manager:
     - name: pull-compass-manager-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for compass-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-manager-pjtester"
@@ -2146,6 +2299,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-compass-manager-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for compass-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-manager-vpathguard"
@@ -2183,6 +2339,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/compass:
     - name: pull-compass-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for compass"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-pjtester"
@@ -2230,6 +2389,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-compass-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for compass"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-vpathguard"
@@ -2267,6 +2429,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/ord-service:
     - name: pull-ord-service-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for ord-service"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-ord-service-pjtester"
@@ -2314,6 +2479,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-ord-service-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for ord-service"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-ord-service-vpathguard"
@@ -2351,6 +2519,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/reconciler:
     - name: pull-reconciler-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for reconciler"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-reconciler-pjtester"
@@ -2398,6 +2569,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-reconciler-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for reconciler"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-reconciler-vpathguard"
@@ -2435,6 +2609,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/bullseye-showcase:
     - name: pull-bullseye-showcase-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for bullseye-showcase"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-bullseye-showcase-pjtester"
@@ -2482,6 +2659,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-bullseye-showcase-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for bullseye-showcase"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-bullseye-showcase-vpathguard"
@@ -2519,6 +2699,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/documentation-component:
     - name: pull-documentation-component-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for documentation-component"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-documentation-component-pjtester"
@@ -2566,6 +2749,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-documentation-component-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for documentation-component"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-documentation-component-vpathguard"
@@ -2603,6 +2789,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/compass-console:
     - name: pull-compass-console-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for compass-console"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-console-pjtester"
@@ -2650,6 +2839,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-compass-console-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for compass-console"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-console-vpathguard"
@@ -2687,6 +2879,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/sap-btp-service-operator:
     - name: pull-sap-btp-service-operator-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for sap-btp-service-operator"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sap-btp-service-operator-pjtester"
@@ -2734,6 +2929,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-sap-btp-service-operator-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for sap-btp-service-operator"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sap-btp-service-operator-vpathguard"
@@ -2771,6 +2969,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/milv:
     - name: pull-milv-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for milv"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-milv-pjtester"
@@ -2818,6 +3019,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-milv-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for milv"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-milv-vpathguard"
@@ -2855,6 +3059,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/varkes:
     - name: pull-varkes-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for varkes"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-varkes-pjtester"
@@ -2902,6 +3109,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-varkes-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for varkes"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-varkes-vpathguard"
@@ -2939,6 +3149,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/slack-bot:
     - name: pull-slack-bot-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for slack-bot"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-slack-bot-pjtester"
@@ -2986,6 +3199,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-slack-bot-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for slack-bot"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-slack-bot-vpathguard"
@@ -3023,6 +3239,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/migrate:
     - name: pull-migrate-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for migrate"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-migrate-pjtester"
@@ -3070,6 +3289,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-migrate-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for migrate"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-migrate-vpathguard"
@@ -3107,6 +3329,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/github-dashboard:
     - name: pull-github-dashboard-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for github-dashboard"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-github-dashboard-pjtester"
@@ -3154,6 +3379,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-github-dashboard-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for github-dashboard"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-github-dashboard-vpathguard"
@@ -3191,6 +3419,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/website-vuepress:
     - name: pull-website-vuepress-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for website-vuepress"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-vuepress-pjtester"
@@ -3238,6 +3469,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-website-vuepress-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for website-vuepress"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-vuepress-vpathguard"
@@ -3275,6 +3509,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/kitbag:
     - name: pull-kitbag-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for kitbag"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kitbag-pjtester"
@@ -3322,6 +3559,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-kitbag-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for kitbag"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kitbag-vpathguard"
@@ -3359,6 +3599,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/kyma-showcase:
     - name: pull-kyma-showcase-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for kyma-showcase"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-showcase-pjtester"
@@ -3406,6 +3649,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-kyma-showcase-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for kyma-showcase"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-showcase-vpathguard"
@@ -3443,6 +3689,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/hydra-login-consent:
     - name: pull-hydra-login-consent-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for hydra-login-consent"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydra-login-consent-pjtester"
@@ -3490,6 +3739,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-hydra-login-consent-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for hydra-login-consent"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydra-login-consent-vpathguard"
@@ -3527,6 +3779,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/kymart:
     - name: pull-kymart-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for kymart"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kymart-pjtester"
@@ -3574,6 +3829,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-kymart-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for kymart"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kymart-vpathguard"
@@ -3611,6 +3869,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/examples:
     - name: pull-examples-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for examples"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-pjtester"
@@ -3658,6 +3919,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-examples-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for examples"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-vpathguard"
@@ -3695,6 +3959,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/vstudio-extension:
     - name: pull-vstudio-extension-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for vstudio-extension"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-vstudio-extension-pjtester"
@@ -3742,6 +4009,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-vstudio-extension-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for vstudio-extension"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-vstudio-extension-vpathguard"
@@ -3779,6 +4049,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/wordpress-connector:
     - name: pull-wordpress-connector-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for wordpress-connector"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-wordpress-connector-pjtester"
@@ -3826,6 +4099,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-wordpress-connector-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for wordpress-connector"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-wordpress-connector-vpathguard"
@@ -3863,6 +4139,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/connector-tools:
     - name: pull-connector-tools-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for connector-tools"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-connector-tools-pjtester"
@@ -3910,6 +4189,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-connector-tools-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for connector-tools"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-connector-tools-vpathguard"
@@ -3947,6 +4229,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/artwork:
     - name: pull-artwork-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for artwork"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-artwork-pjtester"
@@ -3994,6 +4279,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-artwork-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for artwork"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-artwork-vpathguard"
@@ -4031,6 +4319,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/opensap:
     - name: pull-opensap-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for opensap"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-opensap-pjtester"
@@ -4078,6 +4369,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-opensap-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for opensap"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-opensap-vpathguard"
@@ -4115,6 +4409,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/testdrape:
     - name: pull-testdrape-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for testdrape"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-testdrape-pjtester"
@@ -4162,6 +4459,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-testdrape-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for testdrape"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-testdrape-vpathguard"
@@ -4199,6 +4499,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/sc-removal:
     - name: pull-sc-removal-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for sc-removal"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sc-removal-pjtester"
@@ -4246,6 +4549,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-sc-removal-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for sc-removal"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sc-removal-vpathguard"
@@ -4283,6 +4589,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/service-catalog-tester:
     - name: pull-service-catalog-tester-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for service-catalog-tester"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-pjtester"
@@ -4330,6 +4639,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-service-catalog-tester-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for service-catalog-tester"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-vpathguard"
@@ -4367,6 +4679,9 @@ presubmits: # runs on PRs
   
   kyma-incubator/service-catalog:
     - name: pull-service-catalog-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for service-catalog"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-pjtester"
@@ -4414,6 +4729,9 @@ presubmits: # runs on PRs
             secret:
               secretName: pjtester-github-oauth-token
     - name: pull-service-catalog-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for service-catalog"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-vpathguard"

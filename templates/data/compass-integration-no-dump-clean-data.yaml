@@ -18,6 +18,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "post-main-compass-vm-clean-no-dump"
+                  annotations:
+                    owner: compass
+                    description: "Clean up test VM for the no-dump job after PR is merged"
                   run_if_changed: "^(chart|installation)/"
                   decoration_config:
                     timeout: 30m

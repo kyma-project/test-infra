@@ -13,6 +13,9 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                   run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
+                annotations:
+                  owner: skydivingtunas
+                  description: build nats manager image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -28,6 +31,9 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
                   run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
+                annotations:
+                  owner: skydivingtunas
+                  description: build nats manager image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -40,7 +46,10 @@ templates:
                   args:
                     - "-c"
                     - "make test-only"
-                  run_if_changed: "^\\.go$|^go.(sum|mod)"
+                  run_if_changed: "^\\S+\\.go$|^go\\.(sum|mod)$"
+                annotations:
+                  owner: skydivingtunas
+                  description: ran nats manager unit tests
                 inheritedConfigs:
                   global:
                     - testing

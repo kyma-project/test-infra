@@ -85,6 +85,9 @@ templates:
               # presubmits
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing-upgrade
+                  annotations:
+                    owner: skydivingtunas
+                    description: Execute a kyma upgrade with special focus on the eventing component
                   optional: false
                   decoration_config:
                     timeout: 14400000000000 # 4h
@@ -119,6 +122,9 @@ templates:
 
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing
+                  annotations:
+                    owner: skydivingtunas
+                    description: Execute fast integration job with focus on eventing on a gardener cluster
                   optional: false
                   decoration_config:
                     timeout: 14400000000000 # 4h

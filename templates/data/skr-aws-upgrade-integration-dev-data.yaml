@@ -24,7 +24,6 @@ templates:
               preset-kyma-integration-subaccounnt: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
               preset-kcp-client-dev-envs: "true"
-              preset-btp-operator-stage-credentials: "true"
           keb_plan_aws:
             annotations:
               pipeline.platform: gardener_aws

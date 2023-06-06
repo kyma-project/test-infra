@@ -26,7 +26,7 @@ templates:
               - jobConfig:
                   name: eventing-tools-autobump
                   cron: "30 * * * 1-5"
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230522-3eb206f68f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb
                   command: generic-autobumper
                   args:
                     - --config=ci/eventing-tools-autobump-config.yaml
@@ -49,8 +49,11 @@ templates:
             jobs:
               - jobConfig:
                   name: ci-prow-label-sync
+                  annotations:
+                    owner: neighbors
+                    description: "Periodic sync of labels in GitHub"
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20230522-3eb206f68f
+                  image: gcr.io/k8s-prow/label_sync:v20230605-b63f6f76cb
                   command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
@@ -70,9 +73,12 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: ci-prow-autobump
+                  annotations:
+                    owner: neighbors
+                    description: "Autobump prow components image versions"
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230522-3eb206f68f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
@@ -107,6 +113,32 @@ templates:
                     - disable_testgrid
                     - image_markdown_index
               - jobConfig:
+                  name: post-test-infra-image-detector-autobump
+                  slack_channel: kyma-prow-alerts
+                  branches:
+                    - ^main$
+                  run_if_changed: '.(md|yml|yaml|tf|tfvars)$'
+                  skip_report: "false"
+                  max_concurrency: "10"
+                  type_postsubmit: "true"
+                  command: /image-detector
+                  args:
+                    - --prow-config prow/config.yaml
+                    - --prow-jobs-dir prow/jobs
+                    - --terraform-dir configs/terraform
+                    - --sec-scanner-config sec-scanner-config.yaml
+                    - --kubernetes-dir prow/cluster/components
+                    - --autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml
+                    - --inrepo-config=prow/image-detector/inrepo-config.yaml
+                inheritedConfigs:
+                  local:
+                    - github_token_mounts
+                  global:
+                    - jobConfig_postsubmit
+                    - pubsub_labels
+                    - disable_testgrid
+                    - image_image_detector
+              - jobConfig:
                   name: post-test-infra-deploy-prow
                   slack_channel: kyma-prow-alerts
                   branches:
@@ -128,9 +160,12 @@ templates:
                     - pubsub_labels
               - jobConfig:
                   name: ci-prow-autobump-jobs
+                  annotations:
+                    owner: neighbors
+                    description: "Autobump image versions in prow jobs"
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230522-3eb206f68f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml

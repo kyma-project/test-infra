@@ -11,6 +11,9 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/control-plane/components/kyma-metrics-collector"
                   run_if_changed: "^components/kyma-metrics-collector/|^scripts/"
                   release_since: "1.22"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the kmc image
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

@@ -22,6 +22,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "kyma-gardener-cleanup"
+                  annotations:
+                    description: "Periodic cleanup of Gardener clusters"
+                    owner: "neighbors"
                   cron: "0 * * * *" # "At 0 minute every hour"
                 inheritedConfigs:
                   global:

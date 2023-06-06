@@ -13,6 +13,9 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                   run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the eventing-auth-manager image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -28,6 +31,9 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
                   run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the eventing-auth-manager image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -40,6 +46,9 @@ templates:
                     - "-c"
                     - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
                   run_if_changed: "\\.go$|^go.(sum|mod)"
+                  annotations:
+                    owner: skydivingtunas
+                    description: run unit tests for eventing auth manager
                 inheritedConfigs:
                   global:
                     - testing

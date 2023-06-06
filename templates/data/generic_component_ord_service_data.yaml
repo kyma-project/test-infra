@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-ord-service-build
+                  annotations:
+                    owner: compass
+                    description: "Building ORD Service Compass component"
                   args:
                     - "--name=incubator/compass-ord-service"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -27,6 +30,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: "pull-ord-service-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the ORD Service Compass component"
                   image: "maven:3.8.6-eclipse-temurin-11"
                   command: "/bin/sh"
                   args:
@@ -39,6 +45,9 @@ templates:
                     - testing
               - jobConfig:
                   name: post-ord-service-build
+                  annotations:
+                    owner: compass
+                    description: "Building ORD Service component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:

@@ -2,6 +2,8 @@ postsubmits: # runs on main
   kyma-project/compass-manager:
     - name: post-main-compass-manager-build
       annotations:
+        description: "Build the component image"
+        owner: framefrog
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:

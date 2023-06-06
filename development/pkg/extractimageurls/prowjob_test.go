@@ -85,6 +85,19 @@ func TestFromProwJobConfig(t *testing.T) {
 			jobConfig:      config.JobConfig{},
 			expectedImages: []string{},
 		},
+		{
+			name: "job without spec (tekton pipeline)",
+			jobConfig: config.JobConfig{
+				PostsubmitsStatic: map[string][]config.Postsubmit{
+					"test-org/test-repo": {
+						{
+							JobBase: config.JobBase{},
+						},
+					},
+				},
+			},
+			expectedImages: []string{},
+		},
 	}
 
 	for _, c := range tc {

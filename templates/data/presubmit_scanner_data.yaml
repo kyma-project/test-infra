@@ -21,6 +21,9 @@ templates:
                 jobs:
                   - jobConfig:
                       name: "pre-{{$repo.name}}-presubmit-scanner"
+                      annotations:
+                        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for {{$repo.name}}"
+                        owner: "neighbors"
                       optional: true
                     inheritedConfigs:
                       local:

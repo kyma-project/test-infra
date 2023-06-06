@@ -39,6 +39,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-assetstore-gcp-bucket-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
                   cron: "00 00 * * *" # "At 00:00 each day"
                   labels:
                     preset-gc-project-env: "true"
@@ -59,6 +62,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-disks-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud disks"
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -80,6 +86,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-ips-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud IPs"
                   cron: "0 1 * * *" # "At 1:00 each day"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -101,6 +110,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-clusters-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud clusters"
                   cron: "0 * * * *" # "At 0 minute every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -122,6 +134,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-vms-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud VMs"
                   cron: "15,45 * * * *" # "At 15 and 45 past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -143,6 +158,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-loadbalancer-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud load balancers"
                   cron: "15 * * * *" # "At 15 past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -185,6 +203,9 @@ templates:
               #                    - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-dns-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud DNS records"
                   cron: "30 * * * *" # "At minute 30 past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -207,6 +228,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "gcr-cleaner-prow-workloads"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Cleans up GCR images older than 7 days in eu.gcr.io/sap-kyma-prow-workloads"
                   cron: "0 1 * * *" # "At 1:00am every day"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -373,6 +397,10 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-app-gateway"
+                  annotations:
+                    pipeline.platform: k3d
+                    owner: framefrog
+                    description: "It tests the acceptance criteria of the (Central) Application Gateway component"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   optional: "false"
@@ -380,8 +408,6 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
                     preset-kyma-integration-app-connector-tests-app-gateway: "true"
-                  annotations:
-                    pipeline.platform: k3d
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -396,6 +422,10 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-app-conn-validator"
+                  annotations:
+                    pipeline.platform: k3d
+                    owner: framefrog
+                    description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   optional: "false"
@@ -403,8 +433,6 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
                     preset-kyma-integration-app-connector-tests-app-validator: "true"
-                  annotations:
-                    pipeline.platform: k3d
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -419,6 +447,9 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
+                  annotations:
+                    owner: framefrog
+                    description: "It tests Compass integration. It won't be needed after the implementation of this issue - https://github.com/kyma-project/kyma/issues/15037"
                   # following regexp won't start build if only Markdown files were changed
                   always_run: false
                   optional: "true"
@@ -445,6 +476,7 @@ templates:
                   run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     pipeline.platform: k3s
+                    owner: "otters"
                   labels:
                     preset-build-pr: "true"
                   env:
@@ -466,6 +498,7 @@ templates:
                   annotations:
                     description: Serverless function metrics generator
                     pipeline.platform: gke
+                    owner: "otters"
                   labels:
                     preset-gc-compute-envs: "true"
                     preset-gc-project-env: "true"
@@ -485,20 +518,22 @@ templates:
                   local:
                     - "serverless_metrics_template"
               - jobConfig:
-                  name: "serverless-git-auth-integration-k3s-nightly"
-                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
+                  name: "pre-main-serverless-git-auth-integration-k3s"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     description: Serverless git-function authentication nightly integration tests
                     pipeline.platform: k3s
+                    owner: "otters"
                   labels:
-                    preset-build-main: "true"
+                    preset-build-pr: "true"
                     preset-serverless-git-auth: "true"
                   env:
                     INTEGRATION_SUITE: "git-auth-integration"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "jobConfig_periodic"
+                    - "jobConfig_presubmit"
                     - "image_kyma-integration-dind-k3d"
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
@@ -509,6 +544,9 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-telemetry"
+                  annotations:
+                    owner: huskies
+                    description: runs telemetry integration tests on k3d
                   run_if_changed: "^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/"
                   labels:
                     preset-build-pr: "true"
@@ -634,7 +672,8 @@ templates:
                   name: "post-main-kyma-integration-k3d-app-gateway"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d for testing application gateway.
+                    onwer: framefrog
+                    description: "Kyma integration job on k3d for testing application gateway."
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
@@ -656,7 +695,8 @@ templates:
                   name: "post-main-kyma-integration-k3d-app-conn-validator"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d for testing application connectivity validator.
+                    owner: framefrog
+                    description: "Kyma integration job on k3d for testing application connectivity validator."
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
@@ -752,6 +792,9 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "kyma-integration-k3d-telemetry"
+                  annotations:
+                    owner: huskies
+                    description: runs telemetry integration tests on k3d
                   cron: "0 1,13 * * *"
                   slack_channel: huskies-notifications
                   labels:
@@ -775,6 +818,7 @@ templates:
                   cron: "0 2 * * 1-5" # "At 02:00 UTC on every weekday Monday through Friday"
                   annotations:
                     description: Kyma GKE nightly build (depraceted, needed for sec scans)
+                    owner: "neighbors"
                     pipeline.platform: gke
                     pipeline.installer: kyma deploy
                     pipeline.clusterprovisioning: gcloud cli

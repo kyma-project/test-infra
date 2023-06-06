@@ -13,6 +13,9 @@ templates:
                     - "-c"
                     - "cd components/event-publisher-proxy && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m"
                   run_if_changed: '^components/event-publisher-proxy/(.*\.go$|.golangcilint.yaml)'
+                  annotations:
+                    owner: skydivingtunas
+                    description: lint the EPP
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
@@ -25,6 +28,9 @@ templates:
                     - "-c"
                     - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
                   run_if_changed: '^components/event-publisher-proxy/.*$'
+                  annotations:
+                    owner: skydivingtunas
+                    description: run unit tests for EPP
                 inheritedConfigs:
                   global:
                     - testing
@@ -41,6 +47,9 @@ templates:
                     - "-c"
                     - "cd components/eventing-controller && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m"
                   run_if_changed: '^components/eventing-controller/(.*\.go$|.golangcilint.yaml)'
+                  annotations:
+                    owner: skydivingtunas
+                    description: lint the EC
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
@@ -53,6 +62,9 @@ templates:
                     - "-c"
                     - "cd components/eventing-controller && KUBEBUILDER_CONTROLPLANE_START_TIMEOUT=50s go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
                   run_if_changed: '^components/eventing-controller/.*$'
+                  annotations:
+                    owner: skydivingtunas
+                    description: run unit tests for EC
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
@@ -86,6 +98,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pull-telemetry-manager-lint"
+                  annotations:
+                    owner: huskies
+                    description: runs linting on telemetry-manager repo
                   request_cpu: 200m
                   request_memory: 500Mi
                   optional: false
@@ -100,6 +115,9 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-telemetry-manager-unit-test"
+                  annotations:
+                    owner: huskies
+                    description: runs unit tests telemetry-manager repo
                   request_cpu: 200m
                   request_memory: 1.5Gi
                   optional: false
@@ -117,6 +135,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pull-central-application-connectivity-validator-unit-test"
+                  annotations:
+                    owner: framefrog
+                    description: "It unit tests the component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -129,6 +150,9 @@ templates:
 
               - jobConfig:
                   name: "pull-central-application-gateway-lint"
+                  annotations:
+                    owner: framefrog
+                    description: "Linting the code, error checking"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -140,6 +164,9 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-central-application-gateway-unit-test"
+                  annotations:
+                    owner: framefrog
+                    description: "It unit tests the central-application-gateway source code"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -152,6 +179,9 @@ templates:
 
               - jobConfig:
                   name: "pull-compass-runtime-agent-lint"
+                  annotations:
+                    owner: framefrog
+                    description: "Linting the code, error checking"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -163,6 +193,9 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-compass-runtime-agent-unit-test"
+                  annotations:
+                    owner: framefrog
+                    description: "It tests the component source code"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -202,6 +235,9 @@ templates:
           - repoName: "kyma-project/directory-size-exporter"
             jobs:
               - jobConfig:
+                  annotations:
+                    owner: huskies
+                    description: runs linting on the repo
                   name: "pull-directory-size-exporter-lint"
                   optional: false
                   command: "/bin/sh"
@@ -215,6 +251,9 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-directory-size-exporter-unit-test"
+                  annotations:
+                    owner: huskies
+                    description: runs unit tests on the repo
                   optional: false
                   command: "/bin/sh"
                   args:

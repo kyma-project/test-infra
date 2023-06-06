@@ -21,6 +21,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-compass-integration-with-dump"
+                  annotations:
+                    owner: compass
+                    description: "Compass Integration Tests with DB dump"
                   run_if_changed: "^(chart|installation)/"
                   labels:
                     preset-build-pr: "true"
