@@ -1409,3 +1409,11 @@ presets:
       - name: sa-kyma-dns-serviceuser
         mountPath: /sa-kyma-dns-serviceuser
         readOnly: true
+  - labels:
+      preset-kyma-eventing-auth-ias-creds: "true"
+    env:
+      - name: TEST_EVENTING_AUTH_IAS_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: kyma-eventing-auth-ias-creds
+            key: token
