@@ -6,6 +6,7 @@ presubmits:
       cluster: tekton
       # Run on any change in terraform config files, terraform variable values files or resource yaml files.
       run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
+      max_concurrency: 1
       annotations:
         owner: "neighbors"
         description: "Run terraform plan for prod environment."
@@ -88,6 +89,7 @@ postsubmits:
       cluster: tekton
       # Run on any change in terraform config files, terraform variable values files or resource yaml files.
       run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
+      max_concurrency: 1
       annotations:
         owner: "neighbors"
         description: "Run terraform apply for prod environment."
