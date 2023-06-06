@@ -231,6 +231,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-serverless-integration-k3s
       annotations:
+        owner: "otters"
         pipeline.clusterprovisioning: "k3s"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3s"
@@ -269,6 +270,61 @@ presubmits: # runs on PRs
             env:
               - name: INTEGRATION_SUITE
                 value: "serverless-integration"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-serverless-git-auth-integration-k3s
+      annotations:
+        description: "Serverless git-function authentication nightly integration tests"
+        owner: "otters"
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "serverless-test"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-serverless-git-auth-integration-k3s"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
+        preset-serverless-git-auth: "true"
+      run_if_changed: '^((resources/serverless|tests/function-controller)\S+(\.[^.][^.][^.]+|\.[^.][^dD]|\.[^mM][^.]|\.[^.]$|/[^.]+))$'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: true
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
+            env:
+              - name: INTEGRATION_SUITE
+                value: "git-auth-integration"
             resources:
               requests:
                 memory: 100Mi
@@ -1210,6 +1266,7 @@ periodics: # runs on schedule
     - name: serverless-function-metrics-generator
       annotations:
         description: "Serverless function metrics generator"
+        owner: "otters"
         pipeline.platform: "gke"
         pipeline.test: "Serverless function metrics"
         pipeline.trigger: "nightly"
@@ -1254,56 +1311,6 @@ periodics: # runs on schedule
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: serverless-git-auth-integration-k3s-nightly
-      annotations:
-        description: "Serverless git-function authentication nightly integration tests"
-        pipeline.clusterprovisioning: "k3s"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3s"
-        pipeline.test: "serverless-test"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "serverless-git-auth-integration-k3s-nightly"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-main: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
-        preset-serverless-git-auth: "true"
-      cron: "0 3 * * 1-5"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
-            env:
-              - name: INTEGRATION_SUITE
-                value: "git-auth-integration"
-            resources:
-              requests:
-                memory: 100Mi
-                cpu: 50m
         tolerations:
           - key: dedicated
             operator: Equal

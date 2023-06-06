@@ -476,6 +476,7 @@ templates:
                   run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     pipeline.platform: k3s
+                    owner: "otters"
                   labels:
                     preset-build-pr: "true"
                   env:
@@ -497,6 +498,7 @@ templates:
                   annotations:
                     description: Serverless function metrics generator
                     pipeline.platform: gke
+                    owner: "otters"
                   labels:
                     preset-gc-compute-envs: "true"
                     preset-gc-project-env: "true"
@@ -516,20 +518,22 @@ templates:
                   local:
                     - "serverless_metrics_template"
               - jobConfig:
-                  name: "serverless-git-auth-integration-k3s-nightly"
-                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
+                  name: "pre-main-serverless-git-auth-integration-k3s"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     description: Serverless git-function authentication nightly integration tests
                     pipeline.platform: k3s
+                    owner: "otters"
                   labels:
-                    preset-build-main: "true"
+                    preset-build-pr: "true"
                     preset-serverless-git-auth: "true"
                   env:
                     INTEGRATION_SUITE: "git-auth-integration"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "jobConfig_periodic"
+                    - "jobConfig_presubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
