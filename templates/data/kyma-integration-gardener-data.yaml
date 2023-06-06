@@ -276,33 +276,6 @@ templates:
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
-              # presubmits
-              - jobConfig:
-                  name: pre-main-kyma-gardener-gcp-goats-api-gateway
-                  annotations:
-                    owner: goat
-                    description: runs api-gateway integration tests on Gardener GCP cluster
-                  optional: false
-                  labels:
-                    preset-build-pr: "true"
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  run_if_changed: "^((tests/components/api-gateway\\S+|resources/api-gateway\\S+|resources/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    API_GATEWAY_INTEGRATION: "true"
-                    TEST_ORY_IMAGE: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_kyma-integration
-                  local:
-                    - jobConfig_default
-                    - gardener_gcp_job
-                    - command_integration
-
               # periodics
               - jobConfig:
                   name: kyma-integration-evaluation-gardener-azure

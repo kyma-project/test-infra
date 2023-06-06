@@ -623,28 +623,6 @@ templates:
                     - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-              - jobConfig:
-                  name: pre-main-kyma-api-gateway-integration-k3d
-                  annotations:
-                    owner: goat
-                    description: runs api-gateway integration tests on k3d
-                  optional: false
-                  labels:
-                    preset-build-pr: "true"
-                  run_if_changed: "^((tests/components/api-gateway\\S+|resources/api-gateway\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    API_GATEWAY_INTEGRATION: "true"
-                    TEST_ORY_IMAGE: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_kyma-integration-dind-k3d"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_presubmit"
-                  local:
-                    - "jobConfig_default"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
               # postsubmits
               - jobConfig:
                   name: "post-main-kyma-integration-k3d"
