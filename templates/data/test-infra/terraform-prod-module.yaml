@@ -9,6 +9,7 @@ templates:
                   name: pull-plan-prod-terraform
                   # Run on any change in terraform config files, terraform variable values files or resource yaml files.
                   run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
+                  max_concurrency: 1
                   branches:
                     - "^main$"
                   privileged: "false"
@@ -30,6 +31,7 @@ templates:
                   name: post-apply-prod-terraform
                   # Run on any change in terraform config files, terraform variable values files or resource yaml files.
                   run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
+                  max_concurrency: 1
                   branches:
                     - "^main$"
                   privileged: "false"

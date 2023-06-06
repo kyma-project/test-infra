@@ -15,7 +15,7 @@ presubmits: # runs on PRs
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      max_concurrency: 10
+      max_concurrency: 1
       branches:
         - ^main$
       spec:
@@ -57,7 +57,7 @@ postsubmits: # runs on main
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      max_concurrency: 10
+      max_concurrency: 1
       branches:
         - ^main$
       spec:
