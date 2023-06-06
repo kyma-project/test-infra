@@ -28,7 +28,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - extra_refs_reconciler
-                    - image_kyma-integration-garden
+                    - image_kyma-integration
                   local:
                     - reconciler_e2e_jobConfig
                     - reconciler_jobConfig_args
@@ -44,7 +44,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - extra_refs_reconciler
-                    - image_kyma-integration-garden
+                    - image_kyma-integration
                   local:
                     - reconciler_e2e_jobConfig
                     - reconciler_jobConfig_args
@@ -73,7 +73,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - extra_refs_reconciler
-                    - image_kyma-integration-garden
+                    - image_kyma-integration
                   local:
                     - reconciler_upgrade_jobConfig
                     - reconciler_jobConfig_args
