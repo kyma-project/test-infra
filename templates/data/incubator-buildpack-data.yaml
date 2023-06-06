@@ -1,6 +1,34 @@
 templates:
   - from: generic.tmpl
     render:
+      - to: ../../prow/jobs/incubator/hydroform/hydroform.yaml
+        jobConfigs:
+          - repoName: kyma-project/hydroform
+            jobs:
+              - jobConfig:
+                  name: pre-main-hydroform
+                  always_run: true
+                  privileged: false
+                  command: "make"
+                  args:
+                    - "build"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_buildpack-golang
+              - jobConfig:
+                  name: post-main-hydroform
+                  privileged: false
+                  command: "make"
+                  args:
+                    - "build"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - image_buildpack-golang
+                    - disable_testgrid
       - to: ../../prow/jobs/incubator/milv/milv.yaml
         localSets:
           milv_jobConfig:
@@ -164,7 +192,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration-dind-k3d
+                    - image_kyma-integration
                     - extra_refs_test-infra
                   local:
                     - reconciler_main_jobConfig
@@ -204,7 +232,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration-dind-k3d
+                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
@@ -227,7 +255,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration-dind-k3d
+                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
@@ -252,7 +280,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration-dind-k3d
+                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
@@ -278,7 +306,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration-dind-k3d
+                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
@@ -305,7 +333,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration-dind-k3d
+                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
@@ -332,7 +360,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration-dind-k3d
+                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
@@ -360,7 +388,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - gardener_gcp_job
-                    - image_kyma-integration-gcloud
+                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
@@ -381,7 +409,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration-dind-k3d
+                    - image_kyma-integration
                     - extra_refs_test-infra
                   local:
                     - reconciler_dev_jobConfig
@@ -420,7 +448,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration-dind-k3d
+                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
@@ -447,7 +475,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration-dind-k3d
+                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
@@ -573,7 +601,7 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_control-plane
                     - disable_testgrid
-                    - image_kyma-integration-garden
+                    - image_kyma-integration
                     - jobConfig_slack_jellyfish
                   local:
                     - reconciler_nightly_cluster_jobConfig
@@ -605,7 +633,7 @@ templates:
                     - extra_refs_kyma
                     - extra_refs_control-plane
                     - disable_testgrid
-                    - image_kyma-integration-garden
+                    - image_kyma-integration
                     - jobConfig_slack_jellyfish
                   local:
                     - reconciler_nightly_e2e_jobConfig
@@ -642,6 +670,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
-                    - image_kyma-integration-dind-k3d
+                    - image_kyma-integration
                   local:
                     - reconciler_main_jobConfig
