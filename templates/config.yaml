@@ -113,9 +113,11 @@ globalSets:
     request_cpu: "1"
     labels:
       preset-sa-kyma-push-images: "true"
-    annotations:
-      container.apparmor.security.beta.kubernetes.io/test: unconfined
-      container.seccomp.security.alpha.kubernetes.io/test: unconfined
+    securityContext:
+      seccompProfile:
+        type: Unconfined
+    # annotations:
+    #   container.apparmor.security.beta.kubernetes.io/test: unconfined
     env:
       BUILDKITD_FLAGS: "--oci-worker-no-process-sandbox"
     volumes:
@@ -208,6 +210,9 @@ globalSets:
         value: high-cpu
         operator: Equal
         effect: NoSchedule
+    securityContext:
+      seccompProfile:
+        type: RuntimeDefault
     <<: *pubsub_config
   jobConfig_kyma20_docu:
     skip_report: "false"
