@@ -30,7 +30,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_kyma-integration-garden"
+                    - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
