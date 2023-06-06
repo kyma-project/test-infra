@@ -15,16 +15,22 @@ Image Detector:
 ```
 Usage of image-detector:
   --prow-config string
-    path to the Prow config file (Required)
+    path to the Prow config file
   --prow-jobs-dir string
-    path to the directory which contains Prow job files (Required)
+    path to the directory which contains Prow job files
   --terraform-dir string
-    path to the directory containing Terraform files (Required)
+    path to the directory containing Terraform files
   --sec-scanner-config
     path to the security scanner config field (Required)
   --kubernetes-dir string
-    path to the directory containing Kubernetes deployments (Required)
+    path to the directory containing Kubernetes deployments
   --tekton-catalog string
-    path to the Tekton catalog directory (Required)
+    path to the Tekton catalog directory
+  --autobump-config
+    path to the config for autobumper for security scanner config
+  --inrepo-config
+    path to the configuration of repositories with Prow inrepo config enabled
+  --github-token-path
+    path to github token for fetching inrepo config (default: "/etc/github/token")
 ```
 
