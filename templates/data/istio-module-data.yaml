@@ -166,7 +166,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration    # TODO: Prepare a Istio-Manager Image
+                    - image_kyma-integration-dind-k3d    # TODO: Prepare a Istio-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -187,7 +187,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration    # TODO: Prepare a Istio-Manager Image
+                    - image_kyma-integration-dind-k3d    # TODO: Prepare a Istio-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default

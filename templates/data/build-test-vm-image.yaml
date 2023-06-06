@@ -22,7 +22,7 @@ templates:
                     - jobConfig_presubmit
                     - jobConfig_default
                     - pubsub_labels
-                    - image_kyma-integration
+                    - image_kyma-integration-dind-k3d
               - jobConfig:
                   name: pull-test-k3d-on-vm-image
                   run_if_changed: 'development/custom-image/'
@@ -40,7 +40,7 @@ templates:
                     - jobConfig_presubmit
                     - jobConfig_default
                     - pubsub_labels
-                    - image_kyma-integration
+                    - image_kyma-integration-dind-k3d
               - jobConfig:
                   name: post-build-test-vm-image
                   run_if_changed: 'development/custom-image/'
@@ -58,5 +58,5 @@ templates:
                     - jobConfig_postsubmit
                     - jobConfig_default
                     - pubsub_labels
-                    - image_kyma-integration
+                    - image_kyma-integration-dind-k3d
                     - disable_testgrid

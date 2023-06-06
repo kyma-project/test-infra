@@ -70,7 +70,7 @@
                         global:
                           - "jobConfig_default"
                           - "untrusted_cluster"
-                          - "image_kyma-integration"
+                          - "image_kyma-integration-gcloud"
             {{- end}}
             {{- end }}
             {{- end }}

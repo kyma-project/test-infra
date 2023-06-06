@@ -172,6 +172,12 @@ globalSets:
     image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+  image_kyma-integration-dind-k3d:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230525-75242ac0"
+  image_kyma-integration-gcloud:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230525-75242ac0"
+  image_kyma-integration-garden:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
   image_buildpack-node:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
   image_buildpack-golang:
