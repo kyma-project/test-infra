@@ -61,6 +61,7 @@ postsubmits: # runs on main
               - "--sec-scanner-config sec-scanner-config.yaml"
               - "--kubernetes-dir prow/cluster/components"
               - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
+              - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: post-test-infra-deploy-prow
       annotations:
         pipeline.trigger: "pr-merge"
@@ -107,7 +108,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230601-43eb1068e4"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
             command:
               - "generic-autobumper"
             args:
@@ -129,7 +130,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230601-43eb1068e4"
+          - image: "gcr.io/k8s-prow/label_sync:v20230605-b63f6f76cb"
             command:
               - "label_sync"
             args:
@@ -172,7 +173,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230601-43eb1068e4"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
             command:
               - "generic-autobumper"
             args:
@@ -202,7 +203,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230601-43eb1068e4"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
             command:
               - "generic-autobumper"
             args:
