@@ -38,7 +38,7 @@ require (
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tidwall/gjson v1.14.4
-	github.com/zricethezav/gitleaks/v8 v8.16.3
+	github.com/zricethezav/gitleaks/v8 v8.16.4
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.10.0
 	golang.org/x/oauth2 v0.8.0
@@ -54,7 +54,7 @@ require (
 
 require (
 	github.com/tektoncd/pipeline v0.36.0
-	k8s.io/test-infra v0.0.0-20230605183327-cca007bb4077
+	k8s.io/test-infra v0.0.0-20230606182612-89639ea0a549
 )
 
 require (
