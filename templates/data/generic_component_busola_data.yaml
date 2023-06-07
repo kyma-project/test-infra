@@ -14,7 +14,8 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --export-tags
                   run_if_changed: "^public/|^src/|^package.json|^Makefile|^Dockerfile$"
-                  privileged: false
+                  securityContext:
+                    privileged: false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -32,7 +33,8 @@ templates:
                     - --export-tags
                     - --tag=latest
                   run_if_changed: "^public/|^src/|^package.json|^Makefile|^Dockerfile$"
-                  privileged: false
+                  securityContext:
+                    privileged: false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -51,8 +53,9 @@ templates:
                     - --dockerfile=Dockerfile
                     - --config=/config/kaniko-build-config.yaml
                     - --export-tags
-                  run_if_changed: '^backend/|^package.json'
-                  privileged: false
+                  run_if_changed: "^backend/|^package.json"
+                  securityContext:
+                    privileged: false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -69,8 +72,9 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --export-tags
                     - --tag=latest
-                  run_if_changed: '^backend/'
-                  privileged: false
+                  run_if_changed: "^backend/"
+                  securityContext:
+                    privileged: false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -91,7 +95,8 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --export-tags
                   run_if_changed: "^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local"
-                  privileged: false
+                  securityContext:
+                    privileged: false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -109,7 +114,8 @@ templates:
                     - --export-tags
                     - --tag=latest
                   run_if_changed: "^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local"
-                  privileged: false
+                  securityContext:
+                    privileged: false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

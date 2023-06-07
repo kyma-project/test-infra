@@ -113,9 +113,9 @@ globalSets:
     request_cpu: "1"
     labels:
       preset-sa-kyma-push-images: "true"
-    securityContext:
-      seccompProfile:
-        type: Unconfined
+    # securityContext:
+    #   seccompProfile:
+    #     type: Unconfined
     # annotations:
     #   container.apparmor.security.beta.kubernetes.io/test: unconfined
     env:
@@ -198,7 +198,8 @@ globalSets:
     branches:
       - "^master$"
       - "^main$"
-    privileged: "true"
+    securityContext:
+      privileged: "true"
     request_memory: "3Gi"
     request_cpu: "2"
     cluster_presubmit: "untrusted-workload"
@@ -210,9 +211,9 @@ globalSets:
         value: high-cpu
         operator: Equal
         effect: NoSchedule
-    securityContext:
-      seccompProfile:
-        type: RuntimeDefault
+    # securityContext:
+    #   seccompProfile:
+    #     type: RuntimeDefault
     <<: *pubsub_config
   jobConfig_kyma20_docu:
     skip_report: "false"
@@ -221,7 +222,8 @@ globalSets:
     optional: "true"
     branches:
       - "^kyma-2.0-docu$"
-    privileged: "true"
+    securityContext:
+      privileged: "true"
     request_memory: "1.5Gi"
     request_cpu: "0.8"
     cluster_presubmit: "untrusted-workload"

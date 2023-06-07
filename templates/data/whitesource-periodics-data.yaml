@@ -4,7 +4,8 @@ templates:
       - to: ../../prow/jobs/scans/whitesource-periodics.yaml
         localSets:
           jobConfig_default:
-            privileged: "false"
+            securityContext:
+              privileged: "false"
             cron: "0 4 * * *" # At 04:00 am every day
             command: "bash"
             args:
@@ -282,7 +283,8 @@ templates:
                   language: "golang-mod"
                   project: "kyma-project"
                   base_ref: "main"
-                  privileged: "false"
+                  securityContext:
+                    privileged: "false"
                   cron: "0 4 * * *" # At 04:00 am every day
                   command: "bash"
                   args:

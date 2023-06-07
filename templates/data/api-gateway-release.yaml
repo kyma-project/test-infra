@@ -92,7 +92,8 @@ templates:
                   name: rel-api-gateway-custom-domain-integration-gcp
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-                  privileged: false
+                  securityContext:
+                    privileged: false
                   cluster: untrusted-workload
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
@@ -129,7 +130,8 @@ templates:
                   name: rel-api-gateway-custom-domain-integration-aws
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-                  privileged: false
+                  securityContext:
+                    privileged: false
                   cluster: untrusted-workload
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'

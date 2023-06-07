@@ -25,7 +25,8 @@ templates:
                     - "pubsub_labels"
               - jobConfig:
                   name: "pre-main-test-infra-validate-prow-tools"
-                  privileged: "false"
+                  securityContext:
+                    privileged: "false"
                   run_if_changed: "^(go.mod|go.sum)$|^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
                   labels:
                     preset-build-pr: "true"
@@ -42,7 +43,8 @@ templates:
                     - "pubsub_labels"
               - jobConfig:
                   name: "pre-main-test-infra-validate-image-url-helper"
-                  privileged: "false"
+                  securityContext:
+                    privileged: "false"
                   run_if_changed: "^(go.mod|go.sum)$|^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)"
                   labels:
                     preset-build-pr: "true"
@@ -59,7 +61,8 @@ templates:
                     - "pubsub_labels"
               - jobConfig:
                   name: "pre-main-test-infra-validate-prowjobparser"
-                  privileged: "false"
+                  securityContext:
+                    privileged: "false"
                   run_if_changed: "^(go.mod|go.sum)$|^development/prowjobparser/(.*.go|Makefile|.*.sh)"
                   labels:
                     preset-build-pr: "true"
@@ -91,7 +94,7 @@ templates:
                   name: "pre-test-infra-validate-dockerfiles"
                   run_if_changed: ".*Dockerfile$"
                   command: "/bin/bash"
-                  args: 
+                  args:
                     - "-c"
                     - "shopt -s globstar;
                       hadolint --config .hadolint.yaml --no-color **/Dockerfile"

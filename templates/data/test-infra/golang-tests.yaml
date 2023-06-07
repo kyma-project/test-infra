@@ -29,7 +29,8 @@ templates:
                   cluster: untrusted-workload
                   command: "/golangci-lint.sh"
                   run_if_changed: 'go.mod|go.sum|.*\.go$|.golangci.yaml'
-                  privileged: false
+                  securityContext:
+                    privileged: false
                   automountServiceAccountToken: true
                   request_memory: 1Gi
                   request_cpu: 500m

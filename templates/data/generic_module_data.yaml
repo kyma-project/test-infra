@@ -4,7 +4,8 @@ templates:
       - to: ../../prow/jobs/modules/external/keda-manager.yaml
         localSets:
           job_default:
-            privileged: false
+            securityContext:
+              privileged: false
           job_build:
             skip_report: "false"
             max_concurrency: "10"
@@ -205,7 +206,7 @@ templates:
                     preset-sa-kyma-push-images: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned" 
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
                   run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   command: "make"
@@ -283,7 +284,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - image_kyma-integration-dind-k3d # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -303,7 +304,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - image_kyma-integration-dind-k3d # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -323,7 +324,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - image_kyma-integration-dind-k3d # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -333,7 +334,8 @@ templates:
       - to: ../../prow/jobs/modules/internal/serverless-manager.yaml
         localSets:
           job_default:
-            privileged: false
+            securityContext:
+              privileged: false
           main_branches:
             branches:
               - "^master$"

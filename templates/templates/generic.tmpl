@@ -90,9 +90,15 @@
             {{- if .JobConfig.automountServiceAccountToken}}
             automountServiceAccountToken: {{.JobConfig.automountServiceAccountToken}}
             {{- end}}
-            {{- if .JobConfig.privileged}}
+            {{- if .JobConfig.securityContext}}
             securityContext:
-              privileged: {{.JobConfig.privileged}}
+              {{- if and .JobConfig.securityContext.privileged .JobConfig.securityContext.seccompProfile}}
+              {{- fail ".JobConfig.securityContext.privileged and .JobConfig.securityContext.seccompProfile are mutually exclusive"}}
+              {{- end}}
+              privileged: {{.JobConfig.securityContext.privileged}}
+              {{- if .JobConfig.securityContext.seccompProfile}}
+              seccompProfile: {{.JobConfig.securityContext.seccompProfile}}
+              {{- end}}
             {{- end}}
             {{- if .JobConfig.workingDir}}
             workingDir: {{quote .JobConfig.workingDir}}
