@@ -1,0 +1,43 @@
+# Constraint to allow only image-builder tool trusted usage on tekton cluster run as image-builder service account identity.
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: ServiceAccountTrustedUsage
+metadata:
+  name: tekton-image-builder-sa-trusted-usage
+spec:
+  enforcementAction: warn
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    restrictedServiceAccounts:
+      - image-builder
+    trustedImages:
+      - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*"
+        command:
+          - /tekton/bin/entrypoint
+        args:
+          - -wait_file
+          - /tekton/downward/ready
+          - -wait_file_content
+          - -post_file
+          - /tekton/run/0/out
+          - -termination_path
+          - /tekton/termination
+          - -step_metadata_dir
+          - /tekton/run/0/status
+          - -entrypoint
+          - /image-builder
+          - --
+          - '--name=*'
+          - '--config=*'
+          - '--context=*'
+          - '--dockerfile=*'
+          - --log-dir=/
+      - image: "gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/entrypoint:*"
+        command:
+          - /ko-app/entrypoint
+          - init
+          - /ko-app/entrypoint
+          - /tekton/bin/entrypoint
+          - step-build-image
