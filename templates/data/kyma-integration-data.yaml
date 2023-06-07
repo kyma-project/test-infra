@@ -251,6 +251,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "github-issues"
+                  annotations:
+                    owner: neighbors
+                    description: "Exports data from github to the big query (Grafana metrics)"
                   cron: "0 6 * * *" # "At 6:00 every day"
                   labels:
                     preset-bot-github-token: "true"

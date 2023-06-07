@@ -459,6 +459,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pull-build-ginkgo"
+                      annotations:
+                        owner: neighbors
+                        description: "Building ginkgo image"
                       run_if_changed: "^prow/images/ginkgo/"
                       args:
                         - "--name=test-infra/ginkgo"
@@ -471,6 +474,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-build-ginkgo"
+                      annotations:
+                        owner: neighbors
+                        description: "Building ginkgo image"
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^prow/images/ginkgo/"
