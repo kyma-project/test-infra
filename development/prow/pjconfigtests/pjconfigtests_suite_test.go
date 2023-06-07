@@ -22,6 +22,10 @@ func TestProwjobsConfig(t *testing.T) {
 	if os.Getenv("CI") != "true" {
 		t.Skip()
 	}
+	// Skip tests if not running in pull request pjconfigtest prowjob. This is to avoid running tests in golang unit test prowjobs.
+	if os.Getenv("JOB_NAME") != "pull-"+os.Getenv("REPO_NAME")+"-pjconfigtests" {
+		t.Skip()
+	}
 	RegisterFailHandler(Fail)
 
 	var err error
