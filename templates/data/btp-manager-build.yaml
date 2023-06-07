@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig: # builds a docker image of the btp-manager tagged with the PR name
                   name: pull-btp-manager-build
+                  annotations:
+                    owner: "gophers"
+                    description: "BTP Manager image build on PR"
                   always_run: true
                   args:
                     - "--name=btp-manager"
@@ -19,6 +22,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig: # builds a docker image of the btp-manager tagged with the branch name
                   name: post-btp-manager-build
+                  annotations:
+                    owner: "gophers"
+                    description: "BTP Manager image build on main"
                   labels:
                     preset-signify-prod-secret: "true"
                   always_run: true
@@ -36,6 +42,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig: # builds an OCI image with btp-operator module
                   name: post-btp-manager-module-build
+                  annotations:
+                    owner: "gophers"
+                    description: "BTP Manager template image build on main"
                   always_run: true
                   labels:
                     preset-sa-kyma-push-images: "true"
@@ -57,6 +66,9 @@ templates:
                     - "jobConfig_postsubmit"
               - jobConfig: # builds an OCI image with btp-operator module from the PR branch
                   name: pull-btp-manager-module-build
+                  annotations:
+                    owner: "gophers"
+                    description: "BTP Manager template image build on PR"
                   always_run: true
                   optional: true
                   labels:

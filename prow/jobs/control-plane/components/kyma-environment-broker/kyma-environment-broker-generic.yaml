@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-components-kyma-environment-broker
       annotations:
+        owner: "gophers"
+        description: "Main KEB unit testing pipeline"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
