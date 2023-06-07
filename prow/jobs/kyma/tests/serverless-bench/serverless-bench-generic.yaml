@@ -49,6 +49,8 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-test-serverless-bench-build
       annotations:
+        description: "serverless bench build"
+        owner: "otters"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:

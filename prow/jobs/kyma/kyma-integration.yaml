@@ -231,6 +231,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-serverless-integration-k3s
       annotations:
+        description: "serverless integration k3s job"
         owner: "otters"
         pipeline.clusterprovisioning: "k3s"
         pipeline.installer: "kyma deploy"

@@ -43,6 +43,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-main-kyma-incubator-milv
+                  annotations:
+                    owner: otters
+                    description: Builds milv image
                   always_run: true
                 inheritedConfigs:
                   global:
@@ -56,6 +59,9 @@ templates:
                     - milv_jobConfig
               - jobConfig:
                   name: post-main-kyma-incubator-milv
+                  annotations:
+                    owner: otters
+                    description: Builds milv image
                 inheritedConfigs:
                   global:
                     - jobConfig_default

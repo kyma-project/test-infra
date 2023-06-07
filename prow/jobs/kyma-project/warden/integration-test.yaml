@@ -1,6 +1,9 @@
 presubmits:
   kyma-project/warden:
     - name: pull-warden-integration-test
+      annotations:
+        owner: otters
+        description: Warden integration test
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"

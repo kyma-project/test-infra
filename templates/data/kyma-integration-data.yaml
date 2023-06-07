@@ -480,6 +480,7 @@ templates:
                   annotations:
                     pipeline.platform: k3s
                     owner: "otters"
+                    description: serverless integration k3s job
                   labels:
                     preset-build-pr: "true"
                   env:
