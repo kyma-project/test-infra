@@ -64,6 +64,8 @@ postsubmits: # runs on main
               - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: post-test-infra-deploy-prow
       annotations:
+        description: "Deploy prow components"
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:

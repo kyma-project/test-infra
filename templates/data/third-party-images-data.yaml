@@ -187,6 +187,9 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-k8s-tools"
+                  annotations:
+                    owner: neighbors
+                    description: "Build tpi/k8s-tools image."
                   run_if_changed: "^k8s-tools/"
                   args:
                     - "--name=tpi/k8s-tools"
@@ -199,6 +202,9 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-k8s-tools"
+                  annotations:
+                    owner: neighbors
+                    description: "Build tpi/k8s-tools image."
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^k8s-tools/"
@@ -500,4 +506,3 @@ templates:
                   global:
                     - "jobConfig_postsubmit"
                     - "kaniko_buildpack"
-

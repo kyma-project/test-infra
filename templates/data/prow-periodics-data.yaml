@@ -140,6 +140,9 @@ templates:
                     - image_image_detector
               - jobConfig:
                   name: post-test-infra-deploy-prow
+                  annotations:
+                    owner: neighbors
+                    description: "Deploy prow components"
                   slack_channel: kyma-prow-alerts
                   branches:
                     - ^main$

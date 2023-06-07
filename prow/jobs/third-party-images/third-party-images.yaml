@@ -223,6 +223,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-k8s-tools
       annotations:
+        description: "Build tpi/k8s-tools image."
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -869,6 +871,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-k8s-tools
       annotations:
+        description: "Build tpi/k8s-tools image."
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
