@@ -28,7 +28,7 @@ presubmits: # runs on PRs
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "bash"
             args:
@@ -70,7 +70,7 @@ presubmits: # runs on PRs
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "bash"
             args:
@@ -106,7 +106,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/bin/bash"
             args:

@@ -44,7 +44,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "bash"
             args:

@@ -148,6 +148,8 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: Unconfined
             command:
               - "make"
             args:
@@ -207,7 +209,7 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
             resources:

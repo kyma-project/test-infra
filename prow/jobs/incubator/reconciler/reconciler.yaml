@@ -79,7 +79,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
             env:
@@ -128,7 +128,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-pr-cli.sh"
             resources:
@@ -174,7 +174,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
             env:
@@ -227,7 +227,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
             env:
@@ -280,7 +280,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
             env:
@@ -337,7 +337,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -392,7 +392,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -449,7 +449,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -507,7 +507,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-component-provision-gardener.sh"
             env:
@@ -564,7 +564,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
             args:
@@ -610,7 +610,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                  type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -739,7 +741,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/bin/bash"
             args:
@@ -784,7 +786,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-validate-go-mod.sh"
             env:
@@ -838,7 +840,7 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -893,7 +895,7 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -1033,7 +1035,9 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                  type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -1091,7 +1095,7 @@ periodics: # runs on schedule
         containers:
           - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "generic-autobumper"
             args:
@@ -1154,13 +1158,9 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-<<<<<<< HEAD
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-=======
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
             securityContext:
               privileged: false
->>>>>>> 3d0221788 (fix priviledges)
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             args:
@@ -1227,13 +1227,9 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-<<<<<<< HEAD
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-=======
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
             securityContext:
               privileged: false
->>>>>>> 3d0221788 (fix priviledges)
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
             args:

@@ -105,7 +105,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "bash"
             args:

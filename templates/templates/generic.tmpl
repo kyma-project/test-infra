@@ -92,12 +92,15 @@
             {{- end}}
             {{- if .JobConfig.securityContext}}
             securityContext:
-              {{- if and .JobConfig.securityContext.privileged .JobConfig.securityContext.seccompProfile}}
+              {{- if and .JobConfig.securityContext.privileged .JobConfig.securityContext.seccompProfil not "Unconfined"}}
               {{- fail ".JobConfig.securityContext.privileged and .JobConfig.securityContext.seccompProfile are mutually exclusive"}}
               {{- end}}
-              privileged: {{.JobConfig.securityContext.privileged}}
+              privileged: {{ default .JobConfig.securityContext.privileged "false"}}
               {{- if .JobConfig.securityContext.seccompProfile}}
-              seccompProfile: {{.JobConfig.securityContext.seccompProfile}}
+              seccompProfile: 
+                  {{- range $key, $value := .JobConfig.securityContext.seccompProfile}}
+                  {{$key}}: {{$value}}
+                  {{- end}}
               {{- end}}
             {{- end}}
             {{- if .JobConfig.workingDir}}

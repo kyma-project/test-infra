@@ -159,7 +159,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-generated.sh"
             resources:

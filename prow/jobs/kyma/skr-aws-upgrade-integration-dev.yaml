@@ -41,7 +41,7 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/skr-aws-upgrade-integration-dev.sh"
             env:

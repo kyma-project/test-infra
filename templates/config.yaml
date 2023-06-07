@@ -113,9 +113,10 @@ globalSets:
     request_cpu: "1"
     labels:
       preset-sa-kyma-push-images: "true"
-    # securityContext:
-    #   seccompProfile:
-    #     type: Unconfined
+    securityContext:
+      privileged: true
+      seccompProfile:
+        type: Unconfined
     # annotations:
     #   container.apparmor.security.beta.kubernetes.io/test: unconfined
     env:
@@ -199,7 +200,7 @@ globalSets:
       - "^master$"
       - "^main$"
     securityContext:
-      privileged: "true"
+      privileged: "false"
     request_memory: "3Gi"
     request_cpu: "2"
     cluster_presubmit: "untrusted-workload"
@@ -211,9 +212,6 @@ globalSets:
         value: high-cpu
         operator: Equal
         effect: NoSchedule
-    # securityContext:
-    #   seccompProfile:
-    #     type: RuntimeDefault
     <<: *pubsub_config
   jobConfig_kyma20_docu:
     skip_report: "false"
@@ -223,7 +221,9 @@ globalSets:
     branches:
       - "^kyma-2.0-docu$"
     securityContext:
-      privileged: "true"
+      privileged: "false"
+      seccompProfile:
+        type: RuntimeDefault
     request_memory: "1.5Gi"
     request_cpu: "0.8"
     cluster_presubmit: "untrusted-workload"
@@ -269,6 +269,10 @@ globalSets:
       pipeline.clusterprovisioning: reconciler
   # generic component jobConfigs
   jobConfig_generic_component:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: Unconfined
     labels:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"
@@ -345,6 +349,10 @@ globalSets:
           base_ref: "main"
   # labels sets
   build_labels:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: Unconfined
     labels:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"

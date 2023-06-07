@@ -13,6 +13,10 @@ templates:
               - "make validate"
             request_memory: 100Mi
             request_cpu: 50m
+            securityContext:
+              privileged: "true"
+              seccompProfile:
+                type: Unconfined
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-dind-enabled: "true"
@@ -55,6 +59,10 @@ templates:
               - "make gqlgen check-gqlgen"
             request_memory: 100Mi
             request_cpu: 50m
+            securityContext:
+              privileged: "true"
+              seccompProfile:
+                type: Unconfined
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-dind-enabled: "true"

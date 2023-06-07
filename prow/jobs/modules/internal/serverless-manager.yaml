@@ -71,6 +71,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: Unconfined
             command:
               - "bash"
             args:
@@ -108,6 +110,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: Unconfined
             command:
               - "sh"
             args:
@@ -178,13 +182,9 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-<<<<<<< HEAD
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-=======
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230525-75242ac0"
             securityContext:
               privileged: false
->>>>>>> 3d0221788 (fix priviledges)
             command:
               - "bash"
             args:
@@ -277,6 +277,8 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: Unconfined
             command:
               - "sh"
             args:
@@ -347,13 +349,9 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-<<<<<<< HEAD
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-=======
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230525-75242ac0"
             securityContext:
               privileged: false
->>>>>>> 3d0221788 (fix priviledges)
             command:
               - "bash"
             args:
@@ -413,13 +411,9 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-<<<<<<< HEAD
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-=======
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230525-75242ac0"
             securityContext:
               privileged: false
->>>>>>> 3d0221788 (fix priviledges)
             command:
               - "bash"
             args:

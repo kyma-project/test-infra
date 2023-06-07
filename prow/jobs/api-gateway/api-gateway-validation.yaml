@@ -98,7 +98,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "./tests/integration/scripts/integration-gardener.sh"
             env:
@@ -170,7 +170,7 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
             command:
               - "/bin/sh"
             args:
