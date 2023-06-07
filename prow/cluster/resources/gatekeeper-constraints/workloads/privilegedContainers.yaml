@@ -1,0 +1,23 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sPSPPrivilegedContainer
+metadata:
+  name: psp-privileged-container
+spec:
+  enforcementAction: warn
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    nanespaces:
+      - "default"
+  parameters:
+    exemptImages:
+      - "aquasec/trivy:*"
+      - "eu.gcr.io/kyma-project/prow/cleaner:*"
+      - "eu.gcr.io/kyma-project/test-infra/bootstrap:*"
+      - "eu.gcr.io/kyma-project/test-infra/buildpack-golang:*"
+      - "eu.gcr.io/kyma-project/test-infra/gardener-rotate:*"
+      - "eu.gcr.io/kyma-project/test-infra/golangci-lint:*"
+      - "eu.gcr.io/kyma-project/test-infra/kyma-integration:*"
+      - "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"
+      - "gcr.io/k8s-prow/generic-autobumper:*"

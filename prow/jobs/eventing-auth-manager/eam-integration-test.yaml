@@ -1,0 +1,36 @@
+presubmits: # runs on PRs
+  kyma-project/eventing-auth-manager:
+    - name: pull-eventing-auth-manager-integration-test
+      annotations:
+        owner: tunas
+        description: Runs integration suite for Eventing Auth Manager
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-eventing-auth-manager-integration-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
+        preset-kyma-eventing-auth-ias-creds: "true"
+      cluster: untrusted-workload
+      decorate: true
+      always_run: true
+      spec:
+        hostAliases:
+          - ip: "127.0.0.1"
+            hostnames:
+              - "k3d-registry.localhost"
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
+            command: ["/bin/bash"]
+            securityContext:
+              privileged: true
+            args:
+              - -c
+              - scripts/run-integration-test.sh
+            resources:
+              requests:
+                cpu: 1
+                memory: 1Gi
+              limits:
+                cpu: 1.5
+                memory: 2Gi
