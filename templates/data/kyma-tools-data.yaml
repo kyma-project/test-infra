@@ -12,6 +12,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-main-kyma-common
+                  annotations:
+                    owner: framefrog
+                    description: "Build the image used in Application Connector components for logging purposes"
                   args:
                     - "-C"
                     - "common"
@@ -25,6 +28,9 @@ templates:
                     - job_spec
               - jobConfig:
                   name: post-main-kyma-common
+                  annotations:
+                    owner: framefrog
+                    description: "Build the image used in Application Connector components for logging purposes"
                   args:
                     - "-C"
                     - "common"

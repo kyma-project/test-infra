@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-eventing-controller-lint
       annotations:
+        description: "lint the EC"
+        owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -29,6 +31,8 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-eventing-controller-unit-test
       annotations:
+        description: "run unit tests for EC"
+        owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

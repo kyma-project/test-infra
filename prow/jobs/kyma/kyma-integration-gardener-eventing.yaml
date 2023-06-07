@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-gardener-gcp-eventing-upgrade
       annotations:
+        description: "Execute a kyma upgrade with special focus on the eventing component"
+        owner: "skydivingtunas"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_gcp"
@@ -84,6 +86,8 @@ presubmits: # runs on PRs
               secretName: kyma-tunas-prow-event-mesh
     - name: pre-main-kyma-gardener-gcp-eventing
       annotations:
+        description: "Execute fast integration job with focus on eventing on a gardener cluster"
+        owner: "skydivingtunas"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_gcp"

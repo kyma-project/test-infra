@@ -397,6 +397,10 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-app-gateway"
+                  annotations:
+                    pipeline.platform: k3d
+                    owner: framefrog
+                    description: "It tests the acceptance criteria of the (Central) Application Gateway component"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   optional: "false"
@@ -404,8 +408,6 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
                     preset-kyma-integration-app-connector-tests-app-gateway: "true"
-                  annotations:
-                    pipeline.platform: k3d
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -420,6 +422,10 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-app-conn-validator"
+                  annotations:
+                    pipeline.platform: k3d
+                    owner: framefrog
+                    description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component"
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   optional: "false"
@@ -427,8 +433,6 @@ templates:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
                     preset-kyma-integration-app-connector-tests-app-validator: "true"
-                  annotations:
-                    pipeline.platform: k3d
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -443,6 +447,9 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
+                  annotations:
+                    owner: framefrog
+                    description: "It tests Compass integration. It won't be needed after the implementation of this issue - https://github.com/kyma-project/kyma/issues/15037"
                   # following regexp won't start build if only Markdown files were changed
                   always_run: false
                   optional: "true"
@@ -469,6 +476,7 @@ templates:
                   run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     pipeline.platform: k3s
+                    owner: "otters"
                   labels:
                     preset-build-pr: "true"
                   env:
@@ -490,6 +498,7 @@ templates:
                   annotations:
                     description: Serverless function metrics generator
                     pipeline.platform: gke
+                    owner: "otters"
                   labels:
                     preset-gc-compute-envs: "true"
                     preset-gc-project-env: "true"
@@ -509,20 +518,22 @@ templates:
                   local:
                     - "serverless_metrics_template"
               - jobConfig:
-                  name: "serverless-git-auth-integration-k3s-nightly"
-                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
+                  name: "pre-main-serverless-git-auth-integration-k3s"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     description: Serverless git-function authentication nightly integration tests
                     pipeline.platform: k3s
+                    owner: "otters"
                   labels:
-                    preset-build-main: "true"
+                    preset-build-pr: "true"
                     preset-serverless-git-auth: "true"
                   env:
                     INTEGRATION_SUITE: "git-auth-integration"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "jobConfig_periodic"
+                    - "jobConfig_presubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
@@ -661,7 +672,8 @@ templates:
                   name: "post-main-kyma-integration-k3d-app-gateway"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d for testing application gateway.
+                    onwer: framefrog
+                    description: "Kyma integration job on k3d for testing application gateway."
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
@@ -683,7 +695,8 @@ templates:
                   name: "post-main-kyma-integration-k3d-app-conn-validator"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d for testing application connectivity validator.
+                    owner: framefrog
+                    description: "Kyma integration job on k3d for testing application connectivity validator."
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"

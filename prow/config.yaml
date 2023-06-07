@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230526-bc91fd978b
-          initupload: gcr.io/k8s-prow/initupload:v20230526-bc91fd978b
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230526-bc91fd978b
-          sidecar: gcr.io/k8s-prow/sidecar:v20230526-bc91fd978b
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230605-b63f6f76cb
+          initupload: gcr.io/k8s-prow/initupload:v20230605-b63f6f76cb
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230605-b63f6f76cb
+          sidecar: gcr.io/k8s-prow/sidecar:v20230605-b63f6f76cb
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -837,6 +837,18 @@ presets:
         valueFrom:
           secretKeyRef:
             name: kyma-btp-manager-bot-github-token
+            key: token
+  - labels:
+      preset-kyma-eventing-auth-ias-creds: "true"
+    env:
+      - name: TEST_EVENTING_AUTH_IAS_URL
+        value: "https://tunas.accounts400.ondemand.com"
+      - name: TEST_EVENTING_AUTH_IAS_USER
+        value: "skydiving-tunas@groups.sap.com"
+      - name: TEST_EVENTING_AUTH_IAS_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: kyma-eventing-auth-ias-creds
             key: token
   # Kyma Guard Bot
   - labels:

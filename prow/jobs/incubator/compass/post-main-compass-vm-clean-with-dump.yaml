@@ -5,6 +5,8 @@ postsubmits: # runs on main
   kyma-incubator/compass:
     - name: post-main-compass-vm-clean-with-dump
       annotations:
+        description: "Clean up test VM for the dump job after PR is merged"
+        owner: "compass"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

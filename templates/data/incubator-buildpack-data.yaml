@@ -558,40 +558,13 @@ templates:
                     - reconciler_dev_jobConfig
                     - reconciler_jobConfig_args
               - jobConfig:
-                  name: nightly-main-reconciler-publish-unstable-cli
-                  annotations:
-                    description: Bump reconciler version used by CLI and publish the unstable CLI binaries
-                    pipeline.trigger: "nightly"
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 0 * * 1-5" # "At 00:00 on every day-of-week from Monday through Friday"
-                  labels:
-                    preset-sa-vm-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                    preset-bot-github-token: "true"
-                    preset-kyma-cli-unstable: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - disable_testgrid
-                    - image_buildpack-golang
-                    - jobConfig_buildpack_incubator
-                    - jobConfig_slack_jellyfish
-                    - jobConfig_reconciler_publish_unstable_cli
-                  local:
-                    - extra_refs_kyma_cli
-              - jobConfig:
                   name: reconciler-control-plane-image-bump
                   annotations:
                     description: Reconciler image bump in control-plane
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230526-bc91fd978b
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb
                   command: generic-autobumper
                   args:
                     - --config=/home/prow/go/src/github.com/kyma-project/test-infra/prow/autobump-config/control-plane-autobump-reconciler-config.yaml

@@ -26,6 +26,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-compass-console-build
+                  annotations:
+                    owner: compass
+                    description: "Building Compass Console component"
                   args:
                     - "--name=incubator/compass-console"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -45,6 +48,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: pull-compass-console-lint
+                  annotations:
+                    owner: compass
+                    description: "Linter for the Compass Console component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -58,6 +64,9 @@ templates:
                     - linting
               - jobConfig:
                   name: pull-compass-console-test
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Compass Console component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -71,6 +80,9 @@ templates:
                     - testing
               - jobConfig:
                   name: post-compass-console-build
+                  annotations:
+                    owner: compass
+                    description: "Building Compass Console component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
