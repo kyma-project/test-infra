@@ -118,6 +118,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-kubeconfig-service-build
+                  annotations:
+                    owner: sre
+                    description: "Builds and validates kubeconfig-service before merge"
                   run_if_changed: "^components/kubeconfig-service"
                   args:
                     - --name=control-plane/kubeconfig-service
