@@ -28,6 +28,9 @@ templates:
             jobs:
               - jobConfig:
                   path: components/kubeconfig-service
+                  annotations:
+                    owner: sre
+                    description: "Builds and validates kubeconfig-service before merge"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/control-plane/components/kubeconfig-service"
                   run_if_changed: "^components/kubeconfig-service/|^scripts/"
