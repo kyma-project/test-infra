@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-tests-e2e-provisioning
       annotations:
+        owner: "gophers"
+        description: "E2e provisioning testing pipeline"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

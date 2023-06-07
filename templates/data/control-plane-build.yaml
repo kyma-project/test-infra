@@ -151,6 +151,10 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-keb-build
+                  annotations:
+                    owner: "gophers"
+                    description: "KEB image build on PR"
+                    pipeline.trigger: "pr-submit"
                   run_if_changed: "^components/kyma-environment-broker"
                   args:
                     - --name=control-plane/kyma-environment-broker
@@ -163,6 +167,10 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-build
+                  annotations:
+                    owner: "gophers"
+                    description: "KEB image build on main"
+                    pipeline.trigger: "pr-merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
@@ -179,6 +187,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-cleanup-job-build
+                  annotations:
+                    owner: "gophers"
+                    description: "Clean up DEV from Kyma runtimes older than day job build on PR"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
@@ -193,6 +204,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-cleanup-job-build
+                  annotations:
+                    owner: "gophers"
+                    description: "Clean up DEV from Kyma runtimes older than day job build on main"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
@@ -211,6 +225,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-subaccount-cleanup-job-build
+                  annotations:
+                    owner: "gophers"
+                    description: "Removes SKRs when BTP subaccount is deleted job build on PR"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
@@ -225,6 +242,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-subaccount-cleanup-job-build
+                  annotations:
+                    owner: "gophers"
+                    description: "Removes SKRs when BTP subaccount is deleted job build on main"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
@@ -243,6 +263,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-subscription-cleanup-job-build
+                  annotations:
+                    owner: "framefrog"
+                    description: "Cleaning dirty secrets and Azure resources job build on PR https://github.com/kyma-project/control-plane/issues/42"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
@@ -257,6 +280,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-subscription-cleanup-job-build
+                  annotations:
+                    owner: "framefrog"
+                    description: "Cleaning dirty secrets and Azure resources job build on main https://github.com/kyma-project/control-plane/issues/42"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
@@ -275,6 +301,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-trial-cleanup-job-build
+                  annotations:
+                    owner: "gophers"
+                    description: "Removes trials after 14 days job build on PR"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
@@ -289,6 +318,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-trial-cleanup-job-build
+                  annotations:
+                    owner: "gophers"
+                    description: "Removes trials after 14 days job build on main"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
@@ -307,6 +339,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-deprovision-retrigger-job-build
+                  annotations:
+                    owner: "gophers"
+                    description: "Retries deprovisioned SKRs where some steps have failed job build on PR"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
@@ -321,6 +356,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-keb-deprovision-retrigger-job-build
+                  annotations:
+                    owner: "gophers"
+                    description: "Retries deprovisioned SKRs where some steps have failed job build on main"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
@@ -383,6 +421,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-e2e-provisioning-test-build
+                  annotations:
+                    owner: "gophers"
+                    description: "E2E provisioning test build on PR"
                   run_if_changed: "^tests/e2e/provisioning/|^scripts/"
                   args:
                     - --name=control-plane/e2e-provisioning-test
@@ -395,6 +436,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-e2e-provisioning-test-build
+                  annotations:
+                    owner: "gophers"
+                    description: "E2E provisioning test build on main"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^tests/e2e/provisioning/|^scripts/"
