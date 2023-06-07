@@ -11,6 +11,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-kyma-validate-image-definitions"
+                  annotations:
+                    description: "validates if all charts use correct image definition format"
+                    owner: neighbors
                   run_if_changed: "^resources/"
                   command: "bash"
                   args:
@@ -29,6 +32,9 @@ templates:
                     - "smaller_requests"
               - jobConfig:
                   name: "pre-main-kyma-validate-image-existence"
+                  annotations:
+                    description: "his tool validates if all images defined in charts exist"
+                    owner: neighbors
                   run_if_changed: "^resources/"
                   command: "bash"
                   args:
@@ -47,6 +53,9 @@ templates:
                     - "smaller_requests"
               - jobConfig:
                   name: "pre-main-kyma-validate-dockerfiles"
+                  annotations:
+                    owner: neighbors
+                    description: "Validate Dockerfiles, run hadolint."
                   run_if_changed: ".*Dockerfile$"
                   command: "/bin/bash"
                   args: 

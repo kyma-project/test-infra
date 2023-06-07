@@ -104,6 +104,7 @@ postsubmits: # runs on main
     - name: post-rel216-kyma-release-candidate
       annotations:
         description: "Release candidate job for Kyma 2.16."
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
         testgrid-dashboards: "kyma_release-2.16"
         testgrid-days-of-results: "60"

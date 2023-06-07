@@ -7,6 +7,10 @@ templates:
             jobs:
               - jobConfig:
                   name: "unstale-gardener-project"
+                  annotations:
+                    owner: neighbors
+                    description: "Unstale Gardener project. This prowjob creates and removes a cluster to unstale the project"
+                    testgrid-create-test-group: "false"
                   type_periodic: "true"
                   cluster: "trusted-workload"
                   decorate: "true"
@@ -14,8 +18,6 @@ templates:
                   cron: "0 5 1 * *" # At 05:00 on day-of-month 1.
                   labels:
                     preset-gardener-neighbors: "true"
-                  annotations:
-                    testgrid-create-test-group: "false"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/unstale-gardener-project.sh"
                   env:
                     MACHINE_TYPE: "n1-standard-4"

@@ -98,6 +98,7 @@ templates:
                   branches:
                     - '^{{ $rel }}\.\d+(?:-.*)?$' # release tags
                   annotations:
+                    owner: neighbors
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     description: Release candidate job for Kyma {{ $rel }}.
                     testgrid-days-of-results: "60"

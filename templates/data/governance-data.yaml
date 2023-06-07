@@ -203,6 +203,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-test-infra-governance"
+                  annotations:
+                    owner: "technical-writers"
+                    description: "Looking for broken links in the test-infra repo"
                   args:
                     - "--repository"
                     - "test-infra"

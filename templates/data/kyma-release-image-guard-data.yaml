@@ -16,6 +16,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-release-pr-image-guard"
+                  annotations:
+                    owner: neighbors
+                    description: "Check if chart and manifests files use PR images."
                   always_run: true
                 inheritedConfigs:
                   global:
