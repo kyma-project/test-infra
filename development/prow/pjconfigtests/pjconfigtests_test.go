@@ -1,9 +1,8 @@
 package pjconfigtests_test
 
 import (
-	"fmt"
-
 	kprow "github.com/kyma-project/test-infra/development/prow"
+
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"
@@ -22,9 +21,7 @@ var _ = Describe("Prowjob,", func() {
 			})
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
-				if missingAnnotations.PjName != "" {
-					fmt.Printf("%s\n", missingAnnotations)
-				}
+				Expect(missingAnnotations).To(BeZero(), "%s\n", missingAnnotations)
 			})
 		}
 	})
@@ -40,9 +37,7 @@ var _ = Describe("Prowjob,", func() {
 			})
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
-				if missingAnnotations.PjName != "" {
-					fmt.Printf("%s\n", missingAnnotations)
-				}
+				Expect(missingAnnotations).To(BeZero(), "%s\n", missingAnnotations)
 			})
 		}
 	})
@@ -58,9 +53,7 @@ var _ = Describe("Prowjob,", func() {
 			})
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
-				if missingAnnotations.PjName != "" {
-					fmt.Printf("%s\n", missingAnnotations)
-				}
+				Expect(missingAnnotations).To(BeZero(), "%s\n", missingAnnotations)
 			})
 		}
 	})
