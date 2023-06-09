@@ -223,7 +223,7 @@ globalSets:
     securityContext:
       privileged: "false"
       seccompProfile:
-        type: RuntimeDefault
+        type: "RuntimeDefault"
     request_memory: "1.5Gi"
     request_cpu: "0.8"
     cluster_presubmit: "untrusted-workload"
@@ -311,6 +311,11 @@ globalSets:
     cluster: "trusted-workload"
   untrusted_cluster:
     cluster: "untrusted-workload"
+  privileged_job:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: Unconfined
   # extra_refs sets
   extra_refs_test-infra:
     extra_refs:
@@ -352,7 +357,7 @@ globalSets:
     securityContext:
       privileged: "true"
       seccompProfile:
-        type: Unconfined
+        type: "Unconfined"
     labels:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"
