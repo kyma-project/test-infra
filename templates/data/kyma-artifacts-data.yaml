@@ -15,6 +15,10 @@ templates:
               preset-dind-enabled: "true"
               preset-sa-gcr-push: "true"
               preset-docker-push-repository-kyma: "true"
+            securityContext:
+              privileged: "true"
+              seccompProfile:
+                type: "Unconfined"
           jobConfig_release:
             labels:
               preset-kyma-artifacts-bucket: "true"
