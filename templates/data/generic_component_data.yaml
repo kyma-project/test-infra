@@ -618,6 +618,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-tests-serverless-bench-build
+                  annotations:
+                    owner: otters
+                    description: gitserver build job
                   args:
                     - "--name=serverless-bench"
                     - "--config=/config/kaniko-build-config.yaml"
