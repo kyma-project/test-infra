@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pre-main-busola-governance
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -50,6 +52,8 @@ presubmits: # runs on PRs
   kyma-project/community:
     - name: pre-main-community-governance
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -96,6 +100,8 @@ presubmits: # runs on PRs
   kyma-project/examples:
     - name: pre-main-examples-governance
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -142,6 +148,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: kyma-metadata-schema-governance
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -188,6 +196,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-governance
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -232,6 +242,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pull-kyma-crd-governance
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -306,6 +318,8 @@ presubmits: # runs on PRs
   kyma-project/website:
     - name: pre-main-website-governance
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -354,6 +368,8 @@ presubmits: # runs on PRs
   kyma-project/telemetry-manager:
     - name: pre-main-telemetry-manager-governance
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -400,6 +416,8 @@ presubmits: # runs on PRs
   kyma-project/directory-size-exporter:
     - name: pre-main-directory-size-exporter-governance
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -446,6 +464,8 @@ presubmits: # runs on PRs
 periodics: # runs on schedule
     - name: busola-governance-nightly
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
@@ -494,6 +514,8 @@ periodics: # runs on schedule
   
     - name: community-governance-nightly
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
@@ -543,6 +565,8 @@ periodics: # runs on schedule
   
     - name: kyma-governance-nightly
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
@@ -591,6 +615,8 @@ periodics: # runs on schedule
   
     - name: test-infra-governance-nightly
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
@@ -639,6 +665,8 @@ periodics: # runs on schedule
   
     - name: website-governance-nightly
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
@@ -687,6 +715,8 @@ periodics: # runs on schedule
   
     - name: documentation-component-governance-nightly
       annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
