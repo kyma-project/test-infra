@@ -233,6 +233,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: kyma-weekly-gardener-gcp-busola-kyma
       annotations:
+        description: "set up nkyma cluster"
+        owner: "hasselhoff"
         pipeline.clusterprovisioning: "kubectl shootspec"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_gcp"

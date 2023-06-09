@@ -358,6 +358,9 @@ templates:
                     - installer_2
               - jobConfig:
                   name: kyma-weekly-gardener-gcp-busola-kyma
+                  annotations:
+                    owner: hasselhoff
+                    description: set up nkyma cluster
                   decoration_config:
                     timeout: 7200000000000 # 2h
                     grace_period: 600000000000 # 10min
