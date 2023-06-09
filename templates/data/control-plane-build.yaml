@@ -46,6 +46,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-schema-migrator-build
+                  annotations:
+                    owner: framefrog,gopher
+                    description: build schema migrator
                   run_if_changed: "^components/schema-migrator"
                   args:
                     - --name=control-plane/schema-migrator

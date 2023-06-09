@@ -60,6 +60,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-lifecycle-mgr-build
+                  annotations:
+                    owner: jellyfish
+                    description: build lifecycle manager
                   labels:
                     preset-signify-prod-secret: "true"
                   branches:

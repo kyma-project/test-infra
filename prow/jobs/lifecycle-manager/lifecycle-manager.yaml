@@ -127,6 +127,8 @@ postsubmits: # runs on main
   kyma-project/lifecycle-manager:
     - name: main-lifecycle-mgr-build
       annotations:
+        description: "build lifecycle manager"
+        owner: "jellyfish"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

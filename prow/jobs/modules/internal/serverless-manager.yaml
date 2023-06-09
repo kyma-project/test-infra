@@ -257,6 +257,8 @@ postsubmits: # runs on main
       annotations:
         container.apparmor.security.beta.kubernetes.io/test: "unconfined"
         container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
+        description: "build serverless manager"
+        owner: "otters"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -316,6 +318,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-serverless-manager-verify
       annotations:
+        description: "serverless manager verify on k3d vm"
+        owner: "otters"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"

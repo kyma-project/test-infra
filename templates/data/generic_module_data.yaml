@@ -335,6 +335,9 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: post-main-keda-manager-upgrade-latest-to-main
+                  annotations:
+                    owner: otters
+                    description: upgrade keda manager test
                   always_run: "true"
                   optional: "true"
                   env:
@@ -562,6 +565,9 @@ templates:
                     - job_build_volumes
               - jobConfig:
                   name: post-serverless-manager-operator-build
+                  annotations:
+                    owner: otters
+                    description: build serverless manager
                   always_run: true
                   labels:
                     preset-signify-prod-secret: "true"
@@ -613,6 +619,9 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: post-main-serverless-manager-verify
+                  annotations:
+                    owner: otters
+                    description: serverless manager verify on k3d vm
                   always_run: "true"
                   optional: "true"
                   env:

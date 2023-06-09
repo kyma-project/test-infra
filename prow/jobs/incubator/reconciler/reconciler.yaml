@@ -649,6 +649,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-incubator-mothership-reconciler
       annotations:
+        description: "build mothership reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

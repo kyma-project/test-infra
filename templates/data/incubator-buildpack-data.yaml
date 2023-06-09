@@ -519,6 +519,9 @@ templates:
                     - reconciler_component_k3d_integration_jobConfig
               - jobConfig:
                   name: pre-main-kyma-incubator-mothership-reconciler
+                  annotations:
+                    owner: jellyfish
+                    description: build mothership reconciler
                   args:
                     - "--name=incubator/reconciler/mothership"
                     - "--config=/config/kaniko-build-config.yaml"
