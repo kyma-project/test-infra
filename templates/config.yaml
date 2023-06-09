@@ -116,6 +116,7 @@ globalSets:
     securityContext:
       privileged: "true"
       seccompProfile:
+        # fork/exec is required
         type: Unconfined
     # annotations:
     #   container.apparmor.security.beta.kubernetes.io/test: unconfined

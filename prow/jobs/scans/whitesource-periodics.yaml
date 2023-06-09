@@ -36,9 +36,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -91,9 +91,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -146,9 +146,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -201,9 +201,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -256,9 +256,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -311,9 +311,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -366,9 +366,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -421,9 +421,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -478,9 +478,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -533,9 +533,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -588,9 +588,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -643,9 +643,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -698,9 +698,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -753,9 +753,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -802,9 +802,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -859,9 +859,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -914,9 +914,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -972,9 +972,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1027,9 +1027,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
-              {- /* if privileged is set to true then seccomp must be unconfined */}}
               privileged: false
-              seccompProfile: map[type:RuntimeDefault]
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
