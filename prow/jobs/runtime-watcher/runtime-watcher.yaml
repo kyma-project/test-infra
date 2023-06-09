@@ -59,7 +59,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
                   type: Unconfined
             command:
@@ -134,7 +134,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
                   type: Unconfined
             command:

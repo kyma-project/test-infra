@@ -499,7 +499,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
                   type: Unconfined
             command:
@@ -1174,7 +1174,7 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
                   type: Unconfined
             command:

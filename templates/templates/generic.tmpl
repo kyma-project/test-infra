@@ -95,7 +95,7 @@
               {{- if and .JobConfig.securityContext.privileged .JobConfig.securityContext.seccompProfil not "Unconfined"}}
               {{- fail ".JobConfig.securityContext.privileged and .JobConfig.securityContext.seccompProfile are mutually exclusive"}}
               {{- end}}
-              privileged: {{ default .JobConfig.securityContext.privileged "false"}}
+              privileged: {{ default "false" .JobConfig.securityContext.privileged }}
               {{- if .JobConfig.securityContext.seccompProfile}}
               seccompProfile: 
                   {{- range $key, $value := .JobConfig.securityContext.seccompProfile}}
