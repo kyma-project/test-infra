@@ -6,6 +6,7 @@ presubmits: # runs on PRs
     - name: pull-lifecycle-mgr-lint
       annotations:
         description: "executes the 'golangci-lint lint' command before any pull request."
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -41,6 +42,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pull-lifecycle-mgr-tests
       annotations:
+        description: "run lm tests"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -79,6 +82,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pull-lifecycle-mgr-build
       annotations:
+        description: "run lm build"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

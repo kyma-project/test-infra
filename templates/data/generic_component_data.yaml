@@ -582,6 +582,9 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-application-connector-mock-app-build
+                  annotations:
+                    owner: framefrog
+                    description: Building the images using in acceptance test
                   args:
                     - "--name=mock-app"
                     - "--config=/config/kaniko-build-config.yaml"

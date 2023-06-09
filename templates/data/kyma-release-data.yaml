@@ -81,6 +81,8 @@ templates:
                     preset-build-release: "true"
                     preset-sa-vm-kyma-integration: "true"
                   annotations:
+                    owner: neighbors
+                    description: k3d int test
                     pipeline.platform: k3d
                 inheritedConfigs:
                   global:

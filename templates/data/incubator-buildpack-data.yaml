@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-main-hydroform
+                  annotations:
+                    owner: janmedrek
+                    description: hydroform tests and validation
                   always_run: true
                   privileged: false
                   command: "make"
@@ -19,6 +22,9 @@ templates:
                     - image_buildpack-golang
               - jobConfig:
                   name: post-main-hydroform
+                  annotations:
+                    owner: janmedrek
+                    description: hydroform tests and validation
                   privileged: false
                   command: "make"
                   args:
@@ -161,6 +167,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-reconciler-unit-test"
+                  annotations:
+                    owner: jellyfish
+                    description: test reconciler
                   optional: false
                   always_run: true
                   command: "/bin/sh"
@@ -175,6 +184,9 @@ templates:
                   name: "pre-main-reconciler-lint"
                   optional: false
                   command: "/bin/sh"
+                  annotations:
+                    owner: jellyfish
+                    description: lint reconciler
                   args:
                     - "-c"
                     - golangci-lint run -v --timeout=20m --new-from-rev=$PULL_BASE_SHA ./...
@@ -185,6 +197,7 @@ templates:
                     - linting
               - jobConfig:
                   name: "pre-main-reconciler-integration-k3d"
+
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^(go.mod$|go.sum$)|((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -193,6 +206,8 @@ templates:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
                   annotations:
+                    owner: jellyfish
+                    description: int test reconciler
                     pipeline.platform: k3d
                 inheritedConfigs:
                   global:
@@ -205,6 +220,9 @@ templates:
                     - reconciler_integration_jobConfig
               - jobConfig:
                   name: "pre-main-reconciler-publish-pr-cli"
+                  annotations:
+                    owner: jellyfish
+                    description: pre publish reconciler
                   optional: false
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
@@ -223,6 +241,7 @@ templates:
                     - reconciler_publish_pr_cli_jobConfig
               - jobConfig:
                   name: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
+
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -231,6 +250,8 @@ templates:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
                   annotations:
+                    owner: jellyfish
+                    description: int test reconciler
                     pipeline.platform: k3d
                   env:
                     KYMA_TEST_SOURCE: "latest-release"
@@ -254,6 +275,8 @@ templates:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
                   annotations:
+                    owner: jellyfish
+                    description: int test reconciler
                     pipeline.platform: k3d
                   env:
                     KYMA_TEST_SOURCE: "main"
@@ -277,6 +300,8 @@ templates:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
                   annotations:
+                    owner: jellyfish
+                    description: upgrade test reconciler
                     pipeline.platform: k3d
                   env:
                     EXECUTION_PROFILE: evaluation
@@ -410,6 +435,8 @@ templates:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
                   annotations:
+                    owner: jellyfish
+                    description: int test reconciler
                     pipeline.platform: k3d
                 inheritedConfigs:
                   global:
@@ -422,6 +449,9 @@ templates:
                     - reconciler_integration_jobConfig
               - jobConfig:
                   name: "pre-dev-kyma-incubator-reconciler"
+                  annotations:
+                    owner: jellyfish
+                    description: build reconciler
                   always_run: true
                 inheritedConfigs:
                   global:
@@ -503,6 +533,9 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: post-main-kyma-incubator-mothership-reconciler
+                  annotations:
+                    owner: jellyfish
+                    description: build reconciler
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -520,6 +553,9 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: pre-main-kyma-incubator-component-reconciler
+                  annotations:
+                    owner: jellyfish
+                    description: build component reconciler
                   args:
                     - "--name=incubator/reconciler/component"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -534,6 +570,9 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: post-main-kyma-incubator-component-reconciler
+                  annotations:
+                    owner: jellyfish
+                    description: build component reconciler
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -551,6 +590,9 @@ templates:
                     - kaniko_buildpack
               - jobConfig:
                   name: post-dev-kyma-incubator-reconciler
+                  annotations:
+                    owner: jellyfish
+                    description: build reconciler
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -566,6 +608,7 @@ templates:
               - jobConfig:
                   name: reconciler-control-plane-image-bump
                   annotations:
+                    owner: jellyfish
                     description: Reconciler image bump in control-plane
                   decoration_config:
                     timeout: 14400000000000 # 4h
@@ -591,6 +634,7 @@ templates:
               - jobConfig:
                   name: nightly-main-reconciler
                   annotations:
+                    owner: jellyfish
                     description: Creates and installs reconciler from main every night.
                   decoration_config:
                     timeout: 14400000000000 # 4h
@@ -616,6 +660,7 @@ templates:
               - jobConfig:
                   name: nightly-main-reconciler-e2e
                   annotations:
+                    owner: jellyfish
                     description: Executes e2e test periodically on nightly cluster for reconciler.
                     pipeline.installer: "reconciler"
                     pipeline.platform: "gcp"
@@ -647,6 +692,9 @@ templates:
                     - reconciler_main_nightly_cluster_input_name
               - jobConfig:
                   name: "pre-main-reconciler-validate-dockerfiles"
+                  annotations:
+                    owner: neighbors
+                    description: hadolint reconciler
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: ".*Dockerfile$"
                   command: "/bin/bash"
@@ -665,6 +713,9 @@ templates:
                     - reconciler_main_jobConfig
               - jobConfig:
                   name: "pre-main-reconciler-validate-go-mod"
+                  annotations:
+                    owner: jellyfish
+                    description: validate gomod reconciler
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: '^go\.mod$'
                   optional: true

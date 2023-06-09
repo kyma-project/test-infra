@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-rel213-kyma-integration-k3d
       annotations:
+        owner: neighbors
+        description: k3d int test
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"

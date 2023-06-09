@@ -14,6 +14,7 @@ templates:
                   name: pull-lifecycle-mgr-lint # "pre-main-lifecycle-manager-lint"
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
+                    owner: jellyfish
                     description: executes the 'golangci-lint lint' command before any pull request.
                   command: "bash"
                   args:
@@ -28,6 +29,9 @@ templates:
               - jobConfig:
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
                   name: pull-lifecycle-mgr-tests # pre-main-lifecycle-manager-tests
+                  annotations:
+                    owner: jellyfish
+                    description: run lm tests
                   command: "bash"
                   args:
                     - "-c"
@@ -42,6 +46,9 @@ templates:
                     - build_labels # default labels
               - jobConfig:
                   name: pull-lifecycle-mgr-build
+                  annotations:
+                    owner: jellyfish
+                    description: run lm build
                   always_run: true
                   args:
                     - "--name=lifecycle-manager"
