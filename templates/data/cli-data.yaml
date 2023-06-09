@@ -46,13 +46,8 @@ templates:
                     - "ci-release"
                   branches:
                     - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$"
-                  securityContext:
-                    privileged: "true"
-                    seccompProfile:
-                      type: Unconfined
                   labels:
                     preset-bot-github-token: "true"
-                    preset-dind-enabled: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
