@@ -33,6 +33,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "usersmapchecker"
             resources:

@@ -25,6 +25,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -70,6 +72,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -115,6 +119,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -160,6 +166,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -205,6 +213,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -250,6 +260,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -295,6 +307,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -340,6 +354,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -385,6 +401,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -430,6 +448,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -475,6 +495,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -520,6 +542,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -565,6 +589,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -610,6 +636,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -655,6 +683,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -700,6 +730,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -745,6 +777,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -790,6 +824,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -835,6 +871,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -880,6 +918,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -925,6 +965,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -970,6 +1012,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1015,6 +1059,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -1060,6 +1106,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1105,6 +1153,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -1150,6 +1200,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1195,6 +1247,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -1240,6 +1294,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1285,6 +1341,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -1330,6 +1388,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1375,6 +1435,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -1420,6 +1482,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1465,6 +1529,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -1510,6 +1576,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1555,6 +1623,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -1600,6 +1670,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1645,6 +1717,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -1690,6 +1764,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1735,6 +1811,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -1780,6 +1858,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1825,6 +1905,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -1870,6 +1952,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1915,6 +1999,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -1960,6 +2046,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2005,6 +2093,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -2050,6 +2140,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2095,6 +2187,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -2140,6 +2234,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2185,6 +2281,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -2230,6 +2328,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2275,6 +2375,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -2320,6 +2422,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2365,6 +2469,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -2410,6 +2516,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2455,6 +2563,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -2500,6 +2610,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2545,6 +2657,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -2590,6 +2704,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2635,6 +2751,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -2680,6 +2798,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2725,6 +2845,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -2770,6 +2892,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2815,6 +2939,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -2860,6 +2986,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2905,6 +3033,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -2950,6 +3080,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -2995,6 +3127,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -3040,6 +3174,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -3085,6 +3221,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -3130,6 +3268,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -3175,6 +3315,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -3220,6 +3362,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -3265,6 +3409,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -3310,6 +3456,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -3355,6 +3503,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -3400,6 +3550,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -3445,6 +3597,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -3490,6 +3644,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -3535,6 +3691,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -3580,6 +3738,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -3625,6 +3785,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -3670,6 +3832,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -3715,6 +3879,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -3760,6 +3926,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -3805,6 +3973,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -3850,6 +4020,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -3895,6 +4067,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -3940,6 +4114,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -3985,6 +4161,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -4030,6 +4208,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -4075,6 +4255,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -4120,6 +4302,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -4165,6 +4349,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -4210,6 +4396,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -4255,6 +4443,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -4300,6 +4490,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -4345,6 +4537,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -4390,6 +4584,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -4435,6 +4631,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -4480,6 +4678,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -4525,6 +4725,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -4570,6 +4772,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -4615,6 +4819,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -4660,6 +4866,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -4705,6 +4913,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "pjtester"
             args:
@@ -4750,6 +4960,8 @@ presubmits: # runs on PRs
             imagePullPolicy: Always
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:

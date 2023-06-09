@@ -89,8 +89,9 @@
             {{- end}}
             {{- if .JobConfig.securityContext}}
             securityContext:
-              {{- if and .JobConfig.securityContext.privileged .JobConfig.securityContext.seccompProfile}}
-              {{- fail ".JobConfig.securityContext.privileged and .JobConfig.securityContext.seccompProfile are mutually exclusive"}}
+              {- /* if privileged is set to true then seccomp must be unconfined */}}
+              {{- if and .JobConfig.securityContext.privileged (eq .JobConfig.securityContext.privileged "true") (ne .JobConfig.securityContext.seccompProfile.type  "Unconfined")}}
+                {{- fail (printf ".JobConfig.securityContext.privileged and .JobConfig.securityContext.seccompProfile are mutually exclusive: %s %v" .JobConfig.securityContext.privileged .JobConfig.securityContext.seccompProfile.type)}}
               {{- end}}
               privileged: {{.JobConfig.securityContext.privileged}}
               {{- if .JobConfig.securityContext.seccompProfile}}

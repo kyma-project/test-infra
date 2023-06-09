@@ -53,6 +53,8 @@ presubmits: # runs on PRs
             automountServiceAccountToken: true
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "/golangci-lint.sh"
             resources:

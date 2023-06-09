@@ -24,6 +24,8 @@ presubmits: # runs on PRs
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "/ghcomment/github-comment"
             args:

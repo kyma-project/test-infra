@@ -114,7 +114,7 @@ globalSets:
     labels:
       preset-sa-kyma-push-images: "true"
     securityContext:
-      privileged: true
+      privileged: "true"
       seccompProfile:
         type: Unconfined
     # annotations:
@@ -201,6 +201,8 @@ globalSets:
       - "^main$"
     securityContext:
       privileged: "false"
+      seccompProfile:
+        type: "RuntimeDefault"
     request_memory: "3Gi"
     request_cpu: "2"
     cluster_presubmit: "untrusted-workload"
