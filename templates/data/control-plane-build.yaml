@@ -164,7 +164,7 @@ templates:
               - jobConfig:
                   name: pull-keb-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "KEB image build on PR"
                     pipeline.trigger: "pr-submit"
                   run_if_changed: "^components/kyma-environment-broker"
@@ -180,7 +180,7 @@ templates:
               - jobConfig:
                   name: post-keb-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "KEB image build on main"
                     pipeline.trigger: "pr-merge"
                   labels:
@@ -200,7 +200,7 @@ templates:
               - jobConfig:
                   name: pull-keb-cleanup-job-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "Clean up DEV from Kyma runtimes older than day job build on PR"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
@@ -217,7 +217,7 @@ templates:
               - jobConfig:
                   name: post-keb-cleanup-job-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "Clean up DEV from Kyma runtimes older than day job build on main"
                   labels:
                     preset-signify-prod-secret: "true"
@@ -238,7 +238,7 @@ templates:
               - jobConfig:
                   name: pull-keb-subaccount-cleanup-job-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "Removes SKRs when BTP subaccount is deleted job build on PR"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
@@ -255,7 +255,7 @@ templates:
               - jobConfig:
                   name: post-keb-subaccount-cleanup-job-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "Removes SKRs when BTP subaccount is deleted job build on main"
                   labels:
                     preset-signify-prod-secret: "true"
@@ -314,7 +314,7 @@ templates:
               - jobConfig:
                   name: pull-keb-trial-cleanup-job-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "Removes trials after 14 days job build on PR"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
@@ -331,7 +331,7 @@ templates:
               - jobConfig:
                   name: post-keb-trial-cleanup-job-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "Removes trials after 14 days job build on main"
                   labels:
                     preset-signify-prod-secret: "true"
@@ -352,7 +352,7 @@ templates:
               - jobConfig:
                   name: pull-keb-deprovision-retrigger-job-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "Retries deprovisioned SKRs where some steps have failed job build on PR"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
@@ -369,7 +369,7 @@ templates:
               - jobConfig:
                   name: post-keb-deprovision-retrigger-job-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "Retries deprovisioned SKRs where some steps have failed job build on main"
                   labels:
                     preset-signify-prod-secret: "true"
@@ -390,7 +390,7 @@ templates:
               - jobConfig:
                   name: pull-keb-runtime-reconciler-job-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "Job to build runtime-reconciler image on PR submit"
                   run_if_changed: "^components/kyma-environment-broker"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
@@ -409,7 +409,7 @@ templates:
               - jobConfig:
                   name: post-keb-runtime-reconciler-job-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "Job to build runtime-reconciler image after PR merge"
                   labels:
                     preset-signify-prod-secret: "true"
@@ -434,7 +434,7 @@ templates:
               - jobConfig:
                   name: pull-e2e-provisioning-test-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "E2E provisioning test build on PR"
                   run_if_changed: "^tests/e2e/provisioning/|^scripts/"
                   args:
@@ -449,7 +449,7 @@ templates:
               - jobConfig:
                   name: post-e2e-provisioning-test-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "E2E provisioning test build on main"
                   labels:
                     preset-signify-prod-secret: "true"

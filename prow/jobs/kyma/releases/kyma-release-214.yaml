@@ -55,6 +55,8 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-rel214-kyma-integration-k3d
       annotations:
+        description: "Kyma integration job on k3d."
+        owner: "huskies,goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -105,6 +107,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel214-kyma-release-candidate
       annotations:
+        owner: neighbors
         description: "Release candidate job for Kyma 2.14."
         pipeline.trigger: "pr-merge"
         testgrid-dashboards: "kyma_release-2.14"

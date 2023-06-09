@@ -6,7 +6,7 @@ presubmits: # runs on PRs
     - name: pull-btp-manager-build
       annotations:
         description: "BTP Manager image build on PR"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -49,7 +49,7 @@ presubmits: # runs on PRs
     - name: pull-btp-manager-module-build
       annotations:
         description: "BTP Manager template image build on PR"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -97,7 +97,7 @@ postsubmits: # runs on main
     - name: post-btp-manager-build
       annotations:
         description: "BTP Manager image build on main"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -144,7 +144,7 @@ postsubmits: # runs on main
     - name: post-btp-manager-module-build
       annotations:
         description: "BTP Manager template image build on main"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

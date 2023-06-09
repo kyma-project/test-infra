@@ -58,6 +58,8 @@ templates:
                     preset-build-release: "true"
                     preset-sa-vm-kyma-integration: "true"
                   annotations:
+                    description: "Kyma integration job on k3d."
+                    owner: "huskies,goat"
                     pipeline.platform: k3d
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     testgrid-days-of-results: "60"
