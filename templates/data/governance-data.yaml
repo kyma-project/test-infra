@@ -30,6 +30,10 @@ templates:
               preset-dind-enabled: "true"
             request_memory: "10Mi"
             request_cpu: "100m"
+            securityContext:
+              privileged: "true"
+              seccompProfile:
+                type: Unconfined
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
             jobs:
