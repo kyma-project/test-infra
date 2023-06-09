@@ -21,6 +21,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "utilities-kyma-integration-cleaner"
+                  annotations:
+                    owner: neighbors
+                    description: kyma integration cleaner
                   serviceAccountName: sa-prow-job-resource-cleaners
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
@@ -653,6 +656,7 @@ templates:
               - jobConfig:
                   name: "post-main-kyma-integration-k3d"
                   annotations:
+                    owner: huskies,goat
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration job on k3d.
                     testgrid-days-of-results: "60"
@@ -676,7 +680,7 @@ templates:
                   name: "post-main-kyma-integration-k3d-app-gateway"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    onwer: framefrog
+                    owner: framefrog
                     description: "Kyma integration job on k3d for testing application gateway."
                     testgrid-days-of-results: "60"
                   labels:
@@ -747,6 +751,7 @@ templates:
               - jobConfig:
                   name: kyma-upgrade-k3d-kyma2-to-main
                   annotations:
+                    owner: jellyfish
                     testgrid-dashboards: kyma_integration
                     description: K3d Kyma 2.0 to main branch.
                   decoration_config:

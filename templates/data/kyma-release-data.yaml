@@ -151,6 +151,7 @@ templates:
                   slack_channel: kyma-skr-release
                   cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
                   annotations:
+                    owner: neighbors
                     description: Kyma GKE nightly build (release-{{ $rel }})
                     pipeline.platform: gke
                     pipeline.installer: kyma deploy

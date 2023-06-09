@@ -37,6 +37,9 @@ templates:
                     - jobConfig_default
               - jobConfig:
                   name: post-main-kcp-cli
+                  annotations:
+                    owner: sre
+                    description: "Builds and validates KCP CLI before merge"
                   labels:
                     preset-build-artifacts-main: "true"
                 inheritedConfigs:

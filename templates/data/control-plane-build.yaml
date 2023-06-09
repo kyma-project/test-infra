@@ -61,6 +61,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-schema-migrator-build
+                  annotations:
+                    owner: framefrog,gopher
+                    description: build schema migrator
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/schema-migrator"
@@ -136,6 +139,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-kubeconfig-service-build
+                  annotations:
+                    owner: sre
+                    description: build kubeconfig-service
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kubeconfig-service"

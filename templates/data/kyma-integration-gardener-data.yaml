@@ -307,6 +307,7 @@ templates:
               - jobConfig:
                   name: kyma-integration-evaluation-gardener-azure
                   annotations:
+                    owner: huskies
                     testgrid-dashboards: kyma_integration
                     description: Evaluation profile for Kyma Azure Gardener integration job.
                   decoration_config:
@@ -333,6 +334,7 @@ templates:
               - jobConfig:
                   name: kyma-integration-production-gardener-azure
                   annotations:
+                    owner: huskies
                     testgrid-dashboards: kyma_integration
                     description: Production profile for Kyma Azure Gardener integration job.
                   decoration_config:
@@ -385,6 +387,7 @@ templates:
               - jobConfig:
                   name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
                   annotations:
+                    owner: jellyfish
                     testgrid-dashboards: kyma_integration
                     description: Azure Kyma 2.0 to main branch.
                   decoration_config:
@@ -408,6 +411,7 @@ templates:
               - jobConfig:
                   name: kyma-upgrade-gardener-kyma2-minor-versions
                   annotations:
+                    owner: jellyfish
                     testgrid-dashboards: kyma_integration
                     description: Azure Kyma 2 previous minor versions.
                   decoration_config:
