@@ -5,7 +5,7 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pre-busola-integration-test-k3s-cluster
       annotations:
-        description: "busola testing"
+        description: "Busola integration testing"
         owner: "hasselhoff"
         pipeline.trigger: "pr-submit"
       labels:
@@ -54,7 +54,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-busola-integration-test-k3s-namespace
       annotations:
-        description: "busola testing"
+        description: "Busola integration testing"
         owner: "hasselhoff"
         pipeline.trigger: "pr-submit"
       labels:
@@ -106,7 +106,7 @@ postsubmits: # runs on main
   kyma-project/busola:
     - name: post-busola-integration-test-k3s-cluster
       annotations:
-        description: "busola testing"
+        description: "Busola integration testing"
         owner: "hasselhoff"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
@@ -156,7 +156,7 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-busola-integration-test-k3s-namespace
       annotations:
-        description: "busola testing"
+        description: "Busola integration testing"
         owner: "hasselhoff"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
