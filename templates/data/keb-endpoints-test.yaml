@@ -25,7 +25,7 @@ templates:
                   name: "keb-endpoints-test"
                   cron: "5 1 * * *" # "At 01:05"
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "Periodic job to check if KEB endpoints require authorization"
                 inheritedConfigs:
                   global:

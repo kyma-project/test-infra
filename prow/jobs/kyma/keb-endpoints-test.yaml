@@ -5,7 +5,7 @@ periodics: # runs on schedule
     - name: keb-endpoints-test
       annotations:
         description: "Periodic job to check if KEB endpoints require authorization"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.test: "fast-integration"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
