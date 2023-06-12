@@ -137,6 +137,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-application-connector-mock-app-build
       annotations:
+        description: "Building the images using in acceptance test"
+        owner: "framefrog"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

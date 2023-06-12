@@ -231,6 +231,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-serverless-integration-k3s
       annotations:
+        description: "serverless integration k3s job"
         owner: "otters"
         pipeline.clusterprovisioning: "k3s"
         pipeline.installer: "kyma deploy"
@@ -605,6 +606,7 @@ postsubmits: # runs on main
     - name: post-main-kyma-integration-k3d
       annotations:
         description: "Kyma integration job on k3d."
+        owner: "huskies,goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -663,7 +665,7 @@ postsubmits: # runs on main
     - name: post-main-kyma-integration-k3d-app-gateway
       annotations:
         description: "Kyma integration job on k3d for testing application gateway."
-        onwer: "framefrog"
+        owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -839,6 +841,8 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: utilities-kyma-integration-cleaner
       annotations:
+        description: "kyma integration cleaner"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -1225,6 +1229,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: github-issues
       annotations:
+        description: "Exports data from github to the big query (Grafana metrics)"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -1321,6 +1327,7 @@ periodics: # runs on schedule
     - name: kyma-upgrade-k3d-kyma2-to-main
       annotations:
         description: "K3d Kyma 2.0 to main branch."
+        owner: "jellyfish"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"

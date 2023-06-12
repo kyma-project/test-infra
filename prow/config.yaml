@@ -1421,3 +1421,13 @@ presets:
       - name: sa-kyma-dns-serviceuser
         mountPath: /sa-kyma-dns-serviceuser
         readOnly: true
+  - labels:
+      preset-k3d-enabled: "true"
+    env:
+      - name: K3D_ENABLED
+        value: "true"
+  - labels:
+      preset-provision-registry: "true"
+    env:
+      - name: PROVISION_REGISTRY
+        value: "true"

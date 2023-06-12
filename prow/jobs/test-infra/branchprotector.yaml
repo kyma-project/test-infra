@@ -10,6 +10,8 @@ periodics:
       timeout: 5h
     cluster: trusted-workload
     annotations:
+      owner: neighbors
+      description: "Periodic update of branch protection settings in GitHub"
       testgrid-create-test-group: "false"
     extra_refs:
       - org: kyma-project

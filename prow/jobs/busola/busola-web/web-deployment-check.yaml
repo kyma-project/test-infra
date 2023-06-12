@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pre-busola-web-deployment-check
       annotations:
+        description: "Checking frontend deployment update"
+        owner: "hasselhoff"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

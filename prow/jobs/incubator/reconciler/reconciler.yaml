@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-incubator/reconciler:
     - name: pre-main-reconciler-unit-test
       annotations:
+        description: "test reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -29,6 +31,8 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pre-main-reconciler-lint
       annotations:
+        description: "lint reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -53,6 +57,8 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pre-main-reconciler-integration-k3d
       annotations:
+        description: "int test reconciler"
+        owner: "jellyfish"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -98,6 +104,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-reconciler-publish-pr-cli
       annotations:
+        description: "pre publish reconciler"
+        owner: "jellyfish"
         pipeline.installer: "reconciler"
         pipeline.trigger: "pr-submit"
       labels:
@@ -144,6 +152,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-reconciler-cli-integration-kyma-latest-k3d
       annotations:
+        description: "int test reconciler"
+        owner: "jellyfish"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -197,6 +207,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-reconciler-cli-integration-kyma-main-k3d
       annotations:
+        description: "int test reconciler"
+        owner: "jellyfish"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -250,6 +262,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d
       annotations:
+        description: "upgrade test reconciler"
+        owner: "jellyfish"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -538,6 +552,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-dev-reconciler-integration-k3d
       annotations:
+        description: "int test reconciler"
+        owner: "jellyfish"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -585,6 +601,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-dev-kyma-incubator-reconciler
       annotations:
+        description: "build reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -631,6 +649,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-incubator-mothership-reconciler
       annotations:
+        description: "build mothership reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -674,6 +694,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-kyma-incubator-component-reconciler
       annotations:
+        description: "build component reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -717,6 +739,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-reconciler-validate-dockerfiles
       annotations:
+        description: "hadolint reconciler"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -761,6 +785,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-reconciler-validate-go-mod
       annotations:
+        description: "validate gomod reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -918,6 +944,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-kyma-incubator-mothership-reconciler
       annotations:
+        description: "build reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -963,6 +991,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-kyma-incubator-component-reconciler
       annotations:
+        description: "build component reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1008,6 +1038,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-dev-kyma-incubator-reconciler
       annotations:
+        description: "build reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -1057,6 +1089,7 @@ periodics: # runs on schedule
     - name: reconciler-control-plane-image-bump
       annotations:
         description: "Reconciler image bump in control-plane"
+        owner: "jellyfish"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
@@ -1118,6 +1151,7 @@ periodics: # runs on schedule
     - name: nightly-main-reconciler
       annotations:
         description: "Creates and installs reconciler from main every night."
+        owner: "jellyfish"
         pipeline.clusterprovisioning: "reconciler"
         pipeline.installer: "reconciler"
         pipeline.platform: "gardener_gcp"
@@ -1182,6 +1216,7 @@ periodics: # runs on schedule
     - name: nightly-main-reconciler-e2e
       annotations:
         description: "Executes e2e test periodically on nightly cluster for reconciler."
+        owner: "jellyfish"
         pipeline.installer: "reconciler"
         pipeline.platform: "gcp"
         pipeline.test: "fast-integration"

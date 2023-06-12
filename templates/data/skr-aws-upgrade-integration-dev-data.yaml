@@ -35,6 +35,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "skr-aws-upgrade-integration-dev"
+                  annotations:
+                    owner: gopher
+                    description: skr upgrade test on aws
                   cron: "0 */4 * * *" # "Every four hours"
                   # labels:
                   #   preset-skr-al-service-key: "true"

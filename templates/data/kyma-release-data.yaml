@@ -58,6 +58,8 @@ templates:
                     preset-build-release: "true"
                     preset-sa-vm-kyma-integration: "true"
                   annotations:
+                    description: "Kyma integration job on k3d."
+                    owner: "huskies,goat"
                     pipeline.platform: k3d
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     testgrid-days-of-results: "60"
@@ -81,6 +83,8 @@ templates:
                     preset-build-release: "true"
                     preset-sa-vm-kyma-integration: "true"
                   annotations:
+                    owner: neighbors
+                    description: k3d int test
                     pipeline.platform: k3d
                 inheritedConfigs:
                   global:
@@ -98,6 +102,7 @@ templates:
                   branches:
                     - '^{{ $rel }}\.\d+(?:-.*)?$' # release tags
                   annotations:
+                    owner: neighbors
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     description: Release candidate job for Kyma {{ $rel }}.
                     testgrid-days-of-results: "60"
@@ -148,6 +153,7 @@ templates:
                   slack_channel: kyma-skr-release
                   cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
                   annotations:
+                    owner: neighbors
                     description: Kyma GKE nightly build (release-{{ $rel }})
                     pipeline.platform: gke
                     pipeline.installer: kyma deploy

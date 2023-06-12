@@ -72,6 +72,7 @@ periodics: # runs on schedule
     - name: kyma-integration-evaluation-gardener-azure
       annotations:
         description: "Evaluation profile for Kyma Azure Gardener integration job."
+        owner: "huskies"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_azure"
@@ -153,6 +154,7 @@ periodics: # runs on schedule
     - name: kyma-integration-production-gardener-azure
       annotations:
         description: "Production profile for Kyma Azure Gardener integration job."
+        owner: "huskies"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_azure"
@@ -233,6 +235,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: kyma-weekly-gardener-gcp-busola-kyma
       annotations:
+        description: "set up nkyma cluster"
+        owner: "hasselhoff"
         pipeline.clusterprovisioning: "kubectl shootspec"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_gcp"
@@ -298,6 +302,7 @@ periodics: # runs on schedule
     - name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
       annotations:
         description: "Azure Kyma 2.0 to main branch."
+        owner: "jellyfish"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_azure"
@@ -372,6 +377,7 @@ periodics: # runs on schedule
     - name: kyma-upgrade-gardener-kyma2-minor-versions
       annotations:
         description: "Azure Kyma 2 previous minor versions."
+        owner: "jellyfish"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gardener_azure"

@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-gitserver-build
       annotations:
+        description: "gitserver build job"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -50,6 +52,8 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-gitserver-build
       annotations:
+        description: "gitserver build job"
+        owner: "otters"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:

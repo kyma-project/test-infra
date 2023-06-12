@@ -11,7 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-test-infra-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^.prow/|^.prow.yaml'
+      run_if_changed: '^prow/jobs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -43,11 +43,14 @@ presubmits: # runs on PRs
   
   kyma-project/kyma:
     - name: pull-kyma-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for kyma"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -84,11 +87,14 @@ presubmits: # runs on PRs
   
   kyma-project/busola:
     - name: pull-busola-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for busola"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-busola-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -125,11 +131,14 @@ presubmits: # runs on PRs
   
   kyma-project/control-plane:
     - name: pull-control-plane-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for control-plane"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-control-plane-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -166,11 +175,14 @@ presubmits: # runs on PRs
   
   kyma-project/cli:
     - name: pull-cli-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for cli"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-cli-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -207,11 +219,14 @@ presubmits: # runs on PRs
   
   kyma-project/website:
     - name: pull-website-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for website"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -248,11 +263,14 @@ presubmits: # runs on PRs
   
   kyma-project/lifecycle-manager:
     - name: pull-lifecycle-manager-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for lifecycle-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-lifecycle-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -289,11 +307,14 @@ presubmits: # runs on PRs
   
   kyma-project/third-party-images:
     - name: pull-third-party-images-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for third-party-images"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-third-party-images-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -330,11 +351,14 @@ presubmits: # runs on PRs
   
   kyma-project/community:
     - name: pull-community-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for community"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-community-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -371,11 +395,14 @@ presubmits: # runs on PRs
   
   kyma-project/hydroform:
     - name: pull-hydroform-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for hydroform"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydroform-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -412,11 +439,14 @@ presubmits: # runs on PRs
   
   kyma-project/istio-operator:
     - name: pull-istio-operator-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for istio-operator"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-operator-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -453,11 +483,14 @@ presubmits: # runs on PRs
   
   kyma-project/addons:
     - name: pull-addons-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for addons"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-addons-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -494,11 +527,14 @@ presubmits: # runs on PRs
   
   kyma-project/private-fn-for-e2e-serverless-tests:
     - name: pull-private-fn-for-e2e-serverless-tests-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for private-fn-for-e2e-serverless-tests"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-private-fn-for-e2e-serverless-tests-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -535,11 +571,14 @@ presubmits: # runs on PRs
   
   kyma-project/charts:
     - name: pull-charts-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for charts"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-charts-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -576,11 +615,14 @@ presubmits: # runs on PRs
   
   kyma-project/examples:
     - name: pull-examples-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for examples"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -617,11 +659,14 @@ presubmits: # runs on PRs
   
   kyma-project/api-gateway:
     - name: pull-api-gateway-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for api-gateway"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -658,11 +703,14 @@ presubmits: # runs on PRs
   
   kyma-project/istio:
     - name: pull-istio-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for istio"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -699,11 +747,14 @@ presubmits: # runs on PRs
   
   kyma-project/runtime-watcher:
     - name: pull-runtime-watcher-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for runtime-watcher"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-runtime-watcher-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -740,11 +791,14 @@ presubmits: # runs on PRs
   
   kyma-project/keda-manager:
     - name: pull-keda-manager-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for keda-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keda-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -781,11 +835,14 @@ presubmits: # runs on PRs
   
   kyma-project/kyma-dashboard:
     - name: pull-kyma-dashboard-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for kyma-dashboard"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -822,11 +879,14 @@ presubmits: # runs on PRs
   
   kyma-project/application-connector-manager:
     - name: pull-application-connector-manager-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for application-connector-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -863,11 +923,14 @@ presubmits: # runs on PRs
   
   kyma-project/rafter:
     - name: pull-rafter-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for rafter"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-rafter-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -904,11 +967,14 @@ presubmits: # runs on PRs
   
   kyma-project/btp-manager:
     - name: pull-btp-manager-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for btp-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-btp-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -945,11 +1011,14 @@ presubmits: # runs on PRs
   
   kyma-project/telemetry-manager:
     - name: pull-telemetry-manager-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for telemetry-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -986,11 +1055,14 @@ presubmits: # runs on PRs
   
   kyma-project/director-size-exporter:
     - name: pull-director-size-exporter-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for director-size-exporter"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-director-size-exporter-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1027,11 +1099,14 @@ presubmits: # runs on PRs
   
   kyma-project/compass-manager:
     - name: pull-compass-manager-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for compass-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-manager-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1068,11 +1143,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/compass:
     - name: pull-compass-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for compass"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1109,11 +1187,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/ord-service:
     - name: pull-ord-service-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for ord-service"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-ord-service-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1150,11 +1231,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/reconciler:
     - name: pull-reconciler-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for reconciler"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-reconciler-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1191,11 +1275,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/bullseye-showcase:
     - name: pull-bullseye-showcase-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for bullseye-showcase"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-bullseye-showcase-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1232,11 +1319,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/documentation-component:
     - name: pull-documentation-component-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for documentation-component"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-documentation-component-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1273,11 +1363,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/compass-console:
     - name: pull-compass-console-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for compass-console"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-console-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1314,11 +1407,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/sap-btp-service-operator:
     - name: pull-sap-btp-service-operator-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for sap-btp-service-operator"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sap-btp-service-operator-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1355,11 +1451,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/milv:
     - name: pull-milv-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for milv"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-milv-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1396,11 +1495,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/varkes:
     - name: pull-varkes-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for varkes"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-varkes-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1437,11 +1539,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/slack-bot:
     - name: pull-slack-bot-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for slack-bot"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-slack-bot-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1478,11 +1583,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/migrate:
     - name: pull-migrate-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for migrate"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-migrate-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1519,11 +1627,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/github-dashboard:
     - name: pull-github-dashboard-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for github-dashboard"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-github-dashboard-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1560,11 +1671,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/website-vuepress:
     - name: pull-website-vuepress-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for website-vuepress"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-vuepress-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1601,11 +1715,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/kitbag:
     - name: pull-kitbag-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for kitbag"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kitbag-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1642,11 +1759,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/kyma-showcase:
     - name: pull-kyma-showcase-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for kyma-showcase"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-showcase-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1683,11 +1803,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/hydra-login-consent:
     - name: pull-hydra-login-consent-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for hydra-login-consent"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydra-login-consent-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1724,11 +1847,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/kymart:
     - name: pull-kymart-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for kymart"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kymart-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1765,11 +1891,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/examples:
     - name: pull-examples-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for examples"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1806,11 +1935,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/vstudio-extension:
     - name: pull-vstudio-extension-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for vstudio-extension"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-vstudio-extension-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1847,11 +1979,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/wordpress-connector:
     - name: pull-wordpress-connector-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for wordpress-connector"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-wordpress-connector-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1888,11 +2023,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/connector-tools:
     - name: pull-connector-tools-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for connector-tools"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-connector-tools-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1929,11 +2067,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/artwork:
     - name: pull-artwork-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for artwork"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-artwork-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -1970,11 +2111,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/opensap:
     - name: pull-opensap-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for opensap"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-opensap-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -2011,11 +2155,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/testdrape:
     - name: pull-testdrape-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for testdrape"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-testdrape-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -2052,11 +2199,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/sc-removal:
     - name: pull-sc-removal-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for sc-removal"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sc-removal-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -2093,11 +2243,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/service-catalog-tester:
     - name: pull-service-catalog-tester-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for service-catalog-tester"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -2134,11 +2287,14 @@ presubmits: # runs on PRs
   
   kyma-incubator/service-catalog:
     - name: pull-service-catalog-pjconfigtest
+      annotations:
+        description: "Run ginkgo suite tests for prowjobs definitions for service-catalog"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-pjconfigtest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^prow/jobs/'
+      run_if_changed: '^.prow/|^.prow.yaml'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
