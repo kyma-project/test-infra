@@ -1,0 +1,87 @@
+apiVersion: prow.k8s.io/v1
+kind: ProwJob
+metadata:
+  annotations:
+    prow.k8s.io/context: pull-busola-some-shit
+    prow.k8s.io/job: pull-busola-some-shit
+  creationTimestamp: null
+  labels:
+    created-by-prow: "true"
+    preset-dind-enabled: "true"
+    preset-k3d-enabled: "true"
+    prow.k8s.io/context: pull-busola-some-shit
+    prow.k8s.io/job: pull-busola-some-shit
+    prow.k8s.io/refs.base_ref: main
+    prow.k8s.io/refs.org: kyma-project
+    prow.k8s.io/refs.pull: "2497"
+    prow.k8s.io/refs.repo: busola
+    prow.k8s.io/type: presubmit
+  name: 21c0a28f-3497-439a-a309-60c93a3ecf0b
+spec:
+  agent: kubernetes
+  cluster: default
+  context: pull-busola-some-shit
+  decoration_config:
+    censor_secrets: true
+    censoring_options:
+      censoring_buffer_size: 3092
+      censoring_concurrency: 2
+    default_service_account_name: prowjob-default-sa
+    gcs_configuration:
+      bucket: kyma-prow-logs
+      path_strategy: explicit
+    gcs_credentials_secret: ""
+    grace_period: 10m0s
+    timeout: 3h0m0s
+    utility_images:
+      clonerefs: gcr.io/k8s-prow/clonerefs:v20230605-b63f6f76cb
+      entrypoint: gcr.io/k8s-prow/entrypoint:v20230605-b63f6f76cb
+      initupload: gcr.io/k8s-prow/initupload:v20230605-b63f6f76cb
+      sidecar: gcr.io/k8s-prow/sidecar:v20230605-b63f6f76cb
+  job: pull-busola-some-shit
+  namespace: default
+  pod_spec:
+    containers:
+    - command:
+      - tests/integration/scripts/busola-integration-k3s.sh
+      env:
+      - name: SCOPE
+        value: cluster
+      - name: DOCKER_IN_DOCKER_ENABLED
+        value: "true"
+      - name: K3D_ENABLED
+        value: "true"
+      image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-8bbd472a
+      name: ""
+      resources:
+        limits:
+          cpu: "2"
+          memory: 4Gi
+        requests:
+          cpu: "1"
+          memory: 2Gi
+      securityContext:
+        privileged: true
+      volumeMounts:
+      - mountPath: /docker-graph
+        name: docker-graph
+    volumes:
+    - emptyDir: {}
+      name: docker-graph
+  prowjob_defaults:
+    tenant_id: GlobalDefaultID
+  refs:
+    base_ref: main
+    base_sha: e8df73852eaacdf47c19cb1fd43a7364063e0191
+    org: kyma-project
+    pulls:
+    - author: mrCherry97
+      number: 2497
+      sha: 0035e53f07986f0221741bf8376d75b8d62d6a90
+    repo: busola
+  report: true
+  rerun_command: /test pull-busola-some-shit
+  type: presubmit
+status:
+  startTime: "2023-06-12T11:37:09Z"
+  state: triggered

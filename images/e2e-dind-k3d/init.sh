@@ -7,6 +7,7 @@ LOG_DIR=${ARTIFACTS:-"/var/log"}
 if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
   echo "[* * *] Starting Docker in Docker"
   dockerd --data-root=/docker-graph > "${LOG_DIR}/dockerd.log" 2>&1 &
+  sleep 5
 fi
 
 if [[ "$K3D_ENABLED" == "true" ]]; then
