@@ -25,6 +25,9 @@ templates:
             jobs:
               - jobConfig:
                   name: eventing-tools-autobump
+                  annotations:
+                    owner: skydivingtunas
+                    description: autobump eventing images
                   cron: "30 * * * 1-5"
                   image: gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb
                   command: generic-autobumper
@@ -93,6 +96,9 @@ templates:
                     - extra_refs_test-infra
               - jobConfig:
                   name: post-test-infra-markdown-index-autobump
+                  annotations:
+                    owner: neighbors
+                    description: autobump markdown index.md
                   slack_channel: kyma-prow-alerts
                   branches:
                     - ^main$
@@ -114,6 +120,9 @@ templates:
                     - image_markdown_index
               - jobConfig:
                   name: post-test-infra-image-detector-autobump
+                  annotations:
+                    owner: neighbors
+                    description: autobump prow images for scan
                   slack_channel: kyma-prow-alerts
                   branches:
                     - ^main$
@@ -140,6 +149,9 @@ templates:
                     - image_image_detector
               - jobConfig:
                   name: post-test-infra-deploy-prow
+                  annotations:
+                    owner: neighbors
+                    description: "Deploy prow components"
                   slack_channel: kyma-prow-alerts
                   branches:
                     - ^main$

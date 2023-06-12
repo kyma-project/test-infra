@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/warden:
     - name: pull-admission-build
       annotations:
+        description: "Warden admission build job"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -46,6 +48,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-operator-build
       annotations:
+        description: "Warden operator build job"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -88,6 +92,7 @@ presubmits: # runs on PRs
     - name: pull-warden-lint
       annotations:
         description: "executes the 'golangci-lint lint' command before any pull request."
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -124,6 +129,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pull-warden-unit-test
       annotations:
+        description: "Warden unit test job"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -151,6 +158,8 @@ postsubmits: # runs on main
   kyma-project/warden:
     - name: post-admission-build
       annotations:
+        description: "Warden admission build job"
+        owner: "otters"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -193,6 +202,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-operator-build
       annotations:
+        description: "Warden operator build job"
+        owner: "otters"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

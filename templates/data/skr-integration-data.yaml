@@ -84,6 +84,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "skr-azure-integration-dev"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
@@ -99,6 +102,9 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-azure-lite-integration-dev"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
@@ -114,6 +120,9 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-aws-integration-dev"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test aws
                   cron: "5 1 * * *" # "At 01:05"
                   labels:
                     preset-skr-al-service-key: "true"
@@ -131,6 +140,9 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-trial-integration-dev"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test trial
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
@@ -146,6 +158,9 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-free-aws-integration-dev"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test free
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
@@ -161,6 +176,9 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-preview-dev"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test preview
                   cron: "5 1,11 * * *" # "At 01:05 and 11:05"
                 inheritedConfigs:
                   global:

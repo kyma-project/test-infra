@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-main-control-plane-reconciler-e2e
       annotations:
+        description: "control-plane reconciler e2e test"
+        owner: "jellyfish"
         pipeline.platform: "gardener_gcp"
         pipeline.trigger: "pr-submit"
       labels:
@@ -65,6 +67,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-control-plane-reconciler-e2e-latest-release
       annotations:
+        description: "control-plane reconciler e2e test"
+        owner: "jellyfish"
         pipeline.platform: "gardener_gcp"
         pipeline.trigger: "pr-submit"
       labels:

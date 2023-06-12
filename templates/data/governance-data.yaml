@@ -35,6 +35,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-busola-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "busola"
@@ -52,6 +55,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "busola-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 0 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   extra_refs:
                     busola:
@@ -79,6 +85,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-community-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "community"
@@ -94,6 +103,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "community-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 23 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   extra_refs:
                     community:
@@ -121,6 +133,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-examples-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "examples"
@@ -138,6 +153,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "kyma-metadata-schema-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   run_if_changed: "^resources/.*/values.schema.json$"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/metadata-governance.sh"
                   args:
@@ -157,6 +175,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "pre-main-kyma-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "kyma"
@@ -172,6 +193,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "pull-kyma-crd-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   path_alias: github.com/kyma-project/kyma
                   command: "hack/verify-md.sh"
                 inheritedConfigs:
@@ -181,6 +205,9 @@ templates:
                     - "jobConfig_kyma_crd_docs"
               - jobConfig:
                   name: "kyma-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 4 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   args:
                     - "--repository"
@@ -203,6 +230,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-test-infra-governance"
+                  annotations:
+                    owner: "technical-writers"
+                    description: "Looking for broken links in the test-infra repo"
                   args:
                     - "--repository"
                     - "test-infra"
@@ -218,6 +248,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "test-infra-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 5 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   args:
                     - "--repository"
@@ -240,6 +273,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-website-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "website"
@@ -255,6 +291,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "website-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 6 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   extra_refs:
                     website:
@@ -282,6 +321,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "documentation-component-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 2 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   extra_refs:
                     documentation-component:
@@ -312,6 +354,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-telemetry-manager-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "telemetry-manager"
@@ -330,6 +375,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-directory-size-exporter-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "directory-size-exporter"

@@ -11,6 +11,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-kyma-cli
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint + Go test pre-PR + Build CLI pre-PR
                   always_run: true
                   args:
                     - "ci-pr"
@@ -26,6 +29,9 @@ templates:
                     - job_spec
               - jobConfig:
                   name: post-kyma-cli
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint + Go test post-PR + Build CLI post-PR
                   args:
                     - "ci-main"
                   branches:
@@ -41,6 +47,9 @@ templates:
                     - job_spec
               - jobConfig:
                   name: rel-kyma-cli
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint + Go test pre-rel + Build CLI pre-rel
                   args:
                     - "ci-release"
                   branches:
@@ -60,6 +69,7 @@ templates:
               - jobConfig:
                   name: unstable-cli
                   annotations:
+                    owner: jellyfish
                     description: Bump reconciler version used by CLI and publish the unstable CLI binaries
                   labels:
                     preset-sa-vm-kyma-integration: "true"
@@ -80,6 +90,9 @@ templates:
                     - extra_refs_reconciler
               - jobConfig:
                   name: "pull-cli-lint"
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint
                   optional: false
                   command: "/bin/sh"
                   args:
@@ -92,6 +105,9 @@ templates:
                     - linting
               - jobConfig:
                   name: "pull-cli-unit-test"
+                  annotations:
+                    owner: jellyfish
+                    description: Go test
                   optional: false
                   command: "/bin/sh"
                   args:

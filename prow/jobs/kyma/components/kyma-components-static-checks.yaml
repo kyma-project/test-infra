@@ -194,6 +194,8 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pull-function-controller-lint
       annotations:
+        description: "function controller linting job"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

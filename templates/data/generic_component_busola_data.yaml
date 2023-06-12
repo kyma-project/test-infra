@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-busola-web-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola frontend image and push to GCR
                   args:
                     - --name=busola-web
                     - --context=.
@@ -22,6 +25,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-busola-web-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola frontend image and push to GCR
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -45,6 +51,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-busola-backend-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola backend image and push to GCR
                   args:
                     - --name=busola-backend
                     - --context=backend
@@ -60,6 +69,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-busola-backend-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola backend image and push to GCR
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -84,6 +96,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-busola-local-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola local image and push to GCR
                   args:
                     - --name=busola
                     - --context=.
@@ -99,6 +114,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-busola-local-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola local image and push to GCR
                   labels:
                     preset-signify-prod-secret: "true"
                   args:

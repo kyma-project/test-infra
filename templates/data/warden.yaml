@@ -17,6 +17,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-admission-build
+                  annotations:
+                    owner: otters
+                    description: Warden admission build job
                   args:
                     - "--name=warden/admission"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -29,6 +32,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-admission-build
+                  annotations:
+                    owner: otters
+                    description: Warden admission build job
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -43,6 +49,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: pull-operator-build
+                  annotations:
+                    owner: otters
+                    description: Warden operator build job
                   args:
                     - "--name=warden/operator"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -55,6 +64,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-operator-build
+                  annotations:
+                    owner: otters
+                    description: Warden operator build job
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -73,6 +85,7 @@ templates:
                   optional: true
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
+                    owner: otters
                     description: executes the 'golangci-lint lint' command before any pull request.
                   command: "bash"
                   args:
@@ -86,6 +99,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: pull-warden-unit-test
+                  annotations:
+                    owner: otters
+                    description: Warden unit test job
                   command: "/bin/sh"
                   args:
                     - "-c"

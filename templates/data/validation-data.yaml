@@ -14,6 +14,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-test-infra-validate-scripts"
+                  annotations:
+                    owner: neighbors
+                    description: "Validate scripts."
                   run_if_changed: "^(development/.*.sh$|prow/.*.sh$)"
                   command: "prow/scripts/validate-scripts.sh"
                 inheritedConfigs:
@@ -25,6 +28,9 @@ templates:
                     - "pubsub_labels"
               - jobConfig:
                   name: "pre-main-test-infra-validate-prow-tools"
+                  annotations:
+                    owner: neighbors
+                    description: "Validate prow tools"
                   privileged: "false"
                   run_if_changed: "^(go.mod|go.sum)$|^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
                   labels:
@@ -42,6 +48,9 @@ templates:
                     - "pubsub_labels"
               - jobConfig:
                   name: "pre-main-test-infra-validate-image-url-helper"
+                  annotations:
+                    owner: neighbors
+                    description: "Validate image url helper tool"
                   privileged: "false"
                   run_if_changed: "^(go.mod|go.sum)$|^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)"
                   labels:
@@ -59,6 +68,9 @@ templates:
                     - "pubsub_labels"
               - jobConfig:
                   name: "pre-main-test-infra-validate-prowjobparser"
+                  annotations:
+                    owner: neighbors
+                    description: "Validate prowjobparser tool"
                   privileged: "false"
                   run_if_changed: "^(go.mod|go.sum)$|^development/prowjobparser/(.*.go|Makefile|.*.sh)"
                   labels:
@@ -76,6 +88,9 @@ templates:
                     - "pubsub_labels"
               - jobConfig:
                   name: "pre-main-test-infra-validate-generated-files"
+                  annotations:
+                    owner: neighbors
+                    description: "Validate rendertemplate generated files"
                   run_if_changed: "^.github/dependabot.yml$|^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|pkg/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml"
                   labels:
                     preset-build-pr: "true"
@@ -89,6 +104,9 @@ templates:
                     - "pubsub_labels"
               - jobConfig:
                   name: "pre-test-infra-validate-dockerfiles"
+                  annotations:
+                    owner: neighbors
+                    description: "Validate Dockerfiles, run hadolint."
                   run_if_changed: ".*Dockerfile$"
                   command: "/bin/bash"
                   args: 

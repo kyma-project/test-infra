@@ -43,6 +43,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "skr-aws-own-cluster-dev"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test own cluster
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:

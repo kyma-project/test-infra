@@ -9,6 +9,9 @@ templates:
             request_memory: 1Gi
             request_cpu: 0.2
             always_run: true
+            annotations:
+              owner: neighbors
+              description: "Build Kyma release artifacts"
             labels:
               preset-sa-kyma-push-artifacts: "true"
               preset-bot-github-token: "true"

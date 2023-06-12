@@ -7,6 +7,8 @@ postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-test-infra-markdown-index-autobump
       annotations:
+        description: "autobump markdown index.md"
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -33,6 +35,8 @@ postsubmits: # runs on main
               - "--labels-override=kind/chore,area/documentation"
     - name: post-test-infra-image-detector-autobump
       annotations:
+        description: "autobump prow images for scan"
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -64,6 +68,8 @@ postsubmits: # runs on main
               - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: post-test-infra-deploy-prow
       annotations:
+        description: "Deploy prow components"
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -90,6 +96,8 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: eventing-tools-autobump
       annotations:
+        description: "autobump eventing images"
+        owner: "skydivingtunas"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

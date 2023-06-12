@@ -6,7 +6,7 @@ presubmits: # runs on PRs
     - name: pull-keb-build
       annotations:
         description: "KEB image build on PR"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -49,7 +49,7 @@ presubmits: # runs on PRs
     - name: pull-keb-cleanup-job-build
       annotations:
         description: "Clean up DEV from Kyma runtimes older than day job build on PR"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -93,7 +93,7 @@ presubmits: # runs on PRs
     - name: pull-keb-subaccount-cleanup-job-build
       annotations:
         description: "Removes SKRs when BTP subaccount is deleted job build on PR"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -181,7 +181,7 @@ presubmits: # runs on PRs
     - name: pull-keb-trial-cleanup-job-build
       annotations:
         description: "Removes trials after 14 days job build on PR"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -225,7 +225,7 @@ presubmits: # runs on PRs
     - name: pull-keb-deprovision-retrigger-job-build
       annotations:
         description: "Retries deprovisioned SKRs where some steps have failed job build on PR"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -269,7 +269,7 @@ presubmits: # runs on PRs
     - name: pull-keb-runtime-reconciler-job-build
       annotations:
         description: "Job to build runtime-reconciler image on PR submit"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -318,7 +318,7 @@ postsubmits: # runs on main
     - name: post-keb-build
       annotations:
         description: "KEB image build on main"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -364,7 +364,7 @@ postsubmits: # runs on main
     - name: post-keb-cleanup-job-build
       annotations:
         description: "Clean up DEV from Kyma runtimes older than day job build on main"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -411,7 +411,7 @@ postsubmits: # runs on main
     - name: post-keb-subaccount-cleanup-job-build
       annotations:
         description: "Removes SKRs when BTP subaccount is deleted job build on main"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -505,7 +505,7 @@ postsubmits: # runs on main
     - name: post-keb-trial-cleanup-job-build
       annotations:
         description: "Removes trials after 14 days job build on main"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -552,7 +552,7 @@ postsubmits: # runs on main
     - name: post-keb-deprovision-retrigger-job-build
       annotations:
         description: "Retries deprovisioned SKRs where some steps have failed job build on main"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -599,7 +599,7 @@ postsubmits: # runs on main
     - name: post-keb-runtime-reconciler-job-build
       annotations:
         description: "Job to build runtime-reconciler image after PR merge"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
