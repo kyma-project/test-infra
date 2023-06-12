@@ -53,7 +53,7 @@ postsubmits: # runs on main
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230605-f0fdfaf8"
             command:
-              - "/image-detector"
+              - "/imagedetector"
             args:
               - "--prow-config prow/config.yaml"
               - "--prow-jobs-dir prow/jobs"

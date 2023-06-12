@@ -121,7 +121,7 @@ templates:
                   skip_report: "false"
                   max_concurrency: "10"
                   type_postsubmit: "true"
-                  command: /image-detector
+                  command: /imagedetector
                   args:
                     - --prow-config prow/config.yaml
                     - --prow-jobs-dir prow/jobs
