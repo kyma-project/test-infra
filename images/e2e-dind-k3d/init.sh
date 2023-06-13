@@ -5,9 +5,9 @@ set -e
 LOG_DIR=${ARTIFACTS:-"/var/log"}
 
 if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
-  echo "[* * *] Starting Docker in Docker"
+  echo "[ * * * ] Starting Docker in Docker"
   dockerd --data-root=/docker-graph > "${LOG_DIR}/dockerd.log" 2>&1 &
-  sleep 5
+  sleep 5 # sleep to wait for Docker daemon - idk if we can use some kind of condition
 fi
 
 if [[ "$K3D_ENABLED" == "true" ]]; then
