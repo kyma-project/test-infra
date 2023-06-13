@@ -116,7 +116,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f"
             command:
               - "generic-autobumper"
             args:
@@ -138,7 +138,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/label_sync:v20230613-9df263832f"
             command:
               - "label_sync"
             args:
@@ -181,7 +181,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f"
             command:
               - "generic-autobumper"
             args:
@@ -211,7 +211,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f"
             command:
               - "generic-autobumper"
             args:
