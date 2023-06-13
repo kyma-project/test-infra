@@ -1,8 +1,8 @@
 pjConfigs:
-prowJobs:
-  kyma-project:
-    istio:
-      - pjName: "pull-istio-integration-evaluation"
+  prowJobs:
+    kyma-project:
+      istio:
+        - pjName: "pull-istio-integration-evaluation"
 prConfigs:
   kyma-project:
     istio:
