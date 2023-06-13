@@ -258,6 +258,11 @@ globalSets:
       pipeline.trigger: periodic
     type_periodic: "true"
     cluster: "untrusted-workload"
+  unprivileged:
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: "RuntimeDefault"
   disable_testgrid:
     annotations:
       testgrid-create-test-group: "false"
