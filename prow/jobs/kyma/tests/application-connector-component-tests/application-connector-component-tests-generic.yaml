@@ -24,6 +24,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -70,6 +72,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -116,6 +120,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -162,6 +168,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -212,6 +220,8 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -259,6 +269,8 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -306,6 +318,8 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -353,6 +367,8 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "/image-builder"
             args:
