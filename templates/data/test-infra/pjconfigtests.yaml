@@ -32,11 +32,10 @@
                 - repoName: "{{$org.name}}/{{$repo.name}}"
                   jobs:
                     - jobConfig:
-                        {{- if eq $repo.name "test-infra"}}
                         annotations:
+                          owner: neighbors
                           description: "Run ginkgo suite tests for prowjobs definitions for {{$repo.name}}"
-                          owner: "neighbors"
-                        {{- else}}
+                        {{- if eq $repo.name "test-infra"}}
                         run_if_changed: '^prow/jobs/'
                         {{- end}}
                         name: "pull-{{$repo.name}}-pjconfigtest"

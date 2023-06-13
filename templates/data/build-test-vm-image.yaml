@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-build-test-vm-image
+                  annotations:
+                    owner: neighbors
+                    description: "Build Google Cloud VM template image for test-vm-image"
                   run_if_changed: 'development/custom-image/'
                   command: "bash"
                   args:
@@ -25,6 +28,9 @@ templates:
                     - image_kyma-integration
               - jobConfig:
                   name: pull-test-k3d-on-vm-image
+                  annotations:
+                    owner: neighbors
+                    description: "Test k3d installation on Google Cloud VM template image for test-vm-image"
                   run_if_changed: 'development/custom-image/'
                   command: "bash"
                   args:
@@ -43,6 +49,9 @@ templates:
                     - image_kyma-integration
               - jobConfig:
                   name: post-build-test-vm-image
+                  annotations:
+                    owner: neighbors
+                    description: "Build Google Cloud VM template image for test-vm-image"
                   run_if_changed: 'development/custom-image/'
                   command: "bash"
                   args:

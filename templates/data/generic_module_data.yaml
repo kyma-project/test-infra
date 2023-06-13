@@ -64,6 +64,7 @@ templates:
                   name: "keda-operator-nightly-periodic"
                   cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
                   annotations:
+                    owner: otters
                     description: Keda nightly verify
                     pipeline.platform: gke
                     pipeline.installer: kyma deploy
@@ -162,6 +163,7 @@ templates:
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
                   run_if_changed: "^(go.mod|go.sum|main.go)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
+                    owner: otters
                     description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
                   command: "bash"
                   optional: "true"
@@ -178,6 +180,9 @@ templates:
                     - job_default
               - jobConfig:
                   name: pull-keda-module-build
+                  annotations:
+                    owner: otters
+                    description: keda module build job
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -202,6 +207,9 @@ templates:
                     - job_default
               - jobConfig:
                   name: post-keda-module-build
+                  annotations:
+                    owner: otters
+                    description: keda module build job
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -225,6 +233,9 @@ templates:
                     - job_default
               - jobConfig:
                   name: pre-keda-manager-operator-tests
+                  annotations:
+                    owner: otters
+                    description: keda operator tests
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
                   command: "bash"
                   args:
@@ -241,6 +252,9 @@ templates:
                   local:
                     - job_default
               - jobConfig:
+                  annotations:
+                    owner: otters
+                    description: keda operator build job
                   name: pre-keda-manager-operator-build
                   always_run: true
                   args:
@@ -256,6 +270,9 @@ templates:
                     - job_build
               - jobConfig:
                   name: post-keda-manager-operator-build
+                  annotations:
+                    owner: otters
+                    description: keda module build job
                   always_run: true
                   labels:
                     preset-signify-prod-secret: "true"
@@ -273,6 +290,9 @@ templates:
                     - job_build
               - jobConfig:
                   name: pre-main-keda-manager-verify
+                  annotations:
+                    owner: otters
+                    description: runs keda manager verity job on k3d VM
                   always_run: "true"
                   optional: "false"
                   env:
@@ -293,6 +313,9 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: post-main-keda-manager-verify
+                  annotations:
+                    owner: otters
+                    description: runs keda manager verity job on k3d VM
                   always_run: "true"
                   optional: "true"
                   env:
@@ -313,6 +336,9 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: post-main-keda-manager-upgrade-latest-to-main
+                  annotations:
+                    owner: otters
+                    description: upgrade keda manager test
                   always_run: "true"
                   optional: "true"
                   env:
@@ -395,6 +421,7 @@ templates:
                   name: "serverless-operator-nightly-periodic"
                   cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
                   annotations:
+                    owner: otters
                     description: serverless operator nightly verify
                     pipeline.platform: gke
                     pipeline.installer: kyma deploy
@@ -440,6 +467,9 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: post-serverless-module-build
+                  annotations:
+                    owner: otters
+                    description: serverless module build
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -463,6 +493,9 @@ templates:
                     - job_default
               - jobConfig:
                   name: pull-serverless-module-build
+                  annotations:
+                    owner: otters
+                    description: build serverless module
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -487,6 +520,9 @@ templates:
                     - job_default
               - jobConfig:
                   name: pre-serverless-manager-operator-tests
+                  annotations:
+                    owner: otters
+                    description: serverless manager tests
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
                   command: "bash"
                   args:
@@ -504,6 +540,9 @@ templates:
                     - job_default
               - jobConfig:
                   name: pre-serverless-manager-operator-build
+                  annotations:
+                    owner: otters
+                    description: serverless manager operator build
                   always_run: true
                   command: sh
                   args:
@@ -528,6 +567,9 @@ templates:
                     - job_build_volumes
               - jobConfig:
                   name: post-serverless-manager-operator-build
+                  annotations:
+                    owner: otters
+                    description: build serverless manager
                   always_run: true
                   labels:
                     preset-signify-prod-secret: "true"
@@ -555,6 +597,9 @@ templates:
                     - job_build_volumes
               - jobConfig:
                   name: pre-main-serverless-manager-verify
+                  annotations:
+                    owner: otters
+                    description: serverless manager verify on k3d vm
                   always_run: "true"
                   optional: "false"
                   env:
@@ -576,6 +621,9 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: post-main-serverless-manager-verify
+                  annotations:
+                    owner: otters
+                    description: serverless manager verify on k3d vm
                   always_run: "true"
                   optional: "true"
                   env:

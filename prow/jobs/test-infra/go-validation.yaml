@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pull-unit-test-go
       annotations:
+        description: "Run unit tests for all modules in test-infra repository"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -34,6 +36,8 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pre-main-test-infra-lint
       annotations:
+        description: "Run golangci-lint for all modules in test-infra repository"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

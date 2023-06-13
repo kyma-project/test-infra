@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-test-infra-image-syncer-validate"
+                  annotations:
+                    owner: neighbors
+                    description: "Validate sync images from external sources to Kyma owned registry"
                   securityContext:
                     privileged: "false"
                   run_if_changed: "^(go.mod|go.sum|development/image-syncer)"
@@ -22,6 +25,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "pre-main-test-infra-image-syncer-dry-run"
+                  annotations:
+                    owner: neighbors
+                    description: "Dry-run of sync images from external sources to Kyma owned registry"
                   labels:
                     preset-docker-push-repository: "true"
                     preset-sa-gcr-push: "true"
@@ -39,6 +45,8 @@ templates:
               - jobConfig:
                   name: "post-main-test-infra-image-syncer-run"
                   annotations:
+                    owner: neighbors
+                    description: "Sync images from external sources to Kyma owned registry"
                     testgrid-dashboards: kyma_experimental
                   labels:
                     preset-sa-kyma-push-images: "true"

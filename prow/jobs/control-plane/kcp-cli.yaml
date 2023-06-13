@@ -60,6 +60,8 @@ postsubmits: # runs on main
   kyma-project/control-plane:
     - name: post-main-kcp-cli
       annotations:
+        description: "Builds and validates KCP CLI before merge"
+        owner: "sre"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:

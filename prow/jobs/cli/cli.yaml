@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/cli:
     - name: pre-kyma-cli
       annotations:
+        description: "Go lint + Go test pre-PR + Build CLI pre-PR"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -42,6 +44,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pull-cli-lint
       annotations:
+        description: "Go lint"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -68,6 +72,8 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-cli-unit-test
       annotations:
+        description: "Go test"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -97,6 +103,8 @@ postsubmits: # runs on main
   kyma-project/cli:
     - name: post-kyma-cli
       annotations:
+        description: "Go lint + Go test post-PR + Build CLI post-PR"
+        owner: "jellyfish"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -134,6 +142,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: rel-kyma-cli
       annotations:
+        description: "Go lint + Go test pre-rel + Build CLI pre-rel"
+        owner: "jellyfish"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -175,6 +185,7 @@ postsubmits: # runs on main
     - name: unstable-cli
       annotations:
         description: "Bump reconciler version used by CLI and publish the unstable CLI binaries"
+        owner: "jellyfish"
         pipeline.clusterprovisioning: "reconciler"
         pipeline.installer: "reconciler"
         pipeline.test: "fast-integration"

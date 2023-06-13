@@ -208,6 +208,9 @@ templates:
 
               - jobConfig:
                   name: "pull-function-controller-lint"
+                  annotations:
+                    owner: otters
+                    description: function controller linting job
                   command: "/bin/sh"
                   args:
                     - "-c"

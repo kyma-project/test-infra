@@ -1,8 +1,5 @@
 periodics:
   - name: ci-kyma-bot-triage-close
-    annotations:
-      owner: neighbors
-      description: "Periodic close stale issues and PRs"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "ci-kyma-bot-triage-close"
@@ -11,6 +8,8 @@ periodics:
     cluster: trusted-workload
     decorate: true
     annotations:
+      owner: neighbors
+      description: "Periodic close stale issues and PRs"
       testgrid-create-test-group: "false"
     spec:
       containers:
@@ -55,9 +54,6 @@ periodics:
             secretName: kyma-bot-triage-token
 
   - name: ci-kyma-bot-triage-stale
-    annotations:
-      owner: neighbors
-      description: "Periodic triage stale issues and PRs"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "ci-kyma-bot-triage-stale"
@@ -66,6 +62,8 @@ periodics:
     cluster: trusted-workload
     decorate: true
     annotations:
+      owner: neighbors
+      description: "Periodic triage stale issues and PRs"
       testgrid-create-test-group: "false"
     spec:
       containers:

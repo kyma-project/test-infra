@@ -1,9 +1,6 @@
 postsubmits:
   kyma-project/test-infra:
     - name: post-gencred-refresh-kubeconfigs
-      annotations:
-        owner: neighbors
-        description: "Refresh kubeconfigs for workload clusters after config change"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-gencred-refresh-kubeconfigs"
@@ -23,6 +20,8 @@ postsubmits:
             args:
               - --config=./configs/gencred-config.yaml
       annotations:
+        owner: neighbors
+        description: "Refresh kubeconfigs for workload clusters after config change"
         testgrid-create-test-group: "false"
 
 periodics:

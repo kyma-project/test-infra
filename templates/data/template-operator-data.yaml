@@ -15,6 +15,7 @@ templates:
                   name: pull-template-op-lint
                   run_if_changed: "^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile"
                   annotations:
+                    owner: jellyfish
                     description: executes the 'golangci-lint lint' command in the template-operator repository before any pull request.
                   command: "bash"
                   args:
@@ -29,6 +30,9 @@ templates:
               - jobConfig:
                   run_if_changed: "^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile"
                   name: pull-template-op-tests
+                  annotations:
+                    owner: jellyfish
+                    description: template operator test
                   command: "bash"
                   args:
                     - "-c"
@@ -43,6 +47,9 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   name: pull-build-template-operator
+                  annotations:
+                    owner: jellyfish
+                    description: template operator build
                   always_run: true
                   args:
                     - "--name=template-operator"
@@ -54,6 +61,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-template-op-build
+                  annotations:
+                    owner: jellyfish
+                    description: template operator build
                   labels:
                     preset-signify-prod-secret: "true"
                   always_run: true

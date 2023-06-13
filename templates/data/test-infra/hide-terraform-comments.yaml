@@ -9,6 +9,9 @@ templates:
                   securityContext:
                     privileged: "false"
                   name: "pull-hide-tf-github-comments"
+                  annotations:
+                    owner: neighbors
+                    description: "Hide GitHub pull request comments with Terraform plan execution results"
                   run_if_changed: '.*\.tf$|.*\.tfvars$|^development/gcp/workflows'
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
                   labels:

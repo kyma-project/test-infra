@@ -6,6 +6,7 @@ presubmits: # runs on PRs
     - name: pre-keda-manager-operator-lint
       annotations:
         description: "executes the 'golangci-lint lint' command on keda-manager before any pull request."
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -44,6 +45,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pull-keda-module-build
       annotations:
+        description: "keda module build job"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -92,6 +95,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-keda-manager-operator-tests
       annotations:
+        description: "keda operator tests"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -132,6 +137,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-keda-manager-operator-build
       annotations:
+        description: "keda operator build job"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -178,6 +185,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-keda-manager-verify
       annotations:
+        description: "runs keda manager verity job on k3d VM"
+        owner: "otters"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -339,6 +348,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-keda-module-build
       annotations:
+        description: "keda module build job"
+        owner: "otters"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -385,6 +396,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-keda-manager-operator-build
       annotations:
+        description: "keda module build job"
+        owner: "otters"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -433,6 +446,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-keda-manager-verify
       annotations:
+        description: "runs keda manager verity job on k3d VM"
+        owner: "otters"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -490,6 +505,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-keda-manager-upgrade-latest-to-main
       annotations:
+        description: "upgrade keda manager test"
+        owner: "otters"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -550,6 +567,7 @@ periodics: # runs on schedule
     - name: keda-operator-nightly-periodic
       annotations:
         description: "Keda nightly verify"
+        owner: "otters"
         pipeline.clusterprovisioning: "gcloud cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gke"

@@ -239,6 +239,7 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-serverless-integration-k3s
       annotations:
+        description: "serverless integration k3s job"
         owner: "otters"
         pipeline.clusterprovisioning: "k3s"
         pipeline.installer: "kyma deploy"
@@ -564,69 +565,13 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: pre-main-kyma-api-gateway-integration-k3d
-      annotations:
-        description: "runs api-gateway integration tests on k3d"
-        owner: "goat"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-api-gateway-integration-k3d"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((tests/components/api-gateway\S+|resources/api-gateway\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                  type: RuntimeDefault
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: API_GATEWAY_INTEGRATION
-                value: "true"
-              - name: TEST_ORY_IMAGE
-                value: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-main-kyma-integration-k3d
       annotations:
         description: "Kyma integration job on k3d."
+        owner: "huskies,goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -687,7 +632,7 @@ postsubmits: # runs on main
     - name: post-main-kyma-integration-k3d-app-gateway
       annotations:
         description: "Kyma integration job on k3d for testing application gateway."
-        onwer: "framefrog"
+        owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -869,6 +814,8 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: utilities-kyma-integration-cleaner
       annotations:
+        description: "kyma integration cleaner"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -1273,6 +1220,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: github-issues
       annotations:
+        description: "Exports data from github to the big query (Grafana metrics)"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -1373,6 +1322,7 @@ periodics: # runs on schedule
     - name: kyma-upgrade-k3d-kyma2-to-main
       annotations:
         description: "K3d Kyma 2.0 to main branch."
+        owner: "jellyfish"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"

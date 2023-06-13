@@ -4,6 +4,8 @@
 periodics: # runs on schedule
     - name: unstale-gardener-project
       annotations:
+        description: "Unstale Gardener project. This prowjob creates and removes a cluster to unstale the project"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

@@ -4,6 +4,9 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-test-untrusted-prow-plugin
+      annotations:
+        description: "Build test-infra/test-untrusted prow plugin"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-test-untrusted-prow-plugin"
@@ -46,6 +49,8 @@ postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-test-infra-test-untrusted-prow-plugin
       annotations:
+        description: "Build test-infra/test-untrusted prow plugin"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

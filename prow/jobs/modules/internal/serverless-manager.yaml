@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/serverless-manager:
     - name: pull-serverless-module-build
       annotations:
+        description: "build serverless module"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -53,6 +55,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-serverless-manager-operator-tests
       annotations:
+        description: "serverless manager tests"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -93,6 +97,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-serverless-manager-operator-build
       annotations:
+        description: "serverless manager operator build"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -155,6 +161,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-serverless-manager-verify
       annotations:
+        description: "serverless manager verify on k3d vm"
+        owner: "otters"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -217,6 +225,8 @@ postsubmits: # runs on main
   kyma-project/serverless-manager:
     - name: post-serverless-module-build
       annotations:
+        description: "serverless module build"
+        owner: "otters"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -263,6 +273,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-serverless-manager-operator-build
       annotations:
+        description: "build serverless manager"
+        owner: "otters"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -326,6 +338,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-serverless-manager-verify
       annotations:
+        description: "serverless manager verify on k3d vm"
+        owner: "otters"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -388,6 +402,7 @@ periodics: # runs on schedule
     - name: serverless-operator-nightly-periodic
       annotations:
         description: "serverless operator nightly verify"
+        owner: "otters"
         pipeline.clusterprovisioning: "gcloud cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gke"

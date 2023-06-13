@@ -776,6 +776,8 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: compass-manager-whitesource-scan
       annotations:
+        description: "Periodic whitesource scan of Kyma repositories"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
