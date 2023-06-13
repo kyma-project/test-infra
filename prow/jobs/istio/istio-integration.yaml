@@ -44,7 +44,7 @@ presubmits:
     - name: pull-istio-integration-evaluation
       annotations:
         owner: goat
-        description: Runs integration suite for istio operator
+        description: Runs integration suite for istio operator in evaluation profile
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-integration-evaluation"
