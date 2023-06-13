@@ -258,6 +258,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
             command:
               - "hack/verify-md.sh"
             resources:

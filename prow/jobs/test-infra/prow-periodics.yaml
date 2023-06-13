@@ -26,6 +26,8 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
+            securityContext:
+              privileged: false
             command:
               - "/markdown-index"
             args:
@@ -52,6 +54,8 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230605-f0fdfaf8"
+            securityContext:
+              privileged: false
             command:
               - "/image-detector"
             args:
@@ -84,6 +88,8 @@ postsubmits: # runs on main
         serviceAccountName: sa-prow-deploy
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: false
             command:
               - "prow/cluster/deploy.sh"
   
@@ -109,6 +115,8 @@ periodics: # runs on schedule
       spec:
         containers:
           - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
+            securityContext:
+              privileged: false
             command:
               - "generic-autobumper"
             args:
@@ -131,6 +139,8 @@ periodics: # runs on schedule
       spec:
         containers:
           - image: "gcr.io/k8s-prow/label_sync:v20230605-b63f6f76cb"
+            securityContext:
+              privileged: false
             command:
               - "label_sync"
             args:
@@ -174,6 +184,8 @@ periodics: # runs on schedule
       spec:
         containers:
           - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
+            securityContext:
+              privileged: false
             command:
               - "generic-autobumper"
             args:
@@ -204,6 +216,8 @@ periodics: # runs on schedule
       spec:
         containers:
           - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
+            securityContext:
+              privileged: false
             command:
               - "generic-autobumper"
             args:

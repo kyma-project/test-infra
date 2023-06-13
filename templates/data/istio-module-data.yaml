@@ -7,6 +7,8 @@ templates:
             optional: "false"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
           job_post:
             slack_channel: goat-int
           job_build:
@@ -201,7 +203,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration
+                    - image_kyma-integration # TODO: Prepare a Istio-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -222,7 +224,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration
+                    - image_kyma-integration # TODO: Prepare a Istio-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default

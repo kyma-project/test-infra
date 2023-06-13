@@ -284,7 +284,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration
+                    - image_kyma-integration # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -303,7 +303,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_postsubmit
+                    - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
                     - image_kyma-integration
                     - extra_refs_test-infra
                   local:
@@ -323,7 +323,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_postsubmit
+                    - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
                     - image_kyma-integration
                     - extra_refs_test-infra
                   local:

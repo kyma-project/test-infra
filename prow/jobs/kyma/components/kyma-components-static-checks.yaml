@@ -20,6 +20,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:
@@ -46,6 +48,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:
@@ -75,6 +79,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:
@@ -102,6 +108,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:
@@ -129,6 +137,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:
@@ -156,6 +166,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:
@@ -183,6 +195,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:
@@ -208,6 +222,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:
@@ -234,6 +250,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:
@@ -262,6 +280,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:
@@ -288,6 +308,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:

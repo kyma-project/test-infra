@@ -90,7 +90,6 @@
             {{- if .JobConfig.automountServiceAccountToken}}
             automountServiceAccountToken: {{.JobConfig.automountServiceAccountToken}}
             {{- end}}
-            {{- if .JobConfig.securityContext}}
             securityContext:
               {{- /* if privileged is set to true then seccomp must be unconfined */}}
               {{- if and .JobConfig.securityContext.privileged (eq .JobConfig.securityContext.privileged "true") (ne .JobConfig.securityContext.seccompProfile.type  "Unconfined")}}
@@ -103,7 +102,6 @@
                   {{$key}}: {{$value}}
                   {{- end}}
               {{- end}}
-            {{- end}}
             {{- if .JobConfig.workingDir}}
             workingDir: {{quote .JobConfig.workingDir}}
             {{- end}}

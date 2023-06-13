@@ -89,6 +89,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "maven:3.8.6-eclipse-temurin-11"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:

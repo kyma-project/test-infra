@@ -19,6 +19,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
             command:
               - "/image-builder"
             args:
@@ -59,6 +61,8 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
             command:
               - "/bin/sh"
             args:
@@ -89,6 +93,8 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
             command:
               - "/image-builder"
             args:
