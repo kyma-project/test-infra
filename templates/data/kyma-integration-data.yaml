@@ -21,6 +21,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "utilities-kyma-integration-cleaner"
+                  annotations:
+                    owner: neighbors
+                    description: kyma integration cleaner
                   serviceAccountName: sa-prow-job-resource-cleaners
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
@@ -251,6 +254,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "github-issues"
+                  annotations:
+                    owner: neighbors
+                    description: "Exports data from github to the big query (Grafana metrics)"
                   cron: "0 6 * * *" # "At 6:00 every day"
                   labels:
                     preset-bot-github-token: "true"
@@ -476,6 +482,8 @@ templates:
                   run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     pipeline.platform: k3s
+                    owner: "otters"
+                    description: serverless integration k3s job
                   labels:
                     preset-build-pr: "true"
                   env:
@@ -497,6 +505,7 @@ templates:
                   annotations:
                     description: Serverless function metrics generator
                     pipeline.platform: gke
+                    owner: "otters"
                   labels:
                     preset-gc-compute-envs: "true"
                     preset-gc-project-env: "true"
@@ -516,20 +525,22 @@ templates:
                   local:
                     - "serverless_metrics_template"
               - jobConfig:
-                  name: "serverless-git-auth-integration-k3s-nightly"
-                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
+                  name: "pre-main-serverless-git-auth-integration-k3s"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     description: Serverless git-function authentication nightly integration tests
                     pipeline.platform: k3s
+                    owner: "otters"
                   labels:
-                    preset-build-main: "true"
+                    preset-build-pr: "true"
                     preset-serverless-git-auth: "true"
                   env:
                     INTEGRATION_SUITE: "git-auth-integration"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "jobConfig_periodic"
+                    - "jobConfig_presubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
@@ -619,32 +630,11 @@ templates:
                     - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-              - jobConfig:
-                  name: pre-main-kyma-api-gateway-integration-k3d
-                  annotations:
-                    owner: goat
-                    description: runs api-gateway integration tests on k3d
-                  optional: false
-                  labels:
-                    preset-build-pr: "true"
-                  run_if_changed: "^((tests/components/api-gateway\\S+|resources/api-gateway\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    API_GATEWAY_INTEGRATION: "true"
-                    TEST_ORY_IMAGE: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_presubmit"
-                  local:
-                    - "jobConfig_default"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
               # postsubmits
               - jobConfig:
                   name: "post-main-kyma-integration-k3d"
                   annotations:
+                    owner: huskies,goat
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration job on k3d.
                     testgrid-days-of-results: "60"
@@ -668,7 +658,7 @@ templates:
                   name: "post-main-kyma-integration-k3d-app-gateway"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    onwer: framefrog
+                    owner: framefrog
                     description: "Kyma integration job on k3d for testing application gateway."
                     testgrid-days-of-results: "60"
                   labels:
@@ -739,6 +729,7 @@ templates:
               - jobConfig:
                   name: kyma-upgrade-k3d-kyma2-to-main
                   annotations:
+                    owner: jellyfish
                     testgrid-dashboards: kyma_integration
                     description: K3d Kyma 2.0 to main branch.
                   decoration_config:

@@ -23,6 +23,9 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-busola-integration-test-k3s-cluster"
+                  annotations:
+                    owner: hasselhoff
+                    description: "Busola integration testing"
                   optional: false
                   run_if_changed: "^resources/|^tests/|^nginx/"
                   env:
@@ -44,6 +47,9 @@ templates:
               # postsubmits
               - jobConfig:
                   name: "post-busola-integration-test-k3s-cluster"
+                  annotations:
+                    owner: hasselhoff
+                    description: "Busola integration testing"
                   optional: false
                   run_if_changed: "/"
                   env:

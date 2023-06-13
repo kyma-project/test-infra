@@ -4,6 +4,9 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-bootstrap
+      annotations:
+        description: "Build test-infra/bootstrap image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-bootstrap"
@@ -46,6 +49,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-kyma-integration
+      annotations:
+        description: "Build test-infra/kyma-integration image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-kyma-integration"
@@ -88,6 +94,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-buildpack-golang
+      annotations:
+        description: "Build test-infra/buildpack-golang image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-buildpack-golang"
@@ -130,6 +139,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-buildpack-node
+      annotations:
+        description: "Build test-infra/buildpack-node image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-buildpack-node"
@@ -172,6 +184,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-cleaner
+      annotations:
+        description: "Build test-infra/cleaner image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-cleaner"
@@ -214,6 +229,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-vulnerability-scanner
+      annotations:
+        description: "Build test-infra/vulnerability-scanner image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-vulnerability-scanner"
@@ -256,6 +274,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-whitesource-scanner
+      annotations:
+        description: "Build test-infra/whitesource-scanner image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-whitesource-scanner"
@@ -298,6 +319,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-prow-tools
+      annotations:
+        description: "Build test-infra/prow-tools image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-prow-tools"
@@ -340,6 +364,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-github-connector-webhook-gateway
+      annotations:
+        description: "Build test-infra/github-connector-webhook-gateway image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-github-connector-webhook-gateway"
@@ -382,6 +409,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-pubsub-connector-gateway
+      annotations:
+        description: "Build test-infra/pubsub-connector-gateway image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-pubsub-connector-gateway"
@@ -424,6 +454,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-golangci-lint
+      annotations:
+        description: "Build test-infra/golangci-lint image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-golangci-lint"
@@ -466,6 +499,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-gardener-rotate
+      annotations:
+        description: "Build test-infra/gardener-rotate image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-gardener-rotate"
@@ -508,6 +544,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-gardener-sa-rotate
+      annotations:
+        description: "Build test-infra/gardener-sa-rotate image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-gardener-sa-rotate"
@@ -550,6 +589,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-kms-rotate
+      annotations:
+        description: "Build test-infra/kms-rotate image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-kms-rotate"
@@ -592,6 +634,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pull-build-githubrelease
+      annotations:
+        description: "Build test-infra/githubrelease image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-build-githubrelease"
@@ -634,6 +679,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pre-test-infra-markdown-index
+      annotations:
+        description: "Build test-infra/markdown-index image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-markdown-index"
@@ -676,6 +724,9 @@ presubmits: # runs on PRs
             secret:
               secretName: signify-dev-secret
     - name: pull-build-ginkgo
+      annotations:
+        description: "Building ginkgo image"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-build-ginkgo"
@@ -722,6 +773,8 @@ postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-test-infra-bootstrap
       annotations:
+        description: "Build test-infra/bootstrap image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -767,6 +820,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-kyma-integration
       annotations:
+        description: "Build test-infra/kyma-integration image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -812,6 +867,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-buildpack-golang
       annotations:
+        description: "Build test-infra/buildpack-golang image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -857,6 +914,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-buildpack-node
       annotations:
+        description: "Build test-infra/buildpack-node image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -902,6 +961,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-cleaner
       annotations:
+        description: "Build test-infra/cleaner image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -947,6 +1008,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-vulnerability-scanner
       annotations:
+        description: "Build test-infra/vulnerability-scanner image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -992,6 +1055,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-whitesource-scanner
       annotations:
+        description: "Build test-infra/whitesource-scanner image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1037,6 +1102,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-prow-tools
       annotations:
+        description: "Build test-infra/prow-tools image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1082,6 +1149,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-github-connector-webhook-gateway
       annotations:
+        description: "Build test-infra/github-connector-webhook-gateway image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1127,6 +1196,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-pubsub-connector-gateway
       annotations:
+        description: "Build test-infra/pubsub-connector-gateway image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1172,6 +1243,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-golangci-lint
       annotations:
+        description: "Build test-infra/golangci-lint image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1217,6 +1290,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-gardener-rotate
       annotations:
+        description: "Build test-infra/gardener-rotate image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1262,6 +1337,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-gardener-sa-rotate
       annotations:
+        description: "Build test-infra/gardener-sa-rotate image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1307,6 +1384,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-kms-rotate
       annotations:
+        description: "Build test-infra/kms-rotate image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1352,6 +1431,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-build-githubrelease
       annotations:
+        description: "Build test-infra/githubrelease image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1397,6 +1478,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-test-infra-markdown-index
       annotations:
+        description: "Build test-infra/markdown-index image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1442,6 +1525,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-build-ginkgo
       annotations:
+        description: "Building ginkgo image"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

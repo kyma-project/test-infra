@@ -21,6 +21,9 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-busola-web-deployment-check"
+                  annotations:
+                    owner: hasselhoff
+                    description: Checking frontend deployment update
                   optional: false
                   run_if_changed: "^public/|^src/|^scripts/|^shared/|^package.json"
                   labels:

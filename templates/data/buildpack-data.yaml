@@ -43,6 +43,9 @@ templates:
                 jobs:
                   - jobConfig:
                       name: "pre-test-infra-bootstrap"
+                      annotations:
+                        description: "Build test-infra/bootstrap image"
+                        owner: neighbors
                       run_if_changed: "^prow/images/bootstrap/"
                       args:
                         - "--name=test-infra/bootstrap"
@@ -55,6 +58,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-bootstrap"
+                      annotations:
+                        description: "Build test-infra/bootstrap image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^prow/images/bootstrap/"
@@ -69,6 +75,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-kyma-integration"
+                      annotations:
+                        description: "Build test-infra/kyma-integration image"
+                        owner: neighbors
                       run_if_changed: "^prow/images/kyma-integration/"
                       args:
                         - "--name=test-infra/kyma-integration"
@@ -81,6 +90,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-kyma-integration"
+                      annotations:
+                        description: "Build test-infra/kyma-integration image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^prow/images/kyma-integration/"
@@ -95,6 +107,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-buildpack-golang"
+                      annotations:
+                        description: "Build test-infra/buildpack-golang image"
+                        owner: neighbors
                       run_if_changed: "^prow/images/buildpack-golang/"
                       args:
                         - "--name=test-infra/buildpack-golang"
@@ -107,6 +122,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-buildpack-golang"
+                      annotations:
+                        description: "Build test-infra/buildpack-golang image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^prow/images/buildpack-golang/"
@@ -121,6 +139,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-buildpack-node"
+                      annotations:
+                        description: "Build test-infra/buildpack-node image"
+                        owner: neighbors
                       run_if_changed: "^prow/images/buildpack-node/"
                       args:
                         - "--name=test-infra/buildpack-node"
@@ -133,6 +154,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-buildpack-node"
+                      annotations:
+                        description: "Build test-infra/buildpack-node image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^prow/images/buildpack-node/"
@@ -147,6 +171,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-cleaner"
+                      annotations:
+                        description: "Build test-infra/cleaner image"
+                        owner: neighbors
                       run_if_changed: "^prow/images/cleaner/"
                       args:
                         - "--name=test-infra/cleaner"
@@ -159,6 +186,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-cleaner"
+                      annotations:
+                        description: "Build test-infra/cleaner image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^prow/images/cleaner/"
@@ -173,6 +203,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-vulnerability-scanner"
+                      annotations:
+                        description: "Build test-infra/vulnerability-scanner image"
+                        owner: neighbors
                       run_if_changed: "^prow/images/vulnerability-scanner/"
                       args:
                         - "--name=test-infra/vulnerability-scanner"
@@ -185,6 +218,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-vulnerability-scanner"
+                      annotations:
+                        description: "Build test-infra/vulnerability-scanner image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^prow/images/vulnerability-scanner/"
@@ -199,6 +235,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-whitesource-scanner"
+                      annotations:
+                        description: "Build test-infra/whitesource-scanner image"
+                        owner: neighbors
                       run_if_changed: "^prow/images/whitesource-scanner/"
                       args:
                         - "--name=test-infra/whitesource-scanner"
@@ -211,6 +250,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-whitesource-scanner"
+                      annotations:
+                        description: "Build test-infra/whitesource-scanner image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^prow/images/whitesource-scanner/"
@@ -225,6 +267,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-prow-tools"
+                      annotations:
+                        description: "Build test-infra/prow-tools image"
+                        owner: neighbors
                       run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
                       args:
                         - "--name=test-infra/prow-tools"
@@ -237,6 +282,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-prow-tools"
+                      annotations:
+                        description: "Build test-infra/prow-tools image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
@@ -251,6 +299,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                      name: "pre-test-infra-github-connector-webhook-gateway"
+                     annotations:
+                       description: "Build test-infra/github-connector-webhook-gateway image"
+                       owner: neighbors
                      run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                      args:
                        - "--name=test-infra/github-connector-webhook-gateway"
@@ -263,6 +314,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-github-connector-webhook-gateway"
+                      annotations:
+                        description: "Build test-infra/github-connector-webhook-gateway image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
@@ -277,6 +331,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-pubsub-connector-gateway"
+                      annotations:
+                        description: "Build test-infra/pubsub-connector-gateway image"
+                        owner: neighbors
                       run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
                       args:
                         - "--name=test-infra/pubsub-connector-gateway"
@@ -289,6 +346,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-pubsub-connector-gateway"
+                      annotations:
+                        description: "Build test-infra/pubsub-connector-gateway image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
@@ -303,6 +363,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-golangci-lint"
+                      annotations:
+                        description: "Build test-infra/golangci-lint image"
+                        owner: neighbors
                       run_if_changed: "^prow/images/golangci-lint/"
                       args:
                         - "--name=test-infra/golangci-lint"
@@ -315,6 +378,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-golangci-lint"
+                      annotations:
+                        description: "Build test-infra/golangci-lint image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^prow/images/golangci-lint/"
@@ -329,6 +395,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-gardener-rotate"
+                      annotations:
+                        description: "Build test-infra/gardener-rotate image"
+                        owner: neighbors
                       run_if_changed: "^prow/images/gardener-rotate/|^development/gardener-rotate/"
                       args:
                         - "--name=test-infra/gardener-rotate"
@@ -341,6 +410,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-gardener-rotate"
+                      annotations:
+                        description: "Build test-infra/gardener-rotate image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^prow/images/gardener-rotate/|^development/gardener-rotate/"
@@ -355,6 +427,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-gardener-sa-rotate"
+                      annotations:
+                        description: "Build test-infra/gardener-sa-rotate image"
+                        owner: neighbors
                       run_if_changed: "^development/gcp/cloud-run/gardener-sa-rotate/"
                       args:
                         - "--name=test-infra/gardener-sa-rotate"
@@ -367,6 +442,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-gardener-sa-rotate"
+                      annotations:
+                        description: "Build test-infra/gardener-sa-rotate image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^development/gcp/cloud-run/gardener-sa-rotate/"
@@ -381,6 +459,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-kms-rotate"
+                      annotations:
+                        description: "Build test-infra/kms-rotate image"
+                        owner: neighbors
                       run_if_changed: "^development/gcp/cloud-run/kms-rotate/"
                       args:
                         - "--name=test-infra/kms-rotate"
@@ -393,6 +474,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-kms-rotate"
+                      annotations:
+                        description: "Build test-infra/kms-rotate image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^development/gcp/cloud-run/kms-rotate/"
@@ -407,6 +491,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pull-build-githubrelease"
+                      annotations:
+                        description: "Build test-infra/githubrelease image"
+                        owner: neighbors
                       run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
                       args:
                         - "--name=test-infra/githubrelease"
@@ -419,6 +506,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-build-githubrelease"
+                      annotations:
+                        description: "Build test-infra/githubrelease image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
@@ -433,6 +523,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pre-test-infra-markdown-index"
+                      annotations:
+                        description: "Build test-infra/markdown-index image"
+                        owner: neighbors
                       run_if_changed: "^development/markdown-index/"
                       args:
                         - "--name=test-infra/markdown-index"
@@ -445,6 +538,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-test-infra-markdown-index"
+                      annotations:
+                        description: "Build test-infra/markdown-index image"
+                        owner: neighbors
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^development/markdown-index/"
@@ -459,6 +555,9 @@ templates:
                         - "postsubmit"
                   - jobConfig:
                       name: "pull-build-ginkgo"
+                      annotations:
+                        owner: neighbors
+                        description: "Building ginkgo image"
                       run_if_changed: "^prow/images/ginkgo/"
                       args:
                         - "--name=test-infra/ginkgo"
@@ -471,6 +570,9 @@ templates:
                         - "presubmit"
                   - jobConfig:
                       name: "post-build-ginkgo"
+                      annotations:
+                        owner: neighbors
+                        description: "Building ginkgo image"
                       labels:
                         preset-signify-prod-secret: "true"
                       run_if_changed: "^prow/images/ginkgo/"

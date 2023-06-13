@@ -5,6 +5,8 @@ postsubmits: # runs on main
   kyma-incubator/slack-bot:
     - name: merge-slack-bot-build
       annotations:
+        description: "gopher Bot build pipeline"
+        owner: "gopher"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

@@ -35,6 +35,9 @@ templates:
             jobs:
               - jobConfig:
                   run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
+                  annotations:
+                    owner: jellyfish
+                    description: lint runtime watcher
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
                   name: pull-lint-skr
                   command: "bash"
@@ -50,6 +53,9 @@ templates:
               - jobConfig:
                   run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
                   name: pull-tests-skr
+                  annotations:
+                    owner: jellyfish
+                    description: test runtime watcher
                   command: "bash"
                   args:
                     - "-c"
@@ -66,6 +72,9 @@ templates:
                   run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
                   name: "pull-lint-listener"
+                  annotations:
+                    owner: jellyfish
+                    description: lint runtime watcher listener
                   command: "bash"
                   args:
                     - "-c"
@@ -79,6 +88,9 @@ templates:
               - jobConfig:
                   run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
                   name: pull-tests-listener
+                  annotations:
+                    owner: jellyfish
+                    description: test runtime watcher listener
                   command: "bash"
                   args:
                     - "-c"
@@ -93,6 +105,9 @@ templates:
                     - "build_labels" # default labels
               - jobConfig:
                   name: pull-build-skr
+                  annotations:
+                    owner: jellyfish
+                    description: build runtime watcher skr
                   run_if_changed: "^skr/"
                   args:
                     - "--name=runtime-watcher-skr"
@@ -106,6 +121,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-build-skr
+                  annotations:
+                    owner: jellyfish
+                    description: build runtime watcher skr
                   labels:
                     preset-signify-prod-secret: "true"
                   always_run: true

@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pull-build-image-terraform-executor"
+                  annotations:
+                    owner: neighbors
+                    description: "Build image for terraform-executor"
                   run_if_changed: '^prow/images/terraform/'
                   branches:
                     - "^main$"
@@ -21,6 +24,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "post-build-image-terraform-executor"
+                  annotations:
+                    owner: neighbors
+                    description: "Build image for terraform-executor"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: '^prow/images/terraform/'

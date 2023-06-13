@@ -23,6 +23,9 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-kyma-dashboard-test"
+                  annotations:
+                    owner: hasselhoff
+                    description: Kyma dashboard tests
                   optional: false
                   run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/"
                   labels:
@@ -42,6 +45,9 @@ templates:
               # postsubmits
               - jobConfig:
                   name: "post-kyma-dashboard-test"
+                  annotations:
+                    owner: hasselhoff
+                    description: Kyma dashboard tests
                   optional: false
                   run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/"
                   labels:

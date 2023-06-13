@@ -24,6 +24,9 @@ templates:
               - jobConfig:
                   name: pre-main-kcp-cli
                   run_if_changed: "^tools/cli|^components"
+                  annotations:
+                    owner: sre
+                    description: "Builds and validates KCP CLI before merge"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -34,6 +37,9 @@ templates:
                     - jobConfig_default
               - jobConfig:
                   name: post-main-kcp-cli
+                  annotations:
+                    owner: sre
+                    description: "Builds and validates KCP CLI before merge"
                   labels:
                     preset-build-artifacts-main: "true"
                 inheritedConfigs:

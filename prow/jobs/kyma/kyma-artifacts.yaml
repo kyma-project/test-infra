@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-artifacts
       annotations:
+        description: "Build Kyma release artifacts"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -50,6 +52,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-rel215-kyma-artifacts
       annotations:
+        description: "Build Kyma release artifacts"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -94,6 +98,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-rel214-kyma-artifacts
       annotations:
+        description: "Build Kyma release artifacts"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -138,6 +144,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-rel213-kyma-artifacts
       annotations:
+        description: "Build Kyma release artifacts"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -182,6 +190,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-rel216-kyma-artifacts
       annotations:
+        description: "Build Kyma release artifacts"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -229,6 +239,8 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-kyma-artifacts
       annotations:
+        description: "Build Kyma release artifacts"
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -275,6 +287,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel215-kyma-artifacts
       annotations:
+        description: "Build Kyma release artifacts"
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -320,6 +334,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel214-kyma-artifacts
       annotations:
+        description: "Build Kyma release artifacts"
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -365,6 +381,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel213-kyma-artifacts
       annotations:
+        description: "Build Kyma release artifacts"
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -410,6 +428,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-rel216-kyma-artifacts
       annotations:
+        description: "Build Kyma release artifacts"
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
