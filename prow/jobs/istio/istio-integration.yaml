@@ -72,7 +72,7 @@ presubmits:
                 set -e
                 curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
                 k3d registry create registry.localhost --port 5000
-                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --k3s-arg "memory=8Gi@all:*"
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" TEST_EVALUATION=TRUE make docker-build docker-push istio-integration-test
                 k3d cluster delete k3d
             resources:
