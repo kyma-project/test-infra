@@ -49,12 +49,9 @@ templates:
                   annotations:
                     owner: skydivingtunas
                     description: run unit tests for eventing auth manager
-                  securityContext:
-                    privileged: false
-                    seccompProfile:
-                      type: RuntimeDefault
                 inheritedConfigs:
                   global:
                     - testing
                     - "jobConfig_presubmit"
                     - "disable_testgrid"
+                    - "unprivileged"

@@ -51,11 +51,8 @@ templates:
                   annotations:
                     owner: skydivingtunas
                     description: run unit tests for eventing tools
-                  securityContext:
-                    privileged: false
-                    seccompProfile:
-                      type: RuntimeDefault
                 inheritedConfigs:
                   global:
                     - testing
                     - "jobConfig_presubmit"
+                    - "unprivileged"

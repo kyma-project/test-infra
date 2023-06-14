@@ -205,6 +205,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
+                    - "unprivileged"
                   local:
                     - "jobConfig_kyma_crd_docs"
               - jobConfig:
