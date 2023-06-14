@@ -581,6 +581,8 @@ periodics: # runs on schedule
                 value: keda-manager
               - name: CREATE_SUBPROJECTS
                 value: "false"
+              - name: CUSTOM_EXCLUDE
+                value: "**/test/**"
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
