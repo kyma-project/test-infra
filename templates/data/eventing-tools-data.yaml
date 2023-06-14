@@ -20,7 +20,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
-        
+
               - jobConfig:
                   name: post-eventing-tools-build
                   labels:
@@ -51,6 +51,10 @@ templates:
                   annotations:
                     owner: skydivingtunas
                     description: run unit tests for eventing tools
+                  securityContext:
+                    privileged: false
+                    seccompProfile:
+                      type: RuntimeDefault
                 inheritedConfigs:
                   global:
                     - testing
