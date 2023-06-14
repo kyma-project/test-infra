@@ -13,7 +13,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-hide-tf-github-comments"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
-      run_if_changed: '.*\.tf$|.*\.tfvars$|^development/gcp/workflows'
+      run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
       skip_report: false
       decorate: true
       cluster: trusted-workload

@@ -224,6 +224,7 @@ templates:
                     - "product_control_plane"
               - jobConfig:
                   repository: "keda-manager"
+                  exclude: "**/test/**"
                   language: "golang-mod"
                   project: "kyma-project"
                   base_ref: "main"
