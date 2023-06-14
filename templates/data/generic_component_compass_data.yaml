@@ -833,6 +833,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"

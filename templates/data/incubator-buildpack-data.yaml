@@ -182,6 +182,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
               - jobConfig:
                   name: "pre-main-reconciler-lint"
                   optional: false
@@ -197,6 +198,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pre-main-reconciler-integration-k3d"
 
