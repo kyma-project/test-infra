@@ -73,6 +73,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -145,6 +146,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/director/director-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -217,6 +219,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-director-unit-test"
                   annotations:
@@ -231,6 +234,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/hydrator/hydrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -303,6 +307,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/ias-adapter/ias-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -375,6 +380,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/kyma-adapter/kyma-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -447,6 +453,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-kyma-adapter-unit-test"
                   annotations:
@@ -461,6 +468,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -533,6 +541,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -605,6 +614,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -677,6 +687,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -749,6 +760,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"

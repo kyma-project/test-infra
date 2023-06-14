@@ -92,6 +92,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
