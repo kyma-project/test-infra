@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go/bigquery v1.51.2
 	cloud.google.com/go/compute/metadata v0.2.3
 	cloud.google.com/go/firestore v1.10.0
-	cloud.google.com/go/kms v1.11.0
+	cloud.google.com/go/kms v1.12.0
 	cloud.google.com/go/logging v1.7.0
 	cloud.google.com/go/pubsub v1.31.0
 	cloud.google.com/go/storage v1.30.1
@@ -54,13 +54,13 @@ require (
 
 require (
 	github.com/tektoncd/pipeline v0.36.0
-	k8s.io/test-infra v0.0.0-20230613184959-4b4d19e9c026
+	k8s.io/test-infra v0.0.0-20230614182017-90cd41b5e837
 )
 
 require (
 	cloud.google.com/go v0.110.2 // indirect
 	cloud.google.com/go/compute v1.19.3 // indirect
-	cloud.google.com/go/iam v1.0.1 // indirect
+	cloud.google.com/go/iam v1.1.0 // indirect
 	cloud.google.com/go/longrunning v0.4.2 // indirect
 	contrib.go.opencensus.io/exporter/ocagent v0.7.1-0.20200907061046-05415f1de66d // indirect
 	contrib.go.opencensus.io/exporter/prometheus v0.4.0 // indirect
