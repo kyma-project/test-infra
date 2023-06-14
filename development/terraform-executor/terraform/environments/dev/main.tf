@@ -26,4 +26,9 @@ module "terraform_executor_k8s_service_account" {
     name      = var.terraform_executor_k8s_service_account.name,
     namespace = var.terraform_executor_k8s_service_account.namespace
   }
+
+  external_secrets_sa = {
+    name      = var.external_secrets_sa.name
+    namespace = var.external_secrets_sa.namespace
+  }
 }

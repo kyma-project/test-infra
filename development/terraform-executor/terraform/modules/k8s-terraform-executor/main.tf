@@ -23,3 +23,42 @@ resource "kubernetes_service_account" "terraform_executor" {
   }
   automount_service_account_token = true
 }
+
+# Secure access to terraform-executor secret over k8s API.
+resource "kubernetes_cluster_role" "access_terraform_executor_secret" {
+
+  metadata {
+    name = "access-terraform-executor-secret"
+  }
+
+  rule {
+    api_groups     = [""]
+    resources      = ["secrets"]
+    resource_names = [kubernetes_secret.terraform_executor.metadata[0].name]
+    verbs          = ["update", "get", "list", "watch", "patch", "create", "delete"]
+  }
+}
+
+resource "kubernetes_cluster_role_binding" "access_pjtester_secrets_trusted_workloads" {
+  provider = kubernetes.trusted_workload_k8s_cluster
+
+  metadata {
+    name = "access-pjtester-secrets"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = kubernetes_cluster_role.access_terraform_executor_secret.metadata[0].name
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = kubernetes_secret.terraform_executor.metadata[0].name
+    namespace = kubernetes_secret.terraform_executor.metadata[0].namespace
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = var.external_secrets_sa.name
+    namespace = var.external_secrets_sa.namespace
+    api_group = "rbac.authorization.k8s.io"
+  }
+}

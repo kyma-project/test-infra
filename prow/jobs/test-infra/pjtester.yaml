@@ -20,7 +20,6 @@ presubmits: # runs on PRs
       branches:
         - ^.*$
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -119,7 +118,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -218,7 +216,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -317,7 +314,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -416,7 +412,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -515,7 +510,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -614,7 +608,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -713,7 +706,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -812,7 +804,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -911,7 +902,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -1010,7 +1000,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -1109,7 +1098,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -1208,7 +1196,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -1307,7 +1294,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -1406,7 +1392,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -1505,7 +1490,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -1604,7 +1588,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -1703,7 +1686,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -1802,7 +1784,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -1901,7 +1882,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -2000,7 +1980,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -2099,7 +2078,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -2198,7 +2176,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -2297,7 +2274,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -2396,7 +2372,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -2495,7 +2470,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -2594,7 +2568,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -2693,7 +2666,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -2792,7 +2764,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -2891,7 +2862,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -2990,7 +2960,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -3089,7 +3058,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -3188,7 +3156,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -3287,7 +3254,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -3386,7 +3352,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -3485,7 +3450,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -3584,7 +3548,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -3683,7 +3646,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -3782,7 +3744,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -3881,7 +3842,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -3980,7 +3940,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -4079,7 +4038,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -4178,7 +4136,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -4277,7 +4234,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -4376,7 +4332,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -4475,7 +4430,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -4574,7 +4528,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -4673,7 +4626,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -4772,7 +4724,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -4871,7 +4822,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -4970,7 +4920,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -5069,7 +5018,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
@@ -5168,7 +5116,6 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
-        serviceAccountName: pjtester
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always

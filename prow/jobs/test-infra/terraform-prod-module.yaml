@@ -20,10 +20,10 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         serviceAccountName: terraform-executor
-        automountServiceAccountToken: true
+        automountServiceAccountToken: false
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
-            automountServiceAccountToken: true
+            automountServiceAccountToken: false
             securityContext:
               privileged: false
             command:
@@ -62,10 +62,10 @@ postsubmits: # runs on main
         - ^main$
       spec:
         serviceAccountName: terraform-executor
-        automountServiceAccountToken: true
+        automountServiceAccountToken: false
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
-            automountServiceAccountToken: true
+            automountServiceAccountToken: false
             securityContext:
               privileged: false
             command:

@@ -46,3 +46,17 @@ variable "gcp_project_id" {
   default     = "sap-kyma-neighbors-dev"
   description = "Google Cloud project to create resources."
 }
+
+variable "external_secrets_sa" {
+  type = object({
+    name      = string
+    namespace = string
+  })
+
+  default = {
+    name      = "external-secrets"
+    namespace = "external-secrets"
+  }
+
+  description = "Details of external secrets service account."
+}

@@ -25,24 +25,6 @@ resource "google_project_iam_member" "terraform_executor_owner" {
   member  = "serviceAccount:${module.terraform_executor_gcp_service_account.terraform_executor_gcp_service_account.email}"
 }
 
-module "tekton_terraform_executor_k8s_service_account" {
-  providers = {
-    google     = google
-    kubernetes = kubernetes.tekton_k8s_cluster
-  }
-  source = "../../../../development/terraform-executor/terraform/modules/k8s-terraform-executor"
-
-  terraform_executor_gcp_service_account = {
-    id         = var.terraform_executor_gcp_service_account.id
-    project_id = var.terraform_executor_gcp_service_account.project_id
-  }
-  terraform_executor_k8s_service_account = {
-    name      = var.terraform_executor_k8s_service_account.name,
-    namespace = var.terraform_executor_k8s_service_account.namespace
-  }
-
-}
-
 module "trusted_workload_terraform_executor_k8s_service_account" {
   providers = {
     google     = google
@@ -57,6 +39,11 @@ module "trusted_workload_terraform_executor_k8s_service_account" {
   terraform_executor_k8s_service_account = {
     name      = var.terraform_executor_k8s_service_account.name,
     namespace = var.terraform_executor_k8s_service_account.namespace
+  }
+
+  external_secrets_sa = {
+    name      = var.external_secrets_sa_trusted_cluster.name,
+    namespace = var.external_secrets_sa_trusted_cluster.namespace
   }
 
 }
@@ -75,6 +62,11 @@ module "untrusted_workload_terraform_executor_k8s_service_account" {
   terraform_executor_k8s_service_account = {
     name      = var.terraform_executor_k8s_service_account.name,
     namespace = var.terraform_executor_k8s_service_account.namespace
+  }
+
+  external_secrets_sa = {
+    name      = var.external_secrets_sa_untrusted_cluster.name,
+    namespace = var.external_secrets_sa_untrusted_cluster.namespace
   }
 
 }

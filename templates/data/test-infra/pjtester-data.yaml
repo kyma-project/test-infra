@@ -22,7 +22,6 @@
                 - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
             jobConfig_pjtester:
               command: "pjtester"
-              serviceAccountName: "pjtester"
               env:
                 KUBECONFIG_PATH: /etc/kubeconfig/pjtester/config
               labels:

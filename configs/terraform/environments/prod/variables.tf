@@ -147,3 +147,35 @@ variable "workloads_constraints_path" {
 
   description = "Path to both workload clusters constraints directory."
 }
+
+variable "external_secrets_sa_trusted_cluster" {
+  type = object({
+    name      = string
+    namespace = string
+  })
+  default = {
+    name      = "secret-manager-trusted"
+    namespace = "external-secrets"
+  }
+  description = <<-EOT
+    Details of external secrets service account.
+    name: Name of the external secret controller service account.
+    namespace: Namespace of the external secret controller service account.
+    EOT
+}
+
+variable "external_secrets_sa_untrusted_cluster" {
+  type = object({
+    name      = string
+    namespace = string
+  })
+  default = {
+    name      = "secret-manager-untrusted"
+    namespace = "external-secrets"
+  }
+  description = <<-EOT
+    Details of external secrets service account.
+    name: Name of the external secret controller service account.
+    namespace: Namespace of the external secret controller service account.
+    EOT
+}
