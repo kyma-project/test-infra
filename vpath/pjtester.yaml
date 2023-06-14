@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      istio:
+        - pjName: "nightly-istio-performance-test-gcp"
+prConfigs:
+  kyma-project:
+    istio:
+      prNumber: 179
