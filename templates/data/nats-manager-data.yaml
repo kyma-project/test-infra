@@ -54,3 +54,4 @@ templates:
                   global:
                     - testing
                     - "jobConfig_presubmit"
+                    - "unprivileged"
