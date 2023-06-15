@@ -120,6 +120,7 @@ templates:
                     - default
                   global:
                     - jobConfig_presubmit
+                    - "unprivileged"
               - jobConfig:
                   name: main-build-skr
                   annotations:
@@ -139,3 +140,4 @@ templates:
                     - default
                   global:
                     - jobConfig_postsubmit
+                    - "unprivileged"
