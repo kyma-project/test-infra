@@ -26,6 +26,7 @@ templates:
                     - "image_bootstrap"
                     - "jobConfig_presubmit"
                     - "pubsub_labels"
+                    - "unprivileged"
               - jobConfig:
                   name: "pre-main-test-infra-validate-prow-tools"
                   annotations:
@@ -123,3 +124,4 @@ templates:
                     - "image_bootstrap"
                     - "jobConfig_presubmit"
                     - "pubsub_labels"
+                    - "unprivileged"
