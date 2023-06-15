@@ -37,7 +37,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/busola-backend-deployment-check.sh"
             resources:

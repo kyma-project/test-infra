@@ -98,9 +98,9 @@
               privileged: {{ default "false" .JobConfig.securityContext.privileged }}
               {{- if .JobConfig.securityContext.seccompProfile}}
               seccompProfile: 
-                  {{- range $key, $value := .JobConfig.securityContext.seccompProfile}}
-                  {{$key}}: {{$value}}
-                  {{- end}}
+                {{- range $key, $value := .JobConfig.securityContext.seccompProfile}}
+                {{$key}}: {{$value}}
+                {{- end}}
               {{- end}}
             {{- if .JobConfig.workingDir}}
             workingDir: {{quote .JobConfig.workingDir}}

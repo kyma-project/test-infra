@@ -33,7 +33,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -83,7 +83,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -133,7 +133,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -183,7 +183,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/metadata-governance.sh"
             args:
@@ -233,7 +233,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -273,7 +273,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "hack/verify-md.sh"
             resources:
@@ -313,7 +313,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -363,7 +363,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -415,7 +415,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -465,7 +465,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -514,7 +514,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -566,7 +566,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -619,7 +619,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -671,7 +671,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -723,7 +723,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -775,7 +775,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:

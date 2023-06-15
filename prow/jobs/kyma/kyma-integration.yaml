@@ -46,7 +46,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -105,7 +105,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -164,7 +164,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -223,7 +223,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -275,7 +275,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
             env:
@@ -332,7 +332,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
             env:
@@ -388,7 +388,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -441,7 +441,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -494,7 +494,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -548,7 +548,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             env:
@@ -615,7 +615,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -674,7 +674,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -733,7 +733,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -793,7 +793,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             env:
@@ -837,7 +837,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "./cleaner.sh"
             resources:
@@ -879,7 +879,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -925,7 +925,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -971,7 +971,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1017,7 +1017,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1063,7 +1063,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1109,7 +1109,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1156,7 +1156,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1201,7 +1201,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1248,7 +1248,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"
             resources:
@@ -1296,7 +1296,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-metrics-nightly.sh"
             env:
@@ -1367,7 +1367,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"
             env:
@@ -1428,7 +1428,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -1485,7 +1485,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -1549,7 +1549,7 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:

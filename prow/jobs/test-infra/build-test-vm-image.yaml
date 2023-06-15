@@ -27,7 +27,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -68,7 +68,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -113,7 +113,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "bash"
             args:

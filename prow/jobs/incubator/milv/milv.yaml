@@ -34,7 +34,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -87,7 +87,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:

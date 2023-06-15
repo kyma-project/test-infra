@@ -26,7 +26,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -75,7 +75,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -124,7 +124,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -173,7 +173,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -222,7 +222,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -271,7 +271,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -320,7 +320,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -369,7 +369,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -418,7 +418,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -467,7 +467,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -516,7 +516,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -565,7 +565,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -614,7 +614,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -663,7 +663,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -712,7 +712,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -761,7 +761,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -810,7 +810,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -864,7 +864,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -915,7 +915,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -966,7 +966,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1017,7 +1017,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1068,7 +1068,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1119,7 +1119,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1170,7 +1170,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1221,7 +1221,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1272,7 +1272,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1323,7 +1323,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1374,7 +1374,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1425,7 +1425,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1476,7 +1476,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1527,7 +1527,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1578,7 +1578,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1629,7 +1629,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:
@@ -1680,7 +1680,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
             command:
               - "/image-builder"
             args:

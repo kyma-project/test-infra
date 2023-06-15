@@ -39,7 +39,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: true
               seccompProfile:
-                  type: Unconfined
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass-smoke-test.sh"
             env:
