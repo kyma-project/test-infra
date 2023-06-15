@@ -78,7 +78,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: Unconfined
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -119,7 +119,7 @@ presubmits: # runs on PRs
             securityContext:
               privileged: false
               seccompProfile:
-                  type: Unconfined
+                  type: RuntimeDefault
             command:
               - "sh"
             args:
@@ -296,7 +296,7 @@ postsubmits: # runs on main
             securityContext:
               privileged: false
               seccompProfile:
-                  type: Unconfined
+                  type: RuntimeDefault
             command:
               - "sh"
             args:

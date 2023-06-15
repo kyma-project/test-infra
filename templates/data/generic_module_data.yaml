@@ -6,6 +6,8 @@ templates:
           job_default:
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
           job_build:
             skip_report: "false"
             max_concurrency: "10"
@@ -362,6 +364,8 @@ templates:
           job_default:
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
           main_branches:
             branches:
               - "^master$"
