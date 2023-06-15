@@ -48,6 +48,7 @@ templates:
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
+                    - "unprivileged"
           - repoName: kyma-project/test-infra
             jobs:
               - jobConfig:
@@ -74,6 +75,7 @@ templates:
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
+                    - "unprivileged"
               - jobConfig:
                   name: ci-prow-autobump
                   annotations:
@@ -94,6 +96,7 @@ templates:
                     - "pubsub_labels"
                     - "disable_testgrid"
                     - extra_refs_test-infra
+                    - "unprivileged"
               - jobConfig:
                   name: post-test-infra-markdown-index-autobump
                   annotations:
@@ -102,7 +105,7 @@ templates:
                   slack_channel: kyma-prow-alerts
                   branches:
                     - ^main$
-                  run_if_changed: '.md$'
+                  run_if_changed: ".md$"
                   skip_report: "false"
                   max_concurrency: "10"
                   type_postsubmit: "true"
@@ -118,6 +121,7 @@ templates:
                     - pubsub_labels
                     - disable_testgrid
                     - image_markdown_index
+                    - "unprivileged"
               - jobConfig:
                   name: post-test-infra-image-detector-autobump
                   annotations:
@@ -126,7 +130,7 @@ templates:
                   slack_channel: kyma-prow-alerts
                   branches:
                     - ^main$
-                  run_if_changed: '.(md|yml|yaml|tf|tfvars)$'
+                  run_if_changed: ".(md|yml|yaml|tf|tfvars)$"
                   skip_report: "false"
                   max_concurrency: "10"
                   type_postsubmit: "true"
@@ -147,6 +151,7 @@ templates:
                     - pubsub_labels
                     - disable_testgrid
                     - image_image_detector
+                    - "unprivileged"
               - jobConfig:
                   name: post-test-infra-deploy-prow
                   annotations:
@@ -155,7 +160,7 @@ templates:
                   slack_channel: kyma-prow-alerts
                   branches:
                     - ^main$
-                  run_if_changed: 'prow/cluster/components/'
+                  run_if_changed: "prow/cluster/components/"
                   env:
                   command: prow/cluster/deploy.sh
                   serviceAccountName: sa-prow-deploy
@@ -170,6 +175,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
                     - pubsub_labels
+                    - "unprivileged"
               - jobConfig:
                   name: ci-prow-autobump-jobs
                   annotations:
@@ -190,3 +196,4 @@ templates:
                     - "pubsub_labels"
                     - "disable_testgrid"
                     - extra_refs_test-infra
+                    - "unprivileged"
