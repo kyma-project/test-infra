@@ -26,6 +26,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
               - jobConfig:
                   name: "pre-main-test-infra-lint"
                   annotations:

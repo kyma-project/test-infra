@@ -22,6 +22,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -54,6 +56,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -86,6 +90,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -118,6 +124,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -150,6 +158,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -182,6 +192,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -214,6 +226,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -246,6 +260,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -278,6 +294,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -310,6 +328,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -342,6 +362,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -374,6 +396,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -406,6 +430,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -438,6 +464,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -470,6 +498,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -502,6 +532,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -534,6 +566,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -566,6 +600,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -598,6 +634,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -630,6 +668,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -662,6 +702,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -694,6 +736,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -726,6 +770,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -758,6 +804,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -790,6 +838,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -822,6 +872,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -854,6 +906,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -886,6 +940,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -918,6 +974,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -950,6 +1008,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -982,6 +1042,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1014,6 +1076,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1046,6 +1110,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1078,6 +1144,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1110,6 +1178,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1142,6 +1212,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1174,6 +1246,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1206,6 +1280,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1238,6 +1314,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1270,6 +1348,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1302,6 +1382,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1334,6 +1416,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1366,6 +1450,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1398,6 +1484,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1430,6 +1518,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1462,6 +1552,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1494,6 +1586,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1526,6 +1620,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1558,6 +1654,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1590,6 +1688,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1622,6 +1722,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1654,6 +1756,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
@@ -1686,6 +1790,8 @@ presubmits: # runs on PRs
           - image: "gcr.io/k8s-prow/checkconfig:v20230613-9df263832f"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "checkconfig"
             args:
