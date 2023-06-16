@@ -1,0 +1,46 @@
+presubmits: # runs on PRs
+  kyma-project/busola:
+    - name: pull-busola-e2e-cluster-k3d
+      labels:
+        preset-k3d-enabled: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+      decorate: true
+      skip_if_only_changed: "*.md"
+      cluster: untrusted-workload
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
+            imagePullPolicy: Always
+            securityContext:
+              privileged: true
+            command:
+              - /init.sh
+            args:
+              - bash
+              - -c
+              - |
+                set -e
+                export CYPRESS_DOMAIN=http://localhost:8080
+                export NO_COLOR=1
+                k3d kubeconfig get k3d > tests/integration/fixtures/kubeconfig.yaml
+                k3d kubeconfig get k3d > tests/integration/fixtures/kubeconfig-k3s.yaml
+                npm ci && npm start> $ARTIFACTS/busola.log &
+                echo "waiting for server to be up..."
+                while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' "$CYPRESS_DOMAIN")" != "200" ]]; do sleep 5; done
+                sleep 10
+                cd tests/integration
+                npm ci && npm run "test:$SCOPE"
+            env:
+              - name: SCOPE
+                value: "cluster"
+            resources:
+              requests:
+                memory: 4Gi
+                cpu: 2
+              limits:
+                memory: 6Gi
+                cpu: 3
