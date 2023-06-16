@@ -27,7 +27,7 @@ require (
 	github.com/imdario/mergo v0.3.16
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.3.5
-	github.com/onsi/ginkgo/v2 v2.10.0
+	github.com/onsi/ginkgo/v2 v2.11.0
 	github.com/onsi/gomega v1.27.8
 	github.com/pkg/errors v0.9.1
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
@@ -54,7 +54,7 @@ require (
 
 require (
 	github.com/tektoncd/pipeline v0.36.0
-	k8s.io/test-infra v0.0.0-20230615174619-f123d38132bf
+	k8s.io/test-infra v0.0.0-20230616182819-e730b6076907
 )
 
 require (
