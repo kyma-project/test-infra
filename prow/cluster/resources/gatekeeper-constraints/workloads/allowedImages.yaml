@@ -1,0 +1,39 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: k8sWhitelistedImages
+metadata:
+  name: k8senforcewhitelistedimages
+spec:
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    images:
+      # AWS Internal ECR registries
+      - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo
+      # AWS Public Registries
+      - 888888888888.dkr.ecr.us-west-2.amazonaws.com/
+      - 888888888888.dkr.ecr.us-east-1.amazonaws.com/
+      # Images used by the infrastructure services inside the kubernetes cluster
+      - amazon/aws-node-termination-handler
+      - amazon/aws-alb-ingress-controller
+      - amazon/aws-efs-csi-driver
+      - amazon/cloudwatch-agent
+      - docker.io/amazon/aws-alb-ingress-controller
+      - nvidia/k8s-device-plugin
+      - k8s.gcr.io/autoscaling/cluster-autoscaler
+      - k8s.gcr.io/metrics-server-amd64
+      - quay.io/coreos/kube-state-metrics
+      - quay.io/kubernetes-ingress-controller/nginx-ingress-controller
+      - kubernetesui/dashboard
+      - kubernetesui/metrics-scraper
+      - jtblin/kube2iam
+      - grafana/grafana
+      - prom/alertmanager
+      - prom/prometheus
+      - openpolicyagent/gatekeeper
+      # Images for support
+      - amazon/aws-cli
+      - radial/busyboxplus
+      - docker.io/radial/busyboxplus
+      - busybox
