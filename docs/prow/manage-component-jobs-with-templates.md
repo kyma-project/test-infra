@@ -88,7 +88,7 @@ Follow these steps:
    ```Makefile
    APP_NAME = central-application-gateway
    APP_PATH = components/$(APP_NAME)
-   BUILDPACK = eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20210607-b7e95d8b
+   BUILDPACK = europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20210607-b7e95d8b
    SCRIPTS_DIR = $(realpath $(shell pwd)/../..)/common/makefiles
    
    override ENTRYPOINT = cmd/applicationgateway/

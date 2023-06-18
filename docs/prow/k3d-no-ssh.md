@@ -46,7 +46,7 @@ periodics:
         base_ref: branch
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759
+        - image: europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230119-993f0759
           command:
             - ci/test.sh
           securityContext:
@@ -85,7 +85,7 @@ periodics:
         base_ref: branch
     spec:
       containers:
-        - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759
+        - image: europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230119-993f0759
           command:
             - /bin/bash
           args:
