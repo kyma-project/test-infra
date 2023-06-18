@@ -110,7 +110,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -129,4 +129,3 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  

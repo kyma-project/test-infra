@@ -18,7 +18,7 @@ func TestLoadSecurityConfig(t *testing.T) {
 			WantErr: false,
 			ExpectedConfig: &SecurityConfig{
 				ModuleName: "test-infra",
-				Images:     []string{"eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"},
+				Images:     []string{"europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"},
 				Whitesource: Whitesource{
 					Language:    "golang-mod",
 					SubProjects: true,
@@ -27,7 +27,7 @@ func TestLoadSecurityConfig(t *testing.T) {
 			},
 			FileContent: `module-name: test-infra
 protecode:
-  - eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db
+  - europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db
 whitesource:
   language: golang-mod
   subprojects: true

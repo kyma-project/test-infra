@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
             command:
@@ -82,7 +82,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -114,7 +114,7 @@ postsubmits: # runs on main
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
             command:
@@ -155,7 +155,7 @@ postsubmits: # runs on main
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
             command:
@@ -216,7 +216,7 @@ postsubmits: # runs on main
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
             command:
@@ -232,4 +232,3 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  

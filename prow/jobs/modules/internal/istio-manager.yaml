@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "make"
             args:
@@ -240,7 +240,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "make"
             args:
@@ -377,4 +377,3 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  

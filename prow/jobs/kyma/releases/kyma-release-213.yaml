@@ -34,7 +34,7 @@ presubmits: # runs on PRs
           base_ref: release-2.13
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -86,7 +86,7 @@ postsubmits: # runs on main
           base_ref: release-2.13
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -141,7 +141,7 @@ postsubmits: # runs on main
           base_ref: release-2.13
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -228,7 +228,7 @@ periodics: # runs on schedule
           base_ref: release-2.13
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:

@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             command:
               - "prow/scripts/validate-scripts.sh"
             resources:
@@ -46,7 +46,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
             command:
@@ -86,7 +86,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
             command:
@@ -126,7 +126,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
             command:
@@ -167,7 +167,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
             command:
@@ -199,7 +199,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             command:
               - "/bin/bash"
             args:
@@ -209,4 +209,3 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
-  

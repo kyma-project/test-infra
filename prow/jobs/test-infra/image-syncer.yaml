@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
             command:
@@ -64,7 +64,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
             command:
@@ -107,7 +107,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
             command:
@@ -126,4 +126,3 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  

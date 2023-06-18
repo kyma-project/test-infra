@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "go"
             args:
@@ -68,4 +68,3 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  

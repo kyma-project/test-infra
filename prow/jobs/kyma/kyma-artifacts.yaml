@@ -34,7 +34,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -80,7 +80,7 @@ presubmits: # runs on PRs
           base_ref: release-2.15
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -126,7 +126,7 @@ presubmits: # runs on PRs
           base_ref: release-2.14
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -172,7 +172,7 @@ presubmits: # runs on PRs
           base_ref: release-2.13
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -218,7 +218,7 @@ presubmits: # runs on PRs
           base_ref: release-2.16
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -269,7 +269,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -316,7 +316,7 @@ postsubmits: # runs on main
           base_ref: release-2.15
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -363,7 +363,7 @@ postsubmits: # runs on main
           base_ref: release-2.14
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -410,7 +410,7 @@ postsubmits: # runs on main
           base_ref: release-2.13
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -457,7 +457,7 @@ postsubmits: # runs on main
           base_ref: release-2.16
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -473,4 +473,3 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  

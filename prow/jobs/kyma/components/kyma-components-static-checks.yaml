@@ -45,7 +45,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -74,7 +74,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -128,7 +128,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -182,7 +182,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -235,7 +235,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -289,7 +289,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "/bin/sh"
             args:
@@ -299,4 +299,3 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
-  

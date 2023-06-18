@@ -88,7 +88,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -267,4 +267,3 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
-

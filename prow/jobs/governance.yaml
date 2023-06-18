@@ -29,7 +29,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -77,7 +77,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -125,7 +125,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -173,7 +173,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
             command:
@@ -221,7 +221,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -259,7 +259,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db"
             command:
               - "hack/verify-md.sh"
             resources:
@@ -295,7 +295,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -343,7 +343,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -393,7 +393,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -441,7 +441,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -488,7 +488,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -538,7 +538,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -589,7 +589,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -639,7 +639,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -689,7 +689,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -739,7 +739,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
             command:
@@ -764,6 +764,3 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  
-  
-  

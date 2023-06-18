@@ -34,7 +34,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -87,7 +87,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -140,7 +140,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -193,7 +193,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -246,7 +246,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -299,7 +299,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -352,7 +352,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -405,7 +405,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -460,7 +460,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -513,7 +513,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -566,7 +566,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -621,7 +621,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -674,7 +674,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -727,7 +727,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -776,7 +776,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -831,7 +831,7 @@ periodics: # runs on schedule
           base_ref: release-2.15
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -884,7 +884,7 @@ periodics: # runs on schedule
           base_ref: release-2.15
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -940,7 +940,7 @@ periodics: # runs on schedule
           base_ref: release-2.14
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -993,7 +993,7 @@ periodics: # runs on schedule
           base_ref: release-2.14
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
             command:
@@ -1014,4 +1014,3 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-  

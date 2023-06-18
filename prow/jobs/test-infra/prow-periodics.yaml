@@ -27,7 +27,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/markdown-index:v20230404-24c76bf3"
             command:
               - "/markdown-index"
             args:
@@ -217,4 +217,3 @@ periodics: # runs on schedule
             args:
               - "--config=prow/autobump-config/test-infra-autobump-config.yaml"
               - "--labels-override=skip-review,area/ci,kind/chore"
-  
