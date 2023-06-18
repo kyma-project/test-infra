@@ -107,3 +107,4 @@ postsubmits: # runs on main
           - name: sa-kyma-artifacts
             secret:
               secretName: sa-kyma-artifacts
+  
