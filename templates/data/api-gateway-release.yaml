@@ -7,7 +7,7 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -91,7 +91,7 @@ templates:
               - jobConfig:
                   name: rel-api-gateway-custom-domain-integration-gcp
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
-                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
                   privileged: false
                   cluster: untrusted-workload
                   branches:
@@ -128,7 +128,7 @@ templates:
               - jobConfig:
                   name: rel-api-gateway-custom-domain-integration-aws
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
-                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
                   privileged: false
                   cluster: untrusted-workload
                   branches:

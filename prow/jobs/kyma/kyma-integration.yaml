@@ -42,7 +42,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -99,7 +99,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -156,7 +156,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -213,7 +213,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -263,7 +263,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -318,7 +318,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -372,7 +372,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -423,7 +423,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -474,7 +474,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -526,7 +526,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -591,7 +591,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -648,7 +648,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -705,7 +705,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -763,7 +763,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -1244,7 +1244,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -1313,7 +1313,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -1372,7 +1372,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -1427,7 +1427,7 @@ periodics: # runs on schedule
           channel: huskies-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
@@ -1489,7 +1489,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
             command:
