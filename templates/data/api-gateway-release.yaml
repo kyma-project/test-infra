@@ -49,7 +49,7 @@ templates:
                   annotations:
                     owner: goat
                     description: builds webhook certificates image
-                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
