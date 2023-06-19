@@ -231,11 +231,10 @@ templates:
                     - vm_job_labels
               - jobConfig:
                   name: nightly-istio-performance-test-gcp
+                  cron: "0 0 * * *"
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
-                  always_run: true
                   command: "make"
                   args:
                     - "gardener-perf-test"
@@ -256,9 +255,11 @@ templates:
                     DISK_TYPE: "pd-standard"
                     SCALER_MAX: 20
                     SCALER_MIN: 3
+                  reporter_config:
+                    slack:
+                      channel: goat-int
                 inheritedConfigs:
                   global:
-                    - jobConfig_presubmit
                     - jobConfig_default
                     - image_kyma-integration
                   local:
