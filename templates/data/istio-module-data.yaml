@@ -65,7 +65,7 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio module image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -92,7 +92,7 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio module image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -119,7 +119,7 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio operator image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   args:
                     - "--name=istio-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -136,7 +136,7 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio operator image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -157,7 +157,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio operator integration tests on Gardener GCP cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   always_run: true
                   command: "make"
                   args:
@@ -191,7 +191,7 @@ templates:
                   annotations:
                     owner: goat
                     description: run istio operator integration tests on k3d
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   optional: "true"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
@@ -212,7 +212,7 @@ templates:
                   annotations:
                     owner: goat
                     description: run istio operator integration tests on k3d
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   optional: "true"
                   env:
                     # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
@@ -261,6 +261,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
+                    - jobConfig_presubmit
                     - image_kyma-integration
                   local:
                     - job_default
