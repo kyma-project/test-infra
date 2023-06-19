@@ -222,9 +222,10 @@ function eventing::pre_upgrade_test_fast_integration() {
 
     if [[ "${KYMA_BRANCH}" ]]; then
       log::info "Cloning kyma repository and checking out branch:${KYMA_BRANCH}"
-      git clone https://github.com/kyma-project/kyma ~/.kyma_branch
+      git clone https://github.com/mfaizanse/kyma ~/.kyma_branch
       pushd ~/.kyma_branch
-      git checkout "${KYMA_BRANCH}"
+      git checkout "fi-evet-test-check"
+      git status
       popd
 
       pushd ~/.kyma_branch/tests/fast-integration
