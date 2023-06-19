@@ -261,7 +261,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_presubmit
+                    - jobConfig_periodic
                     - image_kyma-integration
                   local:
                     - job_default

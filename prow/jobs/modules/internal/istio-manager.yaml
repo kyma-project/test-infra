@@ -214,65 +214,6 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: nightly-istio-performance-test-gcp
-      annotations:
-        description: "runs istio performance tests on Gardener GCP cluster"
-        owner: "goat"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "nightly-istio-performance-test-gcp"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-cluster-version: "true"
-        preset-gardener-gcp-kyma-integration: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-kyma-dns-serviceuser: "true"
-      optional: false
-      skip_report: false
-      decorate: true
-      decoration_config:
-        grace_period: 600000000000
-        timeout: 14400000000000
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            command:
-              - "make"
-            args:
-              - "gardener-perf-test"
-            env:
-              - name: DISK_SIZE
-                value: "50"
-              - name: DISK_TYPE
-                value: "pd-standard"
-              - name: GARDENER_REGION
-                value: "europe-west3"
-              - name: GARDENER_ZONES
-                value: "europe-west3-c,europe-west3-b,europe-west3-a"
-              - name: MACHINE_TYPE
-                value: "n2-standard-8"
-              - name: SCALER_MAX
-                value: "20"
-              - name: SCALER_MIN
-                value: "3"
-              - name: TEST_SA_ACCESS_KEY_PATH
-                value: "/sa-kyma-dns-serviceuser/service-account.json"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/istio:
@@ -429,6 +370,64 @@ postsubmits: # runs on main
               requests:
                 memory: 200Mi
                 cpu: 80m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+  
+periodics: # runs on schedule
+    - name: nightly-istio-performance-test-gcp
+      annotations:
+        description: "runs istio performance tests on Gardener GCP cluster"
+        owner: "goat"
+        pipeline.trigger: "periodic"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "nightly-istio-performance-test-gcp"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-cluster-version: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-kyma-dns-serviceuser: "true"
+      cron: "0 0 * * *"
+      optional: false
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
+      cluster: untrusted-workload
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            command:
+              - "make"
+            args:
+              - "gardener-perf-test"
+            env:
+              - name: DISK_SIZE
+                value: "50"
+              - name: DISK_TYPE
+                value: "pd-standard"
+              - name: GARDENER_REGION
+                value: "europe-west3"
+              - name: GARDENER_ZONES
+                value: "europe-west3-c,europe-west3-b,europe-west3-a"
+              - name: MACHINE_TYPE
+                value: "n2-standard-8"
+              - name: SCALER_MAX
+                value: "20"
+              - name: SCALER_MIN
+                value: "3"
+              - name: TEST_SA_ACCESS_KEY_PATH
+                value: "/sa-kyma-dns-serviceuser/service-account.json"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
