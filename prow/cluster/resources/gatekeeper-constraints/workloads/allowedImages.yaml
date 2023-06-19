@@ -1,39 +1,33 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
-kind: k8sWhitelistedImages
+kind: K8sAllowedImages
 metadata:
-  name: k8senforcewhitelistedimages
+  name: allow-only-kyma-trusted-repos
 spec:
+  enforcementAction: warn
   match:
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
   parameters:
+    namespaces:
+      - "default"
     images:
-      # AWS Internal ECR registries
-      - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo
-      # AWS Public Registries
-      - 888888888888.dkr.ecr.us-west-2.amazonaws.com/
-      - 888888888888.dkr.ecr.us-east-1.amazonaws.com/
-      # Images used by the infrastructure services inside the kubernetes cluster
-      - amazon/aws-node-termination-handler
-      - amazon/aws-alb-ingress-controller
-      - amazon/aws-efs-csi-driver
-      - amazon/cloudwatch-agent
-      - docker.io/amazon/aws-alb-ingress-controller
-      - nvidia/k8s-device-plugin
-      - k8s.gcr.io/autoscaling/cluster-autoscaler
-      - k8s.gcr.io/metrics-server-amd64
-      - quay.io/coreos/kube-state-metrics
-      - quay.io/kubernetes-ingress-controller/nginx-ingress-controller
-      - kubernetesui/dashboard
-      - kubernetesui/metrics-scraper
-      - jtblin/kube2iam
-      - grafana/grafana
-      - prom/alertmanager
-      - prom/prometheus
-      - openpolicyagent/gatekeeper
-      # Images for support
-      - amazon/aws-cli
-      - radial/busyboxplus
-      - docker.io/radial/busyboxplus
-      - busybox
+      - "docker.io/aquasec/trivy"
+      - "docker.io/zricethezav/gitleaks"
+      - "docker.io/maven"
+      - "gcr.io/k8s-prow/checkconfig"
+      - "gcr.io/k8s-prow/generic-autobumper"
+      - "gcr.io/k8s-prow/label_sync"
+      - "gcr.io/k8s-prow/branchprotector"
+      - "gcr.io/k8s-prow/commenter"
+      - "gcr.io/k8s-prow/gencred"
+      - "eu.gcr.io/kyma-project"
+      - "europe-docker.pkg.dev/kyma-project"
+      - "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev"
+      - "eu.gcr.io/sap-kyma-neighbors-dev"
+#      - "gcr.io"
+#      - "eu.gcr.io"
+#      - "us.gcr.io"
+#      - "asia.gcr.io"
+#      - "docker.wdf.sap.corp"
+#      - "int.repositories.cloud.sap"

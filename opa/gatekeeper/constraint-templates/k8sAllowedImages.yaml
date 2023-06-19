@@ -1,0 +1,47 @@
+apiVersion: templates.gatekeeper.sh/v1beta1
+kind: ConstraintTemplate
+metadata:
+  name: k8sallowedimages
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sAllowedImages
+      validation:
+        # Schema for the `parameters` field
+        openAPIV3Schema:
+          properties:
+            images:
+              type: array
+              items:
+                type: string
+                description: A list of allowed image URLs. Each image URL must be a prefix of the image URL used in the Pod spec.
+            namespaces:
+              type: array
+              items:
+                type: string
+                description: A list of namespaces to which the constraint applies. If empty, the constraint applies to all namespaces.
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8sallowedimages
+        
+        violation[{"msg": msg}] {
+          namespaces := object.get(input.parameters, "namespaces", [".*"])
+          not regex.match(namespaces[_], input.review.object.metadata.namespace)
+          container := input.review.object.spec.containers[_]
+          not strings.any_prefix_match(input.parameters.images, container.image)
+          #satisfied := [good | repo = input.parameters.images[_] ; good = startswith(container.image, repo)]
+          #not any(satisfied)
+          msg := sprintf("container <%v> in namespace <%v> has an invalid image repo <%v>, allowed repos are %v", [container.name, container.image, input.review.object.metadata.namespace, input.parameters.images])
+        }
+        
+        violation[{"msg": msg}] {
+          namespaces := object.get(input.parameters, "namespaces", [".*"])
+          not regex.match(namespaces[_], input.review.object.metadata.namespace)
+          container := input.review.object.spec.initContainers[_]
+          not strings.any_prefix_match(input.parameters.images, container.image)
+          #satisfied := [good | repo = input.parameters.images[_] ; good = startswith(container.image, repo)]
+          #not any(satisfied)
+          msg := sprintf("container <%v> in namespace <%v> has an invalid image repo <%v>, allowed repos are %v", [container.name, container.image, input.review.object.metadata.namespace, input.parameters.images])
+        }
