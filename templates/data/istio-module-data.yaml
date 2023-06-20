@@ -61,7 +61,7 @@ templates:
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
           buildpack_go:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230525-75242ac0"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
