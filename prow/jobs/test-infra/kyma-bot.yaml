@@ -34,7 +34,9 @@ presubmits: # runs on PRs
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "usersmapchecker"
             resources:

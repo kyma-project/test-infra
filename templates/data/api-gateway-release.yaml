@@ -23,10 +23,10 @@ templates:
             jobs:
               - jobConfig:
                   name: rel-api-gateway-build
+                  always_run: true
                   annotations:
                     owner: goat
                     description: builds api-gateway image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
@@ -46,10 +46,10 @@ templates:
                     - job_post
               - jobConfig:
                   name: rel-api-gateway-webhook-certificates-build
+                  always_run: true
                   annotations:
                     owner: goat
                     description: builds webhook certificates image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
@@ -69,10 +69,10 @@ templates:
                     - job_post
               - jobConfig:
                   name: rel-api-gateway-goreleaser
+                  always_run: true
                   annotations:
                     owner: goat
                     description: creates api-gateway GitHub release with artifacts
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   labels:
@@ -90,9 +90,10 @@ templates:
                     - job_post
               - jobConfig:
                   name: rel-api-gateway-custom-domain-integration-gcp
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  always_run: true
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-                  privileged: false
+                  securityContext:
+                    privileged: false
                   cluster: untrusted-workload
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
@@ -127,9 +128,10 @@ templates:
                     - job_post
               - jobConfig:
                   name: rel-api-gateway-custom-domain-integration-aws
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  always_run: true
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-                  privileged: false
+                  securityContext:
+                    privileged: false
                   cluster: untrusted-workload
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'

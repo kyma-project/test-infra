@@ -5,7 +5,8 @@ templates:
         localSets:
           job_spec:
             command: make
-            privileged: "false"
+            securityContext:
+              privileged: "false"
             run_if_changed: "^common/"
         jobConfigs:
           - repoName: kyma-project/kyma

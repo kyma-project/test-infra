@@ -110,5 +110,6 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
+                    - "unprivileged"
                   local:
                     - testing

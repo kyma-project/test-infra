@@ -5,7 +5,10 @@ templates:
         localSets:
           job_default:
             optional: "false"
-            privileged: false
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
           job_post:
             slack_channel: goat-int
           job_build:
@@ -163,7 +166,7 @@ templates:
                   always_run: true
                   command: "make"
                   args:
-                  - "gardener-istio-integration-test"
+                    - "gardener-istio-integration-test"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
