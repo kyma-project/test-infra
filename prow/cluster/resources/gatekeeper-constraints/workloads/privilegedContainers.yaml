@@ -8,7 +8,7 @@ spec:
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
-    nanespaces:
+    namespaces:
       - "default"
   parameters:
     exemptImages:
