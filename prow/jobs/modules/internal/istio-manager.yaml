@@ -431,6 +431,10 @@ periodics: # runs on schedule
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "make"
             args:
