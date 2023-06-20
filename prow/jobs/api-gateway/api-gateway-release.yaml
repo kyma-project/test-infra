@@ -14,6 +14,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
+      always_run: true
       optional: false
       skip_report: false
       decorate: true
@@ -68,6 +69,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
+      always_run: true
       optional: false
       skip_report: false
       decorate: true
@@ -121,6 +123,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "rel-api-gateway-goreleaser"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
+      always_run: true
       optional: false
       skip_report: false
       decorate: true
@@ -162,6 +165,7 @@ postsubmits: # runs on main
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-kyma-dns-serviceuser: "true"
+      always_run: true
       optional: false
       skip_report: false
       decorate: true
@@ -226,6 +230,7 @@ postsubmits: # runs on main
         preset-gardener-aws-kyma-integration: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-kyma-dns-serviceuser: "true"
+      always_run: true
       optional: false
       skip_report: false
       decorate: true

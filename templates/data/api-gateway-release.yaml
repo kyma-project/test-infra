@@ -23,6 +23,7 @@ templates:
             jobs:
               - jobConfig:
                   name: rel-api-gateway-build
+                  always_run: true
                   annotations:
                     owner: goat
                     description: builds api-gateway image
@@ -45,6 +46,7 @@ templates:
                     - job_post
               - jobConfig:
                   name: rel-api-gateway-webhook-certificates-build
+                  always_run: true
                   annotations:
                     owner: goat
                     description: builds webhook certificates image
@@ -67,6 +69,7 @@ templates:
                     - job_post
               - jobConfig:
                   name: rel-api-gateway-goreleaser
+                  always_run: true
                   annotations:
                     owner: goat
                     description: creates api-gateway GitHub release with artifacts
@@ -87,6 +90,7 @@ templates:
                     - job_post
               - jobConfig:
                   name: rel-api-gateway-custom-domain-integration-gcp
+                  always_run: true
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
                   securityContext:
                     privileged: false
@@ -124,6 +128,7 @@ templates:
                     - job_post
               - jobConfig:
                   name: rel-api-gateway-custom-domain-integration-aws
+                  always_run: true
                   image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
                   securityContext:
                     privileged: false
