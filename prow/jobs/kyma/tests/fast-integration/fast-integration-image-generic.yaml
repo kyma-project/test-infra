@@ -37,7 +37,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -86,7 +86,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -135,7 +135,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -184,7 +184,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -238,7 +238,7 @@ postsubmits: # runs on main
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -288,7 +288,7 @@ postsubmits: # runs on main
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -338,7 +338,7 @@ postsubmits: # runs on main
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -388,7 +388,7 @@ postsubmits: # runs on main
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:

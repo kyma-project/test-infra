@@ -98,7 +98,7 @@
                 {{- range $key, $value := .JobConfig.securityContext.seccompProfile}}
                 {{$key}}: {{$value}}
                 {{- end}}
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: {{ default "false" .JobConfig.securityContext.privileged }}
               {{- end}}
             command:
               {{- if .JobConfig.command }}

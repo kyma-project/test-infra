@@ -39,7 +39,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
             resources:
@@ -88,7 +88,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
             resources:
@@ -137,7 +137,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
             resources:
@@ -186,7 +186,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
             resources:
@@ -235,7 +235,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
             resources:
@@ -289,7 +289,7 @@ postsubmits: # runs on main
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
             resources:
@@ -339,7 +339,7 @@ postsubmits: # runs on main
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
             resources:
@@ -389,7 +389,7 @@ postsubmits: # runs on main
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
             resources:
@@ -439,7 +439,7 @@ postsubmits: # runs on main
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
             resources:
@@ -489,7 +489,7 @@ postsubmits: # runs on main
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kyma-artifacts.sh"
             resources:

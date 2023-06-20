@@ -34,7 +34,7 @@ presubmits:
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
         tolerations:
           - key: dedicated
             operator: Equal

@@ -34,7 +34,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -85,7 +85,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -136,7 +136,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -187,7 +187,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/metadata-governance.sh"
             args:
@@ -238,7 +238,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -320,7 +320,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -371,7 +371,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -424,7 +424,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -475,7 +475,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -525,7 +525,7 @@ periodics: # runs on schedule
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -578,7 +578,7 @@ periodics: # runs on schedule
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -632,7 +632,7 @@ periodics: # runs on schedule
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -685,7 +685,7 @@ periodics: # runs on schedule
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -738,7 +738,7 @@ periodics: # runs on schedule
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -791,7 +791,7 @@ periodics: # runs on schedule
               privileged: true
               seccompProfile:
                 type: Unconfined
-              allowPrivilegeEscalation: false
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
