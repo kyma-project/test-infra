@@ -4,14 +4,15 @@ import (
 	"bufio"
 	"context"
 	"fmt"
-	"github.com/kyma-project/test-infra/development/markdown-index/bumper"
-	"github.com/sirupsen/logrus"
-	flag "github.com/spf13/pflag"
 	"log"
 	"os"
 	"path/filepath"
-	"sigs.k8s.io/yaml"
 	"strings"
+
+	"github.com/kyma-project/test-infra/development/github/pkg/bumper"
+	"github.com/sirupsen/logrus"
+	flag "github.com/spf13/pflag"
+	"sigs.k8s.io/yaml"
 )
 
 var _ bumper.PRHandler = (*client)(nil)
@@ -22,10 +23,10 @@ type client struct {
 
 // Changes returns a slice of functions, each one does some stuff, and
 // returns commit message for the changes
-func (c *client) Changes() []func(context.Context) (string, error) {
-	return []func(context.Context) (string, error){
-		func(ctx context.Context) (string, error) {
-			return "Bumping index.md", nil
+func (c *client) Changes() []func(context.Context) (string, []string, error) {
+	return []func(context.Context) (string, []string, error){
+		func(ctx context.Context) (string, []string, error) {
+			return "Bumping index.md", []string{"docs/index.md"}, nil
 		},
 	}
 }

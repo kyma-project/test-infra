@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/kyma-project/test-infra/development/image-detector/bumper"
+	"github.com/kyma-project/test-infra/development/github/pkg/bumper"
 	"github.com/kyma-project/test-infra/development/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/development/pkg/securityconfig"
 	"github.com/spf13/cobra"
@@ -205,10 +205,10 @@ type client struct {
 
 // Changes returns a slice of functions, each one does some stuff, and
 // returns commit message for the changes
-func (c *client) Changes() []func(context.Context) (string, error) {
-	return []func(context.Context) (string, error){
-		func(ctx context.Context) (string, error) {
-			return "Bumping sec-scanner-config.yml", nil
+func (c *client) Changes() []func(context.Context) (string, []string, error) {
+	return []func(context.Context) (string, []string, error){
+		func(ctx context.Context) (string, []string, error) {
+			return "Bumping sec-scanner-config.yml", []string{"sec-scanner-config.yml"}, nil
 		},
 	}
 }
