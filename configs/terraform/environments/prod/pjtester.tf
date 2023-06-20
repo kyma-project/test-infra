@@ -1,4 +1,7 @@
 # Secure access to pjtester secret over k8s API.
+# Only external-secrets controller need access to this secret over k8s API.
+# Prowjobs access this secret as env vars or mounted files. This is controlled by OPA Gatekeeper.
+
 resource "kubernetes_cluster_role" "access_pjtester_secrets_trusted_workloads" {
   provider = kubernetes.trusted_workload_k8s_cluster
 
@@ -27,8 +30,7 @@ resource "kubernetes_cluster_role_binding" "access_pjtester_secrets_trusted_work
   }
   subject {
     kind      = "ServiceAccount"
-    namespace = var.external_secrets_sa_trusted_cluster.namespace
-    name      = var.external_secrets_sa_trusted_cluster.name
-    api_group = "rbac.authorization.k8s.io"
+    namespace = var.external_secrets_k8s_sa_trusted_cluster.namespace
+    name      = var.external_secrets_k8s_sa_trusted_cluster.name
   }
 }

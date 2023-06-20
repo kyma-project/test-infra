@@ -1,4 +1,7 @@
 # Secure access to signify dev and prod secrets over k8s API.
+# Only external-secrets controller need access to these secrets over k8s API.
+# Prowjobs access these secrets as env vars or mounted files. This is controlled by OPA Gatekeeper.
+
 resource "kubernetes_cluster_role" "access_signify_secrets_trusted_workloads" {
   provider = kubernetes.trusted_workload_k8s_cluster
 
@@ -42,9 +45,8 @@ resource "kubernetes_cluster_role_binding" "access_signify_prod_secret_trusted_w
   }
   subject {
     kind      = "ServiceAccount"
-    namespace = var.external_secrets_sa_trusted_cluster.namespace
-    name      = var.external_secrets_sa_trusted_cluster.name
-    api_group = "rbac.authorization.k8s.io"
+    namespace = var.external_secrets_k8s_sa_trusted_cluster.namespace
+    name      = var.external_secrets_k8s_sa_trusted_cluster.name
   }
 }
 resource "kubernetes_cluster_role_binding" "access_signify_prod_secret_untrusted_workloads" {
@@ -60,8 +62,7 @@ resource "kubernetes_cluster_role_binding" "access_signify_prod_secret_untrusted
   }
   subject {
     kind      = "ServiceAccount"
-    namespace = var.external_secrets_sa_trusted_cluster.namespace
-    name      = var.external_secrets_sa_trusted_cluster.name
-    api_group = "rbac.authorization.k8s.io"
+    namespace = var.external_secrets_k8s_sa_trusted_cluster.namespace
+    name      = var.external_secrets_k8s_sa_trusted_cluster.name
   }
 }

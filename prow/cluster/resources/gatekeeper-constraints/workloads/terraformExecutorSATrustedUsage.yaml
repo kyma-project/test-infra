@@ -2,7 +2,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: ServiceAccountTrustedUsage
 metadata:
-  name: tekton-image-builder-sa-trusted-usage
+  name: terraform-executor-sa-trusted-usage
 spec:
   enforcementAction: warn
   match:

@@ -148,7 +148,7 @@ variable "workloads_constraints_path" {
   description = "Path to both workload clusters constraints directory."
 }
 
-variable "external_secrets_sa_trusted_cluster" {
+variable "external_secrets_k8s_sa_trusted_cluster" {
   type = object({
     name      = string
     namespace = string
@@ -158,13 +158,13 @@ variable "external_secrets_sa_trusted_cluster" {
     namespace = "external-secrets"
   }
   description = <<-EOT
-    Details of external secrets service account.
+    Details of external secrets service account. This is service account used as identity for external secrets controller.
     name: Name of the external secret controller service account.
     namespace: Namespace of the external secret controller service account.
     EOT
 }
 
-variable "external_secrets_sa_untrusted_cluster" {
+variable "external_secrets_k8s_sa_untrusted_cluster" {
   type = object({
     name      = string
     namespace = string
@@ -174,7 +174,7 @@ variable "external_secrets_sa_untrusted_cluster" {
     namespace = "external-secrets"
   }
   description = <<-EOT
-    Details of external secrets service account.
+    Details of external secrets service account. This is service account used as identity for external secrets controller.
     name: Name of the external secret controller service account.
     namespace: Namespace of the external secret controller service account.
     EOT
