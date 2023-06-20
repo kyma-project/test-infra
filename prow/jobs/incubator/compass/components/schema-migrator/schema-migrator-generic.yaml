@@ -32,6 +32,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -104,6 +105,7 @@ postsubmits: # runs on main
               privileged: true
               seccompProfile:
                 type: Unconfined
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:

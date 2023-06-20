@@ -101,6 +101,7 @@
                 {{- range $key, $value := .JobConfig.securityContext.seccompProfile}}
                 {{$key}}: {{$value}}
                 {{- end}}
+              allowPrivilegeEscalation: false
               {{- end}}
             {{- if .JobConfig.workingDir}}
             workingDir: {{quote .JobConfig.workingDir}}

@@ -25,6 +25,7 @@ presubmits:
               privileged: true
               seccompProfile:
                 type: Unconfined
+              allowPrivilegeEscalation: false
             args:
               - -c
               - |
@@ -68,6 +69,7 @@ presubmits:
               privileged: true
               seccompProfile:
                 type: Unconfined
+              allowPrivilegeEscalation: false
             args:
               - -c
               - |
@@ -113,6 +115,7 @@ postsubmits:
               privileged: true
               seccompProfile:
                 type: Unconfined
+              allowPrivilegeEscalation: false
             args:
               - -c
               - |

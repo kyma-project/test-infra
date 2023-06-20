@@ -34,3 +34,4 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
+              allowPrivilegeEscalation: false
