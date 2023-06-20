@@ -6,7 +6,8 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  privileged: "false"
+                  securityContext:
+                    privileged: "false"
                   name: "pull-hide-tf-github-comments"
                   # Run on any change in terraform config files, terraform variable values files or resource yaml files.
                   run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'

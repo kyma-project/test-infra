@@ -20,7 +20,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
-        
+
               - jobConfig:
                   name: post-eventing-tools-build
                   labels:
@@ -55,3 +55,4 @@ templates:
                   global:
                     - testing
                     - "jobConfig_presubmit"
+                    - "unprivileged"

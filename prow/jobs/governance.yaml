@@ -32,6 +32,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -80,6 +82,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -128,6 +132,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -176,6 +182,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/metadata-governance.sh"
             args:
@@ -224,6 +232,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -260,6 +270,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "hack/verify-md.sh"
             resources:
@@ -298,6 +312,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -346,6 +362,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -396,6 +414,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -444,6 +464,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -491,6 +513,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -541,6 +565,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -592,6 +618,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -642,6 +670,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -692,6 +722,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:
@@ -742,6 +774,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             args:

@@ -48,6 +48,7 @@ templates:
                     - "extra_refs_test-infra"
                     {{- end}}
                     - "trusted_cluster"
+                    - "unprivileged"
           {{- end}}
           {{- end }}
           {{- end }}

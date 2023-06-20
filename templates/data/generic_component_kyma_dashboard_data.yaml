@@ -14,7 +14,7 @@ templates:
                   annotations:
                     owner: "hasselhoff"
                     description: "Kyma Dashboard Dev Job"
-                  labels: 
+                  labels:
                     preset-sa-kyma-push-images: "true"
                     preset-dind-enabled: "true"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
@@ -31,6 +31,7 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "extra_refs_test-infra"
+                    - "privileged_job"
                   preConfigs:
                     local:
                       - "unTrustedWorkload"
@@ -55,7 +56,7 @@ templates:
                   annotations:
                     owner: "hasselhoff"
                     description: "Kyma Dashboard Stage Job"
-                  labels: 
+                  labels:
                     preset-sa-kyma-push-images: "true"
                     preset-dind-enabled: "true"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
@@ -72,6 +73,7 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "extra_refs_test-infra"
+                    - "privileged_job"
                   preConfigs:
                     local:
                       - "unTrustedWorkload"
@@ -96,7 +98,7 @@ templates:
                   annotations:
                     owner: "hasselhoff"
                     description: "Kyma Dashboard Prod Job"
-                  labels: 
+                  labels:
                     preset-sa-kyma-push-images: "true"
                     preset-dind-enabled: "true"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
@@ -113,6 +115,7 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "extra_refs_test-infra"
+                    - "privileged_job"
                   preConfigs:
                     local:
                       - "unTrustedWorkload"

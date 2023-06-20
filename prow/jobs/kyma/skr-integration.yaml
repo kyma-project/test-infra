@@ -39,7 +39,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -96,7 +98,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -153,7 +157,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -210,7 +216,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -267,7 +275,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -325,7 +335,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -382,7 +394,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration-own-cluster.sh"
             env:

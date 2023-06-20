@@ -37,6 +37,8 @@ presubmits:
                 memory: 1Gi
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
         tolerations:
           - key: dedicated
             operator: Equal

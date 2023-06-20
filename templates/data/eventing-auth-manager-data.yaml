@@ -54,3 +54,4 @@ templates:
                     - testing
                     - "jobConfig_presubmit"
                     - "disable_testgrid"
+                    - "unprivileged"

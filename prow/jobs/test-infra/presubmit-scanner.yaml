@@ -21,6 +21,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -46,6 +50,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -71,6 +79,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -96,6 +108,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -121,6 +137,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -146,6 +166,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -171,6 +195,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -196,6 +224,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -221,6 +253,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -246,6 +282,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -271,6 +311,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -296,6 +340,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -321,6 +369,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -346,6 +398,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -371,6 +427,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -396,6 +456,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -421,6 +485,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -446,6 +514,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -471,6 +543,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -496,6 +572,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -521,6 +601,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -546,6 +630,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -571,6 +659,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -596,6 +688,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -621,6 +717,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -646,6 +746,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -671,6 +775,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -696,6 +804,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -721,6 +833,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -746,6 +862,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -771,6 +891,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -796,6 +920,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -821,6 +949,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -846,6 +978,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -871,6 +1007,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -896,6 +1036,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -921,6 +1065,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -946,6 +1094,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -971,6 +1123,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -996,6 +1152,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1021,6 +1181,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1046,6 +1210,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1071,6 +1239,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1096,6 +1268,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1121,6 +1297,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1146,6 +1326,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1171,6 +1355,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1196,6 +1384,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1221,6 +1413,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1246,6 +1442,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1271,6 +1471,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1296,6 +1500,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1321,6 +1529,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -1346,6 +1558,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
