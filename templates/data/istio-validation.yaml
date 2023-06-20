@@ -27,6 +27,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - linting
+                    - "unprivileged"
                   local:
                     - job_default
               - jobConfig:
@@ -42,5 +43,6 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
                   local:
                     - job_default

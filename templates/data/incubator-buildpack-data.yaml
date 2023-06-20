@@ -132,12 +132,14 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
           reconciler_nightly_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
-            privileged: false
+            securityContext:
+              privileged: false
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
           reconciler_nightly_cluster_jobConfig:
-            privileged: false
+            securityContext:
+              privileged: false
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             annotations:
               pipeline.platform: "gardener_gcp"
@@ -180,6 +182,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
               - jobConfig:
                   name: "pre-main-reconciler-lint"
                   optional: false
@@ -195,6 +198,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pre-main-reconciler-integration-k3d"
 
@@ -616,7 +620,7 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f
                   command: generic-autobumper
                   args:
                     - --config=/home/prow/go/src/github.com/kyma-project/test-infra/prow/autobump-config/control-plane-autobump-reconciler-config.yaml

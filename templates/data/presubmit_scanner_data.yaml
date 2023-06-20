@@ -31,5 +31,6 @@ templates:
                       global:
                         - "jobConfig_presubmit"
                         - "pubsub_labels"
+                        - "unprivileged"
           {{- end}}
           {{- end }}

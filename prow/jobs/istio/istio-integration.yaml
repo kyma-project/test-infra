@@ -23,6 +23,8 @@ presubmits:
             command: ["/bin/bash"]
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             args:
               - -c
               - |
@@ -33,6 +35,49 @@ presubmits:
                 k3d registry create registry.localhost --port 5000
                 k3d cluster create k3d --registry-use k3d-registry.localhost:5000
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
+                k3d cluster delete k3d
+            resources:
+              requests:
+                cpu: 1
+                memory: 1Gi
+              limits:
+                cpu: 1.5
+                memory: 2Gi
+    - name: pull-istio-integration-evaluation
+      annotations:
+        owner: goat
+        description: Runs integration suite for istio operator in evaluation profile
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-istio-integration-evaluation"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
+      cluster: untrusted-workload
+      decorate: true
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      spec:
+        hostAliases:
+          - ip: "127.0.0.1"
+            hostnames:
+              - "k3d-registry.localhost"
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
+            command: ["/bin/bash"]
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+            args:
+              - -c
+              - |
+                service docker start
+                echo "Waiting for Docker to be up..." && sleep 30
+                set -e
+                curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+                k3d registry create registry.localhost --port 5000
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=4g
+                IMG="k3d-registry.localhost:5000/istio-operator:latest" TEST_EVALUATION=TRUE make docker-build docker-push istio-integration-test
                 k3d cluster delete k3d
             resources:
               requests:
@@ -66,6 +111,8 @@ postsubmits:
             command: ["/bin/bash"]
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             args:
               - -c
               - |

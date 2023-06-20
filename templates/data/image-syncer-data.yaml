@@ -10,7 +10,8 @@ templates:
                   annotations:
                     owner: neighbors
                     description: "Validate sync images from external sources to Kyma owned registry"
-                  privileged: "false"
+                  securityContext:
+                    privileged: "false"
                   run_if_changed: "^(go.mod|go.sum|development/image-syncer)"
                   command: "make"
                   args:
@@ -35,7 +36,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - 'make -C development/image-syncer dry-run'
+                    - "make -C development/image-syncer dry-run"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -53,7 +54,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - 'make -C development/image-syncer run'
+                    - "make -C development/image-syncer run"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

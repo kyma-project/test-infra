@@ -5,7 +5,6 @@ templates:
         localSets:
           jobConfig_default:
             imagePullPolicy: "Always"
-            privileged: "false"
         jobConfigs:
           - repoName: kyma-project/lifecycle-manager
             jobs:

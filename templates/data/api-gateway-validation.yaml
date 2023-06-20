@@ -4,6 +4,10 @@ templates:
       - to: ../../prow/jobs/api-gateway/api-gateway-validation.yaml
         localSets:
           job_default:
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             optional: "false"
             path_alias: github.com/kyma-project/api-gateway
             labels:
@@ -35,6 +39,10 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-api-gateway-lint
+                  securityContext:
+                    privileged: false
+                    seccompProfile:
+                      type: RuntimeDefault
                   annotations:
                     owner: goat
                     description: runs api-gateway linting

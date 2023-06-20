@@ -37,6 +37,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -90,6 +92,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -143,6 +147,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -196,6 +202,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -249,6 +257,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -302,6 +312,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -355,6 +367,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -408,6 +422,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -463,6 +479,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -516,6 +534,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -569,6 +589,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -581,6 +603,8 @@ periodics: # runs on schedule
                 value: keda-manager
               - name: CREATE_SUBPROJECTS
                 value: "false"
+              - name: CUSTOM_EXCLUDE
+                value: "**/test/**"
               - name: SCAN_LANGUAGE
                 value: golang-mod
             resources:
@@ -622,6 +646,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -675,6 +701,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -728,6 +756,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -777,6 +807,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -832,6 +864,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -885,6 +919,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -941,6 +977,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -994,6 +1032,8 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
             securityContext:
               privileged: false
+              seccompProfile:
+                  type: RuntimeDefault
             command:
               - "bash"
             args:

@@ -30,6 +30,10 @@ templates:
               preset-dind-enabled: "true"
             request_memory: "10Mi"
             request_cpu: "100m"
+            securityContext:
+              privileged: "true"
+              seccompProfile:
+                type: "Unconfined"
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
             jobs:
@@ -201,6 +205,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "image_buildpack-golang"
+                    - "unprivileged"
                   local:
                     - "jobConfig_kyma_crd_docs"
               - jobConfig:

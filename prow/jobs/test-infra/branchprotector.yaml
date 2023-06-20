@@ -20,8 +20,8 @@ periodics:
     spec:
       containers:
         - name: branchprotector
-          image: gcr.io/k8s-prow/branchprotector:v20230605-b63f6f76cb
-          command: [ "branchprotector" ]
+          image: gcr.io/k8s-prow/branchprotector:v20230613-9df263832f
+          command: ["branchprotector"]
           args:
             - --config-path=prow/config.yaml
             - --job-config-path=prow/jobs
@@ -33,6 +33,10 @@ periodics:
             - mountPath: /etc/github
               name: oauth
               readOnly: true
+          securityContext:
+            privileged: false
+            seccompProfile:
+              type: RuntimeDefault
       volumes:
         - name: oauth
           secret:

@@ -20,6 +20,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "prow/scripts/validate-scripts.sh"
             resources:
@@ -49,6 +53,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "make"
             args:
@@ -89,6 +95,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "make"
             args:
@@ -129,6 +137,8 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "make"
             args:
@@ -169,7 +179,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-generated.sh"
             resources:
@@ -200,6 +212,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/bash"
             args:

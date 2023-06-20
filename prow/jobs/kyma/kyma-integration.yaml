@@ -44,7 +44,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -101,7 +103,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -158,7 +162,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -215,7 +221,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -265,7 +273,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
             env:
@@ -320,7 +330,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
             env:
@@ -374,7 +386,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -425,7 +439,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -476,7 +492,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -528,7 +546,9 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             env:
@@ -593,7 +613,9 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -650,7 +672,9 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -707,7 +731,9 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -765,7 +791,9 @@ postsubmits: # runs on main
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             env:
@@ -807,7 +835,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/prow/cleaner:0.0.1"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "./cleaner.sh"
             resources:
@@ -847,7 +877,9 @@ periodics: # runs on schedule
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -891,7 +923,9 @@ periodics: # runs on schedule
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -935,7 +969,9 @@ periodics: # runs on schedule
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -979,7 +1015,9 @@ periodics: # runs on schedule
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1023,7 +1061,9 @@ periodics: # runs on schedule
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1067,7 +1107,9 @@ periodics: # runs on schedule
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1112,7 +1154,9 @@ periodics: # runs on schedule
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1155,7 +1199,9 @@ periodics: # runs on schedule
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -1200,7 +1246,9 @@ periodics: # runs on schedule
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"
             resources:
@@ -1246,7 +1294,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-metrics-nightly.sh"
             env:
@@ -1315,7 +1365,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"
             env:
@@ -1374,7 +1426,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -1429,7 +1483,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -1491,7 +1547,9 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
