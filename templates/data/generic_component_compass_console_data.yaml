@@ -60,6 +60,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - image_buildpack-node
+                    - "unprivileged"
                   local:
                     - linting
               - jobConfig:
@@ -76,6 +77,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - image_buildpack-node
+                    - "unprivileged"
                   local:
                     - testing
               - jobConfig:
@@ -102,5 +104,3 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-
-

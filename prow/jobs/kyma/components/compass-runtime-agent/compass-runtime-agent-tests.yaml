@@ -38,6 +38,8 @@ presubmits: # runs on PRs
                 cpu: 1
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
 postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-main-kyma-integration-k3d-runtime-agent
@@ -80,3 +82,5 @@ postsubmits: # runs on main
                 cpu: 1
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined

@@ -5,7 +5,8 @@ templates:
         localSets:
           jobConfig_default:
             imagePullPolicy: "Always"
-            privileged: "false"
+            securityContext:
+              privileged: "false"
           default:
             skip_report: "false"
             max_concurrency: "10"
@@ -119,6 +120,7 @@ templates:
                     - default
                   global:
                     - jobConfig_presubmit
+                    - "unprivileged"
               - jobConfig:
                   name: main-build-skr
                   annotations:
@@ -138,3 +140,4 @@ templates:
                     - default
                   global:
                     - jobConfig_postsubmit
+                    - "unprivileged"

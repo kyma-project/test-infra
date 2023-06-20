@@ -24,6 +24,8 @@ presubmits: # runs on PRs
             command: ["/bin/bash"]
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
             args:
               - -c
               - scripts/run-integration-test.sh

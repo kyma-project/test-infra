@@ -26,6 +26,8 @@ presubmits: # runs on PRs
             automountServiceAccountToken: true
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:
@@ -68,6 +70,8 @@ postsubmits: # runs on main
             automountServiceAccountToken: true
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "/bin/sh"
             args:

@@ -6,7 +6,8 @@
           localSets:
             jobConfig_default:
               imagePullPolicy: "Always"
-              privileged: "false"
+              securityContext:
+                privileged: "false"
               run_if_changed: "^(vpath/pjtester.yaml)"
               type_presubmit: "true"
               labels:

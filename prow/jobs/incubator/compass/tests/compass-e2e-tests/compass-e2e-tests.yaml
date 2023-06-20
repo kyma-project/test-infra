@@ -5,8 +5,6 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pull-tests-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
         description: "Building Compass E2E Tests component"
         owner: "compass"
         pipeline.trigger: "pr-submit"
@@ -30,6 +28,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/image-builder"
             args:
@@ -75,8 +77,6 @@ postsubmits: # runs on main
   kyma-incubator/compass:
     - name: post-tests-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
         description: "Building Compass Tests after merge"
         owner: "compass"
         pipeline.trigger: "pr-merge"
@@ -101,6 +101,10 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "/image-builder"
             args:

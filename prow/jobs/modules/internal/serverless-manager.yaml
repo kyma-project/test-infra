@@ -23,6 +23,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "make"
             args:
@@ -71,6 +75,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -89,8 +97,6 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-serverless-manager-operator-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
         description: "serverless manager operator build"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -110,6 +116,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "sh"
             args:
@@ -183,6 +193,10 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -229,6 +243,10 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "make"
             args:
@@ -255,8 +273,6 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-serverless-manager-operator-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
         description: "build serverless manager"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -277,6 +293,10 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
             command:
               - "sh"
             args:
@@ -350,6 +370,10 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:
@@ -411,6 +435,10 @@ periodics: # runs on schedule
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
             command:
               - "bash"
             args:

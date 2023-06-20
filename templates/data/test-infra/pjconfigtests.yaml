@@ -6,7 +6,8 @@
           localSets:
             jobConfig_default:
               imagePullPolicy: "Always"
-              privileged: "false"
+              securityContext:
+                privileged: "false"
               type_presubmit: "true"
               branches:
                 - ^.*$
