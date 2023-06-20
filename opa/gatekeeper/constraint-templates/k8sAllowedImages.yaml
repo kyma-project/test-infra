@@ -8,7 +8,6 @@ spec:
       names:
         kind: K8sAllowedImages
       validation:
-        # Schema for the `parameters` field
         openAPIV3Schema:
           properties:
             images:
@@ -25,20 +24,26 @@ spec:
     - target: admission.k8s.gatekeeper.sh
       rego: |
         package k8sallowedimages
-        
+       
+        # Check violations for conatainers.
         violation[{"msg": msg}] {
+          # Check object is created in namespace matching any of parameters namespaces.
           namespaces := object.get(input.parameters, "namespaces", [".*"])
-          not regex.match(namespaces[_], input.review.object.metadata.namespace)
+          regex.match(namespaces[_], input.review.object.metadata.namespace)
+          # Check object is using an image that is not allowed.
           container := input.review.object.spec.containers[_]
           not strings.any_prefix_match(input.parameters.images, container.image)
           #satisfied := [good | repo = input.parameters.images[_] ; good = startswith(container.image, repo)]
           #not any(satisfied)
           msg := sprintf("container <%v> in namespace <%v> has an invalid image repo <%v>, allowed repos are %v", [container.name, container.image, input.review.object.metadata.namespace, input.parameters.images])
         }
-        
+
+        # Check violations for init containers.
         violation[{"msg": msg}] {
+          # Check object is created in any of parameters namespaces.
           namespaces := object.get(input.parameters, "namespaces", [".*"])
-          not regex.match(namespaces[_], input.review.object.metadata.namespace)
+          regex.match(namespaces[_], input.review.object.metadata.namespace)
+          # Check object is using an image that is not allowed.
           container := input.review.object.spec.initContainers[_]
           not strings.any_prefix_match(input.parameters.images, container.image)
           #satisfied := [good | repo = input.parameters.images[_] ; good = startswith(container.image, repo)]

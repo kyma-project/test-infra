@@ -1,7 +1,9 @@
+# Allow only images needed to run prowjobs.
+
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: K8sAllowedImages
 metadata:
-  name: allow-only-kyma-trusted-repos
+  name: prow-prowjobs-namespace
 spec:
   enforcementAction: warn
   match:
@@ -21,13 +23,11 @@ spec:
       - "gcr.io/k8s-prow/branchprotector"
       - "gcr.io/k8s-prow/commenter"
       - "gcr.io/k8s-prow/gencred"
+      - "gcr.io/k8s-prow/sidecar" # prowjob decoration
+      - "gcr.io/k8s-prow/clonerefs" # prowjob decoration
+      - "gcr.io/k8s-prow/initupload" # prowjob decoration
+      - "gcr.io/k8s-prow/entrypoint" # prowjob decoration
       - "eu.gcr.io/kyma-project"
+      - "eu.gcr.io/sap-kyma-neighbors-dev"
       - "europe-docker.pkg.dev/kyma-project"
       - "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev"
-      - "eu.gcr.io/sap-kyma-neighbors-dev"
-#      - "gcr.io"
-#      - "eu.gcr.io"
-#      - "us.gcr.io"
-#      - "asia.gcr.io"
-#      - "docker.wdf.sap.corp"
-#      - "int.repositories.cloud.sap"

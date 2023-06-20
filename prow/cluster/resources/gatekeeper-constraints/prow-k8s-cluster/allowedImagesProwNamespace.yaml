@@ -1,0 +1,33 @@
+# Allow images needed to run Prow application in Prow cluster.
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sAllowedImages
+metadata:
+  name: prow-namespace
+spec:
+  enforcementAction: warn
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    namespaces:
+      - "default"
+    images:
+      - "gcr.io/k8s-prow/analyze"
+      - "gcr.io/k8s-prow/crier"
+      - "gcr.io/k8s-prow/deck"
+      - "gcr.io/k8s-prow/ghproxy"
+      - "gcr.io/k8s-prow/hook"
+      - "gcr.io/k8s-prow/horologium"
+      - "gcr.io/k8s-prow/pipeline"
+      - "gcr.io/k8s-prow/prow-controller-manager"
+      - "gcr.io/k8s-prow/sinker"
+      - "gcr.io/k8s-prow/status-reconciler"
+      - "gcr.io/k8s-prow/tide"
+      - "k8s.gcr.io/gcsweb"
+      - "docker.io/nginx"
+      - "docker.io/prom/pushgateway"
+      - "eu.gcr.io/kyma-project"
+      - "eu.gcr.io/sap-kyma-neighbors-dev"
+      - "europe-docker.pkg.dev/kyma-project"
+      - "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev"
