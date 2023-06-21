@@ -10,10 +10,10 @@ templates:
             image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            request_memory: 1Gi
-            request_cpu: 500m
-            limits_cpu: 1
-            limits_memory: 2Gi
+            request_memory: 4Gi
+            request_cpu: 2
+            limits_cpu: 4
+            limits_memory: 6Gi
           job_default:
             optional: "false"
           job_post:

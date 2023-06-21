@@ -148,11 +148,11 @@ postsubmits: # runs on main
               - "hack/release.sh"
             resources:
               requests:
-                memory: 1Gi
-                cpu: 500m
+                memory: 4Gi
+                cpu: 2
               limits:
-                memory: 2Gi
-                cpu: 1
+                memory: 6Gi
+                cpu: 4
     - name: rel-api-gateway-custom-domain-integration-gcp
       annotations:
         description: "runs api-gateway integration tests with custom domain handling on Gardener GCP cluster"
