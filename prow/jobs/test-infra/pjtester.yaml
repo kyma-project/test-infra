@@ -27,6 +27,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -74,6 +75,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -121,6 +123,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -168,6 +171,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -215,6 +219,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -262,6 +267,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -309,6 +315,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -356,6 +363,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -403,6 +411,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -450,6 +459,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -497,6 +507,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -544,6 +555,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -591,6 +603,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -638,6 +651,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -685,6 +699,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -732,6 +747,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -779,6 +795,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -826,6 +843,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -873,6 +891,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -920,6 +939,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -967,6 +987,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1014,6 +1035,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1061,6 +1083,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1108,6 +1131,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1155,6 +1179,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1202,6 +1227,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1249,6 +1275,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1296,6 +1323,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1343,6 +1371,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1390,6 +1419,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1437,6 +1467,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1484,6 +1515,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1531,6 +1563,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1578,6 +1611,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1625,6 +1659,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1672,6 +1707,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1719,6 +1755,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1766,6 +1803,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1813,6 +1851,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1860,6 +1899,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1907,6 +1947,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1954,6 +1995,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2001,6 +2043,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2048,6 +2091,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2095,6 +2139,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2142,6 +2187,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2189,6 +2235,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2236,6 +2283,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2283,6 +2331,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2330,6 +2379,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2377,6 +2427,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2424,6 +2475,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2471,6 +2523,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2518,6 +2571,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2565,6 +2619,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2612,6 +2667,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2659,6 +2715,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2706,6 +2763,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2753,6 +2811,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2800,6 +2859,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2847,6 +2907,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2894,6 +2955,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2941,6 +3003,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2988,6 +3051,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3035,6 +3099,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3082,6 +3147,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3129,6 +3195,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3176,6 +3243,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3223,6 +3291,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3270,6 +3339,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3317,6 +3387,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3364,6 +3435,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3411,6 +3483,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3458,6 +3531,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3505,6 +3579,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3552,6 +3627,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3599,6 +3675,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3646,6 +3723,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3693,6 +3771,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3740,6 +3819,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3787,6 +3867,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3834,6 +3915,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3881,6 +3963,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3928,6 +4011,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3975,6 +4059,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4022,6 +4107,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4069,6 +4155,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4116,6 +4203,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4163,6 +4251,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4210,6 +4299,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4257,6 +4347,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4304,6 +4395,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4351,6 +4443,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4398,6 +4491,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4445,6 +4539,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4492,6 +4587,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4539,6 +4635,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4586,6 +4683,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4633,6 +4731,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4680,6 +4779,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4727,6 +4827,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4774,6 +4875,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4821,6 +4923,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4868,6 +4971,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4915,6 +5019,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4962,6 +5067,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:

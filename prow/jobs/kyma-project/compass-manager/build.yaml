@@ -41,6 +41,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
         volumes:
           - name: config
             configMap:

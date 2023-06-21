@@ -24,6 +24,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -54,6 +55,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:

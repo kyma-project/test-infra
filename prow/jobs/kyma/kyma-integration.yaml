@@ -47,6 +47,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -106,6 +107,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -165,6 +167,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -224,6 +227,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -276,6 +280,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
             env:
@@ -333,6 +338,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
             env:
@@ -389,6 +395,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -442,6 +449,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -495,6 +503,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -549,6 +558,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             env:
@@ -616,6 +626,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -675,6 +686,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -734,6 +746,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -794,6 +807,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             env:
@@ -838,6 +852,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "./cleaner.sh"
             resources:
@@ -880,6 +895,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -926,6 +942,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -972,6 +989,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1018,6 +1036,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1064,6 +1083,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1110,6 +1130,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1157,6 +1178,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1202,6 +1224,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1249,6 +1272,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"
             resources:
@@ -1297,6 +1321,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-metrics-nightly.sh"
             env:
@@ -1368,6 +1393,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"
             env:
@@ -1429,6 +1455,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -1486,6 +1513,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -1550,6 +1578,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:

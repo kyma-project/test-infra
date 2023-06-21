@@ -23,6 +23,7 @@ postsubmits:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
       annotations:
         owner: neighbors
         description: "Refresh kubeconfigs for workload clusters after config change"
@@ -57,3 +58,4 @@ periodics:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
+            allowPrivilegeEscalation: false

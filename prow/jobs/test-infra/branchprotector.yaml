@@ -37,6 +37,7 @@ periodics:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
+            allowPrivilegeEscalation: false
       volumes:
         - name: oauth
           secret:

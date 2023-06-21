@@ -27,6 +27,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -67,6 +68,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -119,6 +121,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -160,6 +163,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -223,6 +227,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -272,6 +277,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -325,6 +331,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "./scripts/release.sh"
             args:
@@ -374,6 +381,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -424,6 +432,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -488,6 +497,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -547,6 +557,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -610,6 +621,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:

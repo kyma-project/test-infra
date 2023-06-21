@@ -38,7 +38,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -93,7 +94,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -148,7 +150,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -203,7 +206,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -258,7 +262,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -313,7 +318,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -368,7 +374,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -423,7 +430,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -480,7 +488,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -535,7 +544,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -590,7 +600,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -647,7 +658,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -702,7 +714,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -757,7 +770,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -808,7 +822,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -865,7 +880,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -920,7 +936,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -978,7 +995,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1033,7 +1051,8 @@ periodics: # runs on schedule
             securityContext:
               privileged: false
               seccompProfile:
-                  type: RuntimeDefault
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:

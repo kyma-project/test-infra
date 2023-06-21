@@ -40,6 +40,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-compass-generic.sh"
             args:
