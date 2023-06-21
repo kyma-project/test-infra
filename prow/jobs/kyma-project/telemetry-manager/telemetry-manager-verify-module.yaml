@@ -13,7 +13,7 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
       cluster: untrusted-workload
       decorate: true
-      run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/|sec-scanners-config.yaml'
+      skip_if_only_changed: '^docs/|\.md$|CODEOWNERS|\..*'
       spec:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
