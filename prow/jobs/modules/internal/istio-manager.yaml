@@ -134,12 +134,13 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "make"
             args:
@@ -205,12 +206,13 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "bash"
             args:
@@ -383,12 +385,13 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "bash"
             args:
