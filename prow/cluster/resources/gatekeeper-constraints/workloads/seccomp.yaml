@@ -15,4 +15,8 @@ spec:
       - runtime/default
       - docker/default
     exemptImages:
+      - gcr.io/k8s-prow/entrypoint:*
+      - gcr.io/k8s-prow/initupload:*
+      - gcr.io/k8s-prow/clonerefs:*
+      - gcr.io/k8s-prow/sidecar:*
       - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*

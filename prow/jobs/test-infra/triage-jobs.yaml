@@ -52,6 +52,7 @@ periodics:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
+            allowPrivilegeEscalation: false
       volumes:
         - name: token
           secret:
@@ -111,6 +112,7 @@ periodics:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
+            allowPrivilegeEscalation: false
       volumes:
         - name: token
           secret:

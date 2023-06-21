@@ -24,6 +24,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -54,6 +55,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -96,6 +98,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
             env:
@@ -149,6 +152,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-pr-cli.sh"
             resources:
@@ -199,6 +203,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
             env:
@@ -256,6 +261,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
             env:
@@ -313,6 +319,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
             env:
@@ -372,6 +379,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -429,6 +437,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -488,6 +497,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -548,6 +558,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-component-provision-gardener.sh"
             env:
@@ -609,6 +620,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
             args:
@@ -659,6 +671,7 @@ presubmits: # runs on PRs
               privileged: true
               seccompProfile:
                 type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -701,6 +714,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -750,6 +764,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -804,6 +819,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/bash"
             args:
@@ -853,6 +869,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-validate-go-mod.sh"
             env:
@@ -909,6 +926,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -966,6 +984,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -1013,6 +1032,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -1064,6 +1084,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -1122,6 +1143,7 @@ postsubmits: # runs on main
               privileged: true
               seccompProfile:
                 type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -1183,6 +1205,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "generic-autobumper"
             args:
@@ -1251,6 +1274,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             args:
@@ -1323,6 +1347,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
             args:

@@ -28,6 +28,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -80,6 +81,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -137,6 +139,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
               runAsUser: 0
             command:
               - "make"
@@ -208,6 +211,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
               runAsUser: 0
             command:
               - "bash"
@@ -263,6 +267,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -317,6 +322,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -384,6 +390,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
               runAsUser: 0
             command:
               - "bash"
