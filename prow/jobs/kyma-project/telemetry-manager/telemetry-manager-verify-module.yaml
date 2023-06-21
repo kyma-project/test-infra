@@ -8,7 +8,6 @@ presubmits:
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
-        preset-k3d-enabled: "true"
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-verify-module"
         prow.k8s.io/pubsub.topic: "prowjobs"
@@ -18,8 +17,8 @@ presubmits:
       spec:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
-            args: 
-              - hack/deploy-module-ci.sh
+            command: ["/init.sh"]
+            args: ["make e2e-deploy-module"]
             requests:
               memory: 4Gi
               cpu: 2

@@ -3,9 +3,3 @@ pjConfigs:
     kyma-project:
       telemetry-manager:
         - pjName: "pull-telemetry-manager-verify-module"
-
-prConfigs:
-  kyma-project:
-    telemetry-manager:
-      prNumber: 228
-
