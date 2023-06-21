@@ -62,6 +62,8 @@ templates:
               pipeline.clusterprovisioning: k3d
           e2e:
             image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
+            securityContext: #temporary we need permissions to create folders for tooling, see `make install`
+              runAsUser: 0
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
