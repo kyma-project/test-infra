@@ -17,7 +17,8 @@ presubmits:
       spec:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
-            args: hack/deploy-module-ci.sh
+            args: 
+              - hack/deploy-module-ci.sh
             requests:
               memory: 4Gi
               cpu: 2
