@@ -29,7 +29,7 @@ templates:
                     owner: skydivingtunas
                     description: autobump eventing images
                   cron: "30 * * * 1-5"
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230621-2a6a094857
                   command: generic-autobumper
                   args:
                     - --config=ci/eventing-tools-autobump-config.yaml
@@ -57,7 +57,7 @@ templates:
                     owner: neighbors
                     description: "Periodic sync of labels in GitHub"
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20230613-9df263832f
+                  image: gcr.io/k8s-prow/label_sync:v20230621-2a6a094857
                   command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
@@ -83,7 +83,7 @@ templates:
                     description: "Autobump prow components image versions"
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230621-2a6a094857
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
@@ -183,7 +183,7 @@ templates:
                     description: "Autobump image versions in prow jobs"
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230621-2a6a094857
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml
