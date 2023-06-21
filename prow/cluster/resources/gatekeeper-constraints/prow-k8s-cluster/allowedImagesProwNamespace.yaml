@@ -1,4 +1,5 @@
 # Allow images needed to run Prow application in Prow cluster.
+
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: K8sAllowedImages
 metadata:
