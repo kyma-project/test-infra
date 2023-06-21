@@ -1,0 +1,43 @@
+presubmits:
+  kyma-project/telemetry-manager:
+    - name: pull-telemetry-manager-verify-module
+      annotations:
+        description: "Pre-submit job to verify successful deployment of telemetry module."
+        owner: "huskies"
+      optional: false
+      labels:
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-verify-module"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      cluster: untrusted-workload
+      decorate: true
+      run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/|sec-scanners-config.yaml'
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                make e2e-deploy-module
+            requests:
+              memory: 4Gi
+              cpu: 2
+            limits:
+              memory: 4Gi
+              cpu: 2
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+          dedicated: "high-cpu"
