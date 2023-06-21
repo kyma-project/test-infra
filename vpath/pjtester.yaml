@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      istio:
+        - pjName: "pull-istio-integration"
+prConfigs:
+  kyma-project:
+    istio:
+      prNumber: 182

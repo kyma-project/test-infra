@@ -19,7 +19,7 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0
             command: ["/bin/bash"]
             securityContext:
               privileged: true
@@ -63,7 +63,7 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0
             command: ["/bin/bash"]
             securityContext:
               privileged: true
