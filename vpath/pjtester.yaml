@@ -8,3 +8,4 @@ prConfigs:
   kyma-project:
     telemetry-manager:
       prNumber: 228
+
