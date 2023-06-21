@@ -60,7 +60,7 @@ templates:
               pipeline.installer: kyma deploy
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
-          buildpack_go:
+          e2e:
             image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
@@ -190,7 +190,7 @@ templates:
                     - jobConfig_default
                   local:
                     - job_default
-                    - buildpack_go
+                    - e2e
               - jobConfig:
                   name: pull-istio-operator-integration-k3d
                   annotations:
@@ -211,7 +211,7 @@ templates:
                     - vm_job_make
                     - vm_job_k3d
                     - vm_job_labels
-                    - buildpack_go
+                    - e2e
               - jobConfig:
                   name: post-istio-operator-integration-k3d
                   annotations:
@@ -233,4 +233,4 @@ templates:
                     - vm_job_make
                     - vm_job_k3d
                     - vm_job_labels
-                    - buildpack_go
+                    - e2e
