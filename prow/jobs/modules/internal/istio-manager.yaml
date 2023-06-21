@@ -137,6 +137,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              runAsUser: 0
             command:
               - "make"
             args:
@@ -207,6 +208,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              runAsUser: 0
             command:
               - "bash"
             args:
@@ -382,6 +384,7 @@ postsubmits: # runs on main
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              runAsUser: 0
             command:
               - "bash"
             args:
