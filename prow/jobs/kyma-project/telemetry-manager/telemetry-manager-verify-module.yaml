@@ -8,6 +8,7 @@ presubmits:
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
+        preset-k3d-enabled: "true"
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-verify-module"
         prow.k8s.io/pubsub.topic: "prowjobs"
