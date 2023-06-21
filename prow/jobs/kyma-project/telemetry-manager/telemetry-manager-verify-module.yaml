@@ -18,7 +18,7 @@ presubmits:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
             command: ["/init.sh"]
-            args: ["make e2e-deploy-module"]
+            args: ["bash", "-c", "make e2e-deploy-module"]
             requests:
               memory: 4Gi
               cpu: 2
