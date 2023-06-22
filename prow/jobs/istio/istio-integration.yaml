@@ -29,11 +29,11 @@ presubmits:
                 type: Unconfined
               allowPrivilegeEscalation: true
             args:
-            - "bash"
-            - "-c"
-            - |
-              set -e
-              IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
             resources:
               requests:
                 cpu: 1
@@ -70,11 +70,11 @@ presubmits:
                 type: Unconfined
               allowPrivilegeEscalation: true
             args:
-            - "bash"
-            - "-c"
-            - |
-              set -e
-              IMG="k3d-registry.localhost:5000/istio-operator:latest" TEST_EVALUATION=TRUE make docker-build docker-push istio-integration-test
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                IMG="k3d-registry.localhost:5000/istio-operator:latest" TEST_EVALUATION=TRUE make docker-build docker-push istio-integration-test
             resources:
               requests:
                 cpu: 1
@@ -113,11 +113,11 @@ postsubmits:
                 type: Unconfined
               allowPrivilegeEscalation: true
             args:
-            - "bash"
-            - "-c"
-            - |
-              set -e
-              IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
             resources:
               requests:
                 cpu: 1
