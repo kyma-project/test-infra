@@ -75,6 +75,8 @@ presubmits:
               - |
                 set -e
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" TEST_EVALUATION=TRUE make docker-build docker-push istio-integration-test
+            env:
+              K3D_SERVERS_MEMORY: "4g"
             resources:
               requests:
                 cpu: 1
