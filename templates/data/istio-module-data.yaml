@@ -60,6 +60,10 @@ templates:
               pipeline.installer: kyma deploy
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
+          e2e:
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
+            securityContext: #temporary we need permissions to create folders for tooling, see `make install`
+              runAsRoot: true
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
@@ -186,9 +190,9 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - jobConfig_default
-                    - image_kyma-integration
                   local:
                     - job_default
+                    - e2e
               - jobConfig:
                   name: pull-istio-operator-integration-k3d
                   annotations:
@@ -203,13 +207,13 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration # TODO: Prepare a Istio-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
                     - vm_job_make
                     - vm_job_k3d
                     - vm_job_labels
+                    - e2e
               - jobConfig:
                   name: post-istio-operator-integration-k3d
                   annotations:
@@ -224,7 +228,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration # TODO: Prepare a Istio-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -232,6 +235,7 @@ templates:
                     - vm_job_make
                     - vm_job_k3d
                     - vm_job_labels
+                    - e2e
               - jobConfig:
                   name: nightly-istio-performance-test-gcp
                   cron: "0 0 * * *"
@@ -268,3 +272,4 @@ templates:
                     - image_kyma-integration
                   local:
                     - job_default
+                    - e2e

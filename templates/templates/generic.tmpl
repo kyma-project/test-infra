@@ -97,11 +97,14 @@
               {{- end}}
               privileged: {{ default "false" .JobConfig.securityContext.privileged }}
               {{- if .JobConfig.securityContext.seccompProfile}}
-              seccompProfile: 
+              seccompProfile:
                 {{- range $key, $value := .JobConfig.securityContext.seccompProfile}}
                 {{$key}}: {{$value}}
                 {{- end}}
               allowPrivilegeEscalation: {{ default "false" .JobConfig.securityContext.privileged }}
+              {{- end}}
+              {{- if .JobConfig.securityContext.runAsRoot}}
+              runAsUser: 0
               {{- end}}
             {{- if .JobConfig.workingDir}}
             workingDir: {{quote .JobConfig.workingDir}}
