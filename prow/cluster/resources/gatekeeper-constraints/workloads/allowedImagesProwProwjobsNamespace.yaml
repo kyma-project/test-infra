@@ -10,9 +10,9 @@ spec:
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
-  parameters:
     namespaces:
       - "default"
+  parameters:
     images:
       - "docker.io/aquasec/trivy"
       - "docker.io/zricethezav/gitleaks"

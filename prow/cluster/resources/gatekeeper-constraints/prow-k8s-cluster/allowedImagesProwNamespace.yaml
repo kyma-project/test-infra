@@ -10,9 +10,9 @@ spec:
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
-  parameters:
     namespaces:
       - "default"
+  parameters:
     images:
       - "gcr.io/k8s-prow/analyze"
       - "gcr.io/k8s-prow/crier"

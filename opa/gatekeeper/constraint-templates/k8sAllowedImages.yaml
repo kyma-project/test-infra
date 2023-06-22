@@ -1,7 +1,6 @@
 # k8sallowedimages constraint template validates that a pod is not using an image that is not allowed.
-# The k8sallowedimages accepts two parameters:
+# The k8sallowedimages accepts one parameter:
 # - images: a list of allowed image URLs. Each image URL must be a prefix of the image URL used in the Pod spec.
-# - namespaces: a list of namespaces to which the constraint applies. If empty, the constraint applies to all namespaces.
 apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
@@ -19,11 +18,6 @@ spec:
               items:
                 type: string
                 description: A list of allowed image URLs. Each image URL must be a prefix of the image URL used in the Pod spec.
-            namespaces:
-              type: array
-              items:
-                type: string
-                description: A list of namespaces to which the constraint applies. If empty, the constraint applies to all namespaces.
   targets:
     - target: admission.k8s.gatekeeper.sh
       rego: |
@@ -31,9 +25,6 @@ spec:
        
         # Check violations for conatainers.
         violation[{"msg": msg}] {
-          # Check object is created in a namespace matching any of parameters namespaces.
-          namespaces := object.get(input.parameters, "namespaces", [".*"])
-          regex.match(namespaces[_], input.review.object.metadata.namespace)
           # Check object is using an image that is not allowed.
           container := input.review.object.spec.containers[_]
           not strings.any_prefix_match(input.parameters.images, container.image)
@@ -42,9 +33,6 @@ spec:
 
         # Check violations for init containers.
         violation[{"msg": msg}] {
-          # Check object is created in a namespace matching any of parameters namespaces.
-          namespaces := object.get(input.parameters, "namespaces", [".*"])
-          regex.match(namespaces[_], input.review.object.metadata.namespace)
           # Check object is using an image that is not allowed.
           container := input.review.object.spec.initContainers[_]
           not strings.any_prefix_match(input.parameters.images, container.image)

@@ -10,12 +10,12 @@ spec:
     kinds:
       - apiGroups: [""]
         kinds: ["Pod"]
-  parameters:
     namespaces:
       - "external-secrets"
       - "gatekeeper-system"
       - "prow-monitoring"
       - "probot-stale"
+  parameters:
     images:
       - "ghcr.io/external-secrets/external-secrets"
       - "docker.io/openpolicyagent/gatekeeper"
