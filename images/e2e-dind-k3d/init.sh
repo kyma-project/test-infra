@@ -17,8 +17,8 @@ if [[ "$K3D_ENABLED" == "true" ]]; then
     echo " with registry k3d-registry.localhost:5000"
     k3d registry create registry.localhost --port 5000
     ARGS+=( "--registry-use=k3d-registry.localhost:5000" )
-  if [[ ! -z "$K3D_SERVERS_MEMORY" ]]; then
-    echo " with servers memory ${$K3D_SERVERS_MEMORY}"
+  elif [[ -n "${K3D_SERVERS_MEMORY}" ]]; then
+    echo " with servers memory ${K3D_SERVERS_MEMORY}"
     ARGS+=( "--servers-memory=${K3D_SERVERS_MEMORY}" )
   else
     echo
