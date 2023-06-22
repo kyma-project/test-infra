@@ -1,5 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-project:
-      istio:
-        - pjName: "pull-istio-integration"
