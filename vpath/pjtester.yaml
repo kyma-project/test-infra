@@ -1,6 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-project:
-      telemetry-manager:
-        - pjName: "pull-telemetry-manager-verify-module"
-        - pjName: "pull-telemetry-manager-e2e-test"
