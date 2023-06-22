@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      telemetry-manager:
+        - pjName: "pull-telemetry-manager-upgrade-test"
+# prConfigs:
+#   kyma-project:
+#     telemetry-manager:
+#       prNumber: TODO
