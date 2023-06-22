@@ -76,6 +76,8 @@ templates:
                   labels:
                     preset-sa-kyma-push-images: "true"
                     preset-bot-github-token: "true"
+                  env:
+                    RELEASE_TAG: "${PULL_BASE_REF}"
                   command: "make"
                   args:
                     - "release"

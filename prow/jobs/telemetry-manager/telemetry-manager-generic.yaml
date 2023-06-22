@@ -143,6 +143,9 @@ postsubmits: # runs on main
               - "make"
             args:
               - "release"
+            env:
+              - name: RELEASE_TAG
+                value: "${PULL_BASE_REF}"
             resources:
               requests:
                 memory: 3Gi
