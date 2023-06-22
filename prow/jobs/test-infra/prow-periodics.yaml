@@ -69,11 +69,11 @@ postsubmits: # runs on main
             command:
               - "/imagedetector"
             args:
-              - "--prow-config prow/config.yaml"
-              - "--prow-jobs-dir prow/jobs"
-              - "--terraform-dir configs/terraform"
-              - "--sec-scanner-config sec-scanner-config.yaml"
-              - "--kubernetes-dir prow/cluster/components"
+              - "--prow-config=prow/config.yaml"
+              - "--prow-jobs-dir=prow/jobs"
+              - "--terraform-dir=configs/terraform"
+              - "--sec-scanner-config=sec-scanner-config.yaml"
+              - "--kubernetes-dir=prow/cluster/components"
               - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
               - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: post-test-infra-deploy-prow
