@@ -125,6 +125,10 @@ templates:
                     MACHINE_TYPE: "n1-highcpu-16"
                     PUBSUB_PROJECT: "sap-kyma-prow"
                     PUBSUB_TOPIC: "release-cluster-created"
+                  securityContext:
+                    privileged: "true"
+                    seccompProfile:
+                      type: Unconfined
                   decoration_config:
                     timeout: 3600000000000 # 1h
                     grace_period: 600000000000 # 10min
@@ -191,6 +195,10 @@ templates:
                     GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
                     CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
                     TEST_RESULT_WINDOW_TIME: "6h"
+                  securityContext:
+                    privileged: "true"
+                    seccompProfile:
+                      type: Unconfined
                 inheritedConfigs:
                   global:
                   - "jobConfig_default"
