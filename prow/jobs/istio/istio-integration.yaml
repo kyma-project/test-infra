@@ -19,24 +19,21 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
-            command: ["/bin/bash"]
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+            command: ["/init.sh"]
             securityContext:
               privileged: true
               seccompProfile:
                 type: Unconfined
               allowPrivilegeEscalation: true
             args:
-              - -c
+              - "bash"
+              - "-c"
               - |
-                service docker start
-                echo "Waiting for Docker to be up..." && sleep 30
                 set -e
-                curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
                 k3d registry create registry.localhost --port 5000
-                k3d cluster create k3d --registry-use k3d-registry.localhost:5000
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=10g
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
-                k3d cluster delete k3d
             resources:
               requests:
                 cpu: 1
@@ -63,24 +60,21 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
-            command: ["/bin/bash"]
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+            command: ["/init.sh"]
             securityContext:
               privileged: true
               seccompProfile:
                 type: Unconfined
               allowPrivilegeEscalation: true
             args:
-              - -c
+              - "bash"
+              - "-c"
               - |
-                service docker start
-                echo "Waiting for Docker to be up..." && sleep 30
                 set -e
-                curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
                 k3d registry create registry.localhost --port 5000
                 k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=4g
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" TEST_EVALUATION=TRUE make docker-build docker-push istio-integration-test
-                k3d cluster delete k3d
             resources:
               requests:
                 cpu: 1
@@ -110,23 +104,20 @@ postsubmits:
               - "k3d-registry.localhost"
         containers:
           - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
-            command: ["/bin/bash"]
+            command: ["/init.sh"]
             securityContext:
               privileged: true
               seccompProfile:
                 type: Unconfined
               allowPrivilegeEscalation: true
             args:
-              - -c
+              - "bash"
+              - "-c"
               - |
-                service docker start
-                echo "Waiting for Docker to be up..." && sleep 30
                 set -e
-                curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
                 k3d registry create registry.localhost --port 5000
-                k3d cluster create k3d --registry-use k3d-registry.localhost:5000
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=10g
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
-                k3d cluster delete k3d
             resources:
               requests:
                 cpu: 1
