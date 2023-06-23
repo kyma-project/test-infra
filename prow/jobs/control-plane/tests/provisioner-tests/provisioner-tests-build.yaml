@@ -25,6 +25,11 @@ presubmits: # runs on PRs
               - "--context=tests/provisioner-tests"
               - "--dockerfile=Dockerfile"
               - "--config=/config/kaniko-build-config.yaml"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             resources:
               requests:
                 memory: 1.5Gi
@@ -74,6 +79,11 @@ postsubmits: # runs on main
               - "--context=tests/provisioner-tests"
               - "--dockerfile=Dockerfile"
               - "--config=/config/kaniko-build-config.yaml"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             resources:
               requests:
                 memory: 1.5Gi
