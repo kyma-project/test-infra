@@ -534,6 +534,10 @@ templates:
                     - "make test"
                   branches:
                     - ^main$ # any pr against main triggers this
+                  securityContext:
+                    privileged: "true"
+                    seccompProfile:
+                      type: "Unconfined"
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image

@@ -42,6 +42,7 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
+                    - "privileged"
               - jobConfig:
                   name: "post-main-test-infra-image-syncer-run"
                   annotations:
