@@ -69,11 +69,11 @@ postsubmits: # runs on main
             command:
               - "/imagedetector"
             args:
-              - "--prow-config prow/config.yaml"
-              - "--prow-jobs-dir prow/jobs"
-              - "--terraform-dir configs/terraform"
-              - "--sec-scanner-config sec-scanner-config.yaml"
-              - "--kubernetes-dir prow/cluster/components"
+              - "--prow-config=prow/config.yaml"
+              - "--prow-jobs-dir=prow/jobs"
+              - "--terraform-dir=configs/terraform"
+              - "--sec-scanner-config=sec-scanner-config.yaml"
+              - "--kubernetes-dir=prow/cluster/components"
               - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
               - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: post-test-infra-deploy-prow
@@ -131,7 +131,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230623-ea9b5f8eba"
             securityContext:
               privileged: false
               seccompProfile:
@@ -158,7 +158,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230613-9df263832f"
+          - image: "gcr.io/k8s-prow/label_sync:v20230623-ea9b5f8eba"
             securityContext:
               privileged: false
               seccompProfile:
@@ -206,7 +206,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230623-ea9b5f8eba"
             securityContext:
               privileged: false
               seccompProfile:
@@ -241,7 +241,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230623-ea9b5f8eba"
             securityContext:
               privileged: false
               seccompProfile:

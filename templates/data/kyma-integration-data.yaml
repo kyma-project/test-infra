@@ -183,27 +183,6 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-              #              - jobConfig:
-              #                  name: "firewall-cleaner"
-              #                  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
-              #                  labels:
-              #                    preset-sa-gke-kyma-integration: "true"
-              #                    preset-gc-project-env: "true"
-              #                  command: "bash"
-              #                  args:
-              #                    - "-c"
-              #                    - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-              #                inheritedConfigs:
-              #                  global:
-              #                    - "jobConfig_default"
-              #                    - "jobConfig_periodic"
-              #                    - "image_prow-tools"
-              #                    - "extra_refs_test-infra"
-              #                    - "disable_testgrid"
-              #                  local:
-              #                    - "jobConfig_default"
-              #                    - "request_small"
-              #                    - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-dns-cleaner"
                   annotations:
@@ -700,32 +679,7 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "post-main-kyma-k3d-k8s-preview"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Post-submit job to validate kyma compatibility with next kubernetes version on K3D.
-                    testgrid-days-of-results: "60"
-                    owner: huskies
-                  slack_channel: huskies-notifications
-                  labels:
-                    preset-build-main: "true"
-                  env:
-                    K8S_VERSION: "1.27.1"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
               # periodics
-
               - jobConfig:
                   name: kyma-upgrade-k3d-kyma2-to-main
                   annotations:

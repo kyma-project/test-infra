@@ -29,7 +29,7 @@ templates:
                     owner: skydivingtunas
                     description: autobump eventing images
                   cron: "30 * * * 1-5"
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230623-ea9b5f8eba
                   command: generic-autobumper
                   args:
                     - --config=ci/eventing-tools-autobump-config.yaml
@@ -57,7 +57,7 @@ templates:
                     owner: neighbors
                     description: "Periodic sync of labels in GitHub"
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20230613-9df263832f
+                  image: gcr.io/k8s-prow/label_sync:v20230623-ea9b5f8eba
                   command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
@@ -83,7 +83,7 @@ templates:
                     description: "Autobump prow components image versions"
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230623-ea9b5f8eba
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
@@ -136,11 +136,11 @@ templates:
                   type_postsubmit: "true"
                   command: /imagedetector
                   args:
-                    - --prow-config prow/config.yaml
-                    - --prow-jobs-dir prow/jobs
-                    - --terraform-dir configs/terraform
-                    - --sec-scanner-config sec-scanner-config.yaml
-                    - --kubernetes-dir prow/cluster/components
+                    - --prow-config=prow/config.yaml
+                    - --prow-jobs-dir=prow/jobs
+                    - --terraform-dir=configs/terraform
+                    - --sec-scanner-config=sec-scanner-config.yaml
+                    - --kubernetes-dir=prow/cluster/components
                     - --autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml
                     - --inrepo-config=prow/image-detector/inrepo-config.yaml
                 inheritedConfigs:
@@ -183,7 +183,7 @@ templates:
                     description: "Autobump image versions in prow jobs"
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230623-ea9b5f8eba
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml

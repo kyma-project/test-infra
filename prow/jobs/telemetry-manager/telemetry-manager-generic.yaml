@@ -51,64 +51,6 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-telemetry-manager-verify-module
-      annotations:
-        description: "Pre-submit job to verify successful deployment of telemetry module."
-        owner: "huskies"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-verify-module"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/|sec-scanners-config.yaml'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/telemetry-manager
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-        - ^release-\d+\.\d+$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            env:
-              - name: JOB_REPO_NAME
-                value: "telemetry-manager"
-              - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make e2e-deploy-module"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/telemetry-manager:
@@ -201,6 +143,9 @@ postsubmits: # runs on main
               - "make"
             args:
               - "release"
+            env:
+              - name: RELEASE_TAG
+                value: "${PULL_BASE_REF}"
             resources:
               requests:
                 memory: 3Gi
