@@ -30,10 +30,5 @@ presubmits:
               seccompProfile:
                 type: Unconfined
               allowPrivilegeEscalation: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
         nodeSelector:
           dedicated: "high-cpu"
