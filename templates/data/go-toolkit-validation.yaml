@@ -130,7 +130,7 @@ templates:
                   args:
                     - "-c"
                     - "make test"
-                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
+                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$|Makefile'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
