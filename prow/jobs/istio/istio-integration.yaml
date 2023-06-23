@@ -10,8 +10,6 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
-        preset-k3d-enabled: "true"
-        preset-provision-registry: "true"
       cluster: untrusted-workload
       decorate: true
       skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
@@ -33,6 +31,8 @@ presubmits:
               - "-c"
               - |
                 set -e
+                k3d registry create registry.localhost --port 5000
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=10g
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
             resources:
               requests:
@@ -51,8 +51,6 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
-        preset-k3d-enabled: "true"
-        preset-provision-registry: "true"
       cluster: untrusted-workload
       decorate: true
       skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
@@ -74,6 +72,8 @@ presubmits:
               - "-c"
               - |
                 set -e
+                k3d registry create registry.localhost --port 5000
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=4g
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" TEST_EVALUATION=TRUE make docker-build docker-push istio-integration-test
             resources:
               requests:
@@ -94,8 +94,6 @@ postsubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
-        preset-k3d-enabled: "true"
-        preset-provision-registry: "true"
       cluster: untrusted-workload
       decorate: true
       skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
@@ -117,6 +115,8 @@ postsubmits:
               - "-c"
               - |
                 set -e
+                k3d registry create registry.localhost --port 5000
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=10g
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
             resources:
               requests:
