@@ -10,8 +10,6 @@
                 privileged: "false"
               run_if_changed: "^(vpath/pjtester.yaml)"
               type_presubmit: "true"
-              labels:
-                preset-pjtester-kubeconfig: "true"
               branches:
                 - ^.*$
               skip_report: "false"
@@ -25,13 +23,21 @@
                 - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
             jobConfig_pjtester:
               command: "pjtester"
+              env:
+                - name: "KUBECONFIG_PATH"
+                  value: "/etc/kubeconfig/pjtester/config"
               volumeMounts:
                 - name: "oauth"
                   mountPath: "/etc/github"
                   readOnly: "true"
+                - name: pjtester-kubeconfig
+                  mountPath: /etc/kubeconfig/pjtester
+                  readOnly: true
               volumes:
                 - name: "oauth"
                   secretName: "pjtester-github-oauth-token"
+                - name: pjtester-kubeconfig
+                  secretName: pjtester-kubeconfig
               args:
                 - "--github-token-path=/etc/github/oauth"
           jobConfigs:

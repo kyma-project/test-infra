@@ -2,7 +2,7 @@
 apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: ServiceAccountTrustedUsage
 metadata:
-  name: terraform-executor-sa-trusted-usage
+  name: terraform-executor
 spec:
   enforcementAction: warn
   match:
