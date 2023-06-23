@@ -18,7 +18,7 @@ spec:
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_optionts: '^{.*"args":["/bin/sh","-c","/bin/terraform -chdir=./configs/terraform/environments/prod init -input=false \u0026\u0026 /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -sha $PULL_BASE_SHA apply -- terraform -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve"],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":["/bin/sh","-c","/bin/terraform -chdir=./configs/terraform/environments/prod init -input=false \u0026\u0026 /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -sha $PULL_BASE_SHA apply -- terraform -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve"],"container_name":"test",.*}$'
       # presubmit prowjob
       - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:*"
         command:
