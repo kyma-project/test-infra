@@ -13,7 +13,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -65,7 +65,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-istio-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -120,7 +120,7 @@ presubmits: # runs on PRs
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-kyma-dns-serviceuser: "true"
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -186,7 +186,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -240,7 +240,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -286,4 +286,68 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+  
+periodics: # runs on schedule
+    - name: nightly-istio-performance-test-gcp
+      annotations:
+        description: "runs istio performance tests on Gardener GCP cluster"
+        owner: "goat"
+        pipeline.trigger: "periodic"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "nightly-istio-performance-test-gcp"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-cluster-version: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-kyma-dns-serviceuser: "true"
+      cron: "0 0 * * *"
+      optional: false
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 14400000000000
+      cluster: untrusted-workload
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+              runAsUser: 0
+            command:
+              - "make"
+            args:
+              - "gardener-perf-test"
+            env:
+              - name: DISK_SIZE
+                value: "50"
+              - name: DISK_TYPE
+                value: "pd-standard"
+              - name: GARDENER_REGION
+                value: "europe-west3"
+              - name: GARDENER_ZONES
+                value: "europe-west3-c,europe-west3-b,europe-west3-a"
+              - name: MACHINE_TYPE
+                value: "n2-standard-8"
+              - name: SCALER_MAX
+                value: "20"
+              - name: SCALER_MIN
+                value: "3"
+              - name: TEST_SA_ACCESS_KEY_PATH
+                value: "/sa-kyma-dns-serviceuser/service-account.json"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

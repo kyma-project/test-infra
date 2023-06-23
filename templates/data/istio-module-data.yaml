@@ -72,7 +72,7 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio module image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -99,7 +99,7 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio module image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -126,7 +126,7 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio operator image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   args:
                     - "--name=istio-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -143,7 +143,7 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio operator image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -164,7 +164,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio operator integration tests on Gardener GCP cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   always_run: true
                   command: "make"
                   args:
@@ -190,6 +190,43 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - jobConfig_default
+                  local:
+                    - job_default
+                    - e2e
+              - jobConfig:
+                  name: nightly-istio-performance-test-gcp
+                  cron: "0 0 * * *"
+                  annotations:
+                    owner: goat
+                    description: runs istio performance tests on Gardener GCP cluster
+                  command: "make"
+                  args:
+                    - "gardener-perf-test"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  labels:
+                    preset-gardener-gcp-kyma-integration: "true"
+                    preset-cluster-version: "true"
+                    preset-sa-kyma-dns-serviceuser: "true"
+                    preset-kyma-guard-bot-github-token: "true"
+                  env:
+                    TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
+                    GARDENER_REGION: "europe-west3"
+                    GARDENER_ZONES: "europe-west3-c,europe-west3-b,europe-west3-a"
+                    MACHINE_TYPE: "n2-standard-8"
+                    DISK_SIZE: 50
+                    DISK_TYPE: "pd-standard"
+                    SCALER_MAX: 20
+                    SCALER_MIN: 3
+                  reporter_config:
+                    slack:
+                      channel: goat-int
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_periodic
+                    - image_kyma-integration
                   local:
                     - job_default
                     - e2e

@@ -12,7 +12,7 @@ presubmits:
         preset-dind-enabled: "true"
       cluster: untrusted-workload
       decorate: true
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       spec:
         hostAliases:
           - ip: "127.0.0.1"
@@ -53,7 +53,7 @@ presubmits:
         preset-dind-enabled: "true"
       cluster: untrusted-workload
       decorate: true
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       spec:
         hostAliases:
           - ip: "127.0.0.1"
@@ -96,7 +96,7 @@ postsubmits:
         preset-dind-enabled: "true"
       cluster: untrusted-workload
       decorate: true
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       spec:
         hostAliases:
           - ip: "127.0.0.1"
