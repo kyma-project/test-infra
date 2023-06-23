@@ -1,0 +1,12 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      api-gateway:
+        prNumber: 403
+  prowJobs:
+    kyma-project:
+      api-gateway:
+        - pjName: "post-api-gateway-integration-aws"
+        - pjName: "pull-api-gateway-integration-aws"
+        - pjName: "rel-api-gateway-custom-domain-integration-gcp"
+        - pjName: "rel-api-gateway-custom-domain-integration-aws"

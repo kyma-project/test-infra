@@ -18,22 +18,19 @@ templates:
           with_ias_credentials:
             labels:
               preset-api-gateway-int-test-client-creds: "true"
-          gardener_gcp_job:
+          gardener_aws_job:
             labels:
-              preset-gardener-gcp-kyma-integration: "true"
-              preset-kyma-cli-stable: "true"
+              preset-gardener-aws-kyma-integration: "true"
               preset-cluster-version: "true"
             env:
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-              GARDENER_REGION: "europe-west4"
-              GARDENER_ZONES: "europe-west4-b"
             annotations:
-              pipeline.platform: gardener_gcp
-          command_integration:
-            annotations:
-              pipeline.installer: kyma install
-              pipeline.test: octopus
-              pipeline.clusterprovisioning: kyma cli
+              pipeline.platform: gardener_aws
+#          command_integration:
+#            annotations:
+#              pipeline.installer: kyma install
+#              pipeline.test: octopus
+#              pipeline.clusterprovisioning: kyma cli
         jobConfigs:
           - repoName: "kyma-project/api-gateway"
             jobs:
@@ -72,13 +69,13 @@ templates:
                   local:
                     - job_default
               - jobConfig:
-                  name: pull-api-gateway-integration-gcp
+                  name: pull-api-gateway-integration-aws
                   annotations:
                     owner: goat
-                    description: runs api-gateway integration tests on Gardener GCP cluster
+                    description: runs api-gateway integration tests on Gardener AWS cluster
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   always_run: true
-                  command: "./tests/integration/scripts/integration-gardener.sh"
+                  command: "./tests/integration/scripts/test-gardener-aws.sh"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -93,14 +90,14 @@ templates:
                     - image_kyma-integration
                   local:
                     - job_default
-                    - gardener_gcp_job
+                    - gardener_aws_job
                     - with_ias_credentials
-                    - command_integration
+#                    - command_integration
               - jobConfig:
-                  name: post-api-gateway-integration-gcp
+                  name: post-api-gateway-integration-aws
                   annotations:
                     owner: goat
-                    description: runs api-gateway integration tests on Gardener GCP cluster
+                    description: runs api-gateway integration tests on Gardener AWS cluster
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   always_run: true
                   branches:
@@ -109,7 +106,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "/home/prow/go/src/github.com/kyma-project/api-gateway/tests/integration/scripts/integration-gardener.sh"
+                    - "./tests/integration/scripts/test-gardener-aws.sh"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -125,6 +122,6 @@ templates:
                   local:
                     - job_default
                     - job_post
-                    - gardener_gcp_job
+                    - gardener_aws_job
                     - with_ias_credentials
-                    - command_integration
+#                    - command_integration
