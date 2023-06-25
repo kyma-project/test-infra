@@ -24,8 +24,7 @@
             jobConfig_pjtester:
               command: "pjtester"
               env:
-                - name: "KUBECONFIG_PATH"
-                  value: "/etc/kubeconfig/pjtester/config"
+                KUBECONFIG_PATH: "/etc/kubeconfig/pjtester/config"
               volumeMounts:
                 - name: "oauth"
                   mountPath: "/etc/github"
