@@ -88,7 +88,7 @@ postsubmits: # runs on main
         grace_period: 600000000000
         timeout: 14400000000000
       path_alias: github.com/kyma-project/api-gateway
-      cluster: trusted-workload
+      cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^main$

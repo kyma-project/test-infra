@@ -64,6 +64,10 @@ templates:
                     description: runs api-gateway integration tests on Gardener AWS cluster
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   always_run: true
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+                  securityContext:
+                    privileged: false
+                  cluster: untrusted-workload
                   branches:
                     - ^main$
                   command: "./tests/integration/scripts/test-gardener-aws.sh"
