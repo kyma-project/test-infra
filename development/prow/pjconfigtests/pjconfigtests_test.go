@@ -1,6 +1,7 @@
 package pjconfigtests_test
 
 import (
+	"fmt"
 	"os"
 	"path"
 
@@ -46,7 +47,9 @@ var _ = Describe("Prowjob,", func() {
 			When("using privileged container,", func() {
 				It("use allowed image", func() {
 					for _, container := range pj.Spec.Containers {
+						fmt.println(container.Image)
 						if container.SecurityContext != nil && container.SecurityContext.Privileged != nil && *container.SecurityContext.Privileged {
+							fmt.Println(container.SecurityContext.Privileged)
 							Expect(container.Image).To(BeElementOf(privilegedContainersConstraint.Spec.Parameters.ExemptImages), "Presubmit %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
 						}
 					}
