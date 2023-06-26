@@ -24,8 +24,8 @@ templates:
               preset-cluster-version: "true"
             env:
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-            annotations:
-              pipeline.platform: gardener_aws
+            #annotations:
+              #pipeline.platform: gardener_aws
 #          command_integration:
 #            annotations:
 #              pipeline.installer: kyma install
