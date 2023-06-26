@@ -1,9 +1,9 @@
 package pjconfigtests_test
 
 import (
-	"fmt"
 	"os"
 	"path"
+	"strings"
 
 	"github.com/kyma-project/test-infra/development/opagatekeeper"
 	kprow "github.com/kyma-project/test-infra/development/prow"
@@ -47,10 +47,23 @@ var _ = Describe("Prowjob,", func() {
 			When("using privileged container,", func() {
 				It("use allowed image", func() {
 					for _, container := range pj.Spec.Containers {
-						fmt.println(container.Image)
 						if container.SecurityContext != nil && container.SecurityContext.Privileged != nil && *container.SecurityContext.Privileged {
-							fmt.Println(container.SecurityContext.Privileged)
-							Expect(container.Image).To(BeElementOf(privilegedContainersConstraint.Spec.Parameters.ExemptImages), "Presubmit %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
+							allowedImage := false
+							for _, exemptImage := range privilegedContainersConstraint.Spec.Parameters.ExemptImages {
+								if strings.HasSuffix(exemptImage, "*") {
+									prefix := strings.TrimSuffix(exemptImage, "*")
+									if strings.HasPrefix(container.Image, prefix) {
+										allowedImage = true
+										break
+									}
+								} else {
+									if container.Image == exemptImage {
+										allowedImage = true
+										break
+									}
+								}
+							}
+							Expect(allowedImage).To(BeTrue(), "Presubmit %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
 						}
 					}
 				})
@@ -75,7 +88,22 @@ var _ = Describe("Prowjob,", func() {
 				It("use allowed image", func() {
 					for _, container := range pj.Spec.Containers {
 						if container.SecurityContext != nil && container.SecurityContext.Privileged != nil && *container.SecurityContext.Privileged {
-							Expect(container.Image).To(BeElementOf(privilegedContainersConstraint.Spec.Parameters.ExemptImages), "Postsubmit %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
+							allowedImage := false
+							for _, exemptImage := range privilegedContainersConstraint.Spec.Parameters.ExemptImages {
+								if strings.HasSuffix(exemptImage, "*") {
+									prefix := strings.TrimSuffix(exemptImage, "*")
+									if strings.HasPrefix(container.Image, prefix) {
+										allowedImage = true
+										break
+									}
+								} else {
+									if container.Image == exemptImage {
+										allowedImage = true
+										break
+									}
+								}
+							}
+							Expect(allowedImage).To(BeTrue(), "Postsubmit %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
 						}
 					}
 				})
@@ -100,7 +128,22 @@ var _ = Describe("Prowjob,", func() {
 				It("use allowed image", func() {
 					for _, container := range pj.Spec.Containers {
 						if container.SecurityContext != nil && container.SecurityContext.Privileged != nil && *container.SecurityContext.Privileged {
-							Expect(container.Image).To(BeElementOf(privilegedContainersConstraint.Spec.Parameters.ExemptImages), "Periodic %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
+							allowedImage := false
+							for _, exemptImage := range privilegedContainersConstraint.Spec.Parameters.ExemptImages {
+								if strings.HasSuffix(exemptImage, "*") {
+									prefix := strings.TrimSuffix(exemptImage, "*")
+									if strings.HasPrefix(container.Image, prefix) {
+										allowedImage = true
+										break
+									}
+								} else {
+									if container.Image == exemptImage {
+										allowedImage = true
+										break
+									}
+								}
+							}
+							Expect(allowedImage).To(BeTrue(), "Periodic %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
 						}
 					}
 				})
