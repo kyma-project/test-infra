@@ -2,8 +2,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       api-gateway:
-        #- pjName: "post-api-gateway-integration-aws"
-        - pjName: "pull-api-gateway-integration-aws"
+        - pjName: "post-api-gateway-integration-aws"
 prConfigs: #
   kyma-project:
     api-gateway:
