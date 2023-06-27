@@ -49,7 +49,7 @@ function testCustomImage() {
 gcp::authenticate \
   -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
-RANDOM_ID=$(LC_ALL=C tr -dc 'a-z' < /dev/urandom | head -c4)
+RANDOM_ID=$(LC_ALL=C tr -dc '[:lower:]' < /dev/urandom | head -c4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
