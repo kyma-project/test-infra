@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-incubator:
+      reconciler:
+        - pjName: "pre-latest-istio-reconciler-integration-k3d"
+# prConfigs:
+#   kyma-project:
+#     api-gateway:
+#       prNumber: 211

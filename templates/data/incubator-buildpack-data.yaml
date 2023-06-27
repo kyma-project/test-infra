@@ -164,6 +164,8 @@ templates:
               - name: kyma-bot-github-token
                 mountPath: /etc/github
                 readOnly: true
+          reconciler_e2e_image:
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230525-75242ac0
         jobConfigs:
           - repoName: kyma-incubator/reconciler
             jobs:
@@ -341,12 +343,12 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
+                    - reconciler_e2e_image
               - jobConfig:
                   name: "pre-main-istio-reconciler-integration-k3d"
                   annotations:
@@ -368,12 +370,12 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
+                    - reconciler_e2e_image
               - jobConfig:
                   name: "pre-main-ory-reconciler-eval-integration-k3d"
                   annotations:
@@ -488,12 +490,12 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
+                    - reconciler_e2e_image
               - jobConfig:
                   name: "post-main-istio-reconciler-integration-k3d"
                   annotations:
@@ -515,12 +517,12 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - image_kyma-integration
                     - extra_refs_test-infra
                     - extra_refs_kyma
                   local:
                     - reconciler_main_jobConfig
                     - reconciler_component_k3d_integration_jobConfig
+                    - reconciler_e2e_image
               - jobConfig:
                   name: pre-main-kyma-incubator-mothership-reconciler
                   annotations:
