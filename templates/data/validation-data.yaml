@@ -106,6 +106,7 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
                     - "pubsub_labels"
+                    - "privileged"
               - jobConfig:
                   name: "pre-test-infra-validate-dockerfiles"
                   annotations:

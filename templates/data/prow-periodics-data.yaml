@@ -98,6 +98,32 @@ templates:
                     - extra_refs_test-infra
                     - "unprivileged"
               - jobConfig:
+                  name: test-infra-image-detector-autobump
+                  annotations:
+                    owner: neighbors
+                    description: daily detect prow images for scan
+                  cron: "0 8 * * *"
+                  slack_channel: kyma-prow-alerts
+                  command: /imagedetector
+                  args:
+                    - --prow-config=prow/config.yaml
+                    - --prow-jobs-dir=prow/jobs
+                    - --terraform-dir=configs/terraform
+                    - --sec-scanner-config=sec-scanner-config.yaml
+                    - --kubernetes-dir=prow/cluster/components
+                    - --autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml
+                    - --inrepo-config=prow/image-detector/inrepo-config.yaml
+                inheritedConfigs:
+                  local:
+                    - periodic_config
+                    - github_token_mounts
+                  global:
+                    - pubsub_labels
+                    - disable_testgrid
+                    - image_image_detector
+                    - extra_refs_test-infra
+                    - "unprivileged"
+              - jobConfig:
                   name: post-test-infra-markdown-index-autobump
                   annotations:
                     owner: neighbors

@@ -132,14 +132,10 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
           reconciler_nightly_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
-            securityContext:
-              privileged: false
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
           reconciler_nightly_cluster_jobConfig:
-            securityContext:
-              privileged: false
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             annotations:
               pipeline.platform: "gardener_gcp"
@@ -660,6 +656,7 @@ templates:
                     - disable_testgrid
                     - image_kyma-integration
                     - jobConfig_slack_jellyfish
+                    - privileged
                   local:
                     - reconciler_nightly_cluster_jobConfig
                     - reconciler_jobConfig_args
@@ -693,6 +690,7 @@ templates:
                     - disable_testgrid
                     - image_kyma-integration
                     - jobConfig_slack_jellyfish
+                    - privileged
                   local:
                     - reconciler_nightly_e2e_jobConfig
                     - reconciler_jobConfig_args
