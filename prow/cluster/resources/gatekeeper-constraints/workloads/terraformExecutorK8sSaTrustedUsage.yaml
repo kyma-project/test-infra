@@ -1,0 +1,40 @@
+# Constraint to allow only image-builder tool trusted usage on tekton cluster run as image-builder service account identity.
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: ServiceAccountTrustedUsage
+metadata:
+  name: terraform-executor
+spec:
+  enforcementAction: warn
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    restrictedServiceAccounts:
+      - terraform-executor
+    trustedImages:
+      # postsubmit prowjob
+      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:*"
+        command:
+          - /tools/entrypoint
+        args: []
+        entrypoint_options: '^{.*"args":["/bin/sh","-c","/bin/terraform -chdir=./configs/terraform/environments/prod init -input=false \u0026\u0026 /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -sha $PULL_BASE_SHA apply -- terraform -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve"],"container_name":"test",.*}$'
+      # presubmit prowjob
+      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:*"
+        command:
+          - /tools/entrypoint
+        args: []
+        entrypoint_options: '^{.*"args":["/bin/sh","-c","/bin/terraform -chdir=./configs/terraform/environments/prod init -input=false \u0026\u0026 /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER -sha $PULL_PULL_SHA plan -- terraform -chdir=./configs/terraform/environments/prod plan -input=false -no-color"],"container_name":"test",.*}$'
+      # prow decoration
+      - image: "gcr.io/k8s-prow/sidecar:*"
+        command: []
+        args: []
+      - image: "gcr.io/k8s-prow/clonerefs:*"
+        command: []
+        args: []
+      - image: "gcr.io/k8s-prow/initupload:*"
+        command: []
+        args: []
+      - image: "gcr.io/k8s-prow/entrypoint:*"
+        command: []
+        args: []

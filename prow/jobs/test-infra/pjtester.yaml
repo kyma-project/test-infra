@@ -11,7 +11,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-test-infra-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -32,6 +31,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -39,6 +41,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -51,6 +56,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-test-infra-vpathguard
       annotations:
         description: "Run pjtester vpathguard for test-infra"
@@ -59,7 +67,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-test-infra-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -102,7 +109,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -128,6 +134,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -135,6 +144,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -147,6 +159,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-kyma-vpathguard
       annotations:
         description: "Run pjtester vpathguard for kyma"
@@ -155,7 +170,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -198,7 +212,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-busola-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -224,6 +237,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -231,6 +247,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -243,6 +262,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-busola-vpathguard
       annotations:
         description: "Run pjtester vpathguard for busola"
@@ -251,7 +273,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-busola-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -294,7 +315,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-control-plane-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -320,6 +340,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -327,6 +350,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -339,6 +365,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-control-plane-vpathguard
       annotations:
         description: "Run pjtester vpathguard for control-plane"
@@ -347,7 +376,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-control-plane-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -390,7 +418,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-cli-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -416,6 +443,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -423,6 +453,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -435,6 +468,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-cli-vpathguard
       annotations:
         description: "Run pjtester vpathguard for cli"
@@ -443,7 +479,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-cli-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -486,7 +521,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -512,6 +546,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -519,6 +556,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -531,6 +571,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-website-vpathguard
       annotations:
         description: "Run pjtester vpathguard for website"
@@ -539,7 +582,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -582,7 +624,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-lifecycle-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -608,6 +649,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -615,6 +659,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -627,6 +674,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-lifecycle-manager-vpathguard
       annotations:
         description: "Run pjtester vpathguard for lifecycle-manager"
@@ -635,7 +685,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-lifecycle-manager-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -678,7 +727,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-third-party-images-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -704,6 +752,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -711,6 +762,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -723,6 +777,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-third-party-images-vpathguard
       annotations:
         description: "Run pjtester vpathguard for third-party-images"
@@ -731,7 +788,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-third-party-images-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -774,7 +830,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-community-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -800,6 +855,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -807,6 +865,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -819,6 +880,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-community-vpathguard
       annotations:
         description: "Run pjtester vpathguard for community"
@@ -827,7 +891,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-community-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -870,7 +933,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydroform-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -896,6 +958,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -903,6 +968,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -915,6 +983,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-hydroform-vpathguard
       annotations:
         description: "Run pjtester vpathguard for hydroform"
@@ -923,7 +994,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydroform-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -966,7 +1036,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-operator-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -992,6 +1061,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -999,6 +1071,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -1011,6 +1086,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-istio-operator-vpathguard
       annotations:
         description: "Run pjtester vpathguard for istio-operator"
@@ -1019,7 +1097,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-operator-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1062,7 +1139,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-addons-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1088,6 +1164,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -1095,6 +1174,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -1107,6 +1189,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-addons-vpathguard
       annotations:
         description: "Run pjtester vpathguard for addons"
@@ -1115,7 +1200,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-addons-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1158,7 +1242,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-private-fn-for-e2e-serverless-tests-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1184,6 +1267,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -1191,6 +1277,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -1203,6 +1292,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-private-fn-for-e2e-serverless-tests-vpathguard
       annotations:
         description: "Run pjtester vpathguard for private-fn-for-e2e-serverless-tests"
@@ -1211,7 +1303,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-private-fn-for-e2e-serverless-tests-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1254,7 +1345,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-charts-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1280,6 +1370,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -1287,6 +1380,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -1299,6 +1395,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-charts-vpathguard
       annotations:
         description: "Run pjtester vpathguard for charts"
@@ -1307,7 +1406,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-charts-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1350,7 +1448,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1376,6 +1473,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -1383,6 +1483,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -1395,6 +1498,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-examples-vpathguard
       annotations:
         description: "Run pjtester vpathguard for examples"
@@ -1403,7 +1509,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1446,7 +1551,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1472,6 +1576,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -1479,6 +1586,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -1491,6 +1601,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-api-gateway-vpathguard
       annotations:
         description: "Run pjtester vpathguard for api-gateway"
@@ -1499,7 +1612,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1542,7 +1654,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1568,6 +1679,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -1575,6 +1689,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -1587,6 +1704,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-istio-vpathguard
       annotations:
         description: "Run pjtester vpathguard for istio"
@@ -1595,7 +1715,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1638,7 +1757,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-runtime-watcher-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1664,6 +1782,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -1671,6 +1792,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -1683,6 +1807,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-runtime-watcher-vpathguard
       annotations:
         description: "Run pjtester vpathguard for runtime-watcher"
@@ -1691,7 +1818,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-runtime-watcher-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1734,7 +1860,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keda-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1760,6 +1885,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -1767,6 +1895,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -1779,6 +1910,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-keda-manager-vpathguard
       annotations:
         description: "Run pjtester vpathguard for keda-manager"
@@ -1787,7 +1921,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keda-manager-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1830,7 +1963,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1856,6 +1988,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -1863,6 +1998,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -1875,6 +2013,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-kyma-dashboard-vpathguard
       annotations:
         description: "Run pjtester vpathguard for kyma-dashboard"
@@ -1883,7 +2024,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1926,7 +2066,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1952,6 +2091,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -1959,6 +2101,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -1971,6 +2116,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-application-connector-manager-vpathguard
       annotations:
         description: "Run pjtester vpathguard for application-connector-manager"
@@ -1979,7 +2127,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-manager-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2022,7 +2169,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-rafter-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2048,6 +2194,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -2055,6 +2204,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -2067,6 +2219,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-rafter-vpathguard
       annotations:
         description: "Run pjtester vpathguard for rafter"
@@ -2075,7 +2230,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-rafter-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2118,7 +2272,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-btp-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2144,6 +2297,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -2151,6 +2307,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -2163,6 +2322,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-btp-manager-vpathguard
       annotations:
         description: "Run pjtester vpathguard for btp-manager"
@@ -2171,7 +2333,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-btp-manager-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2214,7 +2375,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2240,6 +2400,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -2247,6 +2410,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -2259,6 +2425,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-telemetry-manager-vpathguard
       annotations:
         description: "Run pjtester vpathguard for telemetry-manager"
@@ -2267,7 +2436,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2310,7 +2478,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-director-size-exporter-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2336,6 +2503,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -2343,6 +2513,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -2355,6 +2528,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-director-size-exporter-vpathguard
       annotations:
         description: "Run pjtester vpathguard for director-size-exporter"
@@ -2363,7 +2539,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-director-size-exporter-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2406,7 +2581,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2432,6 +2606,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -2439,6 +2616,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -2451,6 +2631,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-compass-manager-vpathguard
       annotations:
         description: "Run pjtester vpathguard for compass-manager"
@@ -2459,7 +2642,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-manager-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2502,7 +2684,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2528,6 +2709,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -2535,6 +2719,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -2547,6 +2734,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-compass-vpathguard
       annotations:
         description: "Run pjtester vpathguard for compass"
@@ -2555,7 +2745,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2598,7 +2787,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-ord-service-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2624,6 +2812,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -2631,6 +2822,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -2643,6 +2837,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-ord-service-vpathguard
       annotations:
         description: "Run pjtester vpathguard for ord-service"
@@ -2651,7 +2848,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-ord-service-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2694,7 +2890,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-reconciler-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2720,6 +2915,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -2727,6 +2925,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -2739,6 +2940,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-reconciler-vpathguard
       annotations:
         description: "Run pjtester vpathguard for reconciler"
@@ -2747,7 +2951,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-reconciler-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2790,7 +2993,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-bullseye-showcase-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2816,6 +3018,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -2823,6 +3028,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -2835,6 +3043,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-bullseye-showcase-vpathguard
       annotations:
         description: "Run pjtester vpathguard for bullseye-showcase"
@@ -2843,7 +3054,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-bullseye-showcase-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2886,7 +3096,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-documentation-component-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2912,6 +3121,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -2919,6 +3131,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -2931,6 +3146,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-documentation-component-vpathguard
       annotations:
         description: "Run pjtester vpathguard for documentation-component"
@@ -2939,7 +3157,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-documentation-component-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2982,7 +3199,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-console-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3008,6 +3224,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -3015,6 +3234,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -3027,6 +3249,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-compass-console-vpathguard
       annotations:
         description: "Run pjtester vpathguard for compass-console"
@@ -3035,7 +3260,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-console-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3078,7 +3302,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sap-btp-service-operator-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3104,6 +3327,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -3111,6 +3337,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -3123,6 +3352,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-sap-btp-service-operator-vpathguard
       annotations:
         description: "Run pjtester vpathguard for sap-btp-service-operator"
@@ -3131,7 +3363,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sap-btp-service-operator-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3174,7 +3405,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-milv-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3200,6 +3430,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -3207,6 +3440,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -3219,6 +3455,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-milv-vpathguard
       annotations:
         description: "Run pjtester vpathguard for milv"
@@ -3227,7 +3466,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-milv-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3270,7 +3508,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-varkes-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3296,6 +3533,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -3303,6 +3543,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -3315,6 +3558,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-varkes-vpathguard
       annotations:
         description: "Run pjtester vpathguard for varkes"
@@ -3323,7 +3569,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-varkes-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3366,7 +3611,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-slack-bot-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3392,6 +3636,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -3399,6 +3646,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -3411,6 +3661,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-slack-bot-vpathguard
       annotations:
         description: "Run pjtester vpathguard for slack-bot"
@@ -3419,7 +3672,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-slack-bot-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3462,7 +3714,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-migrate-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3488,6 +3739,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -3495,6 +3749,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -3507,6 +3764,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-migrate-vpathguard
       annotations:
         description: "Run pjtester vpathguard for migrate"
@@ -3515,7 +3775,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-migrate-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3558,7 +3817,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-github-dashboard-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3584,6 +3842,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -3591,6 +3852,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -3603,6 +3867,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-github-dashboard-vpathguard
       annotations:
         description: "Run pjtester vpathguard for github-dashboard"
@@ -3611,7 +3878,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-github-dashboard-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3654,7 +3920,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-vuepress-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3680,6 +3945,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -3687,6 +3955,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -3699,6 +3970,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-website-vuepress-vpathguard
       annotations:
         description: "Run pjtester vpathguard for website-vuepress"
@@ -3707,7 +3981,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-vuepress-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3750,7 +4023,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kitbag-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3776,6 +4048,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -3783,6 +4058,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -3795,6 +4073,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-kitbag-vpathguard
       annotations:
         description: "Run pjtester vpathguard for kitbag"
@@ -3803,7 +4084,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kitbag-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3846,7 +4126,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-showcase-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3872,6 +4151,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -3879,6 +4161,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -3891,6 +4176,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-kyma-showcase-vpathguard
       annotations:
         description: "Run pjtester vpathguard for kyma-showcase"
@@ -3899,7 +4187,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-showcase-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3942,7 +4229,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydra-login-consent-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3968,6 +4254,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -3975,6 +4264,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -3987,6 +4279,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-hydra-login-consent-vpathguard
       annotations:
         description: "Run pjtester vpathguard for hydra-login-consent"
@@ -3995,7 +4290,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydra-login-consent-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4038,7 +4332,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kymart-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4064,6 +4357,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -4071,6 +4367,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -4083,6 +4382,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-kymart-vpathguard
       annotations:
         description: "Run pjtester vpathguard for kymart"
@@ -4091,7 +4393,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kymart-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4134,7 +4435,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4160,6 +4460,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -4167,6 +4470,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -4179,6 +4485,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-examples-vpathguard
       annotations:
         description: "Run pjtester vpathguard for examples"
@@ -4187,7 +4496,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4230,7 +4538,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-vstudio-extension-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4256,6 +4563,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -4263,6 +4573,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -4275,6 +4588,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-vstudio-extension-vpathguard
       annotations:
         description: "Run pjtester vpathguard for vstudio-extension"
@@ -4283,7 +4599,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-vstudio-extension-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4326,7 +4641,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-wordpress-connector-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4352,6 +4666,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -4359,6 +4676,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -4371,6 +4691,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-wordpress-connector-vpathguard
       annotations:
         description: "Run pjtester vpathguard for wordpress-connector"
@@ -4379,7 +4702,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-wordpress-connector-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4422,7 +4744,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-connector-tools-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4448,6 +4769,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -4455,6 +4779,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -4467,6 +4794,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-connector-tools-vpathguard
       annotations:
         description: "Run pjtester vpathguard for connector-tools"
@@ -4475,7 +4805,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-connector-tools-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4518,7 +4847,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-artwork-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4544,6 +4872,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -4551,6 +4882,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -4563,6 +4897,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-artwork-vpathguard
       annotations:
         description: "Run pjtester vpathguard for artwork"
@@ -4571,7 +4908,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-artwork-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4614,7 +4950,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-opensap-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4640,6 +4975,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -4647,6 +4985,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -4659,6 +5000,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-opensap-vpathguard
       annotations:
         description: "Run pjtester vpathguard for opensap"
@@ -4667,7 +5011,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-opensap-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4710,7 +5053,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-testdrape-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4736,6 +5078,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -4743,6 +5088,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -4755,6 +5103,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-testdrape-vpathguard
       annotations:
         description: "Run pjtester vpathguard for testdrape"
@@ -4763,7 +5114,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-testdrape-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4806,7 +5156,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sc-removal-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4832,6 +5181,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -4839,6 +5191,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -4851,6 +5206,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-sc-removal-vpathguard
       annotations:
         description: "Run pjtester vpathguard for sc-removal"
@@ -4859,7 +5217,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sc-removal-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4902,7 +5259,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4928,6 +5284,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -4935,6 +5294,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -4947,6 +5309,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-service-catalog-tester-vpathguard
       annotations:
         description: "Run pjtester vpathguard for service-catalog-tester"
@@ -4955,7 +5320,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4998,7 +5362,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -5024,6 +5387,9 @@ presubmits: # runs on PRs
               - "pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
             resources:
               requests:
                 memory: 100M
@@ -5031,6 +5397,9 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: oauth
                 mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
         tolerations:
           - key: dedicated
@@ -5043,6 +5412,9 @@ presubmits: # runs on PRs
           - name: oauth
             secret:
               secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
     - name: pull-service-catalog-vpathguard
       annotations:
         description: "Run pjtester vpathguard for service-catalog"
@@ -5051,7 +5423,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-vpathguard"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true

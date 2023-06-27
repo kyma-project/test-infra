@@ -429,20 +429,6 @@ presets:
     env:
       - name: DEBUG_COMMANDO_OOM
         value: "true"
-  # pjtester
-  - labels:
-      preset-pjtester-kubeconfig: "true"
-    env:
-      - name: KUBECONFIG_PATH
-        value: /etc/kubeconfig/pjtester/config
-    volumes:
-      - name: pjtester-kubeconfig
-        secret:
-          secretName: pjtester-kubeconfig
-    volumeMounts:
-      - name: pjtester-kubeconfig
-        mountPath: /etc/kubeconfig/pjtester
-        readOnly: true
   - labels:
       preset-certificates-bucket: "true"
     env:
