@@ -12,7 +12,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-provisioner-integration-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
       optional: false
-      run_if_changed: "components/provisioner/(go.mod|go.sum)$|*/(.*.go|Makefile|Dockerfile|.*.sh)"
+      run_if_changed: "components/provisioner/((go.mod|go.sum)$|/(.*.go|Makefile|Dockerfile|.*.sh))"
       skip_report: false
       decorate: true
       cluster: untrusted-workload
