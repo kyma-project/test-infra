@@ -6,6 +6,9 @@ periodics:
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-kyma-k8s-integration-next-k3d"
+      prow.k8s.io/pubsub.topic: "prowjobs"
     decorate: true
     interval: 12h
     skip_report: true
