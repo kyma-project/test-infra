@@ -3,7 +3,7 @@
 # This script is designed to provision a new vm and start kyma.It takes an optional positional parameter using --image flag
 # Use this flag to specify the custom image for provisining vms. If no flag is provided, the latest custom image is used.
 
-set -o errexit
+set -xo errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
