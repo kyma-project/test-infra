@@ -11,7 +11,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-test-infra-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -27,6 +26,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -82,6 +82,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -108,7 +109,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -129,6 +129,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -184,6 +185,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -210,7 +212,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-busola-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -231,6 +232,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -286,6 +288,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -312,7 +315,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-control-plane-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -333,6 +335,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -388,6 +391,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -414,7 +418,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-cli-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -435,6 +438,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -490,6 +494,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -516,7 +521,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -537,6 +541,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -592,6 +597,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -618,7 +624,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-lifecycle-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -639,6 +644,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -694,6 +700,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -720,7 +727,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-third-party-images-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -741,6 +747,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -796,6 +803,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -822,7 +830,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-community-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -843,6 +850,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -898,6 +906,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -924,7 +933,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydroform-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -945,6 +953,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1000,6 +1009,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1026,7 +1036,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-operator-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1047,6 +1056,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1102,6 +1112,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1128,7 +1139,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-addons-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1149,6 +1159,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1204,6 +1215,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1230,7 +1242,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-private-fn-for-e2e-serverless-tests-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1251,6 +1262,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1306,6 +1318,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1332,7 +1345,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-charts-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1353,6 +1365,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1408,6 +1421,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1434,7 +1448,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1455,6 +1468,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1510,6 +1524,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1536,7 +1551,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1557,6 +1571,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1612,6 +1627,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1638,7 +1654,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1659,6 +1674,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1714,6 +1730,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1740,7 +1757,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-runtime-watcher-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1761,6 +1777,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1816,6 +1833,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1842,7 +1860,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keda-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1863,6 +1880,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -1918,6 +1936,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -1944,7 +1963,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -1965,6 +1983,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2020,6 +2039,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2046,7 +2066,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2067,6 +2086,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2122,6 +2142,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2148,7 +2169,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-rafter-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2169,6 +2189,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2224,6 +2245,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2250,7 +2272,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-btp-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2271,6 +2292,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2326,6 +2348,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2352,7 +2375,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2373,6 +2395,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2428,6 +2451,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2454,7 +2478,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-director-size-exporter-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2475,6 +2498,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2530,6 +2554,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2556,7 +2581,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-manager-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2577,6 +2601,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2632,6 +2657,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2658,7 +2684,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2679,6 +2704,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2734,6 +2760,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2760,7 +2787,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-ord-service-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2781,6 +2807,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2836,6 +2863,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2862,7 +2890,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-reconciler-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2883,6 +2910,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -2938,6 +2966,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -2964,7 +2993,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-bullseye-showcase-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -2985,6 +3013,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3040,6 +3069,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3066,7 +3096,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-documentation-component-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3087,6 +3116,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3142,6 +3172,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3168,7 +3199,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-console-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3189,6 +3219,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3244,6 +3275,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3270,7 +3302,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sap-btp-service-operator-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3291,6 +3322,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3346,6 +3378,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3372,7 +3405,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-milv-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3393,6 +3425,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3448,6 +3481,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3474,7 +3508,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-varkes-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3495,6 +3528,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3550,6 +3584,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3576,7 +3611,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-slack-bot-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3597,6 +3631,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3652,6 +3687,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3678,7 +3714,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-migrate-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3699,6 +3734,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3754,6 +3790,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3780,7 +3817,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-github-dashboard-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3801,6 +3837,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3856,6 +3893,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3882,7 +3920,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-vuepress-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -3903,6 +3940,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -3958,6 +3996,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -3984,7 +4023,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kitbag-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4005,6 +4043,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4060,6 +4099,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4086,7 +4126,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-showcase-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4107,6 +4146,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4162,6 +4202,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4188,7 +4229,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydra-login-consent-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4209,6 +4249,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4264,6 +4305,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4290,7 +4332,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kymart-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4311,6 +4352,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4366,6 +4408,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4392,7 +4435,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4413,6 +4455,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4468,6 +4511,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4494,7 +4538,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-vstudio-extension-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4515,6 +4558,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4570,6 +4614,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4596,7 +4641,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-wordpress-connector-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4617,6 +4661,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4672,6 +4717,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4698,7 +4744,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-connector-tools-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4719,6 +4764,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4774,6 +4820,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4800,7 +4847,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-artwork-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4821,6 +4867,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4876,6 +4923,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -4902,7 +4950,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-opensap-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -4923,6 +4970,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -4978,6 +5026,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -5004,7 +5053,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-testdrape-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -5025,6 +5073,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -5080,6 +5129,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -5106,7 +5156,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sc-removal-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -5127,6 +5176,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -5182,6 +5232,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -5208,7 +5259,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -5229,6 +5279,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -5284,6 +5335,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -5310,7 +5362,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-pjtester"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-pjtester-kubeconfig: "true"
       run_if_changed: '^(vpath/pjtester.yaml)'
       skip_report: false
       decorate: true
@@ -5331,6 +5382,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "pjtester"
             args:
@@ -5386,6 +5438,7 @@ presubmits: # runs on PRs
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:

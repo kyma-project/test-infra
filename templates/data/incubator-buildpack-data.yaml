@@ -132,14 +132,10 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
           reconciler_nightly_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
-            securityContext:
-              privileged: false
           reconciler_jobConfig_args:
             args:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
           reconciler_nightly_cluster_jobConfig:
-            securityContext:
-              privileged: false
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             annotations:
               pipeline.platform: "gardener_gcp"
@@ -620,7 +616,7 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230613-9df263832f
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230623-ea9b5f8eba
                   command: generic-autobumper
                   args:
                     - --config=/home/prow/go/src/github.com/kyma-project/test-infra/prow/autobump-config/control-plane-autobump-reconciler-config.yaml
@@ -660,6 +656,7 @@ templates:
                     - disable_testgrid
                     - image_kyma-integration
                     - jobConfig_slack_jellyfish
+                    - privileged
                   local:
                     - reconciler_nightly_cluster_jobConfig
                     - reconciler_jobConfig_args
@@ -693,6 +690,7 @@ templates:
                     - disable_testgrid
                     - image_kyma-integration
                     - jobConfig_slack_jellyfish
+                    - privileged
                   local:
                     - reconciler_nightly_e2e_jobConfig
                     - reconciler_jobConfig_args

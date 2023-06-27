@@ -20,7 +20,7 @@ periodics:
     spec:
       containers:
         - name: branchprotector
-          image: gcr.io/k8s-prow/branchprotector:v20230613-9df263832f
+          image: gcr.io/k8s-prow/branchprotector:v20230623-ea9b5f8eba
           command: ["branchprotector"]
           args:
             - --config-path=prow/config.yaml
@@ -37,6 +37,7 @@ periodics:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
+            allowPrivilegeEscalation: false
       volumes:
         - name: oauth
           secret:

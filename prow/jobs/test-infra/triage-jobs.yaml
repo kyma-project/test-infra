@@ -13,7 +13,7 @@ periodics:
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20230613-9df263832f
+        - image: gcr.io/k8s-prow/commenter:v20230623-ea9b5f8eba
           command:
             - commenter
           args:
@@ -52,6 +52,7 @@ periodics:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
+            allowPrivilegeEscalation: false
       volumes:
         - name: token
           secret:
@@ -71,7 +72,7 @@ periodics:
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20230613-9df263832f
+        - image: gcr.io/k8s-prow/commenter:v20230623-ea9b5f8eba
           command:
             - commenter
           args:
@@ -111,6 +112,7 @@ periodics:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
+            allowPrivilegeEscalation: false
       volumes:
         - name: token
           secret:

@@ -46,6 +46,7 @@ periodics: # runs on schedule
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/skr-aws-upgrade-integration-dev.sh"
             env:

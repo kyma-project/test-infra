@@ -10,6 +10,8 @@
                 privileged: "false"
               run_if_changed: "^(vpath/pjtester.yaml)"
               type_presubmit: "true"
+              labels:
+                preset-pjtester-kubeconfig: "true"
               branches:
                 - ^.*$
               skip_report: "false"
@@ -25,8 +27,6 @@
               command: "pjtester"
               env:
                 KUBECONFIG_PATH: /etc/kubeconfig/pjtester/config
-              labels:
-                preset-pjtester-kubeconfig: "true"
               volumeMounts:
                 - name: oauth
                   mountPath: /etc/github

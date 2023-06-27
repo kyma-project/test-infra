@@ -16,7 +16,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio linting
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "/bin/sh"
                   args:
@@ -35,7 +35,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio unit tests
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "./tests/integration/scripts/code-coverage-guard.sh"
                   always_run: true

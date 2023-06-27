@@ -16,14 +16,9 @@ presubmits:
       run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/'
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
-            command:
-              - /bin/bash
-            args:
-              - -c
-              - |
-                service docker start
-                make e2e-test
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+            command: ["/init.sh"]
+            args: ["bash", "-c", "make e2e-test"]
             requests:
               memory: 4Gi
               cpu: 2
@@ -34,6 +29,7 @@ presubmits:
               privileged: true
               seccompProfile:
                 type: Unconfined
+              allowPrivilegeEscalation: true
         tolerations:
           - key: dedicated
             operator: Equal

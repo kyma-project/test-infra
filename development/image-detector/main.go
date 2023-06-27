@@ -172,7 +172,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&TektonCatalog, "tekton-catalog", "", "path to the Tekton catalog directory")
 	rootCmd.PersistentFlags().StringVar(&AutobumpConfig, "autobump-config", "", "path to the config for autobumper for security scanner config")
 	rootCmd.PersistentFlags().StringVar(&InRepoConfig, "inrepo-config", "", "path to the configuration of repositories with Prow inrepo config enabled")
-	rootCmd.PersistentFlags().StringVar(&InRepoConfig, "github-token-path", "/etc/github/token", "path to github token for fetching inrepo config")
+	rootCmd.PersistentFlags().StringVar(&GithubTokenPath, "github-token-path", "/etc/github/token", "path to github token for fetching inrepo config")
 
 	rootCmd.MarkFlagRequired("sec-scanner-config")
 }

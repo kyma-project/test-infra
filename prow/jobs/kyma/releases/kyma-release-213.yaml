@@ -37,6 +37,9 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -89,6 +92,9 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -144,6 +150,9 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "bash"
             args:
@@ -231,6 +240,9 @@ periodics: # runs on schedule
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "bash"
             args:

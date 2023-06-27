@@ -195,7 +195,7 @@ globalSets:
   image_markdown_index:
     image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
   image_image_detector:
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230605-f0fdfaf8"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230622-de57a1f7"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -263,6 +263,11 @@ globalSets:
       privileged: "false"
       seccompProfile:
         type: "RuntimeDefault"
+  privileged:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: "Unconfined"
   disable_testgrid:
     annotations:
       testgrid-create-test-group: "false"
