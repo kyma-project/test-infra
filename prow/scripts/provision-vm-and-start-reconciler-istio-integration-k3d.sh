@@ -119,6 +119,9 @@ if [[ ! $KYMA_VERSION ]]; then
     export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
     log::info "Reading latest Kyma release version, got: ${KYMA_VERSION}"
 fi
+
+git config --global --add safe.directory "${KYMA_SOURCES_DIR}"
+
 # Determine Istio version based on Kyma version
 istio::get_version
 export ISTIO_VERSION="${istio_version:?}"
