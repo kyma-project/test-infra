@@ -139,7 +139,8 @@ var rootCmd = &cobra.Command{
 			for _, repo := range cfg {
 				imgs, err := extractimageurls.FromInRepoConfig(repo, ghToken)
 				if err != nil {
-					log.Fatalf("failed to exract image urls from repository %s: %v", &repo, err)
+					log.Printf("warn: failed to exract image urls from repository %s: %v", &repo, err)
+					continue
 				}
 
 				images = append(images, imgs...)
