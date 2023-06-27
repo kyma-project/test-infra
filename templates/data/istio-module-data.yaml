@@ -196,6 +196,13 @@ templates:
               - jobConfig:
                   name: nightly-istio-performance-test-gcp
                   cron: "0 0 * * *"
+                  path_alias: github.com/kyma-project/istio
+                  extra_refs:
+                    istio:
+                      - org: kyma-project
+                        repo: istio
+                        base_ref: main
+                        path_alias: github.com/kyma-project/istio
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
@@ -219,14 +226,12 @@ templates:
                     DISK_TYPE: "pd-standard"
                     SCALER_MAX: 20
                     SCALER_MIN: 3
-                  reporter_config:
-                    slack:
-                      channel: goat-int
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
                     - image_kyma-integration
+                    - jobConfig_slack_goat
                   local:
                     - job_default
                     - e2e

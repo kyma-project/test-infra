@@ -121,6 +121,7 @@ templates:
                     - pubsub_labels
                     - disable_testgrid
                     - image_image_detector
+                    - extra_refs_test-infra
                     - "unprivileged"
               - jobConfig:
                   name: post-test-infra-markdown-index-autobump

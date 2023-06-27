@@ -263,6 +263,11 @@ globalSets:
       privileged: "false"
       seccompProfile:
         type: "RuntimeDefault"
+  privileged:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: "Unconfined"
   disable_testgrid:
     annotations:
       testgrid-create-test-group: "false"
@@ -270,6 +275,8 @@ globalSets:
     slack_channel: "kyma-prow-dev-null"
   jobConfig_slack_jellyfish:
     slack_channel: "jellyfish-notifications"
+  jobConfig_slack_goat:
+    slack_channel: "goat-int"
   jobConfig_buildpack_incubator:
     labels:
       preset-docker-push-repository-incubator: "true"
