@@ -1,0 +1,35 @@
+presubmits: # runs on PRs
+  kyma-project/control-plane:
+    - name: pre-main-provisioner-integration-tests
+      annotations:
+        description: "It tests the component's correctness"
+        owner: framefrog
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-provisioner-integration-tests"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      optional: false
+      run_if_changed: "components/provisioner/(go.mod|go.sum)$|*/(.*.go|Makefile|Dockerfile|.*.sh)"
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            command:
+              - components/provisioner/integration_test/test.sh
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 1
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
