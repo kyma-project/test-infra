@@ -9,8 +9,6 @@ templates:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
-          job_post:
-            slack_channel: goat-int
           job_build:
             skip_report: "false"
             max_concurrency: "10"
@@ -38,6 +36,8 @@ templates:
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
+          job_skip_config:
+            skip_if_only_changed: 'sec-scanners-config.yaml|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
           vm_job_make:
             path_alias: github.com/kyma-project/istio
             command: "bash"
@@ -72,7 +72,6 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio module image
-                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -94,12 +93,12 @@ templates:
                     - jobConfig_presubmit
                   local:
                     - job_default
+                    - job_skip_config
               - jobConfig:
                   name: post-istio-module-build
                   annotations:
                     owner: goat
                     description: build istio module image
-                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -118,15 +117,15 @@ templates:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
+                    - jobConfig_slack_goat
                   local:
                     - job_default
-                    - job_post
+                    - job_skip_config
               - jobConfig:
                   name: pull-istio-operator-build
                   annotations:
                     owner: goat
                     description: build istio operator image
-                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   args:
                     - "--name=istio-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -138,12 +137,12 @@ templates:
                   local:
                     - job_default
                     - job_build
+                    - job_skip_config
               - jobConfig:
                   name: post-istio-operator-build
                   annotations:
                     owner: goat
                     description: build istio operator image
-                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -155,16 +154,16 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
+                    - jobConfig_slack_goat
                   local:
                     - job_default
-                    - job_post
                     - job_build
+                    - job_skip_config
               - jobConfig:
                   name: pull-istio-operator-integration-gcp
                   annotations:
                     owner: goat
                     description: runs istio operator integration tests on Gardener GCP cluster
-                  skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   always_run: true
                   command: "make"
                   args:
@@ -193,6 +192,7 @@ templates:
                   local:
                     - job_default
                     - e2e
+                    - job_skip_config
               - jobConfig:
                   name: nightly-istio-performance-test-gcp
                   cron: "0 0 * * *"
