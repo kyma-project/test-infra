@@ -1,4 +1,5 @@
 # k8sallowedimages constraint template validates that a pod is not using an image that is not allowed.
+# It prevents the use of images with the :latest tag.
 # The k8sallowedimages accepts one parameter:
 # - images: a list of allowed image URLs. Each image URL must be a prefix of the image URL used in the Pod spec.
 apiVersion: templates.gatekeeper.sh/v1beta1
@@ -22,19 +23,33 @@ spec:
     - target: admission.k8s.gatekeeper.sh
       rego: |
         package k8sallowedimages
-       
-        # Check violations for conatainers.
+        # Check containers are not using latest tag.
         violation[{"msg": msg}] {
-          # Check object is using an image that is not allowed.
           container := input.review.object.spec.containers[_]
-          not strings.any_prefix_match(input.parameters.images, container.image)
-          msg := sprintf("container <%v> in namespace <%v> has an invalid image repo <%v>, allowed repos are %v", [container.name, container.image, input.review.object.metadata.namespace, input.parameters.images])
+          # Check if object is using an image with latest tag.
+          strings.endswith(container.image, ":latest")
+          msg := sprintf("container <%v> in namespace <%v> has image <%v> with latest tag, using latest tag is not allowed", [container.name, input.review.object.metadata.namespace, container.image])
         }
 
-        # Check violations for init containers.
+        # Check init containers are not using latest tag.
         violation[{"msg": msg}] {
-          # Check object is using an image that is not allowed.
           container := input.review.object.spec.initContainers[_]
+          # Check if object is using an image with latest tag.
+          strings.endswith(container.image, ":latest")
+          msg := sprintf("container <%v> in namespace <%v> has image <%v> with latest tag, using latest tag is not allowed", [container.name, input.review.object.metadata.namespace, container.image])
+        }
+        # Check containers are using allowed images.
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.containers[_]
+          # Check object is using an image that is not allowed.
           not strings.any_prefix_match(input.parameters.images, container.image)
-          msg := sprintf("container <%v> in namespace <%v> has an invalid image repo <%v>, allowed repos are %v", [container.name, container.image, input.review.object.metadata.namespace, input.parameters.images])
+          msg := sprintf("container <%v> in namespace <%v> has an invalid image repo <%v>, allowed repos are %v", [container.name, input.review.object.metadata.namespace, container.image, input.parameters.images])
+        }
+
+        # Check init containers are using allowed images.
+        violation[{"msg": msg}] {
+          container := input.review.object.spec.initContainers[_]
+          # Check object is using an image that is not allowed.
+          not strings.any_prefix_match(input.parameters.images, container.image)
+          msg := sprintf("container <%v> in namespace <%v> has an invalid image repo <%v>, allowed repos are %v", [container.name, input.review.object.metadata.namespace, container.image, input.parameters.images])
         }
