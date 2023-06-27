@@ -46,8 +46,6 @@ presubmits: # runs on PRs
             command:
               - "./tests/integration/scripts/test-gardener-aws.sh"
             env:
-              - name: JOBGUARD_TIMEOUT
-                value: "10m"
               - name: JOB_NAME_PATTERN
                 value: "pull-api-gateway-build"
               - name: KYMA_PROJECT_DIR
@@ -111,8 +109,6 @@ postsubmits: # runs on main
             command:
               - "./tests/integration/scripts/test-gardener-aws.sh"
             env:
-              - name: JOBGUARD_TIMEOUT
-                value: "10m"
               - name: JOB_NAME_PATTERN
                 value: "post-api-gateway-build"
               - name: KYMA_PROJECT_DIR
@@ -166,8 +162,6 @@ postsubmits: # runs on main
             command:
               - "./tests/integration/scripts/custom-domain-gardener-gcp.sh"
             env:
-              - name: JOBGUARD_TIMEOUT
-                value: "10m"
               - name: JOB_NAME_PATTERN
                 value: "post-api-gateway-build"
               - name: KYMA_PROJECT_DIR
@@ -223,8 +217,6 @@ postsubmits: # runs on main
             command:
               - "./tests/integration/scripts/custom-domain-gardener-aws.sh"
             env:
-              - name: JOBGUARD_TIMEOUT
-                value: "10m"
               - name: JOB_NAME_PATTERN
                 value: "post-api-gateway-build"
               - name: KYMA_PROJECT_DIR

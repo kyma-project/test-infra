@@ -46,7 +46,6 @@ templates:
                     grace_period: 600000000000 # 10min
                   env:
                     JOB_NAME_PATTERN: "pull-api-gateway-build"
-                    JOBGUARD_TIMEOUT: "10m"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -76,7 +75,6 @@ templates:
                     grace_period: 600000000000 # 10min
                   env:
                     JOB_NAME_PATTERN: "post-api-gateway-build"
-                    JOBGUARD_TIMEOUT: "10m"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -106,7 +104,6 @@ templates:
                   command: "./tests/integration/scripts/custom-domain-gardener-gcp.sh"
                   env:
                     JOB_NAME_PATTERN: "post-api-gateway-build"
-                    JOBGUARD_TIMEOUT: "10m"
                     TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
                 inheritedConfigs:
                   global:
@@ -135,7 +132,6 @@ templates:
                   command: "./tests/integration/scripts/custom-domain-gardener-aws.sh"
                   env:
                     JOB_NAME_PATTERN: "post-api-gateway-build"
-                    JOBGUARD_TIMEOUT: "10m"
                     TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
                 inheritedConfigs:
                   global:
