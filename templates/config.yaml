@@ -263,6 +263,11 @@ globalSets:
       privileged: "false"
       seccompProfile:
         type: "RuntimeDefault"
+  privileged:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: "Unconfined"
   disable_testgrid:
     annotations:
       testgrid-create-test-group: "false"
