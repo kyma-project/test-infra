@@ -43,7 +43,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
+      run_if_changed: '^(go.mod|go.sum)$|^.*\.go$|Makefile'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
