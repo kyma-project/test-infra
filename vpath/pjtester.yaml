@@ -3,7 +3,7 @@ pjConfigs:
     kyma-project:
       api-gateway:
         - pjName: "post-api-gateway-custom-domain-integration-gcp"
-        - pjName: "post-api-gateway-custom-domain-integration-aws"
+        #- pjName: "post-api-gateway-custom-domain-integration-aws"
 prConfigs: #
   kyma-project:
     api-gateway:
