@@ -196,6 +196,13 @@ templates:
               - jobConfig:
                   name: nightly-istio-performance-test-gcp
                   cron: "0 0 * * *"
+                  path_alias: github.com/kyma-project/istio
+                  extra_refs:
+                    istio:
+                      - org: kyma-project
+                        repo: istio
+                        base_ref: main
+                        path_alias: github.com/kyma-project/istio
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
