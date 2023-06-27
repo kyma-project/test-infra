@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-plan-prod-terraform
+                  annotations:
+                    owner: neighbors
+                    description: "Test terraform production environment config"
                   # Run on any change in terraform config files, terraform variable values files or resource yaml files.
                   run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
                   max_concurrency: 1
@@ -29,6 +32,9 @@ templates:
                     - "trusted_cluster"
               - jobConfig:
                   name: post-apply-prod-terraform
+                  annotations:
+                    owner: neighbors
+                    description: "Apply terraform production environment config."
                   # Run on any change in terraform config files, terraform variable values files or resource yaml files.
                   run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
                   max_concurrency: 1
