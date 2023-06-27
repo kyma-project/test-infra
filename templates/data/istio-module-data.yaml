@@ -226,14 +226,12 @@ templates:
                     DISK_TYPE: "pd-standard"
                     SCALER_MAX: 20
                     SCALER_MIN: 3
-                  reporter_config:
-                    slack:
-                      channel: goat-int
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
                     - image_kyma-integration
+                    - jobConfig_slack_goat
                   local:
                     - job_default
                     - e2e

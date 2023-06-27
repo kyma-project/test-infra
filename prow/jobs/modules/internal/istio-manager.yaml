@@ -315,6 +315,9 @@ periodics: # runs on schedule
           repo: istio
           path_alias: github.com/kyma-project/istio
           base_ref: main
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
