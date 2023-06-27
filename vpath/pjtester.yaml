@@ -1,9 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-incubator:
-      reconciler:
-        - pjName: "pre-main-ory-reconciler-eval-integration-k3d"
-# prConfigs:
-#   kyma-project:
-#     api-gateway:
-#       prNumber: 211
