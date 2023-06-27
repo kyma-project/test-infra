@@ -162,6 +162,8 @@ templates:
                 readOnly: true
           reconciler_e2e_image:
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230525-75242ac0
+            securityContext: #temporary we need permissions to create files before transfer them to remote vm
+              runAsRoot: true
         jobConfigs:
           - repoName: kyma-incubator/reconciler
             jobs:

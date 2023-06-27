@@ -380,6 +380,7 @@ presubmits: # runs on PRs
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -438,6 +439,7 @@ presubmits: # runs on PRs
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -927,6 +929,7 @@ postsubmits: # runs on main
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -985,6 +988,7 @@ postsubmits: # runs on main
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
