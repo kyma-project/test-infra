@@ -10,8 +10,6 @@
                 privileged: "false"
               run_if_changed: "^(vpath/pjtester.yaml)"
               type_presubmit: "true"
-              labels:
-                preset-pjtester-kubeconfig: "true"
               branches:
                 - ^.*$
               skip_report: "false"
