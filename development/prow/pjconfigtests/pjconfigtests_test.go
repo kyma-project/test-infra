@@ -3,10 +3,10 @@ package pjconfigtests_test
 import (
 	"os"
 	"path"
-	"strings"
 
 	"github.com/kyma-project/test-infra/development/opagatekeeper"
 	kprow "github.com/kyma-project/test-infra/development/prow"
+	"github.com/kyma-project/test-infra/development/prow/pjconfigtests"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	. "github.com/onsi/gomega/gstruct"
@@ -38,7 +38,7 @@ var _ = Describe("Prowjob,", func() {
 					"prow.k8s.io/pubsub.project": Equal("sap-kyma-prow"),
 					"prow.k8s.io/pubsub.runID":   Not(BeZero()),
 					"prow.k8s.io/pubsub.topic":   Equal("prowjobs"),
-				}), "Presubmit %s is missing pubsub required labels.", pj.Name)
+				}), "[PJ config test failed] Presubmit %s is missing pubsub required labels.", pj.Name)
 			})
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
@@ -48,22 +48,8 @@ var _ = Describe("Prowjob,", func() {
 				It("use allowed image", func() {
 					for _, container := range pj.Spec.Containers {
 						if container.SecurityContext != nil && container.SecurityContext.Privileged != nil && *container.SecurityContext.Privileged {
-							allowedImage := false
-							for _, exemptImage := range privilegedContainersConstraint.Spec.Parameters.ExemptImages {
-								if strings.HasSuffix(exemptImage, "*") {
-									prefix := strings.TrimSuffix(exemptImage, "*")
-									if strings.HasPrefix(container.Image, prefix) {
-										allowedImage = true
-										break
-									}
-								} else {
-									if container.Image == exemptImage {
-										allowedImage = true
-										break
-									}
-								}
-							}
-							Expect(allowedImage).To(BeTrue(), "Presubmit %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
+							allowedImage := pjconfigtests.IsPrivilegedAllowedImage(container.Image, privilegedContainersConstraint)
+							Expect(allowedImage).To(BeTrue(), "[PJ config test failed] Presubmit %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
 						}
 					}
 				})
@@ -78,7 +64,7 @@ var _ = Describe("Prowjob,", func() {
 					"prow.k8s.io/pubsub.project": Equal("sap-kyma-prow"),
 					"prow.k8s.io/pubsub.runID":   Not(BeZero()),
 					"prow.k8s.io/pubsub.topic":   Equal("prowjobs"),
-				}), "Postsubmit %s is missing pubsub required labels.", pj.Name)
+				}), "[PJ config test failed] Postsubmit %s is missing pubsub required labels.", pj.Name)
 			})
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
@@ -88,22 +74,8 @@ var _ = Describe("Prowjob,", func() {
 				It("use allowed image", func() {
 					for _, container := range pj.Spec.Containers {
 						if container.SecurityContext != nil && container.SecurityContext.Privileged != nil && *container.SecurityContext.Privileged {
-							allowedImage := false
-							for _, exemptImage := range privilegedContainersConstraint.Spec.Parameters.ExemptImages {
-								if strings.HasSuffix(exemptImage, "*") {
-									prefix := strings.TrimSuffix(exemptImage, "*")
-									if strings.HasPrefix(container.Image, prefix) {
-										allowedImage = true
-										break
-									}
-								} else {
-									if container.Image == exemptImage {
-										allowedImage = true
-										break
-									}
-								}
-							}
-							Expect(allowedImage).To(BeTrue(), "Postsubmit %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
+							allowedImage := pjconfigtests.IsPrivilegedAllowedImage(container.Image, privilegedContainersConstraint)
+							Expect(allowedImage).To(BeTrue(), "[PJ config test failed] Postsubmit %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
 						}
 					}
 				})
@@ -118,7 +90,7 @@ var _ = Describe("Prowjob,", func() {
 					"prow.k8s.io/pubsub.project": Equal("sap-kyma-prow"),
 					"prow.k8s.io/pubsub.runID":   Not(BeZero()),
 					"prow.k8s.io/pubsub.topic":   Equal("prowjobs"),
-				}), "Periodic %s is missing pubsub required labels.", pj.Name)
+				}), "[PJ config test failed] Periodic %s is missing pubsub required labels.", pj.Name)
 			})
 			It("has ownership annotation", func() {
 				missingAnnotations := kprow.CheckRequiredAnnotations(pj.Name, pj.Annotations)
@@ -128,22 +100,8 @@ var _ = Describe("Prowjob,", func() {
 				It("use allowed image", func() {
 					for _, container := range pj.Spec.Containers {
 						if container.SecurityContext != nil && container.SecurityContext.Privileged != nil && *container.SecurityContext.Privileged {
-							allowedImage := false
-							for _, exemptImage := range privilegedContainersConstraint.Spec.Parameters.ExemptImages {
-								if strings.HasSuffix(exemptImage, "*") {
-									prefix := strings.TrimSuffix(exemptImage, "*")
-									if strings.HasPrefix(container.Image, prefix) {
-										allowedImage = true
-										break
-									}
-								} else {
-									if container.Image == exemptImage {
-										allowedImage = true
-										break
-									}
-								}
-							}
-							Expect(allowedImage).To(BeTrue(), "Periodic %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
+							allowedImage := pjconfigtests.IsPrivilegedAllowedImage(container.Image, privilegedContainersConstraint)
+							Expect(allowedImage).To(BeTrue(), "[PJ config test failed] Periodic %s is using privileged container with not allowed image %s.", pj.Name, container.Image)
 						}
 					}
 				})
