@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/ginkgo:PR-6825"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20230607-587d3f6a"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2487,4 +2487,3 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-  
