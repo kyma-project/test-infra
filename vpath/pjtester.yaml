@@ -6,7 +6,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       test-infra:
-        - pjName: "https://github.com/kyma-project/test-infra/pull/7959"
+        - pjName: "pre-test-infra-test-untrusted-prow-plugin"
 # prConfigs: #
 #   kyma-project:
 #     kyma:
