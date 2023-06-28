@@ -1,6 +1,12 @@
 ###################################
 # Artifact Registry related values
 ###################################
+variable "owner" {
+  type        = string
+  description = "owner inside SAP"
+  default     = "neighbors"
+}
+
 variable "module" {
   type        = string
   description = "Module name"

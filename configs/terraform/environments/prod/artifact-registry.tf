@@ -16,20 +16,11 @@ resource "google_artifact_registry_repository" "artifact_registry" {
   }
 }
 
-resource "google_artifact_registry_repository_iam_member" "member_service_account_1" {
+resource "google_artifact_registry_repository_iam_member" "member_service_account" {
   count      = var.artifact_registry_count
-  project    = var.gcp_project
+  project    = var.gcp_project_id
   location   = local.location
   repository = google_artifact_registry_repository.artifact_registry[count.index].name
   role       = "roles/artifactregistry.writer"
-  member     = "serviceAccount:sa-dev-kyma-project@sap-kyma-prow.iam.gserviceaccount.com"
-}
-
-resource "google_artifact_registry_repository_iam_member" "member_service_account_2" {
-  count      = var.artifact_registry_count
-  project    = var.gcp_project
-  location   = local.location
-  repository = google_artifact_registry_repository.artifact_registry[count.index].name
-  role       = "roles/artifactregistry.writer"
-  member     = "serviceAccount:sa-gcr-push-kyma-project@sap-kyma-prow.iam.gserviceaccount.com"
+  member     = "serviceAccount:sa-kyma-project@sap-kyma-prow.iam.gserviceaccount.com"
 }
