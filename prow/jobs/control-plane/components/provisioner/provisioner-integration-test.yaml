@@ -11,6 +11,8 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-provisioner-integration-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
       optional: false
       run_if_changed: "components/provisioner/((go.mod|go.sum)$|/(.*.go|Makefile|Dockerfile|.*.sh))"
       skip_report: false
@@ -21,30 +23,13 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - name: "test"
-            image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
             command:
               - components/provisioner/integration_test/test.sh
             resources:
               requests:
                 memory: 1Gi
                 cpu: 1
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-          - name: postgres
-            image: "postgres"
-            command:
-            - "docker-entrypoint.sh"
-            args:
-            - "postgres"
-            env:
-            - name: POSTGRES_PASSWORD
-              value: somepass
-            ports:
-            - containerPort: 5432
             securityContext:
               privileged: false
               seccompProfile:
