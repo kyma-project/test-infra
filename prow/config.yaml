@@ -132,7 +132,7 @@ deck:
               - "command not found"
               - '\[ERROR\]'
               # This highlights prowjobconfigtests failed tests.
-              - "[PJ config test failed]"
+              - '\[PJ config test failed\]'
         required_files:
           - ^.*build-log\.txt$
       - lens:
