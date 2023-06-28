@@ -36,8 +36,8 @@ presubmits: # runs on PRs
               allowPrivilegeEscalation: false
           - name: postgres
             image: "postgres"
-            command:
-              - docker-entrypoint.sh
+            command: ["postgres"]
+            args: ["-c", "config_file=/path/to/postgresql.conf"]
             env:
             - name: POSTGRES_PASSWORD
               value: somepass
