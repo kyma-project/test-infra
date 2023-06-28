@@ -132,7 +132,7 @@ templates:
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
-                    - "--name=api-gateway-controller"
+                    - "--name=istio-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
