@@ -27,7 +27,7 @@ spec:
         violation[{"msg": msg}] {
           container := input.review.object.spec.containers[_]
           # Check if object is using an image with latest tag.
-          strings.endswith(container.image, ":latest")
+          endswith(container.image, ":latest")
           msg := sprintf("container <%v> in namespace <%v> has image <%v> with latest tag, using latest tag is not allowed", [container.name, input.review.object.metadata.namespace, container.image])
         }
 
@@ -35,7 +35,7 @@ spec:
         violation[{"msg": msg}] {
           container := input.review.object.spec.initContainers[_]
           # Check if object is using an image with latest tag.
-          strings.endswith(container.image, ":latest")
+          endswith(container.image, ":latest")
           msg := sprintf("container <%v> in namespace <%v> has image <%v> with latest tag, using latest tag is not allowed", [container.name, input.review.object.metadata.namespace, container.image])
         }
         # Check containers are using allowed images.
