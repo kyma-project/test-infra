@@ -5,7 +5,7 @@ templates:
         localSets:
           job_default:
             optional: "false"
-            skip_if_only_changed: 'sec-scanners-config.yaml|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+            skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
             path_alias: github.com/kyma-project/istio
             env:
               EXPORT_RESULTS: true
