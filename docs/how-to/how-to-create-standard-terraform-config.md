@@ -22,7 +22,7 @@ The Terraform config should be stored in the `terraform` directory in the locati
 
 Example structure of the Terraform config is the following:
 
-```bash
+
 ├── environments
 │   ├── dev
 │   │   ├── backend.tf

@@ -31,3 +31,8 @@ output "trusted_workload_terraform_executor_k8s_service_account" {
 output "untrusted_workload_terraform_executor_k8s_service_account" {
   value = kubernetes_service_account.untrusted_workload_terraform_executor
 }
+
+output "artifact_registry_list" {
+  description = "Artifact Registry name"
+  value       = google_artifact_registry_repository.artifact_registry[*].name
+}
