@@ -32,6 +32,7 @@ templates:
                     - extra_refs_kyma
                     - extra_refs_reconciler
                     - image_kyma-integration
+                    - privileged
                   local:
                     - reconciler_e2e_jobConfig
                     - reconciler_jobConfig_args
@@ -51,6 +52,7 @@ templates:
                     - extra_refs_kyma
                     - extra_refs_reconciler
                     - image_kyma-integration
+                    - privileged
                   local:
                     - reconciler_e2e_jobConfig
                     - reconciler_jobConfig_args
@@ -83,6 +85,7 @@ templates:
                     - extra_refs_kyma
                     - extra_refs_reconciler
                     - image_kyma-integration
+                    - privileged
                   local:
                     - reconciler_upgrade_jobConfig
                     - reconciler_jobConfig_args

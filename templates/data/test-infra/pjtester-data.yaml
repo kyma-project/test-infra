@@ -24,17 +24,17 @@
             jobConfig_pjtester:
               command: "pjtester"
               env:
-                KUBECONFIG_PATH: "/etc/kubeconfig/pjtester/config"
+                KUBECONFIG_PATH: /etc/kubeconfig/pjtester/config
               volumeMounts:
-                - name: "oauth"
-                  mountPath: "/etc/github"
-                  readOnly: "true"
+                - name: oauth
+                  mountPath: /etc/github
+                  readOnly: true
                 - name: pjtester-kubeconfig
                   mountPath: /etc/kubeconfig/pjtester
                   readOnly: true
               volumes:
-                - name: "oauth"
-                  secretName: "pjtester-github-oauth-token"
+                - name: oauth
+                  secretName: pjtester-github-oauth-token
                 - name: pjtester-kubeconfig
                   secretName: pjtester-kubeconfig
               args:

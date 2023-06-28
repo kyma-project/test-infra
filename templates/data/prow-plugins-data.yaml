@@ -35,6 +35,7 @@ templates:
                   global:
                     - "image_buildpack-golang"
                     - "jobConfig_default"
+                    - privileged
                   local:
                     - "default"
                     - "presubmit"

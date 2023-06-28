@@ -12,7 +12,7 @@ templates:
               preset-dind-enabled: "true"
               preset-bot-github-token: "true"
         jobConfigs:
-          - repoName:  kyma-project/kyma
+          - repoName: kyma-project/kyma
             jobs:
               - jobConfig:
                   name: "pre-release-pr-image-guard"
@@ -26,5 +26,6 @@ templates:
                     - "jobConfig_presubmit"
                     - "image_bootstrap"
                     - "extra_refs_test-infra"
+                    - "privileged"
                   local:
                     - "jobConfig_default"
