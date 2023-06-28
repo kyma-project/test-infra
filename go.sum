@@ -47,8 +47,8 @@ cloud.google.com/go/firestore v1.10.0 h1:FG5C49ukKKqyljY+XNRZGae1HZaiVe7aoqi2Bip
 cloud.google.com/go/firestore v1.10.0/go.mod h1:eAeoQCV8F35Mcy4k8ZrQbcSYZOayIwoiU7ZJ6xzH1+o=
 cloud.google.com/go/iam v1.1.0 h1:67gSqaPukx7O8WLLHMa0PNs3EBGd2eE4d+psbO/CO94=
 cloud.google.com/go/iam v1.1.0/go.mod h1:nxdHjaKfCr7fNYx/HJMM8LgiMugmveWlkatear5gVyk=
-cloud.google.com/go/kms v1.12.0 h1:IEYV44WsGc6yVO1PlvnRlYzsHM2ImpB598Cglh/3uGw=
-cloud.google.com/go/kms v1.12.0/go.mod h1:syfpIBSOqQ/ZqK48RLPkwUhFhvbsA1SyGAq/vPohd20=
+cloud.google.com/go/kms v1.12.1 h1:xZmZuwy2cwzsocmKDOPu4BL7umg8QXagQx6fKVmf45U=
+cloud.google.com/go/kms v1.12.1/go.mod h1:c9J991h5DTl+kg7gi3MYomh12YEENGrf48ee/N/2CDM=
 cloud.google.com/go/logging v1.7.0 h1:CJYxlNNNNAMkHp9em/YEXcfJg+rPDg7YfwoRpMU+t5I=
 cloud.google.com/go/logging v1.7.0/go.mod h1:3xjP2CjkM3ZkO73aj4ASA5wRPGGCRrPIAeNqVNkzY8M=
 cloud.google.com/go/longrunning v0.4.2 h1:WDKiiNXFTaQ6qz/G8FCOkuY9kJmOJGY67wPUC1M2RbE=
