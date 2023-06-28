@@ -43,6 +43,8 @@ presubmits: # runs on PRs
             ports:
             - containerPort: 5432
             securityContext:
+              runAsUser: 999
+              runAsGroup: 999
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
