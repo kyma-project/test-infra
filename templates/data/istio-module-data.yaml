@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/modules/internal/istio-manager.yaml
+      - to: ../../prow/jobs/istio/istio-manager.yaml
         localSets:
           job_default:
             optional: "false"
@@ -121,6 +121,29 @@ templates:
                   local:
                     - job_default
                     - job_post
+              - jobConfig:
+                  name: rel-istio-build
+                  always_run: true
+                  annotations:
+                    owner: goat
+                    description: builds istio operator image on release
+                  branches:
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=api-gateway-controller"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - jobConfig_slack_goat
+                  local:
+                    - job_default
+                    - job_build
               - jobConfig:
                   name: pull-istio-operator-build
                   annotations:
