@@ -1,0 +1,144 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/api-gateway/api-gateway-integration-tests.yaml
+        localSets:
+          job_default:
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+            optional: "false"
+            path_alias: github.com/kyma-project/api-gateway
+            labels:
+              preset-debug-commando-oom: "true"
+              preset-kyma-guard-bot-github-token: "true"
+          job_post:
+            slack_channel: goat-int
+          with_ias_credentials:
+            labels:
+              preset-api-gateway-int-test-client-creds: "true"
+          gardener_gcp_job:
+            labels:
+              preset-gardener-gcp-kyma-integration: "true"
+              preset-cluster-version: "true"
+            env:
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+          gardener_aws_job:
+            labels:
+              preset-gardener-aws-kyma-integration: "true"
+              preset-cluster-version: "true"
+            env:
+              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
+        jobConfigs:
+          - repoName: "kyma-project/api-gateway"
+            jobs:
+              - jobConfig:
+                  name: pull-api-gateway-integration-aws
+                  annotations:
+                    owner: goat
+                    description: runs api-gateway integration tests on Gardener AWS cluster
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  always_run: true
+                  command: "./tests/integration/scripts/test-gardener-aws.sh"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  env:
+                    JOB_NAME_PATTERN: "pull-api-gateway-build"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                  local:
+                    - job_default
+                    - gardener_aws_job
+                    - with_ias_credentials
+              - jobConfig:
+                  name: post-api-gateway-integration-aws
+                  annotations:
+                    owner: goat
+                    description: runs api-gateway integration tests on Gardener AWS cluster
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  always_run: true
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+                  securityContext:
+                    privileged: false
+                  cluster: untrusted-workload
+                  branches:
+                    - ^main$
+                  command: "./tests/integration/scripts/test-gardener-aws.sh"
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                  env:
+                    JOB_NAME_PATTERN: "post-api-gateway-build"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - extra_refs_kyma
+                    - image_kyma-integration
+                  local:
+                    - job_default
+                    - job_post
+                    - gardener_aws_job
+                    - with_ias_credentials
+              - jobConfig:
+                  name: post-api-gateway-custom-domain-integration-gcp
+                  annotations:
+                    owner: goat
+                    description: runs api-gateway integration tests with custom domain handling on Gardener GCP cluster
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  always_run: true
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+                  securityContext:
+                    privileged: false
+                  cluster: untrusted-workload
+                  branches:
+                    - ^main$
+                  labels:
+                    preset-sa-kyma-dns-serviceuser: "true"
+                  command: "./tests/integration/scripts/custom-domain-gardener-gcp.sh"
+                  env:
+                    JOB_NAME_PATTERN: "post-api-gateway-build"
+                    TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - jobConfig_default
+                  local:
+                    - job_default
+                    - job_post
+                    - gardener_gcp_job
+                    - with_ias_credentials
+              - jobConfig:
+                  name: post-api-gateway-custom-domain-integration-aws
+                  annotations:
+                    owner: goat
+                    description: runs api-gateway integration tests with custom domain handling on Gardener AWS cluster
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  always_run: true
+                  image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+                  securityContext:
+                    privileged: false
+                  cluster: untrusted-workload
+                  branches:
+                    - ^main$
+                  labels:
+                    preset-sa-kyma-dns-serviceuser: "true"
+                  command: "./tests/integration/scripts/custom-domain-gardener-aws.sh"
+                  env:
+                    JOB_NAME_PATTERN: "post-api-gateway-build"
+                    TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - jobConfig_default
+                  local:
+                    - job_default
+                    - job_post
+                    - gardener_aws_job
+                    - with_ias_credentials
