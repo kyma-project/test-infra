@@ -21,7 +21,8 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - name: "test"
+            image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             command:
               - components/provisioner/integration_test/test.sh
             resources:
