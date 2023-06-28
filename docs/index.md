@@ -174,8 +174,6 @@
 
 [Prow Tools](/prow/images/prow-tools/README.md) - The directory contains the Dockerfile for the prow tools image with prebuilt tools used in the prow pipelines.
 
-[Prow Tools](/prow/images/test-untrusted-plugin/README.md) - The directory contains the Dockerfile for the prow tools image with prebuilt tools used in the prow pipelines.
-
 [Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
 
 [Cluster](/prow/scripts/README.md) - The folder contains scripts involved in integration tests.
@@ -201,4 +199,3 @@
 [Terraform Executor](/task/terraform-executor/0.1/README.md) - The terraform-executor Task initializes Terraform state locally and runs actions for the provided terraform config.
 
 [Templates](/templates/README.md) - Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.
-
