@@ -44,9 +44,9 @@ func FromInRepoConfig(repository Repository, ghToken string) ([]string, error) {
 	}
 
 	// fetch files from .prow, failback to .prow.yaml if not exists
-	repositoryContent, directoryContent, resp, err := ghClient.Repositories.GetContents(ctx, repository.Owner, repository.Name, ".prow", &github.RepositoryContentGetOptions{Ref: "main"})
+	repositoryContent, directoryContent, resp, err := ghClient.Repositories.GetContents(ctx, repository.Owner, repository.Name, ".prow", &github.RepositoryContentGetOptions{})
 	if resp.StatusCode == 404 {
-		repositoryContent, _, resp, err = ghClient.Repositories.GetContents(ctx, repository.Owner, repository.Name, ".prow.yaml", &github.RepositoryContentGetOptions{Ref: "main"})
+		repositoryContent, _, resp, err = ghClient.Repositories.GetContents(ctx, repository.Owner, repository.Name, ".prow.yaml", &github.RepositoryContentGetOptions{})
 	}
 	if err != nil {
 		return nil, err
