@@ -12,7 +12,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: 'sec-scanners-config.yaml|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -48,7 +48,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: 'sec-scanners-config.yaml|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true

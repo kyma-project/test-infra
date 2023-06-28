@@ -8,6 +8,6 @@ RUN  CGO_ENABLED=0 go build -o /imagedetector -ldflags="-s -w" ./development/ima
 FROM alpine:3.18.2
 
 COPY --from=builder /imagedetector /imagedetector
-RUN apk add --no-cache ca-certificates && \
+RUN apk add --no-cache ca-certificates git && \
 	chmod +x /imagedetector
 ENTRYPOINT ["/imagedetector"]

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -139,7 +140,7 @@ var rootCmd = &cobra.Command{
 			for _, repo := range cfg {
 				imgs, err := extractimageurls.FromInRepoConfig(repo, ghToken)
 				if err != nil {
-					log.Printf("warn: failed to exract image urls from repository %s: %v", &repo, err)
+					log.Printf("warn: failed to extract image urls from repository %s: %v", &repo, err)
 					continue
 				}
 
@@ -228,27 +229,23 @@ type options struct {
 
 // runAutobumper is wrapper for bumper API -> ACL
 func runAutobumper(autoBumperCfg string) error {
-	f, err := os.Open(autoBumperCfg)
+	data, err := os.ReadFile(autoBumperCfg)
 	if err != nil {
-		return err
+		return fmt.Errorf("open autobumper config: %s", err)
 	}
 
-	decoder := yaml.NewDecoder(f)
-
 	var bumperClientOpt options
-	err = decoder.Decode(&bumperClientOpt)
+	err = yaml.Unmarshal(data, &bumperClientOpt)
 	if err != nil {
-		return err
+		return fmt.Errorf("decode autobumper config: %s", err)
 	}
 
 	var opts bumper.Options
-	err = decoder.Decode(&opts)
+	err = yaml.Unmarshal(data, &opts)
 	if err != nil {
-		return err
+		return fmt.Errorf("decode bumper options: %s", err)
 	}
 
 	ctx := context.Background()
-	bumper.Run(ctx, &opts, &client{o: &bumperClientOpt})
-
-	return nil
+	return bumper.Run(ctx, &opts, &client{o: &bumperClientOpt})
 }
