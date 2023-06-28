@@ -36,6 +36,8 @@ presubmits: # runs on PRs
               allowPrivilegeEscalation: false
           - name: postgres
             image: "postgres"
+            command:
+              - postgres
             env:
             - name: POSTGRES_PASSWORD
               value: somepass
