@@ -37,13 +37,15 @@ presubmits: # runs on PRs
           - name: postgres
             image: "postgres"
             command: ["postgres"]
-            args: ["-c", "config_file=/path/to/postgresql.conf"]
             env:
             - name: POSTGRES_PASSWORD
               value: somepass
             ports:
             - containerPort: 5432
             securityContext:
+              runAsUser: 999
+              runAsGroup: 999
+              fsGroup: 999
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
