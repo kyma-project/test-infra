@@ -36,15 +36,16 @@ presubmits: # runs on PRs
               allowPrivilegeEscalation: false
           - name: postgres
             image: "postgres"
-            command: ["postgres"]
+            command:
+            - "docker-entrypoint.sh"
+            args:
+            - "postgres"
             env:
             - name: POSTGRES_PASSWORD
               value: somepass
             ports:
             - containerPort: 5432
             securityContext:
-              runAsUser: 999
-              runAsGroup: 999
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
