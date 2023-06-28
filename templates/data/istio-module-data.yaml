@@ -37,7 +37,7 @@ templates:
                 mountPath: /secret
                 readOnly: true
           job_skip_config:
-            skip_if_only_changed: 'sec-scanners-config.yaml|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+            skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
           vm_job_make:
             path_alias: github.com/kyma-project/istio
             command: "bash"
