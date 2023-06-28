@@ -33,7 +33,8 @@ presubmits: # runs on PRs
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
-          - image: "postgres"
+          - name: postgres
+            image: "postgres"
             env:
             - name: POSTGRES_PASSWORD
               value: somepass
