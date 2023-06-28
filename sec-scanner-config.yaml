@@ -6,7 +6,6 @@ protecode:
     - eu.gcr.io/kyma-project/prow/cleaner:0.0.1
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a
     - eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
-    - eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0
     - eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17
     - gcr.io/k8s-prow/branchprotector:v20230628-f13bc80c8a
@@ -67,5 +66,6 @@ protecode:
     - eu.gcr.io/sap-kyma-neighbors-dev/test-untrusted-plugin:v0.1.0
     - gcr.io/k8s-prow/tide:v20230628-f13bc80c8a
     - nginx:1.20-alpine
+    - eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41
 whitesource:
     language: golang-mod
