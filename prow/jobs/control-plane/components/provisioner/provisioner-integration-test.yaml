@@ -37,7 +37,7 @@ presubmits: # runs on PRs
           - name: postgres
             image: "postgres"
             command:
-              - postgres
+              - docker-entrypoint.sh
             env:
             - name: POSTGRES_PASSWORD
               value: somepass
