@@ -5,12 +5,14 @@ templates:
         localSets:
           job_spec:
             command: "make"
-            privileged: "false"
         jobConfigs:
           - repoName: kyma-project/cli
             jobs:
               - jobConfig:
                   name: pre-kyma-cli
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint + Go test pre-PR + Build CLI pre-PR
                   always_run: true
                   args:
                     - "ci-pr"
@@ -22,10 +24,14 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - image_buildpack-golang-toolbox
+                    - "unprivileged"
                   local:
                     - job_spec
               - jobConfig:
                   name: post-kyma-cli
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint + Go test post-PR + Build CLI post-PR
                   args:
                     - "ci-main"
                   branches:
@@ -37,17 +43,20 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
                     - image_buildpack-golang-toolbox
+                    - "unprivileged"
                   local:
                     - job_spec
               - jobConfig:
                   name: rel-kyma-cli
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint + Go test pre-rel + Build CLI pre-rel
                   args:
                     - "ci-release"
                   branches:
                     - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$"
                   labels:
                     preset-bot-github-token: "true"
-                    preset-dind-enabled: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -55,11 +64,13 @@ templates:
                     - disable_testgrid
                     - image_buildpack-golang-toolbox
                     - jobConfig_slack_jellyfish
+                    - "unprivileged"
                   local:
                     - job_spec
               - jobConfig:
                   name: unstable-cli
                   annotations:
+                    owner: jellyfish
                     description: Bump reconciler version used by CLI and publish the unstable CLI binaries
                   labels:
                     preset-sa-vm-kyma-integration: "true"
@@ -80,6 +91,9 @@ templates:
                     - extra_refs_reconciler
               - jobConfig:
                   name: "pull-cli-lint"
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint
                   optional: false
                   command: "/bin/sh"
                   args:
@@ -90,8 +104,12 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-cli-unit-test"
+                  annotations:
+                    owner: jellyfish
+                    description: Go test
                   optional: false
                   command: "/bin/sh"
                   args:
@@ -102,3 +120,4 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"

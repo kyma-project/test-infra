@@ -11,7 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-compass-manager-trivy"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '.+'
+      run_if_changed: ".+"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -32,3 +32,6 @@ presubmits: # runs on PRs
                 cpu: 1
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true

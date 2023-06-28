@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230605-b63f6f76cb
-          initupload: gcr.io/k8s-prow/initupload:v20230605-b63f6f76cb
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230605-b63f6f76cb
-          sidecar: gcr.io/k8s-prow/sidecar:v20230605-b63f6f76cb
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230628-f13bc80c8a
+          initupload: gcr.io/k8s-prow/initupload:v20230628-f13bc80c8a
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230628-f13bc80c8a
+          sidecar: gcr.io/k8s-prow/sidecar:v20230628-f13bc80c8a
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -131,8 +131,8 @@ deck:
               - '"status": "Vulns"' # protecode guard
               - "command not found"
               - '\[ERROR\]'
-              # This highlights non failing prowjobconfigtests warnings about missing annotations.
-              - "Prowjob.+is missing required annotations:"
+              # This highlights prowjobconfigtests failed tests.
+              - '\[PJ config test failed\]'
         required_files:
           - ^.*build-log\.txt$
       - lens:
@@ -169,7 +169,7 @@ deck:
         - 3108790 # cluster-access GH team in Kyma organization
 
 sinker:
-  max_prowjob_age: 8h
+  max_prowjob_age: 4h
   max_pod_age: 5h
   resync_period: 1m
   terminated_pod_ttl: 30m
@@ -411,9 +411,9 @@ presets:
       - name: AKS_CLUSTER_VERSION
         value: "1.26"
       - name: GKE_CLUSTER_VERSION
-        value: "1.25"
+        value: "1.26"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.25"
+        value: "1.26"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
@@ -429,20 +429,6 @@ presets:
     env:
       - name: DEBUG_COMMANDO_OOM
         value: "true"
-  # pjtester
-  - labels:
-      preset-pjtester-kubeconfig: "true"
-    env:
-      - name: KUBECONFIG_PATH
-        value: /etc/kubeconfig/pjtester/config
-    volumes:
-      - name: pjtester-kubeconfig
-        secret:
-          secretName: pjtester-kubeconfig
-    volumeMounts:
-      - name: pjtester-kubeconfig
-        mountPath: /etc/kubeconfig/pjtester
-        readOnly: true
   - labels:
       preset-certificates-bucket: "true"
     env:
@@ -1421,3 +1407,13 @@ presets:
       - name: sa-kyma-dns-serviceuser
         mountPath: /sa-kyma-dns-serviceuser
         readOnly: true
+  - labels:
+      preset-k3d-enabled: "true"
+    env:
+      - name: K3D_ENABLED
+        value: "true"
+  - labels:
+      preset-provision-registry: "true"
+    env:
+      - name: PROVISION_REGISTRY
+        value: "true"

@@ -4,6 +4,8 @@
 periodics: # runs on schedule
     - name: skr-aws-upgrade-integration-dev
       annotations:
+        description: "skr upgrade test on aws"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_aws"
@@ -41,7 +43,10 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/skr-aws-upgrade-integration-dev.sh"
             env:

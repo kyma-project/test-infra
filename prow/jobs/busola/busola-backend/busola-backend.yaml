@@ -5,8 +5,8 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pull-busola-backend-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
+        description: "Building Busola backend image and push to GCR"
+        owner: "hasselhoff"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -24,6 +24,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/image-builder"
             args:
@@ -68,8 +73,8 @@ postsubmits: # runs on main
   kyma-project/busola:
     - name: post-busola-backend-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
+        description: "Building Busola backend image and push to GCR"
+        owner: "hasselhoff"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -89,6 +94,11 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/image-builder"
             args:

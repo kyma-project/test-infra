@@ -25,6 +25,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-test-infra-test-untrusted-prow-plugin"
+                  annotations:
+                    owner: neighbors
+                    description: "Build test-infra/test-untrusted prow plugin"
                   run_if_changed: '^(go\.mod|go\.sum)$|^development/external-plugins/test-untrusted/.*\.go$|^development/prow/externalplugin/.*\.go$|^prow/images/test-untrusted-plugin/(Dockerfile|Makefile)$'
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/test-untrusted-plugin"
@@ -32,11 +35,15 @@ templates:
                   global:
                     - "image_buildpack-golang"
                     - "jobConfig_default"
+                    - privileged
                   local:
                     - "default"
                     - "presubmit"
               - jobConfig:
                   name: "post-test-infra-test-untrusted-prow-plugin"
+                  annotations:
+                    owner: neighbors
+                    description: "Build test-infra/test-untrusted prow plugin"
                   run_if_changed: '^(go\.mod|go\.sum)$|^development/external-plugins/test-untrusted/.*\.go$|^development/prow/externalplugin/.*\.go$|^prow/images/test-untrusted-plugin/(Dockerfile|Makefile)$'
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/images/test-untrusted-plugin"
@@ -44,6 +51,7 @@ templates:
                   global:
                     - "image_buildpack-golang"
                     - "jobConfig_default"
+                    - privileged
                   local:
                     - "default"
                     - "postsubmit"

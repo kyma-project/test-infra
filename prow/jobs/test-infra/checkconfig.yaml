@@ -19,7 +19,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -49,7 +54,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -79,7 +89,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -109,7 +124,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -139,7 +159,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -169,7 +194,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -199,7 +229,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -229,7 +264,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -259,7 +299,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -289,7 +334,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -319,7 +369,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -349,7 +404,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -379,7 +439,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -409,7 +474,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -439,7 +509,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -469,7 +544,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -499,7 +579,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -529,7 +614,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -559,7 +649,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -589,7 +684,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -619,7 +719,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -649,7 +754,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -679,7 +789,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -709,7 +824,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -739,7 +859,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -769,7 +894,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -799,7 +929,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -829,7 +964,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -859,7 +999,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -889,7 +1034,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -919,7 +1069,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -949,7 +1104,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -979,7 +1139,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1009,7 +1174,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1039,7 +1209,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1069,7 +1244,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1099,7 +1279,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1129,7 +1314,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1159,7 +1349,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1189,7 +1384,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1219,7 +1419,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1249,7 +1454,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1279,7 +1489,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1309,7 +1524,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1339,7 +1559,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1369,7 +1594,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1399,7 +1629,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1429,7 +1664,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1459,7 +1699,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1489,7 +1734,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1519,7 +1769,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1549,7 +1804,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -1579,7 +1839,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:

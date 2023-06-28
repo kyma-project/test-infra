@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-incubator/milv:
     - name: pre-main-kyma-incubator-milv
       annotations:
+        description: "Builds milv image"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -31,6 +33,9 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -54,6 +59,8 @@ postsubmits: # runs on main
   kyma-incubator/milv:
     - name: post-main-kyma-incubator-milv
       annotations:
+        description: "Builds milv image"
+        owner: "otters"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -80,6 +87,9 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:

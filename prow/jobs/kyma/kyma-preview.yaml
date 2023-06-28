@@ -1,0 +1,50 @@
+periodics:
+  - name: ci-kyma-k8s-integration-next-k3d
+    annotations:
+      owner: huskies
+      description: Runs fast-integration test on next k8s version
+    labels:
+      preset-dind-enabled: "true"
+      preset-kind-volume-mounts: "true"
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-kyma-k8s-integration-next-k3d"
+      prow.k8s.io/pubsub.topic: "prowjobs"
+    decorate: true
+    interval: 12h
+    skip_report: true
+    cluster: untrusted-workload
+    extra_refs:
+      - org: kyma-project
+        repo: kyma
+        base_ref: main
+    spec:
+      containers:
+        # TODO change image to production once build toolchain is done
+        - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
+          securityContext:
+            privileged: true
+            seccompProfile:
+              type: Unconfined
+            allowPrivilegeEscalation: true
+          env:
+            - name: K8S_VERSION
+              value: "1.27.3"
+          command: ["/init.sh"]
+          args:
+            - bash
+            - -c
+            - |
+              set -e
+              curl -sSLo /usr/local/bin/kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-linux?alt=media"
+              chmod +x /usr/local/bin/kyma
+              kyma provision k3d --ci -k "$K8S_VERSION"
+              kubectl get nodes
+              kyma deploy --ci --source=local --workspace "$(pwd)"
+              make -C tests/fast-integration ci
+          resources:
+            requests:
+              cpu: 1
+              memory: 2Gi
+            limits:
+              cpu: 2
+              memory: 4Gi

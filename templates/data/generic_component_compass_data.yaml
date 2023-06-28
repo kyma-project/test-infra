@@ -73,6 +73,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -145,6 +146,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/director/director-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -217,6 +219,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-director-unit-test"
                   annotations:
@@ -231,6 +234,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/hydrator/hydrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -303,6 +307,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/ias-adapter/ias-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -375,6 +380,95 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
+      - to: ../../prow/jobs/incubator/compass/components/kyma-adapter/kyma-adapter-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
+              - jobConfig:
+                  name: pull-kyma-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Kyma Adapter Compass component"
+                  args:
+                    - "--name=incubator/compass-kyma-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/kyma-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 2000m
+                  run_if_changed: "^components/kyma-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-kyma-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Kyma Adapter Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-kyma-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/kyma-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 2000m
+                  run_if_changed: "^components/kyma-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-kyma-adapter-lint"
+                  annotations:
+                    description: "Linter for the Kyma Adapter Compass component"
+                    owner: "compass"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/kyma-adapter && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=15m"
+                  run_if_changed: '^components/kyma-adapter/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - linting
+                    - "unprivileged"
+              - jobConfig:
+                  name: "pull-kyma-adapter-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Kyma Adapter Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/kyma-adapter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/kyma-adapter/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -447,6 +541,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -519,6 +614,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -591,6 +687,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -663,6 +760,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
@@ -735,6 +833,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"

@@ -21,6 +21,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "utilities-kyma-integration-cleaner"
+                  annotations:
+                    owner: neighbors
+                    description: kyma integration cleaner
                   serviceAccountName: sa-prow-job-resource-cleaners
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
@@ -180,27 +183,6 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-              #              - jobConfig:
-              #                  name: "firewall-cleaner"
-              #                  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
-              #                  labels:
-              #                    preset-sa-gke-kyma-integration: "true"
-              #                    preset-gc-project-env: "true"
-              #                  command: "bash"
-              #                  args:
-              #                    - "-c"
-              #                    - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-              #                inheritedConfigs:
-              #                  global:
-              #                    - "jobConfig_default"
-              #                    - "jobConfig_periodic"
-              #                    - "image_prow-tools"
-              #                    - "extra_refs_test-infra"
-              #                    - "disable_testgrid"
-              #                  local:
-              #                    - "jobConfig_default"
-              #                    - "request_small"
-              #                    - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-dns-cleaner"
                   annotations:
@@ -251,6 +233,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "github-issues"
+                  annotations:
+                    owner: neighbors
+                    description: "Exports data from github to the big query (Grafana metrics)"
                   cron: "0 6 * * *" # "At 6:00 every day"
                   labels:
                     preset-bot-github-token: "true"
@@ -477,6 +462,7 @@ templates:
                   annotations:
                     pipeline.platform: k3s
                     owner: "otters"
+                    description: serverless integration k3s job
                   labels:
                     preset-build-pr: "true"
                   env:
@@ -623,32 +609,11 @@ templates:
                     - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-              - jobConfig:
-                  name: pre-main-kyma-api-gateway-integration-k3d
-                  annotations:
-                    owner: goat
-                    description: runs api-gateway integration tests on k3d
-                  optional: false
-                  labels:
-                    preset-build-pr: "true"
-                  run_if_changed: "^((tests/components/api-gateway\\S+|resources/api-gateway\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    API_GATEWAY_INTEGRATION: "true"
-                    TEST_ORY_IMAGE: "eu.gcr.io/kyma-project/incubator/test-hydra-login-consent:d6e6d3bc"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_presubmit"
-                  local:
-                    - "jobConfig_default"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
               # postsubmits
               - jobConfig:
                   name: "post-main-kyma-integration-k3d"
                   annotations:
+                    owner: huskies,goat
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration job on k3d.
                     testgrid-days-of-results: "60"
@@ -672,7 +637,7 @@ templates:
                   name: "post-main-kyma-integration-k3d-app-gateway"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    onwer: framefrog
+                    owner: framefrog
                     description: "Kyma integration job on k3d for testing application gateway."
                     testgrid-days-of-results: "60"
                   labels:
@@ -714,35 +679,11 @@ templates:
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "post-main-kyma-k3d-k8s-preview"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Post-submit job to validate kyma compatibility with next kubernetes version on K3D.
-                    testgrid-days-of-results: "60"
-                    owner: huskies
-                  slack_channel: huskies-notifications
-                  labels:
-                    preset-build-main: "true"
-                  env:
-                    K8S_VERSION: "1.27.1"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
               # periodics
-
               - jobConfig:
                   name: kyma-upgrade-k3d-kyma2-to-main
                   annotations:
+                    owner: jellyfish
                     testgrid-dashboards: kyma_integration
                     description: K3d Kyma 2.0 to main branch.
                   decoration_config:
@@ -850,6 +791,10 @@ templates:
                     GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
                     CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
                     TEST_RESULT_WINDOW_TIME: "6h"
+                  securityContext:
+                    privileged: "true"
+                    seccompProfile:
+                      type: Unconfined
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

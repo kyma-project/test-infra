@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-incubator/reconciler:
     - name: pre-main-reconciler-unit-test
       annotations:
+        description: "test reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -18,6 +20,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -29,6 +36,8 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pre-main-reconciler-lint
       annotations:
+        description: "lint reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -42,6 +51,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -53,6 +67,8 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pre-main-reconciler-integration-k3d
       annotations:
+        description: "int test reconciler"
+        owner: "jellyfish"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -79,7 +95,10 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
             env:
@@ -98,6 +117,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-reconciler-publish-pr-cli
       annotations:
+        description: "pre publish reconciler"
+        owner: "jellyfish"
         pipeline.installer: "reconciler"
         pipeline.trigger: "pr-submit"
       labels:
@@ -128,7 +149,10 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-pr-cli.sh"
             resources:
@@ -144,6 +168,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-reconciler-cli-integration-kyma-latest-k3d
       annotations:
+        description: "int test reconciler"
+        owner: "jellyfish"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -174,7 +200,10 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
             env:
@@ -197,6 +226,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-reconciler-cli-integration-kyma-main-k3d
       annotations:
+        description: "int test reconciler"
+        owner: "jellyfish"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -227,7 +258,10 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
             env:
@@ -250,6 +284,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d
       annotations:
+        description: "upgrade test reconciler"
+        owner: "jellyfish"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -280,7 +316,10 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
             env:
@@ -335,9 +374,13 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230525-75242ac0"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -390,9 +433,13 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230525-75242ac0"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -447,9 +494,13 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230525-75242ac0"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -505,9 +556,13 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230525-75242ac0"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-component-provision-gardener.sh"
             env:
@@ -538,6 +593,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-dev-reconciler-integration-k3d
       annotations:
+        description: "int test reconciler"
+        owner: "jellyfish"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -564,7 +621,10 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
             args:
@@ -585,6 +645,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-dev-kyma-incubator-reconciler
       annotations:
+        description: "build reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -611,6 +673,9 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -631,6 +696,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-incubator-mothership-reconciler
       annotations:
+        description: "build mothership reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -647,6 +714,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -674,6 +746,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-kyma-incubator-component-reconciler
       annotations:
+        description: "build component reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -690,6 +764,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -717,6 +796,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-reconciler-validate-dockerfiles
       annotations:
+        description: "hadolint reconciler"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -739,7 +820,10 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/bash"
             args:
@@ -761,6 +845,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-reconciler-validate-go-mod
       annotations:
+        description: "validate gomod reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -784,7 +870,10 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-validate-go-mod.sh"
             env:
@@ -836,9 +925,13 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230525-75242ac0"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -891,9 +984,13 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230525-75242ac0"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+              runAsUser: 0
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
             env:
@@ -918,6 +1015,8 @@ postsubmits: # runs on main
             dedicated: "high-cpu"
     - name: post-main-kyma-incubator-mothership-reconciler
       annotations:
+        description: "build reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -935,6 +1034,11 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -963,6 +1067,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-kyma-incubator-component-reconciler
       annotations:
+        description: "build component reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -980,6 +1086,11 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -1008,6 +1119,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-dev-kyma-incubator-reconciler
       annotations:
+        description: "build reconciler"
+        owner: "jellyfish"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -1034,6 +1147,9 @@ postsubmits: # runs on main
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -1057,6 +1173,7 @@ periodics: # runs on schedule
     - name: reconciler-control-plane-image-bump
       annotations:
         description: "Reconciler image bump in control-plane"
+        owner: "jellyfish"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
@@ -1089,9 +1206,12 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230628-f13bc80c8a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "generic-autobumper"
             args:
@@ -1118,6 +1238,7 @@ periodics: # runs on schedule
     - name: nightly-main-reconciler
       annotations:
         description: "Creates and installs reconciler from main every night."
+        owner: "jellyfish"
         pipeline.clusterprovisioning: "reconciler"
         pipeline.installer: "reconciler"
         pipeline.platform: "gardener_gcp"
@@ -1155,6 +1276,11 @@ periodics: # runs on schedule
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
             args:
@@ -1182,6 +1308,7 @@ periodics: # runs on schedule
     - name: nightly-main-reconciler-e2e
       annotations:
         description: "Executes e2e test periodically on nightly cluster for reconciler."
+        owner: "jellyfish"
         pipeline.installer: "reconciler"
         pipeline.platform: "gcp"
         pipeline.test: "fast-integration"
@@ -1222,6 +1349,11 @@ periodics: # runs on schedule
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
             args:

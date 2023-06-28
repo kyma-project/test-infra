@@ -8,7 +8,7 @@ templates:
               - jobConfig: # builds a docker image of the btp-manager tagged with the PR name
                   name: pull-btp-manager-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "BTP Manager image build on PR"
                   always_run: true
                   args:
@@ -23,7 +23,7 @@ templates:
               - jobConfig: # builds a docker image of the btp-manager tagged with the branch name
                   name: post-btp-manager-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "BTP Manager image build on main"
                   labels:
                     preset-signify-prod-secret: "true"
@@ -43,7 +43,7 @@ templates:
               - jobConfig: # builds an OCI image with btp-operator module
                   name: post-btp-manager-module-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "BTP Manager template image build on main"
                   always_run: true
                   labels:
@@ -52,8 +52,9 @@ templates:
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG_REGISTRY:  "europe-docker.pkg.dev/kyma-project/prod"
-                  privileged: false
+                    IMG_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod"
+                  securityContext:
+                    privileged: false
                   command: "./scripts/release.sh"
                   args:
                     - "ci"
@@ -67,7 +68,7 @@ templates:
               - jobConfig: # builds an OCI image with btp-operator module from the PR branch
                   name: pull-btp-manager-module-build
                   annotations:
-                    owner: "gophers"
+                    owner: "gopher"
                     description: "BTP Manager template image build on PR"
                   always_run: true
                   optional: true
@@ -77,8 +78,9 @@ templates:
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
-                    IMG_REGISTRY:  "europe-docker.pkg.dev/kyma-project/dev"
-                  privileged: false
+                    IMG_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev"
+                  securityContext:
+                    privileged: false
                   command: "./scripts/create_module_image.sh"
                   args:
                     - "ci"

@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-validate-scripts
       annotations:
+        description: "Validate scripts."
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -18,6 +20,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "prow/scripts/validate-scripts.sh"
             resources:
@@ -26,6 +33,8 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-test-infra-validate-prow-tools
       annotations:
+        description: "Validate prow tools"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -45,6 +54,9 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -64,6 +76,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-test-infra-validate-image-url-helper
       annotations:
+        description: "Validate image url helper tool"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -83,6 +97,9 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -102,6 +119,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-test-infra-validate-prowjobparser
       annotations:
+        description: "Validate prowjobparser tool"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -121,6 +140,9 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -140,6 +162,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-test-infra-validate-generated-files
       annotations:
+        description: "Validate rendertemplate generated files"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -160,6 +184,9 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-generated.sh"
             resources:
@@ -175,6 +202,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-test-infra-validate-dockerfiles
       annotations:
+        description: "Validate Dockerfiles, run hadolint."
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -188,6 +217,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/bash"
             args:

@@ -6,7 +6,7 @@ presubmits: # runs on PRs
     - name: pull-e2e-provisioning-test-build
       annotations:
         description: "E2E provisioning test build on PR"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -21,6 +21,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -52,7 +57,7 @@ postsubmits: # runs on main
     - name: post-e2e-provisioning-test-build
       annotations:
         description: "E2E provisioning test build on main"
-        owner: "gophers"
+        owner: "gopher"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -70,6 +75,11 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:

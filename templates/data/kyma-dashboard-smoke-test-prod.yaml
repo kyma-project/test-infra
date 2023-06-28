@@ -23,6 +23,9 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-kyma-dashboard-smoke-test-prod"
+                  annotations:
+                    owner: hasselhoff
+                    description: Dashboard prod smoke tests
                   optional: false
                   run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
                   labels:
@@ -44,6 +47,9 @@ templates:
               # postsubmits
               - jobConfig:
                   name: "post-kyma-dashboard-smoke-test-prod"
+                  annotations:
+                    owner: hasselhoff
+                    description: Dashboard prod smoke tests
                   optional: false
                   run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^/tests/cypress-smoke.json|^/tests/tests/.*/test-check-extensions.spec.js"
                   labels:

@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-busola-web-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola frontend image and push to GCR
                   args:
                     - --name=busola-web
                     - --context=.
@@ -14,7 +17,6 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --export-tags
                   run_if_changed: "^public/|^src/|^package.json|^Makefile|^Dockerfile$"
-                  privileged: false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -22,6 +24,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-busola-web-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola frontend image and push to GCR
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -32,7 +37,6 @@ templates:
                     - --export-tags
                     - --tag=latest
                   run_if_changed: "^public/|^src/|^package.json|^Makefile|^Dockerfile$"
-                  privileged: false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -45,14 +49,16 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-busola-backend-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola backend image and push to GCR
                   args:
                     - --name=busola-backend
                     - --context=backend
                     - --dockerfile=Dockerfile
                     - --config=/config/kaniko-build-config.yaml
                     - --export-tags
-                  run_if_changed: '^backend/|^package.json'
-                  privileged: false
+                  run_if_changed: "^backend/|^package.json"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -60,6 +66,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-busola-backend-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola backend image and push to GCR
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -69,8 +78,7 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --export-tags
                     - --tag=latest
-                  run_if_changed: '^backend/'
-                  privileged: false
+                  run_if_changed: "^backend/"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -84,6 +92,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-busola-local-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola local image and push to GCR
                   args:
                     - --name=busola
                     - --context=.
@@ -91,7 +102,6 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --export-tags
                   run_if_changed: "^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local"
-                  privileged: false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -99,6 +109,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-busola-local-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola local image and push to GCR
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -109,7 +122,6 @@ templates:
                     - --export-tags
                     - --tag=latest
                   run_if_changed: "^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local"
-                  privileged: false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

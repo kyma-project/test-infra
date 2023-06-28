@@ -1,8 +1,5 @@
 periodics:
   - name: ci-kyma-bot-triage-close
-    annotations:
-      owner: neighbors
-      description: "Periodic close stale issues and PRs"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "ci-kyma-bot-triage-close"
@@ -11,10 +8,12 @@ periodics:
     cluster: trusted-workload
     decorate: true
     annotations:
+      owner: neighbors
+      description: "Periodic close stale issues and PRs"
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20230605-b63f6f76cb
+        - image: gcr.io/k8s-prow/commenter:v20230628-f13bc80c8a
           command:
             - commenter
           args:
@@ -31,17 +30,17 @@ periodics:
             - |-
               --comment=This issue or PR has been automatically closed due to the lack of activity.
               Thank you for your contributions.
-              
+
               This bot triages issues and PRs according to the following rules:
               - After 60d of inactivity, `lifecycle/stale` is applied
               - After 7d of inactivity since `lifecycle/stale` was applied, the issue is closed
-              
+
               You can:
               - Reopen this issue or PR with `/reopen`
               - Mark this issue or PR as fresh with `/remove-lifecycle stale`
-              
+
               If you think that I work incorrectly, kindly [raise an issue](https://github.com/kyma-project/test-infra/issues/new/choose) with the problem.
-              
+
               /close
             - --template
             - --ceiling=10
@@ -49,15 +48,17 @@ periodics:
           volumeMounts:
             - name: token
               mountPath: /etc/github-token
+          securityContext:
+            privileged: false
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
       volumes:
         - name: token
           secret:
             secretName: kyma-bot-triage-token
 
   - name: ci-kyma-bot-triage-stale
-    annotations:
-      owner: neighbors
-      description: "Periodic triage stale issues and PRs"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "ci-kyma-bot-triage-stale"
@@ -66,10 +67,12 @@ periodics:
     cluster: trusted-workload
     decorate: true
     annotations:
+      owner: neighbors
+      description: "Periodic triage stale issues and PRs"
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20230605-b63f6f76cb
+        - image: gcr.io/k8s-prow/commenter:v20230628-f13bc80c8a
           command:
             - commenter
           args:
@@ -87,17 +90,17 @@ periodics:
             - |-
               --comment=This issue or PR has been automatically marked as stale due to the lack of recent activity.
               Thank you for your contributions.
-              
+
               This bot triages issues and PRs according to the following rules:
               - After 60d of inactivity, `lifecycle/stale` is applied
               - After 7d of inactivity since `lifecycle/stale` was applied, the issue is closed
-              
+
               You can:
               - Mark this issue or PR as fresh with `/remove-lifecycle stale`
               - Close this issue or PR with `/close`
-              
+
               If you think that I work incorrectly, kindly [raise an issue](https://github.com/kyma-project/test-infra/issues/new/choose) with the problem.
-              
+
               /lifecycle stale
             - --template
             - --ceiling=10
@@ -105,6 +108,11 @@ periodics:
           volumeMounts:
             - name: token
               mountPath: /etc/github-token
+          securityContext:
+            privileged: false
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
       volumes:
         - name: token
           secret:

@@ -30,6 +30,9 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-busola-lighthouse"
+                  annotations:
+                    owner: hasselhoff
+                    description: Busola performance testing
                   optional: true
                   run_if_changed: "^resources/|^lighthouse/|^nginx/"
                   labels:
@@ -50,6 +53,9 @@ templates:
               # postsubmits
               - jobConfig:
                   name: "post-busola-lighthouse"
+                  annotations:
+                    owner: hasselhoff
+                    description: Busola performance testing
                   optional: true
                   run_if_changed: "^resources/|^tests/|^lighthouse/|^nginx/"
                   labels:

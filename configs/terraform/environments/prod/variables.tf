@@ -78,72 +78,34 @@ variable "untrusted_workload_k8s_cluster" {
   description = "Details of the untrusted-workload k8s cluster."
 }
 
-variable "terraform_executor_k8s_service_account" {
+variable "external_secrets_k8s_sa_trusted_cluster" {
   type = object({
     name      = string
     namespace = string
   })
-
   default = {
-    name      = "terraform-executor"
-    namespace = "default"
+    name      = "secret-manager-trusted"
+    namespace = "external-secrets"
   }
-
-  description = "Details of terraform executor k8s service account."
+  description = <<-EOT
+    Details of external secrets service account. This is service account used as identity for external secrets controller.
+    name: Name of the external secret controller service account.
+    namespace: Namespace of the external secret controller service account.
+    EOT
 }
 
-variable "terraform_executor_gcp_service_account" {
+variable "external_secrets_k8s_sa_untrusted_cluster" {
   type = object({
-    id         = string
-    project_id = string
+    name      = string
+    namespace = string
   })
-
   default = {
-    id         = "terraform-executor"
-    project_id = "sap-kyma-prow"
+    name      = "secret-manager-untrusted"
+    namespace = "external-secrets"
   }
-
-  description = "Details of terraform executor gcp service account."
-}
-
-variable "constraint_templates_path" {
-  type    = string
-  default = "../../../../opa/gatekeeper/constraint-templates/**.yaml"
-
-  description = "Path to the constraint templates directory."
-}
-
-variable "tekton_constraints_path" {
-  type    = string
-  default = "../../../../tekton/deployments/gatekeeper-constraints/**.yaml"
-
-  description = "Path to the tekton cluster constraints directory."
-}
-
-variable "prow_constraints_path" {
-  type    = string
-  default = "../../../../prow/cluster/resources/gatekeeper-constraints/prow/**.yaml"
-
-  description = "Path to the trusted workloads cluster constraints directory."
-}
-
-variable "trusted_workloads_constraints_path" {
-  type    = string
-  default = "../../../../prow/cluster/resources/gatekeeper-constraints/trusted/**.yaml"
-
-  description = "Path to the trusted workloads cluster constraints directory."
-}
-
-variable "untrusted_workloads_constraints_path" {
-  type    = string
-  default = "../../../../prow/cluster/resources/gatekeeper-constraints/untrusted/**.yaml"
-
-  description = "Path to the untrusted workloads cluster constraints directory."
-}
-
-variable "workloads_constraints_path" {
-  type    = string
-  default = "../../../../prow/cluster/resources/gatekeeper-constraints/workloads/**.yaml"
-
-  description = "Path to both workload clusters constraints directory."
+  description = <<-EOT
+    Details of external secrets service account. This is service account used as identity for external secrets controller.
+    name: Name of the external secret controller service account.
+    namespace: Namespace of the external secret controller service account.
+    EOT
 }

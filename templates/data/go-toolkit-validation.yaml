@@ -20,6 +20,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-event-publisher-proxy-unit-test"
                   optional: false
@@ -27,7 +28,7 @@ templates:
                   args:
                     - "-c"
                     - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/event-publisher-proxy/.*$'
+                  run_if_changed: "^components/event-publisher-proxy/.*$"
                   annotations:
                     owner: skydivingtunas
                     description: run unit tests for EPP
@@ -35,6 +36,7 @@ templates:
                   global:
                     - testing
                     - "jobConfig_presubmit"
+                    - "unprivileged"
       - to: ../../prow/jobs/kyma/components/eventing-controller/eventing-controller-checks.yaml
         jobConfigs:
           - repoName: "kyma-project/kyma"
@@ -54,6 +56,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-eventing-controller-unit-test"
                   optional: false
@@ -61,7 +64,7 @@ templates:
                   args:
                     - "-c"
                     - "cd components/eventing-controller && KUBEBUILDER_CONTROLPLANE_START_TIMEOUT=50s go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/eventing-controller/.*$'
+                  run_if_changed: "^components/eventing-controller/.*$"
                   annotations:
                     owner: skydivingtunas
                     description: run unit tests for EC
@@ -69,6 +72,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/kyma/components/kyma-components-static-checks.yaml
@@ -113,6 +117,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-telemetry-manager-unit-test"
                   annotations:
@@ -125,11 +130,12 @@ templates:
                   args:
                     - "-c"
                     - "make test"
-                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
+                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$|Makefile'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
 
           - repoName: "kyma-project/kyma"
             jobs:
@@ -147,6 +153,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
 
               - jobConfig:
                   name: "pull-central-application-gateway-lint"
@@ -162,6 +169,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-central-application-gateway-unit-test"
                   annotations:
@@ -176,6 +184,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
 
               - jobConfig:
                   name: "pull-compass-runtime-agent-lint"
@@ -191,6 +200,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-compass-runtime-agent-unit-test"
                   annotations:
@@ -205,9 +215,13 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
 
               - jobConfig:
                   name: "pull-function-controller-lint"
+                  annotations:
+                    owner: otters
+                    description: function controller linting job
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -217,6 +231,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-function-controller-unit-test"
                   annotations:
@@ -232,6 +247,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
           - repoName: "kyma-project/directory-size-exporter"
             jobs:
               - jobConfig:
@@ -249,6 +265,7 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-directory-size-exporter-unit-test"
                   annotations:
@@ -264,4 +281,4 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
-
+                    - "unprivileged"

@@ -8,8 +8,8 @@ templates:
               - jobConfig:
                   name: merge-slack-bot-build
                   annotations:
-                    owner: "gophers"
-                    description: "Gophers Bot build pipeline"
+                    owner: "gopher"
+                    description: "gopher Bot build pipeline"
                   args:
                     - --name=slack-bot
                     - --context=./

@@ -8,11 +8,13 @@ templates:
             jobs:
               - jobConfig:
                   name: "pull-unit-test-go"
+                  annotations:
+                    owner: neighbors
+                    description: "Run unit tests for all modules in test-infra repository"
+                    pipeline.trigger: "pr-submit"
                   run_if_changed: '.*\.go$'
                   cluster: untrusted-workload
                   optional: false
-                  annotations:
-                    pipeline.trigger: "pr-submit"
                   branches:
                     - ^main$
                   command: "go"
@@ -24,12 +26,17 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
               - jobConfig:
                   name: "pre-main-test-infra-lint"
+                  annotations:
+                    owner: neighbors
+                    description: "Run golangci-lint for all modules in test-infra repository"
                   cluster: untrusted-workload
                   command: "/golangci-lint.sh"
                   run_if_changed: 'go.mod|go.sum|.*\.go$|.golangci.yaml'
-                  privileged: false
+                  securityContext:
+                    privileged: false
                   automountServiceAccountToken: true
                   request_memory: 1Gi
                   request_cpu: 500m

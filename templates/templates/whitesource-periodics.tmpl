@@ -87,10 +87,19 @@
             {{- if .JobConfig.automountServiceAccountToken}}
             automountServiceAccountToken: {{.JobConfig.automountServiceAccountToken}}
             {{- end}}
-            {{- if .JobConfig.privileged}}
             securityContext:
-              privileged: {{.JobConfig.privileged}}
-            {{- end}}
+              {{- /* if privileged is set to true then seccomp must be unconfined */}}
+              {{- if and .JobConfig.securityContext.privileged (eq .JobConfig.securityContext.privileged "true") (ne .JobConfig.securityContext.seccompProfile.type  "Unconfined")}}
+                {{- fail (printf ".JobConfig.securityContext.privileged and .JobConfig.securityContext.seccompProfile are mutually exclusive: %s %v" .JobConfig.securityContext.privileged .JobConfig.securityContext.seccompProfile.type)}}
+              {{- end}}
+              privileged: {{.JobConfig.securityContext.privileged}}
+              {{- if .JobConfig.securityContext.seccompProfile}}
+              seccompProfile: 
+                {{- range $key, $value := .JobConfig.securityContext.seccompProfile}}
+                {{$key}}: {{$value}}
+                {{- end}}
+              allowPrivilegeEscalation: {{ default "false" .JobConfig.securityContext.privileged }}
+              {{- end}}
             command:
               {{- if .JobConfig.command }}
               - {{ quote .JobConfig.command }}

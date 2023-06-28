@@ -5,6 +5,7 @@ templates:
         localSets:
           job_default:
             optional: "false"
+            skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
             path_alias: github.com/kyma-project/istio
             env:
               EXPORT_RESULTS: true
@@ -16,7 +17,6 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio linting
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "/bin/sh"
                   args:
@@ -27,6 +27,7 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - linting
+                    - "unprivileged"
                   local:
                     - job_default
               - jobConfig:
@@ -34,7 +35,6 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio unit tests
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "./tests/integration/scripts/code-coverage-guard.sh"
                   always_run: true
@@ -42,5 +42,6 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
                   local:
                     - job_default

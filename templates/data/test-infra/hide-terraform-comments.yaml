@@ -6,9 +6,14 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  privileged: "false"
+                  securityContext:
+                    privileged: "false"
                   name: "pull-hide-tf-github-comments"
-                  run_if_changed: '.*\.tf$|.*\.tfvars$|^development/gcp/workflows'
+                  # Run on any change in terraform config files, terraform variable values files or resource yaml files.
+                  run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
+                  annotations:
+                    owner: neighbors
+                    description: "Hide GitHub pull request comments with Terraform plan execution results"
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
                   labels:
                     preset-bot-github-token: "true"

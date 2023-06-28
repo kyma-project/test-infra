@@ -14,18 +14,15 @@
 | pre-main-kyma-eval-istio-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-prod-istio-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-istio-reconcilation-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
-| pre-main-kyma-api-gateway-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | post-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-app-gateway | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-app-conn-validator | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
-| post-main-kyma-k3d-k8s-preview | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | kyma-upgrade-k3d-kyma2-to-main | k3d | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
 | kyma-integration-k3d | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-gke-nightly | gke | gcloud cli | kyma deploy |  | periodic |    |
 | pre-main-kyma-gardener-gcp-eventing-upgrade | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-gcp-eventing | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
-| pre-main-kyma-gardener-gcp-goats-api-gateway | gardener_gcp | kyma cli | kyma install |  | pr-submit |  octopus  |
 | kyma-integration-evaluation-gardener-azure | gardener_azure | kyma cli | kyma deploy | evaluation | periodic |  fast-integration  |
 | kyma-integration-production-gardener-azure | gardener_azure | kyma cli | kyma deploy | production | periodic |  fast-integration  |
 | kyma-weekly-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |

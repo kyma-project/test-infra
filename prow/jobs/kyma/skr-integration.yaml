@@ -4,6 +4,8 @@
 periodics: # runs on schedule
     - name: skr-azure-integration-dev
       annotations:
+        description: "skr integration test azure"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_azure"
@@ -37,7 +39,10 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -58,6 +63,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: skr-azure-lite-integration-dev
       annotations:
+        description: "skr integration test azure"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_azure"
@@ -92,7 +99,10 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -113,6 +123,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: skr-aws-integration-dev
       annotations:
+        description: "skr integration test aws"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_aws"
@@ -147,7 +159,10 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -168,6 +183,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: skr-trial-integration-dev
       annotations:
+        description: "skr integration test trial"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_azure"
@@ -202,7 +219,10 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -223,6 +243,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: skr-free-aws-integration-dev
       annotations:
+        description: "skr integration test free"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_aws"
@@ -257,7 +279,10 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -280,6 +305,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: skr-preview-dev
       annotations:
+        description: "skr integration test preview"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_aws"
@@ -313,7 +340,10 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -334,6 +364,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: skr-aws-own-cluster-dev
       annotations:
+        description: "skr integration test own cluster"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_aws"
@@ -368,7 +400,10 @@ periodics: # runs on schedule
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration-own-cluster.sh"
             env:
