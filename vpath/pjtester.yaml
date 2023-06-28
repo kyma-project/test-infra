@@ -1,0 +1,13 @@
+pjConfigs:
+  # prConfig:
+  #   kyma-project:
+  #     kyma:
+  #       prNumber: 1313
+  prowJobs:
+    kyma-project:
+      test-infra:
+        - pjName: "https://github.com/kyma-project/test-infra/pull/7959"
+# prConfigs: #
+#   kyma-project:
+#     kyma:
+#       prNumber: 1212
