@@ -33,3 +33,14 @@ presubmits: # runs on PRs
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+          - image: "postgres"
+            env:
+            - name: POSTGRES_PASSWORD
+              value: somepass
+            ports:
+            - containerPort: 5432
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
