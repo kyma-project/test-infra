@@ -195,7 +195,7 @@ globalSets:
   image_markdown_index:
     image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
   image_image_detector:
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230628-93eb8a16"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230628-c32b11e6"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
