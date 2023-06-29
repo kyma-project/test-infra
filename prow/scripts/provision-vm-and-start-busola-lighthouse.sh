@@ -119,7 +119,7 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 KYMA_CLUSTER_NAME="nkyma"
 log::info "KYMA_CLUSTER_NAME=${KYMA_CLUSTER_NAME}"
-cat <<EOF | kubectl replace -f - --raw /apis/core.gardener.cloud/v1beta1/namespaces/garden-gardener-kyma-prow/shoots/${KYMA_CLUSTER_NAME}/adminkubeconfig | jq -r ".status.kubeconfig" | base64 -d > "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml"
+cat <<EOF | kubectl replace -f - --raw /apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${KYMA_CLUSTER_NAME}/adminkubeconfig | jq -r ".status.kubeconfig" | base64 -d > "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml"
 {
     "apiVersion": "authentication.gardener.cloud/v1alpha1",
     "kind": "AdminKubeconfigRequest",
