@@ -31,7 +31,7 @@ spec:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":["/bin/sh","-c","/bin/terraform -chdir=./development/secrets-rotator/terraform/environments/prod init -input=false \u0026\u0026 /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER -sha $PULL_PULL_SHA plan -- terraform -chdir=./development/secrets-rotator/terraform/environments/prod plan -input=false -no-color"],"container_name":"test",.*}$'
-        # postsubmit prowjob environment prod secrets-rotator module
+      # postsubmit prowjob environment prod secrets-rotator module
       - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:*"
         command:
           - /tools/entrypoint
@@ -43,7 +43,7 @@ spec:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":["/bin/sh","-c","/bin/terraform -chdir=./configs/terraform/secrets-leaks-log-scanner init -input=false \u0026\u0026 /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER -sha $PULL_PULL_SHA plan -- terraform -chdir=./configs/terraform/secrets-leaks-log-scanner plan -input=false -no-color"],"container_name":"test",.*}$'
-        # postsubmit prowjob environment prod secret-leak-log-scanner module
+      # postsubmit prowjob environment prod secret-leak-log-scanner module
       - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:*"
         command:
           - /tools/entrypoint
