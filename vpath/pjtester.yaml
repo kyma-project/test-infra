@@ -3,6 +3,7 @@ pjConfigs:
     kyma-incubator:
       compass:
         - pjName: "pre-main-compass-integration-no-dump"
+        - pjName: "pre-main-compass-integration-with-dump"
 prConfigs: #
   kyma-incubator:
     compass:
