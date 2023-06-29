@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pull-plan-prod-terraform
       annotations:
+        description: "Test terraform production environment config"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -20,12 +22,15 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         serviceAccountName: terraform-executor
-        automountServiceAccountToken: true
+        automountServiceAccountToken: false
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
-            automountServiceAccountToken: true
+            automountServiceAccountToken: false
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -47,6 +52,8 @@ postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-apply-prod-terraform
       annotations:
+        description: "Apply terraform production environment config."
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -62,12 +69,15 @@ postsubmits: # runs on main
         - ^main$
       spec:
         serviceAccountName: terraform-executor
-        automountServiceAccountToken: true
+        automountServiceAccountToken: false
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
-            automountServiceAccountToken: true
+            automountServiceAccountToken: false
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:

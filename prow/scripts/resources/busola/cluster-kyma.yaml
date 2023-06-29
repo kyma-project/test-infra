@@ -27,7 +27,7 @@ spec:
           - RS256
         usernameClaim: sub
         usernamePrefix: '-'
-    version: 1.25.6
+    version: 1.26.5
   networking:
     nodes: 10.250.0.0/16
     pods: 100.96.0.0/11
@@ -48,7 +48,7 @@ spec:
     - machine:
         image:
           name: gardenlinux
-          version: 934.6.0
+          version: 934.8.0
         type: n2-standard-8
       maxSurge: 1
       maxUnavailable: 0

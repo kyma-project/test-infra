@@ -32,11 +32,11 @@ type MissingRequiredAnnotations struct {
 // non-colorable String() is used by go's string formatting support but ignored by ReportEntry
 func (s MissingRequiredAnnotations) String() string {
 	if s.Owner && s.Description {
-		return fmt.Sprintf("Prowjob %s is missing required annotations: %s, %s", s.PjName, OwnerAnnotationName, DescriptionAnnotationName)
+		return fmt.Sprintf("[PJ config test failed] Prowjob %s is missing required annotations: %s, %s", s.PjName, OwnerAnnotationName, DescriptionAnnotationName)
 	} else if s.Owner {
-		return fmt.Sprintf("Prowjob %s is missing required annotation: %s", s.PjName, OwnerAnnotationName)
+		return fmt.Sprintf("[PJ config test failed] Prowjob %s is missing required annotation: %s", s.PjName, OwnerAnnotationName)
 	} else if s.Description {
-		return fmt.Sprintf("Prowjob %s is missing reuired annotation: %s", s.PjName, DescriptionAnnotationName)
+		return fmt.Sprintf("[PJ config test failed] Prowjob %s is missing reuired annotation: %s", s.PjName, DescriptionAnnotationName)
 	}
 	return ""
 }

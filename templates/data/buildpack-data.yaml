@@ -1,587 +1,591 @@
 templates:
   - from: generic.tmpl
     render:
-          - to: ../../prow/jobs/test-infra/buildpack.yaml
-            localSets:
-              default:
-                skip_report: "false"
-                max_concurrency: "10"
-                decorate: "true"
-                branches:
-                  - "^master$"
-                  - "^main$"
-                pubsub_project: "sap-kyma-prow"
-                pubsub_topic: "prowjobs"
-                image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
-                command: /image-builder
-                request_memory: "1.5Gi"
-                request_cpu: "1"
-                labels:
-                  preset-sa-kyma-push-images: "true"
-                volumes:
-                  - name: config
-                    configMapName: kaniko-build-config
-                  - name: signify-secret
-                    secretName: signify-dev-secret
-                volumeMounts:
-                  - name: config
-                    mountPath: /config
-                    readOnly: true
-                  - name: signify-secret
-                    mountPath: /secret
-                    readOnly: true
-              presubmit:
-                type_presubmit: "true"
-                cluster: "untrusted-workload"
-              postsubmit:
-                type_postsubmit: "true"
-                cluster: "trusted-workload"
-                annotations:
-                  testgrid-create-test-group: "false"
-            jobConfigs:
-              - repoName: "github.com/kyma-project/test-infra"
-                jobs:
-                  - jobConfig:
-                      name: "pre-test-infra-bootstrap"
-                      annotations:
-                        description: "Build test-infra/bootstrap image"
-                        owner: neighbors
-                      run_if_changed: "^prow/images/bootstrap/"
-                      args:
-                        - "--name=test-infra/bootstrap"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/bootstrap"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-bootstrap"
-                      annotations:
-                        description: "Build test-infra/bootstrap image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^prow/images/bootstrap/"
-                      args:
-                        - "--name=test-infra/bootstrap"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/bootstrap"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-kyma-integration"
-                      annotations:
-                        description: "Build test-infra/kyma-integration image"
-                        owner: neighbors
-                      run_if_changed: "^prow/images/kyma-integration/"
-                      args:
-                        - "--name=test-infra/kyma-integration"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/kyma-integration"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-kyma-integration"
-                      annotations:
-                        description: "Build test-infra/kyma-integration image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^prow/images/kyma-integration/"
-                      args:
-                        - "--name=test-infra/kyma-integration"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/kyma-integration"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-buildpack-golang"
-                      annotations:
-                        description: "Build test-infra/buildpack-golang image"
-                        owner: neighbors
-                      run_if_changed: "^prow/images/buildpack-golang/"
-                      args:
-                        - "--name=test-infra/buildpack-golang"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/buildpack-golang"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-buildpack-golang"
-                      annotations:
-                        description: "Build test-infra/buildpack-golang image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^prow/images/buildpack-golang/"
-                      args:
-                        - "--name=test-infra/buildpack-golang"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/buildpack-golang"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-buildpack-node"
-                      annotations:
-                        description: "Build test-infra/buildpack-node image"
-                        owner: neighbors
-                      run_if_changed: "^prow/images/buildpack-node/"
-                      args:
-                        - "--name=test-infra/buildpack-node"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/buildpack-node"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-buildpack-node"
-                      annotations:
-                        description: "Build test-infra/buildpack-node image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^prow/images/buildpack-node/"
-                      args:
-                        - "--name=test-infra/buildpack-node"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/buildpack-node"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-cleaner"
-                      annotations:
-                        description: "Build test-infra/cleaner image"
-                        owner: neighbors
-                      run_if_changed: "^prow/images/cleaner/"
-                      args:
-                        - "--name=test-infra/cleaner"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/cleaner"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-cleaner"
-                      annotations:
-                        description: "Build test-infra/cleaner image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^prow/images/cleaner/"
-                      args:
-                        - "--name=test-infra/cleaner"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/cleaner"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-vulnerability-scanner"
-                      annotations:
-                        description: "Build test-infra/vulnerability-scanner image"
-                        owner: neighbors
-                      run_if_changed: "^prow/images/vulnerability-scanner/"
-                      args:
-                        - "--name=test-infra/vulnerability-scanner"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/vulnerability-scanner"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-vulnerability-scanner"
-                      annotations:
-                        description: "Build test-infra/vulnerability-scanner image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^prow/images/vulnerability-scanner/"
-                      args:
-                        - "--name=test-infra/vulnerability-scanner"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/vulnerability-scanner"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-whitesource-scanner"
-                      annotations:
-                        description: "Build test-infra/whitesource-scanner image"
-                        owner: neighbors
-                      run_if_changed: "^prow/images/whitesource-scanner/"
-                      args:
-                        - "--name=test-infra/whitesource-scanner"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/whitesource-scanner"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-whitesource-scanner"
-                      annotations:
-                        description: "Build test-infra/whitesource-scanner image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^prow/images/whitesource-scanner/"
-                      args:
-                        - "--name=test-infra/whitesource-scanner"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/whitesource-scanner"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-prow-tools"
-                      annotations:
-                        description: "Build test-infra/prow-tools image"
-                        owner: neighbors
-                      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
-                      args:
-                        - "--name=test-infra/prow-tools"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=prow/images/prow-tools/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-prow-tools"
-                      annotations:
-                        description: "Build test-infra/prow-tools image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
-                      args:
-                        - "--name=test-infra/prow-tools"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=prow/images/prow-tools/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                     name: "pre-test-infra-github-connector-webhook-gateway"
-                     annotations:
-                       description: "Build test-infra/github-connector-webhook-gateway image"
-                       owner: neighbors
-                     run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-                     args:
-                       - "--name=test-infra/github-connector-webhook-gateway"
-                       - "--config=/config/kaniko-build-config.yaml"
-                       - "--context=development/kyma-github-connector/githubWebhookGateway"
-                       - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-github-connector-webhook-gateway"
-                      annotations:
-                        description: "Build test-infra/github-connector-webhook-gateway image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-                      args:
-                        - "--name=test-infra/github-connector-webhook-gateway"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=development/kyma-github-connector/githubWebhookGateway"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-pubsub-connector-gateway"
-                      annotations:
-                        description: "Build test-infra/pubsub-connector-gateway image"
-                        owner: neighbors
-                      run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-                      args:
-                        - "--name=test-infra/pubsub-connector-gateway"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=development/kyma-pubsub-connector/pubSubGateway"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-pubsub-connector-gateway"
-                      annotations:
-                        description: "Build test-infra/pubsub-connector-gateway image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
-                      args:
-                        - "--name=test-infra/pubsub-connector-gateway"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=development/kyma-pubsub-connector/pubSubGateway"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-golangci-lint"
-                      annotations:
-                        description: "Build test-infra/golangci-lint image"
-                        owner: neighbors
-                      run_if_changed: "^prow/images/golangci-lint/"
-                      args:
-                        - "--name=test-infra/golangci-lint"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/golangci-lint"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-golangci-lint"
-                      annotations:
-                        description: "Build test-infra/golangci-lint image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^prow/images/golangci-lint/"
-                      args:
-                        - "--name=test-infra/golangci-lint"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=prow/images/golangci-lint"
-                        - "--dockerfile=Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-gardener-rotate"
-                      annotations:
-                        description: "Build test-infra/gardener-rotate image"
-                        owner: neighbors
-                      run_if_changed: "^prow/images/gardener-rotate/|^development/gardener-rotate/"
-                      args:
-                        - "--name=test-infra/gardener-rotate"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=prow/images/gardener-rotate/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-gardener-rotate"
-                      annotations:
-                        description: "Build test-infra/gardener-rotate image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^prow/images/gardener-rotate/|^development/gardener-rotate/"
-                      args:
-                        - "--name=test-infra/gardener-rotate"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=prow/images/gardener-rotate/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-gardener-sa-rotate"
-                      annotations:
-                        description: "Build test-infra/gardener-sa-rotate image"
-                        owner: neighbors
-                      run_if_changed: "^development/gcp/cloud-run/gardener-sa-rotate/"
-                      args:
-                        - "--name=test-infra/gardener-sa-rotate"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=development/gcp/cloud-run/gardener-sa-rotate/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-gardener-sa-rotate"
-                      annotations:
-                        description: "Build test-infra/gardener-sa-rotate image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^development/gcp/cloud-run/gardener-sa-rotate/"
-                      args:
-                        - "--name=test-infra/gardener-sa-rotate"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=development/gcp/cloud-run/gardener-sa-rotate/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-kms-rotate"
-                      annotations:
-                        description: "Build test-infra/kms-rotate image"
-                        owner: neighbors
-                      run_if_changed: "^development/gcp/cloud-run/kms-rotate/"
-                      args:
-                        - "--name=test-infra/kms-rotate"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=development/gcp/cloud-run/kms-rotate/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-kms-rotate"
-                      annotations:
-                        description: "Build test-infra/kms-rotate image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^development/gcp/cloud-run/kms-rotate/"
-                      args:
-                        - "--name=test-infra/kms-rotate"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=development/gcp/cloud-run/kms-rotate/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pull-build-githubrelease"
-                      annotations:
-                        description: "Build test-infra/githubrelease image"
-                        owner: neighbors
-                      run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
-                      args:
-                        - "--name=test-infra/githubrelease"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-build-githubrelease"
-                      annotations:
-                        description: "Build test-infra/githubrelease image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
-                      args:
-                        - "--name=test-infra/githubrelease"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pre-test-infra-markdown-index"
-                      annotations:
-                        description: "Build test-infra/markdown-index image"
-                        owner: neighbors
-                      run_if_changed: "^development/markdown-index/"
-                      args:
-                        - "--name=test-infra/markdown-index"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=development/markdown-index/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-test-infra-markdown-index"
-                      annotations:
-                        description: "Build test-infra/markdown-index image"
-                        owner: neighbors
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^development/markdown-index/"
-                      args:
-                        - "--name=test-infra/markdown-index"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=development/markdown-index/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
-                  - jobConfig:
-                      name: "pull-build-ginkgo"
-                      annotations:
-                        owner: neighbors
-                        description: "Building ginkgo image"
-                      run_if_changed: "^prow/images/ginkgo/"
-                      args:
-                        - "--name=test-infra/ginkgo"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=prow/images/ginkgo/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "presubmit"
-                  - jobConfig:
-                      name: "post-build-ginkgo"
-                      annotations:
-                        owner: neighbors
-                        description: "Building ginkgo image"
-                      labels:
-                        preset-signify-prod-secret: "true"
-                      run_if_changed: "^prow/images/ginkgo/"
-                      args:
-                        - "--name=test-infra/ginkgo"
-                        - "--config=/config/kaniko-build-config.yaml"
-                        - "--context=."
-                        - "--dockerfile=prow/images/ginkgo/Dockerfile"
-                    inheritedConfigs:
-                      local:
-                        - "default"
-                        - "postsubmit"
+      - to: ../../prow/jobs/test-infra/buildpack.yaml
+        localSets:
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^master$"
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+            command: /image-builder
+            request_memory: "1.5Gi"
+            request_cpu: "1"
+            labels:
+              preset-sa-kyma-push-images: "true"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+              - name: signify-secret
+                secretName: signify-dev-secret
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+          presubmit:
+            type_presubmit: "true"
+            cluster: "untrusted-workload"
+          postsubmit:
+            type_postsubmit: "true"
+            cluster: "trusted-workload"
+            annotations:
+              testgrid-create-test-group: "false"
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: "pre-test-infra-bootstrap"
+                  annotations:
+                    description: "Build test-infra/bootstrap image"
+                    owner: neighbors
+                  run_if_changed: "^prow/images/bootstrap/"
+                  args:
+                    - "--name=test-infra/bootstrap"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/bootstrap"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-bootstrap"
+                  annotations:
+                    description: "Build test-infra/bootstrap image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/bootstrap/"
+                  args:
+                    - "--name=test-infra/bootstrap"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/bootstrap"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-kyma-integration"
+                  annotations:
+                    description: "Build test-infra/kyma-integration image"
+                    owner: neighbors
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  args:
+                    - "--name=test-infra/kyma-integration"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/kyma-integration"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-kyma-integration"
+                  annotations:
+                    description: "Build test-infra/kyma-integration image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/kyma-integration/"
+                  args:
+                    - "--name=test-infra/kyma-integration"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/kyma-integration"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-buildpack-golang"
+                  annotations:
+                    description: "Build test-infra/buildpack-golang image"
+                    owner: neighbors
+                  run_if_changed: "^prow/images/buildpack-golang/"
+                  args:
+                    - "--name=test-infra/buildpack-golang"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/buildpack-golang"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-buildpack-golang"
+                  annotations:
+                    description: "Build test-infra/buildpack-golang image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/buildpack-golang/"
+                  args:
+                    - "--name=test-infra/buildpack-golang"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/buildpack-golang"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-buildpack-node"
+                  annotations:
+                    description: "Build test-infra/buildpack-node image"
+                    owner: neighbors
+                  run_if_changed: "^prow/images/buildpack-node/"
+                  args:
+                    - "--name=test-infra/buildpack-node"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/buildpack-node"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-buildpack-node"
+                  annotations:
+                    description: "Build test-infra/buildpack-node image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/buildpack-node/"
+                  args:
+                    - "--name=test-infra/buildpack-node"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/buildpack-node"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-cleaner"
+                  annotations:
+                    description: "Build test-infra/cleaner image"
+                    owner: neighbors
+                  run_if_changed: "^prow/images/cleaner/"
+                  args:
+                    - "--name=test-infra/cleaner"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/cleaner"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-cleaner"
+                  annotations:
+                    description: "Build test-infra/cleaner image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/cleaner/"
+                  args:
+                    - "--name=test-infra/cleaner"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/cleaner"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-vulnerability-scanner"
+                  annotations:
+                    description: "Build test-infra/vulnerability-scanner image"
+                    owner: neighbors
+                  run_if_changed: "^prow/images/vulnerability-scanner/"
+                  args:
+                    - "--name=test-infra/vulnerability-scanner"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/vulnerability-scanner"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-vulnerability-scanner"
+                  annotations:
+                    description: "Build test-infra/vulnerability-scanner image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/vulnerability-scanner/"
+                  args:
+                    - "--name=test-infra/vulnerability-scanner"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/vulnerability-scanner"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-whitesource-scanner"
+                  annotations:
+                    description: "Build test-infra/whitesource-scanner image"
+                    owner: neighbors
+                  run_if_changed: "^prow/images/whitesource-scanner/"
+                  args:
+                    - "--name=test-infra/whitesource-scanner"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/whitesource-scanner"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-whitesource-scanner"
+                  annotations:
+                    description: "Build test-infra/whitesource-scanner image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/whitesource-scanner/"
+                  args:
+                    - "--name=test-infra/whitesource-scanner"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/whitesource-scanner"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-prow-tools"
+                  annotations:
+                    description: "Build test-infra/prow-tools image"
+                    owner: neighbors
+                  run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+                  args:
+                    - "--name=test-infra/prow-tools"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=prow/images/prow-tools/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-prow-tools"
+                  annotations:
+                    description: "Build test-infra/prow-tools image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: '^(go\.mod|go\.sum)$|^development/(tools|jobguard|image-url-helper)/((cmd|pkg)/.*\.go|.*\.toml|go\.mod)$|^prow/images/prow-tools/(Dockerfile|Makefile)$'
+                  args:
+                    - "--name=test-infra/prow-tools"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=prow/images/prow-tools/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-github-connector-webhook-gateway"
+                  annotations:
+                    description: "Build test-infra/github-connector-webhook-gateway image"
+                    owner: neighbors
+                  run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                  args:
+                    - "--name=test-infra/github-connector-webhook-gateway"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=development/kyma-github-connector/githubWebhookGateway"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-github-connector-webhook-gateway"
+                  annotations:
+                    description: "Build test-infra/github-connector-webhook-gateway image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: '^development/kyma-github-connector/githubWebhookGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                  args:
+                    - "--name=test-infra/github-connector-webhook-gateway"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=development/kyma-github-connector/githubWebhookGateway"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-pubsub-connector-gateway"
+                  annotations:
+                    description: "Build test-infra/pubsub-connector-gateway image"
+                    owner: neighbors
+                  run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                  args:
+                    - "--name=test-infra/pubsub-connector-gateway"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=development/kyma-pubsub-connector/pubSubGateway"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-pubsub-connector-gateway"
+                  annotations:
+                    description: "Build test-infra/pubsub-connector-gateway image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: '^development/kyma-pubsub-connector/pubSubGateway/(.*\.go|go\.mod|go\.sum|Dockerfile|Makefile)$'
+                  args:
+                    - "--name=test-infra/pubsub-connector-gateway"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=development/kyma-pubsub-connector/pubSubGateway"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-golangci-lint"
+                  annotations:
+                    description: "Build test-infra/golangci-lint image"
+                    owner: neighbors
+                  run_if_changed: "^prow/images/golangci-lint/"
+                  args:
+                    - "--name=test-infra/golangci-lint"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/golangci-lint"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-golangci-lint"
+                  annotations:
+                    description: "Build test-infra/golangci-lint image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/golangci-lint/"
+                  args:
+                    - "--name=test-infra/golangci-lint"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/golangci-lint"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-gardener-rotate"
+                  annotations:
+                    description: "Build test-infra/gardener-rotate image"
+                    owner: neighbors
+                  run_if_changed: "^prow/images/gardener-rotate/|^development/gardener-rotate/"
+                  args:
+                    - "--name=test-infra/gardener-rotate"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=prow/images/gardener-rotate/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-gardener-rotate"
+                  annotations:
+                    description: "Build test-infra/gardener-rotate image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/gardener-rotate/|^development/gardener-rotate/"
+                  args:
+                    - "--name=test-infra/gardener-rotate"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=prow/images/gardener-rotate/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-gardener-sa-rotate"
+                  annotations:
+                    description: "Build test-infra/gardener-sa-rotate image"
+                    owner: neighbors
+                  run_if_changed: "^development/gcp/cloud-run/gardener-sa-rotate/"
+                  args:
+                    - "--name=test-infra/gardener-sa-rotate"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/gcp/cloud-run/gardener-sa-rotate/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-gardener-sa-rotate"
+                  annotations:
+                    description: "Build test-infra/gardener-sa-rotate image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^development/gcp/cloud-run/gardener-sa-rotate/"
+                  args:
+                    - "--name=test-infra/gardener-sa-rotate"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/gcp/cloud-run/gardener-sa-rotate/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-kms-rotate"
+                  annotations:
+                    description: "Build test-infra/kms-rotate image"
+                    owner: neighbors
+                  run_if_changed: "^development/gcp/cloud-run/kms-rotate/"
+                  args:
+                    - "--name=test-infra/kms-rotate"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/gcp/cloud-run/kms-rotate/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-kms-rotate"
+                  annotations:
+                    description: "Build test-infra/kms-rotate image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^development/gcp/cloud-run/kms-rotate/"
+                  args:
+                    - "--name=test-infra/kms-rotate"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/gcp/cloud-run/kms-rotate/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pull-build-githubrelease"
+                  annotations:
+                    description: "Build test-infra/githubrelease image"
+                    owner: neighbors
+                  run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                  args:
+                    - "--name=test-infra/githubrelease"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-build-githubrelease"
+                  annotations:
+                    description: "Build test-infra/githubrelease image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                  args:
+                    - "--name=test-infra/githubrelease"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pre-test-infra-markdown-index"
+                  annotations:
+                    description: "Build test-infra/markdown-index image"
+                    owner: neighbors
+                  run_if_changed: "^development/markdown-index/"
+                  args:
+                    - "--name=test-infra/markdown-index"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/markdown-index/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-markdown-index"
+                  annotations:
+                    description: "Build test-infra/markdown-index image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^development/markdown-index/"
+                  args:
+                    - "--name=test-infra/markdown-index"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/markdown-index/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pull-build-ginkgo"
+                  annotations:
+                    owner: neighbors
+                    description: "Building ginkgo image"
+                  run_if_changed: "^prow/images/ginkgo/"
+                  args:
+                    - "--name=test-infra/ginkgo"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=prow/images/ginkgo/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-build-ginkgo"
+                  annotations:
+                    owner: neighbors
+                    description: "Building ginkgo image"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/ginkgo/"
+                  args:
+                    - "--name=test-infra/ginkgo"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=prow/images/ginkgo/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"

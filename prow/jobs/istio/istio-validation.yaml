@@ -12,7 +12,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -22,6 +22,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -43,7 +48,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
       decorate: true
@@ -53,6 +58,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "./tests/integration/scripts/code-coverage-guard.sh"
             env:

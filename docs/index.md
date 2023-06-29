@@ -174,8 +174,6 @@
 
 [Prow Tools](/prow/images/prow-tools/README.md) - The directory contains the Dockerfile for the prow tools image with prebuilt tools used in the prow pipelines.
 
-[Prow Tools](/prow/images/test-untrusted-plugin/README.md) - The directory contains the Dockerfile for the prow tools image with prebuilt tools used in the prow pipelines.
-
 [Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
 
 [Cluster](/prow/scripts/README.md) - The folder contains scripts involved in integration tests.

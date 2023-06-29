@@ -9,7 +9,7 @@ templates:
             max_concurrency: "10"
             decorate: "true"
             command: checkconfig
-            image: gcr.io/k8s-prow/checkconfig:v20230613-9df263832f
+            image: gcr.io/k8s-prow/checkconfig:v20230629-ca1e8ed813
           jobConfig_inrepo:
             run_if_changed: "(^.prow/.*.yaml|^.prow.yaml)"
             args:
@@ -48,6 +48,7 @@ templates:
                     - "extra_refs_test-infra"
                     {{- end}}
                     - "trusted_cluster"
+                    - "unprivileged"
           {{- end}}
           {{- end }}
           {{- end }}

@@ -2,11 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"os"
 
-	"github.com/kyma-project/test-infra/development/image-detector/bumper"
+	"github.com/kyma-project/test-infra/development/github/pkg/bumper"
 	"github.com/kyma-project/test-infra/development/pkg/extractimageurls"
 	"github.com/kyma-project/test-infra/development/pkg/securityconfig"
 	"github.com/spf13/cobra"
@@ -139,7 +140,8 @@ var rootCmd = &cobra.Command{
 			for _, repo := range cfg {
 				imgs, err := extractimageurls.FromInRepoConfig(repo, ghToken)
 				if err != nil {
-					log.Fatalf("failed to exract image urls from repository %s: %v", &repo, err)
+					log.Printf("warn: failed to extract image urls from repository %s: %v", &repo, err)
+					continue
 				}
 
 				images = append(images, imgs...)
@@ -172,7 +174,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&TektonCatalog, "tekton-catalog", "", "path to the Tekton catalog directory")
 	rootCmd.PersistentFlags().StringVar(&AutobumpConfig, "autobump-config", "", "path to the config for autobumper for security scanner config")
 	rootCmd.PersistentFlags().StringVar(&InRepoConfig, "inrepo-config", "", "path to the configuration of repositories with Prow inrepo config enabled")
-	rootCmd.PersistentFlags().StringVar(&InRepoConfig, "github-token-path", "/etc/github/token", "path to github token for fetching inrepo config")
+	rootCmd.PersistentFlags().StringVar(&GithubTokenPath, "github-token-path", "/etc/github/token", "path to github token for fetching inrepo config")
 
 	rootCmd.MarkFlagRequired("sec-scanner-config")
 }
@@ -205,17 +207,17 @@ type client struct {
 
 // Changes returns a slice of functions, each one does some stuff, and
 // returns commit message for the changes
-func (c *client) Changes() []func(context.Context) (string, error) {
-	return []func(context.Context) (string, error){
-		func(ctx context.Context) (string, error) {
-			return "Bumping sec-scanner-config.yml", nil
+func (c *client) Changes() []func(context.Context) (string, []string, error) {
+	return []func(context.Context) (string, []string, error){
+		func(ctx context.Context) (string, []string, error) {
+			return "Bumping sec-scanner-config.yml", []string{"sec-scanner-config.yml"}, nil
 		},
 	}
 }
 
 // PRTitleBody returns the body of the PR, this function runs after each commit
 func (c *client) PRTitleBody() (string, string, error) {
-	return "Update sec-scanner-config.yml" + "\n", "", nil
+	return "Update sec-scanner-config.yml", "", nil
 }
 
 // options is the options for autobumper operations.
@@ -227,27 +229,23 @@ type options struct {
 
 // runAutobumper is wrapper for bumper API -> ACL
 func runAutobumper(autoBumperCfg string) error {
-	f, err := os.Open(autoBumperCfg)
+	data, err := os.ReadFile(autoBumperCfg)
 	if err != nil {
-		return err
+		return fmt.Errorf("open autobumper config: %s", err)
 	}
 
-	decoder := yaml.NewDecoder(f)
-
 	var bumperClientOpt options
-	err = decoder.Decode(&bumperClientOpt)
+	err = yaml.Unmarshal(data, &bumperClientOpt)
 	if err != nil {
-		return err
+		return fmt.Errorf("decode autobumper config: %s", err)
 	}
 
 	var opts bumper.Options
-	err = decoder.Decode(&opts)
+	err = yaml.Unmarshal(data, &opts)
 	if err != nil {
-		return err
+		return fmt.Errorf("decode bumper options: %s", err)
 	}
 
 	ctx := context.Background()
-	bumper.Run(ctx, &opts, &client{o: &bumperClientOpt})
-
-	return nil
+	return bumper.Run(ctx, &opts, &client{o: &bumperClientOpt})
 }
