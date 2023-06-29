@@ -147,128 +147,223 @@ default:
         - name: ":construction: WIP :construction:"
 
     # area labels
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to dependency changes
       name: area/dependency
       previously:
         - name: dependencies
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to tooling
       name: area/tooling
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to documentation
       name: area/documentation
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to prow configuration
       name: area/prow
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to templates
       name: area/templates
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to security
       name: area/security
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to CI related topics
       name: area/ci
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to the logging module (deprecated)
       name: area/logging
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to the monitoring module (deprecated)
       name: area/monitoring
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to the tracing module (deprecated)
       name: area/tracing
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to the telemetry module
       name: area/telemetry
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to service management
       name: area/service-management
       previously:
         - name: area/service-catalog
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to application connectivity
       name: area/application-connector
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to serverless
       name: area/serverless
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to eventing
       name: area/eventing
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to installation
       name: area/installation
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to api-gateway
       name: area/api-gateway
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to service-mesh
       name: area/service-mesh
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to core and supporting
       name: area/core-and-supporting
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to changes in charts
       name: area/charts
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to changes in CRDs
       name: area/crds
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to tests
       name: area/tests
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to overall changes in tools
       name: area/tools
       target: both
       addedBy: label
-    - color: 0052cc
+    - color: 99DDFF
       description: Issues or PRs related to event-subscriber tool
       name: area/tools/event-subscriber
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activities around CLI
+      name: area/cli
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activities that are done for Kyma community
+      name: area/community
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activities around the Console UI and all its views
+      name: area/console
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activities around Kyma Control Plane
+      name: area/control-plane
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activities around Luigi micro-frontend framework
+      name: area/luigi
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activities around Management Plane
+      name: area/management-plane
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activities around Kyma performance, scalability, and resource utilization
+      name: area/performance
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activites around quality
+      name: area/quality
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activities around cluster and its stability
+      name: area/cluster
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Issues or PRs related to gitserver tool
+      name: area/tools/gitserver
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Issues or PRs related to busola-migrator
+      name: area/busola-migrator
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Issues or PRs related to automation.
+      name: area/automation
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activities around the Busola UI and all its views
+      name: area/busola
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: ""
+      name: area/reconciler
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activities around Kyma on-call
+      name: area/support
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Related to all activities around Luigi micro-frontend framework
+      name: area/busola/luigi-removal
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Issues or PRs related to Busola Extensibility Feature
+      name: area/busola/extensibility
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: Issues or PRs related to Busola User Experience
+      name: area/busola/ux
+      target: both
+      addedBy: label
+    - color: 99DDFF
+      description: ""
+      name: area/examples
       target: both
       addedBy: label
 
