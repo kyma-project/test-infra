@@ -1,0 +1,38 @@
+presubmits:
+  kyma-project/warden:
+    - name: pre-main-serverless-operator
+      optional: true
+      labels:
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+      cluster: untrusted-workload
+      decorate: true
+      spec:
+        containers:
+          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759
+            command:
+              - /bin/bash
+            args:
+              - -c
+              - |
+                service docker start
+                curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+                k3d cluster create
+                kubectl cluster-info
+                make -C hack/ci k3d-integration-test
+                failed=$?
+                k3d cluster delete
+                exit $failed
+            requests:
+              memory: 1Gi
+            limits:
+              memory: 1Gi
+            securityContext:
+              privileged: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+          dedicated: "high-cpu"
