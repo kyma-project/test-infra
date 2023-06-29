@@ -8,7 +8,7 @@ templates:
             command: "bash"
             args:
               - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-benchmark.sh"
+              - "/home/prow/go/src/github.com/kyma-incubator/compass/prow/compass-gke-benchmark.sh"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
               PROVISION_REGIONAL_CLUSTER: "true"
