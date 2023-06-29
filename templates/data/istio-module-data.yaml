@@ -169,7 +169,6 @@ templates:
                     - jobConfig_slack_goat
                   local:
                     - job_default
-                    - job_skip_config
               - jobConfig:
                   name: pull-istio-operator-build
                   annotations:
