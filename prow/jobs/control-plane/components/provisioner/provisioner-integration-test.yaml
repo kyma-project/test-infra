@@ -13,6 +13,8 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
+        # Gardener credentials
+        preset-gardener-gcp-kyma-integration: "true"
       optional: false
       run_if_changed: "components/provisioner/((go.mod|go.sum)$|/(.*.go|Makefile|Dockerfile|.*.sh))"
       skip_report: false
