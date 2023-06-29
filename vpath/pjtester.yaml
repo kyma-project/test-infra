@@ -2,7 +2,8 @@ pjConfigs:
   prowJobs:
     kyma-incubator:
       compass:
-        - pjName: "pre-main-compass-integration-with-dump"
+        - pjName: "post-main-compass-vm-clean-no-dump"
+        - pjName: "post-main-compass-vm-clean-with-dump"
 prConfigs: #
   kyma-incubator:
     compass:
