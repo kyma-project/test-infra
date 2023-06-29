@@ -1,4 +1,4 @@
-# Secure access to signify dev and prod secrets over k8s API.
+# Secure access to kyma-autobump-bot-github-token secrets over k8s API.
 # Only external-secrets controller need access to these secrets over k8s API.
 # Prowjobs access these secrets as env vars or mounted files. This is controlled by OPA Gatekeeper.
 
