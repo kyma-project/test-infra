@@ -18,7 +18,7 @@ spec:
   parameters:
     images:
       - "ghcr.io/external-secrets/external-secrets"
-      - "docker.io/openpolicyagent/gatekeeper"
+      - "openpolicyagent/gatekeeper"
       - "docker.io/grafana/grafana"
       - "docker.io/nginx"
       - "quay.io/prometheus-operator/prometheus-config-reloader"

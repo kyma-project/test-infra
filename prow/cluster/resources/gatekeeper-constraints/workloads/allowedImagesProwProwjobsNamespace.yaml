@@ -23,6 +23,7 @@ spec:
       - "gcr.io/k8s-prow/branchprotector"
       - "gcr.io/k8s-prow/commenter"
       - "gcr.io/k8s-prow/gencred"
+      - "gcr.io/k8s-prow/ghproxy"
       - "gcr.io/k8s-prow/sidecar" # prowjob decoration
       - "gcr.io/k8s-prow/clonerefs" # prowjob decoration
       - "gcr.io/k8s-prow/initupload" # prowjob decoration

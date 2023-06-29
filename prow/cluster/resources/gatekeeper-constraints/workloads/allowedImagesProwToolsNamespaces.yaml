@@ -16,7 +16,7 @@ spec:
   parameters:
     images:
       - "ghcr.io/external-secrets/external-secrets"
-      - "docker.io/openpolicyagent/gatekeeper"
+      - "openpolicyagent/gatekeeper"
       - "eu.gcr.io/kyma-project"
       - "eu.gcr.io/sap-kyma-neighbors-dev"
       - "europe-docker.pkg.dev/kyma-project"
