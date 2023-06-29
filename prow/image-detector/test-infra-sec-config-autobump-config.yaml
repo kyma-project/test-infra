@@ -15,4 +15,4 @@ foldersToFilter:
   - ".github"
   - ".githooks"
 filesToFilter:
-  - "sec-scanners-config.yml"
+  - "sec-scanners-config.yaml"
