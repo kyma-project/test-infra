@@ -5,7 +5,7 @@ templates:
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-compass-generic.sh"
+            command: "prow/validate-compass-generic.sh"
             args:
               - "--component"
               - "schema-migrator"
@@ -41,6 +41,7 @@ templates:
                     - "image_buildpack-golang"
                     - "extra_refs_test-infra"
                     - "privileged_job"
+                    - "kyma_project_dir"
                   local:
                     - "jobConfig_default"
 
@@ -48,7 +49,7 @@ templates:
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-compass-generic.sh"
+            command: "prow/validate-compass-generic.sh"
             args:
               - "--component"
               - "director"
@@ -84,5 +85,6 @@ templates:
                     - "image_buildpack-golang"
                     - "extra_refs_test-infra"
                     - "privileged_job"
+                    - "kyma_project_dir"
                   local:
                     - "jobConfig_default"
