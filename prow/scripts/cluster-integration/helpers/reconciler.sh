@@ -295,7 +295,7 @@ function reconciler::export_shoot_cluster_kubeconfig() {
   log::info "Export shoot cluster kubeconfig to ENV"
   export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
   local shoot_kubeconfig="/tmp/shoot-kubeconfig.yaml"
-  cat <<EOF | kubectl replace -f - --raw /apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${INPUT_CLUSTER_NAME}/adminkubeconfig | jq -r ".status.kubeconfig" | base64 -d > "${shoot_kubeconfig}"
+  cat <<EOF | kubectl replace -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${INPUT_CLUSTER_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${shoot_kubeconfig}"
 {
     "apiVersion": "authentication.gardener.cloud/v1alpha1",
     "kind": "AdminKubeconfigRequest",
