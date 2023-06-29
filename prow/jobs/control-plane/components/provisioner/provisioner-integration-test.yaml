@@ -31,7 +31,7 @@ presubmits: # runs on PRs
                 memory: 1Gi
                 cpu: 1
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
