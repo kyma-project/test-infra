@@ -1,23 +1,23 @@
 module-name: test-infra
 protecode:
     - eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41
-    - gcr.io/k8s-prow/generic-autobumper:v20230628-f13bc80c8a
+    - gcr.io/k8s-prow/generic-autobumper:v20230629-ca1e8ed813
     - eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
     - eu.gcr.io/kyma-project/prow/cleaner:0.0.1
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a
     - eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0
     - eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17
-    - gcr.io/k8s-prow/branchprotector:v20230628-f13bc80c8a
+    - gcr.io/k8s-prow/branchprotector:v20230629-ca1e8ed813
     - eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230330-3213bd39
-    - gcr.io/k8s-prow/label_sync:v20230628-f13bc80c8a
+    - gcr.io/k8s-prow/label_sync:v20230629-ca1e8ed813
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230628-80b781e8
-    - gcr.io/k8s-prow/gencred:v20230628-f13bc80c8a
-    - gcr.io/k8s-prow/commenter:v20230628-f13bc80c8a
+    - gcr.io/k8s-prow/gencred:v20230629-ca1e8ed813
+    - gcr.io/k8s-prow/commenter:v20230629-ca1e8ed813
     - eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     - maven:3.8.6-eclipse-temurin-11
-    - gcr.io/k8s-prow/checkconfig:v20230628-f13bc80c8a
+    - gcr.io/k8s-prow/checkconfig:v20230629-ca1e8ed813
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20230607-587d3f6a
     - docker.io/zricethezav/gitleaks:v8.15.3
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
@@ -46,25 +46,25 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20230309-1d421c4f
     - eu.gcr.io/sap-kyma-neighbors-dev/automerge-notification-plugin:v0.1.28-test
     - eu.gcr.io/sap-kyma-neighbors-dev/cla-assistant-plugin:v20220130-54e1f7f39-dirty-2
-    - gcr.io/k8s-prow/crier:v20230628-f13bc80c8a
-    - gcr.io/k8s-prow/deck:v20230628-f13bc80c8a
+    - gcr.io/k8s-prow/crier:v20230629-ca1e8ed813
+    - gcr.io/k8s-prow/deck:v20230629-ca1e8ed813
     - k8s.gcr.io/gcsweb:v1.1.0
-    - gcr.io/k8s-prow/ghproxy:v20230628-f13bc80c8a
-    - gcr.io/k8s-prow/analyze:v20230628-f13bc80c8a
-    - gcr.io/k8s-prow/hook:v20230628-f13bc80c8a
-    - gcr.io/k8s-prow/horologium:v20230628-f13bc80c8a
+    - gcr.io/k8s-prow/ghproxy:v20230629-ca1e8ed813
+    - gcr.io/k8s-prow/analyze:v20230629-ca1e8ed813
+    - gcr.io/k8s-prow/hook:v20230629-ca1e8ed813
+    - gcr.io/k8s-prow/horologium:v20230629-ca1e8ed813
     - docker.io/nginx:1.23.2-alpine
     - grafana/grafana:7.5.17
     - quay.io/prometheus-operator/prometheus-operator:v0.61.1
     - eu.gcr.io/sap-kyma-neighbors-dev/needs-tws:v20220119-9cd5b58e9-dirty
-    - gcr.io/k8s-prow/pipeline:v20230628-f13bc80c8a
-    - gcr.io/k8s-prow/prow-controller-manager:v20230628-f13bc80c8a
+    - gcr.io/k8s-prow/pipeline:v20230629-ca1e8ed813
+    - gcr.io/k8s-prow/prow-controller-manager:v20230629-ca1e8ed813
     - prom/pushgateway:v1.5.1
     - nginx:1
-    - gcr.io/k8s-prow/sinker:v20230628-f13bc80c8a
-    - gcr.io/k8s-prow/status-reconciler:v20230628-f13bc80c8a
+    - gcr.io/k8s-prow/sinker:v20230629-ca1e8ed813
+    - gcr.io/k8s-prow/status-reconciler:v20230629-ca1e8ed813
     - eu.gcr.io/sap-kyma-neighbors-dev/test-untrusted-plugin:v0.1.0
-    - gcr.io/k8s-prow/tide:v20230628-f13bc80c8a
+    - gcr.io/k8s-prow/tide:v20230629-ca1e8ed813
     - nginx:1.20-alpine
     - eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41
 whitesource:
