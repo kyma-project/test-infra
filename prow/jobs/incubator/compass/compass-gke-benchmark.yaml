@@ -52,7 +52,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "./prow/compass-gke-benchmark.sh"
+              - "prow/compass-gke-benchmark.sh"
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
