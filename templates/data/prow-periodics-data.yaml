@@ -109,7 +109,7 @@ templates:
                     - --prow-config=prow/config.yaml
                     - --prow-jobs-dir=prow/jobs
                     - --terraform-dir=configs/terraform
-                    - --sec-scanner-config=sec-scanner-config.yaml
+                    - --sec-scanner-config=sec-scanners-config.yaml
                     - --kubernetes-dir=prow/cluster/components
                     - --autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml
                     - --inrepo-config=prow/image-detector/inrepo-config.yaml
@@ -165,7 +165,7 @@ templates:
                     - --prow-config=prow/config.yaml
                     - --prow-jobs-dir=prow/jobs
                     - --terraform-dir=configs/terraform
-                    - --sec-scanner-config=sec-scanner-config.yaml
+                    - --sec-scanner-config=sec-scanners-config.yaml
                     - --kubernetes-dir=prow/cluster/components
                     - --autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml
                     - --inrepo-config=prow/image-detector/inrepo-config.yaml
