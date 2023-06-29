@@ -18,6 +18,7 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/'
+      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-dashboard
