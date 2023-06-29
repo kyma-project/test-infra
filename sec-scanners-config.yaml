@@ -66,6 +66,6 @@ protecode:
     - eu.gcr.io/sap-kyma-neighbors-dev/test-untrusted-plugin:v0.1.0
     - gcr.io/k8s-prow/tide:v20230629-ca1e8ed813
     - nginx:1.20-alpine
-    - eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
+    - eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41
 whitesource:
     language: golang-mod
