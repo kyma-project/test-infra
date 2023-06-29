@@ -267,11 +267,6 @@ default:
       target: both
       addedBy: label
     - color: 99DDFF
-      description: Issues or PRs related to event-subscriber tool
-      name: area/tools/event-subscriber
-      target: both
-      addedBy: label
-    - color: 99DDFF
       description: Related to all activities around CLI
       name: area/cli
       target: both
@@ -282,18 +277,8 @@ default:
       target: both
       addedBy: label
     - color: 99DDFF
-      description: Related to all activities around the Console UI and all its views
-      name: area/console
-      target: both
-      addedBy: label
-    - color: 99DDFF
       description: Related to all activities around Kyma Control Plane
       name: area/control-plane
-      target: both
-      addedBy: label
-    - color: 99DDFF
-      description: Related to all activities around Luigi micro-frontend framework
-      name: area/luigi
       target: both
       addedBy: label
     - color: 99DDFF
@@ -322,11 +307,6 @@ default:
       target: both
       addedBy: label
     - color: 99DDFF
-      description: Issues or PRs related to busola-migrator
-      name: area/busola-migrator
-      target: both
-      addedBy: label
-    - color: 99DDFF
       description: Issues or PRs related to automation.
       name: area/automation
       target: both
@@ -344,11 +324,6 @@ default:
     - color: 99DDFF
       description: Related to all activities around Kyma on-call
       name: area/support
-      target: both
-      addedBy: label
-    - color: 99DDFF
-      description: Related to all activities around Luigi micro-frontend framework
-      name: area/busola/luigi-removal
       target: both
       addedBy: label
     - color: 99DDFF
