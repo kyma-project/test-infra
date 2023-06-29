@@ -2,8 +2,6 @@ pjConfigs:
   prowJobs:
     kyma-incubator:
       compass:
-        - pjName: "pre-main-compass-gke-benchmark"
-          report: false
         - pjName: "pre-main-compass-integration-no-dump"
 prConfigs: #
   kyma-incubator:
