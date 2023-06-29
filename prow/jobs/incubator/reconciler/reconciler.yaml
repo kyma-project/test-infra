@@ -1180,6 +1180,7 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "reconciler-control-plane-image-bump"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
         preset-log-collector-slack-token: "true"
       cron: "0 1-22/4 * * 1-5"
       skip_report: false
@@ -1220,10 +1221,6 @@ periodics: # runs on schedule
               requests:
                 memory: 3Gi
                 cpu: 2
-            volumeMounts:
-              - name: kyma-bot-github-token
-                mountPath: /etc/github
-                readOnly: true
         tolerations:
           - key: dedicated
             operator: Equal
@@ -1231,10 +1228,6 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-        volumes:
-          - name: kyma-bot-github-token
-            secret:
-              secretName: kyma-bot-github-token
     - name: nightly-main-reconciler
       annotations:
         description: "Creates and installs reconciler from main every night."
