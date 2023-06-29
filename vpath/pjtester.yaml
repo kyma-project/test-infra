@@ -1,0 +1,6 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      serverless-manager:
+        - pjName: "pre-main-serverless-operator"
+          report: false
