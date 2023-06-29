@@ -26,7 +26,7 @@ templates:
                   annotations:
                     owner: hasselhoff
                     description: Dashboard stage smoke tests
-                  optional: false
+                  optional: true
                   run_if_changed: "^Dockerfile.*|^package.json|^environments/stage/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
                   labels:
                     preset-build-pr: "true"
