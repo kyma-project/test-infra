@@ -19,61 +19,36 @@ import (
 // Options is the options for autobumper operations.
 type Options struct {
 	// The target GitHub org name where the autobump PR will be created. Only required when SkipPullRequest is false.
-	GitHubOrg string `yaml:"gitHubOrg"`
+	GitHubOrg string `json:"gitHubOrg"`
 	// The target GitHub repo name where the autobump PR will be created. Only required when SkipPullRequest is false.
-	GitHubRepo string `yaml:"gitHubRepo"`
+	GitHubRepo string `json:"gitHubRepo"`
 	// The name of the branch in the target GitHub repo on which the autobump PR will be based.  If not specified, will be autodetected via GitHub API.
-	GitHubBaseBranch string `yaml:"gitHubBaseBranch"`
+	GitHubBaseBranch string `json:"gitHubBaseBranch"`
 	// The GitHub username to use. If not specified, uses values from the user associated with the access token.
-	GitHubLogin string `yaml:"gitHubLogin"`
+	GitHubLogin string `json:"gitHubLogin"`
 	// The path to the GitHub token file. Only required when SkipPullRequest is false.
-	GitHubToken string `yaml:"gitHubToken"`
+	GitHubToken string `json:"gitHubToken"`
 	// The name to use on the git commit. Only required when GitEmail is specified and SkipPullRequest is false. If not specified, uses values from the user associated with the access token
-	GitName string `yaml:"gitName"`
+	GitName string `json:"gitName"`
 	// The email to use on the git commit. Only required when GitName is specified and SkipPullRequest is false. If not specified, uses values from the user associated with the access token.
-	GitEmail string `yaml:"gitEmail"`
+	GitEmail string `json:"gitEmail"`
 	// AssignTo specifies who to assign the created PR to. Takes precedence over onCallAddress and onCallGroup if set.
-	AssignTo string `yaml:"assign_to"`
+	AssignTo string `json:"assign_to"`
 	// Whether to skip creating the pull request for this bump.
-	SkipPullRequest bool `yaml:"skipPullRequest"`
+	SkipPullRequest bool `json:"skipPullRequest"`
 	// The name used in the address when creating remote. This should be the same name as the fork. If fork does not exist this will be the name of the fork that is created.
 	// If it is not the same as the fork, the robot will change the name of the fork to this. Format will be git@github.com:{GitLogin}/{RemoteName}.git
-	RemoteName string `yaml:"remoteName"`
+	RemoteName string `json:"remoteName"`
 	// The name of the branch that will be used when creating the pull request. If unset, defaults to "autobump".
-	HeadBranchName string `yaml:"headBranchName"`
+	HeadBranchName string `json:"headBranchName"`
 	// Optional list of labels to add to the bump PR
-	Labels []string `yaml:"labels"`
-}
-
-// GitCommand is used to pass the various components of the git command which needs to be executed
-type GitCommand struct {
-	baseCommand string
-	args        []string
-	workingDir  string
-}
-
-// Call will execute the Git command and switch the working directory if specified
-func (gc GitCommand) Call(stdout, stderr io.Writer) error {
-	return Call(stdout, stderr, gc.baseCommand, gc.buildCommand()...)
-}
-
-func (gc GitCommand) buildCommand() []string {
-	args := []string{}
-	if gc.workingDir != "" {
-		args = append(args, "-C", gc.workingDir)
-	}
-	args = append(args, gc.args...)
-	return args
-}
-
-func (gc GitCommand) getCommand() string {
-	return fmt.Sprintf("%s %s", gc.baseCommand, strings.Join(gc.buildCommand(), " "))
+	Labels []string `json:"labels"`
 }
 
 const (
 	forkRemoteName = "bumper-fork-remote"
 
-	defaultHeadBranchName = "sec-scanner-autobump"
+	defaultHeadBranchName = "autobump"
 
 	gitCmd = "git"
 )
@@ -82,24 +57,11 @@ const (
 // manipulating the repo, and provides commit messages, PR title and body.
 type PRHandler interface {
 	// Changes returns a slice of functions, each one does some stuff, and
-	// returns commit message for the changes
-	Changes() []func(context.Context) (string, error)
+	// returns commit message for the changes and list of files that should be added to commit
+	Changes() []func(context.Context) (string, []string, error)
 	// PRTitleBody returns the body of the PR, this function runs after all
 	// changes have been executed
 	PRTitleBody() (string, string, error)
-}
-
-type HideSecretsWriter struct {
-	Delegate io.Writer
-	Censor   func(content []byte) []byte
-}
-
-func (w HideSecretsWriter) Write(content []byte) (int, error) {
-	_, err := w.Delegate.Write(w.Censor(content))
-	if err != nil {
-		return 0, err
-	}
-	return len(content), nil
 }
 
 func Call(stdout, stderr io.Writer, cmd string, args ...string) error {
@@ -149,10 +111,15 @@ func gitStatus(stdout io.Writer, stderr io.Writer) (string, error) {
 	return string(output), nil
 }
 
-func gitCommit(name, email, message string, stdout, stderr io.Writer) error {
-	if err := Call(stdout, stderr, gitCmd, "add", "sec-scanner-config.yaml"); err != nil {
+func gitAdd(files []string, stdout, stderr io.Writer) error {
+	if err := Call(stdout, stderr, gitCmd, "add", strings.Join(files, " ")); err != nil {
 		return fmt.Errorf("git add: %w", err)
 	}
+
+	return nil
+}
+
+func gitCommit(name, email, message string, stdout, stderr io.Writer) error {
 	commitArgs := []string{"commit", "-m", message}
 	if name != "" && email != "" {
 		commitArgs = append(commitArgs, "--author", fmt.Sprintf("%s <%s>", name, email))
@@ -273,7 +240,7 @@ func validateOptions(o *Options) error {
 	return nil
 }
 
-// Run is the entrypoint which will update sec-scanner-config.yml file based on the provided options.
+// Run is the entrypoint which will update files based on the provided options and PRHandler.
 func Run(_ context.Context, o *Options, prh PRHandler) error {
 	if err := validateOptions(o); err != nil {
 		return fmt.Errorf("validating options: %w", err)
@@ -287,8 +254,8 @@ func Run(_ context.Context, o *Options, prh PRHandler) error {
 }
 
 func processGitHub(o *Options, prh PRHandler) error {
-	stdout := HideSecretsWriter{Delegate: os.Stdout, Censor: secret.Censor}
-	stderr := HideSecretsWriter{Delegate: os.Stderr, Censor: secret.Censor}
+	stdout := CensoredWriter{Delegate: os.Stdout, Censor: secret.Censor}
+	stderr := CensoredWriter{Delegate: os.Stderr, Censor: secret.Censor}
 	if err := secret.Add(o.GitHubToken); err != nil {
 		return fmt.Errorf("start secrets agent: %w", err)
 	}
@@ -313,17 +280,28 @@ func processGitHub(o *Options, prh PRHandler) error {
 		}
 	}
 
-	resp, err := gitStatus(stdout, stderr)
-	if err != nil {
-		return fmt.Errorf("git status: %w", err)
-	}
-	if strings.Contains(resp, "nothing to commit, working tree clean") {
-		fmt.Println("No changes, quitting.")
-		return nil
-	}
+	for i, changeFunc := range prh.Changes() {
+		commitMsg, filesToBeAdded, err := changeFunc(context.Background())
+		if err != nil {
+			return fmt.Errorf("failed to process function %d: %s", i, err)
+		}
 
-	if err := gitCommit(o.GitName, o.GitEmail, "Bumping sec-scanner-config.yml", stdout, stderr); err != nil {
-		return fmt.Errorf("commit changes to the remote branch: %w", err)
+		resp, err := gitStatus(stdout, stderr)
+		if err != nil {
+			return fmt.Errorf("git status: %w", err)
+		}
+		if strings.Contains(resp, "nothing to commit, working tree clean") {
+			fmt.Println("No changes, quitting.")
+			return nil
+		}
+
+		if err := gitAdd(filesToBeAdded, stdout, stderr); err != nil {
+			return fmt.Errorf("add changes to commit %w", err)
+		}
+
+		if err := gitCommit(o.GitName, o.GitEmail, commitMsg, stdout, stderr); err != nil {
+			return fmt.Errorf("commit changes to the remote branch: %w", err)
+		}
 	}
 
 	remote := fmt.Sprintf("https://%s:%s@github.com/%s/%s.git", o.GitHubLogin, string(secret.GetTokenGenerator(o.GitHubToken)()), o.GitHubLogin, o.RemoteName)
