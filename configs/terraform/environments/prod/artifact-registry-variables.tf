@@ -1,18 +1,18 @@
 ###################################
 # Artifact Registry related values
 ###################################
-variable "owner" {
+variable "artifact_registry_owner" {
   type        = string
-  description = "owner inside SAP"
+  description = "Owner inside SAP"
   default     = "neighbors"
 }
 
-variable "module" {
+variable "artifact_registry_module" {
   type        = string
   description = "Module name"
 }
 
-variable "type" {
+variable "artifact_registry_type" {
   type        = string
   description = "Environment for the resources"
 }
