@@ -27,7 +27,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
+          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230629-3a619e17"
             securityContext:
               privileged: false
               seccompProfile:
@@ -60,7 +60,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230628-80b781e8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230629-6b7922f4"
             securityContext:
               privileged: false
               seccompProfile:
@@ -241,7 +241,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230628-80b781e8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230629-6b7922f4"
             securityContext:
               privileged: false
               seccompProfile:
