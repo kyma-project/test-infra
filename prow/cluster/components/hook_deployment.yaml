@@ -35,7 +35,7 @@ spec:
         - --job-config-path=/etc/job-config
         env:
           - name: KUBECONFIG
-            value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config:/etc/tekton-pipelines-kubeconfig/config"
+            value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config"
         ports:
           - name: http
             containerPort: 8888
@@ -60,9 +60,6 @@ spec:
           readOnly: true
         - mountPath: /etc/trusted-workload-kubeconfig
           name: trusted-workload-kubeconfig
-          readOnly: true
-        - mountPath: /etc/tekton-pipelines-kubeconfig
-          name: tekton-pipelines-kubeconfig
           readOnly: true
         livenessProbe:
           httpGet:
@@ -92,10 +89,6 @@ spec:
         secret:
           defaultMode: 420
           secretName: trusted-workload-kubeconfig
-      - name: tekton-pipelines-kubeconfig
-        secret:
-          defaultMode: 420
-          secretName: tekton-pipelines-kubeconfig
       - name: config
         configMap:
           name: config

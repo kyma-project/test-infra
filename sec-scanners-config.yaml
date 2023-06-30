@@ -31,7 +31,6 @@ protecode:
     - eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5
     - eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3
     - opa/gatekeeper/constraint-templates
-    - tekton/deployments/gatekeeper-constraints
     - prow/cluster/resources/gatekeeper-constraints/prow
     - prow/cluster/resources/gatekeeper-constraints/trusted
     - prow/cluster/resources/gatekeeper-constraints/untrusted
