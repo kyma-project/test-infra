@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-echo -e
+set -e
 
 # WORKAROUND
 #TODO (@Ressetkk): Use bundled image with docker-credential-gcr and docker
-if ! commnand -v docker-credential-gcr; then
-  curl -fsSLo docker-credential-gcr.tar.gz "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${DOCKER_CREDENTIAL_GCR_VERSION}/docker-credential-gcr_$(go env GOOS)_$(go env GOARCH)-${DOCKER_CREDENTIAL_GCR_VERSION}.tar.gz" && \
+if ! command -v docker-credential-gcr; then
+  curl -fsSLo docker-credential-gcr.tar.gz "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v2.1.10/docker-credential-gcr_linux_amd64-2.1.10.tar.gz" && \
   tar xzf docker-credential-gcr.tar.gz \
   && chmod +x docker-credential-gcr && mv docker-credential-gcr /usr/bin/
 fi
@@ -24,12 +24,14 @@ buildpack-go
 e2e-garden
 )
 
+docker buildx create --driver docker-container --use --name builder
+
 toPush=()
 for v in "${images[@]}"; do
   echo "building $v..."
   docker buildx build \
-    --cache-from="type=registry,ref=europe-docker.pkg.dev/kyma-project/cache" \
-    --cache-to="type=registry,ref=europe-docker.pkg.dev/kyma-project/cache" \
+    --builder "builder" \
+    --load \
     -t "$REGISTRY/$v:latest" \
     -t "$REGISTRY/$v:$TAG" \
     "./$v"
