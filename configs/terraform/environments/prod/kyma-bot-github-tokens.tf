@@ -12,7 +12,7 @@ resource "kubernetes_cluster_role" "access_kyma_bot_github_tokens_trusted_worklo
   rule {
     api_groups     = [""]
     resources      = ["secrets"]
-    resource_names = [var.kyma_autobump_bot_github_token_secret_name, var.kyma_bot_github_sap_token_secret_name]
+    resource_names = [var.kyma_autobump_bot_github_token_secret_name, var.kyma_bot_github_sap_token_secret_name, var.kyma_bot_triage_token_secret_name]
     verbs          = ["update", "get", "list", "watch", "patch", "create", "delete"]
   }
 }
@@ -27,7 +27,7 @@ resource "kubernetes_cluster_role" "access_kyma_bot_github_tokens_untrusted_work
   rule {
     api_groups     = [""]
     resources      = ["secrets"]
-    resource_names = [var.kyma_autobump_bot_github_token_secret_name, var.kyma_bot_github_sap_token_secret_name]
+    resource_names = [var.kyma_autobump_bot_github_token_secret_name, var.kyma_bot_github_sap_token_secret_name, var.kyma_bot_triage_token_secret_name]
     verbs          = ["update", "get", "list", "watch", "patch", "create", "delete"]
   }
 }
@@ -36,7 +36,7 @@ resource "kubernetes_cluster_role_binding" "access_kyma_bot_github_tokens_truste
   provider = kubernetes.trusted_workload_k8s_cluster
 
   metadata {
-    name = "access-access-kyma-bot-github-tokens"
+    name = "access-kyma-bot-github-tokens"
   }
   role_ref {
     api_group = "rbac.authorization.k8s.io"

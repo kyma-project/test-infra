@@ -15,12 +15,12 @@ spec:
       # Prowjob name: pre-main-check-users-map
       - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"
         command:
-          - usersmapchecker
+          - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["usersmapchecker"\],"container_name":"test",.*}$'
       # Prowjob name: github-issues
       - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"
         command:
-          - /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh
+          - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"\],"container_name":"test",.*}$'
