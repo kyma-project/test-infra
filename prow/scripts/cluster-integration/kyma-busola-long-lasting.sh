@@ -46,7 +46,7 @@ function provisionIngress() {
     log::info "Install ingress"
 
     # switch to the new cluster
-    cat <<EOF | kubectl replace -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
+    cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
 {
     "apiVersion": "authentication.gardener.cloud/v1alpha1",
     "kind": "AdminKubeconfigRequest",
@@ -82,7 +82,7 @@ function provisionBusola() {
     log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
 
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-    cat <<EOF | kubectl replace -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
+    cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
 {
     "apiVersion": "authentication.gardener.cloud/v1alpha1",
     "kind": "AdminKubeconfigRequest",
@@ -124,7 +124,7 @@ function provisionKyma2(){
 
     # switch to the new cluster
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-    cat <<EOF | kubectl replace -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+    cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
 {
     "apiVersion": "authentication.gardener.cloud/v1alpha1",
     "kind": "AdminKubeconfigRequest",
@@ -161,7 +161,7 @@ function undeployKyma(){
     log::info "Uninstalling Kyma on the cluster : ${DOMAIN_NAME} using ${CPU_COUNT} cpus"
 
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-    cat <<EOF | kubectl replace -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+    cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
 {
     "apiVersion": "authentication.gardener.cloud/v1alpha1",
     "kind": "AdminKubeconfigRequest",
