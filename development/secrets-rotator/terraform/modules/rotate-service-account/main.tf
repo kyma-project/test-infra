@@ -1,4 +1,6 @@
-data "google_project" "project" {}
+data "google_project" "project" {
+  provider = google
+}
 
 resource "google_service_account" "service_account_keys_rotator" {
   account_id  = var.service_account_keys_rotator_account_id
