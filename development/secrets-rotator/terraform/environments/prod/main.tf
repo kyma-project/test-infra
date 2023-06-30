@@ -66,10 +66,7 @@ module "service_account_keys_cleaner" {
 
   application_name = var.application_name
   service_name     = var.service_account_keys_cleaner_service_name
-  project = {
-    id     = data.google_project.project.project_id
-    number = data.google_project.project.number
-  }
+  
   region                                     = var.region
   service_account_keys_cleaner_account_id    = var.service_account_keys_cleaner_account_id
   service_account_keys_cleaner_image         = var.service_account_keys_cleaner_image
