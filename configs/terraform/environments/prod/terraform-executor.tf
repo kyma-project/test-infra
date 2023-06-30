@@ -19,9 +19,9 @@ resource "google_service_account" "terraform_executor" {
   description  = "Identity of terraform executor. It's mapped to k8s service account through workload identity."
 }
 
-# Grant owner role to terraform executor service account in the workloads project.
-resource "google_project_iam_member" "terraform_executor_owner" {
-  project = var.workloads_project_id
+# Grant owner role to terraform executor service account in the prow project.
+resource "google_project_iam_member" "terraform_executor_prow_project_owner" {
+  project = var.terraform_executor_gcp_service_account.project_id
   role    = "roles/owner"
   member  = "serviceAccount:${google_service_account.terraform_executor.email}"
 }
@@ -30,6 +30,13 @@ resource "google_service_account_iam_binding" "terraform_workload_identity" {
   members            = ["serviceAccount:${local.terraform_workload_identity_gcp_service_account}"]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_executor.name
+}
+
+# Grant owner role to terraform executor service account in the workloads project.
+resource "google_project_iam_member" "terraform_executor_workloads_project_owner" {
+  project = var.workloads_project_id
+  role    = "roles/owner"
+  member  = "serviceAccount:${google_service_account.terraform_executor.email}"
 }
 
 resource "kubernetes_service_account" "trusted_workload_terraform_executor" {
