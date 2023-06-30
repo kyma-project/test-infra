@@ -1,33 +1,34 @@
+data "google_project" "project" {}
+
 resource "google_service_account" "service_account_keys_rotator" {
   account_id  = var.service_account_keys_rotator_account_id
-  project     = var.project.id
   description = "Identity of the service account keys rotator service."
 }
 
 // roles/iam.serviceAccountKeyAdmin is required to be able to create new keys for the service account
 resource "google_project_iam_member" "service_account_keys_rotator" {
-  project = var.project.id
+  project = data.google_project.project.project_id
   role    = "roles/iam.serviceAccountKeyAdmin"
   member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
 }
 
 // roles/secretmanager.secretAccessor is required to be able to access the secret version payload in secret manager
 resource "google_project_iam_member" "service_account_keys_rotator_secret_version_accessor" {
-  project = var.project.id
+  project = data.google_project.project.project_id
   role    = "roles/secretmanager.secretAccessor"
   member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
 }
 
 // roles/secretmanager.secretVersionAdder is required to be able to add new versions to the secret in secret manager
 resource "google_project_iam_member" "service_account_keys_rotator_secret_version_adder" {
-  project = var.project.id
+  project = data.google_project.project.project_id
   role    = "roles/secretmanager.secretVersionAdder"
   member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
 }
 
 // roles/secretmanager.viewer is required to be able to access the secret in secret manager and read its metadata
 resource "google_project_iam_member" "service_account_keys_rotator_secret_version_viewer" {
-  project = var.project.id
+  project = data.google_project.project.project_id
   role    = "roles/secretmanager.viewer"
   member  = "serviceAccount:${google_service_account.service_account_keys_rotator.email}"
 }
@@ -42,12 +43,11 @@ resource "google_cloud_run_service_iam_member" "service_account_keys_rotator_inv
 
 resource "google_project_service_identity" "pubsub_identity_agent" {
   provider = google-beta
-  project  = var.project.id
   service  = "pubsub.googleapis.com"
 }
 
 resource "google_project_iam_binding" "pubsub_project_token_creator" {
-  project = var.project.id
+  project = data.google_project.project.project_id
   role    = "roles/iam.serviceAccountTokenCreator"
   members = ["serviceAccount:${google_project_service_identity.pubsub_identity_agent.email}"]
 }
@@ -55,7 +55,6 @@ resource "google_project_iam_binding" "pubsub_project_token_creator" {
 resource "google_cloud_run_service" "service_account_keys_rotator" {
   name     = var.service_name
   location = var.region
-  project  = var.project.id
 
   template {
     spec {
@@ -81,7 +80,6 @@ resource "google_cloud_run_service" "service_account_keys_rotator" {
 
 resource "google_pubsub_subscription" "service_account_keys_rotator" {
   name                 = format("%s-%s", var.application_name, var.service_name)
-  project              = var.project.id
   topic                = var.secret_manager_notifications_topic
   ack_deadline_seconds = 20
 
