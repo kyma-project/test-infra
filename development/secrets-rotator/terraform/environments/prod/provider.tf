@@ -15,6 +15,7 @@ provider "google" {
 provider "google" {
   alias = "workloads"
   project = var.workloads_project_id
+  region = var.region
 }
 
 provider "google-beta" {
