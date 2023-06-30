@@ -1,3 +1,18 @@
+###################################
+# Provider related values
+###################################
+
+variable "gcp_region" {
+  type        = string
+  default     = "europe-west4"
+  description = "Default Google Cloud region to create resources."
+}
+
+variable "gcp_project_id" {
+  type        = string
+  default     = "sap-kyma-prow"
+  description = "Google Cloud project to create resources."
+}
 
 ###################################
 # Artifact Registry related values
