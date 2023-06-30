@@ -49,6 +49,7 @@ output "service_account_keys_rotator" {
 }
 
 resource "google_project_iam_member" "service_account_keys_rotator_workloads_project" {
+  provider = google.workloads
   project = var.workloads_project_id
   role    = "roles/iam.serviceAccountKeyAdmin"
   member  = "serviceAccount:${module.service_account_keys_rotator.service_account_keys_rotator_service_account.email}"
@@ -75,6 +76,7 @@ output "service_account_keys_cleaner" {
 }
 
 resource "google_project_iam_member" "service_account_keys_cleaner_workloads_project" {
+  provider = google.workloads
   project = var.workloads_project_id
   role    = "roles/iam.serviceAccountKeyAdmin"
   member  = "serviceAccount:${module.service_account_keys_cleaner.service_account_keys_cleaner_service_account.email}"
