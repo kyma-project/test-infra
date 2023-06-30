@@ -34,7 +34,7 @@ var (
 	// TektonCatalog contains root path to tekton catalog directory
 	TektonCatalog string
 
-	// AutobumpConfig contains root path to config for autobumper for sec-scanner-config
+	// AutobumpConfig contains root path to config for autobumper for sec-scanners-config
 	AutobumpConfig string
 
 	// InRepoConfig contains path to the configuration of repositories with Prow inrepo config enabled
@@ -210,14 +210,14 @@ type client struct {
 func (c *client) Changes() []func(context.Context) (string, []string, error) {
 	return []func(context.Context) (string, []string, error){
 		func(ctx context.Context) (string, []string, error) {
-			return "Bumping sec-scanner-config.yml", []string{"sec-scanner-config.yml"}, nil
+			return "Bumping sec-scanners-config.yaml", []string{"sec-scanners-config.yaml"}, nil
 		},
 	}
 }
 
 // PRTitleBody returns the body of the PR, this function runs after each commit
 func (c *client) PRTitleBody() (string, string, error) {
-	return "Update sec-scanner-config.yml", "", nil
+	return "Update sec-scanners-config.yaml", "", nil
 }
 
 // options is the options for autobumper operations.

@@ -152,14 +152,6 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-pr-cli.sh"
             annotations:
               pipeline.installer: reconciler
-          github_token_mounts:
-            volumes:
-              - name: kyma-bot-github-token
-                secretName: kyma-bot-github-token
-            volumeMounts:
-              - name: kyma-bot-github-token
-                mountPath: /etc/github
-                readOnly: true
           reconciler_e2e_image:
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230525-75242ac0
             securityContext: #temporary we need permissions to create files before transfer them to remote vm
@@ -627,6 +619,7 @@ templates:
                   cron: "0 1-22/4 * * 1-5" # "At minute 0 past every 2nd hour from 1 through 22 on every day-of-week from Monday through Friday."
                   labels:
                     preset-log-collector-slack-token: "true"
+                    preset-bot-github-token: "true"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -636,8 +629,6 @@ templates:
                     - extra_refs_control-plane
                     - disable_testgrid
                     - jobConfig_slack_jellyfish
-                  local:
-                    - github_token_mounts
               - jobConfig:
                   name: nightly-main-reconciler
                   annotations:

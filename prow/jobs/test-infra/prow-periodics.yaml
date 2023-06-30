@@ -60,7 +60,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230628-80b781e8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230629-6b7922f4"
             securityContext:
               privileged: false
               seccompProfile:
@@ -72,7 +72,7 @@ postsubmits: # runs on main
               - "--prow-config=prow/config.yaml"
               - "--prow-jobs-dir=prow/jobs"
               - "--terraform-dir=configs/terraform"
-              - "--sec-scanner-config=sec-scanner-config.yaml"
+              - "--sec-scanner-config=sec-scanners-config.yaml"
               - "--kubernetes-dir=prow/cluster/components"
               - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
               - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
@@ -241,7 +241,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230628-80b781e8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230629-6b7922f4"
             securityContext:
               privileged: false
               seccompProfile:
@@ -253,7 +253,7 @@ periodics: # runs on schedule
               - "--prow-config=prow/config.yaml"
               - "--prow-jobs-dir=prow/jobs"
               - "--terraform-dir=configs/terraform"
-              - "--sec-scanner-config=sec-scanner-config.yaml"
+              - "--sec-scanner-config=sec-scanners-config.yaml"
               - "--kubernetes-dir=prow/cluster/components"
               - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
               - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
