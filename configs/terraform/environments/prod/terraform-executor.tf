@@ -21,7 +21,7 @@ resource "google_service_account" "terraform_executor" {
 
 # Grant owner role to terraform executor service account in the workloads project.
 resource "google_project_iam_member" "terraform_executor_owner" {
-  project = var.terraform_executor_gcp_service_account.project_id
+  project = var.workloads_project_id
   role    = "roles/owner"
   member  = "serviceAccount:${google_service_account.terraform_executor.email}"
 }
