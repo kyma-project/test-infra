@@ -40,7 +40,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "prow/provision-vm-compass.sh"
+              - "installation/scripts/prow/jobs/provision-vm-compass.sh"
             args:
               - "--dump-db"
             env:
