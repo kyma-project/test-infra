@@ -20,3 +20,8 @@ variable "kyma_bot_triage_token_secret_name" {
   description = "Name of the kyma-bot-triage-token secret. This secret is used by triage automation to interact with GitHub."
   default     = "kyma-bot-triage-token"
 }
+variable "kyma_guard_bot_github_token_secret_name" {
+  type        = string
+  description = "Name of the kyma-guard-bot-github-token secret. This secret is used by automation to get GitHub contexts statuses."
+  default     = "kyma-guard-bot-github-token"
+}
