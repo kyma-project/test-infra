@@ -1,10 +1,5 @@
-data "google_project" "project" {
-  project_id = var.project_id
-}
-
 resource "google_pubsub_topic" "secrets_rotator_dead_letter" {
-  name    = format("%s-%s", var.application_name, "dead-letter")
-  project = data.google_project.project.project_id
+  name = format("%s-%s", var.application_name, "dead-letter")
 
   labels = {
     application = var.application_name
@@ -19,7 +14,6 @@ output "secrets_rotator_dead_letter_topic" {
 
 resource "google_service_account" "secrets-rotator" {
   account_id   = "secrets-rotator"
-  project      = data.google_project.project.project_id
   display_name = "Identity of the secrets rotator application"
 }
 
@@ -28,8 +22,7 @@ output "secrets-rotator" {
 }
 
 data "google_pubsub_topic" "secret-manager-notifications-topic" {
-  name    = var.secret_manager_notifications_topic
-  project = data.google_project.project.project_id
+  name = var.secret_manager_notifications_topic
 }
 
 output "secret-manager-notifications-topic" {
@@ -41,12 +34,8 @@ module "service_account_keys_rotator" {
 
   application_name = var.application_name
   service_name     = var.service_account_keys_rotator_service_name
-  project = {
-    id     = data.google_project.project.project_id
-    number = data.google_project.project.number
-  }
-  region = var.region
 
+  region                                             = var.region
   service_account_keys_rotator_account_id            = var.service_account_keys_rotator_account_id
   service_account_keys_rotator_dead_letter_topic_uri = google_pubsub_topic.secrets_rotator_dead_letter.id
   service_account_keys_rotator_image                 = var.service_account_keys_rotator_image
@@ -60,6 +49,7 @@ output "service_account_keys_rotator" {
 }
 
 resource "google_project_iam_member" "service_account_keys_rotator_workloads_project" {
+  provider = google.workloads
   project = var.workloads_project_id
   role    = "roles/iam.serviceAccountKeyAdmin"
   member  = "serviceAccount:${module.service_account_keys_rotator.service_account_keys_rotator_service_account.email}"
@@ -70,10 +60,7 @@ module "service_account_keys_cleaner" {
 
   application_name = var.application_name
   service_name     = var.service_account_keys_cleaner_service_name
-  project = {
-    id     = data.google_project.project.project_id
-    number = data.google_project.project.number
-  }
+
   region                                     = var.region
   service_account_keys_cleaner_account_id    = var.service_account_keys_cleaner_account_id
   service_account_keys_cleaner_image         = var.service_account_keys_cleaner_image
@@ -89,6 +76,7 @@ output "service_account_keys_cleaner" {
 }
 
 resource "google_project_iam_member" "service_account_keys_cleaner_workloads_project" {
+  provider = google.workloads
   project = var.workloads_project_id
   role    = "roles/iam.serviceAccountKeyAdmin"
   member  = "serviceAccount:${module.service_account_keys_cleaner.service_account_keys_cleaner_service_account.email}"

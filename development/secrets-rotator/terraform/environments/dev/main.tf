@@ -1,10 +1,5 @@
-data "google_project" "project" {
-  project_id = var.project_id
-}
-
 resource "google_pubsub_topic" "secrets_rotator_dead_letter" {
-  name    = format("%s-%s", var.application_name, "dead-letter")
-  project = data.google_project.project.project_id
+  name = format("%s-%s", var.application_name, "dead-letter")
 
   labels = {
     application = var.application_name
@@ -19,7 +14,6 @@ output "secrets_rotator_dead_letter_topic" {
 
 resource "google_service_account" "secrets-rotator" {
   account_id   = "secrets-rotator"
-  project      = data.google_project.project.project_id
   display_name = "Identity of the secrets rotator application"
 }
 
@@ -28,8 +22,7 @@ output "secrets-rotator" {
 }
 
 resource "google_pubsub_topic" "secret-manager-notifications-topic" {
-  name    = var.secret_manager_notifications_topic
-  project = data.google_project.project.project_id
+  name = var.secret_manager_notifications_topic
 
   message_retention_duration = "86600s"
 }
@@ -43,11 +36,7 @@ module "service_account_keys_rotator" {
 
   application_name = var.application_name
   service_name     = var.service_account_keys_rotator_service_name
-  project = {
-    id     = data.google_project.project.project_id
-    number = data.google_project.project.number
-  }
-  region = var.region
+  region           = var.region
 
   service_account_keys_rotator_account_id            = var.service_account_keys_rotator_account_id
   service_account_keys_rotator_dead_letter_topic_uri = google_pubsub_topic.secrets_rotator_dead_letter.id
@@ -66,10 +55,7 @@ module "service_account_keys_cleaner" {
 
   application_name = var.application_name
   service_name     = var.service_account_keys_cleaner_service_name
-  project = {
-    id     = data.google_project.project.project_id
-    number = data.google_project.project.number
-  }
+
   region                                     = var.region
   service_account_keys_cleaner_account_id    = var.service_account_keys_cleaner_account_id
   service_account_keys_cleaner_image         = var.service_account_keys_cleaner_image
