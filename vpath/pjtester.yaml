@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-incubator:
+      compass:
+        - pjName: "pre-main-compass-gke-benchmark"
+        - pjName: "pre-main-compass-smoke-test"
+prConfigs: #
+  kyma-incubator:
+    compass:
+      prNumber: 3151

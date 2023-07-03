@@ -8,7 +8,7 @@ templates:
             command: "bash"
             args:
               - "-c"
-              - "prow/compass-gke-benchmark.sh"
+              - "installation/scripts/prow/jobs/compass-gke-benchmark.sh"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
               PROVISION_REGIONAL_CLUSTER: "true"
