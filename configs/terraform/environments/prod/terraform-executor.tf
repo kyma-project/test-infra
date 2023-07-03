@@ -24,6 +24,9 @@ resource "google_project_iam_member" "terraform_executor_prow_project_owner" {
   project = var.terraform_executor_gcp_service_account.project_id
   role    = "roles/owner"
   member  = "serviceAccount:${google_service_account.terraform_executor.email}"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "google_service_account_iam_binding" "terraform_workload_identity" {
@@ -37,6 +40,9 @@ resource "google_project_iam_member" "terraform_executor_workloads_project_owner
   project = var.workloads_project_id
   role    = "roles/owner"
   member  = "serviceAccount:${google_service_account.terraform_executor.email}"
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "kubernetes_service_account" "trusted_workload_terraform_executor" {
