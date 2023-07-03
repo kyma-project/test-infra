@@ -27,7 +27,7 @@ templates:
                   annotations:
                     description: "Job to build image-detector image on PR merge"
                     owner: "neighbors"
-                  run_if_changed: '^development/(pkg/extractimageurls|image-detector)/(Dockerfile|.*\.go)$'
+                  run_if_changed: '^(development/(pkg/extractimageurls|image-detector|github)/(Dockerfile|.*\.go)|go.(mod|sum))$'
                   labels:
                     preset-signify-prod-secret: "true"
                   branches:
