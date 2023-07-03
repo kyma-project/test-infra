@@ -33,7 +33,7 @@ output "untrusted_workload_terraform_executor_k8s_service_account" {
 }
 
 output "artifact_registry_list" {
-  description = "Artifact Registry name"
+  description = "Artifact Registry"
   value       = module.artifact_registry
   sensitive   = false
 }

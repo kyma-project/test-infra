@@ -30,19 +30,6 @@ variable "artifact_registry_primary_area" {
   default     = "europe"
 }
 
-
-variable "artifact_registry_prefix" {
-  type        = string
-  description = "Naming prefix for all Artifact registry"
-  default     = "modules"
-}
-
-variable "artifact_registry_count" {
-  type        = number
-  description = "Number of Artifact registries to create"
-  default     = 2
-}
-
 variable "artifact_registry_names" {
   type        = list(string)
   description = "Artifact Registry names"

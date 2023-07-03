@@ -1,17 +1,11 @@
-###################################
-# Provider related values
-###################################
-
 variable "gcp_region" {
   type        = string
-  default     = "europe-west4"
-  description = "Default Google Cloud region to create resources."
+  description = "Google Cloud Region"
 }
 
 variable "gcp_project_id" {
   type        = string
-  default     = "sap-kyma-prow"
-  description = "Google Cloud project to create resources."
+  description = "Google Cloud Project"
 }
 
 ###################################
@@ -43,19 +37,6 @@ variable "artifact_registry_primary_area" {
   type        = string
   description = "Location type Multi-region"
   default     = "europe"
-}
-
-
-variable "artifact_registry_prefix" {
-  type        = string
-  description = "Naming prefix for all Artifact registry"
-  default     = "modules"
-}
-
-variable "artifact_registry_count" {
-  type        = number
-  description = "Number of Artifact registries to create"
-  default     = 2
 }
 
 variable "artifact_registry_names" {
