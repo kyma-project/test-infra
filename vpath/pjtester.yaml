@@ -1,0 +1,11 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "kyma-upgrade-k3d-kyma2-to-main"
+          report: true
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 17789
+          
