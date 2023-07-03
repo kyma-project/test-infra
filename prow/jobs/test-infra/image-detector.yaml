@@ -67,7 +67,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^development/(pkg/extractimageurls|image-detector|github)/(Dockerfile|.*\.go)$'
+      run_if_changed: '^(development/(pkg/extractimageurls|image-detector|github)/(Dockerfile|.*\.go)|go.(mod|sum))$'
       skip_report: false
       decorate: true
       cluster: trusted-workload
