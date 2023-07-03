@@ -3,10 +3,10 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma:
-    - name: pre-rel213-kyma-integration-k3d
+    - name: pre-rel217-kyma-integration-k3d
       annotations:
-        owner: neighbors
-        description: k3d int test
+        description: "k3d int test"
+        owner: "neighbors"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel213-kyma-integration-k3d"
+        prow.k8s.io/pubsub.runID: "pre-rel217-kyma-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-gc-project-env: "true"
@@ -26,20 +26,20 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^release-2.13$
+        - ^release-2.17$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.13
+          base_ref: release-2.17
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -56,7 +56,7 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma:
-    - name: post-rel213-kyma-integration-k3d
+    - name: post-rel217-kyma-integration-k3d
       annotations:
         description: "Kyma integration job on k3d."
         owner: "huskies,goat"
@@ -65,11 +65,11 @@ postsubmits: # runs on main
         pipeline.platform: "k3d"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
-        testgrid-dashboards: "kyma_release-2.13"
+        testgrid-dashboards: "kyma_release-2.17"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel213-kyma-integration-k3d"
+        prow.k8s.io/pubsub.runID: "post-rel217-kyma-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-release: "true"
         preset-gc-project-env: "true"
@@ -81,20 +81,23 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^release-2.13$
+        - ^release-2.17$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.13
+          base_ref: release-2.17
+      reporter_config:
+        slack:
+          channel: kyma-skr-release
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
@@ -108,16 +111,16 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-rel213-kyma-release-candidate
+    - name: post-rel217-kyma-release-candidate
       annotations:
-        owner: neighbors
-        description: "Release candidate job for Kyma 2.13."
+        description: "Release candidate job for Kyma 2.17."
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
-        testgrid-dashboards: "kyma_release-2.13"
+        testgrid-dashboards: "kyma_release-2.17"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-rel213-kyma-release-candidate"
+        prow.k8s.io/pubsub.runID: "post-rel217-kyma-release-candidate"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-certificates-bucket: "true"
         preset-cluster-use-ssd: "true"
@@ -139,15 +142,18 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^2.13\.\d+(?:-.*)?$
+        - ^2.17\.\d+(?:-.*)?$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.13
+          base_ref: release-2.17
+      reporter_config:
+        slack:
+          channel: kyma-skr-release
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
               seccompProfile:
@@ -190,20 +196,20 @@ postsubmits: # runs on main
               secretName: kyma-tunas-release-testing-event-mesh
   
 periodics: # runs on schedule
-    - name: kyma-gke-nightly-rel213
+    - name: kyma-gke-nightly-rel217
       annotations:
-        description: "Kyma GKE nightly build (release-2.13)"
+        description: "Kyma GKE nightly build (release-2.17)"
         owner: "neighbors"
         pipeline.clusterprovisioning: "gcloud cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gke"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
-        testgrid-dashboards: "kyma_release-2.13"
+        testgrid-dashboards: "kyma_release-2.17"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-gke-nightly-rel213"
+        prow.k8s.io/pubsub.runID: "kyma-gke-nightly-rel217"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-certificates-bucket: "true"
@@ -230,14 +236,17 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: release-2.13
+          base_ref: release-2.17
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.13
+          base_ref: release-2.17
+      reporter_config:
+        slack:
+          channel: kyma-skr-release
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
               seccompProfile:
@@ -254,7 +263,7 @@ periodics: # runs on schedule
               - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
                 value: "cluster-access"
               - name: INPUT_CLUSTER_NAME
-                value: "nightly-213"
+                value: "nightly-217"
               - name: MACHINE_TYPE
                 value: "custom-8-15360"
               - name: NODES_PER_ZONE
@@ -284,3 +293,4 @@ periodics: # runs on schedule
           - name: sa-stability-fluentd-storage-writer
             secret:
               secretName: sa-stability-fluentd-storage-writer
+  
