@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/modules/internal/istio-manager.yaml
+      - to: ../../prow/jobs/istio/istio-manager.yaml
         localSets:
           job_default:
             optional: "false"
@@ -121,6 +121,54 @@ templates:
                   local:
                     - job_default
                     - job_skip_config
+              - jobConfig:
+                  name: rel-istio-build
+                  always_run: true
+                  annotations:
+                    owner: goat
+                    description: builds istio operator image on release
+                  branches:
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=istio-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - jobConfig_slack_goat
+                  local:
+                    - job_default
+                    - job_build
+              - jobConfig:
+                  name: rel-istio-module-build
+                  always_run: true
+                  annotations:
+                    owner: goat
+                    description: builds istio module template on release
+                  branches:
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod"
+                    IMG: "europe-docker.pkg.dev/kyma-project/dev/istio-manager:${PULL_BASE_REF}"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "all"
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - jobConfig_slack_goat
+                  local:
+                    - job_default
               - jobConfig:
                   name: pull-istio-operator-build
                   annotations:

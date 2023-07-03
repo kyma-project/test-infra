@@ -9,7 +9,7 @@ require (
 	cloud.google.com/go/kms v1.12.1
 	cloud.google.com/go/logging v1.7.0
 	cloud.google.com/go/pubsub v1.32.0
-	cloud.google.com/go/storage v1.30.1
+	cloud.google.com/go/storage v1.31.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/cloudevents/sdk-go/v2 v2.14.0
@@ -54,7 +54,7 @@ require (
 
 require (
 	github.com/tektoncd/pipeline v0.36.0
-	k8s.io/test-infra v0.0.0-20230628183432-50bb407c2f1d
+	k8s.io/test-infra v0.0.0-20230630175242-6924f56478ce
 )
 
 require (
