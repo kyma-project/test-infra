@@ -42,7 +42,7 @@ presubmits: # runs on PRs
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "prow/validate-compass-generic.sh"
+              - "installation/scripts/prow/jobs/validate-compass-generic.sh"
             args:
               - "--component"
               - "director"
