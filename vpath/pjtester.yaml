@@ -4,6 +4,8 @@ pjConfigs:
       kyma:
         - pjName: "kyma-upgrade-k3d-kyma2-to-main"
           report: true
+        - pjName: "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"
+          report: true
 prConfigs:
   kyma-project:
     kyma:
