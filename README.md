@@ -9,8 +9,7 @@ See also internally available [test-infra onboarding](https://github.tools.sap/k
 
 ### Project documentation
 
-Please see the [index page](/docs/inde![image](https://github.com/kyma-project/test-infra/assets/48180632/71cf00de-f424-4de1-ac37-fe3d5f0e43d9)
-x.md) for the Test Infra documentation. It lists all the documentation available in the `test-infra` repository.
+Please see the [index page](/docs/index.md) for the Test Infra documentation. It lists all the documentation available in the `test-infra` repository.
 
 ### Prow
 
