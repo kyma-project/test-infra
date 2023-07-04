@@ -13,7 +13,6 @@ presubmits:
         preset-build-pr: "true"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
-        preset-k3d-enabled: "true"
         preset-kyma-guard-bot-github-token: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
@@ -45,7 +44,19 @@ presubmits:
               - "-c"
               - |
                 set -e
-                echo "Starting tests"
+                local install_dir
+                declare -r install_dir="/usr/local/bin"
+                mkdir -p "$install_dir"
+
+                echo "PR Number: ${PULL_NUMBER}"
+                kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
+
+                pushd "$install_dir" || exit
+                curl -Lo kyma "${kyma_cli_url}"
+                chmod +x kyma
+                popd || exit
+
+                kyma version --client
             env:
               - name: EXECUTION_PROFILE
                 value: "evaluation"
