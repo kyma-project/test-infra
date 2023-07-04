@@ -254,6 +254,9 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230704-b7911c28"
+                  securityContext: #temporary we need permissions to create folders for tooling, see `make install`
+                    runAsRoot: true
                   command: "make"
                   args:
                     - "gardener-perf-test"
@@ -282,4 +285,3 @@ templates:
                     - jobConfig_slack_goat
                   local:
                     - job_default
-                    - e2e
