@@ -6,6 +6,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
 
 	"github.com/kyma-project/test-infra/development/github/pkg/bumper"
 	"github.com/kyma-project/test-infra/development/pkg/extractimageurls"
@@ -49,7 +50,7 @@ var rootCmd = &cobra.Command{
 	Short: "Image Detector CLI",
 	Long:  "Command-Line tool to retrieve list of images and update security-config",
 	Run: func(cmd *cobra.Command, args []string) {
-		// load images from security config
+		// load security config
 		reader, err := os.Open(SecScannerConfig)
 		if err != nil {
 			log.Fatalf("failed to open security config file %s", err)
@@ -59,7 +60,8 @@ var rootCmd = &cobra.Command{
 			log.Fatalf("failed to parse security config file: %s", err)
 		}
 
-		images := securityConfig.Images
+		// don't use previously scanned images as it will not delete removed once
+		images := []string{}
 
 		// get images from prow jobs
 		if ProwConfig != "" && JobsConfigDir != "" {
@@ -149,6 +151,9 @@ var rootCmd = &cobra.Command{
 		}
 
 		images = extractimageurls.UniqueImages(images)
+
+		// sort list of images to have consistent order
+		sort.Strings(images)
 
 		// write images to security config
 		securityConfig.Images = images

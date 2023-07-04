@@ -5,13 +5,6 @@ variable "constraint_templates_path" {
   description = "Path to the constraint templates directory."
 }
 
-variable "tekton_constraints_path" {
-  type    = string
-  default = "../../../../tekton/deployments/gatekeeper-constraints/**.yaml"
-
-  description = "Path to the tekton cluster constraints directory."
-}
-
 variable "prow_constraints_path" {
   type    = string
   default = "../../../../prow/cluster/resources/gatekeeper-constraints/prow/**.yaml"

@@ -298,6 +298,7 @@ tide:
     kyma-project/btp-manager: squash
     kyma-project/istio: squash
     kyma-project/warden: squash
+    kyma-project/serverless-manager: squash
     kyma-project/telemetry-manager: squash
     kyma-project/directory-size-exporter: squash
     kyma-project/eventing-manager: squash
