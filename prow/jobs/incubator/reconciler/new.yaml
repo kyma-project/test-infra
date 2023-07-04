@@ -48,8 +48,11 @@ presubmits:
                 install_dir="/usr/local/bin"
                 mkdir -p "$install_dir"
 
+                kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
+
+
                 pushd "$install_dir" || exit
-                curl -Lo kyma "https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
+                curl -Lo kyma "${kyma_cli_url}"
                 chmod +x kyma
                 popd || exit
 
