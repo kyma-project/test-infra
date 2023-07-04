@@ -45,9 +45,6 @@ presubmits:
               - |
                 set -e
 
-                k3d version
-                kubectl version
-
                 install_dir="/usr/local/bin"
                 mkdir -p "$install_dir"
 
@@ -59,13 +56,12 @@ presubmits:
                 kyma version --client
                 kyma provision k3d --ci
                 kyma deploy --ci --concurrency=8 --profile=evaluation --source=main --workspace "/home/prow/go/src/github.com/kyma-project/kyma" --verbose
+                pushd "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
+                make ci
+                popd
             env:
-              - name: EXECUTION_PROFILE
-                value: "evaluation"
               - name: GO11MODULE
                 value: "on"
-              - name: KYMA_TEST_SOURCE
-                value: "main"
             resources:
               requests:
                 memory: 3Gi
