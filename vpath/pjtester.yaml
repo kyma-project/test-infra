@@ -4,8 +4,8 @@ pjConfigs:
   #     kyma:
   #       prNumber: 1313
   prowJobs:
-    kyma-project:
-      kyma:
+    kyma-incubator:
+      reconciler:
       - pjName: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
 # prConfigs: #
 #   kyma-project:
