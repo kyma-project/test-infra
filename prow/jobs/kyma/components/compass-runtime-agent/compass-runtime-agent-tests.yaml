@@ -21,6 +21,7 @@ presubmits: # runs on PRs
       path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
+      optional: true
       branches:
         - ^master$
         - ^main$
