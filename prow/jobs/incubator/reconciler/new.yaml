@@ -44,18 +44,21 @@ presubmits:
               - "-c"
               - |
                 set -e
+
+                k3d version
+                kubectl version
+
                 install_dir="/usr/local/bin"
                 mkdir -p "$install_dir"
 
-                echo "PR Number: ${PULL_NUMBER}"
-                kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
-
                 pushd "$install_dir" || exit
-                curl -Lo kyma "${kyma_cli_url}"
+                curl -Lo kyma "https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
                 chmod +x kyma
                 popd || exit
 
                 kyma version --client
+                kyma provision k3d --ci
+                kyma deploy --ci --concurrency=8 --profile=evaluation --source=main --workspace "/home/prow/go/src/github.com/kyma-project/kyma" --verbose
             env:
               - name: EXECUTION_PROFILE
                 value: "evaluation"
