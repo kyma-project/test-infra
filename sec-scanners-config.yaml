@@ -65,6 +65,7 @@ protecode:
     - eu.gcr.io/sap-kyma-neighbors-dev/test-untrusted-plugin:v0.1.0
     - gcr.io/k8s-prow/tide:v20230630-9eecc0f38f
     - nginx:1.20-alpine
-    - eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230629-6b7922f4
+    - tekton/deployments/gatekeeper-constraints
 whitesource:
     language: golang-mod
