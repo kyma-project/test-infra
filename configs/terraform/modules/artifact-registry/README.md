@@ -9,10 +9,12 @@ Configure variables in `terraform.tfvars` (configs/terraform/environments/prod/t
 Default values
 
 ```terraform
-module                         = "cap-operator"
-type                           = "development"
-immutable_artifact_registry    = false
-artifact_registry_multi_region = true
+artifact_registry_module         = "cap-operator"
+artifact_registry_owner          = "neighbors"
+artifact_registry_type           = "development"
+immutable_artifact_registry      = false
+artifact_registry_multi_region   = true
+artifact_registry_serviceaccount = "sa-kyma-project@sap-kyma-prow.iam.gserviceaccount.com"
 ```
 
 Note:

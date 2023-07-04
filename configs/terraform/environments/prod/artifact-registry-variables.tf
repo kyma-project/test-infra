@@ -2,10 +2,14 @@
 ###################################
 # Artifact Registry related values
 ###################################
+variable "artifact_registry_names" {
+  type        = list(string)
+  description = "Artifact Registry names"
+  default     = ["ocim", "internal"]
+}
 variable "artifact_registry_owner" {
   type        = string
   description = "Owner inside SAP"
-  default     = "neighbors"
 }
 
 variable "artifact_registry_module" {
@@ -18,9 +22,14 @@ variable "artifact_registry_type" {
   description = "Environment for the resources"
 }
 
+variable "artifact_registry_serviceaccount" {
+  type        = string
+  description = "Service Account"
+}
+
 variable "artifact_registry_multi_region" {
   type        = bool
-  description = "Is Location type Multi-region"
+  description = "Is Location type Multi-region?"
   default     = true
 }
 
@@ -30,14 +39,8 @@ variable "artifact_registry_primary_area" {
   default     = "europe"
 }
 
-variable "artifact_registry_names" {
-  type        = list(string)
-  description = "Artifact Registry names"
-  default     = ["ocim", "internal"]
-}
-
 variable "immutable_artifact_registry" {
   type        = bool
-  description = "Is Artifact registry immutable"
+  description = "Is Artifact registry immutable?"
   default     = false
 }

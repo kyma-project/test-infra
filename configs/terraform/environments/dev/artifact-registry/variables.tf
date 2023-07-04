@@ -1,21 +1,22 @@
-variable "gcp_region" {
-  type        = string
-  description = "Google Cloud Region"
-}
-
-variable "gcp_project_id" {
-  type        = string
-  description = "Google Cloud Project"
-}
 
 ###################################
 # Artifact Registry related values
 ###################################
-variable "artifact_registry_name" {
+variable "gcp_region" {
   type        = string
-  description = "Artifact Registry name"
+  description = "Default Google Cloud region to create resources."
 }
 
+variable "gcp_project_id" {
+  type        = string
+  description = "Google Cloud project to create resources."
+}
+
+variable "artifact_registry_names" {
+  type        = list(string)
+  description = "Artifact Registry names"
+  default     = ["ocim", "internal"]
+}
 variable "artifact_registry_owner" {
   type        = string
   description = "Owner inside SAP"
@@ -26,19 +27,19 @@ variable "artifact_registry_module" {
   description = "Module name"
 }
 
-variable "artifact_registry_serviceaccount" {
-  type        = string
-  description = "Service Account"
-}
-
 variable "artifact_registry_type" {
   type        = string
   description = "Environment for the resources"
 }
 
+variable "artifact_registry_serviceaccount" {
+  type        = string
+  description = "Service Account"
+}
+
 variable "artifact_registry_multi_region" {
   type        = bool
-  description = "Is Location type Multi-region"
+  description = "Is Location type Multi-region?"
   default     = true
 }
 
@@ -50,6 +51,6 @@ variable "artifact_registry_primary_area" {
 
 variable "immutable_artifact_registry" {
   type        = bool
-  description = "Is Artifact registry immutable"
+  description = "Is Artifact registry immutable?"
   default     = false
 }
