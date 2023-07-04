@@ -44,8 +44,7 @@ presubmits:
               - "-c"
               - |
                 set -e
-                curl -sL https://deb.nodesource.com/setup_14.x | bash -
-                apt-get -y install jq nodejs
+                apk add nodejs=14.x
                 install_dir="/usr/local/bin"
                 mkdir -p "$install_dir"
                 kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
