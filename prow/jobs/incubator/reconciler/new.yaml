@@ -44,8 +44,7 @@ presubmits:
               - "-c"
               - |
                 set -e
-                local install_dir
-                declare -r install_dir="/usr/local/bin"
+                install_dir="/usr/local/bin"
                 mkdir -p "$install_dir"
 
                 echo "PR Number: ${PULL_NUMBER}"
