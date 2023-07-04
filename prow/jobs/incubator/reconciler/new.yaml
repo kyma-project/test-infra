@@ -44,7 +44,7 @@ presubmits:
               - "-c"
               - |
                 set -e
-                apk add nodejs=14.x
+                apk add nodejs npm
                 install_dir="/usr/local/bin"
                 mkdir -p "$install_dir"
                 kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
