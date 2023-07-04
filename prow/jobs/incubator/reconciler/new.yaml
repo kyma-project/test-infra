@@ -44,10 +44,8 @@ presubmits:
               - "-c"
               - |
                 set -e
-
-                pwd
-                ls
-
+                curl -sL https://deb.nodesource.com/setup_14.x | sudo bash -
+                sudo apt-get -y install jq nodejs
                 install_dir="/usr/local/bin"
                 mkdir -p "$install_dir"
                 kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
@@ -57,8 +55,7 @@ presubmits:
                 popd || exit
                 kyma version --client
                 kyma provision k3d --ci
-                kyma deploy --ci --concurrency=8 --profile=evaluation --source=main --workspace "/homed/prow/go/src/github.com/kyma-project/kyma" --verbose
-                pwd
+                kyma deploy --ci --concurrency=8 --profile=evaluation --source=main --verbose
                 pushd "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
                 make ci
                 popd
