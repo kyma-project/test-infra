@@ -1,4 +1,4 @@
-# This file deploys gatekeeper to the prow, workloads and tekton clusters.
+# This file deploys gatekeeper to the prow, workloads clusters.
 
 module "prow_gatekeeper" {
   providers = {
@@ -13,20 +13,6 @@ module "prow_gatekeeper" {
 
   constraint_templates_path = [var.constraint_templates_path]
   constraints_path          = [var.prow_constraints_path]
-}
-
-module "tekton_gatekeeper" {
-  providers = {
-    kubernetes = kubernetes.tekton_k8s_cluster
-    google     = google
-    kubectl    = kubectl.tekton_k8s_cluster
-  }
-
-  source = "../../../../opa/terraform/modules/gatekeeper"
-
-  manifests_path            = var.gatekeeper_manifest_path
-  constraint_templates_path = [var.constraint_templates_path]
-  constraints_path          = [var.tekton_constraints_path]
 }
 
 module "trusted_workload_gatekeeper" {

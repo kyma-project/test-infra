@@ -66,7 +66,6 @@ protecode:
     - gcr.io/k8s-prow/tide:v20230630-9eecc0f38f
     - nginx:1.20-alpine
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230629-6b7922f4
-    - tekton/deployments/gatekeeper-constraints
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc
 whitesource:
     language: golang-mod

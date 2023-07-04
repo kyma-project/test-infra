@@ -36,20 +36,6 @@ variable "prow_k8s_cluster" {
   description = "Details of the prow k8s cluster."
 }
 
-variable "tekton_k8s_cluster" {
-  type = object({
-    name     = string
-    location = string
-  })
-
-  default = {
-    name     = "tekton"
-    location = "europe-west4"
-  }
-
-  description = "Details of the tekton k8s cluster."
-}
-
 variable "trusted_workload_k8s_cluster" {
   type = object({
     name     = string

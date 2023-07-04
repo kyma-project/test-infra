@@ -54,30 +54,6 @@ provider "kubectl" {
   load_config_file = false
 }
 
-data "google_container_cluster" "tekton_k8s_cluster" {
-  name     = var.tekton_k8s_cluster.name
-  location = var.tekton_k8s_cluster.location
-}
-
-provider "kubernetes" {
-  alias = "tekton_k8s_cluster"
-  host  = "https://${data.google_container_cluster.tekton_k8s_cluster.endpoint}"
-  token = data.google_client_config.gcp.access_token
-  cluster_ca_certificate = base64decode(
-    data.google_container_cluster.tekton_k8s_cluster.master_auth[0].cluster_ca_certificate,
-  )
-}
-
-provider "kubectl" {
-  alias = "tekton_k8s_cluster"
-  host  = "https://${data.google_container_cluster.tekton_k8s_cluster.endpoint}"
-  token = data.google_client_config.gcp.access_token
-  cluster_ca_certificate = base64decode(
-    data.google_container_cluster.tekton_k8s_cluster.master_auth[0].cluster_ca_certificate,
-  )
-  load_config_file = false
-}
-
 data "google_container_cluster" "trusted_workload_k8s_cluster" {
   name     = var.trusted_workload_k8s_cluster.name
   location = var.trusted_workload_k8s_cluster.location
