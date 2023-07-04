@@ -45,20 +45,20 @@ presubmits:
               - |
                 set -e
 
+                pwd
+                ls
+
                 install_dir="/usr/local/bin"
                 mkdir -p "$install_dir"
-
                 kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
-
-
                 pushd "$install_dir" || exit
                 curl -Lo kyma "${kyma_cli_url}"
                 chmod +x kyma
                 popd || exit
-
                 kyma version --client
                 kyma provision k3d --ci
-                kyma deploy --ci --concurrency=8 --profile=evaluation --source=main --workspace "/home/prow/go/src/github.com/kyma-project/kyma" --verbose
+                kyma deploy --ci --concurrency=8 --profile=evaluation --source=main --workspace "/homed/prow/go/src/github.com/kyma-project/kyma" --verbose
+                pwd
                 pushd "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
                 make ci
                 popd
