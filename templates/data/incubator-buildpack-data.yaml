@@ -237,45 +237,19 @@ templates:
                     - reconciler_publish_pr_cli_jobConfig
               - jobConfig:
                   name: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
-
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
-                    preset-sa-vm-kyma-integration: "true"
-                    preset-gc-project-env: "true"
+                    preset-kind-volume-mounts: "true"
+                    preset-dind-enabled: "true"
                   annotations:
                     owner: jellyfish
                     description: int test reconciler
                     pipeline.platform: k3d
                   env:
                     KYMA_TEST_SOURCE: "latest-release"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - image_kyma-integration
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                  local:
-                    - reconciler_main_jobConfig
-                    - reconciler_cli_integration_jobConfig
-              - jobConfig:
-                  name: "pre-main-reconciler-cli-integration-kyma-main-k3d"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-kyma-guard-bot-github-token: "true"
-                    preset-sa-vm-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                  annotations:
-                    owner: jellyfish
-                    description: int test reconciler
-                    pipeline.platform: k3d
-                  env:
-                    KYMA_TEST_SOURCE: "main"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
