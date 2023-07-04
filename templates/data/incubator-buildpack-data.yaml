@@ -242,8 +242,8 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-guard-bot-github-token: "true"
-                    preset-kind-volume-mounts: "true"
-                    preset-dind-enabled: "true"
+                    preset-sa-vm-kyma-integration: "true"
+                    preset-gc-project-env: "true"
                   annotations:
                     owner: jellyfish
                     description: int test reconciler

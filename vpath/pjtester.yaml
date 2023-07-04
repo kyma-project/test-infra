@@ -6,7 +6,7 @@ pjConfigs:
   prowJobs:
     kyma-incubator:
       reconciler:
-      - pjName: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
+      - pjName: "pre-main-reconciler-cli-integration-kyma-main-k3d"
 # prConfigs: #
 #   kyma-project:
 #     kyma:
