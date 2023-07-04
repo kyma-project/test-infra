@@ -11,9 +11,10 @@ presubmits:
         prow.k8s.io/pubsub.runID: "pre-main-reconciler-cli-integration-kyma-main-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-        preset-gc-project-env: "true"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
+        preset-k3d-enabled: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
@@ -32,14 +33,19 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+            command: ["/init.sh"]
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            args:
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                echo "Starting tests"
             env:
               - name: EXECUTION_PROFILE
                 value: "evaluation"
@@ -51,6 +57,12 @@ presubmits:
               requests:
                 memory: 3Gi
                 cpu: 2
+              # requests:
+              #   cpu: 1
+              #   memory: 1Gi
+              # limits:
+              #   cpu: 1.5
+              #   memory: 2Gi
         tolerations:
           - key: dedicated
             operator: Equal
