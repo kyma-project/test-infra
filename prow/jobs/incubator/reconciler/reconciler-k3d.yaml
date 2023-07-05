@@ -250,7 +250,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:latest
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
             command: [ "/init.sh" ]
             securityContext:
               privileged: true
@@ -270,12 +270,7 @@ presubmits:
                 chmod +x kyma
                 popd
                 kyma version --client
-                apt install ca-certificates gnupg
-                curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | tee /etc/apt/trusted.gpg.d/apt.postgresql.org.gpg >/dev/null
-                deb http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main
-                sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-                apt update
-                apt install postgresql-client-13
+                apk add nodejs npm postgresql13-client
                 wget https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz -O - | tar -zxO migrate > /tmp/migrate && chmod +x /tmp/migrate && mv /tmp/migrate /usr/local/bin/migrate
                 ./scripts/postgres.sh start
                 kyma provision k3d --ci
