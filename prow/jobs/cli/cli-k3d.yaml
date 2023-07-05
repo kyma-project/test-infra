@@ -68,8 +68,6 @@ postsubmits:
                 if [[ "${git_status}" != "" ]]; then
                   git commit -am 'bump reconciler version'
                 fi
-                pwd
-                ls ./bin/kyma-linux
                 echo "Copying Kyma binary to usr/local/bin"
                 cp ./bin/kyma-linux /usr/local/bin/kyma
                 echo "Provisioning k3d Kubernetes runtime"
