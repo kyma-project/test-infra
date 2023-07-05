@@ -68,28 +68,6 @@ templates:
                   local:
                     - job_spec
               - jobConfig:
-                  name: unstable-cli
-                  annotations:
-                    owner: jellyfish
-                    description: Bump reconciler version used by CLI and publish the unstable CLI binaries
-                  labels:
-                    preset-sa-vm-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                    preset-bot-github-token: "true"
-                    preset-kyma-cli-unstable: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - disable_testgrid
-                    - image_buildpack-golang
-                    - jobConfig_buildpack_incubator
-                    - jobConfig_slack_jellyfish
-                    - jobConfig_reconciler_publish_unstable_cli
-                    - extra_refs_reconciler
-              - jobConfig:
                   name: "pull-cli-lint"
                   annotations:
                     owner: jellyfish
