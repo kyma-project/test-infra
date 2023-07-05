@@ -7,7 +7,7 @@ presubmits: # runs on PRs
         preset-kind-volume-mounts: "true"
         preset-gardener-gcp-kyma-integration: "true"
       decorate: true
-      skip_if_only_changed: "*.md"
+      skip_if_only_changed: ".*\.md"
       cluster: untrusted-workload
       branches:
         - ^master$
