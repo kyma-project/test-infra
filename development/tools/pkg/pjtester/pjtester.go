@@ -558,7 +558,6 @@ func (pjopts *testProwJobOptions) newTestPJ(pjCfg pjConfig, opt options) (prowap
 	// Building ProwJob k8s resource based on generated job specifications.
 	log.Debug("Generating ProwJob k8s resource.")
 	pj := pjutil.NewProwJob(pjSpecification, job.Labels, job.Annotations)
-	// Allow pjtester to run prowjob to test on tekton cluster.
 	// Make sure prowjob to test will run on untrusted-workload cluster.
 	pj.Spec.Cluster = "untrusted-workload"
 	// Enable all reporting, otherwise send slack messages to null channel.
