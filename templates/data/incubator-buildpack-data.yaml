@@ -192,29 +192,6 @@ templates:
                     - linting
                     - "unprivileged"
               - jobConfig:
-                  name: "pre-main-reconciler-integration-k3d"
-
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^(go.mod$|go.sum$)|((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-kyma-guard-bot-github-token: "true"
-                    preset-sa-vm-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                  annotations:
-                    owner: jellyfish
-                    description: int test reconciler
-                    pipeline.platform: k3d
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - image_kyma-integration
-                    - extra_refs_test-infra
-                  local:
-                    - reconciler_main_jobConfig
-                    - reconciler_integration_jobConfig
-              - jobConfig:
                   name: "pre-main-reconciler-publish-pr-cli"
                   annotations:
                     owner: jellyfish
