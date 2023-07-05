@@ -167,23 +167,45 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
+            command: ["/init.sh"]
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            args:
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                kyma_get_previous_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-2].target_commitish | split("/") | .[-1]')
+                export KYMA_SOURCE="${kyma_get_previous_release_version_return_version:?}"
+                kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].target_commitish | split("/") | .[-1]')
+                export KYMA_UPGRADE_VERSION="${kyma_get_last_release_version_return_version:?}"
+                install_dir="/usr/local/bin"
+                mkdir -p "$install_dir"
+                kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
+                pushd "$install_dir" || exit
+                curl -Lo kyma "${kyma_cli_url}"
+                chmod +x kyma
+                popd || exit
+                kyma version --client
+                kyma provision k3d --ci
+                kyma deploy --ci --concurrency=8 --profile=evaluation --source="${KYMA_SOURCE}" --verbose
+                pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
+                git remote add origin https://github.com/kyma-project/kyma.git
+                git reset --hard && git remote update && git fetch --all >/dev/null 2>&1 && git checkout "${KYMA_SOURCE}"
+                make ci-pre-upgrade
+                popd
+                kyma deploy --ci --concurrency=8 --profile=evaluation --source="${KYMA_UPGRADE_VERSION}" --verbose
+                pushd "${KYMA_SOURCES_DIR}/tests/fast-integration"
+                git reset --hard && git remote update && git fetch --all >/dev/null 2>&1 && git checkout "${KYMA_UPGRADE_VERSION}"
+                make ci-post-upgrade
+                popd
             env:
-              - name: EXECUTION_PROFILE
-                value: "evaluation"
               - name: GO11MODULE
                 value: "on"
-              - name: KYMA_TEST_SOURCE
-                value: "previous-release"
-              - name: KYMA_UPGRADE_SOURCE
-                value: "latest-release"
             resources:
               requests:
                 memory: 3Gi
