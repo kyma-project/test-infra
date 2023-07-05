@@ -31,7 +31,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:latest
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -97,7 +97,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:latest
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -167,7 +167,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:latest
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -245,7 +245,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:latest
             command: [ "/init.sh" ]
             securityContext:
               privileged: true
