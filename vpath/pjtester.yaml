@@ -10,6 +10,7 @@ pjConfigs:
       - pjName: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
       - pjName: "pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d"
       - pjName: "pre-main-reconciler-integration-k3d"
+      - pjName: "kyma-upgrade-k3d-kyma2-to-main"
 # prConfigs: #
 #   kyma-project:
 #     kyma:
