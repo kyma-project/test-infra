@@ -283,11 +283,11 @@ presubmits:
                 value: "on"
             resources:
               requests:
-                cpu: 1
-                memory: 2Gi
-              limits:
                 cpu: 2
-                memory: 4Gi
+                memory: 3Gi
+              limits:
+                cpu: 4
+                memory: 6Gi
         tolerations:
           - key: dedicated
             operator: Equal
