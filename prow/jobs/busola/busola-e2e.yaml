@@ -68,8 +68,8 @@ presubmits: # runs on PRs
                 value: "cluster"
             resources:
               requests:
-                memory: 4Gi
+                memory: 6Gi
                 cpu: 2
               limits:
-                memory: 6Gi
+                memory: 8Gi
                 cpu: 3
