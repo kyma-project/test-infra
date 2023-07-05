@@ -43,7 +43,7 @@ postsubmits:
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:latest
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
             command: [ "/init.sh" ]
             securityContext:
               privileged: true
@@ -55,6 +55,7 @@ postsubmits:
               - "-c"
               - |
                 set -e
+                apk add nodejs npm
                 echo "Bump reconciler version used by the Kyma CLI"
                 go get -d github.com/kyma-incubator/reconciler@latest
                 make resolve
