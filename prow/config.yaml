@@ -1416,3 +1416,13 @@ presets:
     env:
       - name: PROVISION_REGISTRY
         value: "true"
+  - labels:
+      preset-compass-director-secret: "true"
+    volumes:
+      - name: preset-compass-director-secret
+        secret:
+          secretName: preset-compass-director-secret
+    volumeMounts:
+      - name: preset-compass-director-secret
+        mountPath: /preset-compass-director-secret
+        readOnly: true
