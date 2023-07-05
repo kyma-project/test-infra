@@ -228,9 +228,9 @@ presubmits:
         prow.k8s.io/pubsub.runID: "pre-main-reconciler-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-        preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
       run_if_changed: '^(go.mod$|go.sum$)|((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
@@ -245,14 +245,29 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
+            command: [ "/init.sh" ]
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            args:
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                INSTALL_DIR="/usr/local/bin"
+                mkdir -p $INSTALL_DIR
+                export PATH=$PATH:$INSTALL_DIR
+                pushd $INSTALL_DIR || exit
+                curl -Lo kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-linux"
+                chmod +x kyma
+                popd
+                kyma version --client
+                ./scripts/postgres.sh start
+                kyma provision k3d --ci
+                make test-all
             env:
               - name: GO11MODULE
                 value: "on"
