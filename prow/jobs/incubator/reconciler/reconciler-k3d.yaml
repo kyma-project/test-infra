@@ -271,6 +271,7 @@ presubmits:
                 chmod +x kyma
                 popd
                 kyma version --client
+                apt-get update && apt-get upgrade -y  
                 apt-get install -y postgresql-client-13
                 wget https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz -O - | tar -zxO migrate > /tmp/migrate && chmod +x /tmp/migrate && mv /tmp/migrate /usr/local/bin/migrate
                 ./scripts/postgres.sh start
