@@ -32,7 +32,7 @@ presubmits: # runs on PRs
               - -c
               - |
                 set -e
-                export CYPRESS_DOMAIN=http://localhost:8080
+                export CYPRESS_DOMAIN=http://localhost:3000
                 export NO_COLOR=1
                 export KUBECONFIG="$GARDENER_KYMA_PROW_KUBECONFIG"
 
@@ -48,10 +48,17 @@ presubmits: # runs on PRs
                 
                 cp kubeconfig--kyma--nkyma.yaml tests/integration/fixtures/kubeconfig.yaml
                 k3d kubeconfig get k3d > tests/integration/fixtures/kubeconfig-k3s.yaml
-                npm ci && npm start> $ARTIFACTS/busola.log &
+                npm ci && npm run build
+                serve -s build > $ARTIFACTS/busola.log &
+
+                pushd backend
+                npm start > $ARTIFACTS/backend.log &
+                popd
+
                 echo "waiting for server to be up..."
                 while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' "$CYPRESS_DOMAIN")" != "200" ]]; do sleep 5; done
                 sleep 10
+
                 cd tests/integration
                 npm ci && npm run "test:$SCOPE"
             env:
