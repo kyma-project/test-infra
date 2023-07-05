@@ -2,8 +2,8 @@ presubmits:
   kyma-incubator/reconciler:   
     - name: pre-main-reconciler-cli-integration-kyma-main-k3d
       annotations:
-        description: "int test reconciler"
         owner: "jellyfish"
+        description: "int test reconciler"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -18,7 +18,6 @@ presubmits:
       skip_report: false
       decorate: true
       cluster: untrusted-workload
-      max_concurrency: 10
       branches:
         - ^main$
       extra_refs:
@@ -32,7 +31,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -44,7 +43,6 @@ presubmits:
               - "-c"
               - |
                 set -e
-                apk add nodejs npm
                 install_dir="/usr/local/bin"
                 mkdir -p "$install_dir"
                 kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
@@ -54,7 +52,7 @@ presubmits:
                 popd || exit
                 kyma version --client
                 kyma provision k3d --ci
-                kyma deploy --ci --concurrency=8 --profile=evaluation --source=main --verbose
+                kyma deploy --ci --concurrency=8 --profile=evaluation --source=main
                 pushd "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
                 make ci
                 popd
@@ -63,25 +61,14 @@ presubmits:
                 value: "on"
             resources:
               requests:
-                memory: 3Gi
+                cpu: 1
+                memory: 2Gi
+              limits:
                 cpu: 2
-              # requests:
-              #   cpu: 1
-              #   memory: 1Gi
-              # limits:
-              #   cpu: 1.5
-              #   memory: 2Gi
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-reconciler-cli-integration-kyma-latest-k3d
       annotations:
-        description: "int test reconciler"
         owner: "jellyfish"
+        description: "int test reconciler"
         pipeline.platform: "k3d"
         pipeline.trigger: "pr-submit"
       labels:
@@ -110,29 +97,41 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
+            command: ["/init.sh"]
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            args:
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].target_commitish | split("/") | .[-1]')
+                export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
+                install_dir="/usr/local/bin"
+                mkdir -p "$install_dir"
+                kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
+                pushd "$install_dir" || exit
+                curl -Lo kyma "${kyma_cli_url}"
+                chmod +x kyma
+                popd || exit
+                kyma version --client
+                kyma provision k3d --ci
+                kyma deploy --ci --concurrency=8 --profile=evaluation --source="${KYMA_SOURCE}"
+                pushd "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
+                make ci
+                popd
             env:
-              - name: EXECUTION_PROFILE
-                value: "evaluation"
               - name: GO11MODULE
                 value: "on"
               - name: KYMA_TEST_SOURCE
                 value: "latest-release"
             resources:
               requests:
-                memory: 3Gi
+                cpu: 1
+                memory: 2Gi
+              limits:
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-          dedicated: "high-cpu"
