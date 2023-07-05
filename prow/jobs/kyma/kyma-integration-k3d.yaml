@@ -65,15 +65,9 @@ periodics:
               kyma provision k3d --ci            
               kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].tag_name')
               export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
-              echo $KYMA_SOURCE
-              kyma deploy --ci --source "${KYMA_SOURCE}" --timeout 60m
+              kyma deploy --ci --source ${KYMA_SOURCE} --timeout 60m
               git reset --hard
-              if [[ ${KYMA_SOURCE} == "main" ]]
-              then
-                git checkout "${KYMA_SOURCE}"
-              else
-                git checkout tags/"${KYMA_SOURCE}"
-              fi
+              git checkout tags/"${KYMA_SOURCE}"
               make -C "./tests/fast-integration" "ci-pre-upgrade"
               pushd "/tmp/bin" || exit
               curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/latest/download/kyma_linux_x86_64.tar.gz" && tar -zxvf kyma.tar.gz && chmod +x kyma && rm -f kyma.tar.gz
@@ -88,11 +82,11 @@ periodics:
               value: "."
           resources:
             requests:
-              memory: 100Mi
-              cpu: 50m
+              cpu: 1
+              memory: 2Gi
             limits:
-              memory: 200Mi
-              cpu: 100m
+              cpu: 2
+              memory: 4Gi
       tolerations:
         - key: dedicated
           operator: Equal
