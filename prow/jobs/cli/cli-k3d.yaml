@@ -83,6 +83,9 @@ postsubmits:
                 echo "all done"
             resources:
               requests:
+                memory: 2Gi
+                cpu: 1
+              limits:
                 memory: 3Gi
                 cpu: 2
         tolerations:
