@@ -243,6 +243,8 @@ branch-protection:
           branches:
             luigiless-busola:
               protect: false
+        kyma-environment-broker:
+          protect: false
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
