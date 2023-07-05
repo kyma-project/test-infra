@@ -1,6 +1,6 @@
 # Basic setup for Prow jobs
 
-FROM debian:11
+FROM debian:12
 
 # Commit details
 
@@ -28,8 +28,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     jq \
     dnsutils \
     openssh-client \
-    python2 \
-    python-is-python2 \
+    python3 \
+    python-is-python3 \
     wget \
     apt-transport-https \
     gnupg2 \
@@ -108,8 +108,8 @@ RUN apt-get -y --no-install-recommends install nodejs
 ENV HELM_VERSION="v3.7.2"
 
 RUN curl -fLSs https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -xzO linux-amd64/helm > /usr/local/bin/helm && \
-	  chmod +x /usr/local/bin/helm && \
-      rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
+    chmod +x /usr/local/bin/helm && \
+    rm -rf helm-${HELM_VERSION}-linux-amd64.tar.gz linux-amd64
 
 # Install Azure CLI
 # If you receive error related to recv-keys please make sure you have latest signing key
@@ -211,14 +211,14 @@ RUN curl -fLSs -o /usr/local/bin/yq https://github.com/mikefarah/yq/releases/dow
 #################################################################
 ENV GH_VERSION=2.2.0
 RUN curl -fsSL https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_amd64.tar.gz -o - | tar -xz &&\
-  mv gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh &&\
-  chmod +x /usr/local/bin/gh &&\
-  rm -r gh_${GH_VERSION}_linux_amd64
+    mv gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh &&\
+    chmod +x /usr/local/bin/gh &&\
+    rm -r gh_${GH_VERSION}_linux_amd64
 
 #################################################################
 ################ Install kustomize ########################
 #################################################################
 ENV KUSTOMIZE_VERSION=4.5.7
 RUN curl -fsSL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz -o - | tar -xz &&\
-  mv kustomize /usr/local/bin/kustomize &&\
-  chmod +x /usr/local/bin/kustomize
+    mv kustomize /usr/local/bin/kustomize &&\
+    chmod +x /usr/local/bin/kustomize

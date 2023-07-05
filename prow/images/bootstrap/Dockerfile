@@ -1,6 +1,6 @@
 # Basic setup for Prow jobs
 
-FROM debian:11
+FROM debian:12
 
 # Add commit details
 
@@ -23,8 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     jq \
     dnsutils \
     openssh-client \
-    python2 \
-    python-is-python2 \
+    python3 \
+    python-is-python3 \
     wget \
     apt-transport-https \
     gnupg2 \
