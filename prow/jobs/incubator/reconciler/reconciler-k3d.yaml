@@ -31,7 +31,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:latest
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -43,6 +43,7 @@ presubmits:
               - "-c"
               - |
                 set -e
+                apk add nodejs npm
                 install_dir="/usr/local/bin"
                 mkdir -p "$install_dir"
                 kyma_cli_url="https://storage.googleapis.com/kyma-cli-pr/kyma-linux-pr-${PULL_NUMBER}"
@@ -98,7 +99,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:latest
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -110,6 +111,7 @@ presubmits:
               - "-c"
               - |
                 set -e
+                apk add nodejs npm
                 kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].target_commitish | split("/") | .[-1]')
                 export KYMA_SOURCE="${kyma_get_last_release_version_return_version:?}"
                 install_dir="/usr/local/bin"
@@ -169,7 +171,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:latest
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -181,6 +183,7 @@ presubmits:
               - "-c"
               - |
                 set -e
+                apk add nodejs npm
                 kyma_get_previous_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-2].target_commitish | split("/") | .[-1]')
                 export KYMA_SOURCE="${kyma_get_previous_release_version_return_version:?}"
                 kyma_get_last_release_version_return_version=$(curl --silent --fail --show-error -H "Authorization: token ${BOT_GITHUB_TOKEN}" "https://api.github.com/repos/kyma-project/kyma/releases" | jq -r 'del( .[] | select( (.prerelease == true) or (.draft == true) )) | sort_by(.tag_name | split(".") | map(tonumber)) | .[-1].target_commitish | split("/") | .[-1]')
@@ -262,6 +265,7 @@ presubmits:
               - "-c"
               - |
                 set -e
+                apk add nodejs npm postgresql13-client
                 INSTALL_DIR="/usr/local/bin"
                 mkdir -p $INSTALL_DIR
                 export PATH=$PATH:$INSTALL_DIR
@@ -270,7 +274,6 @@ presubmits:
                 chmod +x kyma
                 popd
                 kyma version --client
-                apk add nodejs npm postgresql13-client
                 wget https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz -O - | tar -zxO migrate > /tmp/migrate && chmod +x /tmp/migrate && mv /tmp/migrate /usr/local/bin/migrate
                 ./scripts/postgres.sh start
                 kyma provision k3d --ci
