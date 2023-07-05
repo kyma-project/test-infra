@@ -5,6 +5,7 @@ presubmits: # runs on PRs
         preset-k3d-enabled: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
+        preset-gardener-gcp-kyma-integration: "true"
       decorate: true
       skip_if_only_changed: "*.md"
       cluster: untrusted-workload
@@ -12,6 +13,13 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
       spec:
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
         containers:
           - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
             imagePullPolicy: Always
@@ -26,7 +34,19 @@ presubmits: # runs on PRs
                 set -e
                 export CYPRESS_DOMAIN=http://localhost:8080
                 export NO_COLOR=1
-                k3d kubeconfig get k3d > tests/integration/fixtures/kubeconfig.yaml
+                export KUBECONFIG="$GARDENER_KYMA_PROW_KUBECONFIG"
+
+                cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/nkyma/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "kubeconfig--kyma--nkyma.yaml"
+                {
+                    "apiVersion": "authentication.gardener.cloud/v1alpha1",
+                    "kind": "AdminKubeconfigRequest",
+                    "spec": {
+                        "expirationSeconds": 10800
+                    }
+                }
+                EOF
+                
+                cp kubeconfig--kyma--nkyma.yaml tests/integration/fixtures/kubeconfig.yaml
                 k3d kubeconfig get k3d > tests/integration/fixtures/kubeconfig-k3s.yaml
                 npm ci && npm start> $ARTIFACTS/busola.log &
                 echo "waiting for server to be up..."
