@@ -32,9 +32,6 @@ var (
 	// KubernetesFiles contains root path to directory containing kubernetes deployments file
 	KubernetesFiles string
 
-	// TektonCatalog contains root path to tekton catalog directory
-	TektonCatalog string
-
 	// AutobumpConfig contains root path to config for autobumper for sec-scanners-config
 	AutobumpConfig string
 
@@ -103,21 +100,6 @@ var rootCmd = &cobra.Command{
 			images = append(images, imgs...)
 		}
 
-		// get images from tekton catalog
-		if TektonCatalog != "" {
-			files, err := extractimageurls.FindFilesInDirectory(TektonCatalog, ".*.(yaml|yml)")
-			if err != nil {
-				log.Fatalf("failed to find files in tekton catalog directory %s: %s", TektonCatalog, err)
-			}
-
-			imgs, err := extractimageurls.FromFiles(files, extractimageurls.FromTektonTask)
-			if err != nil {
-				log.Fatalf("failed to extract image urls from tekton tasks files: %s", err)
-			}
-
-			images = append(images, imgs...)
-		}
-
 		// get prow jobs configuration from in-repo configuration
 		if InRepoConfig != "" {
 			// load InRepo configuration
@@ -176,7 +158,6 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&TerraformDir, "terraform-dir", "", "path to the directory containing Terraform files")
 	rootCmd.PersistentFlags().StringVar(&SecScannerConfig, "sec-scanner-config", "", "path to the security scanner config field")
 	rootCmd.PersistentFlags().StringVar(&KubernetesFiles, "kubernetes-dir", "", "path to the directory containing Kubernetes deployments")
-	rootCmd.PersistentFlags().StringVar(&TektonCatalog, "tekton-catalog", "", "path to the Tekton catalog directory")
 	rootCmd.PersistentFlags().StringVar(&AutobumpConfig, "autobump-config", "", "path to the config for autobumper for security scanner config")
 	rootCmd.PersistentFlags().StringVar(&InRepoConfig, "inrepo-config", "", "path to the configuration of repositories with Prow inrepo config enabled")
 	rootCmd.PersistentFlags().StringVar(&GithubTokenPath, "github-token-path", "/etc/github/token", "path to github token for fetching inrepo config")
