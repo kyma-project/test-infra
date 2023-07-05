@@ -61,7 +61,7 @@ templates:
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230705-8a78b1bd"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
         jobConfigs:
@@ -254,7 +254,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230704-b7911c28"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230705-8a78b1bd"
                   securityContext: #temporary we need permissions to create folders for tooling, see `make install`
                     runAsRoot: true
                   command: "make"
