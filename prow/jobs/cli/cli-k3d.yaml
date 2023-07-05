@@ -15,9 +15,9 @@ postsubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-docker-push-repository-incubator: "true"
-        preset-gc-project-env: "true"
         preset-kyma-cli-unstable: "true"
-        preset-sa-vm-kyma-integration: "true"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -43,14 +43,44 @@ postsubmits:
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
+            command: [ "/init.sh" ]
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            args:
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                echo "Bump reconciler version used by the Kyma CLI"
+                go get -d github.com/kyma-incubator/reconciler@latest
+                make resolve
+                echo "Run unit-tests for kyma kyma"
+                make test
+                echo "Building Kyma CLI"
+                make build-linux
+                echo "Committing reconciler bump"
+                git_status=$(git status --porcelain)
+                if [[ "${git_status}" != "" ]]; then
+                  git commit -am 'bump reconciler version'
+                fi
+                mkdir \$HOME/bin
+                echo "Created bin directory"
+                cp /bin/kyma-linux /usr/local/bin/kyma
+                echo "Provisioning k3d Kubernetes runtime"
+                kyma provision k3d --ci
+                echo "Installing Kyma"
+                kyma deploy --ci 
+                echo "Running fast-integration tests"
+                cd ../kyma/tests/fast-integration && make ci
+                echo "Uninstalling Kyma"
+                kyma undeploy --ci --timeout=10m0s
+                echo "Publishing new unstable builds to $KYMA_CLI_UNSTABLE_BUCKET"
+                make ci-main
+                echo "all done"
             resources:
               requests:
                 memory: 3Gi
