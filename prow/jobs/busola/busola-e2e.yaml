@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         nodeSelector:
             dedicated: "high-cpu"
         containers:
-          - image: eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230705-8a78b1bd
             imagePullPolicy: Always
             securityContext:
               privileged: true
