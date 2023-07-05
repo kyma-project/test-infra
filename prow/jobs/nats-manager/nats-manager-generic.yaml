@@ -13,7 +13,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-nats-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^Dockerfile|\.go$|^go.(sum|mod)'
+      run_if_changed: '^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^internal/*/.*$|^cmd/*/.*$|^resources/*/.*$|^api/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -97,7 +97,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^Dockerfile|\.go$|^go.(sum|mod)'
+      run_if_changed: '^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^internal/*/.*$|^cmd/*/.*$|^resources/*/.*$|^api/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -136,4 +136,53 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: post-nats-module-build
+      annotations:
+        description: "NATS module build job"
+        owner: "skydivingtunas"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-nats-module-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^internal/*/.*$|^cmd/*/.*$|^resources/*/.*$|^api/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "hack/ci"
+              - "module-build"
+            env:
+              - name: IMG
+                value: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:${PULL_BASE_SHA}"
+              - name: KUSTOMIZE_VERSION
+                value: "v4.5.6"
+              - name: MODULE_REGISTRY
+                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   

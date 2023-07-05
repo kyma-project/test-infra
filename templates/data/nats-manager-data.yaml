@@ -2,6 +2,12 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/nats-manager/nats-manager-generic.yaml
+        localSets:
+          job_default:
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
         jobConfigs:
           - repoName: "github.com/kyma-project/nats-manager"
             jobs:
@@ -12,7 +18,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                  run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^internal/*/.*$|^cmd/*/.*$|^resources/*/.*$|^api/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
                   annotations:
                     owner: skydivingtunas
                     description: build nats manager image
@@ -30,7 +36,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
-                  run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^internal/*/.*$|^cmd/*/.*$|^resources/*/.*$|^api/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
                   annotations:
                     owner: skydivingtunas
                     description: build nats manager image
@@ -55,3 +61,29 @@ templates:
                     - testing
                     - "jobConfig_presubmit"
                     - "unprivileged"
+              - jobConfig:
+                  name: post-nats-module-build
+                  annotations:
+                    owner: skydivingtunas
+                    description: NATS module build job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:${PULL_BASE_SHA}"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^internal/*/.*$|^cmd/*/.*$|^resources/*/.*$|^api/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default
