@@ -1,0 +1,67 @@
+periodics:
+  - name: kyma-upgrade-k3d-kyma2-to-main
+    annotations:
+      description: "K3d Kyma 2.0 to main branch."
+      owner: "jellyfish"
+      pipeline.clusterprovisioning: "kyma cli"
+      pipeline.installer: "kyma deploy"
+      pipeline.platform: "k3d"
+      pipeline.test: "upgrade-fast-integration"
+      pipeline.trigger: "periodic"
+      pipeline.type: "integration"
+      testgrid-dashboards: "kyma_integration"
+    labels:
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "kyma-upgrade-k3d-kyma2-to-main"
+      prow.k8s.io/pubsub.topic: "prowjobs"
+      preset-gc-project-env: "true"
+      preset-kyma-guard-bot-github-token: "true"
+      preset-sa-vm-kyma-integration: "true"
+    cron: "0 0 6-18/2 ? * 1-5"
+    skip_report: false
+    decorate: true
+    decoration_config:
+      grace_period: 600000000000
+      timeout: 7200000000000
+    path_alias: github.com/kyma-project/kyma
+    cluster: trusted-workload
+    extra_refs:
+      - org: kyma-project
+        repo: kyma
+        path_alias: github.com/kyma-project/kyma
+        base_ref: main
+      - org: kyma-incubator
+        repo: local-kyma
+        path_alias: github.com/kyma-incubator/local-kyma
+        base_ref: main
+      - org: kyma-project
+        repo: test-infra
+        path_alias: github.com/kyma-project/test-infra
+        base_ref: main
+    reporter_config:
+      slack:
+        channel: jellyfish-notifications
+    spec:
+      containers:
+        - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          securityContext:
+            privileged: false
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+          command:
+            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"
+          env:
+            - name: KYMA_PROJECT_DIR
+              value: "."
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 50m
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: high-cpu
+          effect: NoSchedule
+      nodeSelector:
+        dedicated: "high-cpu"

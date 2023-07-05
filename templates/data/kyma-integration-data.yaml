@@ -680,31 +680,6 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               # periodics
-              - jobConfig:
-                  name: kyma-upgrade-k3d-kyma2-to-main
-                  annotations:
-                    owner: jellyfish
-                    testgrid-dashboards: kyma_integration
-                    description: K3d Kyma 2.0 to main branch.
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 0 6-18/2 ? * 1-5"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - image_kyma-integration
-                    - jobConfig_slack_jellyfish
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-                    - "vm_job_template_upgrade_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
               # kyma-integration-cleaner removes all sshPublic keys stored for service account "sa-vm-kyma-integration". Those keys refers to machines that in most cases were already removed.
               # Purpose of this job is to avoid error: "Login profile size exceeds 32 KiB" when running kyma-integration tests
               - jobConfig:
