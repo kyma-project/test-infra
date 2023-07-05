@@ -76,9 +76,9 @@ presubmits:
         prow.k8s.io/pubsub.runID: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-        preset-gc-project-env: "true"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
@@ -146,9 +146,9 @@ presubmits:
         prow.k8s.io/pubsub.runID: "pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-        preset-gc-project-env: "true"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
