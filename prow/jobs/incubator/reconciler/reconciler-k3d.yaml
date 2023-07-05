@@ -270,12 +270,12 @@ presubmits:
                 chmod +x kyma
                 popd
                 kyma version --client
-                apt update && apt upgrade -y
-                apt-get install gnupg2 -y
+                apt install ca-certificates gnupg
+                curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/apt.postgresql.org.gpg >/dev/null
+                deb http://apt.postgresql.org/pub/repos/apt bookworm-pgdg main
                 sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-                wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -
-                apt -y update
-                apt-get install -y postgresql-client-13
+                apt update
+                apt install postgresql-client-13
                 wget https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz -O - | tar -zxO migrate > /tmp/migrate && chmod +x /tmp/migrate && mv /tmp/migrate /usr/local/bin/migrate
                 ./scripts/postgres.sh start
                 kyma provision k3d --ci
