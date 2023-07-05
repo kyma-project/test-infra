@@ -127,8 +127,6 @@ presubmits:
             env:
               - name: GO11MODULE
                 value: "on"
-              - name: KYMA_TEST_SOURCE
-                value: "latest-release"
             resources:
               requests:
                 cpu: 1
