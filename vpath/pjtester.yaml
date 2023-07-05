@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      istio:
+        - pjName: "post-api-gateway-custom-domain-integration-gcp"
+        - pjName: "post-api-gateway-custom-domain-integration-aws"
+prConfigs:
+  kyma-project:
+    istio:
+      prNumber: 194
