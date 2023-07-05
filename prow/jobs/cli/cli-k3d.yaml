@@ -68,7 +68,7 @@ postsubmits:
                 if [[ "${git_status}" != "" ]]; then
                   git commit -am 'bump reconciler version'
                 fi
-                mkdir \$HOME/bin
+                mkdir /usr/local/bin
                 echo "Created bin directory"
                 cp /bin/kyma-linux /usr/local/bin/kyma
                 echo "Provisioning k3d Kubernetes runtime"
