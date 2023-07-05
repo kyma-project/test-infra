@@ -84,11 +84,11 @@ postsubmits:
                 echo "all done"
             resources:
               requests:
-                memory: 2Gi
                 cpu: 1
+                memory: 2Gi
               limits:
-                memory: 3Gi
                 cpu: 2
+                memory: 4Gi
         tolerations:
           - key: dedicated
             operator: Equal

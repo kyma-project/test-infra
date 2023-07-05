@@ -62,10 +62,10 @@ presubmits:
             resources:
               requests:
                 cpu: 1
-                memory: 1Gi
+                memory: 2Gi
               limits:
                 cpu: 2
-                memory: 2Gi
+                memory: 4Gi
     - name: pre-main-reconciler-cli-integration-kyma-latest-k3d
       annotations:
         owner: "jellyfish"
@@ -133,10 +133,10 @@ presubmits:
             resources:
               requests:
                 cpu: 1
-                memory: 1Gi
+                memory: 2Gi
               limits:
                 cpu: 2
-                memory: 2Gi
+                memory: 4Gi
     - name: pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d
       annotations:
         owner: "jellyfish"
@@ -210,11 +210,11 @@ presubmits:
                 value: "on"
             resources:
               requests:
-                memory: 2Gi
                 cpu: 1
+                memory: 2Gi
               limits:
-                memory: 3Gi
                 cpu: 2
+                memory: 4Gi
         tolerations:
           - key: dedicated
             operator: Equal
@@ -278,11 +278,11 @@ presubmits:
                 value: "on"
             resources:
               requests:
-                memory: 2Gi
                 cpu: 1
+                memory: 2Gi
               limits:
-                memory: 3Gi
                 cpu: 2
+                memory: 4Gi
         tolerations:
           - key: dedicated
             operator: Equal
