@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      kyma-environment-broker:
+        - pjName: "keb-endpoints-test"
+
+prConfigs:
+  kyma-project:
+    kyma-environment-broker:
+      prNumber: 7
