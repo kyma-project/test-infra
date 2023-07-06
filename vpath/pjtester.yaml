@@ -2,11 +2,11 @@ pjConfigs:
   prConfigs:
     kyma-project:
       test-infra:
-        prNumber: xxxx
+        prNumber: 8071
   prowJobs:
     kyma-incubator:
       compass:
-        - pjName: "pull-ord-service-unit-test"
+        - pjName: "pre-main-compass-integration-with-dump"
 prConfigs:
   kyma-incubator:
     compass:
