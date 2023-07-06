@@ -3,10 +3,6 @@ variable "gcp_region" {
   description = "Google Cloud Region"
 }
 
-variable "gcp_project_id" {
-  type        = string
-  description = "Google Cloud Project"
-}
 
 ###################################
 # Artifact Registry related values
