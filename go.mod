@@ -41,7 +41,7 @@ require (
 	github.com/zricethezav/gitleaks/v8 v8.17.0
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.12.0
-	golang.org/x/oauth2 v0.9.0
+	golang.org/x/oauth2 v0.10.0
 	google.golang.org/api v0.130.0
 	google.golang.org/grpc v1.56.1
 	gopkg.in/yaml.v2 v2.4.0
@@ -49,13 +49,13 @@ require (
 	k8s.io/api v0.24.2
 	k8s.io/apimachinery v0.24.2
 	k8s.io/client-go v0.24.2
-	k8s.io/test-infra v0.0.0-20230705173512-ce761749a2e5
+	k8s.io/test-infra v0.0.0-20230706105105-91ecbd6a270f
 	sigs.k8s.io/yaml v1.3.0
 )
 
 require (
 	cloud.google.com/go v0.110.2 // indirect
-	cloud.google.com/go/compute v1.19.3 // indirect
+	cloud.google.com/go/compute v1.20.1 // indirect
 	cloud.google.com/go/iam v1.1.0 // indirect
 	cloud.google.com/go/longrunning v0.5.0 // indirect
 	contrib.go.opencensus.io/exporter/ocagent v0.7.1-0.20200907061046-05415f1de66d // indirect
