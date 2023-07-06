@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfigs:
+    kyma-project:
+      test-infra:
+        prNumber: xxxx
+  prowJobs:
+    kyma-incubator:
+      compass:
+        - pjName: "pull-ord-service-unit-test"
+prConfigs:
+  kyma-incubator:
+    compass:
+      prNumber: 3161
