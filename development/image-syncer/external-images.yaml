@@ -64,3 +64,4 @@ images:
 - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.10.1"
 - source: "nginx:1.23.3"
   amd64Only: true
+- source: "fluent/fluentd:v1.16-debian-1"
