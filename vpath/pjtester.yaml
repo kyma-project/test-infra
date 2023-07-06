@@ -6,7 +6,7 @@ pjConfigs:
   prowJobs:
     kyma-incubator:
       compass:
-        - pjName: "pre-main-compass-integration-with-dump"
+        - pjName: "pre-main-compass-integration-no-dump"
 prConfigs:
   kyma-incubator:
     compass:
