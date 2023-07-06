@@ -49,6 +49,8 @@
   owner: kyma-project
 - name: btp-manager
   owner: kyma-project
+- name: kyma-environment-broker
+  owner: kyma-project
 - name: telemetry-manager
   owner: kyma-project
 - name: director-size-exporter
