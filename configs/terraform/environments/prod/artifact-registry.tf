@@ -4,7 +4,6 @@ module "artifact_registry" {
   for_each                         = toset(var.artifact_registry_names)
   artifact_registry_name           = each.value
   gcp_region                       = var.gcp_region
-  gcp_project_id                   = var.gcp_project_id
   artifact_registry_type           = var.artifact_registry_type
   artifact_registry_module         = var.artifact_registry_module
   immutable_artifact_registry      = var.immutable_artifact_registry
