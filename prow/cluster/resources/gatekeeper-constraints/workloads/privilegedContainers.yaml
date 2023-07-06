@@ -29,4 +29,5 @@ spec:
       - "eu.gcr.io/sap-kyma-neighbors-dev/e2e-dind-nodejs:*"
       - "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"
       - "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:*"
+      - "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:*"
       - "gcr.io/k8s-prow/generic-autobumper:*"

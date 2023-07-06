@@ -1,0 +1,82 @@
+presubmits: # runs on PRs
+  kyma-project/busola:
+    - name: pull-busola-integration-cluster-k3d
+      annotations:
+        owner: hasselhoff
+        description: "Busola integration testing"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-busola-integration-cluster-k3d"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-k3d-enabled: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+      decorate: true
+      run_if_changed: "^resources/|^tests/|^nginx/"
+      cluster: untrusted-workload
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230705-8a78b1bd
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - /init.sh
+            args:
+              - tests/integration/scripts/busola-integration-k3s.sh
+            env:
+              - name: SCOPE
+                value: "cluster"
+            resources:
+              requests:
+                memory: 6Gi
+                cpu: 2
+              limits:
+                memory: 8Gi
+                cpu: 3
+    - name: pull-busola-integration-namespace-k3d
+      annotations:
+        owner: hasselhoff
+        description: "Busola integration testing"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-busola-integration-namespace-k3d"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-k3d-enabled: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+      decorate: true
+      run_if_changed: "^resources/|^tests/|^nginx/"
+      cluster: untrusted-workload
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230705-8a78b1bd
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - /init.sh
+            args:
+              - tests/integration/scripts/busola-integration-k3s.sh
+            env:
+              - name: SCOPE
+                value: "namespace"
+            resources:
+              requests:
+                memory: 6Gi
+                cpu: 2
+              limits:
+                memory: 8Gi
+                cpu: 3
