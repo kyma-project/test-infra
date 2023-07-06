@@ -5,6 +5,9 @@ presubmits: # runs on PRs
         owner: hasselhoff
         description: "Busola integration testing"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-busola-integration-cluster-k3d"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-k3d-enabled: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -42,6 +45,9 @@ presubmits: # runs on PRs
         owner: hasselhoff
         description: "Busola integration testing"
       labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-busola-integration-namespace-k3d"
+        prow.k8s.io/pubsub.topic: "prowjobs"
         preset-k3d-enabled: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
