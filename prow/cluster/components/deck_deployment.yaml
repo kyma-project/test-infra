@@ -38,7 +38,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: deck
-        image: gcr.io/k8s-prow/deck:v20230605-b63f6f76cb
+        image: gcr.io/k8s-prow/deck:v20230705-6666368cff
         imagePullPolicy: Always
         ports:
           - name: http
@@ -60,7 +60,7 @@ spec:
         - --plugin-config=/etc/plugins/plugins.yaml
         env:
           - name: KUBECONFIG
-            value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config:/etc/tekton-pipelines-kubeconfig/config"
+            value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config"
         volumeMounts:
         - name: oauth-config
           mountPath: /etc/githuboauth
@@ -73,9 +73,6 @@ spec:
           readOnly: true
         - mountPath: /etc/trusted-workload-kubeconfig
           name: trusted-workload-kubeconfig
-          readOnly: true
-        - mountPath: /etc/tekton-pipelines-kubeconfig
-          name: tekton-pipelines-kubeconfig
           readOnly: true
         - name: config
           mountPath: /etc/config
@@ -123,10 +120,6 @@ spec:
         secret:
           defaultMode: 420
           secretName: trusted-workload-kubeconfig
-      - name: tekton-pipelines-kubeconfig
-        secret:
-          defaultMode: 420
-          secretName: tekton-pipelines-kubeconfig
       - name: config
         configMap:
           name: config

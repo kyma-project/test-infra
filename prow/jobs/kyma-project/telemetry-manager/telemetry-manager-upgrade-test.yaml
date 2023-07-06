@@ -1,0 +1,32 @@
+presubmits:
+  kyma-project/telemetry-manager:
+    - name: pull-telemetry-manager-upgrade-test
+      annotations:
+        description: "Pre-submit job to execute upgrade test."
+        owner: "huskies"
+      optional: false
+      labels:
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-upgrade-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      cluster: untrusted-workload
+      decorate: true
+      run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/'
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230706-786bc3fc
+            command: ["/init.sh"]
+            args: ["bash", "-c", "make upgrade-test"]
+            requests:
+              memory: 4Gi
+              cpu: 2
+            limits:
+              memory: 4Gi
+              cpu: 2
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true

@@ -28,6 +28,11 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/markdown-index"
             args:
@@ -55,15 +60,20 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230605-f0fdfaf8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/imagedetector"
             args:
-              - "--prow-config prow/config.yaml"
-              - "--prow-jobs-dir prow/jobs"
-              - "--terraform-dir configs/terraform"
-              - "--sec-scanner-config sec-scanner-config.yaml"
-              - "--kubernetes-dir prow/cluster/components"
+              - "--prow-config=prow/config.yaml"
+              - "--prow-jobs-dir=prow/jobs"
+              - "--terraform-dir=configs/terraform"
+              - "--sec-scanner-config=sec-scanners-config.yaml"
+              - "--kubernetes-dir=prow/cluster/components"
               - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
               - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: post-test-infra-deploy-prow
@@ -90,6 +100,11 @@ postsubmits: # runs on main
         serviceAccountName: sa-prow-deploy
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "prow/cluster/deploy.sh"
   
@@ -116,7 +131,12 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "generic-autobumper"
             args:
@@ -138,7 +158,12 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/label_sync:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "label_sync"
             args:
@@ -181,12 +206,57 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "generic-autobumper"
             args:
               - "--config=prow/autobump-config/prow-cluster-autobump-config.yaml"
               - "--labels-override=kind/chore,area/prow"
+    - name: test-infra-image-detector-autobump
+      annotations:
+        description: "daily detect prow images for scan"
+        owner: "neighbors"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "test-infra-image-detector-autobump"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
+      cron: "0 8 * * *"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-alerts
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/imagedetector"
+            args:
+              - "--prow-config=prow/config.yaml"
+              - "--prow-jobs-dir=prow/jobs"
+              - "--terraform-dir=configs/terraform"
+              - "--sec-scanner-config=sec-scanners-config.yaml"
+              - "--kubernetes-dir=prow/cluster/components"
+              - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
+              - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: ci-prow-autobump-jobs
       annotations:
         description: "Autobump image versions in prow jobs"
@@ -211,7 +281,12 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230605-b63f6f76cb"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "generic-autobumper"
             args:

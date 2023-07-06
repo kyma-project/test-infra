@@ -5,6 +5,7 @@ templates:
         localSets:
           job_default:
             optional: "false"
+            skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
             path_alias: github.com/kyma-project/istio
             env:
               EXPORT_RESULTS: true
@@ -12,29 +13,10 @@ templates:
           - repoName: "kyma-project/istio"
             jobs:
               - jobConfig:
-                  name: pull-istio-lint
-                  annotations:
-                    owner: goat
-                    description: runs istio linting
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
-                  request_cpu: 500m
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m -v --out-format html > ${ARTIFACTS}/report-golangci-lint.html"
-                  always_run: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_presubmit
-                    - linting
-                  local:
-                    - job_default
-              - jobConfig:
                   name: pull-istio-test
                   annotations:
                     owner: goat
                     description: runs istio unit tests
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
                   request_cpu: 500m
                   command: "./tests/integration/scripts/code-coverage-guard.sh"
                   always_run: true
@@ -42,5 +24,6 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
                   local:
                     - job_default

@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230605-b63f6f76cb
-          initupload: gcr.io/k8s-prow/initupload:v20230605-b63f6f76cb
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230605-b63f6f76cb
-          sidecar: gcr.io/k8s-prow/sidecar:v20230605-b63f6f76cb
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230705-6666368cff
+          initupload: gcr.io/k8s-prow/initupload:v20230705-6666368cff
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230705-6666368cff
+          sidecar: gcr.io/k8s-prow/sidecar:v20230705-6666368cff
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -131,8 +131,8 @@ deck:
               - '"status": "Vulns"' # protecode guard
               - "command not found"
               - '\[ERROR\]'
-              # This highlights non failing prowjobconfigtests warnings about missing annotations.
-              - "Prowjob.+is missing required annotations:"
+              # This highlights prowjobconfigtests failed tests.
+              - '\[PJ config test failed\]'
         required_files:
           - ^.*build-log\.txt$
       - lens:
@@ -169,7 +169,7 @@ deck:
         - 3108790 # cluster-access GH team in Kyma organization
 
 sinker:
-  max_prowjob_age: 8h
+  max_prowjob_age: 4h
   max_pod_age: 5h
   resync_period: 1m
   terminated_pod_ttl: 30m
@@ -243,6 +243,8 @@ branch-protection:
           branches:
             luigiless-busola:
               protect: false
+        kyma-environment-broker:
+          protect: false
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
@@ -258,15 +260,11 @@ branch-protection:
           branches:
             main:
               protect: true
-              required_status_checks:
-                strict: true
         ord-service:
           protect: false
           branches:
             main:
               protect: true
-              required_status_checks:
-                strict: true
         reconciler:
           protect: false
           branches:
@@ -300,8 +298,10 @@ tide:
     kyma-project/api-gateway: squash
     kyma-project/organization-and-operations: squash
     kyma-project/btp-manager: squash
+    kyma-project/kyma-environment-broker: squash
     kyma-project/istio: squash
     kyma-project/warden: squash
+    kyma-project/serverless-manager: squash
     kyma-project/telemetry-manager: squash
     kyma-project/directory-size-exporter: squash
     kyma-project/eventing-manager: squash
@@ -411,9 +411,9 @@ presets:
       - name: AKS_CLUSTER_VERSION
         value: "1.26"
       - name: GKE_CLUSTER_VERSION
-        value: "1.25"
+        value: "1.26"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.25"
+        value: "1.26"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
@@ -429,20 +429,6 @@ presets:
     env:
       - name: DEBUG_COMMANDO_OOM
         value: "true"
-  # pjtester
-  - labels:
-      preset-pjtester-kubeconfig: "true"
-    env:
-      - name: KUBECONFIG_PATH
-        value: /etc/kubeconfig/pjtester/config
-    volumes:
-      - name: pjtester-kubeconfig
-        secret:
-          secretName: pjtester-kubeconfig
-    volumeMounts:
-      - name: pjtester-kubeconfig
-        mountPath: /etc/kubeconfig/pjtester
-        readOnly: true
   - labels:
       preset-certificates-bucket: "true"
     env:
@@ -1431,3 +1417,13 @@ presets:
     env:
       - name: PROVISION_REGISTRY
         value: "true"
+  - labels:
+      preset-compass-director-secret: "true"
+    volumes:
+      - name: preset-compass-director-secret
+        secret:
+          secretName: preset-compass-director-secret
+    volumeMounts:
+      - name: preset-compass-director-secret
+        mountPath: /preset-compass-director-secret
+        readOnly: true

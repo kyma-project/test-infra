@@ -4,7 +4,10 @@ templates:
       - to: ../../prow/jobs/modules/external/keda-manager.yaml
         localSets:
           job_default:
-            privileged: false
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
           job_build:
             skip_report: "false"
             max_concurrency: "10"
@@ -189,7 +192,7 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
-                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  run_if_changed: "^keda.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
                   command: "make"
                   args:
                     - "-C"
@@ -213,9 +216,9 @@ templates:
                     preset-sa-kyma-push-images: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned" 
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
-                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  run_if_changed: "^keda.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
                   command: "make"
                   args:
                     - "-C"
@@ -303,7 +306,7 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - image_kyma-integration # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -325,8 +328,8 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_postsubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
+                    - image_kyma-integration
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -348,8 +351,8 @@ templates:
                 inheritedConfigs:
                   global:
                     - jobConfig_default
-                    - jobConfig_postsubmit
-                    - image_kyma-integration    # TODO: Prepare a Keda-Manager Image
+                    - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
+                    - image_kyma-integration
                     - extra_refs_test-infra
                   local:
                     - job_default
@@ -359,7 +362,10 @@ templates:
       - to: ../../prow/jobs/modules/internal/serverless-manager.yaml
         localSets:
           job_default:
-            privileged: false
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
           main_branches:
             branches:
               - "^master$"
@@ -528,6 +534,10 @@ templates:
                     - "make test"
                   branches:
                     - ^main$ # any pr against main triggers this
+                  securityContext:
+                    privileged: "true"
+                    seccompProfile:
+                      type: "Unconfined"
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
@@ -555,6 +565,10 @@ templates:
                       --config=/config/kaniko-build-config.yaml
                       --context=.
                       --dockerfile=Dockerfile
+                  securityContext:
+                    privileged: "true"
+                    seccompProfile:
+                      type: Unconfined
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
@@ -585,6 +599,10 @@ templates:
                       --context=.
                       --dockerfile=Dockerfile
                       --tag=$PULL_BASE_SHA
+                  securityContext:
+                    privileged: "true"
+                    seccompProfile:
+                      type: Unconfined
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit

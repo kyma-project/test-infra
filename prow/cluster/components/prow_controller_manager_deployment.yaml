@@ -34,7 +34,7 @@ spec:
       serviceAccountName: prow-controller-manager
       containers:
       - name: prow-controller-manager
-        image: gcr.io/k8s-prow/prow-controller-manager:v20230605-b63f6f76cb
+        image: gcr.io/k8s-prow/prow-controller-manager:v20230705-6666368cff
         args:
         - --config-path=/etc/config/config.yaml
         - --dry-run=false
@@ -42,7 +42,7 @@ spec:
         - --job-config-path=/etc/job-config
         env:
           - name: KUBECONFIG
-            value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config:/etc/tekton-pipelines-kubeconfig/config"
+            value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config"
         volumeMounts:
         - mountPath: /etc/untrusted-workload-kubeconfig
           name: untrusted-workload-kubeconfig
@@ -50,8 +50,6 @@ spec:
         - mountPath: /etc/trusted-workload-kubeconfig
           name: trusted-workload-kubeconfig
           readOnly: true
-        - mountPath: /etc/tekton-pipelines-kubeconfig
-          name: tekton-pipelines-kubeconfig
         - name: config
           mountPath: /etc/config
           readOnly: true
@@ -67,10 +65,6 @@ spec:
         secret:
           defaultMode: 420
           secretName: trusted-workload-kubeconfig
-      - name: tekton-pipelines-kubeconfig
-        secret:
-          defaultMode: 420
-          secretName: tekton-pipelines-kubeconfig
       - name: config
         configMap:
           name: config

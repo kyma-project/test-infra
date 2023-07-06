@@ -8,8 +8,11 @@ gitHubRepo: "test-infra"
 remoteName: "test-infra-1"
 upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/test-infra/main"
 headBranchName: "test-infra-sec-config-autobump"
+labels:
+  - "area/security"
+  - "kind/chore"
 foldersToFilter:
   - ".github"
   - ".githooks"
 filesToFilter:
-  - "sec-scanner-config.yml"
+  - "sec-scanners-config.yaml"

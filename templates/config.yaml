@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.16"
+  nextRelease: "2.17"
   releases:
+    - "2.16"
     - "2.15"
     - "2.14"
-    - "2.13"
   orgs:
     - name: "kyma-project"
       repos:
@@ -31,6 +31,7 @@ global:
         - name: "template-repository"
         - name: "rafter"
         - name: "btp-manager"
+        - name: "kyma-environment-broker"
         - name: "telemetry-manager"
         - name: "director-size-exporter"
         - name: "compass-manager"
@@ -80,6 +81,10 @@ globalSets:
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: RuntimeDefault
     labels:
       preset-sa-kyma-push-images: "true"
     volumes:
@@ -113,9 +118,13 @@ globalSets:
     request_cpu: "1"
     labels:
       preset-sa-kyma-push-images: "true"
-    annotations:
-      container.apparmor.security.beta.kubernetes.io/test: unconfined
-      container.seccomp.security.alpha.kubernetes.io/test: unconfined
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        # fork/exec is required
+        type: Unconfined
+    # annotations:
+    #   container.apparmor.security.beta.kubernetes.io/test: unconfined
     env:
       BUILDKITD_FLAGS: "--oci-worker-no-process-sandbox"
     volumes:
@@ -187,7 +196,7 @@ globalSets:
   image_markdown_index:
     image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
   image_image_detector:
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230605-f0fdfaf8"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -196,7 +205,10 @@ globalSets:
     branches:
       - "^master$"
       - "^main$"
-    privileged: "true"
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: "RuntimeDefault"
     request_memory: "3Gi"
     request_cpu: "2"
     cluster_presubmit: "untrusted-workload"
@@ -216,7 +228,10 @@ globalSets:
     optional: "true"
     branches:
       - "^kyma-2.0-docu$"
-    privileged: "true"
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: "RuntimeDefault"
     request_memory: "1.5Gi"
     request_cpu: "0.8"
     cluster_presubmit: "untrusted-workload"
@@ -244,6 +259,16 @@ globalSets:
       pipeline.trigger: periodic
     type_periodic: "true"
     cluster: "untrusted-workload"
+  unprivileged:
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: "RuntimeDefault"
+  privileged:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: "Unconfined"
   disable_testgrid:
     annotations:
       testgrid-create-test-group: "false"
@@ -251,6 +276,8 @@ globalSets:
     slack_channel: "kyma-prow-dev-null"
   jobConfig_slack_jellyfish:
     slack_channel: "jellyfish-notifications"
+  jobConfig_slack_goat:
+    slack_channel: "goat-int"
   jobConfig_buildpack_incubator:
     labels:
       preset-docker-push-repository-incubator: "true"
@@ -262,6 +289,10 @@ globalSets:
       pipeline.clusterprovisioning: reconciler
   # generic component jobConfigs
   jobConfig_generic_component:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: Unconfined
     labels:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"
@@ -300,6 +331,11 @@ globalSets:
     cluster: "trusted-workload"
   untrusted_cluster:
     cluster: "untrusted-workload"
+  privileged_job:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: Unconfined
   # extra_refs sets
   extra_refs_test-infra:
     extra_refs:
@@ -338,6 +374,10 @@ globalSets:
           base_ref: "main"
   # labels sets
   build_labels:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: "Unconfined"
     labels:
       preset-dind-enabled: "true"
       preset-sa-gcr-push: "true"

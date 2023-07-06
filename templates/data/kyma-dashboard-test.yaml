@@ -26,7 +26,7 @@ templates:
                   annotations:
                     owner: hasselhoff
                     description: Kyma dashboard tests
-                  optional: false
+                  optional: true
                   run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/"
                   labels:
                     preset-build-pr: "true"

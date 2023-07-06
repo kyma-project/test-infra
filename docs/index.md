@@ -84,8 +84,6 @@
 
 [Standard Terraform configuration](/docs/how-to/how-to-create-standard-terraform-config.md) - This document describes the standard Terraform configuration that is used in `test-infra` repository. 
 
-[Use Tekton Pipelines with Prow](/docs/how-to/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use Kubernetes-native implementation of CI/CD pipelines, where every task is a self-contained set of commands.
-
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
 
 [Authorization](/docs/prow/authorization.md) - To deploy a Prow cluster, configure the following service accounts in the GCP project you own.
@@ -174,8 +172,6 @@
 
 [Prow Tools](/prow/images/prow-tools/README.md) - The directory contains the Dockerfile for the prow tools image with prebuilt tools used in the prow pipelines.
 
-[Prow Tools](/prow/images/test-untrusted-plugin/README.md) - The directory contains the Dockerfile for the prow tools image with prebuilt tools used in the prow pipelines.
-
 [Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
 
 [Cluster](/prow/scripts/README.md) - The folder contains scripts involved in integration tests.
@@ -187,18 +183,6 @@
 [#Overview](/prow/scripts/resources/README.md) - The folder contains files that are directly used by Prow pipeline scripts.
 
 [Cluster](/prow/workload-cluster/README.md) - This folder contains configuration files for the Prow workload. This configuration is used during cluster provisioning.
-
-[Clone Repositories](/task/clone-refs/0.1/README.md) - The clone-refs Task clones repositories references defined by ProwJob refs and extra-refs.
-
-[Unit Tests for Go Code](/task/go-unit-tests/0.1/README.md) - A go-unit-tests Task is used to run unit tests for Go code.
-
-[Go Linters](/task/golangci-lint/0.1/README.md) - The golangci-lint Task runs a Golang linter.
-
-[Hide GitHub Pull Request Comments](/task/hide-github-pr-comments/0.1/README.md) - The hide-github-pr-comments Task hides comments which belong to an old commit.
-
-[Image Builder](/task/image-builder/0.1/README.md) - The image-builder Task builds an OCI image from a Dockerfile.
-
-[Terraform Executor](/task/terraform-executor/0.1/README.md) - The terraform-executor Task initializes Terraform state locally and runs actions for the provided terraform config.
 
 [Templates](/templates/README.md) - Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.
 

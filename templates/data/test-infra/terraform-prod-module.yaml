@@ -1,0 +1,57 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/test-infra/terraform-prod-module.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
+              - jobConfig:
+                  name: pull-plan-prod-terraform
+                  annotations:
+                    owner: neighbors
+                    description: "Test terraform production environment config"
+                  # Run on any change in terraform config files, terraform variable values files or resource yaml files.
+                  run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
+                  max_concurrency: 1
+                  branches:
+                    - "^main$"
+                  privileged: "false"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
+                  serviceAccountName: "terraform-executor"
+                  automountServiceAccountToken: "false"
+                  labels:
+                    preset-bot-github-token: "true"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "/bin/terraform -chdir=./configs/terraform/environments/prod init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER -sha $PULL_PULL_SHA plan -- terraform -chdir=./configs/terraform/environments/prod plan -input=false -no-color"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "trusted_cluster"
+              - jobConfig:
+                  name: post-apply-prod-terraform
+                  annotations:
+                    owner: neighbors
+                    description: "Apply terraform production environment config."
+                  # Run on any change in terraform config files, terraform variable values files or resource yaml files.
+                  run_if_changed: '.*\.tf$|.*\.tfvars$|.*\.yaml$|.*\.yml$'
+                  max_concurrency: 1
+                  branches:
+                    - "^main$"
+                  privileged: "false"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
+                  serviceAccountName: "terraform-executor"
+                  automountServiceAccountToken: "false"
+                  labels:
+                    preset-bot-github-token: "true"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "/bin/terraform -chdir=./configs/terraform/environments/prod init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -sha $PULL_BASE_SHA apply -- terraform -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "trusted_cluster"

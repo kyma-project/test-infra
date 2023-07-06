@@ -28,3 +28,4 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "pubsub_labels"
+                    - "unprivileged"

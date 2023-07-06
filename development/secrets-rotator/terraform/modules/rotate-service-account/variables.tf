@@ -1,11 +1,3 @@
-variable "project" {
-  type = object({
-    id     = string
-    number = number
-  })
-  description = "Google Cloud project ID to deploy the service account keys rotator to."
-}
-
 variable "region" {
   type        = string
   description = "Google Cloud region to deploy the service account keys rotator to."

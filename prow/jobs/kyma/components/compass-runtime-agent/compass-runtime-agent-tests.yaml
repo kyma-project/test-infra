@@ -15,7 +15,7 @@ presubmits: # runs on PRs
         preset-kyma-integration-compass-dev: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
-      run_if_changed: '^((resources/compass-runtime-agent\S+|installation\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((resources/compass-runtime-agent\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -38,6 +38,9 @@ presubmits: # runs on PRs
                 cpu: 1
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
 postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-main-kyma-integration-k3d-runtime-agent
@@ -80,3 +83,6 @@ postsubmits: # runs on main
                 cpu: 1
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true

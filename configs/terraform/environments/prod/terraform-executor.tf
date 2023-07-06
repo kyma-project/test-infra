@@ -1,80 +1,68 @@
-# This file creates the terraform executor Google Cloud service account and k8s service accounts need to run terraform.
-# k8s service accounts are created in the prow workloads and tekton clusters.
-# It grants required permissions to the Google Cloud service account and setup workload identity.
-# It also grants the terraform executor service account the owner role in the workloads project.
+# Create the terraform executor Google Cloud and k8s service accounts.
+# k8s service accounts are created in the prow workloads clusters.
+# GCP and k8s service account are bind together with workload identity.
+# It grants owner rights to the Google Cloud service account. The owner role is required to let
+# the terraform executor manage all the resources in the Google Cloud project.
+# It also grants the terraform executor gcp service account the owner role in the workloads project.
 
-module "terraform_executor_gcp_service_account" {
-  source = "../../../../development/terraform-executor/terraform/modules/gcp-terraform-executor"
-
-  terraform_executor_gcp_service_account = {
-    id         = var.terraform_executor_gcp_service_account.id
-    project_id = var.terraform_executor_gcp_service_account.project_id
-  }
-
-  terraform_executor_k8s_service_account = {
-    name      = var.terraform_executor_k8s_service_account.name,
-    namespace = var.terraform_executor_k8s_service_account.namespace
-  }
+# Create workload identity principal name.
+locals {
+  terraform_workload_identity_gcp_service_account = format("%s.svc.id.goog[%s/%s]", var
+    .terraform_executor_gcp_service_account.project_id,
+  var.terraform_executor_k8s_service_account.namespace, var.terraform_executor_k8s_service_account.name)
 }
 
-# Grant owner role to terraform executor service account in the workloads project. The owner role is required to let
-# the terraform executor manage all the resources in the Google Cloud project.
-resource "google_project_iam_member" "terraform_executor_owner" {
+resource "google_service_account" "terraform_executor" {
+  project      = var.terraform_executor_gcp_service_account.project_id
+  account_id   = var.terraform_executor_gcp_service_account.id
+  display_name = var.terraform_executor_gcp_service_account.id
+  description  = "Identity of terraform executor. It's mapped to k8s service account through workload identity."
+}
+
+# Grant owner role to terraform executor service account in the prow project.
+resource "google_project_iam_member" "terraform_executor_prow_project_owner" {
+  project = var.terraform_executor_gcp_service_account.project_id
+  role    = "roles/owner"
+  member  = "serviceAccount:${google_service_account.terraform_executor.email}"
+}
+
+resource "google_service_account_iam_binding" "terraform_workload_identity" {
+  members            = ["serviceAccount:${local.terraform_workload_identity_gcp_service_account}"]
+  role               = "roles/iam.workloadIdentityUser"
+  service_account_id = google_service_account.terraform_executor.name
+}
+
+# Grant owner role to terraform executor service account in the workloads project.
+resource "google_project_iam_member" "terraform_executor_workloads_project_owner" {
   project = var.workloads_project_id
   role    = "roles/owner"
-  member  = "serviceAccount:${module.terraform_executor_gcp_service_account.terraform_executor_gcp_service_account.email}"
+  member  = "serviceAccount:${google_service_account.terraform_executor.email}"
 }
 
-module "tekton_terraform_executor_k8s_service_account" {
-  providers = {
-    google     = google
-    kubernetes = kubernetes.tekton_k8s_cluster
-  }
-  source = "../../../../development/terraform-executor/terraform/modules/k8s-terraform-executor"
+resource "kubernetes_service_account" "trusted_workload_terraform_executor" {
+  provider = kubernetes.trusted_workload_k8s_cluster
 
-  terraform_executor_gcp_service_account = {
-    id         = var.terraform_executor_gcp_service_account.id
-    project_id = var.terraform_executor_gcp_service_account.project_id
-  }
-  terraform_executor_k8s_service_account = {
-    name      = var.terraform_executor_k8s_service_account.name,
+  metadata {
     namespace = var.terraform_executor_k8s_service_account.namespace
+    name      = var.terraform_executor_k8s_service_account.name
+    annotations = {
+      "iam.gke.io/gcp-service-account" = format("%s@%s.iam.gserviceaccount.com", var
+      .terraform_executor_gcp_service_account.id, var.terraform_executor_gcp_service_account.project_id)
+    }
   }
-
+  automount_service_account_token = true
 }
 
-module "trusted_workload_terraform_executor_k8s_service_account" {
-  providers = {
-    google     = google
-    kubernetes = kubernetes.trusted_workload_k8s_cluster
-  }
-  source = "../../../../development/terraform-executor/terraform/modules/k8s-terraform-executor"
+resource "kubernetes_service_account" "untrusted_workload_terraform_executor" {
+  provider = kubernetes.untrusted_workload_k8s_cluster
 
-  terraform_executor_gcp_service_account = {
-    id         = var.terraform_executor_gcp_service_account.id
-    project_id = var.terraform_executor_gcp_service_account.project_id
-  }
-  terraform_executor_k8s_service_account = {
-    name      = var.terraform_executor_k8s_service_account.name,
+  metadata {
     namespace = var.terraform_executor_k8s_service_account.namespace
+    name      = var.terraform_executor_k8s_service_account.name
+    annotations = {
+      "iam.gke.io/gcp-service-account" = format("%s@%s.iam.gserviceaccount.com", var
+      .terraform_executor_gcp_service_account.id, var.terraform_executor_gcp_service_account.project_id)
+    }
   }
-
-}
-
-module "untrusted_workload_terraform_executor_k8s_service_account" {
-  providers = {
-    google     = google
-    kubernetes = kubernetes.untrusted_workload_k8s_cluster
-  }
-  source = "../../../../development/terraform-executor/terraform/modules/k8s-terraform-executor"
-
-  terraform_executor_gcp_service_account = {
-    id         = var.terraform_executor_gcp_service_account.id
-    project_id = var.terraform_executor_gcp_service_account.project_id
-  }
-  terraform_executor_k8s_service_account = {
-    name      = var.terraform_executor_k8s_service_account.name,
-    namespace = var.terraform_executor_k8s_service_account.namespace
-  }
-
+  automount_service_account_token = true
 }
