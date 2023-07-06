@@ -5,7 +5,7 @@
 ## Overview
 
 The purpose of the `test-infra` repository is to store configuration and scripts for the test infrastructure used in the `kyma-project` organization.
-See also internally available [test-infra onboarding](https://github.tools.sap/kyma/test-infra/blob/main/onboarding.md).
+See also the internally available [test-infra onboarding](https://github.tools.sap/kyma/test-infra/blob/main/onboarding.md).
 
 ### Project documentation
 
