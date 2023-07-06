@@ -1,5 +1,5 @@
 pjConfigs:
-  prConfigs:
+  prConfig:
     kyma-project:
       test-infra:
         prNumber: 8071
