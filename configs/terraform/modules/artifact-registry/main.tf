@@ -1,4 +1,6 @@
-
+data "google_project" "project" {
+  provider = google
+}
 
 resource "google_artifact_registry_repository" "artifact_registry" {
   location      = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : var.gcp_region
