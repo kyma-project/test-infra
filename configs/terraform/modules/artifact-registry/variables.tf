@@ -9,6 +9,7 @@ variable "artifact_registry_name" {
 variable "artifact_registry_owner" {
   type        = string
   description = "Owner inside SAP"
+  default     = "neighbors"
 }
 
 variable "artifact_registry_module" {
@@ -24,6 +25,7 @@ variable "artifact_registry_serviceaccount" {
 variable "artifact_registry_type" {
   type        = string
   description = "Environment for the resources"
+  default     = "development"
 }
 
 variable "artifact_registry_multi_region" {
