@@ -18,9 +18,8 @@ artifact_registry_multi_region   = true
 
 Note:
 - Soluton is prepared for GCP Service Account related execution
-- Credential file is the service account key file in json format
 - `roles/artifactregistry.write` role binding is part of the solution ([Artifact Registry Repository Access Control](https://cloud.google.com/artifact-registry/docs/access-control))
 - Vulnerability scanning is on by default
-- If the value of `artifact_registry_serviceaccount` variable is `""` or `null` the solution won't do anything
+- You must define `artifact_registry_serviceaccount` in tfvars file.
 
 

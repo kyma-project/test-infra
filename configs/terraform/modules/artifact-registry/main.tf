@@ -1,9 +1,7 @@
-data "google_project" "project" {
-  provider = google
-}
+data "google_client_config" "this" {}
 
 resource "google_artifact_registry_repository" "artifact_registry" {
-  location      = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : var.gcp_region
+  location      = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : data.google_client_config.this.region
   repository_id = "modules-${lower(var.artifact_registry_name)}"
   description   = "modules-${lower(var.artifact_registry_name)} repository"
   format        = "DOCKER"
@@ -20,8 +18,8 @@ resource "google_artifact_registry_repository" "artifact_registry" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "member_service_account" {
-  project    = data.google_project.project.project_id
-  location   = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : var.gcp_region
+  project    = data.google_client_config.this.project
+  location   = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : data.google_client_config.this.region
   repository = google_artifact_registry_repository.artifact_registry.name
   role       = "roles/artifactregistry.writer"
   member     = "serviceAccount:${var.artifact_registry_serviceaccount}"

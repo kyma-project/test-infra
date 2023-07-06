@@ -1,9 +1,3 @@
-variable "gcp_region" {
-  type        = string
-  description = "Google Cloud Region"
-}
-
-
 ###################################
 # Artifact Registry related values
 ###################################
