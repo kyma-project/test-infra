@@ -280,12 +280,6 @@ globalSets:
   jobConfig_buildpack_incubator:
     labels:
       preset-docker-push-repository-incubator: "true"
-  jobConfig_reconciler_publish_unstable_cli:
-    command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
-    annotations:
-      pipeline.installer: reconciler
-      pipeline.test: "fast-integration"
-      pipeline.clusterprovisioning: reconciler
   # generic component jobConfigs
   jobConfig_generic_component:
     securityContext:

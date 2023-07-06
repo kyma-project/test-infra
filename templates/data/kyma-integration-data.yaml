@@ -280,15 +280,6 @@ templates:
           request_big:
             request_memory: 200Mi
             request_cpu: 80m
-          vm_job_template_upgrade_k3d:
-            annotations:
-              pipeline.platform: k3d
-              pipeline.installer: kyma deploy
-              pipeline.test: upgrade-fast-integration
-              pipeline.clusterprovisioning: kyma cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"
-            env:
-              KYMA_PROJECT_DIR: "."
           vm_job_template_k3d:
             annotations:
               pipeline.platform: k3d

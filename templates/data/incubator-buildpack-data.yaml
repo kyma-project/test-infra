@@ -118,12 +118,6 @@ templates:
               GO11MODULE: "on"
             branches:
               - ^develop$
-          reconciler_integration_jobConfig:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
-          reconciler_cli_integration_jobConfig:
-            env:
-              EXECUTION_PROFILE: evaluation
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
           reconciler_component_k3d_integration_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-istio-integration-k3d.sh"
           reconciler_component_gardener_integration_jobConfig:
