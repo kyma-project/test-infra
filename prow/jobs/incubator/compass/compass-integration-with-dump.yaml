@@ -40,12 +40,14 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass.sh"
+              - "installation/scripts/prow/jobs/provision-vm-compass.sh"
             args:
               - "--dump-db"
             env:
               - name: GO111MODULE
                 value: "on"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 100Mi

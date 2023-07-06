@@ -5,7 +5,7 @@ templates:
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass-smoke-test.sh"
+            command: "installation/scripts/prow/jobs/provision-vm-compass-smoke-test.sh"
             request_memory: 100Mi
             request_cpu: 50m
             env:
@@ -38,5 +38,6 @@ templates:
                     - "image_buildpack-golang"
                     - "extra_refs_test-infra"
                     - "privileged_job"
+                    - "kyma_project_dir"
                   local:
                     - "jobConfig_default"

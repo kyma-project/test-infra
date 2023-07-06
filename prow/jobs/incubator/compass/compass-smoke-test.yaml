@@ -42,10 +42,12 @@ presubmits: # runs on PRs
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass-smoke-test.sh"
+              - "installation/scripts/prow/jobs/provision-vm-compass-smoke-test.sh"
             env:
               - name: GO111MODULE
                 value: "on"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 100Mi

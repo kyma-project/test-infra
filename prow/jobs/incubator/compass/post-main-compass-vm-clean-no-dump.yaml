@@ -42,10 +42,13 @@ postsubmits: # runs on main
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/clean-vm-compass.sh"
+              - "installation/scripts/prow/jobs/clean-vm-compass.sh"
             args:
               - "--vm-prefix"
               - "compass-integration-test-no-dump"
+            env:
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 3Gi
