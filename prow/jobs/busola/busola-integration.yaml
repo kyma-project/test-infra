@@ -26,7 +26,7 @@ presubmits: # runs on PRs
             command:
               - /init.sh
             args:
-              - scripts/busola-integration-k3s.sh
+              - tests/integration/scripts/busola-integration-k3s.sh
             env:
               - name: SCOPE
                 value: "cluster"
@@ -63,7 +63,7 @@ presubmits: # runs on PRs
             command:
               - /init.sh
             args:
-              - scripts/busola-integration-k3s.sh
+              - tests/integration/scripts/busola-integration-k3s.sh
             env:
               - name: SCOPE
                 value: "namespace"
