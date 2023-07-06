@@ -20,7 +20,7 @@ resource "google_artifact_registry_repository" "artifact_registry" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "member_service_account" {
-  project    = var.gcp_project_id
+  project    = data.google_project.project.project_id
   location   = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : var.gcp_region
   repository = google_artifact_registry_repository.artifact_registry.name
   role       = "roles/artifactregistry.writer"
