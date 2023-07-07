@@ -3,6 +3,7 @@ pjConfigs:
     kyma-project:
       serverless-manager:
       - pjName: "pre-main-serverless-manager-verify"
+      - pjName: "post-main-serverless-manager-verify"
 prConfigs:
   kyma-project:
     serverless-manager:

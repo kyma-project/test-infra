@@ -641,22 +641,17 @@ templates:
                   annotations:
                     owner: otters
                     description: serverless manager verify on k3d vm
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-integration-test
                   always_run: "true"
                   optional: "true"
-                  env:
-                    # TODO: Below line is a workaround -> Check issue https://github.com/kyma-project/test-infra/issues/6513
-                    JOB_VM_COMMAND: >-
-                      export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin 
-                      &&
-                      make -C hack/ci k3d-lm-integration-test
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
+                    - jobConfig_privileged
                     - jobConfig_postsubmit
-                    - image_kyma-integration
                     - extra_refs_test-infra
                   local:
-                    - job_default
-                    - vm_job_make
-                    - vm_job_k3d
-                    - vm_job_labels
+                    - k3d_test

@@ -300,23 +300,17 @@ postsubmits: # runs on main
       annotations:
         description: "serverless manager verify on k3d vm"
         owner: "otters"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-serverless-manager-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
       always_run: true
       optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/serverless-manager
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -329,28 +323,30 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "bash"
+              - "/init.sh"
             args:
+              - "bash"
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: JOB_REPO_NAME
-                value: "serverless-manager"
-              - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin  && make -C hack/ci k3d-lm-integration-test"
+              - "make -C hack/ci k3d-integration-test
+"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 periodics: # runs on schedule
     - name: serverless-operator-nightly-periodic
