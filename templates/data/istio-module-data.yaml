@@ -146,12 +146,15 @@ templates:
                     - job_build
               - jobConfig:
                   name: rel-istio-module-build
+                  image: "https://europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230706-786bc3fc"
                   always_run: true
                   annotations:
                     owner: goat
                     description: builds istio module template on release
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-sa-kyma-push-images: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
@@ -163,7 +166,6 @@ templates:
                     - "all"
                 inheritedConfigs:
                   global:
-                    - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - jobConfig_slack_goat
