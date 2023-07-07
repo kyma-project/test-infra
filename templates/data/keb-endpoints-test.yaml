@@ -33,6 +33,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
+                    - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"

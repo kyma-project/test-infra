@@ -372,6 +372,13 @@ globalSets:
           repo: "btp-manager"
           path_alias: "github.com/kyma-project/btp-manager"
           base_ref: "main"
+  extra_refs_kyma-environment-broker:
+    extra_refs:
+      kyma-environment-broker:
+        - org: "kyma-project"
+          repo: "kyma-environment-broker"
+          path_alias: "github.com/kyma-project/kyma-environment-broker"
+          base_ref: "main"
   # labels sets
   build_labels:
     securityContext:
