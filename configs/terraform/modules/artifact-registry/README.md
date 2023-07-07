@@ -4,7 +4,7 @@ This is the GCP private image registry. Use the registry to publish modules that
 
 ## Usage
 
-Configure variables in [`terraform.tfvars`](../../environments/prod/terraform.tfvars) file.
+Configure variables in the [`terraform.tfvars`](../../environments/prod/terraform.tfvars) file.
 
 These are the default values:
 
