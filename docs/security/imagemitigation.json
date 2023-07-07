@@ -1,0 +1,232 @@
+{
+  "images": [
+    {
+      "registry": "gcr.io/k8s-prow/*",
+      "purpose" : "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "contributors": "1.100",
+      "activity": {
+        "frequency": "high",
+        "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+      },
+      "comment": "",
+      "openSSF": {
+        "score": 5.6,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    },
+    {
+      "registry": "docker.io/prom/*",
+      "purpose" : "Prometheus monitoring",
+      "publisher": "Prometheus community",
+      "sourceCode": "https://github.com/prometheus",
+      "contributors": "33",
+      "activity": {
+        "frequency": "high",
+        "evidence": "https://github.com/prometheus/prometheus/commits/main"
+      },
+      "comment": "",
+      "openSSF": {
+        "score": 0,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    },
+    {
+      "registry": "k8s.gcr.io/gcsweb",
+      "purpose" : "Web UI for Google Cloud Storage",
+      "publisher": "Kubernetes community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/gcsweb",
+      "contributors": "1.100",
+      "activity": {
+        "frequency": "low",
+        "evidence": "https://github.com/kubernetes/test-infra/commits/master/gcsweb"
+      },
+      "comment": "GCR is deprecated, has to be relocated to https://github.com/kubernetes/registry.k8s.io",
+      "openSSF": {
+        "score": 5.6,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    },
+    {
+      "registry": "docker.io/nginx",
+      "purpose" : "NGINX HTTP server",
+      "publisher": "Nginx Docker community",
+      "sourceCode": "https://github.com/nginx/nginx",
+      "contributors": "36",
+      "activity": {
+        "frequency": "weekly",
+        "evidence": "https://github.com/nginxinc/docker-nginx/commits/master"
+      },
+      "comment": "Docker: verified publisher (https://hub.docker.com/_/nginx)",
+      "openSSF": {
+        "score": 4.4,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    },
+    {
+      "registry": "europe[-*]-docker.pkg.dev/[kyma-project|sap-kyma-neighbors-dev]",
+      "purpose" : "Custom Kyma images",
+      "publisher": "kyma project team",
+      "sourceCode": "https://github.com/kyma-project/kyma",
+      "contributors": "190",
+      "activity": {
+        "frequency": "daily",
+        "evidence": "https://github.com/kyma-project/kyma/commits/main"
+      },
+      "comment": "",
+      "openSSF": {
+        "score": 0,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    },
+    {
+      "registry": "ghcr.io/external-secrets/external-secrets",
+      "purpose" : "External Secrets Operator",
+      "publisher": "",
+      "sourceCode": "https://github.com/external-secrets/external-secrets",
+      "contributors": "230",
+      "activity": {
+        "frequency": "daily",
+        "evidence": "https://github.com/external-secrets/external-secrets/commits/main"
+      },
+      "comment": "",
+      "openSSF": {
+        "score": 7.2,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    },
+    {
+      "registry": "docker.io/openpolicyagent/gatekeeper",
+      "purpose" : "OPA Gatekeeper",
+      "publisher": "OPA Gatekeeper",
+      "sourceCode": "https://github.com/open-policy-agent/gatekeeper",
+      "contributors": "180",
+      "activity": {
+        "frequency": "weekly",
+        "evidence": "https://github.com/open-policy-agent/gatekeeper/commits/master"
+      },
+      "comment": "Docker: sponsored OSS",
+      "openSSF": {
+        "score": 6.2,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    },
+    {
+      "registry": "docker.io/grafana/grafana",
+      "purpose" : "Grafana Dashboard",
+      "publisher": "Grafana Community",
+      "sourceCode": "https://github.com/grafana/grafana",
+      "contributors": "2000",
+      "activity": {
+        "frequency": "daily",
+        "evidence": "https://github.com/grafana/grafana/commits/main"
+      },
+      "comment": "Will be replace by Plutono (https://github.com/kyma-project/test-infra/issues/8072)",
+      "openSSF": {
+        "score": 0,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    },
+    {
+      "registry": "quay.io/prometheus-operator/*",
+      "purpose" : "Prometheus (Monitoring) Operator",
+      "publisher": "Prometheus Community",
+      "sourceCode": "https://github.com/prometheus-operator/prometheus-operator",
+      "contributors": "500",
+      "activity": {
+        "frequency": "daily",
+        "evidence": "https://github.com/prometheus-operator/prometheus-operator/commits/main"
+      },
+      "comment": "",
+      "openSSF": {
+        "score": 6.5,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    },
+    {
+      "registry": "docker.io/aquasec/trivy",
+      "purpose" : "Security Scanner",
+      "publisher": "Aqua Security",
+      "sourceCode": "https://github.com/aquasecurity/trivy",
+      "contributors": "300",
+      "activity": {
+        "frequency": "daily",
+        "evidence": "https://github.com/aquasecurity/trivy/commits/main"
+      },
+      "comment": "",
+      "openSSF": {
+        "score": 6.3,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    },
+    {
+      "registry": "docker.io/zricethezav/gitleaks",
+      "purpose" : "Git Security Scanner",
+      "publisher": "Public project of private person (Zachary Rice)",
+      "sourceCode": "https://github.com/gitleaks/gitleaks",
+      "contributors": "140",
+      "activity": {
+        "frequency": "monthly",
+        "evidence": "https://github.com/gitleaks/gitleaks/commits/master"
+      },
+      "comment": "Project sponsor: https://github.com/zricethezav",
+      "openSSF": {
+        "score": 4.9,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    },
+    {
+      "registry": "docker.io/maven",
+      "purpose" : "Java package manager",
+      "publisher": "Maven community",
+      "sourceCode": "https://github.com/apache/maven ",
+      "contributors": "170",
+      "activity": {
+        "frequency": "monthly",
+        "evidence": "https://github.com/apache/maven-sources/commits/master"
+      },
+      "comment": "Docker: Official image, full source code distributed across many repositories",
+      "openSSF": {
+        "score": 4.1,
+        "review": {
+          "approvedImage": false,
+          "reason": ""
+        }
+      }
+    }
+  ]
+}
