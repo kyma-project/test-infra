@@ -294,6 +294,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       optional: false
       skip_report: false
@@ -307,7 +308,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "https://europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230706-786bc3fc"
             securityContext:
               privileged: false
               seccompProfile:
