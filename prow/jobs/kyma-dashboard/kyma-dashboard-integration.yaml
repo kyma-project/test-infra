@@ -1,0 +1,39 @@
+presubmits: # runs on PRs
+  kyma-project/kyma-dashboard:
+    - name: pull-kyma-dashboard-integration
+      annotations:
+        owner: hasselhoff
+        description: "Kyma dashboard integration testing"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-k3d-enabled: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        preset-gardener-gcp-kyma-integration: "true"
+      decorate: true
+      run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/"
+      cluster: untrusted-workload
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230705-8a78b1bd
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - /init.sh
+            args:
+              - tests/scripts/kyma-dashboard-integration.sh
+            resources:
+              requests:
+                memory: 6Gi
+                cpu: 2
+              limits:
+                memory: 8Gi
+                cpu: 3
