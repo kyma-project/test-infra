@@ -23,6 +23,7 @@
 | kyma-gke-nightly | gke | gcloud cli | kyma deploy |  | periodic |    |
 | pre-main-kyma-gardener-gcp-eventing-upgrade | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-gardener-gcp-eventing | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
+| pre-main-kyma-gardener-gcp-eventing-with-auth-manager | gardener_gcp | kyma cli | kyma deploy |  | pr-submit |  fast-integration  |
 | kyma-integration-evaluation-gardener-azure | gardener_azure | kyma cli | kyma deploy | evaluation | periodic |  fast-integration  |
 | kyma-integration-production-gardener-azure | gardener_azure | kyma cli | kyma deploy | production | periodic |  fast-integration  |
 | kyma-weekly-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |

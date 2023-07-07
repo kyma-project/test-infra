@@ -36,6 +36,12 @@ templates:
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
+          command_integration_eventing_with_auth_manager:
+            annotations:
+              pipeline.installer: kyma deploy
+              pipeline.test: "fast-integration"
+              pipeline.clusterprovisioning: kyma cli
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing-with-auth-manager.sh"
           command_integration_skr_eventing:
             annotations:
               pipeline.installer: keb
@@ -151,6 +157,38 @@ templates:
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
+
+              - jobConfig:
+                  name: pre-main-kyma-gardener-gcp-eventing-with-auth-manager
+                  annotations:
+                    owner: skydivingtunas
+                    description: Execute fast integration job with focus on eventing on a gardener cluster
+                  optional: true # TODO(marcobebway) make the job required when it is stable
+                  decoration_config:
+                    timeout: 14400000000000 # 4h
+                    grace_period: 600000000000 # 10min
+                    # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  env:
+                    EXECUTION_PROFILE: "evaluation"
+                  volumes:
+                    - name: kyma-tunas-prow-event-mesh
+                      secretName: kyma-tunas-prow-event-mesh
+                  volumeMounts:
+                    - name: kyma-tunas-prow-event-mesh
+                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
+                      readOnly: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+                    - image_kyma-integration
+                  local:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - gardener_gcp_job_eventing
+                    - command_integration_eventing_with_auth_manager
 
   - fromTo:
       - from: generic.tmpl
