@@ -6,7 +6,7 @@ This is the GCP private image registry. Use the registry to publish modules that
 
 Configure variables in `terraform.tfvars` (configs/terraform/environments/prod/terraform.tfvars) file
 
-Default values
+These are the default values:
 
 ```terraform
 artifact_registry_owner          = "neighbors"
