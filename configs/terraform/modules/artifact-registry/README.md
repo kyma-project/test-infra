@@ -21,4 +21,4 @@ When you use the GCP private image registry, consider the following:
 - The solution is prepared for GCP Service Account related execution
 - `roles/artifactregistry.write` role binding is part of the solution ([Artifact Registry Repository Access Control](https://cloud.google.com/artifact-registry/docs/access-control))
 - Vulnerability scanning is enabled by default.
-- You must define `artifact_registry_serviceaccount` in tfvars file.
+- You must define `artifact_registry_serviceaccount` in the .tfvars file.
