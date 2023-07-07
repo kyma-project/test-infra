@@ -361,11 +361,6 @@ templates:
                     - vm_job_labels
       - to: ../../prow/jobs/modules/internal/serverless-manager.yaml
         localSets:
-          job_default:
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
           main_branches:
             branches:
               - "^master$"
@@ -395,35 +390,20 @@ templates:
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
-          k3d_test:
-            labels:
-              preset-kind-volume-mounts: "true"
-              preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
-            command: "/init.sh"
-          vm_job_make:
-            path_alias: github.com/kyma-project/serverless-manager
-            command: "bash"
-            env:
-              CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-              # TODO: split this env and args into new config "serverless-manager"
-              JOB_REPO_NAME: "serverless-manager"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            request_memory: 200Mi
-            request_cpu: 80m
-          vm_job_labels:
-            labels:
-              preset-kyma-guard-bot-github-token: "true"
-              preset-sa-vm-kyma-integration: "true"
-              preset-gc-project-env: "true"
-          vm_job_k3d:
+          dind_job_k3d:
             annotations:
               pipeline.platform: k3d
               pipeline.installer: kyma deploy
-              pipeline.test: fast-integration
-              pipeline.clusterprovisioning: k3d
+              pipeline.test: k3d-test
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            path_alias: github.com/kyma-project/serverless-manager
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+            command: "/init.sh"
+            request_memory: "4Gi"
+            request_cpu: "3"
         jobConfigs:
           - repoName: kyma-project/serverless-manager
             jobs:
@@ -433,13 +413,8 @@ templates:
                   annotations:
                     owner: otters
                     description: serverless operator nightly verify
-                    pipeline.platform: gke
-                    pipeline.installer: kyma deploy
-                    pipeline.clusterprovisioning: gcloud cli
-                    pipeline.type: integration
                     testgrid-dashboards: serverless-operator-nightly
                     testgrid-days-of-results: "60"
-                  path_alias: github.com/kyma-project/serverless-manager
                   cluster: "trusted-workload"
                   volumes:
                     - name: sa-stability-fluentd-storage-writer
@@ -448,16 +423,11 @@ templates:
                     - name: sa-stability-fluentd-storage-writer
                       mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
                       readOnly: true
-                  env:
-                    MACHINE_TYPE: "custom-8-15360"
-                    PROVISION_REGIONAL_CLUSTER: "true"
-                    NODES_PER_ZONE: "1"
-                    STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG: "0.6.4"
-                    INPUT_CLUSTER_NAME: "serverless-operator-nightly-periodic"
-                    GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
-                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-                    TEST_RESULT_WINDOW_TIME: "6h"
-                    JOB_VM_COMMAND: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make -C hack/local run-with-lifecycle-manager"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/local run-with-lifecycle-manager
                   extra_refs:
                     serverless-manager:
                       - org: kyma-project
@@ -466,15 +436,11 @@ templates:
                         path_alias: github.com/kyma-project/serverless-manager
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
+                    - jobConfig_privileged
                     - jobConfig_periodic
-                    - image_kyma-integration
                     - extra_refs_test-infra
                   local:
-                    - job_default
-                    - vm_job_make
-                    - vm_job_k3d
-                    - vm_job_labels
+                    - dind_job_k3d
               - jobConfig:
                   name: post-serverless-module-build
                   annotations:
@@ -499,8 +465,6 @@ templates:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
-                  local:
-                    - job_default
               - jobConfig:
                   name: pull-serverless-module-build
                   annotations:
@@ -526,8 +490,6 @@ templates:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_presubmit
-                  local:
-                    - job_default
               - jobConfig:
                   name: pre-serverless-manager-operator-tests
                   annotations:
@@ -550,8 +512,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - build_labels # default labels
-                  local:
-                    - job_default
               - jobConfig:
                   name: pre-serverless-manager-operator-build
                   annotations:
@@ -580,7 +540,6 @@ templates:
                     - jobConfig_presubmit
                     - image-builder-buildkit
                   local:
-                    - job_default
                     - main_branches
                     - job_build_volumes
               - jobConfig:
@@ -614,7 +573,6 @@ templates:
                     - jobConfig_postsubmit
                     - image-builder-buildkit
                   local:
-                    - job_default
                     - main_branches
                     - job_build_volumes
               - jobConfig:
@@ -635,7 +593,7 @@ templates:
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                   local:
-                    - k3d_test
+                    - dind_job_k3d
               - jobConfig:
                   name: post-main-serverless-manager-verify
                   annotations:
@@ -654,4 +612,4 @@ templates:
                     - jobConfig_postsubmit
                     - extra_refs_test-infra
                   local:
-                    - k3d_test
+                    - dind_job_k3d
