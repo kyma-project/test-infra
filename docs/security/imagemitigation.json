@@ -5,7 +5,7 @@
       "purpose" : "Prow CI",
       "publisher": "Prow community",
       "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
-      "contributors": "1.100",
+      "contributors": 1100,
       "activity": {
         "frequency": "high",
         "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
@@ -24,7 +24,7 @@
       "purpose" : "Prometheus monitoring",
       "publisher": "Prometheus community",
       "sourceCode": "https://github.com/prometheus",
-      "contributors": "33",
+      "contributors": 33,
       "activity": {
         "frequency": "high",
         "evidence": "https://github.com/prometheus/prometheus/commits/main"
@@ -43,7 +43,7 @@
       "purpose" : "Web UI for Google Cloud Storage",
       "publisher": "Kubernetes community",
       "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/gcsweb",
-      "contributors": "1.100",
+      "contributors": 1100,
       "activity": {
         "frequency": "low",
         "evidence": "https://github.com/kubernetes/test-infra/commits/master/gcsweb"
@@ -62,7 +62,7 @@
       "purpose" : "NGINX HTTP server",
       "publisher": "Nginx Docker community",
       "sourceCode": "https://github.com/nginx/nginx",
-      "contributors": "36",
+      "contributors": 36,
       "activity": {
         "frequency": "weekly",
         "evidence": "https://github.com/nginxinc/docker-nginx/commits/master"
@@ -81,7 +81,7 @@
       "purpose" : "Custom Kyma images",
       "publisher": "kyma project team",
       "sourceCode": "https://github.com/kyma-project/kyma",
-      "contributors": "190",
+      "contributors": 190,
       "activity": {
         "frequency": "daily",
         "evidence": "https://github.com/kyma-project/kyma/commits/main"
@@ -100,7 +100,7 @@
       "purpose" : "External Secrets Operator",
       "publisher": "",
       "sourceCode": "https://github.com/external-secrets/external-secrets",
-      "contributors": "230",
+      "contributors": 230,
       "activity": {
         "frequency": "daily",
         "evidence": "https://github.com/external-secrets/external-secrets/commits/main"
@@ -119,7 +119,7 @@
       "purpose" : "OPA Gatekeeper",
       "publisher": "OPA Gatekeeper",
       "sourceCode": "https://github.com/open-policy-agent/gatekeeper",
-      "contributors": "180",
+      "contributors": 180,
       "activity": {
         "frequency": "weekly",
         "evidence": "https://github.com/open-policy-agent/gatekeeper/commits/master"
@@ -138,7 +138,7 @@
       "purpose" : "Grafana Dashboard",
       "publisher": "Grafana Community",
       "sourceCode": "https://github.com/grafana/grafana",
-      "contributors": "2000",
+      "contributors": 2000,
       "activity": {
         "frequency": "daily",
         "evidence": "https://github.com/grafana/grafana/commits/main"
@@ -157,7 +157,7 @@
       "purpose" : "Prometheus (Monitoring) Operator",
       "publisher": "Prometheus Community",
       "sourceCode": "https://github.com/prometheus-operator/prometheus-operator",
-      "contributors": "500",
+      "contributors": 500,
       "activity": {
         "frequency": "daily",
         "evidence": "https://github.com/prometheus-operator/prometheus-operator/commits/main"
@@ -176,7 +176,7 @@
       "purpose" : "Security Scanner",
       "publisher": "Aqua Security",
       "sourceCode": "https://github.com/aquasecurity/trivy",
-      "contributors": "300",
+      "contributors": 300,
       "activity": {
         "frequency": "daily",
         "evidence": "https://github.com/aquasecurity/trivy/commits/main"
@@ -195,7 +195,7 @@
       "purpose" : "Git Security Scanner",
       "publisher": "Public project of private person (Zachary Rice)",
       "sourceCode": "https://github.com/gitleaks/gitleaks",
-      "contributors": "140",
+      "contributors": 140,
       "activity": {
         "frequency": "monthly",
         "evidence": "https://github.com/gitleaks/gitleaks/commits/master"
@@ -214,7 +214,7 @@
       "purpose" : "Java package manager",
       "publisher": "Maven community",
       "sourceCode": "https://github.com/apache/maven ",
-      "contributors": "170",
+      "contributors": 170,
       "activity": {
         "frequency": "monthly",
         "evidence": "https://github.com/apache/maven-sources/commits/master"
