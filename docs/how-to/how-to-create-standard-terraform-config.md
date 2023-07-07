@@ -22,26 +22,26 @@ The Terraform config should be stored in the `terraform` directory in the locati
 
 Example structure of the Terraform config is the following:
 
-
+```bash
 ├── environments
-│   ├── dev
-│   │   ├── backend.tf
-│   │   ├── main.tf
-│   │   ├── provider.tf
-│   │   ├── terraform.tfvars
-│   │   └── variables.tf
-│   └── dev2
-│       ├── backend.tf
-│       ├── main.tf
-│       ├── provider.tf
-│       ├── terraform.tfvars
-│       └── variables.tf
+│   ├── dev
+│   │   ├── backend.tf
+│   │   ├── main.tf
+│   │   ├── provider.tf
+│   │   ├── terraform.tfvars
+│   │   └── variables.tf
+│   └── dev2
+│       ├── backend.tf
+│       ├── main.tf
+│       ├── provider.tf
+│       ├── terraform.tfvars
+│       └── variables.tf
 └── modules
     ├── rotate-service-account
-    │   ├── main.tf
-    │   ├── output.tf
-    │   ├── provider.tf
-    │   └── variables.tf
+    │   ├── main.tf
+    │   ├── output.tf
+    │   ├── provider.tf
+    │   └── variables.tf
     └── service-account-keys-cleaner
         ├── main.tf
         ├── output.tf
