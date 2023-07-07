@@ -8,7 +8,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-k3d-enabled: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-gardener-gcp-kyma-integration: "true"
