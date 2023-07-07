@@ -18,6 +18,10 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
       spec:
+        hostAliases:
+          - ip: "127.0.0.1"
+            hostnames:
+              - "k3d-registry.localhost"
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230705-8a78b1bd
             securityContext:
