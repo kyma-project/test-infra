@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      serverless-manager:
+      - pjName: "pre-main-serverless-manager-verify"
+prConfigs:
+  kyma-project:
+    serverless-manager:
+      prNumber: 154
