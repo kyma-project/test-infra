@@ -6,13 +6,15 @@ LOG_DIR=${ARTIFACTS:-"/var/log"}
 DOCKERD_PROCESS=""
 function cleanup() {
   set +e
-  echo "[ * * * ] Cleaning up..."
-  k3d cluster delete --all
-  k3d registry delete --all
-  kill -SIGTSTP "$DOCKERD_PROCESS"
+  if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
+    echo "[ * * * ] Cleaning up Docker resources..."
+    docker stop "$(docker ps -aq)"
+    docker system prune --all -f --volumes
+    kill -SIGTSTP "$DOCKERD_PROCESS"
+  fi
   set -e
 }
-trap cleanup INT ERR EXIT
+trap cleanup INT ERR EXIT TERM
 
 if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
   echo "[ * * * ] Starting Docker in Docker"
