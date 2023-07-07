@@ -1,6 +1,6 @@
 # gcp-artifact-registry-terraform
 
-Provide private image registry in GCP
+This is the GCP private image registry. Use the registry to publish modules that should be accessible by internal SAP teams.
 
 ## Usage
 
