@@ -22,25 +22,26 @@ The Terraform config should be stored in the `terraform` directory in the locati
 
 Example structure of the Terraform config is the following:
 
+```bash
 ├── environments
-│   ├── dev
-│   │   ├── backend.tf
-│   │   ├── main.tf
-│   │   ├── provider.tf
-│   │   ├── terraform.tfvars
-│   │   └── variables.tf
-│   └── dev2
-│       ├── backend.tf
-│       ├── main.tf
-│       ├── provider.tf
-│       ├── terraform.tfvars
-│       └── variables.tf
+│   ├── dev
+│   │   ├── backend.tf
+│   │   ├── main.tf
+│   │   ├── provider.tf
+│   │   ├── terraform.tfvars
+│   │   └── variables.tf
+│   └── dev2
+│       ├── backend.tf
+│       ├── main.tf
+│       ├── provider.tf
+│       ├── terraform.tfvars
+│       └── variables.tf
 └── modules
     ├── rotate-service-account
-    │   ├── main.tf
-    │   ├── output.tf
-    │   ├── provider.tf
-    │   └── variables.tf
+    │   ├── main.tf
+    │   ├── output.tf
+    │   ├── provider.tf
+    │   └── variables.tf
     └── service-account-keys-cleaner
         ├── main.tf
         ├── output.tf
@@ -98,7 +99,6 @@ Usually, Terraform executor ProwJobs are executed on every change in the Terrafo
 
 ### Terraform presubmit ProwJob
 
-Example of the [presubmit ProwJob](https://github.com/kyma-project/test-infra/blob/2cf10428a38535a4aa5066c6b27bb6b051e64714/prow/jobs/test-infra/secrets-rotator.yaml#L106) for the secrets-rotator application. The presubmit ProwJob runs the `terraform plan` command and publishes the results on a GitHub pull request.
+Example of the [presubmit ProwJob](https://github.com/kyma-project/test-infra/blob/4540c0ba3622b4f1fed47a50dedc189fdfc324b1/prow/jobs/test-infra/secrets-rotator.yaml#L92) for the secrets-rotator application. The presubmit ProwJob runs the `terraform plan` command and publishes the results on a GitHub pull request.
 
-Example of the [postubmit ProwJob](https://github.com/kyma-project/test-infra/blob/2cf10428a38535a4aa5066c6b27bb6b051e64714/prow/jobs/test-infra/secrets-rotator.yaml#L255) for the secrets-rotator application. The postsubmit ProwJob runs the `terraform apply` command and publishes the results on a GitHub pull request.
-
+Example of the [postubmit ProwJob](https://github.com/kyma-project/test-infra/blob/4540c0ba3622b4f1fed47a50dedc189fdfc324b1/prow/jobs/test-infra/secrets-rotator.yaml#L222) for the secrets-rotator application. The postsubmit ProwJob runs the `terraform apply` command and publishes the results on a GitHub pull request.
