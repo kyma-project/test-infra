@@ -1,0 +1,14 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      serverless-manager:
+      - pjName: "pre-main-serverless-manager-verify"
+      - pjName: "post-main-serverless-manager-verify"
+      test-infra:
+      - pjName: "serverless-operator-nightly-periodic"
+prConfigs:
+  kyma-project:
+    test-infra:
+      prNumber: 8087
+    serverless-manager:
+      prNumber: 154
