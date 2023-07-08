@@ -9,6 +9,6 @@ pjConfigs:
 prConfigs:
   kyma-project:
     test-infra:
-      prNumber: 8087
+      prNumber: 8094
     serverless-manager:
       prNumber: 154
