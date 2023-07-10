@@ -10,9 +10,8 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-compass-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
       run_if_changed: '^(chart|installation)/'
       skip_report: false
       decorate: true
@@ -33,6 +32,9 @@ presubmits: # runs on PRs
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/test.sh"
             args:
@@ -44,8 +46,8 @@ presubmits: # runs on PRs
                 value: "2"
             resources:
               requests:
-                cpu: 1
-                memory: 1Gi
+                memory: 3Gi
+                cpu: 2
         tolerations:
           - key: dedicated
             operator: Equal
