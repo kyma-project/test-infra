@@ -43,6 +43,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "skr-aws-own-cluster-dev"
+                  slack_channel: "kyma-gophers-private-alerts"
                   annotations:
                     owner: gopher
                     description: skr integration test own cluster
