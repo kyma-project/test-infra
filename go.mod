@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go/bigquery v1.52.0
 	cloud.google.com/go/compute/metadata v0.2.3
 	cloud.google.com/go/firestore v1.11.0
-	cloud.google.com/go/kms v1.12.1
+	cloud.google.com/go/kms v1.13.0
 	cloud.google.com/go/logging v1.7.0
 	cloud.google.com/go/pubsub v1.32.0
 	cloud.google.com/go/storage v1.31.0
@@ -49,7 +49,7 @@ require (
 	k8s.io/api v0.24.2
 	k8s.io/apimachinery v0.24.2
 	k8s.io/client-go v0.24.2
-	k8s.io/test-infra v0.0.0-20230706105105-91ecbd6a270f
+	k8s.io/test-infra v0.0.0-20230710160906-68864df0573a
 	sigs.k8s.io/yaml v1.3.0
 )
 
