@@ -115,7 +115,7 @@ presubmits: # runs on PRs
               - "module-build"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:PR-${PULL_NUMBER}"
+                value: "europe-docker.pkg.dev/kyma-project/dev/nats-manager:PR-${PULL_NUMBER}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.7"
               - name: MODULE_REGISTRY

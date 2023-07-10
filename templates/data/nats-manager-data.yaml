@@ -71,7 +71,7 @@ templates:
                   env:
                     KUSTOMIZE_VERSION: "v4.5.7"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:PR-${PULL_NUMBER}"
+                    IMG: "europe-docker.pkg.dev/kyma-project/dev/nats-manager:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
                   run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^internal/*/.*$|^cmd/*/.*$|^resources/*/.*$|^api/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
                   command: "make"
