@@ -35,6 +35,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gophers-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -95,6 +98,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gophers-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -155,6 +161,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gophers-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -215,6 +224,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gophers-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -275,6 +287,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gophers-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -336,6 +351,9 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gophers-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"

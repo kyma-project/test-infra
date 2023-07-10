@@ -84,6 +84,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "skr-azure-integration-dev"
+                  slack_channel: "kyma-gophers-private-alerts"
                   annotations:
                     owner: gopher
                     description: skr integration test azure
@@ -102,6 +103,7 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-azure-lite-integration-dev"
+                  slack_channel: "kyma-gophers-private-alerts"
                   annotations:
                     owner: gopher
                     description: skr integration test azure
@@ -120,6 +122,7 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-aws-integration-dev"
+                  slack_channel: "kyma-gophers-private-alerts"
                   annotations:
                     owner: gopher
                     description: skr integration test aws
@@ -140,6 +143,7 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-trial-integration-dev"
+                  slack_channel: "kyma-gophers-private-alerts"
                   annotations:
                     owner: gopher
                     description: skr integration test trial
@@ -158,6 +162,7 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-free-aws-integration-dev"
+                  slack_channel: "kyma-gophers-private-alerts"
                   annotations:
                     owner: gopher
                     description: skr integration test free
@@ -176,6 +181,7 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-preview-dev"
+                  slack_channel: "kyma-gophers-private-alerts"
                   annotations:
                     owner: gopher
                     description: skr integration test preview
