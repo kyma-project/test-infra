@@ -211,10 +211,10 @@ templates:
                     - jobConfig_presubmit
                     - build_labels # default labels
               - jobConfig:
+                  name: pre-keda-manager-operator-build
                   annotations:
                     owner: otters
                     description: keda operator build job
-                  name: pre-keda-manager-operator-build
                   always_run: true
                   args:
                     - "--name=keda-manager"
