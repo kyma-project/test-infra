@@ -207,6 +207,29 @@ globalSets:
     cluster_presubmit: "untrusted-workload"
     cluster_postsubmit: "trusted-workload"
     <<: *pubsub_config
+  jobConfig_privileged:
+    skip_report: "false"
+    max_concurrency: "10"
+    decorate: "true"
+    branches:
+      - "^master$"
+      - "^main$"
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: "Unconfined"
+    request_memory: "3Gi"
+    request_cpu: "2"
+    cluster_presubmit: "untrusted-workload"
+    cluster_postsubmit: "trusted-workload"
+    nodeSelector:
+      dedicated: high-cpu
+    tolerations:
+      - key: dedicated
+        value: high-cpu
+        operator: Equal
+        effect: NoSchedule
+    <<: *pubsub_config
   jobConfig_kyma20_docu:
     skip_report: "false"
     max_concurrency: "10"
