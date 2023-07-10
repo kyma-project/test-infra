@@ -40,4 +40,4 @@ if [[ "$K3D_ENABLED" == "true" ]]; then
   fi
   k3d cluster create k3d "${ARGS[@]}"
 fi
-exec "$@"
+bash -c "$@"
