@@ -62,6 +62,33 @@ templates:
                     - "jobConfig_presubmit"
                     - "unprivileged"
               - jobConfig:
+                  name: pull-nats-module-build
+                  annotations:
+                    owner: skydivingtunas
+                    description: nats module build pre-main job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.7"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:PR-${PULL_NUMBER}"
+                    MODULE_SHA: "PR-${PULL_NUMBER}"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^internal/*/.*$|^cmd/*/.*$|^resources/*/.*$|^api/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                  local:
+                    - job_default
+              - jobConfig:
                   name: post-nats-module-build
                   annotations:
                     owner: skydivingtunas
@@ -69,9 +96,9 @@ templates:
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
+                    KUSTOMIZE_VERSION: "v4.5.7"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:${PULL_BASE_SHA}"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:${PULL_BASE_SHA::7}"
                   run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^internal/*/.*$|^cmd/*/.*$|^resources/*/.*$|^api/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
                   command: "make"
                   args:

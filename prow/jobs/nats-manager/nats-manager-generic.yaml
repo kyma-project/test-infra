@@ -82,6 +82,57 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
+    - name: pull-nats-module-build
+      annotations:
+        description: "nats module build pre-main job"
+        owner: "skydivingtunas"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-nats-module-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^internal/*/.*$|^cmd/*/.*$|^resources/*/.*$|^api/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "hack/ci"
+              - "module-build"
+            env:
+              - name: IMG
+                value: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:PR-${PULL_NUMBER}"
+              - name: KUSTOMIZE_VERSION
+                value: "v4.5.7"
+              - name: MODULE_REGISTRY
+                value: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+              - name: MODULE_SHA
+                value: "PR-${PULL_NUMBER}"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/nats-manager:
@@ -169,9 +220,9 @@ postsubmits: # runs on main
               - "module-build"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:${PULL_BASE_SHA}"
+                value: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:${PULL_BASE_SHA::7}"
               - name: KUSTOMIZE_VERSION
-                value: "v4.5.6"
+                value: "v4.5.7"
               - name: MODULE_REGISTRY
                 value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
             resources:

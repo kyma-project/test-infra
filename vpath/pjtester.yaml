@@ -4,6 +4,8 @@ pjConfigs:
       nats-manager:
         - pjName: "post-nats-module-build"
           report: false
+        - pjName: "pull-nats-module-build"
+          report: false
 prConfigs: #
   kyma-project:
     nats-manager:
