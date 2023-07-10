@@ -37,3 +37,20 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
+              - jobConfig:
+                  name: "pre-main-compass-integration-test"
+                  run_if_changed: "^(chart|installation)/"
+                  labels:
+                    preset-build-pr: "true"
+                  branches:
+                    - ^master$
+                    - ^main$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang-kubebuilder2"
+                    - "jobConfig_privileged"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "k3d_test"
