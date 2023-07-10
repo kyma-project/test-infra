@@ -220,7 +220,7 @@ postsubmits: # runs on main
               - "module-build"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:${PULL_BASE_SHA}"
+                value: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:$(date +v%Y%m%d)-${PULL_BASE_SHA:0:8}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.7"
               - name: MODULE_REGISTRY
