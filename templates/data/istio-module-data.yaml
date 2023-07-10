@@ -10,8 +10,6 @@ templates:
               seccompProfile:
                 type: RuntimeDefault
           job_build:
-            securityContext: #temporary we need permissions to create folders for tooling, see `make install`
-              runAsRoot: true
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
@@ -20,7 +18,7 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230706-786bc3fc
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
