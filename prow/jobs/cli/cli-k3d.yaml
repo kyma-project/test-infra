@@ -1,6 +1,6 @@
 postsubmits:
   kyma-project/cli:
-    - name: unstable-cli
+    - name: post-main-unstable-cli
       annotations:
         description: "Bump reconciler version used by CLI and publish the unstable CLI binaries"
         owner: "jellyfish"
@@ -11,7 +11,7 @@ postsubmits:
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "unstable-cli"
+        prow.k8s.io/pubsub.runID: "post-main-unstable-cli"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-docker-push-repository-incubator: "true"
