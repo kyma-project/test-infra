@@ -219,14 +219,14 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/keda-manager:
-    - name: post-keda-manager-build
+    - name: release-keda-manager-build
       annotations:
         description: "Job to build keda module for a release."
         owner: "otters"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-keda-manager-build"
+        prow.k8s.io/pubsub.runID: "release-keda-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -271,14 +271,14 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-keda-manager-module-build
+    - name: release-keda-manager-module-build
       annotations:
         description: "Job to build keda module for a release."
         owner: "otters"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-keda-manager-module-build"
+        prow.k8s.io/pubsub.runID: "release-keda-manager-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
       always_run: true

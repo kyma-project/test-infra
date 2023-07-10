@@ -80,7 +80,7 @@ templates:
                   local:
                     - dind_job_k3d
               - jobConfig:
-                  name: post-keda-manager-build
+                  name: release-keda-manager-build
                   annotations:
                     owner: otters
                     description: Job to build keda module for a release.
@@ -102,7 +102,7 @@ templates:
                     - job_build
                     - limits
               - jobConfig:
-                  name: post-keda-manager-module-build
+                  name: release-keda-manager-module-build
                   annotations:
                     owner: otters
                     description: Job to build keda module for a release.
