@@ -169,7 +169,7 @@ deck:
         - 3108790 # cluster-access GH team in Kyma organization
 
 sinker:
-  max_prowjob_age: 4h
+  max_prowjob_age: 24h
   max_pod_age: 5h
   resync_period: 1m
   terminated_pod_ttl: 30m
