@@ -34,9 +34,10 @@ presubmits: # runs on PRs
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "installation/scripts/prow/jobs/test.sh"
+              - "bash"
             args:
-              - "--dump-db"
+              - "-c"
+              - "installation/scripts/prow/jobs/test.sh"
             env:
               - name: GO111MODULE
                 value: "on"
