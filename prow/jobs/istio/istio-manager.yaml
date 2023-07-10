@@ -294,6 +294,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       optional: false
       skip_report: false
