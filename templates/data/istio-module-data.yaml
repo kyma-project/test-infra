@@ -10,6 +10,8 @@ templates:
               seccompProfile:
                 type: RuntimeDefault
           job_build:
+            securityContext: #temporary we need permissions to create folders for tooling, see `make install`
+              runAsRoot: true
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
@@ -18,7 +20,7 @@ templates:
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
-            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230706-786bc3fc
             command: /image-builder
             request_memory: "1.5Gi"
             request_cpu: "1"
@@ -64,6 +66,10 @@ templates:
             image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230706-786bc3fc"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
+          job_go_build:
+            labels:
+              preset-sa-kyma-push-images: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
@@ -72,8 +78,6 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio module image
-                  labels:
-                    preset-sa-kyma-push-images: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
@@ -88,12 +92,12 @@ templates:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
-                    - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_presubmit
                   local:
                     - job_default
                     - job_skip_config
+                    - job_go_build
               - jobConfig:
                   name: post-istio-module-build
                   annotations:
@@ -120,6 +124,7 @@ templates:
                   local:
                     - job_default
                     - job_skip_config
+                    - job_go_build
               - jobConfig:
                   name: rel-istio-build
                   always_run: true
@@ -145,7 +150,6 @@ templates:
                     - job_build
               - jobConfig:
                   name: rel-istio-module-build
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230706-786bc3fc"
                   always_run: true
                   annotations:
                     owner: goat
@@ -170,6 +174,7 @@ templates:
                     - jobConfig_slack_goat
                   local:
                     - job_default
+                    - job_go_build
               - jobConfig:
                   name: pull-istio-operator-build
                   annotations:
