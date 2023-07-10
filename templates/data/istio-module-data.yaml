@@ -64,7 +64,7 @@ templates:
             image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230706-786bc3fc"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
-          job_go_build:
+          job_module_build:
             labels:
               preset-sa-kyma-push-images: "true"
             image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
@@ -95,7 +95,7 @@ templates:
                   local:
                     - job_default
                     - job_skip_config
-                    - job_go_build
+                    - job_module_build
               - jobConfig:
                   name: post-istio-module-build
                   annotations:
@@ -122,7 +122,7 @@ templates:
                   local:
                     - job_default
                     - job_skip_config
-                    - job_go_build
+                    - job_module_build
               - jobConfig:
                   name: rel-istio-build
                   always_run: true
@@ -172,7 +172,7 @@ templates:
                     - jobConfig_slack_goat
                   local:
                     - job_default
-                    - job_go_build
+                    - job_module_build
               - jobConfig:
                   name: pull-istio-operator-build
                   annotations:
