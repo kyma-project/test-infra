@@ -569,7 +569,7 @@ periodics: # runs on schedule
             args:
               - "bash"
               - "-c"
-              - "make -C hack/ci k3d-integration-test
+              - "make -C hack/ci run-with-lifecycle-manager
 "
             resources:
               requests:

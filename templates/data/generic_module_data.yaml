@@ -63,7 +63,7 @@ templates:
                     - bash
                     - -c
                     - |
-                      make -C hack/ci k3d-integration-test
+                      make -C hack/ci run-with-lifecycle-manager
                   volumes:
                     - name: sa-stability-fluentd-storage-writer
                       secretName: sa-stability-fluentd-storage-writer
