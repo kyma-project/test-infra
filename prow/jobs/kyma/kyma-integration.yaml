@@ -228,9 +228,9 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-serverless-integration-k3s"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-        preset-gc-project-env: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((resources/serverless|tests/function-controller)\S+(\.[^.][^.][^.]+|\.[^.][^dD]|\.[^mM][^.]|\.[^.]$|/[^.]+))$'
       skip_report: false
       decorate: true
@@ -247,21 +247,26 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh serverless-integration
+"
             env:
-              - name: INTEGRATION_SUITE
-                value: "serverless-integration"
+              - name: KYMA_SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/kyma"
             resources:
               requests:
-                memory: 100Mi
-                cpu: 50m
+                memory: 4Gi
+                cpu: 3
     - name: pre-main-serverless-git-auth-integration-k3s
       annotations:
         description: "Serverless git-function authentication nightly integration tests"
@@ -278,9 +283,9 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-serverless-git-auth-integration-k3s"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-        preset-gc-project-env: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
         preset-serverless-git-auth: "true"
       run_if_changed: '^((resources/serverless|tests/function-controller)\S+(\.[^.][^.][^.]+|\.[^.][^dD]|\.[^mM][^.]|\.[^.]$|/[^.]+))$'
       skip_report: false
@@ -298,21 +303,29 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "export APP_TEST_GITHUB_SSH_AUTH_KEY=\"${GH_AUTH_PRIVATE_KEY}\" &&
+export APP_TEST_AZURE_BASIC_AUTH_USERNAME=\"${AZURE_DEVOPS_AUTH_USERNAME}\" &&
+export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
+/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh git-auth-integration
+"
             env:
-              - name: INTEGRATION_SUITE
-                value: "git-auth-integration"
+              - name: KYMA_SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/kyma"
             resources:
               requests:
-                memory: 100Mi
-                cpu: 50m
+                memory: 4Gi
+                cpu: 3
     - name: pre-main-kyma-integration-k3d-telemetry
       annotations:
         description: "runs telemetry integration tests on k3d"
