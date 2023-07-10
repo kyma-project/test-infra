@@ -12,7 +12,7 @@ presubmits: # runs on PRs
         preset-kind-volume-mounts: "true"
         preset-gardener-gcp-kyma-integration: "true"
       decorate: true
-      run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/"
+      run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
       cluster: untrusted-workload
       branches:
         - ^master$
