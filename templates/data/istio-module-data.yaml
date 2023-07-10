@@ -114,7 +114,6 @@ templates:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
-                    - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - jobConfig_slack_goat
