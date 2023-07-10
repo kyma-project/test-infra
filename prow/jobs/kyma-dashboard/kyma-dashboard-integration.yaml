@@ -33,6 +33,9 @@ presubmits: # runs on PRs
               - /init.sh
             args:
               - tests/scripts/kyma-dashboard-integration.sh
+            env:
+              - name: SCOPE
+                value: "e2e"
             resources:
               requests:
                 memory: 6Gi
