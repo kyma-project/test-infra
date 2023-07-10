@@ -427,7 +427,7 @@ templates:
                     - bash
                     - -c
                     - |
-                      make -C hack/local run-with-lifecycle-manager
+                      make -C hack/ci run-with-lifecycle-manager
                   extra_refs:
                     serverless-manager:
                       - org: kyma-project

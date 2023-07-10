@@ -403,7 +403,7 @@ periodics: # runs on schedule
             args:
               - "bash"
               - "-c"
-              - "make -C hack/local run-with-lifecycle-manager
+              - "make -C hack/ci run-with-lifecycle-manager
 "
             resources:
               requests:
