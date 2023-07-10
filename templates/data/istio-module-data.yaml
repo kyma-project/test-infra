@@ -146,7 +146,7 @@ templates:
                     - job_build
               - jobConfig:
                   name: rel-istio-module-build
-                  image: "https://europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230706-786bc3fc"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230706-786bc3fc"
                   always_run: true
                   annotations:
                     owner: goat
