@@ -34,7 +34,7 @@ presubmits: # runs on PRs
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/test.sh"
+              - "installation/scripts/prow/jobs/test.sh"
             args:
               - "--dump-db"
             env:
