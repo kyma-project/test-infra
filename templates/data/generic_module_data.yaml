@@ -59,6 +59,11 @@ templates:
                     testgrid-dashboards: keda-nightly
                     testgrid-days-of-results: "60"
                   cluster: "trusted-workload"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-integration-test
                   volumes:
                     - name: sa-stability-fluentd-storage-writer
                       secretName: sa-stability-fluentd-storage-writer
@@ -252,6 +257,11 @@ templates:
                     description: runs keda manager verity job on k3d VM
                   always_run: "true"
                   optional: "false"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-integration-test
                 inheritedConfigs:
                   global:
                     - jobConfig_privileged
@@ -266,6 +276,11 @@ templates:
                     description: runs keda manager verity job on k3d VM
                   always_run: "true"
                   optional: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-lm-integration-test
                 inheritedConfigs:
                   global:
                     - jobConfig_privileged
@@ -280,6 +295,11 @@ templates:
                     description: upgrade keda manager test
                   always_run: "true"
                   optional: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-upgrade-test
                 inheritedConfigs:
                   global:
                     - jobConfig_privileged

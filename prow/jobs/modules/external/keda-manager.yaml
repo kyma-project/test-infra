@@ -205,6 +205,11 @@ presubmits: # runs on PRs
               allowPrivilegeEscalation: true
             command:
               - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "make -C hack/ci k3d-integration-test
+"
             resources:
               requests:
                 memory: 4Gi
@@ -446,6 +451,11 @@ postsubmits: # runs on main
               allowPrivilegeEscalation: true
             command:
               - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "make -C hack/ci k3d-lm-integration-test
+"
             resources:
               requests:
                 memory: 4Gi
@@ -497,6 +507,11 @@ postsubmits: # runs on main
               allowPrivilegeEscalation: true
             command:
               - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "make -C hack/ci k3d-upgrade-test
+"
             resources:
               requests:
                 memory: 4Gi
@@ -551,6 +566,11 @@ periodics: # runs on schedule
               allowPrivilegeEscalation: true
             command:
               - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "make -C hack/ci k3d-integration-test
+"
             resources:
               requests:
                 memory: 4Gi
