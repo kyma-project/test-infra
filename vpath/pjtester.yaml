@@ -7,4 +7,4 @@ pjConfigs:
 prConfigs:
   kyma-project:
     istio:
-      prNumber: 213
+      prNumber: 210
