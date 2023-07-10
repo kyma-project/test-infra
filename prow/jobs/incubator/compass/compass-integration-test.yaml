@@ -44,8 +44,8 @@ presubmits: # runs on PRs
                 value: "2"
             resources:
               requests:
-                memory: 100Mi
-                cpu: 50m
+                cpu: 1
+                memory: 1Gi
         tolerations:
           - key: dedicated
             operator: Equal
