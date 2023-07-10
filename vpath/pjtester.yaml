@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "post-nats-module-build"
+          report: false
+prConfigs: #
+  kyma-project:
+    nats-manager:
+      prNumber: 78
