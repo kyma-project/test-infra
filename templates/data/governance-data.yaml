@@ -7,59 +7,41 @@ templates:
             run_if_changed: "milv.config.yaml|.md$"
             labels:
               preset-build-pr: "true"
+          jobConfig_kyma_crd_docs:
+            run_if_changed: "^installation/resources/crds/|^.*.md$"
+            annotations:
+              pipeline.trigger: pr-submit
+            type_presubmit: "true"
+            cluster: "untrusted-workload"
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^main$"
+            request_memory: "10Mi"
+            request_cpu: "100m"
+            cluster_presubmit: "untrusted-workload"
+            cluster_postsubmit: "trusted-workload"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
           jobConfig_default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
             labels:
               preset-dind-enabled: "true"
             request_memory: "10Mi"
             request_cpu: "100m"
+            securityContext:
+              privileged: "true"
+              seccompProfile:
+                type: "Unconfined"
         jobConfigs:
-          - repoName: "github.com/kyma-project/addons"
-            jobs:
-              - jobConfig:
-                  name: "pre-main-addons-governance"
-                  args:
-                    - "--repository"
-                    - "addons"
-                  path_alias: github.com/kyma-project/addons
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_bootstrap"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-              - jobConfig:
-                  name: "addons-governance-nightly"
-                  cron: "0 22 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
-                  extra_refs:
-                    addons:
-                      - org: kyma-project
-                        repo: addons
-                        base_ref: master
-                        path_alias: github.com/kyma-project/addons
-                  args:
-                    - "--repository"
-                    - "addons"
-                    - "--repository-dir"
-                    - "/home/prow/go/src/github.com/kyma-project/addons"
-                    - "--full-validation"
-                    - "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_bootstrap"
-                    - "jobConfig_periodic"
-                    - "disable_testgrid"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
           - repoName: "github.com/kyma-project/busola"
             jobs:
               - jobConfig:
                   name: "pre-main-busola-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "busola"
@@ -77,6 +59,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "busola-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 0 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   extra_refs:
                     busola:
@@ -104,6 +89,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-community-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "community"
@@ -119,6 +107,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "community-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 23 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   extra_refs:
                     community:
@@ -142,52 +133,13 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
-          - repoName: "github.com/kyma-project/console"
-            jobs:
-              - jobConfig:
-                  name: "pre-main-console-governance"
-                  args:
-                    - "--repository"
-                    - "console"
-                  path_alias: github.com/kyma-project/console
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_bootstrap"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-              - jobConfig:
-                  name: "console-governance-nightly"
-                  cron: "0 0 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
-                  extra_refs:
-                    console:
-                      - org: kyma-project
-                        repo: console
-                        base_ref: master
-                        path_alias: github.com/kyma-project/console
-                  args:
-                    - "--repository"
-                    - "console"
-                    - "--repository-dir"
-                    - "/home/prow/go/src/github.com/kyma-project/console"
-                    - "--full-validation"
-                    - "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_bootstrap"
-                    - "jobConfig_periodic"
-                    - "disable_testgrid"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
           - repoName: "github.com/kyma-project/examples"
             jobs:
               - jobConfig:
                   name: "pre-main-examples-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "examples"
@@ -201,35 +153,13 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-              - jobConfig:
-                  name: "examples-governance-nightly"
-                  cron: "0 1 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
-                  extra_refs:
-                    examples:
-                      - org: kyma-project
-                        repo: examples
-                        base_ref: main
-                        path_alias: github.com/kyma-project/examples
-                  args:
-                    - "--repository"
-                    - "examples"
-                    - "--repository-dir"
-                    - "/home/prow/go/src/github.com/kyma-project/examples"
-                    - "--full-validation"
-                    - "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_bootstrap"
-                    - "jobConfig_periodic"
-                    - "disable_testgrid"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
                   name: "kyma-metadata-schema-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   run_if_changed: "^resources/.*/values.schema.json$"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/metadata-governance.sh"
                   args:
@@ -249,6 +179,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "pre-main-kyma-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "kyma"
@@ -263,22 +196,23 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  name: "pre-kyma-docu-2.0-governance"
-                  args:
-                    - "--repository"
-                    - "kyma"
+                  name: "pull-kyma-crd-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   path_alias: github.com/kyma-project/kyma
+                  command: "hack/verify-md.sh"
                 inheritedConfigs:
                   global:
-                    - "jobConfig_kyma20_docu"
-                    - "image_bootstrap"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
+                    - "image_buildpack-golang"
+                    - "unprivileged"
                   local:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
+                    - "jobConfig_kyma_crd_docs"
               - jobConfig:
                   name: "kyma-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 4 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   args:
                     - "--repository"
@@ -301,6 +235,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-test-infra-governance"
+                  annotations:
+                    owner: "technical-writers"
+                    description: "Looking for broken links in the test-infra repo"
                   args:
                     - "--repository"
                     - "test-infra"
@@ -310,11 +247,15 @@ templates:
                     - "jobConfig_default"
                     - "image_bootstrap"
                     - "jobConfig_presubmit"
+                    - "extra_refs_kyma"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "test-infra-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 5 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   args:
                     - "--repository"
@@ -330,12 +271,16 @@ templates:
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                     - "extra_refs_test-infra"
+                    - "extra_refs_kyma"
                   local:
                     - "jobConfig_default"
           - repoName: "github.com/kyma-project/website"
             jobs:
               - jobConfig:
                   name: "pre-main-website-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   args:
                     - "--repository"
                     - "website"
@@ -351,6 +296,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "website-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 6 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   extra_refs:
                     website:
@@ -377,24 +325,10 @@ templates:
           - repoName: "github.com/kyma-incubator/documentation-component"
             jobs:
               - jobConfig:
-                  name: "pre-documentation-component-governance"
-                  args:
-                    - "--repository"
-                    - "documentation-component"
-                    - "--repository-org"
-                    - "kyma-incubator"
-                  path_alias: github.com/kyma-incubator/documentation-component
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_bootstrap"
-                    - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-              - jobConfig:
                   name: "documentation-component-governance-nightly"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
                   cron: "0 2 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
                   extra_refs:
                     documentation-component:
@@ -421,3 +355,44 @@ templates:
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
+          - repoName: "github.com/kyma-project/telemetry-manager"
+            jobs:
+              - jobConfig:
+                  name: "pre-main-telemetry-manager-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
+                  args:
+                    - "--repository"
+                    - "telemetry-manager"
+                  path_alias: github.com/kyma-project/telemetry-manager
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+
+          - repoName: "github.com/kyma-project/directory-size-exporter"
+            jobs:
+              - jobConfig:
+                  name: "pre-main-directory-size-exporter-governance"
+                  annotations:
+                    owner: technical-writers
+                    description: dead links governance job
+                  args:
+                    - "--repository"
+                    - "directory-size-exporter"
+                  path_alias: github.com/kyma-project/directory-size-exporter
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_bootstrap"
+                    - "jobConfig_presubmit"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"

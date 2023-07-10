@@ -243,8 +243,7 @@ gcp::provision_k8s_cluster \
         -P "$TEST_INFRA_SOURCES_DIR" \
         -r "$PROVISION_REGIONAL_CLUSTER" \
         -m "$MACHINE_TYPE" \
-        -D "$CLUSTER_USE_SSD" \
-        -e "$GKE_ENABLE_POD_SECURITY_POLICY"
+        -D "$CLUSTER_USE_SSD"
 CLEANUP_CLUSTER="true"
 
 kyma::install_cli
@@ -259,11 +258,22 @@ kubectl create clusterrolebinding kyma_developers --clusterrole cluster-admin --
 log::info "generate service account and kubeconfig with cluster-admin rights"
 namespace="default"
 serviceAccount="admin-user"
+secretName="$serviceAccount-secret"
+
 server="https://$(gcloud container clusters describe "$COMMON_NAME" --region "$CLOUDSDK_COMPUTE_REGION" | awk '/endpoint:/ {print $2}')"
 kubectl create serviceaccount -n "$namespace" "$serviceAccount"
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: "$secretName"
+  namespace: "$namespace"
+  annotations:
+    kubernetes.io/service-account.name: "$serviceAccount"
+type: kubernetes.io/service-account-token
+EOF
 kubectl create clusterrolebinding $serviceAccount --clusterrole cluster-admin --serviceaccount="$namespace:$serviceAccount"
 
-secretName="$(kubectl -n "$namespace" get serviceAccount "$serviceAccount" -o jsonpath='{.secrets[0].name}')"
 ca="$(kubectl -n "$namespace" get "secret/$secretName" -o jsonpath='{.data.ca\.crt}')"
 token="$(kubectl -n "$namespace" get "secret/$secretName" -o jsonpath='{.data.token}' | base64 --decode)"
 

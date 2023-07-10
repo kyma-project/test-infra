@@ -4,63 +4,62 @@
 # The last matching pattern has the most precedence.
 # For more details, read the following article on GitHub: https://help.github.com/articles/about-codeowners/.
 
-# These are the default owners for the whole content of the `kyma` repository. The default owners are automatically added as reviewers when you open a pull request, unless different owners are specified in the file.
+# These are the default owners for the whole content of the `kyma` repository.
+# The default owners are automatically added as reviewers when you open a pull request, unless different owners are specified in the file.
 
-* @kyma-project/prow
-/development @kyma-project/prow
-/docs @kyma-project/prow @majakurcius @mmitoraj @grego952 @klaudiagrz @NHingerl
-/prow @kyma-project/prow
-/prow/cluster @kyma-project/prow
-/prow/images @kyma-project/prow
-/prow/images/buildpack-node @kyma-project/prow @akucharska @wawrzyn321 @a-thaler @jcawley5 @lilitgh @sawthis @valentinvieriu @brendandobbs @dariadomagala @qbalukom
+# IMPORTANT: Each path must have @neighbors-dev-bot added to let automation work. Having bot added as owner explicitly while it's not a kyma-project/prow group member does not interfere with the request review automation.
 
-/prow/jobs @kyma-project/prow
-/prow/jobs/addons @ralikio @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @kyma-project/prow
-/prow/jobs/busola @dariadomagala @qbalukom @sawthis @valentinvieriu @wawrzyn321 @akucharska @kyma-project/prow
-/prow/jobs/cli @chrkl @jeremyharisch @lindnerby @tobiscr @a-thaler @clebs @lilitgh @rakesh-garimella @skhalash @kyma-project/prow
-/prow/jobs/console @akucharska @dariadomagala @qbalukom @sawthis @valentinvieriu @wawrzyn321 @kyma-project/prow
-/prow/jobs/control-plane @tillknuesting @piotrmiskiewicz @wozniakjan @akgalwas @franpog859 @hanngos @koala7659 @pk85 @janmedrek @maladie @ralikio @szwedm @kyma-project/prow
-/prow/jobs/incubator/compass @gvachkov @la4ezar @petartodorovv @desislavaa @dimitarpetrov @kaloyanspiridonov @krasish @alextargov @nyordanoff @stanislavstefanov @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @ivantenevvasilev @kyma-project/prow
-/prow/jobs/incubator/compass-console @gvachkov @la4ezar @petartodorovv @desislavaa @dimitarpetrov @kaloyanspiridonov @krasish @alextargov @nyordanoff @stanislavstefanov @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @ivantenevvasilev @kyma-project/prow
-/prow/jobs/incubator/dex @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
-/prow/jobs/incubator/documentation-component @m00g3n @kyma-project/prow
-/prow/jobs/incubator/hydra-login-consent @tomasz-smelcerz-sap @dariusztutaj @piotrkpc @kyma-project/prow
-/prow/jobs/incubator/kyma-showcase @cortey @hanngos @lyczeq @mrcherry97 @mvshao @kyma-project/prow
-/prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow
-/prow/jobs/incubator/octopus @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio @kyma-project/prow
-/prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @kaloyanspiridonov @alextargov @dzahariev @svetlinzarev-sap @dragobt @kyma-project/prow
-/prow/jobs/incubator/podpreset-crd @szwedm @tillknuesting @wozniakjan @hanngos @piotrmiskiewicz @pk85 @ralikio @kyma-project/prow
-/prow/jobs/incubator/reconciler @pbochynski @varbanv @clebs @dbadura @kwiatekus @m00g3n @moelsayed @jeremyharisch @pprecel @tobiscr @kyma-project/prow
-/prow/jobs/incubator/varkes @brendandobbs @jcawley5 @lilitgh @a-thaler @kyma-project/prow
-/prow/jobs/kyma/components/apiserver-proxy @pk85 @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @kyma-project/prow
-/prow/jobs/kyma/components/busola-migrator @pk85 @akucharska @dariadomagala @qbalukom @sawthis @valentinvieriu @a-thaler @wawrzyn321 @pbochynski @kyma-project/prow
-/prow/jobs/kyma/components/central-application-connectivity-validator @janmedrek @koala7659 @maladie @pbochynski @akgalwas @franpog859 @ralikio @a-thaler @pk85 @kyma-project/prow
-/prow/jobs/kyma/components/central-application-gateway @a-thaler @koala7659 @maladie @janmedrek @ralikio @pbochynski @pk85 @akgalwas @franpog859 @kyma-project/prow
-/prow/jobs/kyma/components/compass-runtime-agent @franpog859 @janmedrek @ralikio @pbochynski @a-thaler @pk85 @akgalwas @koala7659 @maladie @kyma-project/prow
-/prow/jobs/kyma/components/dex-static-user-configurer @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @kyma-project/prow
-/prow/jobs/kyma/components/event-publisher-proxy @friedrichwilken @k15r @pxsalehi @vladislavpaskar @a-thaler @pk85 @pbochynski @lilitgh @marcobebway @mfaizanse @nachtmaar @kyma-project/prow
-/prow/jobs/kyma/components/eventing-controller @pbochynski @k15r @lilitgh @marcobebway @mfaizanse @vladislavpaskar @a-thaler @pk85 @friedrichwilken @nachtmaar @pxsalehi @kyma-project/prow
-/prow/jobs/kyma/components/function-controller @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @kyma-project/prow
-/prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @pbochynski @pk85 @kyma-project/prow
-/prow/jobs/kyma/components/iam-kubeconfig-service @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @kyma-project/prow
-/prow/jobs/kyma/components/istio-installer @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @kyma-project/prow
-/prow/jobs/kyma/components/kyma-operator @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @kyma-project/prow
-/prow/jobs/kyma/components/permission-controller @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @kyma-project/prow
-/prow/jobs/kyma/components/telemetry-operator @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @wozniakjan @pbochynski @piotrmiskiewicz @kyma-project/prow
-/prow/jobs/kyma/components/uaa-activator @wozniakjan @pbochynski @piotrmiskiewicz @pk85 @szwedm @tillknuesting @a-thaler @hanngos @ralikio @kyma-project/prow
-/prow/jobs/kyma/components/xip-patch @mjakobczyk @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @kyma-project/prow
-/prow/jobs/kyma/tests/end-to-end @wozniakjan @pbochynski @piotrmiskiewicz @pk85 @ralikio @szwedm @tillknuesting @a-thaler @hanngos @k15r @kyma-project/prow
-/prow/jobs/kyma/tests/function-controller @a-thaler @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow
-/prow/jobs/kyma/tests/integration @strekm @tomasz-smelcerz-sap @werdes72 @a-thaler @pbochynski @pk85 @dariusztutaj @mjakobczyk @kyma-project/prow
-/prow/jobs/kyma/tests/rafter @dbadura @m00g3n @pprecel @kyma-project/prow
-/prow/jobs/kyma/tests/serverless-bench @pbochynski @pk85 @dbadura @kwiatekus @m00g3n @pprecel @a-thaler @kyma-project/prow
-/prow/jobs/kyma/tools/event-subscriber @a-thaler @friedrichwilken @k15r @mfaizanse @nachtmaar @pxsalehi @vladislavpaskar @pk85 @lilitgh @marcobebway @pbochynski @kyma-project/prow
-/prow/jobs/rafter @dbadura @m00g3n @pprecel @kyma-project/prow
+* @kyma-project/prow @neighbors-dev-bot
+/development @kyma-project/prow @neighbors-dev-bot
+/docs @kyma-project/prow @mmitoraj @grego952 @NHingerl @IwonaLanger @nataliasitko @neighbors-dev-bot
+/prow @kyma-project/prow @neighbors-dev-bot
+/prow/cluster @kyma-project/prow @neighbors-dev-bot
+/prow/images @kyma-project/prow @neighbors-dev-bot
+/prow/images/buildpack-node @kyma-project/prow @kyma-project/hasselhoff @a-thaler @lilitgh @neighbors-dev-bot
 
-/prow/scripts @kyma-project/prow @kyma-project/developers
+/prow/jobs @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/busola @kyma-project/hasselhoff @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/cli @chrkl @jeremyharisch @lindnerby @tobiscr  @lilitgh @rakesh-garimella @skhalash @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/control-plane @kyma-project/gopher @kyma-project/Framefrog @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/incubator/compass @gvachkov @petartodorovv @desislavaa @dimitarpetrov @krasish @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/incubator/compass-console @gvachkov @petartodorovv @desislavaa @dimitarpetrov @krasish @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @dzahariev @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/incubator/reconciler @varbanv @jeremyharisch @tobiscr @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish @neighbors-dev-bot
+/prow/jobs/kyma/components/central-application-connectivity-validator @kyma-project/Framefrog @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/kyma/components/central-application-gateway @kyma-project/prow @kyma-project/Framefrog @neighbors-dev-bot
+/prow/jobs/kyma/components/compass-runtime-agent @kyma-project/prow @kyma-project/Framefrog @neighbors-dev-bot
+/prow/jobs/kyma/components/event-publisher-proxy @kyma-project/eventing @neighbors-dev-bot
+/prow/jobs/kyma/components/eventing-controller @kyma-project/eventing @neighbors-dev-bot
+/prow/jobs/kyma/components/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @pk85 @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
+/prow/jobs/eventing-tools/ @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
+/prow/jobs/eventing-webhook/ @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
+/prow/jobs/nats-manager/ @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
+/prow/jobs/telemetry-manager @kyma-project/observability @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/directory-size-exporter @kyma-project/observability @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/kyma/tests/fast-integration @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/kyma/tests/serverless-bench @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/istio/ @kyma-project/goat @neighbors-dev-bot
+/prow/jobs/api-gateway/ @kyma-project/goat @neighbors-dev-bot
+/prow/scripts @kyma-project/prow @neighbors-dev-bot
 
-/templates @kyma-project/prow
-/templates/templates @kyma-project/prow
+/templates @kyma-project/prow @neighbors-dev-bot
+/templates/templates @kyma-project/prow @neighbors-dev-bot
+templates/data/eventing-tools-data.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
+templates/data/eventing-webhook-certificates-build.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
+templates/data/eventing-webhook-certificates-release.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
+templates/data/nats-manager-data.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
 
 # All .md files
-*.md @klaudiagrz @mmitoraj @majakurcius @NHingerl @grego952
+*.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko @neighbors-dev-bot
+
+# Don't require human review for auto generated files
+/test-inventory-integration.md
+
+# File index.md must be owned by prow group in case it will get changes in a pull request which is not allowed to be approved by approval bot.
+# In such case a human approver from prow group must approve the pull request.
+/docs/index.md @kyma-project/prow @neighbors-dev-bot

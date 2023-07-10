@@ -4,15 +4,16 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"net/http"
+	"os"
+	"regexp"
+	"time"
+
 	"github.com/kyma-project/test-infra/development/prow/externalplugin"
 	"go.uber.org/zap"
 	"k8s.io/test-infra/prow/config"
 	"k8s.io/test-infra/prow/github"
 	"k8s.io/test-infra/prow/pluginhelp"
-	"net/http"
-	"os"
-	"regexp"
-	"time"
 )
 
 const (
@@ -88,7 +89,7 @@ func main() {
 	fs.IntVar(&o.Port, "port", 8080, "Plugin port to listen on.")
 	fs.BoolVar(&o.DryRun, "dry-run", false, "Run in dry-run mode - no actual changes will be made.")
 	fs.StringVar(&o.WebhookSecretPath, "hmac-secret-file", "/etc/webhook/hmac", "Path to the file containing GitHub HMAC secret")
-	fs.StringVar(&o.LogLevel, "log-level", "info", "Set log level.")
+	fs.Var(&o.LogLevel, "log-level", "Set log level.")
 	fs.StringVar(&addr, "address", "https://cla-assistant.io", "CLA Assistant address.")
 	fs.Parse(os.Args[1:])
 

@@ -3,265 +3,460 @@ package pjtester
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"os"
-	"path/filepath"
 	"strconv"
-	"strings"
-	"testing"
 
 	gogithub "github.com/google/go-github/v40/github"
-	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder/mocks"
-	"github.com/stretchr/testify/assert"
+
+	"github.com/kyma-project/test-infra/development/github/pkg/git"
+	prtagbuildermock "github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder/mocks"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+	. "github.com/onsi/gomega/gstruct"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
+	"k8s.io/test-infra/prow/config"
 	prowflagutil "k8s.io/test-infra/prow/flagutil"
-	"k8s.io/test-infra/prow/github"
+	"k8s.io/test-infra/prow/git/localgit"
+	k8sgit "k8s.io/test-infra/prow/git/v2"
 	"k8s.io/test-infra/prow/github/fakegithub"
+	"k8s.io/test-infra/prow/pjutil"
 )
 
-var (
-	testInfraPrAuthor       string
-	testInfraBaseRef        string
-	testInfraBaseSHA        string
-	testInfraPrNumber       int
-	testInfraPrHeadSHA      string
-	testInfraPrOrg          string
-	testInfraPrRepo         string
-	kymaPrAuthor            string
-	kymaPrHeadSHA           string
-	kymaPrNumber            int
-	kymaPrOrg               string
-	kymaPrRepo              string
-	kymaBaseRef             string
-	kymaBaseSHA             string
-	fakeRepoPrAuthor        string
-	fakeRepoPrHeadSHA       string
-	fakeRepoPrNumber        int
-	fakeRepoPrOrg           string
-	fakeRepoPrRepo          string
-	fakeRepoBaseRef         string
-	fakeRepoBaseSHA         string
-	fakeRepoMainName        string
-	fakeRepoProtectedBranch bool
-	fakeRepoMerged          bool
-	fakeRepoCommitMessage   string
-	fakeRepoRefs            prowapi.Refs
-	kymaRefs                prowapi.Refs
-	testInfraRefs           prowapi.Refs
-	ghOptions               *prowflagutil.GitHubOptions
-)
-
-func TestMain(m *testing.M) {
-	pjPath, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
-	// set data for testing
-	testInfraPrAuthor = "testInfraAuthor"
-	testInfraBaseRef = "main"
-	testInfraBaseSHA = "testInfraMainSHA"
-	testInfraPrNumber = 12345
-	testInfraPrHeadSHA = "testInfraPrHeadSHA"
-	testInfraPrOrg = "kyma-project"
-	testInfraPrRepo = "test-infra"
-	kymaPrAuthor = "kymaAuthor"
-	kymaPrHeadSHA = "kymaPrHeadSHA"
-	kymaPrNumber = 1212
-	kymaPrOrg = "kyma-project"
-	kymaPrRepo = "kyma"
-	kymaBaseRef = "master"
-	kymaBaseSHA = "kymaBaseSHA"
-	fakeRepoPrAuthor = "fakeRepoAuthor"
-	fakeRepoPrHeadSHA = "fakeRepoSHA"
-	fakeRepoPrNumber = 1515
-	fakeRepoPrOrg = "kyma-project"
-	fakeRepoPrRepo = "fake-repo"
-	fakeRepoBaseRef = "main"
-	fakeRepoBaseSHA = "fakeRepoSHA"
-	fakeRepoMainName = "main"
-	fakeRepoProtectedBranch = false
-	fakeRepoMerged = true
-	fakeRepoCommitMessage = fmt.Sprintf("Fake Repo commit message (#%s)", strconv.Itoa(fakeRepoPrNumber))
-	repoDir := filepath.Clean(fmt.Sprintf("%s/../../../../..", pjPath))
-	kymaRefs = prowapi.Refs{
-		Org:     kymaPrOrg,
-		Repo:    kymaPrRepo,
-		BaseRef: kymaBaseRef,
-		BaseSHA: kymaBaseSHA,
-		Pulls: []prowapi.Pull{{
-			Number: kymaPrNumber,
-			Author: kymaPrAuthor,
-			SHA:    kymaPrHeadSHA,
-		}},
-		PathAlias: fmt.Sprintf("github.com/%s/%s", kymaPrOrg, kymaPrRepo),
-	}
-	testInfraRefs = prowapi.Refs{
-		Org:     testInfraPrOrg,
-		Repo:    testInfraPrRepo,
-		BaseRef: testInfraBaseRef,
-		BaseSHA: testInfraBaseSHA,
-		Pulls: []prowapi.Pull{{
-			Number: testInfraPrNumber,
-			Author: testInfraPrAuthor,
-			SHA:    testInfraPrHeadSHA,
-		}},
-		PathAlias: fmt.Sprintf("github.com/%s/%s", testInfraPrOrg, testInfraPrRepo),
-	}
-	fakeRepoRefs = prowapi.Refs{
-		Org:     fakeRepoPrOrg,
-		Repo:    fakeRepoPrRepo,
-		BaseRef: fakeRepoBaseRef,
-		BaseSHA: fakeRepoBaseSHA,
-		Pulls: []prowapi.Pull{{
-			Number: fakeRepoPrNumber,
-			Author: fakeRepoPrAuthor,
-			SHA:    fakeRepoPrHeadSHA,
-		}},
-		PathAlias: fmt.Sprintf("github.com/%s/%s", fakeRepoPrOrg, fakeRepoPrRepo),
-	}
-
-	// set env variables for pjtester
-	os.Setenv("KYMA_PROJECT_DIR", repoDir)
-	os.Setenv("PULL_BASE_REF", testInfraBaseRef)
-	os.Setenv("PULL_BASE_SHA", testInfraBaseSHA)
-	os.Setenv("PULL_NUMBER", strconv.Itoa(testInfraPrNumber))
-	os.Setenv("PULL_PULL_SHA", testInfraPrHeadSHA)
-	os.Setenv("REPO_OWNER", testInfraPrOrg)
-	os.Setenv("REPO_NAME", testInfraPrRepo)
-	os.Setenv("JOB_SPEC", fmt.Sprintf("{\"type\":\"presubmit\",\"job\":\"job-name\",\"buildid\":\"0\",\"prowjobid\":\"uuid\",\"refs\":{\"org\":\"org-name\",\"repo\":\"repo-name\",\"base_ref\":\"base-ref\",\"base_sha\":\"base-sha\",\"pulls\":[{\"number\":1,\"author\":\"%s\",\"sha\":\"pull-sha\"}]}}", testInfraPrAuthor))
-	testCfgFile = fmt.Sprintf("%s/test-infra/development/tools/pkg/pjtester/test_artifacts/pjtester.yaml", repoDir)
-	ghOptions = &prowflagutil.GitHubOptions{}
-	os.Exit(m.Run())
+type FakeGithubClient struct {
+	fakegithub.FakeClient
 }
 
-func TestReadTestCfg(t *testing.T) {
-	testCfg := readTestCfg(testCfgFile)
-	assert.Containsf(t, testCfg.PjNames, pjCfg{
-		PjName: "test-infra-presubmit-test-job",
-		PjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/",
-		Report: true,
-	}, "pjCfg for test-infra-presubmit-test-job has wrong values.")
-	assert.Containsf(t, testCfg.PjNames, pjCfg{
-		PjName: "fake-repo-presubmit-test-job",
-		PjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/",
-		Report: false,
-	}, "pjCfg for fake-repo-presubmit-test-job has wrong values.")
-	assert.Containsf(t, testCfg.PjNames, pjCfg{
-		PjName: "orphaned-disks-cleaner",
-		PjPath: "test-infra/prow/jobs/",
-	}, "pjCfg for orphaned-disks-cleaner has wrong values")
-	assert.Containsf(t, testCfg.PjNames, pjCfg{
-		PjName: "post-main-kyma-integration-k3d",
-		PjPath: "test-infra/prow/jobs/",
-	}, "pjCfg for post-main-kyma-integration-k3d has wrong values.")
-	assert.Equalf(t, "test-infra/prow/config.yaml", testCfg.ConfigPath, "pjtester has wrong path to prow config.yaml file.")
-	assert.Equalf(t, 1212, testCfg.PrConfigs["kyma-project"]["kyma"].PrNumber, "PR number for kyma read from pjtester.yaml file is wrong.")
+func (f *FakeGithubClient) Email() (string, error) {
+	panic("implement me")
 }
 
-func TestNewTestPJ(t *testing.T) {
-	testCfg := readTestCfg(testCfgFile)
-	o := gatherOptions(testCfg.ConfigPath, *ghOptions)
-	fakeGitHubClient := &fakegithub.FakeClient{}
-	fakeGitHubClient.PullRequests = map[int]*github.PullRequest{
-		kymaPrNumber: {
-			User: github.User{
-				Login: kymaPrAuthor,
-			},
-			Head: github.PullRequestBranch{
-				SHA: kymaPrHeadSHA,
-			},
-			Number: kymaPrNumber,
-			Base: github.PullRequestBranch{
-				SHA: kymaBaseSHA,
-				Ref: kymaBaseRef,
-			},
-		},
-		fakeRepoPrNumber: {
-			User: github.User{
-				Login: fakeRepoPrAuthor,
-			},
-			Head: github.PullRequestBranch{
-				SHA: fakeRepoPrHeadSHA,
-			},
-			Number: fakeRepoPrNumber,
-			Base: github.PullRequestBranch{
-				SHA: fakeRepoBaseSHA,
-				Ref: fakeRepoBaseRef,
-			},
-		},
-	}
-	o.githubClient = fakeGitHubClient
-	o.prFinder = mocks.NewFakeGitHubClient(nil)
-	ctx := context.Background()
-	o.prFinder.Repositories.(*mocks.GithubRepoService).On("GetBranch", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseRef).Return(&gogithub.Branch{
-		Name: &fakeRepoMainName,
-		Commit: &gogithub.RepositoryCommit{
-			Commit: &gogithub.Commit{
-				SHA:     &fakeRepoBaseSHA,
-				Message: &fakeRepoCommitMessage,
-			},
-			SHA: &fakeRepoBaseSHA,
-		},
-		Protected: &fakeRepoProtectedBranch,
-	}, nil, nil)
-	//o.prFinder.Repositories.(*mocks.GithubRepoService).On("GetCommit", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseSHA)
-	o.prFinder.PullRequests.(*mocks.GithubPullRequestsService).On("Get", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoPrNumber).Return(&gogithub.PullRequest{
-		Merged:         &fakeRepoMerged,
-		MergeCommitSHA: &fakeRepoPrHeadSHA,
-	}, nil, nil)
-	//o.prFinder.PullRequests.(*mocks.GithubPullRequestsService).MethodCalled("GetBranch", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseRef)
-	//o.prFinder.Repositories.(*mocks.GithubRepoService).MethodCalled("Get", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoPrNumber)
-	defer o.prFinder.Repositories.(*mocks.GithubRepoService).AssertExpectations(t)
-	defer o.prFinder.PullRequests.(*mocks.GithubPullRequestsService).AssertExpectations(t)
-	var testPrCfg *map[string]prOrg
-	if testPrCfg = &testCfg.PrConfigs; testPrCfg != nil {
-		o.getPullRequests(testCfg)
-	}
-	for _, pjCfg := range testCfg.PjNames {
-		pj := newTestPJ(pjCfg, o)
-		assert.Equalf(t, "untrusted-workload", pj.Spec.Cluster, "Prowjob cluster name is not : untrusted-workload")
-		assert.Regexpf(t, "^testinfraauthor_test_of_prowjob_.*", pj.Spec.Job, "Prowjob name doesn't start with : <author github user>_test_of_prowjob_")
-		assert.LessOrEqualf(t, len(pj.Spec.Job), 63, "Size of prowjob name is greater than 63 bytes.")
-		if pj.Spec.Report == true {
-			assert.Equalf(t, pj.Spec.Report, true, "Unexpected Spec.Report value")
-		} else {
-			assert.Equalf(t, pj.Spec.Report, false, "Unexpected Spec.Report value")
-		}
-		if strings.Contains(pj.Spec.Job, "orphaned-disks-cleaner") {
-			assert.Containsf(t, pj.Spec.ExtraRefs, testInfraRefs, "ExtraRefs for test-infra is not present")
-			o.prFinder.Repositories.(*mocks.GithubRepoService).AssertNotCalled(t, "GetCommit", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseSHA)
-		} else if strings.Contains(pj.Spec.Job, "post-main-kyma-integration-k3d") {
-			assert.Equalf(t, kymaRefs, *pj.Spec.Refs, "Postsubmit Refs for kyma has wrong values")
-			assert.Lenf(t, pj.Spec.ExtraRefs, 2, "ExtraRefs slice doesn't contain two elements.")
-			assert.Equalf(t, testInfraRefs, pj.Spec.ExtraRefs[1], "ExtraRefs for test-infra is not present")
-			o.prFinder.Repositories.(*mocks.GithubRepoService).AssertNotCalled(t, "GetCommit", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseSHA)
-		} else if strings.Contains(pj.Spec.Job, "test-infra-presubmit-test-job") {
-			assert.Equalf(t, testInfraRefs, *pj.Spec.Refs, "Presubmit Refs for test-infra has wrong values")
-			assert.Lenf(t, pj.Spec.ExtraRefs, 1, "ExtraRefs slice doesn't contain one element.")
-			assert.Equalf(t, kymaRefs.Repo, pj.Spec.ExtraRefs[0].Repo, "Pre ExtraRefs Repo is not as expected")
-			assert.Equalf(t, kymaRefs.Org, pj.Spec.ExtraRefs[0].Org, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, kymaRefs.BaseSHA, pj.Spec.ExtraRefs[0].BaseSHA, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, kymaRefs.BaseRef, pj.Spec.ExtraRefs[0].BaseRef, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, kymaRefs.Pulls[0].SHA, pj.Spec.ExtraRefs[0].Pulls[0].SHA, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, kymaRefs.Pulls[0].Author, pj.Spec.ExtraRefs[0].Pulls[0].Author, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, kymaRefs.Pulls[0].Number, pj.Spec.ExtraRefs[0].Pulls[0].Number, "Pre ExtraRefs Org is not as expected")
-			o.prFinder.Repositories.(*mocks.GithubRepoService).AssertNotCalled(t, "GetCommit", ctx, fakeRepoPrOrg, fakeRepoPrRepo, fakeRepoBaseSHA)
-		}
-		if strings.Contains(pj.Spec.Job, "fake-repo-presubmit-test-job") {
-			assert.Lenf(t, pj.Spec.ExtraRefs, 2, "ExtraRefs slice doesn't contain two elements.")
-			assert.Equalf(t, testInfraRefs.Repo, pj.Spec.ExtraRefs[1].Repo, "Pre ExtraRefs Repo is not as expected")
-			assert.Equalf(t, testInfraRefs.Org, pj.Spec.ExtraRefs[1].Org, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, testInfraRefs.BaseSHA, pj.Spec.ExtraRefs[1].BaseSHA, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, testInfraRefs.BaseRef, pj.Spec.ExtraRefs[1].BaseRef, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, testInfraRefs.Pulls[0].SHA, pj.Spec.ExtraRefs[1].Pulls[0].SHA, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, testInfraRefs.Pulls[0].Author, pj.Spec.ExtraRefs[1].Pulls[0].Author, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, testInfraRefs.Pulls[0].Number, pj.Spec.ExtraRefs[1].Pulls[0].Number, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, kymaRefs.Repo, pj.Spec.ExtraRefs[0].Repo, "Pre ExtraRefs Repo is not as expected")
-			assert.Equalf(t, kymaRefs.Org, pj.Spec.ExtraRefs[0].Org, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, kymaRefs.BaseSHA, pj.Spec.ExtraRefs[0].BaseSHA, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, kymaRefs.BaseRef, pj.Spec.ExtraRefs[0].BaseRef, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, kymaRefs.Pulls[0].SHA, pj.Spec.ExtraRefs[0].Pulls[0].SHA, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, kymaRefs.Pulls[0].Author, pj.Spec.ExtraRefs[0].Pulls[0].Author, "Pre ExtraRefs Org is not as expected")
-			assert.Equalf(t, kymaRefs.Pulls[0].Number, pj.Spec.ExtraRefs[0].Pulls[0].Number, "Pre ExtraRefs Org is not as expected")
-		}
+type GitClient struct {
+	k8sgit.ClientFactory
+	git.RepoClient
+}
+
+func fakeProwYAMLGetterFactory(presubmits []config.Presubmit, postsubmits []config.Postsubmit) config.ProwYAMLGetter {
+	return func(_ *config.Config, _ k8sgit.ClientFactory, _, _ string, _ ...string) (*config.ProwYAML, error) {
+		return &config.ProwYAML{
+			Presubmits:  presubmits,
+			Postsubmits: postsubmits,
+		}, nil
 	}
 }
+
+func refsPullsElement(element interface{}) string {
+	return strconv.Itoa(element.(prowapi.Pull).Number)
+}
+
+func extraRefsElement(element interface{}) string {
+	return (element.(prowapi.Refs).Org) + "/" + (element.(prowapi.Refs).Repo)
+}
+
+var _ = Describe("Pjtester", func() {
+	var (
+		testCfgFile       string
+		pjtesterPrAuthor  string
+		pjtesterPrBaseRef string
+		pjtesterPrBaseSHA string
+		pjtesterPrNumber  int
+		pjtesterPrHeadSHA string
+		pjtesterPrOrg     string
+		pjtesterPrRepo    string
+		// testInfraPrAuthor        string
+		// testInfraPrHeadSHA       string
+		testInfraPrNumber        int
+		testInfraPrOrg           string
+		testInfraPrRepo          string
+		testInfraBaseRef         string
+		testInfraBaseSHA         string
+		testInfraMainName        string
+		testInfraProtectedBranch bool
+		testInfraMerged          bool
+		testInfraCommitMessage   string
+	)
+
+	Describe("loading and validating pjtester.yaml file", func() {
+		Context("with valid full config file", func() {
+			BeforeEach(func() {
+				testCfgFile = "./test_artifacts/full-pjtester.yaml"
+				Expect(testCfgFile).Should(BeAnExistingFile())
+			})
+			It("create pjtester.testCfg instance without errors", func() {
+				testConfig, err := readTestCfg(testCfgFile)
+
+				Expect(err).To(BeNil())
+				Expect(testConfig).ToNot(BeZero())
+			})
+			It("create valid pjtester.testCfg instance", func() {
+				testConfig, _ := readTestCfg(testCfgFile)
+
+				Expect(testConfig).To(MatchAllFields(Fields{
+					// "ConfigPath": Equal("fake/config/file/path.yaml"),
+					"PjConfigs": MatchAllFields(Fields{
+						"PrConfig": MatchAllKeys(Keys{
+							"kyma-project": MatchAllKeys(Keys{
+								"test-infra": MatchFields(IgnoreExtras, Fields{
+									"PrNumber": Equal(1414),
+								}),
+							}),
+						}),
+						"ProwJobs": MatchAllKeys(Keys{
+							"kyma-project": MatchAllKeys(Keys{
+								"test-infra": ConsistOf(pjConfig{
+									PjName: "pre-test-infra-validate-dockerfiles",
+								}, pjConfig{
+									PjName: "test-infra-presubmit-test-job",
+									// PjPath: "test-infra/development/tools/pkg/pjtester/test_artifacts/",
+									Report: true,
+								}),
+							}),
+							"kyma-incubator": MatchAllKeys(Keys{
+								"busola": ConsistOf(pjConfig{PjName: "busola-fake-pjname"}),
+							}),
+						}),
+					}),
+					"PrConfigs": MatchAllKeys(Keys{
+						"kyma-project": MatchAllKeys(Keys{
+							"kyma": MatchFields(IgnoreExtras, Fields{
+								"PrNumber": Equal(1212),
+							}),
+							"test-infra": MatchFields(IgnoreExtras, Fields{
+								"PrNumber": Equal(1313),
+							}),
+						}),
+					}),
+				}), "pjtester created pjtester.testCfg instance which doesn't match input")
+			})
+		})
+
+		Context("with valid minimal config file", func() {
+			BeforeEach(func() {
+				testCfgFile = "./test_artifacts/minimal-pjtester.yaml"
+				Expect(testCfgFile).Should(BeAnExistingFile(), "Pjtester test config file doesn't exist")
+			})
+
+			It("create pjtester.testCfg instance without errors", func() {
+				testConfig, err := readTestCfg(testCfgFile)
+
+				Expect(err).To(BeNil())
+				Expect(testConfig).ToNot(BeZero())
+			})
+
+			It("create valid pjtester.testCfg instance", func() {
+				testConfig, _ := readTestCfg(testCfgFile)
+
+				Expect(testConfig).To(MatchAllFields(Fields{
+					"PrConfigs": BeZero(),
+					// "ConfigPath": BeZero(),
+					"PjConfigs": MatchAllFields(Fields{
+						"PrConfig": BeZero(),
+						"ProwJobs": MatchAllKeys(Keys{
+							"kyma-project": MatchAllKeys(Keys{
+								"test-infra": SatisfyAll(
+									HaveLen(1),
+									ContainElement(MatchAllFields(Fields{
+										"PjName": Equal("pre-test-infra-validate-dockerfiles"),
+										// "PjPath": BeZero(),
+										"Report": BeFalse(),
+									}))),
+							}),
+						}),
+					}),
+				}), "pjtester created pjtester.testCfg instance which doesn't match input")
+			})
+		})
+
+		Context("with invalid config file", func() {
+			BeforeEach(func() {
+				testCfgFile = "./test_artifacts/invalid-pjtester.yaml"
+				Expect(testCfgFile).Should(BeAnExistingFile(), "Pjtester test config file doesn't exist")
+			})
+
+			It("raise validation error", func() {
+				testConfig, err := readTestCfg(testCfgFile)
+
+				Expect(err).ToNot(BeNil())
+				Expect(testConfig).To(BeZero())
+			})
+		})
+	})
+	Describe("scheduling test prowjob", func() {
+		var (
+			ghOptions                  prowflagutil.GitHubOptions
+			opts                       options
+			ghRepoMock                 *prtagbuildermock.GithubRepoService
+			ghPrMock                   *prtagbuildermock.GithubPullRequestsService
+			err                        error
+			testConfig                 testCfg
+			pj                         prowapi.ProwJob
+			ProwYAMLGetterWithDefaults config.ProwYAMLGetter
+		)
+		JustBeforeEach(func() {
+			pjtesterPrAuthor = "pjtesterPrAuthor"
+			pjtesterPrBaseRef = "main"
+			pjtesterPrBaseSHA = "pjtesterPrBaseSHA"
+			pjtesterPrNumber = 12345
+			pjtesterPrHeadSHA = "pjtesterPrHeadSHA"
+			pjtesterPrOrg = "kyma-project"
+			pjtesterPrRepo = "test-infra"
+
+			// set env variables for pjtester pull request
+			_ = os.Setenv("PULL_BASE_REF", pjtesterPrBaseRef)
+			_ = os.Setenv("PULL_BASE_SHA", pjtesterPrBaseSHA)
+			_ = os.Setenv("PULL_NUMBER", strconv.Itoa(pjtesterPrNumber))
+			_ = os.Setenv("PULL_PULL_SHA", pjtesterPrHeadSHA)
+			_ = os.Setenv("REPO_OWNER", pjtesterPrOrg)
+			_ = os.Setenv("REPO_NAME", pjtesterPrRepo)
+			_ = os.Setenv("JOB_SPEC", fmt.Sprintf("{\"type\":\"presubmit\",\"job\":\"job-name\",\"buildid\":\"0\",\"prowjobid\":\"uuid\",\"refs\":{\"pjtesterPrOrg\":\"%s\",\"repo\":\"%s\",\"base_ref\":\"%s\",\"base_sha\":\"%s\",\"pulls\":[{\"number\":%d,\"author\":\"%s\",\"sha\":\"%s\"}]}}", pjtesterPrOrg, pjtesterPrRepo, pjtesterPrBaseRef, pjtesterPrBaseSHA, pjtesterPrNumber, pjtesterPrAuthor, pjtesterPrHeadSHA))
+
+			ghOptions = prowflagutil.GitHubOptions{}
+			// TODO: test this function in separate context, opts must be defined at the beginning.
+			opts, err = newCommonOptions(&ghOptions)
+			Expect(err).To(Succeed())
+
+			testConfig, err = readTestCfg(testCfgFile)
+			// Make sure config file was load without errors.
+			Expect(err).To(BeNil())
+			Expect(testConfig).ToNot(BeZero())
+
+			// Override default job config path
+			opts.jobConfigPath = "./test_artifacts/test-job.yaml"
+			// Override default job config path
+			opts.configPath = "./test_artifacts/test-prow-config.yaml"
+
+			// Create fake GitHub client
+			fake := &FakeGithubClient{*fakegithub.NewFakeClient()}
+			// TODO: merge map from BeforeEach with existing map under fakeGitHub client.
+			/*
+				fake.PullRequests = map[int]*github.PullRequest{
+					testInfraPrNumber: {
+						User: github.User{
+							Login: testInfraPrAuthor,
+						},
+						Head: github.PullRequestBranch{
+							SHA: testInfraPrHeadSHA,
+						},
+						Number: testInfraPrNumber,
+						Base: github.PullRequestBranch{
+							SHA: testInfraBaseSHA,
+							Ref: testInfraBaseRef,
+						},
+					},
+				}
+
+			*/
+			opts.githubClient = fake
+
+			// Create fake git client
+			opts.gitOptions = git.ClientConfig{}
+			lg, gc, err := localgit.NewV2()
+			// localgit.DefaultBranch(lg.Dir)
+			err = lg.MakeFakeRepo(pjtesterPrOrg, pjtesterPrRepo)
+			Expect(err).To(Succeed())
+			// opts.gitClient, err = opts.gitOptions.NewClient(git.WithGithubClient(opts.githubClient))
+			opts.gitClient = GitClient{ClientFactory: gc}
+			// Make sure gitClient was created without errors.
+			Expect(err).To(BeNil())
+			Expect(opts.gitClient).ToNot(BeZero())
+
+			// Mock prFinder
+			opts.prFinder = prtagbuildermock.NewFakeGitHubClient(&http.Client{})
+			ghRepoMock = new(prtagbuildermock.GithubRepoService)
+			ghPrMock = new(prtagbuildermock.GithubPullRequestsService)
+			ghRepoMock.On("GetBranch", context.Background(), testInfraPrOrg, testInfraPrRepo, testInfraBaseRef).Return(&gogithub.Branch{
+				Name: &testInfraMainName,
+				Commit: &gogithub.RepositoryCommit{
+					Commit: &gogithub.Commit{
+						SHA:     &testInfraBaseSHA,
+						Message: &testInfraCommitMessage,
+					},
+					SHA: &testInfraBaseSHA,
+				},
+				Protected: &testInfraProtectedBranch,
+			}, nil, nil)
+			ghPrMock.On("Get", context.Background(), testInfraPrOrg, testInfraPrRepo, testInfraPrNumber).Return(&gogithub.PullRequest{
+				Merged:         &testInfraMerged,
+				MergeCommitSHA: &testInfraBaseSHA,
+			}, nil, nil)
+			opts.prFinder.Repositories = ghRepoMock
+			opts.prFinder.PullRequests = ghPrMock
+
+		})
+		When("test prowjob definition is in test-infra", func() {
+			When("pjtester pull request is in test-infra ", func() {
+				/*
+					Context("with provided pull request with test prowjob definition", func() {
+						Context("with defined test prowjob pull requests", func() {
+						})
+						Context("without defined test prowjob pull requests", func() {
+						})
+					})
+				*/
+				When("not provided pull request with test prowjob definition", func() {
+					/*
+						Context("with defined test prowjob pull requests", func() {
+						})
+					*/
+					When("not provided test prowjob pull requests", func() {
+						BeforeEach(func() {
+							// testInfraPrAuthor = "testInfraPrAuthor"
+							// testInfraPrHeadSHA = "testInfraHeadSHA"
+							testInfraPrNumber = 1515
+							testInfraPrOrg = "kyma-project"
+							testInfraPrRepo = "test-infra"
+							testInfraBaseRef = "main"
+							testInfraBaseSHA = "fakeRepoSHA"
+							testInfraMainName = "main"
+							testInfraProtectedBranch = false
+							testInfraMerged = true
+							testInfraCommitMessage = fmt.Sprintf("Fake Repo commit message (#%s)", strconv.Itoa(testInfraPrNumber))
+							testCfgFile = "./test_artifacts/no_prconfigs-no_prowjob_prconfig-pjtester.yaml"
+							Expect(testCfgFile).Should(BeAnExistingFile(), "Pjtester test config file doesn't exist")
+
+							// Return nil, nil as there is no inrepo config tested in this scenario
+							ProwYAMLGetterWithDefaults = fakeProwYAMLGetterFactory(
+								nil,
+								nil,
+							)
+
+						})
+						It("create valid prowjob specification", func() {
+							if &testConfig.PrConfigs != nil {
+								pullRequests, err := opts.getPullRequests(testConfig.PrConfigs)
+								Expect(err).To(BeNil())
+								opts.testPullRequests = pullRequests
+							}
+							if &testConfig.PjConfigs.PrConfig != nil {
+								pullRequests, err := opts.getPullRequests(testConfig.PjConfigs.PrConfig)
+								Expect(err).To(BeNil())
+								for _, prorg := range pullRequests {
+									for _, prconfig := range prorg {
+										opts.pjConfigPullRequest = prconfig
+									}
+								}
+							}
+							for org, pjOrg := range testConfig.PjConfigs.ProwJobs {
+								for repo, pjconfigs := range pjOrg {
+									for _, pjCfg := range pjconfigs {
+										// generate prowjob specification to test.
+										testPjOpts := testProwJobOptions{
+											repoName: repo,
+											orgName:  org,
+											pjConfig: pjCfg,
+										}
+										conf, err := config.Load(opts.configPath, opts.jobConfigPath, nil, "")
+										Expect(err).To(Succeed())
+										Expect(conf).Should(BeAssignableToTypeOf(&config.Config{}))
+										conf.ProwYAMLGetterWithDefaults = ProwYAMLGetterWithDefaults
+										err = testPjOpts.setRefsGetters(opts)
+										Expect(err).To(Succeed())
+										_, pjSpecification, err := testPjOpts.genJobSpec(opts, conf, pjCfg)
+										Expect(err).To(Succeed())
+										pj = pjutil.NewProwJob(pjSpecification, map[string]string{"created-by-pjtester": "true", "prow.k8s.io/is-optional": "true"}, map[string]string{})
+										pj.Spec.Cluster = "untrusted-workload"
+										if pjCfg.Report {
+											pj.Spec.Report = true
+										} else {
+											pj.Spec.ReporterConfig = &prowapi.ReporterConfig{Slack: &prowapi.SlackReporterConfig{Channel: "kyma-prow-dev-null"}}
+										}
+									}
+								}
+							}
+							Expect(testConfig.PrConfigs).To(BeNil())
+							Expect(testConfig.PjConfigs.PrConfig).To(BeNil())
+							Expect(pj).To(MatchFields(3, Fields{
+								"Spec": MatchFields(3, Fields{
+									"Job":     Equal("pjtesterprauthor_test_of_prowjob_test-infra-presubmit-test-job"),
+									"Context": Equal("pjtesterprauthor_test_of_prowjob_test-infra-presubmit-test-job"),
+									"Cluster": Equal("untrusted-workload"),
+									"Report":  BeTrue(),
+									"ReporterConfig": PointTo(MatchAllFields(Fields{
+										"Slack": PointTo(MatchFields(3, Fields{
+											"Channel": Equal("kyma-prow-dev-null"),
+										})),
+									})),
+									"Refs": PointTo(MatchFields(3, Fields{
+										"Org":     Equal("kyma-project"),
+										"Repo":    Equal("test-infra"),
+										"BaseRef": Equal(pjtesterPrBaseRef),
+										"BaseSHA": Equal(pjtesterPrBaseSHA),
+										"Pulls": MatchAllElements(refsPullsElement, Elements{
+											"12345": MatchFields(3, Fields{
+												"Number": Equal(pjtesterPrNumber),
+												"Author": Equal(pjtesterPrAuthor),
+												"SHA":    Equal(pjtesterPrHeadSHA),
+											}),
+										}),
+									})),
+									"ExtraRefs": MatchAllElements(extraRefsElement, Elements{
+										"kyma-project/kyma": MatchFields(3, Fields{
+											"Org":     Equal("kyma-project"),
+											"Repo":    Equal("kyma"),
+											"BaseRef": Equal("main"),
+											"BaseSHA": BeZero(),
+											"Pulls":   BeNil(),
+										}),
+									}),
+								}),
+							}))
+						})
+					})
+				})
+			})
+			/*
+				Context("with pjtester pull request not in test-infra", func() {
+					Context("with provided pull request with test prowjob definition", func() {
+						Context("with defined test prowjob pull requests", func() {
+						})
+						Context("without defined test prowjob pull requests", func() {
+						})
+					})
+					Context("without provided pull request with test prowjob definition", func() {
+						Context("with defined test prowjob pull requests", func() {
+						})
+						Context("without defined test prowjob pull requests", func() {
+						})
+					})
+				})
+			*/
+		})
+		/*
+			Context("with test prowjob definition not in test-infra", func() {
+				Context("with pjtester pull request in test-infra ", func() {
+					Context("with provided pull request with test prowjob definition", func() {
+						Context("with defined test prowjob pull requests", func() {
+						})
+						Context("without defined test prowjob pull requests", func() {
+						})
+					})
+					Context("without provided pull request with test prowjob definition", func() {
+						Context("with defined test prowjob pull requests", func() {
+						})
+						Context("without defined test prowjob pull requests", func() {
+						})
+					})
+				})
+				Context("with pjtester pull request not in test-infra", func() {
+					Context("with provided pull request with test prowjob definition", func() {
+						Context("with defined test prowjob pull requests", func() {
+						})
+						Context("without defined test prowjob pull requests", func() {
+						})
+					})
+					Context("without provided pull request with test prowjob definition", func() {
+						Context("with defined test prowjob pull requests", func() {
+						})
+						Context("without defined test prowjob pull requests", func() {
+						})
+					})
+				})
+			})
+		*/
+	})
+	/*
+		When("Creating new common options", func() {
+
+		})
+	*/
+})

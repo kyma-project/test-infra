@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-smoke-test
       annotations:
+        description: "Compass smoke test"
+        owner: "compass"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -33,14 +35,19 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass-smoke-test.sh"
+              - "installation/scripts/prow/jobs/provision-vm-compass-smoke-test.sh"
             env:
               - name: GO111MODULE
                 value: "on"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 100Mi

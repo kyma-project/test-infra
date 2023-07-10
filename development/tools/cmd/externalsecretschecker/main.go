@@ -67,7 +67,7 @@ func gatherOptions() options {
 
 func main() {
 	o := gatherOptions()
-	externalSecretsSuccesful := true
+	externalSecretsSuccessful := true
 	secretsDeclaredAsExternal := true
 	exitCode := 0
 
@@ -99,9 +99,9 @@ func main() {
 		// check if we have defined list of namespaces to check, otherwise check all
 		if len(checkedNamespaces) == 0 || nameInSlice(namespace.Name, checkedNamespaces) {
 			// check status for all external secrets
-			externalSecretsInNamespaceSuccesfull := checkExternalSecretsStatus(client, namespace.Name)
-			if !externalSecretsInNamespaceSuccesfull {
-				externalSecretsSuccesful = false
+			externalSecretsInNamespaceSuccessful := checkExternalSecretsStatus(client, namespace.Name)
+			if !externalSecretsInNamespaceSuccessful {
+				externalSecretsSuccessful = false
 			}
 
 			// check if all Opaque secrets are also declared as externalSecrets
@@ -112,8 +112,8 @@ func main() {
 		}
 	}
 
-	if !externalSecretsSuccesful {
-		logrus.Info("At least one ExternalSecret was not synchronized succesfully")
+	if !externalSecretsSuccessful {
+		logrus.Info("At least one ExternalSecret was not synchronized successfully")
 		exitCode++
 	}
 

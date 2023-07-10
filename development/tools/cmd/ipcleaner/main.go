@@ -16,6 +16,7 @@ import (
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/container/v1"
+	"google.golang.org/api/option"
 )
 
 // nat-auto-ip is *probably* from Gardener, let them handle removal
@@ -45,7 +46,7 @@ func main() {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
 
-	computeSvc, err := compute.New(connection)
+	computeSvc, err := compute.NewService(ctx, option.WithHTTPClient(connection))
 	if err != nil {
 		log.Fatalf("Could not initialize compute API client: %v", err)
 	}

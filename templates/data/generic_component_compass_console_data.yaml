@@ -1,0 +1,106 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
+        localSets:
+          linting:
+            skip_report: "false"
+            max_concurrency: "10"
+            optional: "false"
+            decorate: "true"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 200Mi
+            request_cpu: 100m
+          testing:
+            skip_report: "false"
+            max_concurrency: "10"
+            optional: "false"
+            decorate: "true"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 500Mi
+            request_cpu: 500m
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass-console"
+            jobs:
+              - jobConfig:
+                  name: pull-compass-console-build
+                  annotations:
+                    owner: compass
+                    description: "Building Compass Console component"
+                  args:
+                    - "--name=incubator/compass-console"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=compass/Dockerfile"
+                  decoration_config:
+                    timeout: 60m
+                    grace_period: 1m
+                  run_if_changed: "^compass/|^components/|^shared/|^package.json"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: pull-compass-console-lint
+                  annotations:
+                    owner: compass
+                    description: "Linter for the Compass Console component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "./scripts/prow-lint.sh"
+                  run_if_changed: "^compass/|^components/|^shared/|^package.json"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - image_buildpack-node
+                    - "unprivileged"
+                  local:
+                    - linting
+              - jobConfig:
+                  name: pull-compass-console-test
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Compass Console component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "./scripts/prow-test.sh"
+                  run_if_changed: "^compass/|^components/|^shared/|^package.json"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - image_buildpack-node
+                    - "unprivileged"
+                  local:
+                    - testing
+              - jobConfig:
+                  name: post-compass-console-build
+                  annotations:
+                    owner: compass
+                    description: "Building Compass Console component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-console"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=compass/Dockerfile"
+                  decoration_config:
+                    timeout: 60m
+                    grace_period: 1m
+                  run_if_changed: "^compass/|^components/|^shared/|^package.json"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit

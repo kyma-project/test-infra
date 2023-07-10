@@ -25,6 +25,24 @@ components:
 EOF
 }
 
+function api-gateway::prepare_components_file_istio_only() {
+  log::info "Preparing Kyma installation with Istio and API-Gateway"
+
+cat << EOF > "$PWD/components.yaml"
+defaultNamespace: kyma-system
+prerequisites:
+  - name: "cluster-essentials"
+  - name: "istio"
+    namespace: "istio-system"
+  - name: "certificates"
+    namespace: "istio-system"
+components:
+  - name: "istio-resources"
+  - name: "api-gateway"
+  - name: "ory" # Until drop of ory oathkeeper Ory needs to be deployed for noop and OAuth2 scenarios
+EOF
+}
+
 function api-gateway::prepare_test_environments() {
   log::info "Prepare test environment variables"
 
@@ -32,8 +50,16 @@ function api-gateway::prepare_test_environments() {
   export TEST_HYDRA_ADDRESS="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com"
   export TEST_REQUEST_TIMEOUT="120"
   export TEST_REQUEST_DELAY="10"
-  export TEST_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com" 
+  export TEST_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com"
   export TEST_CLIENT_TIMEOUT=30s
+  export TEST_CONCURENCY="8"
+  export EXPORT_RESULT="true"
+  export KYMA_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com"
+}
+
+function api-gateway::prepare_test_env_integration_tests() {
+  log::info "Prepare test environment variables for integration tests"
+  export KYMA_DOMAIN="${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com"
 }
 
 function api-gateway::configure_ory_hydra() {
@@ -44,6 +70,7 @@ function api-gateway::configure_ory_hydra() {
   kubectl -n kyma-system set env deployment ory-hydra URLS_CONSENT="https://ory-hydra-login-consent.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/consent"
   kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_ISSUER="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/"
   kubectl -n kyma-system set env deployment ory-hydra URLS_SELF_PUBLIC="https://oauth2.${CLUSTER_NAME}.${GARDENER_KYMA_PROW_PROJECT_NAME}.shoot.live.k8s-hana.ondemand.com/"
+  kubectl -n kyma-system scale deployment.apps ory-hydra --replicas=1
   kubectl -n kyma-system rollout restart deployment ory-hydra
   kubectl -n kyma-system rollout status deployment ory-hydra
 }
@@ -123,15 +150,27 @@ spec:
         port:
           number: 80
 EOF
+  kubectl wait deployment/istiod -n istio-system --timeout=60s --for condition=available
   kubectl apply -f "$PWD/ory-hydra-login-consent.yaml"
+  kubectl wait deployment ory-hydra-login-consent -n kyma-system --timeout=60s --for condition=available
   log::success "App deployed"
 }
 
 function api-gateway::launch_tests() {
   log::info "Running Kyma API-Gateway tests"
+  kubectl get validatingwebhookconfigurations
+  pushd "${KYMA_SOURCES_DIR}/tests/components/api-gateway"
+  make test
+  popd
 
-  pushd "${KYMA_SOURCES_DIR}/tests/components/api-gateway/gateway-tests"
-  go test -v ./main_test.go
+  log::success "Tests completed"
+}
+
+function api-gateway::launch_integration_tests() {
+  log::info "Running API-Gateway integration tests"
+  pushd "${API_GATEWAY_SOURCES_DIR}"
+  make install-kyma
+  make test-integration
   popd
 
   log::success "Tests completed"

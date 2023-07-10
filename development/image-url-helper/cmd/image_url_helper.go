@@ -3,7 +3,7 @@ package cmd
 import "github.com/spf13/cobra"
 
 var (
-	// ResourcesDirectory stores path to the Kyma resoruces directory
+	// ResourcesDirectory stores path to the Kyma resources directory
 	ResourcesDirectory string
 	rootCmd            = &cobra.Command{
 		Use:   "image-url-helper",
@@ -12,12 +12,11 @@ var (
 	}
 )
 
-// Execute is a main Cobra fucntion
+// Execute is a main Cobra function
 func Execute() error {
 	rootCmd.AddCommand(CheckCmd())
 	rootCmd.AddCommand(ListCmd())
 	rootCmd.AddCommand(PromoteCmd())
-	rootCmd.AddCommand(ComponentsCmd())
 	rootCmd.AddCommand(MissingCmd())
 
 	return rootCmd.Execute()

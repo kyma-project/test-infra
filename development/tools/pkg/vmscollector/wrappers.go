@@ -19,9 +19,7 @@ func (iaw *InstancesAPIWrapper) ListInstances(project string) ([]*compute.Instan
 
 	pageFunc := func(instancesList *compute.InstanceAggregatedList) error {
 		for _, instancesInZone := range instancesList.Items {
-			for _, inst := range instancesInZone.Instances {
-				instances = append(instances, inst)
-			}
+			instances = append(instances, instancesInZone.Instances...)
 		}
 		return nil
 	}

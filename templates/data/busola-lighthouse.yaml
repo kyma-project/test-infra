@@ -30,7 +30,10 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-busola-lighthouse"
-                  optional: false
+                  annotations:
+                    owner: hasselhoff
+                    description: Busola performance testing
+                  optional: true
                   run_if_changed: "^resources/|^lighthouse/|^nginx/"
                   labels:
                     preset-build-pr: "true"
@@ -50,8 +53,11 @@ templates:
               # postsubmits
               - jobConfig:
                   name: "post-busola-lighthouse"
-                  optional: false
-                  run_if_changed: "^resources/|^lighthouse/|^nginx/"
+                  annotations:
+                    owner: hasselhoff
+                    description: Busola performance testing
+                  optional: true
+                  run_if_changed: "^resources/|^tests/|^lighthouse/|^nginx/"
                   labels:
                     preset-build-main: "false"
                     preset-gardener-azure-kyma-integration: "true"

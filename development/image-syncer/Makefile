@@ -21,8 +21,8 @@ clean:
 	rm -f logs-printer
 .PHONY: dry-run
 dry-run:
-	go run . --dry-run --debug --images-file external-images.yaml --target-repo-auth-key="${GOOGLE_APPLICATION_CREDENTIALS}" --kms-key="${KMS_KEY_URL}"
+	go run . --dry-run --debug --images-file external-images.yaml --target-repo-auth-key="${GOOGLE_APPLICATION_CREDENTIALS}"
 
 .PHONY: run
 run:
-	go run . --images-file external-images.yaml --target-repo-auth-key="${GOOGLE_APPLICATION_CREDENTIALS}" --kms-key="${KMS_KEY_URL}"
+	go run . --images-file external-images.yaml --target-repo-auth-key="${GOOGLE_APPLICATION_CREDENTIALS}"

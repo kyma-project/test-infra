@@ -13,6 +13,7 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/pkg/orphanremover"
 	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"
+	"google.golang.org/api/option"
 )
 
 var (
@@ -31,12 +32,12 @@ func main() {
 
 	log.Printf("Running with arguments: project: \"%s\", dryRun: \"%t\"", *project, *dryRun)
 	ctx := context.Background()
-	connenction, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+	connection, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
 	if err != nil {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
 
-	svc, err := compute.New(connenction)
+	svc, err := compute.NewService(ctx, option.WithHTTPClient(connection))
 	if err != nil {
 		log.Fatalf("Could not initialize gke client: %v", err)
 	}

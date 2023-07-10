@@ -16,8 +16,6 @@ excludedConfigPaths:
 {{- $rel := . | replace "." "" }}
   - "prow/jobs/kyma/releases/kyma-release-{{ $rel }}.yaml"
 {{- end }}
-extraFiles:
-  - "development/tools/jobs/tester/tester.go"
 targetVersion: "latest"
 prefixes:
   - name: "test-infra"
@@ -27,3 +25,10 @@ prefixes:
     repo: "https://github.com/kyma-project/test-infra"
     summarise: true
     consistentImages: false
+  - name: "testimages"
+    prefix: "europe-docker.pkg.dev/kyma-project/prod/testimages/"
+    refConfigFile: "templates/config.yaml"
+    stagingRefConfigFile: "templates/config.yaml"
+    repo: "https://github.com/kyma-project/test-infra"
+    summarise: true
+    consistentImages: true

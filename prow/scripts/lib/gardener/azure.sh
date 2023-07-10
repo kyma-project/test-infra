@@ -20,8 +20,6 @@ source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/docker.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
-# shellcheck disable=SC1090
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers/fluent-bit-stackdriver-logging.sh"
 # shellcheck source=prow/scripts/lib/gardener/gardener.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
 
@@ -119,11 +117,13 @@ gardener::provision_cluster() {
                 --region "${GARDENER_REGION}" \
                 -z "${GARDENER_ZONES}" \
                 -t "${MACHINE_TYPE}" \
-                --scaler-max 1 --scaler-min 1 \
+                --scaler-max 1 \
+                --scaler-min 1 \
                 --disk-type StandardSSD_LRS \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
                 --attempts 1 \
-                --verbose
+                --verbose \
+                --hibernation-start ""
     else
             # enable trap to catch kyma provision failures
             trap gardener::reprovision_cluster ERR
@@ -137,9 +137,12 @@ gardener::provision_cluster() {
                 -z "${GARDENER_ZONES}" \
                 -t "${MACHINE_TYPE}" \
                 --disk-type StandardSSD_LRS \
+                --scaler-max 4 \
+                --scaler-min 2 \
                 --kube-version="${GARDENER_CLUSTER_VERSION}" \
                 --attempts 1 \
-                --verbose
+                --verbose \
+                --hibernation-start ""
     fi
     # trap cleanup we want other errors fail pipeline immediately
     trap - ERR
@@ -147,42 +150,6 @@ gardener::provision_cluster() {
     # run oom debug pod
         utils::debug_oom
     fi
-}
-
-gardener::install_kyma() {
-    log::info "Installing Kyma"
-
-    prepare_stackdriver_logging "${INSTALLATION_OVERRIDE_STACKDRIVER}"
-    if [[ "$?" -ne 0 ]]; then
-        return 1
-    fi
-
-    set -x
-    if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-        kyma install \
-            --ci \
-            --source "${KYMA_SOURCE}" \
-            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
-            --timeout 60m \
-            --profile evaluation \
-            --verbose
-    elif [[ "$EXECUTION_PROFILE" == "production" ]]; then
-        kyma install \
-            --ci \
-            --source "${KYMA_SOURCE}" \
-            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
-            --timeout 60m \
-            --profile production \
-            --verbose
-    else
-        kyma install \
-            --ci \
-            --source "${KYMA_SOURCE}" \
-            -o "${INSTALLATION_OVERRIDE_STACKDRIVER}" \
-            --timeout 90m \
-            --verbose
-    fi
-    set +x
 }
 
 gardener::hibernate_kyma() {
@@ -318,9 +285,11 @@ gardener::test_fast_integration_kyma() {
 }
 
 gardener::pre_upgrade_test_fast_integration_kyma() {
-    log::info "Running pre-upgrade Kyma Fast Integration tests"
+    log::info "Running pre-upgrade Kyma Fast Integration tests - Azure"
 
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    kymaDirectory="$(utils::get_kyma_fast_integration_dir "$@")"
+    log::info "Switching directory to '$kymaDirectory'"
+    pushd "$kymaDirectory"
     make ci-pre-upgrade
     popd
 
@@ -328,9 +297,11 @@ gardener::pre_upgrade_test_fast_integration_kyma() {
 }
 
 gardener::post_upgrade_test_fast_integration_kyma() {
-    log::info "Running post-upgrade Kyma Fast Integration tests"
+    log::info "Running post-upgrade Kyma Fast Integration tests - Azure"
 
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    kymaDirectory="$(utils::get_kyma_fast_integration_dir "$@")"
+    log::info "Switching directory to '$kymaDirectory'"
+    pushd "$kymaDirectory"
     make ci-post-upgrade
     popd
 

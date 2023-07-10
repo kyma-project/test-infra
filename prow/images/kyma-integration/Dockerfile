@@ -11,7 +11,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 #################################################################
 ###################### Basic Bootstrap ##########################
 #################################################################
-ARG K8S_VERSION=1.18
+ARG K8S_VERSION=1.26
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
@@ -73,7 +73,7 @@ RUN update-alternatives --set iptables /usr/sbin/iptables-legacy && \
 
 # Versions
 
-ENV GO_VERSION 1.18.3
+ENV GO_VERSION 1.19.4
 ENV DEP_RELEASE_TAG v0.5.4
 
 # Install Go
@@ -100,12 +100,12 @@ RUN curl -fLSs https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get -y --no-install-recommends install nodejs
 
 #################################################################
-###################### Cluster Integration ###################### 
+###################### Cluster Integration ######################
 #################################################################
 
 #Install helm
 
-ENV HELM_VERSION="v3.7.1"
+ENV HELM_VERSION="v3.7.2"
 
 RUN curl -fLSs https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz | tar -xzO linux-amd64/helm > /usr/local/bin/helm && \
 	  chmod +x /usr/local/bin/helm && \
@@ -139,7 +139,7 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor |
 #################################################################
 
 # hadolint ignore=DL3022
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20220105-4e0c3c9e /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20221118-5c35cc55 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
 
@@ -148,7 +148,7 @@ ENV PATH=$PATH:/prow-tools
 ######################## Install gcloud #########################
 #################################################################
 
-ENV CLOUD_SDK_VERSION=324.0.0 \
+ENV CLOUD_SDK_VERSION=423.0.0 \
     PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1 \
     CLUSTER_VERSION=$K8S_VERSION
@@ -162,9 +162,11 @@ RUN curl -fLSs -o gc-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid
     --path-update=false \
     --usage-reporting=false && \
     gcloud components install alpha beta kubectl docker-credential-gcr && \
+    gcloud components install gke-gcloud-auth-plugin && \
     gcloud info | tee /workspace/gcloud-info.txt && \
     mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 
+ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
 #################################################################
 ################ Install Benchmark utilities ####################
 #################################################################
@@ -193,7 +195,7 @@ RUN curl -fLSs -o /usr/local/bin/cosign https://github.com/sigstore/cosign/relea
 #################################################################
 
 # Note: kcp-cli doesn't provide releases
-ENV KCPCLI_VERSION=master-1208b417
+ENV KCPCLI_VERSION=master
 RUN curl -fLSs -o /usr/local/bin/kcp https://storage.googleapis.com/kyma-development-artifacts/kcp/${KCPCLI_VERSION}/kcp-linux &&\
     chmod +x /usr/local/bin/kcp
 
@@ -212,3 +214,11 @@ RUN curl -fsSL https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${
   mv gh_${GH_VERSION}_linux_amd64/bin/gh /usr/local/bin/gh &&\
   chmod +x /usr/local/bin/gh &&\
   rm -r gh_${GH_VERSION}_linux_amd64
+
+#################################################################
+################ Install kustomize ########################
+#################################################################
+ENV KUSTOMIZE_VERSION=4.5.7
+RUN curl -fsSL https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize%2Fv${KUSTOMIZE_VERSION}/kustomize_v${KUSTOMIZE_VERSION}_linux_amd64.tar.gz -o - | tar -xz &&\
+  mv kustomize /usr/local/bin/kustomize &&\
+  chmod +x /usr/local/bin/kustomize

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 log::info "Create local resources for a sample Function"
-clitests::assertRemoteCommand "sudo kyma init function --name first-function --runtime nodejs12"
+clitests::assertRemoteCommand "sudo kyma init function --name first-function --runtime nodejs16"
 
 log::info "Apply local resources for the Function to the Kyma cluster"
 clitests::assertRemoteCommand "sudo kyma apply function"

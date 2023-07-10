@@ -49,6 +49,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "post-rel{{ $relShort }}-kyma-integration-k3d"
+                  slack_channel: kyma-skr-release
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   branches:
@@ -57,6 +58,8 @@ templates:
                     preset-build-release: "true"
                     preset-sa-vm-kyma-integration: "true"
                   annotations:
+                    description: "Kyma integration job on k3d."
+                    owner: "huskies,goat"
                     pipeline.platform: k3d
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     testgrid-days-of-results: "60"
@@ -65,7 +68,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
                     - "image_kyma-integration"
-                    - "kyma_major_version_2"
                   local:
                     - "request_small"
                     - "vm_job_template_k3d"
@@ -81,13 +83,14 @@ templates:
                     preset-build-release: "true"
                     preset-sa-vm-kyma-integration: "true"
                   annotations:
+                    owner: neighbors
+                    description: k3d int test
                     pipeline.platform: k3d
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "image_kyma-integration"
-                    - "kyma_major_version_2"
                   local:
                     - "request_small"
                     - "vm_job_template_k3d"
@@ -95,9 +98,11 @@ templates:
                     - "bot_token"
               - jobConfig:
                   name: post-rel{{ $relShort }}-kyma-release-candidate
+                  slack_channel: kyma-skr-release
                   branches:
                     - '^{{ $rel }}\.\d+(?:-.*)?$' # release tags
                   annotations:
+                    owner: neighbors
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     description: Release candidate job for Kyma {{ $rel }}.
                     testgrid-days-of-results: "60"
@@ -112,7 +117,6 @@ templates:
                     preset-certificates-bucket: "true"
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
-                    preset-gke-pod-security-policy: "true"
                     preset-kms-gc-project-env: "true"
                     preset-cluster-use-ssd: "true"
                   env:
@@ -121,6 +125,10 @@ templates:
                     MACHINE_TYPE: "n1-highcpu-16"
                     PUBSUB_PROJECT: "sap-kyma-prow"
                     PUBSUB_TOPIC: "release-cluster-created"
+                  securityContext:
+                    privileged: "true"
+                    seccompProfile:
+                      type: Unconfined
                   decoration_config:
                     timeout: 3600000000000 # 1h
                     grace_period: 600000000000 # 10min
@@ -146,8 +154,10 @@ templates:
                     - "test-infra"
               - jobConfig:
                   name: "kyma-gke-nightly-rel{{ $relShort }}"
+                  slack_channel: kyma-skr-release
                   cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
                   annotations:
+                    owner: neighbors
                     description: Kyma GKE nightly build (release-{{ $rel }})
                     pipeline.platform: gke
                     pipeline.installer: kyma deploy
@@ -161,11 +171,9 @@ templates:
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
                     preset-build-main: "true"
-                    preset-stability-checker-slack-notifications: "true"
                     preset-nightly-github-integration: "true"
                     preset-kms-gc-project-env: "true"
                     preset-certificates-bucket: "true"
-                    preset-gke-pod-security-policy: "true"
                     preset-slack-alerts: "true"
                   volumes:
                   - name: sa-stability-fluentd-storage-writer
@@ -187,6 +195,10 @@ templates:
                     GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
                     CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
                     TEST_RESULT_WINDOW_TIME: "6h"
+                  securityContext:
+                    privileged: "true"
+                    seccompProfile:
+                      type: Unconfined
                 inheritedConfigs:
                   global:
                   - "jobConfig_default"

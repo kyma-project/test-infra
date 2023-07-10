@@ -1,0 +1,21 @@
+gitHubLogin: "kyma-bot"
+gitHubToken: "/etc/github/token"
+gitName: "Kyma Bot"
+gitEmail: "kyma.bot@sap.com"
+skipPullRequest: false
+gitHubOrg: "kyma-project"
+gitHubRepo: "test-infra"
+remoteName: "test-infra-1"
+upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/test-infra/main"
+headBranchName: "test-infra-markdwon-index-autobump"
+foldersToFilter:
+  - ".github"
+  - ".githooks"
+filesToFilter:
+  - "/CODE_OF_CONDUCT.md"
+  - "/CONTRIBUTING.md"
+  - "/NOTICE.md"
+  - "/README.md"
+  - "/index.md"
+  - "/docs/index.md"
+  - "/test-inventory-integration.md"

@@ -1,6 +1,6 @@
 # Presets
 
-This document contains the list of all Presets available in the [`config.yaml`](../../prow/config.yaml) file. Use them to define Prow Jobs for your components.
+This document contains the list of all Presets available in the [`config.yaml`](/prow/config.yaml) file. Use them to define Prow Jobs for your components.
 
 | Name                                                      | Description                                                                                                                                                                               |
 | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -17,7 +17,6 @@ This document contains the list of all Presets available in the [`config.yaml`](
 | **preset-sa-vm-kyma-integration**                         | It injects credentials for the service account to run integration tests on virtual machines (VMs).                                                                                        |
 | **preset-sa-gke-kyma-integration**                        | It injects credentials for the service account to run integration tests on a Google Cloud Engine (GKE) cluster.                                                                           |
 | **preset-creds-aks-kyma-integration**                     | It injects credentials to run integration tests on an Azure Kubernetes Service (AKS) cluster.                                                                                             |
-| **preset-nightly-aks-github-integration**                 | It injects GitHub application credentials which enable GitHub authentication for an AKS cluster using Dex.                                                                                |
 | **preset-bot-npm-token**                                  | It provides an environment variable with a token for publishing npm packages.                                                                                                             |
 | **preset-sa-kyma-artifacts**                              | It sets up the service account that has `write` rights to Kyma's artifacts bucket. This is also required if you need to push a new docker image.                                      |
 | **preset-docker-push-repository-gke-integration**         | It provides the environment variable with the location of the directory in the GCR repository for storing temporary Docker images for the Kyma Installer.                                 |
@@ -31,11 +30,9 @@ This document contains the list of all Presets available in the [`config.yaml`](
 | **preset-kyma-guard-bot-github-token**                    | It sets the environment variable with the GitHub token for the `kyma-guard-bot` account.                                                                                                  |
 | **preset-kyma-guard-bot-github-identity**                 | It sets the environment variables for the name and email of the `kyma-guard-bot` account.                                                                                                 |
 | **preset-kyma-artifacts-bucket**                          | It defines the environment variable for Kyma's artifact bucket.                                                                                                                           |
-| **preset-stability-checker-slack-notifications**          | It defines a webhook URL and a client token required for the Slack integration.                                                                                                           |
 | **preset-sap-slack-bot-token**                            | It sets the environment variable for the Slack token of the bot account in the SAP CX workspace. Find more information [here](https://api.slack.com/docs/token-types#bot).                |
 | **preset-kyma-backup-credentials**                        | It sets the environment variable for the JSON file with the credentials for the service account. The file contains write and read permissions for the GCP bucket used for backups.        |
 | **preset-kyma-backup-restore-bucket**                     | It defines the environment variable for Kyma's backups bucket.                                                                                                                            |
 | **preset-kyma-ondemands**                                 | It defines the environment variable for Kyma's on-demand artifacts bucket.                                                                                                                |
 | **preset-kyma-encryption-key**                            | It defines the key name for encrypting/decrypting operations on a  Prow cluster.                                                                                                                |
-| **preset-sa-prow-job-resource-cleaner**                   | It injects credentials for the service account to give multiple resource cleaners the `list` and `delete` rights in GCP.                                                                  |
 | **preset-certificates-bucket**                            | It provides the environment variable with the name of the bucket for Prow Jobs Secrets in the `kyma-prow-workload` project.                                                                |

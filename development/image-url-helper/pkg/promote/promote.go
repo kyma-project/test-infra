@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -285,7 +284,7 @@ func saveToFile(path string, lines []string) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(path, []byte(outputData), info.Mode())
+	err = os.WriteFile(path, []byte(outputData), info.Mode())
 	if err != nil {
 		return err
 	}
@@ -297,7 +296,7 @@ func ParseExcludes(excludesListFilename string) (ExcludesMap, error) {
 		return nil, nil
 	}
 
-	excludesListFile, err := ioutil.ReadFile(excludesListFilename)
+	excludesListFile, err := os.ReadFile(excludesListFilename)
 	if err != nil {
 		return nil, err
 	}

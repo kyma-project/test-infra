@@ -1,4 +1,4 @@
-# Prow Secrets Management
+# KMS Secrets Management
 
 ## Overview
 
@@ -19,7 +19,7 @@ Use the `export {VARIABLE}={value}` command to set up these variables, where:
  - **ENCRYPTION_KEY_NAME** is the key name in the key ring that is used for data encryption.
  - **LOCATION** is the geographical location of the data center that handles requests for Cloud KMS regarding a given resource and stores the corresponding cryptographic keys. When set to `global`, your Cloud KMS resources are available from multiple data centres.
 
-## Secrets management
+## KMS Secrets management
 
 >**NOTE:** Before you follow this guide, check Prow Secrets setup for the Google Cloud project.
 
@@ -51,6 +51,20 @@ Create a key to encrypt your private key.
 gcloud kms keys create $ENCRYPTION_KEY_NAME --location $LOCATION \
   --keyring $KEYRING_NAME --purpose encryption
   ```
+
+## Rotate a key version
+
+Use this command to create a new version of a key:
+```
+gcloud kms keys versions create --key=$ENCRYPTION_KEY_NAME --location $LOCATION \
+  --keyring $KEYRING_NAME --primary
+```
+
+Use this command to disable an old version of a key:
+```
+gcloud kms keys versions disable $VERSION --key=$ENCRYPTION_KEY_NAME --location $LOCATION \
+  --keyring $KEYRING_NAME --primary
+```
 
 ### Create a Google service account
 
@@ -86,6 +100,25 @@ Follow these steps:
    ```
    gcloud projects add-iam-policy-binding $PROJECT --member=serviceAccount:$SA_NAME@$PROJECT.iam.gserviceaccount.com --role=$ROLE
    ```
+
+
+### Rotate a Google service account key
+Follow these steps:
+
+1. Create a new key for a service account:
+```
+gcloud iam service-accounts keys create $SECRET_FILE --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+```
+
+2. List all keys:
+```
+gcloud iam service-accounts keys list --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com --managed-by=user
+```
+
+3. Delete an old key:
+```
+gcloud iam service-accounts keys delete $KEY_ID --iam-account=$SA_NAME@$PROJECT.iam.gserviceaccount.com
+```
 
 ### Encrypt the Secret
 

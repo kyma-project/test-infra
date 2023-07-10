@@ -4,6 +4,8 @@
 periodics: # runs on schedule
     - name: skr-aws-upgrade-integration-dev
       annotations:
+        description: "skr upgrade test on aws"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_aws"
@@ -15,7 +17,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "skr-aws-upgrade-integration-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
-        preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
@@ -40,16 +41,17 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/skr-aws-upgrade-integration-dev.sh"
             env:
               - name: KEB_PLAN_ID
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
-              - name: KYMA_MAJOR_VERSION
-                value: "1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: SKIP_CLEANUP

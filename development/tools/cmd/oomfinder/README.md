@@ -4,7 +4,7 @@
 
 oomfinder is a small tool designed to run in a Pod on each k8s worker node as a privileged container. It will check if Docker or Containerd is used and attach to its socket to listen for oom events. If an oom event occurs, oomfinder will print a message to `os stdout` with the following details:
 
-* Time when the oom event occured
+* Time when the oom event occurred
 * Namespace where it happened
 * Pod name which had this event
 * Container name which had this event

@@ -46,7 +46,15 @@ function provisionIngress() {
     log::info "Install ingress"
 
     # switch to the new cluster
-    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
+    cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
+{
+    "apiVersion": "authentication.gardener.cloud/v1alpha1",
+    "kind": "AdminKubeconfigRequest",
+    "spec": {
+        "expirationSeconds": 10800
+    }
+}
+EOF
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
 
     # ask for new certificates
@@ -55,7 +63,7 @@ function provisionIngress() {
     helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
     helm repo update
 
-    envsubst < "${RESOURCES_PATH}/nginxValues.yaml" | helm install ingress-nginx --namespace=kube-system -f - ingress-nginx/ingress-nginx
+    envsubst < "${RESOURCES_PATH}/nginxValues.yaml" | helm install ingress-nginx --version 4.1.3 --namespace=kube-system -f - ingress-nginx/ingress-nginx
 
     # wait for ingress controller to start
     kubectl wait --namespace kube-system \
@@ -74,7 +82,15 @@ function provisionBusola() {
     log::info "Installing Busola on the cluster: ${DOMAIN_NAME}"
 
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
+    cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--busola--${DOMAIN_NAME}.yaml"
+{
+    "apiVersion": "authentication.gardener.cloud/v1alpha1",
+    "kind": "AdminKubeconfigRequest",
+    "spec": {
+        "expirationSeconds": 10800
+    }
+}
+EOF
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--busola--$DOMAIN_NAME.yaml"
 
     # delete old installation
@@ -108,7 +124,15 @@ function provisionKyma2(){
 
     # switch to the new cluster
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+    cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+{
+    "apiVersion": "authentication.gardener.cloud/v1alpha1",
+    "kind": "AdminKubeconfigRequest",
+    "spec": {
+        "expirationSeconds": 10800
+    }
+}
+EOF
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
 
     kyma::install_cli
@@ -128,7 +152,7 @@ function provisionKyma2(){
 
 function provisionBusolaE2ECleaner(){
     log::info "Installing Busola e2e cleaner"
-    kubectl apply -f "${BUSOLA_SOURCES_DIR}/tests/busola-e2e-cleaner.yaml"
+    kubectl apply -f "${BUSOLA_SOURCES_DIR}/tests/integration/busola-e2e-cleaner.yaml"
 }
 
 function undeployKyma(){
@@ -137,7 +161,15 @@ function undeployKyma(){
     log::info "Uninstalling Kyma on the cluster : ${DOMAIN_NAME} using ${CPU_COUNT} cpus"
 
     export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
-    kubectl get secrets "${DOMAIN_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+    cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${DOMAIN_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
+{
+    "apiVersion": "authentication.gardener.cloud/v1alpha1",
+    "kind": "AdminKubeconfigRequest",
+    "spec": {
+        "expirationSeconds": 10800
+    }
+}
+EOF
     export KUBECONFIG="${RESOURCES_PATH}/kubeconfig--kyma--${DOMAIN_NAME}.yaml"
 
     kyma::install_cli

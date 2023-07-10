@@ -5,7 +5,6 @@
 #Expected common vars:
 # - JOB_TYPE - set up by prow (presubmit, postsubmit, periodic)
 # - KYMA_PROJECT_DIR - directory path with Kyma sources to use for installation
-# - KYMA_MAJOR_VERSION - major version of the first installation
 #
 #Please look in each provider script for provider specific requirements
 
@@ -37,7 +36,6 @@ function prereq() {
     # All provides require these values, each of them may check for additional variables
     requiredVars=(
         KYMA_PROJECT_DIR
-        KYMA_MAJOR_VERSION
     )
     utils::check_required_vars "${requiredVars[@]}"
 
@@ -53,8 +51,16 @@ function provision_cluster() {
 function make_fast_integration() {
     log::info "### Run ${1} tests"
 
-    git reset --hard "${KYMA_SOURCE}"
-    make -C "${KYMA_SOURCES_DIR}/tests/fast-integration" "${1}"
+    log::info "KYMA_SOURCE ${KYMA_SOURCE}"
+    git reset --hard
+    if [[ ${KYMA_SOURCE} == "main" ]]
+    then
+      git checkout "${KYMA_SOURCE}"
+    else
+      git checkout tags/"${KYMA_SOURCE}"
+    fi
+
+    make -C "./tests/fast-integration" "${1}"
 
     if [[ $? -eq 0 ]];then
         log::success "Tests completed"
@@ -107,11 +113,13 @@ prereq
 log::info "### Starting pipeline"
 provision_cluster
 
+cd "${KYMA_SOURCES_DIR}"
+
 install_kyma
 
 make_fast_integration "ci-pre-upgrade"
 
-# Upgrade kyma to main branch with latest stable cli
+# Upgrade kyma to main branch with latest cli released
 kyma::install_cli
 
 upgrade_kyma

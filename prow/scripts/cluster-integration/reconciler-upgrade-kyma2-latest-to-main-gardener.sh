@@ -30,8 +30,6 @@
 # Exit on error, and raise error when variable is not set when used
 set -e
 
-ENABLE_TEST_LOG_COLLECTOR=false
-
 # Exported variables
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
@@ -122,7 +120,6 @@ reconciler::wait_until_is_ready
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 
 # Exported variables
-export KYMA_MAJOR_VERSION="2"
 export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
 
 # Set up test pod environment
@@ -139,14 +136,18 @@ reconciler::wait_until_kyma_reconciled
 
 # run the fast integration test before reconciliation
 log::banner "Executing pre-upgrade test"
-gardener::pre_upgrade_test_fast_integration_kyma
+log::info "### switching local Kyma sources to the ${KYMA_UPGRADE_SOURCE}"
+pushd "${KYMA_PROJECT_DIR}/kyma"
+git reset --hard
+git checkout tags/"${KYMA_UPGRADE_SOURCE}"
+popd
+gardener::pre_upgrade_test_fast_integration_kyma -d "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
 
 ## ---------------------------------------------------------------------------------------
 ## Reconcile and test Kyma2 main
 ## ---------------------------------------------------------------------------------------
 
 # Exported variables
-export KYMA_MAJOR_VERSION="2"
 export KYMA_UPGRADE_SOURCE="main"
 
 # Set up test pod environment
@@ -163,7 +164,13 @@ reconciler::wait_until_kyma_reconciled
 
 # run the fast integration test after reconciliation
 log::banner "Executing post-upgrade test"
-gardener::post_upgrade_test_fast_integration_kyma
+log::info "### switching local Kyma sources to the ${KYMA_UPGRADE_SOURCE}"
+pushd "${KYMA_PROJECT_DIR}/kyma"
+git reset --hard
+git checkout "${KYMA_UPGRADE_SOURCE}"
+popd
+
+gardener::post_upgrade_test_fast_integration_kyma -d "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
 
 # Must be at the end of the script
 ERROR_LOGGING_GUARD="false"

@@ -10,33 +10,54 @@ templates:
             type_periodic: "true"
             cluster: "trusted-workload"
           github_token_mounts:
-            volumes:
-              - name: kyma-bot-github-token
-                secretName: kyma-bot-github-token
-            volumeMounts:
-              - name: kyma-bot-github-token
-                mountPath: /etc/github
-                readOnly: true
+            labels:
+              preset-autobump-bot-github-token: "true"
           label_sync_mounts:
             volumes:
-              - name: kyma-bot-github-token
-                secretName: kyma-bot-github-token
               - name: config
                 configMapName: label-config
             volumeMounts:
-              - name: kyma-bot-github-token
-                mountPath: /etc/github
-                readOnly: true
               - name: config
                 mountPath: /etc/config
                 readOnly: true
         jobConfigs:
+          - repoName: kyma-project/eventing-tools
+            jobs:
+              - jobConfig:
+                  name: eventing-tools-autobump
+                  annotations:
+                    owner: skydivingtunas
+                    description: autobump eventing images
+                  cron: "30 * * * 1-5"
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230705-6666368cff
+                  command: generic-autobumper
+                  args:
+                    - --config=ci/eventing-tools-autobump-config.yaml
+                  labels:
+                    preset-tunas-github-bot-token: "true"
+                  extra_refs:
+                    eventing-tools:
+                      - org: "kyma-project"
+                        repo: "eventing-tools"
+                        path_alias: "github.com/kyma-project/eventing-tools"
+                        base_ref: "main"
+                inheritedConfigs:
+                  local:
+                    - periodic_config
+                    - github_token_mounts
+                  global:
+                    - "pubsub_labels"
+                    - "disable_testgrid"
+                    - "unprivileged"
           - repoName: kyma-project/test-infra
             jobs:
               - jobConfig:
                   name: ci-prow-label-sync
+                  annotations:
+                    owner: neighbors
+                    description: "Periodic sync of labels in GitHub"
                   cron: "17 * * * *"
-                  image: gcr.io/k8s-prow/label_sync:v20220610-d59e6cd2db
+                  image: gcr.io/k8s-prow/label_sync:v20230705-6666368cff
                   command: label_sync
                   args:
                     - --config=/etc/config/labels.yaml
@@ -50,17 +71,23 @@ templates:
                   local:
                     - periodic_config
                     - label_sync_mounts
+                    - github_token_mounts
                   global:
                     - "pubsub_labels"
                     - "disable_testgrid"
+                    - "unprivileged"
               - jobConfig:
                   name: ci-prow-autobump
+                  annotations:
+                    owner: neighbors
+                    description: "Autobump prow components image versions"
                   cron: "30 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20220610-d59e6cd2db
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230705-6666368cff
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
+                    - --labels-override=kind/chore,area/prow
                 inheritedConfigs:
                   local:
                     - periodic_config
@@ -69,21 +96,100 @@ templates:
                     - "pubsub_labels"
                     - "disable_testgrid"
                     - extra_refs_test-infra
+                    - "unprivileged"
               - jobConfig:
-                  name: post-test-infra-deploy-prow
+                  name: test-infra-image-detector-autobump
+                  annotations:
+                    owner: neighbors
+                    description: daily detect prow images for scan
+                  cron: "0 8 * * *"
+                  slack_channel: kyma-prow-alerts
+                  command: /imagedetector
+                  args:
+                    - --prow-config=prow/config.yaml
+                    - --prow-jobs-dir=prow/jobs
+                    - --terraform-dir=configs/terraform
+                    - --sec-scanner-config=sec-scanners-config.yaml
+                    - --kubernetes-dir=prow/cluster/components
+                    - --autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml
+                    - --inrepo-config=prow/image-detector/inrepo-config.yaml
+                inheritedConfigs:
+                  local:
+                    - periodic_config
+                    - github_token_mounts
+                  global:
+                    - pubsub_labels
+                    - disable_testgrid
+                    - image_image_detector
+                    - extra_refs_test-infra
+                    - "unprivileged"
+              - jobConfig:
+                  name: post-test-infra-markdown-index-autobump
+                  annotations:
+                    owner: neighbors
+                    description: autobump markdown index.md
                   slack_channel: kyma-prow-alerts
                   branches:
                     - ^main$
-                  run_if_changed: 'prow/cluster/components/'
+                  run_if_changed: ".md$"
+                  skip_report: "false"
+                  max_concurrency: "10"
+                  type_postsubmit: "true"
+                  command: /markdown-index
+                  args:
+                    - --config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml
+                    - --labels-override=kind/chore,area/documentation
+                inheritedConfigs:
+                  local:
+                    - github_token_mounts
+                  global:
+                    - jobConfig_postsubmit
+                    - pubsub_labels
+                    - disable_testgrid
+                    - image_markdown_index
+                    - "unprivileged"
+              - jobConfig:
+                  name: post-test-infra-image-detector-autobump
+                  annotations:
+                    owner: neighbors
+                    description: autobump prow images for scan
+                  slack_channel: kyma-prow-alerts
+                  branches:
+                    - ^main$
+                  run_if_changed: ".(md|yml|yaml|tf|tfvars)$"
+                  skip_report: "false"
+                  max_concurrency: "10"
+                  type_postsubmit: "true"
+                  command: /imagedetector
+                  args:
+                    - --prow-config=prow/config.yaml
+                    - --prow-jobs-dir=prow/jobs
+                    - --terraform-dir=configs/terraform
+                    - --sec-scanner-config=sec-scanners-config.yaml
+                    - --kubernetes-dir=prow/cluster/components
+                    - --autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml
+                    - --inrepo-config=prow/image-detector/inrepo-config.yaml
+                inheritedConfigs:
+                  local:
+                    - github_token_mounts
+                  global:
+                    - jobConfig_postsubmit
+                    - pubsub_labels
+                    - disable_testgrid
+                    - image_image_detector
+                    - "unprivileged"
+              - jobConfig:
+                  name: post-test-infra-deploy-prow
+                  annotations:
+                    owner: neighbors
+                    description: "Deploy prow components"
+                  slack_channel: kyma-prow-alerts
+                  branches:
+                    - ^main$
+                  run_if_changed: "prow/cluster/components/"
                   env:
-                    GOOGLE_APPLICATION_CREDENTIALS: /etc/credentials/service-account.json
                   command: prow/cluster/deploy.sh
-                  volumes:
-                    - name: sa-prow-deploy
-                      secretName: sa-prow-deploy
-                  volumeMounts:
-                    - name: sa-prow-deploy
-                      mountPath: /etc/credentials
+                  serviceAccountName: sa-prow-deploy
                   skip_report: "false"
                   max_concurrency: "10"
                   decorate: "true"
@@ -95,15 +201,19 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
                     - pubsub_labels
+                    - "unprivileged"
               - jobConfig:
                   name: ci-prow-autobump-jobs
+                  annotations:
+                    owner: neighbors
+                    description: "Autobump image versions in prow jobs"
                   cron: "45 * * * 1-5"
                   slack_channel: kyma-prow-alerts
-                  image: gcr.io/k8s-prow/generic-autobumper:v20220610-d59e6cd2db
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230705-6666368cff
                   command: generic-autobumper
                   args:
                     - --config=prow/autobump-config/test-infra-autobump-config.yaml
-                    - --labels-override=skip-review # This label marks PR to auto merge
+                    - --labels-override=skip-review,area/ci,kind/chore
                 inheritedConfigs:
                   local:
                     - periodic_config
@@ -112,40 +222,4 @@ templates:
                     - "pubsub_labels"
                     - "disable_testgrid"
                     - extra_refs_test-infra
-              - jobConfig:
-                  name: pre-test-infra-build-vm-image
-                  run_if_changed: 'development/custom-image/'
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "development/custom-image/create-custom-image.sh"
-                  labels:
-                    preset-sa-vm-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_presubmit
-                    - jobConfig_default
-                    - pubsub_labels
-                    - image_kyma-integration
-              - jobConfig:
-                  name: post-test-infra-build-vm-image
-                  run_if_changed: 'development/custom-image/'
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "development/custom-image/create-custom-image.sh --default"
-                  labels:
-                    preset-sa-vm-kyma-integration: "true"
-                    preset-gc-project-env: "true"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_postsubmit
-                    - jobConfig_default
-                    - pubsub_labels
-                    - image_kyma-integration
-                    - disable_testgrid
+                    - "unprivileged"

@@ -1,0 +1,71 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/incubator/ord-service/components/ord-service/ord-service-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/ord-service"
+            jobs:
+              - jobConfig:
+                  name: pull-ord-service-build
+                  annotations:
+                    owner: compass
+                    description: "Building ORD Service Compass component"
+                  args:
+                    - "--name=incubator/compass-ord-service"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/ord-service"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                  decoration_config:
+                    timeout: 60m
+                    grace_period: 1m
+                  run_if_changed: "^components/ord-service/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: "pull-ord-service-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the ORD Service Compass component"
+                  image: "maven:3.8.6-eclipse-temurin-11"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/ord-service && ./run.sh --no-start"
+                  run_if_changed: "^components/ord-service"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
+              - jobConfig:
+                  name: post-ord-service-build
+                  annotations:
+                    owner: compass
+                    description: "Building ORD Service component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-ord-service"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/ord-service"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                  decoration_config:
+                    timeout: 60m
+                    grace_period: 1m
+                  run_if_changed: "^components/ord-service/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit

@@ -1,0 +1,78 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/lifecycle-manager/lifecycle-manager.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+        jobConfigs:
+          - repoName: kyma-project/lifecycle-manager
+            jobs:
+              - jobConfig:
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+                  name: pull-lifecycle-mgr-lint # "pre-main-lifecycle-manager-lint"
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  annotations:
+                    owner: jellyfish
+                    description: executes the 'golangci-lint lint' command before any pull request.
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  name: pull-lifecycle-mgr-tests # pre-main-lifecycle-manager-tests
+                  annotations:
+                    owner: jellyfish
+                    description: run lm tests
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "make test" # run test make target of operator
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - build_labels # default labels
+              - jobConfig:
+                  name: pull-lifecycle-mgr-build
+                  annotations:
+                    owner: jellyfish
+                    description: run lm build
+                  always_run: true
+                  args:
+                    - "--name=lifecycle-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: main-lifecycle-mgr-build
+                  annotations:
+                    owner: jellyfish
+                    description: build lifecycle manager
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                  always_run: true
+                  args:
+                    - "--name=lifecycle-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit

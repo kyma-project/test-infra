@@ -163,8 +163,6 @@ function installKyma() {
 
 	log::info "Prepare Kyma overrides"
 
-	export DEX_CALLBACK_URL="https://dex.${DOMAIN}/callback"
-
 	KYMA_RESOURCES_DIR="${KYMA_SOURCES_DIR}/installation/resources"
 
 	log::info "Apply Azure disable knative-eventing stdout logging"
@@ -173,7 +171,6 @@ function installKyma() {
 	kubectl apply -f "${KYMA_RESOURCES_DIR}"/azure-crb-for-healthz.yaml
 
   envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/kyma-installer-overrides.tpl.yaml" > "$PWD/kyma-installer-overrides.yaml"
-  envsubst < "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/overrides-dex-and-monitoring.tpl.yaml" > "$PWD/overrides-dex-and-monitoring.yaml"
 
 	log::info "Trigger installation"
 
@@ -181,7 +178,6 @@ function installKyma() {
 			--ci \
 			--source main \
 			-o "$PWD/kyma-installer-overrides.yaml" \
-			-o "$PWD/overrides-dex-and-monitoring.yaml" \
 			-o "${TEST_INFRA_SOURCES_DIR}/prow/scripts/resources/prometheus-cluster-essentials-overrides.tpl.yaml" \
 			--domain "${DOMAIN}" \
 			--profile production \
@@ -198,16 +194,6 @@ function installKyma() {
 				-s "$DNS_SUBDOMAIN" \
 				-z "$CLOUDSDK_DNS_ZONE_NAME"
 	fi
-}
-
-function apply_dex_github_kyma_admin_group() {
-	kubectl get ClusterRoleBinding kyma-admin-binding -oyaml > kyma-admin-binding.yaml && cat >> kyma-admin-binding.yaml <<EOF 
-- apiGroup: rbac.authorization.k8s.io
-  kind: Group
-  name: kyma-project:cluster-access
-EOF
-
-	kubectl replace -f kyma-admin-binding.yaml
 }
 
 function test_console_url() {
@@ -263,6 +249,5 @@ installKyma
 
 
 log::info "Override kyma-admin-binding ClusterRoleBinding"
-apply_dex_github_kyma_admin_group
 
 test_console_url

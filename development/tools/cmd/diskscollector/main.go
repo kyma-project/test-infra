@@ -15,6 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/oauth2/google"
 	compute "google.golang.org/api/compute/v1"
+	"google.golang.org/api/option"
 )
 
 const defaultDiskNameRegex = "^gke-gkeint.*[-]pvc[-]"
@@ -38,12 +39,12 @@ func main() {
 	common.ShoutFirst("Running with arguments: project: \"%s\", dryRun: %t, ageInHours: %d, diskNameRegex: \"%s\"", *project, *dryRun, *ageInHours, *diskNameRegex)
 	context := context.Background()
 
-	connenction, err := google.DefaultClient(context, compute.CloudPlatformScope)
+	connection, err := google.DefaultClient(context, compute.CloudPlatformScope)
 	if err != nil {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
 
-	svc, err := compute.New(connenction)
+	svc, err := compute.NewService(context, option.WithHTTPClient(connection))
 	if err != nil {
 		log.Fatalf("Could not initialize gke client: %v", err)
 	}

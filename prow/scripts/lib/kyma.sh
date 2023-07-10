@@ -9,7 +9,7 @@ source "${LIBDIR}/log.sh"
 # Arguments:
 # optional:
 # s - Kyma source
-# d - Kyma sources directory
+# d - Kyma workspace directory
 # p - execution profile
 # u - upgrade (this will not reuse helm values which is already set)
 function kyma::deploy_kyma() {
@@ -221,32 +221,6 @@ kyma::provision_k3d() {
   kubectl version
 }
 
-kyma::install_cli() {
-    local settings
-    local kyma_version
-    settings="$(set +o); set -$-"
-    mkdir -p "/tmp/bin"
-    export PATH="/tmp/bin:${PATH}"
-    os=$(host::os)
-
-    pushd "/tmp/bin" || exit
-
-    log::info "--> Install kyma CLI ${os} locally to /tmp/bin"
-
-    if [[ "${KYMA_MAJOR_VERSION-}" == "1" ]]; then
-        curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_${os}_x86_64.tar.gz"
-        tar xvzf kyma.tar.gz
-    else
-        curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}?alt=media"
-    fi
-    chmod +x kyma
-    kyma_version=$(kyma version --client)
-    log::info "--> Kyma CLI version: ${kyma_version}"
-    log::info "OK"
-    popd || exit
-    eval "${settings}"
-}
-
 kyma::install_unstable_cli() {
     local settings
     local kyma_version
@@ -268,7 +242,35 @@ kyma::install_unstable_cli() {
     eval "${settings}"
 }
 
-kyma::install_cli_last_release() {
+
+kyma::install_old_cli() {
+    local settings
+    local kyma_version
+    settings="$(set +o); set -$-"
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
+    os=$(host::os)
+
+    pushd "/tmp/bin" || exit
+
+    log::info "--> Install kyma CLI ${os} locally to /tmp/bin"
+
+    if [[ "${KYMA_MAJOR_VERSION-}" == "1" ]]; then
+        curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/1.24.8/kyma_${os}_x86_64.tar.gz"
+        tar xvzf kyma.tar.gz
+    else
+        curl -sSLo kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-${os}?alt=media"
+    fi
+
+    chmod +x kyma
+    kyma_version=$(kyma version --client)
+    log::info "--> Kyma CLI version: ${kyma_version}"
+    log::info "OK"
+    popd || exit
+    eval "${settings}"
+}
+
+kyma::install_cli() { #latest CLI release
     local settings
     settings="$(set +o); set -$-"
 
@@ -276,7 +278,16 @@ kyma::install_cli_last_release() {
     export PATH="/tmp/bin:${PATH}"
     pushd "/tmp/bin" || exit
 
-    curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_Linux_x86_64.tar.gz" \
+    local os
+    os="$(uname -s)"
+    if [[ -z "$os" || ! "$os" =~ ^(Darwin|Linux)$ ]]; then
+        echo >&2 -e "Unsupported host OS. Must be Linux or Mac OS X."
+        exit 1
+    else
+        readonly os
+    fi
+
+    curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/latest/download/kyma_${os}_x86_64.tar.gz" \
     && tar -zxvf kyma.tar.gz && chmod +x kyma \
     && rm -f kyma.tar.gz
 

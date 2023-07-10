@@ -33,10 +33,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: crier
-        image: gcr.io/k8s-prow/crier:v20220610-d59e6cd2db
-        env:
-          - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: "/etc/credentials/service-account.json"
+        image: gcr.io/k8s-prow/crier:v20230705-6666368cff
         args:
         - --blob-storage-workers=1
         - --config-path=/etc/config/config.yaml
@@ -45,15 +42,19 @@ spec:
         - --github-token-path=/etc/github/oauth
         - --github-workers=5
         - --job-config-path=/etc/job-config
-        - --kubeconfig=/etc/kubeconfig/config
         - --kubernetes-blob-storage-workers=1
         - --pubsub-workers=5
         - --slack-token-file=/etc/slack/token
         - --slack-workers=1
-        - --gcs-credentials-file=/etc/credentials/service-account.json
+        env:
+        - name: KUBECONFIG
+          value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config"
         volumeMounts:
-        - mountPath: /etc/kubeconfig
-          name: kubeconfig
+        - mountPath: /etc/untrusted-workload-kubeconfig
+          name: untrusted-workload-kubeconfig
+          readOnly: true
+        - mountPath: /etc/trusted-workload-kubeconfig
+          name: trusted-workload-kubeconfig
           readOnly: true
         - name: config
           mountPath: /etc/config
@@ -66,9 +67,6 @@ spec:
           readOnly: true
         - name: slack
           mountPath: /etc/slack
-          readOnly: true
-        - name: gcs-service-account
-          mountPath: /etc/credentials
           readOnly: true
       volumes:
       - name: config
@@ -83,10 +81,11 @@ spec:
       - name: slack
         secret:
           secretName: slack-token
-      - name: kubeconfig
+      - name: untrusted-workload-kubeconfig
         secret:
           defaultMode: 420
-          secretName: workload-clusters-kubeconfig
-      - name: gcs-service-account
+          secretName: untrusted-workload-kubeconfig
+      - name: trusted-workload-kubeconfig
         secret:
-          secretName: sa-crier
+          defaultMode: 420
+          secretName: trusted-workload-kubeconfig

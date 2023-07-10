@@ -6,377 +6,946 @@ templates:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: components/operations-controller
+                  name: pull-operations-controller-build
+                  annotations:
+                    owner: compass
+                    description: "Building Operations Controller Compass component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass/components/operations-controller"
-                  run_if_changed: "^components/operations-controller/|^scripts/"
-                  release_since: "1.19"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-operations-controller"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/operations-controller"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/operations-controller/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-operations-controller-build
+                  annotations:
+                    owner: compass
+                    description: "Building Operations Controller component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-operations-controller"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/operations-controller"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/operations-controller/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-operations-controller-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Operations Controller Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/operations-controller && make test-local"
+                  run_if_changed: '^components/operations-controller/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: components/connector
+                  name: pull-connector-build
+                  annotations:
+                    owner: compass
+                    description: "Building Connector Compass component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass/components/connector"
-                  run_if_changed: "^components/connector/|^scripts/"
-                  release_since: "1.7"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-connector"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/connector"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/connector/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-connector-build
+                  annotations:
+                    owner: compass
+                    description: "Building Connector Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-connector"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/connector"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/connector/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-connector-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Connector Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/connector && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/connector/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/director/director-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: components/director
+                  name: pull-director-build
+                  annotations:
+                    owner: compass
+                    description: "Building Director Compass component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass/components/director"
-                  run_if_changed: "^components/director/|^scripts/"
-                  release_since: "1.7"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-director"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/director"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 2000m
+                  run_if_changed: "^components/director/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-director-build
+                  annotations:
+                    owner: compass
+                    description: "Building Director Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-director"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/director"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 2000m
+                  run_if_changed: "^components/director/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-director-lint"
+                  annotations:
+                    owner: compass
+                    description: "Linter for the Compass Director component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/director && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=15m"
+                  run_if_changed: '^components/director/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - linting
+                    - "unprivileged"
+              - jobConfig:
+                  name: "pull-director-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Director Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/director && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/director/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/hydrator/hydrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: components/hydrator
+                  name: pull-hydrator-build
+                  annotations:
+                    owner: compass
+                    description: "Building Hydrator Compass component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass/components/hydrator"
-                  run_if_changed: "^components/hydrator/|^scripts/"
-                  release_since: "1.7"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-hydrator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/hydrator"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/hydrator/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/incubator/ord-service/components/ord-service/ord-service-generic.yaml
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-hydrator-build
+                  annotations:
+                    owner: compass
+                    description: "Building Hydrator Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-hydrator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/hydrator"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/hydrator/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-hydrator-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Hydrator Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/hydrator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/hydrator/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
+      - to: ../../prow/jobs/incubator/compass/components/ias-adapter/ias-adapter-generic.yaml
         jobConfigs:
-          - repoName: "github.com/kyma-incubator/ord-service"
+          - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: components/ord-service
-                  path_alias: "github.com/kyma-incubator/ord-service"
+                  name: pull-ias-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building IAS Adapter Compass component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/ord-service/components/ord-service"
-                  run_if_changed: "^components/ord-service/|^scripts/"
-                  release_since: "1.17"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-ias-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/ias-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/ias-adapter/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-ias-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building IAS Adapter Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-ias-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/ias-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/ias-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-ias-adapter-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the IAS Adapter Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/ias-adapter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/ias-adapter/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
+      - to: ../../prow/jobs/incubator/compass/components/kyma-adapter/kyma-adapter-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
+              - jobConfig:
+                  name: pull-kyma-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Kyma Adapter Compass component"
+                  args:
+                    - "--name=incubator/compass-kyma-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/kyma-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 2000m
+                  run_if_changed: "^components/kyma-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-kyma-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Kyma Adapter Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-kyma-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/kyma-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 2000m
+                  run_if_changed: "^components/kyma-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-kyma-adapter-lint"
+                  annotations:
+                    description: "Linter for the Kyma Adapter Compass component"
+                    owner: "compass"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/kyma-adapter && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=15m"
+                  run_if_changed: '^components/kyma-adapter/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - linting
+                    - "unprivileged"
+              - jobConfig:
+                  name: "pull-kyma-adapter-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Kyma Adapter Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/kyma-adapter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/kyma-adapter/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: components/system-broker
+                  name: pull-system-broker-build
+                  annotations:
+                    owner: compass
+                    description: "Building System Broker Compass component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass/components/system-broker"
-                  run_if_changed: "^components/system-broker/|^scripts/"
-                  release_since: "1.16"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-system-broker"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/system-broker"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/system-broker/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-      - to: ../../prow/jobs/incubator/compass-console/compass/compass-ui.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-incubator/compass-console"
-            jobs:
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
               - jobConfig:
-                  path: compass
-                  path_alias: "github.com/kyma-incubator/compass-console"
+                  name: post-system-broker-build
+                  annotations:
+                    owner: compass
+                    description: "Building System Broker Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass-console/compass"
-                  run_if_changed: "^compass/|^components/|^shared/|^package.json"
-                  release_since: "1.16"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-system-broker"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/system-broker"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/system-broker/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-system-broker-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the System Broker Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/system-broker && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/system-broker/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: components/external-services-mock
+                  name: pull-external-services-mock-build
+                  annotations:
+                    owner: compass
+                    description: "Building External Services Mock Compass component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass/components/external-services-mock"
-                  run_if_changed: "^components/external-services-mock/|^scripts/"
-                  release_since: "1.12"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-external-services-mock"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/external-services-mock"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/external-services-mock/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-external-services-mock-build
+                  annotations:
+                    owner: compass
+                    description: "Building External Services Mock Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-external-services-mock"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/external-services-mock"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/external-services-mock/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-external-services-mock-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the External Services Mock Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/external-services-mock && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/external-services-mock/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: components/connectivity-adapter
+                  name: pull-connectivity-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Connectivity Adapter Compass component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass/components/connectivity-adapter"
-                  run_if_changed: "^components/connectivity-adapter/|^scripts/"
-                  release_since: "1.10"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-connectivity-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/connectivity-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/connectivity-adapter/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-connectivity-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Connectivity Adapter Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-connectivity-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/connectivity-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/connectivity-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-connectivity-adapter-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Connectivity Adapter Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/connectivity-adapter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/connectivity-adapter/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: components/pairing-adapter
+                  name: pull-pairing-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Pairing Adapter Compass component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass/components/pairing-adapter"
-                  run_if_changed: "^components/pairing-adapter/|^scripts/"
-                  release_since: "1.11"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-pairing-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/pairing-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/pairing-adapter/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-pairing-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Pairing Adapter Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-pairing-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/pairing-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/pairing-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-pairing-adapter-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Pairing Adapter Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/pairing-adapter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/pairing-adapter/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: components/gateway
+                  name: pull-gateway-build
+                  annotations:
+                    owner: compass
+                    description: "Building Compass Gateway component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass/components/gateway"
-                  run_if_changed: "^components/gateway/|^scripts/"
-                  release_since: "1.7"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-gateway"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/gateway"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/gateway/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-gateway-build
+                  annotations:
+                    owner: compass
+                    description: "Building Gateway Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-gateway"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/gateway"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/gateway/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-gateway-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Compass Gateway component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/gateway && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/gateway/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: components/schema-migrator
+                  name: pull-schema-migrator-build
+                  annotations:
+                    owner: compass
+                    description: "Building Schema Migrator Compass component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass/components/schema-migrator"
-                  run_if_changed: "^components/schema-migrator/|^scripts/"
-                  release_since: "1.7"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-schema-migrator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/schema-migrator"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/schema-migrator/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-schema-migrator-build
+                  annotations:
+                    owner: compass
+                    description: "Building Schema Migrator Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-schema-migrator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/schema-migrator"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/schema-migrator/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+
       - to: ../../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
-                  path: tests
+                  name: pull-tests-build
+                  annotations:
+                    owner: compass
+                    description: "Building Compass E2E Tests component"
                   args:
-                    - "/home/prow/go/src/github.com/kyma-incubator/compass/tests"
-                  run_if_changed: "^tests/|^scripts/"
-                  release_since: "1.17"
-                  skipReleaseJobs: "true"
+                    - "--name=incubator/compass-e2e-tests"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 2000m
+                  run_if_changed: "^tests/"
                   branches:
                     - ^main$
                     - ^master$
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_compass"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-tests-build
+                  annotations:
+                    owner: compass
+                    description: "Building Compass Tests after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-e2e-tests"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 2000m
+                  run_if_changed: "^tests/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit

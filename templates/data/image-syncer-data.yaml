@@ -7,7 +7,11 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-main-test-infra-image-syncer-validate"
-                  privileged: "false"
+                  annotations:
+                    owner: neighbors
+                    description: "Validate sync images from external sources to Kyma owned registry"
+                  securityContext:
+                    privileged: "false"
                   run_if_changed: "^(go.mod|go.sum|development/image-syncer)"
                   command: "make"
                   args:
@@ -21,35 +25,37 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "pre-main-test-infra-image-syncer-dry-run"
+                  annotations:
+                    owner: neighbors
+                    description: "Dry-run of sync images from external sources to Kyma owned registry"
                   labels:
                     preset-docker-push-repository: "true"
                     preset-sa-gcr-push: "true"
                     preset-dind-enabled: "true"
-                    preset-kyma-kms-sign-key: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
                   command: "bash"
                   args:
                     - "-c"
-                    - 'source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer dry-run'
+                    - "make -C development/image-syncer dry-run"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
+                    - "privileged"
               - jobConfig:
                   name: "post-main-test-infra-image-syncer-run"
                   annotations:
+                    owner: neighbors
+                    description: "Sync images from external sources to Kyma owned registry"
                     testgrid-dashboards: kyma_experimental
                   labels:
-                    preset-docker-push-repository: "true"
-                    preset-dind-enabled: "true"
-                    preset-sa-gcr-push: "true"
-                    preset-kyma-kms-sign-key: "true"
+                    preset-sa-kyma-push-images: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
                   command: "bash"
                   args:
                     - "-c"
-                    - 'source prow/scripts/lib/docker.sh && docker::start && make -C development/image-syncer run'
+                    - "make -C development/image-syncer run"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

@@ -1,0 +1,90 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/api-gateway/api-gateway-release.yaml
+        localSets:
+          goreleaser:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 1Gi
+            request_cpu: 500m
+            limits_cpu: 1
+            limits_memory: 2Gi
+          job_default:
+            optional: "false"
+          job_post:
+            slack_channel: goat-int
+        jobConfigs:
+          - repoName: kyma-project/api-gateway
+            jobs:
+              - jobConfig:
+                  name: rel-api-gateway-build
+                  always_run: true
+                  annotations:
+                    owner: goat
+                    description: builds api-gateway image
+                  branches:
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=api-gateway-controller"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default
+                    - job_post
+              - jobConfig:
+                  name: rel-api-gateway-webhook-certificates-build
+                  always_run: true
+                  annotations:
+                    owner: goat
+                    description: builds webhook certificates image
+                  branches:
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=api-gateway-webhook-certificates"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile-certificates"
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default
+                    - job_post
+              - jobConfig:
+                  name: rel-api-gateway-goreleaser
+                  always_run: true
+                  annotations:
+                    owner: goat
+                    description: creates api-gateway GitHub release with artifacts
+                  branches:
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-bot-github-token: "true"
+                  command: "/bin/bash"
+                  args:
+                    - "-c"
+                    - hack/release.sh
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                  local:
+                    - goreleaser
+                    - job_default
+                    - job_post

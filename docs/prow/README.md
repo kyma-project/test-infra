@@ -10,7 +10,6 @@ Read the documents to learn how to:
 
 - [Configure Prow on a production cluster](./production-cluster-configuration.md) based on the preconfigured Google Cloud Storage (GCS) resources.
 - [Create a service account](./prow-secrets-management.md) and store its encrypted key in a GCS bucket.
-- [Install and configure Prow](./prow-installation-on-forks.md) on a forked repository to test and develop it on your own.
 - [Install and manage monitoring](./prow-monitoring.md) on a Prow cluster.
 - [Create, modify, and remove component jobs using templates](./manage-component-jobs-with-templates.md) for the Prow pipeline.
 - [Update](./prow-cluster-update.md) a Prow cluster.

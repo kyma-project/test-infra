@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -23,7 +22,7 @@ const (
 	DefaultTechnicalWritersGroup = "technical-writers"
 )
 
-var markdownRe = regexp.MustCompile("^.*\\.md$")
+var markdownRe = regexp.MustCompile(`^.*\.md$`)
 
 func HelpProvider(_ []config.OrgRepo) (*pluginhelp.PluginHelp, error) {
 	ph := &pluginhelp.PluginHelp{
@@ -48,7 +47,6 @@ type ownersAliases interface {
 }
 
 type AliasesClient struct {
-	ownersAliases
 }
 
 func (o AliasesClient) LoadOwnersAliases(l *zap.SugaredLogger, basedir, filename string) (repoowners.RepoAliases, error) {
@@ -57,7 +55,7 @@ func (o AliasesClient) LoadOwnersAliases(l *zap.SugaredLogger, basedir, filename
 	if _, err := os.Stat(path); err != nil {
 		return nil, err
 	}
-	b, err := ioutil.ReadFile(path)
+	b, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
 	}

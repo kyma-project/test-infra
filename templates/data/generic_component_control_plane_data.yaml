@@ -1,81 +1,6 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/control-plane/components/provisioner/provisioner-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/control-plane"
-            jobs:
-              - jobConfig:
-                  path: components/provisioner
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/components/provisioner"
-                  run_if_changed: "^components/provisioner/|^scripts/"
-                  release_since: "1.14"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-
-      - to: ../../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/control-plane"
-            jobs:
-              - jobConfig:
-                  path: components/kyma-environment-broker
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/components/kyma-environment-broker"
-                  run_if_changed: "^components/kyma-environment-broker/|^scripts/"
-                  release_since: "1.14"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-
-      - to: ../../prow/jobs/control-plane/components/schema-migrator/schema-migrator-kcp-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/control-plane"
-            jobs:
-              - jobConfig:
-                  path: components/schema-migrator
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/components/schema-migrator"
-                  run_if_changed: "^components/schema-migrator/|^scripts/"
-                  release_since: "1.14"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-
       - to: ../../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
@@ -86,6 +11,9 @@ templates:
                     - "/home/prow/go/src/github.com/kyma-project/control-plane/components/kyma-metrics-collector"
                   run_if_changed: "^components/kyma-metrics-collector/|^scripts/"
                   release_since: "1.22"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the kmc image
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -96,10 +24,6 @@ templates:
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
 
       - to: ../../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
         jobConfigs:
@@ -107,6 +31,9 @@ templates:
             jobs:
               - jobConfig:
                   path: components/kubeconfig-service
+                  annotations:
+                    owner: sre
+                    description: "Builds and validates kubeconfig-service before merge"
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/control-plane/components/kubeconfig-service"
                   run_if_changed: "^components/kubeconfig-service/|^scripts/"
@@ -121,57 +48,3 @@ templates:
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-
-      - to: ../../prow/jobs/control-plane/tests/provisioner-tests/provisioner-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/control-plane"
-            jobs:
-              - jobConfig:
-                  path: tests/provisioner-tests
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/tests/provisioner-tests"
-                  run_if_changed: "^tests/provisioner-tests/|^scripts/"
-                  release_since: "1.14"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
-
-      - to: ../../prow/jobs/control-plane/tests/e2e/provisioning/provisioning-test-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/control-plane"
-            jobs:
-              - jobConfig:
-                  path: tests/e2e/provisioning
-                  args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/tests/e2e/provisioning"
-                  run_if_changed: "^tests/e2e/provisioning/|^scripts/"
-                  release_since: "1.14"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"

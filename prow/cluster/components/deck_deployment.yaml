@@ -38,13 +38,12 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: deck
-        image: gcr.io/k8s-prow/deck:v20220610-d59e6cd2db
+        image: gcr.io/k8s-prow/deck:v20230705-6666368cff
         imagePullPolicy: Always
         ports:
           - name: http
             containerPort: 8080
         args:
-        - --kubeconfig=/etc/kubeconfig/config
         - --tide-url=http://tide/
         - --hook-url=http://hook:8888/plugin-help
         - --redirect-http-to=status.build.kyma-project.io
@@ -59,6 +58,9 @@ spec:
         - --github-oauth-config-file=/etc/githuboauth/secret
         - --cookie-secret=/etc/cookie/secret
         - --plugin-config=/etc/plugins/plugins.yaml
+        env:
+          - name: KUBECONFIG
+            value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config"
         volumeMounts:
         - name: oauth-config
           mountPath: /etc/githuboauth
@@ -66,8 +68,11 @@ spec:
         - name: cookie-secret
           mountPath: /etc/cookie
           readOnly: true
-        - mountPath: /etc/kubeconfig
-          name: kubeconfig
+        - mountPath: /etc/untrusted-workload-kubeconfig
+          name: untrusted-workload-kubeconfig
+          readOnly: true
+        - mountPath: /etc/trusted-workload-kubeconfig
+          name: trusted-workload-kubeconfig
           readOnly: true
         - name: config
           mountPath: /etc/config
@@ -107,10 +112,14 @@ spec:
       - name: cookie-secret
         secret:
           secretName: cookie
-      - name: kubeconfig
+      - name: untrusted-workload-kubeconfig
         secret:
           defaultMode: 420
-          secretName: workload-clusters-kubeconfig
+          secretName: untrusted-workload-kubeconfig
+      - name: trusted-workload-kubeconfig
+        secret:
+          defaultMode: 420
+          secretName: trusted-workload-kubeconfig
       - name: config
         configMap:
           name: config

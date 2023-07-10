@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install gcloud
-ENV CLOUD_SDK_VERSION=358.0.0
+ENV CLOUD_SDK_VERSION=423.0.0
 ENV PATH=/google-cloud-sdk/bin:/workspace:${PATH} \
     CLOUDSDK_CORE_DISABLE_PROMPTS=1
 
@@ -49,12 +49,14 @@ RUN curl -fLSs -o gc-sdk.tar.gz https://dl.google.com/dl/cloudsdk/channels/rapid
     --path-update=false \
     --usage-reporting=false && \
     gcloud components install alpha beta kubectl docker-credential-gcr && \
+    gcloud components install gke-gcloud-auth-plugin &&\
     gcloud info | tee /workspace/gcloud-info.txt
 
+ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
 # Cluster Version
-ENV CLUSTER_VERSION=1.21
+ENV CLUSTER_VERSION=1.26
 
-# Kubectl 1.21
+# Kubectl 1.26
 RUN mv /google-cloud-sdk/bin/kubectl.${CLUSTER_VERSION} /google-cloud-sdk/bin/kubectl
 
 # Docker-in-docker
@@ -83,7 +85,7 @@ RUN curl -L https://raw.github.com/stoplightio/spectral/v6.0.0/scripts/install.s
 
 # Prow Tools
 # hadolint ignore=DL3022
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210401-294e46e5 /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20221118-5c35cc55 /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools
 

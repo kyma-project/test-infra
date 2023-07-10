@@ -68,7 +68,7 @@ function utils::generate_self_signed_cert() {
     local certPath="$tmpDir/cert.pem"
     local keyPath="$tmpDir/key.pem"
 
-    openssl req -x509 -nodes -days "$certValidDays" -newkey rsa:4069 \
+    openssl req -x509 -nodes -days "$certValidDays" -newkey rsa:4096 \
         -subj "/CN=$dnsFQDN" \
         -reqexts SAN -extensions SAN \
         -config <(cat /etc/ssl/openssl.cnf \
@@ -140,19 +140,19 @@ function utils::generate_letsencrypt_cert() {
 function utils::receive_from_vm() {
   if [ -z "$1" ]; then
     echo "Zone is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$2" ]; then
     echo "Remote name is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$3" ]; then
     echo "Remote path is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$4" ]; then
     echo "Local path is empty. Exiting..."
-    exit 1
+    return 1
   fi
   local ZONE=$1
   local REMOTE_NAME=$2
@@ -162,7 +162,7 @@ function utils::receive_from_vm() {
   for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
     gcloud compute scp --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SCP_LOG_LEVEL:-error}" --strict-host-key-checking=no --quiet --recurse --zone="${ZONE}" "${REMOTE_NAME}":"${REMOTE_PATH}" "${LOCAL_PATH}" && break;
-    [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
+    [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && return 1
   done;
 }
 
@@ -178,19 +178,19 @@ function utils::send_to_vm() {
   log::info "Checking compute zone, remote name, local path and remote path arguments"
   if [ -z "$1" ]; then
     echo "Zone is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$2" ]; then
     echo "Remote name is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$3" ]; then
     echo "Local path is empty. Exiting..."
-    exit 1
+    return 1
   fi
   if [ -z "$4" ]; then
     echo "Remote path is empty. Exiting..."
-    exit 1
+    return 1
   fi
   local ZONE=$1
   local REMOTE_NAME=$2
@@ -200,7 +200,7 @@ function utils::send_to_vm() {
   for i in $(seq 1 5); do
     [[ ${i} -gt 1 ]] && log::info 'Retrying in 15 seconds..' && sleep 15;
     gcloud compute scp --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SCP_LOG_LEVEL:-error}" --strict-host-key-checking=no --quiet --recurse --zone="${ZONE}" "${LOCAL_PATH}" "${REMOTE_NAME}":"${REMOTE_PATH}" && break;
-    [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && exit 1
+    [[ ${i} -ge 5 ]] && log::error "Failed after $i attempts." && return 1
   done;
 }
 
@@ -246,9 +246,9 @@ function utils::ssh_to_vm_with_script() {
   utils::check_empty_arg "$COMMAND" "ssh command not provided."
 
   if [ -z "${LOCAL_SCRIPT_PATH}" ]; then
-      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}"
+      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}"
   else
-      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-debug}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}" < "${LOCAL_SCRIPT_PATH}"
+      gcloud compute ssh --ssh-key-file="${SSH_KEY_FILE_PATH:-/root/.ssh/user/google_compute_engine}" --verbosity="${GCLOUD_SSH_LOG_LEVEL:-error}" --quiet --zone="${ZONE}" --command="${COMMAND}" --ssh-flag="-o ServerAliveInterval=10 -o TCPKeepAlive=no -o ServerAliveCountMax=60 -v" "${REMOTE_NAME}" < "${LOCAL_SCRIPT_PATH}"
   fi
 }
 
@@ -582,9 +582,6 @@ function utils::post_hook() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    # collect logs from failed tests before deprovisioning
-    kyma::run_test_log_collector "$jobname"
-
     log::info "Cleanup"
 
     utils::oom_get_output
@@ -820,4 +817,74 @@ function utils::unmask_debug_output {
         unset utils_mask_debug_output_return_masked
         set -x
     fi
+}
+
+# utils::install_yq installs yq CLI
+function utils::install_yq {
+    local settings
+    local yq_version
+    settings="$(set +o); set -$-"
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
+
+    pushd "/tmp/bin" || exit
+
+    log::info "--> Install yq CLI locally to /tmp/bin"
+
+    curl -sSLo yq.tar.gz "https://github.com/mikefarah/yq/releases/download/v4.25.1/yq_linux_amd64.tar.gz"
+
+    tar xvzf yq.tar.gz
+    mv ./yq_linux_amd64 yq
+
+    chmod +x yq
+    yq_version=$(yq --version)
+    log::info "--> yq CLI version: ${yq_version}"
+    log::info "OK"
+    popd || exit
+    eval "${settings}"
+}
+
+# utils::install_helm installs helm CLI
+function utils::install_helm {
+    local settings
+    local helm_version
+    settings="$(set +o); set -$-"
+    mkdir -p "/tmp/bin"
+    export PATH="/tmp/bin:${PATH}"
+
+    pushd "/tmp/bin" || exit
+
+    log::info "--> Install helm CLI locally to /tmp/bin"
+
+    curl -sSLo helm.tar.gz "https://get.helm.sh/helm-v3.8.0-linux-amd64.tar.gz"
+
+    tar xvzf helm.tar.gz
+    mv ./linux-amd64/helm .
+
+    chmod +x helm
+    helm_version=$(helm version)
+    log::info "--> helm CLI version: ${helm_version}"
+    log::info "OK"
+    popd || exit
+    eval "${settings}"
+}
+
+function utils::get_kyma_fast_integration_dir {
+  local kymaDirectory="/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
+  for arg in "$@"
+  do
+    case "$arg" in
+        -d)
+          if [ ! -z "$2" ]; then
+            kymaDirectory="$2"
+          fi
+          shift 2
+          ;;
+        *)
+          shift
+          ;;
+    esac
+  done
+
+  echo -n "$kymaDirectory"
 }

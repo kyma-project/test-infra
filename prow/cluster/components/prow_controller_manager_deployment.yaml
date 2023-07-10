@@ -34,16 +34,21 @@ spec:
       serviceAccountName: prow-controller-manager
       containers:
       - name: prow-controller-manager
-        image: gcr.io/k8s-prow/prow-controller-manager:v20220610-d59e6cd2db
+        image: gcr.io/k8s-prow/prow-controller-manager:v20230705-6666368cff
         args:
         - --config-path=/etc/config/config.yaml
         - --dry-run=false
         - --enable-controller=plank
         - --job-config-path=/etc/job-config
-        - --kubeconfig=/etc/kubeconfig/config
+        env:
+          - name: KUBECONFIG
+            value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config"
         volumeMounts:
-        - mountPath: /etc/kubeconfig
-          name: kubeconfig
+        - mountPath: /etc/untrusted-workload-kubeconfig
+          name: untrusted-workload-kubeconfig
+          readOnly: true
+        - mountPath: /etc/trusted-workload-kubeconfig
+          name: trusted-workload-kubeconfig
           readOnly: true
         - name: config
           mountPath: /etc/config
@@ -52,10 +57,14 @@ spec:
           mountPath: /etc/job-config
           readOnly: true
       volumes:
-      - name: kubeconfig
+      - name: untrusted-workload-kubeconfig
         secret:
           defaultMode: 420
-          secretName: workload-clusters-kubeconfig
+          secretName: untrusted-workload-kubeconfig
+      - name: trusted-workload-kubeconfig
+        secret:
+          defaultMode: 420
+          secretName: trusted-workload-kubeconfig
       - name: config
         configMap:
           name: config

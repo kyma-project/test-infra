@@ -6,10 +6,7 @@ spec:
   purpose: development
   cloudProfileName: gcp
   kubernetes:
-    allowPrivilegedContainers: true
-    kubeAPIServer:
-      enableBasicAuthentication: false
-    version: 1.21.8
+    version: 1.26.5
   provider:
     controlPlaneConfig:
       apiVersion: gcp.provider.extensions.gardener.cloud/v1alpha1
@@ -25,7 +22,7 @@ spec:
     - machine:
         image:
           name: gardenlinux
-          version: 576.9.0
+          version: 934.8.0
         type: n1-standard-2
       maxSurge: 1
       maxUnavailable: 0

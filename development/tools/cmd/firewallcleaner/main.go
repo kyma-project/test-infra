@@ -15,6 +15,7 @@ import (
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/container/v1"
+	"google.golang.org/api/option"
 )
 
 var (
@@ -34,17 +35,17 @@ func main() {
 	log.Printf("Running with arguments: project: \"%s\", dryRun: \"%t\"", *project, *dryRun)
 	ctx := context.Background()
 
-	connenction, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
+	connection, err := google.DefaultClient(ctx, compute.CloudPlatformScope)
 	if err != nil {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
 
-	computeSvc, err := compute.New(connenction)
+	computeSvc, err := compute.NewService(ctx, option.WithHTTPClient(connection))
 	if err != nil {
 		log.Fatalf("Could not initialize gke client: %v", err)
 	}
 
-	containerSvc, err := container.New(connenction)
+	containerSvc, err := container.NewService(ctx, option.WithHTTPClient(connection))
 	if err != nil {
 		log.Fatalf("Could not initialize gke client: %v", err)
 	}

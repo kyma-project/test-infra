@@ -18,9 +18,7 @@ func (daw *DiskAPIWrapper) ListDisks(project, zone string) ([]*compute.Disk, err
 
 	var disks = []*compute.Disk{}
 	pageFunc := func(disksList *compute.DiskList) error {
-		for _, disk := range disksList.Items {
-			disks = append(disks, disk)
-		}
+		disks = append(disks, disksList.Items...)
 		return nil
 	}
 

@@ -1,0 +1,29 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/istio/istio-validation.yaml
+        localSets:
+          job_default:
+            optional: "false"
+            skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+            path_alias: github.com/kyma-project/istio
+            env:
+              EXPORT_RESULTS: true
+        jobConfigs:
+          - repoName: "kyma-project/istio"
+            jobs:
+              - jobConfig:
+                  name: pull-istio-test
+                  annotations:
+                    owner: goat
+                    description: runs istio unit tests
+                  request_cpu: 500m
+                  command: "./tests/integration/scripts/code-coverage-guard.sh"
+                  always_run: true
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
+                  local:
+                    - job_default

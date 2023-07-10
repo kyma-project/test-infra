@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-main-control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener
       annotations:
+        description: "control-plane reconciler e2e test"
+        owner: "jellyfish"
         pipeline.platform: "gardener_gcp"
         pipeline.trigger: "pr-submit"
       labels:
@@ -39,9 +41,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-upgrade-kyma2-latest-to-main-gardener.sh"
             args:

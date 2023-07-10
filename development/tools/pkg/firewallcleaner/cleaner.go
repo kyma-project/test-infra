@@ -16,7 +16,7 @@ const sleepFactor = 2
 
 //go:generate mockery -name=ComputeAPI -output=automock -outpkg=automock -case=underscore
 
-//ComputeAPI interface logic for Google cloud API
+// ComputeAPI interface logic for Google cloud API
 type ComputeAPI interface {
 	LookupFirewallRule(project string) ([]*compute.Firewall, error)
 	LookupInstances(project string) ([]*compute.Instance, error)
@@ -25,17 +25,17 @@ type ComputeAPI interface {
 	DeleteFirewallRule(project, firewall string)
 }
 
-//Cleaner Element holding the firewall cleaning logic
+// Cleaner Element holding the firewall cleaning logic
 type Cleaner struct {
 	computeAPI ComputeAPI
 }
 
-//NewCleaner Returns a new cleaner object
+// NewCleaner Returns a new cleaner object
 func NewCleaner(computeAPI ComputeAPI) *Cleaner {
 	return &Cleaner{computeAPI}
 }
 
-//Run the main find&destroy function
+// Run the main find&destroy function
 func (c *Cleaner) Run(dryRun bool, project string) error {
 	dryRunPrefix := ""
 	if dryRun {

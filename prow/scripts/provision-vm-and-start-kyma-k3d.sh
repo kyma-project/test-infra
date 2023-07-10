@@ -20,7 +20,7 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
   "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
-cleanup() {
+function cleanup() {
   # TODO - collect junit results
 
   log::info "Stopping instance kyma-integration-test-${RANDOM_ID}"
@@ -30,10 +30,18 @@ cleanup() {
   set +e
 
   #shellcheck disable=SC2088
-  if [[ ! $ISTIO_INTEGRATION_ENABLED ]]; then
+  if [[ "$ISTIO_INTEGRATION_ENABLED" == "true" ]]; then
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/istio/junit-report.xml" "${ARTIFACTS}"
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/istio/reports/*.html" "${ARTIFACTS}"
+  elif [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY ]] || [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR ]] || [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT ]]; then
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/application-connector/junit-report.xml" "${ARTIFACTS}"
+  elif [[ "$API_GATEWAY_INTEGRATION" == "true" ]]; then
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/api-gateway/junit-report.xml" "${ARTIFACTS}"
+    utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/components/api-gateway/reports/*.html" "${ARTIFACTS}/report.html"
+  else
     utils::receive_from_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "~/kyma/tests/fast-integration/junit_kyma-fast-integration.xml" "${ARTIFACTS}"
   fi
-  
+
   gcloud compute instances stop --async --zone="${ZONE}" "kyma-integration-test-${RANDOM_ID}"
 
   log::info "End of cleanup"
@@ -54,7 +62,7 @@ RANDOM_ID=$(openssl rand -hex 4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
-  LABELS=(--labels "branch=$PULL_BASE_REF,job-name=kyma-integration")
+  LABELS=(--labels "branch=${PULL_BASE_REF//./},job-name=kyma-integration")
 else
   LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=kyma-integration")
 fi
@@ -114,6 +122,10 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 trap cleanup exit INT
 
 log::info "Preparing environment variables for the instance"
+
+export GARDENER_ZONE=${ZONE}
+export CLUSTER_NAME=kyma-integration-test-${RANDOM_ID}
+
 envVars=(
   COMPASS_TENANT
   COMPASS_HOST
@@ -121,10 +133,16 @@ envVars=(
   COMPASS_CLIENT_SECRET
   COMPASS_INTEGRATION_ENABLED
   CENTRAL_APPLICATION_CONNECTIVITY_ENABLED
+  APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY
+  APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR
+  APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT
   TELEMETRY_ENABLED
   ISTIO_INTEGRATION_ENABLED
-  KYMA_MAJOR_VERSION
+  API_GATEWAY_INTEGRATION
+  GARDENER_ZONE
+  CLUSTER_NAME
   KYMA_PROFILE
+  RECONCILATION_TEST
   K8S_VERSION
 )
 utils::save_env_file "${envVars[@]}"
@@ -135,20 +153,42 @@ log::info "Copying Kyma to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/kyma" "~/kyma"
 
+if [[ -v API_GATEWAY_INTEGRATION ]]; then
+  log::info "Copying components file for API-gateway tests"
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-api-gateway-components.yaml" "~/kyma-integration-k3d-api-gateway-components.yaml"
+fi
+
 if [[ -v COMPASS_INTEGRATION_ENABLED ]]; then
   log::info "Copying components file for compass tests"
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-compass-components.yaml" "~/kyma-integration-k3d-compass-components.yaml"
 fi
 
+if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY ]]; then
+  log::info "Copying components file for application connector component tests for Kyma OS setup"
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-app-connector-components-os.yaml" "~/kyma-integration-k3d-app-connector-components-os.yaml"
+fi
+
+if [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR ]] || [[ -v APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT ]]; then
+  log::info "Copying components file for application connector component tests for Kyma SKR setup"
+  #shellcheck disable=SC2088
+  utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-app-connector-components-skr.yaml" "~/kyma-integration-k3d-app-connector-components-skr.yaml"
+fi
+
 if [[ -v TELEMETRY_ENABLED ]]; then
   log::info "Copying components file for telemetry tests"
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry-components.yaml" "~/kyma-integration-k3d-telemetry-components.yaml"
+  log::info "Triggering the installation"
+  utils::ssh_to_vm_with_script -z "${ZONE}" -n "kyma-integration-test-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-telemetry.sh"
+  log::success "all done"
+  exit 0
 fi
 
 if [[ -v ISTIO_INTEGRATION_ENABLED ]]; then
-  log::info "Copying components file for telemetry tests"
+  log::info "Copying components file for istio tests"
   #shellcheck disable=SC2088
   utils::send_to_vm "${ZONE}" "kyma-integration-test-${RANDOM_ID}" "${SCRIPT_DIR}/cluster-integration/kyma-integration-k3d-istio-components.yaml" "~/kyma-integration-k3d-istio-components.yaml"
 fi

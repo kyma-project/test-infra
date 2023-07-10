@@ -1,0 +1,37 @@
+presubmits: # runs on PRs
+  kyma-project/compass-manager:
+    - name: pre-main-compass-manager-trivy
+      annotations:
+        description: "Scans the component for security vulnerabilities"
+        owner: framefrog
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-compass-manager-trivy"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: ".+"
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "aquasec/trivy:0.39.0"
+            args: ["trivy", "fs", "--config", ".trivy.yaml", "."]
+            resources:
+              requests:
+                memory: 300Mi
+                cpu: 500m
+              limits:
+                memory: 1Gi
+                cpu: 1
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true

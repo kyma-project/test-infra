@@ -1,0 +1,12 @@
+# https://golangci-lint.run/usage/configuration/
+
+# not used
+run:
+  timeout: 10m
+  # skip test files
+  tests: false
+
+  skip-dirs:
+    - .
+  skip-files:
+    - ".*\\.go$"

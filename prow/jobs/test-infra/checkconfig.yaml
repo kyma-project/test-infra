@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for test-infra"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -17,7 +19,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
@@ -28,6 +35,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for kyma"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -45,17 +54,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/busola:
     - name: pre-busola-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for busola"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -73,17 +89,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/control-plane:
     - name: pre-control-plane-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for control-plane"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -101,17 +124,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/cli:
     - name: pre-cli-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for cli"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -129,17 +159,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/website:
     - name: pre-website-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for website"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -157,21 +194,28 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
-  kyma-project/kyma-operator:
-    - name: pre-kyma-operator-validate-inrepo-prow-configs
+  kyma-project/lifecycle-manager:
+    - name: pre-lifecycle-manager-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for lifecycle-manager"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-operator-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.runID: "pre-lifecycle-manager-validate-inrepo-prow-configs"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
       skip_report: false
@@ -185,17 +229,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/third-party-images:
     - name: pre-third-party-images-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for third-party-images"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -213,17 +264,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/community:
     - name: pre-community-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for community"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -241,45 +299,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-project/manifest-operator:
-    - name: pre-manifest-operator-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-manifest-operator-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/hydroform:
     - name: pre-hydroform-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for hydroform"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -297,73 +334,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-project/console:
-    - name: pre-console-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-console-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-project/helm-broker:
-    - name: pre-helm-broker-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-helm-broker-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/istio-operator:
     - name: pre-istio-operator-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for istio-operator"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -381,17 +369,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/addons:
     - name: pre-addons-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for addons"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -409,45 +404,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-project/rafter:
-    - name: pre-rafter-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rafter-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/private-fn-for-e2e-serverless-tests:
     - name: pre-private-fn-for-e2e-serverless-tests-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for private-fn-for-e2e-serverless-tests"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -465,17 +439,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/charts:
     - name: pre-charts-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for charts"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -493,45 +474,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-project/busola-migrator:
-    - name: pre-busola-migrator-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-busola-migrator-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-project/examples:
     - name: pre-examples-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for examples"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -549,101 +509,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
-  kyma-incubator/compass:
-    - name: pre-compass-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-compass-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/ord-service:
-    - name: pre-ord-service-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-ord-service-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/reconciler:
-    - name: pre-reconciler-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-reconciler-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/api-gateway:
+  kyma-project/api-gateway:
     - name: pre-api-gateway-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for api-gateway"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -661,17 +544,514 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/istio:
+    - name: pre-istio-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for istio"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-istio-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/runtime-watcher:
+    - name: pre-runtime-watcher-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for runtime-watcher"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-runtime-watcher-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/keda-manager:
+    - name: pre-keda-manager-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for keda-manager"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-keda-manager-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/kyma-dashboard:
+    - name: pre-kyma-dashboard-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for kyma-dashboard"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/application-connector-manager:
+    - name: pre-application-connector-manager-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for application-connector-manager"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-application-connector-manager-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/rafter:
+    - name: pre-rafter-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for rafter"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-rafter-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/btp-manager:
+    - name: pre-btp-manager-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for btp-manager"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-btp-manager-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/kyma-environment-broker:
+    - name: pre-kyma-environment-broker-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for kyma-environment-broker"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-kyma-environment-broker-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/telemetry-manager:
+    - name: pre-telemetry-manager-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for telemetry-manager"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-telemetry-manager-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/director-size-exporter:
+    - name: pre-director-size-exporter-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for director-size-exporter"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-director-size-exporter-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-project/compass-manager:
+    - name: pre-compass-manager-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for compass-manager"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-compass-manager-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/compass:
+    - name: pre-compass-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for compass"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-compass-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/ord-service:
+    - name: pre-ord-service-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for ord-service"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-ord-service-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/reconciler:
+    - name: pre-reconciler-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for reconciler"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-reconciler-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/bullseye-showcase:
     - name: pre-bullseye-showcase-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for bullseye-showcase"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -689,17 +1069,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/documentation-component:
     - name: pre-documentation-component-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for documentation-component"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -717,17 +1104,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/compass-console:
     - name: pre-compass-console-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for compass-console"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -745,17 +1139,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/sap-btp-service-operator:
     - name: pre-sap-btp-service-operator-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for sap-btp-service-operator"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -773,17 +1174,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/milv:
     - name: pre-milv-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for milv"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -801,17 +1209,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/varkes:
     - name: pre-varkes-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for varkes"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -829,17 +1244,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/slack-bot:
     - name: pre-slack-bot-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for slack-bot"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -857,45 +1279,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/podpreset-crd:
-    - name: pre-podpreset-crd-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-podpreset-crd-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/migrate:
     - name: pre-migrate-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for migrate"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -913,17 +1314,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/github-dashboard:
     - name: pre-github-dashboard-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for github-dashboard"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -941,17 +1349,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/website-vuepress:
     - name: pre-website-vuepress-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for website-vuepress"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -969,101 +1384,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/sc-removal:
-    - name: pre-sc-removal-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-sc-removal-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/service-catalog-tester:
-    - name: pre-service-catalog-tester-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-service-catalog-tester-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/dex:
-    - name: pre-dex-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-dex-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/kitbag:
     - name: pre-kitbag-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for kitbag"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1081,45 +1419,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/octopus:
-    - name: pre-octopus-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-octopus-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/kyma-showcase:
     - name: pre-kyma-showcase-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for kyma-showcase"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1137,17 +1454,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/hydra-login-consent:
     - name: pre-hydra-login-consent-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for hydra-login-consent"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1165,45 +1489,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/terraform-provider-gardener:
-    - name: pre-terraform-provider-gardener-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-terraform-provider-gardener-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/kymart:
     - name: pre-kymart-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for kymart"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1221,17 +1524,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/examples:
     - name: pre-examples-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for examples"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1249,17 +1559,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/vstudio-extension:
     - name: pre-vstudio-extension-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for vstudio-extension"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1277,17 +1594,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/wordpress-connector:
     - name: pre-wordpress-connector-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for wordpress-connector"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1305,17 +1629,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/connector-tools:
     - name: pre-connector-tools-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for connector-tools"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1333,73 +1664,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/service-catalog:
-    - name: pre-service-catalog-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-service-catalog-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-  
-  kyma-incubator/gcp-service-broker:
-    - name: pre-gcp-service-broker-validate-inrepo-prow-configs
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-gcp-service-broker-validate-inrepo-prow-configs"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/artwork:
     - name: pre-artwork-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for artwork"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1417,17 +1699,24 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   
   kyma-incubator/opensap:
     - name: pre-opensap-validate-inrepo-prow-configs
       annotations:
+        description: "Validate inrepo prow configs for opensap"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -1445,11 +1734,156 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20220610-d59e6cd2db"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../prow/plugins.yaml"
-              - "--config-path=../prow/config.yaml"
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/testdrape:
+    - name: pre-testdrape-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for testdrape"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-testdrape-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/sc-removal:
+    - name: pre-sc-removal-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for sc-removal"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-sc-removal-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/service-catalog-tester:
+    - name: pre-service-catalog-tester-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for service-catalog-tester"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-service-catalog-tester-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
+              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
+  
+  kyma-incubator/service-catalog:
+    - name: pre-service-catalog-validate-inrepo-prow-configs
+      annotations:
+        description: "Validate inrepo prow configs for service-catalog"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-service-catalog-validate-inrepo-prow-configs"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/checkconfig:v20230705-6666368cff"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "checkconfig"
+            args:
+              - "--plugin-config=../test-infra/prow/plugins.yaml"
+              - "--config-path=../test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
   

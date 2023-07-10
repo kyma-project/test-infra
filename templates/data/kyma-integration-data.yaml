@@ -21,6 +21,10 @@ templates:
             jobs:
               - jobConfig:
                   name: "utilities-kyma-integration-cleaner"
+                  annotations:
+                    owner: neighbors
+                    description: kyma integration cleaner
+                  serviceAccountName: sa-prow-job-resource-cleaners
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   image: eu.gcr.io/kyma-project/prow/cleaner:0.0.1 # see test-infra/prow/images/cleaner
                   labels:
@@ -37,31 +41,12 @@ templates:
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
-                  name: "orphaned-az-storage-accounts-cleaner"
-                  cron: "00 00 * * *" # "At 00:00 each day"
-                  labels:
-                    preset-az-kyma-prow-credentials: "true"
-                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/minio/azure-cleaner.sh"
-                  env:
-                    MINIO_GATEWAY_MODE: azure
-                    AZURE_RS_GROUP: rafter-minio-gateway
-                    AZURE_REGION: westeurope
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "jobConfig_periodic"
-              - jobConfig:
                   name: "orphaned-assetstore-gcp-bucket-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
                   cron: "00 00 * * *" # "At 00:00 each day"
                   labels:
-                    preset-sa-prow-job-resource-cleaner: "true"
                     preset-gc-project-env: "true"
                   command: "bash"
                   args:
@@ -80,6 +65,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-disks-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud disks"
                   cron: "30 * * * *" # "At 30 minutes past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -87,7 +75,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-'"
+                    - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='.*'"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -101,6 +89,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-ips-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud IPs"
                   cron: "0 1 * * *" # "At 1:00 each day"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -122,6 +113,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-clusters-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud clusters"
                   cron: "0 * * * *" # "At 0 minute every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -129,7 +123,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22"
+                    - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22,persist"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -143,6 +137,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-vms-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud VMs"
                   cron: "15,45 * * * *" # "At 15 and 45 past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -164,6 +161,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-loadbalancer-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud load balancers"
                   cron: "15 * * * *" # "At 15 past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -183,29 +183,11 @@ templates:
                     - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
-              #              - jobConfig:
-              #                  name: "firewall-cleaner"
-              #                  cron: "45 */4 * * 1-5" # "At minute 45 past every 4th hour from Monday through Friday"
-              #                  labels:
-              #                    preset-sa-gke-kyma-integration: "true"
-              #                    preset-gc-project-env: "true"
-              #                  command: "bash"
-              #                  args:
-              #                    - "-c"
-              #                    - "/prow-tools/firewallcleaner -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
-              #                inheritedConfigs:
-              #                  global:
-              #                    - "jobConfig_default"
-              #                    - "jobConfig_periodic"
-              #                    - "image_prow-tools"
-              #                    - "extra_refs_test-infra"
-              #                    - "disable_testgrid"
-              #                  local:
-              #                    - "jobConfig_default"
-              #                    - "request_small"
-              #                    - "jobConfig_periodic"
               - jobConfig:
                   name: "orphaned-dns-cleaner"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic cleanup of orphaned Google cloud DNS records"
                   cron: "30 * * * *" # "At minute 30 past every hour"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -228,6 +210,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "gcr-cleaner-prow-workloads"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Cleans up GCR images older than 7 days in eu.gcr.io/sap-kyma-prow-workloads"
                   cron: "0 1 * * *" # "At 1:00am every day"
                   labels:
                     preset-sa-gke-kyma-integration: "true"
@@ -248,6 +233,9 @@ templates:
                     - "jobConfig_periodic"
               - jobConfig:
                   name: "github-issues"
+                  annotations:
+                    owner: neighbors
+                    description: "Exports data from github to the big query (Grafana metrics)"
                   cron: "0 6 * * *" # "At 6:00 every day"
                   labels:
                     preset-bot-github-token: "true"
@@ -301,13 +289,6 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"
             env:
               KYMA_PROJECT_DIR: "."
-          vm_job_template:
-            annotations:
-              pipeline.platform: minikube
-              pipeline.clusterprovisioning: minikube
-              pipeline.installer: kyma install
-              pipeline.test: octopus
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-minikube.sh"
           vm_job_template_k3d:
             annotations:
               pipeline.platform: k3d
@@ -319,9 +300,9 @@ templates:
             annotations:
               pipeline.platform: k3s
               pipeline.installer: kyma deploy
-              pipeline.test: helm serverless-test
+              pipeline.test: serverless-test
               pipeline.clusterprovisioning: k3s
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3s.sh"
+            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
           vm_job_labels_template:
             labels:
               preset-kyma-guard-bot-github-token: "true"
@@ -351,7 +332,6 @@ templates:
               preset-kyma-artifacts-bucket: "true"
               preset-cluster-use-ssd: "true"
               preset-cluster-version: "true"
-              preset-gke-pod-security-policy: "true"
           fast_integration_template:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
             annotations:
@@ -379,20 +359,71 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d"
+                  annotations:
+                    owner: goat
+                    description: Kyma integration job on k3d
+                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
-                  annotations:
-                    pipeline.platform: k3d
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "pre-main-kyma-integration-k3d-app-gateway"
+                  annotations:
+                    pipeline.platform: k3d
+                    owner: framefrog
+                    description: "It tests the acceptance criteria of the (Central) Application Gateway component"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  optional: "false"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-kyma-integration-app-connector-tests-app-gateway: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                  local:
+                    - "jobConfig_default"
+                    - "request_small"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
+                    - "extra_refs_kyma-local"
+              - jobConfig:
+                  name: "pre-main-kyma-integration-k3d-app-conn-validator"
+                  annotations:
+                    pipeline.platform: k3d
+                    owner: framefrog
+                    description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  optional: "false"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-kyma-integration-app-connector-tests-app-validator: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "request_small"
@@ -401,8 +432,11 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
+                  annotations:
+                    owner: framefrog
+                    description: "It tests Compass integration. It won't be needed after the implementation of this issue - https://github.com/kyma-project/kyma/issues/15037"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  always_run: false
                   optional: "true"
                   labels:
                     preset-build-pr: "true"
@@ -415,7 +449,6 @@ templates:
                     - "jobConfig_presubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
                   local:
                     - "jobConfig_default"
                     - "request_small"
@@ -425,9 +458,11 @@ templates:
               - jobConfig:
                   name: "pre-main-serverless-integration-k3s"
                   # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources/serverless\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
+                  run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     pipeline.platform: k3s
+                    owner: "otters"
+                    description: serverless integration k3s job
                   labels:
                     preset-build-pr: "true"
                   env:
@@ -444,35 +479,12 @@ templates:
                     - "vm_job_template_serverless_k3s"
                     - "vm_job_labels_template"
               - jobConfig:
-                  name: "serverless-function-benchmark"
-                  cron: "0 1,13 * * *" # twice a day
-                  annotations:
-                    description: Serverless function runtime benchmarks
-                    pipeline.platform: gke
-                  labels:
-                    preset-gc-compute-envs: "true"
-                    preset-gc-project-env: "true"
-                  env:
-                    PROVISION_REGIONAL_CLUSTER: "true"
-                    INPUT_CLUSTER_NAME: "nightly"
-                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-                    CLUSTER_PROVIDER: "gcp"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_kyma-integration"
-                    - "extra_refs_kyma"
-                    - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
-                  local:
-                    - "serverless_benchmarks_template"
-              - jobConfig:
                   name: "serverless-function-metrics-generator"
                   cron: "0 0,12 * * *" # twice a day, midnight and noon, everyday
                   annotations:
                     description: Serverless function metrics generator
                     pipeline.platform: gke
+                    owner: "otters"
                   labels:
                     preset-gc-compute-envs: "true"
                     preset-gc-project-env: "true"
@@ -488,25 +500,26 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_kyma"
                     - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
                     - "disable_testgrid"
                   local:
                     - "serverless_metrics_template"
               - jobConfig:
-                  name: "serverless-git-auth-integration-k3s-nightly"
-                  cron: "0 3 * * 1-5" # "At 03:00 UTC on every weekday Monday through Friday"
+                  name: "pre-main-serverless-git-auth-integration-k3s"
+                  # following regexp won't start build if only Markdown files were changed
+                  run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     description: Serverless git-function authentication nightly integration tests
                     pipeline.platform: k3s
+                    owner: "otters"
                   labels:
-                    preset-build-main: "true"
+                    preset-build-pr: "true"
                     preset-serverless-git-auth: "true"
                   env:
                     INTEGRATION_SUITE: "git-auth-integration"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "jobConfig_periodic"
+                    - "jobConfig_presubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
@@ -517,7 +530,10 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-telemetry"
-                  run_if_changed: "^resources/telemetry/|^installation/resources/crds/telemetry"
+                  annotations:
+                    owner: huskies
+                    description: runs telemetry integration tests on k3d
+                  run_if_changed: "^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/"
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
@@ -526,7 +542,6 @@ templates:
                     - "jobConfig_default"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
                     - "jobConfig_presubmit"
                   local:
                     - "jobConfig_default"
@@ -534,8 +549,11 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-eval-istio-integration-k3d"
+                  annotations:
+                    owner: goat
+                    description: runs istio integration tests with evaluation profile on k3d
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
-                  optional: true
+                  optional: false
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-istio-evaluation: "true"
@@ -544,7 +562,6 @@ templates:
                     - "jobConfig_default"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
                     - "jobConfig_presubmit"
                   local:
                     - "jobConfig_default"
@@ -552,8 +569,11 @@ templates:
                     - "vm_job_labels_template"
               - jobConfig:
                   name: "pre-main-kyma-prod-istio-integration-k3d"
+                  annotations:
+                    owner: goat
+                    description: runs istio integration tests with production profile on k3d
                   run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
-                  optional: true
+                  optional: false
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-istio-production: "true"
@@ -562,30 +582,51 @@ templates:
                     - "jobConfig_default"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
                     - "jobConfig_presubmit"
                   local:
                     - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-
+              - jobConfig:
+                  name: "pre-main-kyma-istio-reconcilation-k3d"
+                  annotations:
+                    owner: goat
+                    description: runs istio reconcilation tests with production profile on k3d
+                  run_if_changed: "(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)"
+                  optional: true
+                  env:
+                    RECONCILATION_TEST: "true"
+                  labels:
+                    preset-build-pr: "true"
+                    preset-kyma-integration-istio-production: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_kyma-integration"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_presubmit"
+                  local:
+                    - "jobConfig_default"
+                    - "vm_job_template_k3d"
+                    - "vm_job_labels_template"
               # postsubmits
               - jobConfig:
                   name: "post-main-kyma-integration-k3d"
                   annotations:
+                    owner: huskies,goat
                     testgrid-dashboards: kyma_integration
                     description: Kyma integration job on k3d.
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
+                  slack_channel: huskies-notifications
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
                   local:
                     - "jobConfig_default"
                     - "request_small"
@@ -593,23 +634,22 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3d-central-app-connectivity-compass"
+                  name: "post-main-kyma-integration-k3d-app-gateway"
                   annotations:
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration job on k3d with central Application Gateway and Compass dev.
+                    owner: framefrog
+                    description: "Kyma integration job on k3d for testing application gateway."
                     testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
-                    preset-kyma-integration-compass-dev: "true"
-                    preset-kyma-integration-compass-enabled: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-kyma-integration-app-connector-tests-app-gateway: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_postsubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
                   local:
                     - "jobConfig_default"
                     - "request_small"
@@ -617,29 +657,33 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3d-telemetry"
-                  run_if_changed: "^resources/telemetry/|^installation/resources/crds/telemetry"
+                  name: "post-main-kyma-integration-k3d-app-conn-validator"
+                  annotations:
+                    testgrid-dashboards: kyma_integration
+                    owner: framefrog
+                    description: "Kyma integration job on k3d for testing application connectivity validator."
+                    testgrid-days-of-results: "60"
                   labels:
                     preset-build-main: "true"
-                    preset-kyma-integration-telemetry-enabled: "true"
+                    preset-kyma-integration-central-app-connectivity-enabled: "true"
+                    preset-kyma-integration-app-connector-tests-app-validator: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
+                    - "jobConfig_postsubmit"
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
-                    - "jobConfig_postsubmit"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
+                    - "request_small"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
-
+                    - "extra_refs_kyma-local"
               # periodics
-
               - jobConfig:
                   name: kyma-upgrade-k3d-kyma2-to-main
                   annotations:
+                    owner: jellyfish
                     testgrid-dashboards: kyma_integration
                     description: K3d Kyma 2.0 to main branch.
                   decoration_config:
@@ -653,7 +697,6 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - image_kyma-integration
-                    - kyma_major_version_2
                     - jobConfig_slack_jellyfish
                   local:
                     - "jobConfig_default"
@@ -667,8 +710,9 @@ templates:
               - jobConfig:
                   name: "kyma-integration-k3d"
                   annotations:
+                    owner: goat
                     testgrid-dashboards: kyma_integration
-                    description: Kyma integration periodic job on k3d.
+                    description: Kyma integration periodic job on k3d
                   cron: "5 * * * *"
                   labels:
                     preset-build-main: "true"
@@ -680,7 +724,6 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
-                    - "kyma_major_version_2"
                   local:
                     - "jobConfig_default"
                     - "request_small"
@@ -690,7 +733,11 @@ templates:
                     - "extra_refs_kyma-local"
               - jobConfig:
                   name: "kyma-integration-k3d-telemetry"
-                  cron: "00 07 * * *" # "At 07:00 each day"
+                  annotations:
+                    owner: huskies
+                    description: runs telemetry integration tests on k3d
+                  cron: "0 1,13 * * *"
+                  slack_channel: huskies-notifications
                   labels:
                     preset-build-main: "true"
                     preset-kyma-integration-telemetry-enabled: "true"
@@ -701,7 +748,6 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
-                    - "kyma_major_version_2"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -713,6 +759,7 @@ templates:
                   cron: "0 2 * * 1-5" # "At 02:00 UTC on every weekday Monday through Friday"
                   annotations:
                     description: Kyma GKE nightly build (depraceted, needed for sec scans)
+                    owner: "neighbors"
                     pipeline.platform: gke
                     pipeline.installer: kyma deploy
                     pipeline.clusterprovisioning: gcloud cli
@@ -720,11 +767,9 @@ templates:
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
                     preset-build-main: "true"
-                    preset-stability-checker-slack-notifications: "true"
                     preset-nightly-github-integration: "true"
                     preset-kms-gc-project-env: "true"
                     preset-certificates-bucket: "true"
-                    preset-gke-pod-security-policy: "true"
                     preset-slack-alerts: "true"
                   volumes:
                     - name: sa-stability-fluentd-storage-writer
@@ -746,6 +791,10 @@ templates:
                     GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS: "cluster-access"
                     CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
                     TEST_RESULT_WINDOW_TIME: "6h"
+                  securityContext:
+                    privileged: "true"
+                    seccompProfile:
+                      type: Unconfined
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -759,78 +808,3 @@ templates:
                     - "request_big"
                     - "jobConfig_periodic"
                     - "gke_job_labels_template"
-              - jobConfig:
-                  name: "kyma-gke-nightly-fast-integration"
-                  cron: "0 0-1,4-23 * * 1-5" # "At every hour except 03:00 and 4:00 UTC on every weekday Monday through Friday"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    description: Kyma GKE nightly fast integration tests.
-                    pipeline.platform: gke
-                  labels:
-                    preset-gc-compute-envs: "true"
-                    preset-gc-project-env: "true"
-                  env:
-                    PROVISION_REGIONAL_CLUSTER: "true"
-                    INPUT_CLUSTER_NAME: "nightly"
-                    CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-                    CLUSTER_PROVIDER: "gcp"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "image_kyma-integration"
-                    - "extra_refs_kyma"
-                    - "extra_refs_test-infra"
-                    - "kyma_major_version_2"
-                  local:
-                    - "fast_integration_template"
-              # these jobs are disabled due to failing tests, until Kyma 2.0 long lasting clusters are introduced
-              # - jobConfig:
-              #     name: "kyma-gke-weekly-fast-integration"
-              #     cron: "0 0-4,6-23 * * 1-5" # "At every hour except 05:00 UTC, on every weekday Monday through Friday"
-              #     annotations:
-              #       testgrid-dashboards: kyma_integration
-              #       description: Kyma GKE weekly fast integration tests.
-              #       pipeline.platform: gke
-              #     labels:
-              #       preset-gc-compute-envs: "true"
-              #       preset-gc-project-env: "true"
-              #     env:
-              #       PROVISION_REGIONAL_CLUSTER: "true"
-              #       INPUT_CLUSTER_NAME: "weekly-124"
-              #       CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-              #       CLUSTER_PROVIDER: "gcp"
-              #   inheritedConfigs:
-              #     global:
-              #       - "jobConfig_default"
-              #       - "jobConfig_periodic"
-              #       - "image_kyma-integration"
-              #       - "extra_refs_kyma"
-              #       - "extra_refs_test-infra"
-              #       - "kyma_major_version_1"
-              #     local:
-              #       - "fast_integration_template"
-
-              # - jobConfig:
-              #     name: "kyma-aks-nightly-fast-integration"
-              #     cron: "0 0-2,4-23 * * 1-5" # "At every hour except 03:00 UTC on every day-of-week from Monday through Friday"
-              #     annotations:
-              #       testgrid-dashboards: kyma_integration
-              #       description: Kyma AKS nightly fast integration tests.
-              #       pipeline.platform: aks
-              #     labels:
-              #       preset-az-kyma-prow-credentials: "true"
-              #     env:
-              #       RS_GROUP: "kyma-nightly-aks"
-              #       INPUT_CLUSTER_NAME: "nightly-aks-124"
-              #       CLUSTER_PROVIDER: "azure"
-              #   inheritedConfigs:
-              #     global:
-              #       - "jobConfig_default"
-              #       - "jobConfig_periodic"
-              #       - "image_kyma-integration"
-              #       - "extra_refs_kyma"
-              #       - "extra_refs_test-infra"
-              #       - "kyma_major_version_1"
-              #     local:
-              #       - "fast_integration_template"

@@ -5,6 +5,7 @@ readonly RECONCILER_NAMESPACE=reconciler
 readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=15 # in secs
 readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
+readonly MOTHERSHIP_RECONCILER_VALUES_FILE="../../resources/kcp/charts/mothership-reconciler/values.yaml"
 
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
@@ -75,8 +76,10 @@ function reconciler::provision_cluster() {
     # catch cluster provisioning errors and try provision new one
     trap reconciler::reprovision_cluster ERR
 
+    set +e
     # create the cluster
     envsubst < "${DEFINITION_PATH}" | kubectl create -f -
+    set -e
 
     # wait for the cluster to be ready
     kubectl wait --for condition="ControlPlaneHealthy" --timeout=20m shoot "${INPUT_CLUSTER_NAME}"
@@ -181,8 +184,12 @@ function reconciler::initialize_test_pod() {
 
   # move to reconciler directory
   cd "${CONTROL_PLANE_RECONCILER_DIR}"  || { echo "Failed to change dir to: ${CONTROL_PLANE_RECONCILER_DIR}"; exit 1; }
+  if [ ! -f "$MOTHERSHIP_RECONCILER_VALUES_FILE" ]; then
+    log::error "Mothership reconciler values file not found! ($MOTHERSHIP_RECONCILER_VALUES_FILE)"
+    exit 1
+  fi
   echo "************* Current Reconciler Image To Be Used **************"
-  cat < ../../resources/kcp/values.yaml | grep -o 'mothership_reconciler:.*mothership.*'
+  cat < "$MOTHERSHIP_RECONCILER_VALUES_FILE" | grep -o 'mothership_reconciler.*\"'
   echo "****************************************************************"
   # Create reconcile request payload with kubeconfig, domain, and version to the test-pod
   domain="$(kubectl get cm shoot-info -n kube-system -o jsonpath='{.data.domain}')"
@@ -190,22 +197,21 @@ function reconciler::initialize_test_pod() {
   # shellcheck disable=SC2086
   kc="$(cat ${KUBECONFIG})"
 
-  if [ "$KYMA_UPGRADE_SOURCE" == "main" ]; then
-    sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-main.json
-    # shellcheck disable=SC2016
-    jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-main.json > body.json
-  elif [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.0\.[0-9]+$ ]] ; then
-    sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-0-x.json
-    # shellcheck disable=SC2016
-    jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-0-x.json > body.json
-  elif [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.[1-9]\.[0-9]+$ ]] ; then
-    sed -i "s/example.com/$domain/" ./e2e-test/template-kyma-2-1-x.json
-    # shellcheck disable=SC2016
-    jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' ./e2e-test/template-kyma-2-1-x.json > body.json
-  else
-    log::error "Unsupported Kyma Version: $KYMA_UPGRADE_SOURCE"
-    exit 1
+  local tplFile="./e2e-test/template-kyma-main.json"
+  if [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.0\.[0-9]+$ ]] ; then
+    tplFile="./e2e-test/template-kyma-2-0-x.json"
+  elif [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.[1-3]\.[0-9]+$ ]] ; then
+    tplFile="./e2e-test/template-kyma-2-1-x.json"
+  elif [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.[4-5]\.[0-9]+$ ]] ; then
+    tplFile="./e2e-test/template-kyma-2-4-x.json"
   fi
+
+  log::info "Calling reconciler by using JSON template '$tplFile' as payload"
+
+  sed -i "s/example.com/$domain/" "$tplFile"
+  # shellcheck disable=SC2016
+  jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' "$tplFile" > body.json
+
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
   kubectl cp body.json -c test-pod reconciler/test-pod:/tmp
   kubectl cp ./e2e-test/reconcile-kyma.sh -c test-pod reconciler/test-pod:/tmp
@@ -230,7 +236,14 @@ function reconciler::wait_until_kyma_reconciled() {
   log::info "Wait until reconciliation is complete"
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
-    status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs)
+    status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs || true)
+
+    if [ -z "${status}" ]; then
+      log::info "Failed to retrieve reconciliation status. Retrying previous call in debug mode"
+      kubectl exec -v=8 -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" || true
+      status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs || true)
+    fi
+
     if [ "${status}" = "ready" ]; then
       log::info "Kyma is reconciled"
       break
@@ -240,6 +253,11 @@ function reconciler::wait_until_kyma_reconciled() {
       log::error "Failed to reconcile Kyma. Exiting"
       kubectl logs -n "${RECONCILER_NAMESPACE}" -l app.kubernetes.io/name=mothership-reconciler -c mothership-reconciler --tail -1
       exit 1
+    fi
+
+    if [ -z "${status}" ]; then
+      log::info "Failed to retrieve reconciliation status. Checking if API server is reachable by asking for its version"
+      kubectl version -v=8
     fi
 
     if [ "$RECONCILER_TIMEOUT" -ne 0 ] && [ "$iterationsLeft" -le 0 ]; then
@@ -277,7 +295,15 @@ function reconciler::export_shoot_cluster_kubeconfig() {
   log::info "Export shoot cluster kubeconfig to ENV"
   export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
   local shoot_kubeconfig="/tmp/shoot-kubeconfig.yaml"
-  kubectl get secret "${INPUT_CLUSTER_NAME}.kubeconfig"  -ogo-template="{{ .data.kubeconfig | base64decode }}" > "${shoot_kubeconfig}"
+  cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${INPUT_CLUSTER_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${shoot_kubeconfig}"
+{
+    "apiVersion": "authentication.gardener.cloud/v1alpha1",
+    "kind": "AdminKubeconfigRequest",
+    "spec": {
+        "expirationSeconds": 10800
+    }
+}
+EOF
   cat "${shoot_kubeconfig}" > "${LOCAL_KUBECONFIG}"
   export KUBECONFIG="${shoot_kubeconfig}"
 }

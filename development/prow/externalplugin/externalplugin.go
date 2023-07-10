@@ -235,10 +235,8 @@ func Start(p *Plugin, helpProvider externalplugins.ExternalPluginHelpProvider, o
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	select {
-	case <-sig:
-		if err := s.Shutdown(ctx); err != nil {
-			p.logger.Fatalw("Error closing server.", "error", err.Error())
-		}
+	<-sig
+	if err := s.Shutdown(ctx); err != nil {
+		p.logger.Fatalw("Error closing server.", "error", err.Error())
 	}
 }

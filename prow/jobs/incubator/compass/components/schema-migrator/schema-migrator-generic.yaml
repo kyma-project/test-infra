@@ -3,45 +3,60 @@
 
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pre-compass-components-schema-migrator
+    - name: pull-schema-migrator-build
       annotations:
+        description: "Building Schema Migrator Compass component"
+        owner: "compass"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-compass-components-schema-migrator"
+        prow.k8s.io/pubsub.runID: "pull-schema-migrator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^components/schema-migrator/|^scripts/'
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^components/schema-migrator/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-incubator/compass
+      decoration_config:
+        grace_period: 1m
+        timeout: 20m
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^main$
         - ^master$
         - ^hotfix-.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - "/image-builder"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/compass/components/schema-migrator"
+              - "--name=incubator/compass-schema-migrator"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=components/schema-migrator"
+              - "--dockerfile=Dockerfile"
+              - "--platform=linux/amd64"
+            env:
+              - name: BUILDKITD_FLAGS
+                value: "--oci-worker-no-process-sandbox"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 1Gi
+                cpu: 1000m
+            volumeMounts:
+              - name: share
+                mountPath: /home/user/.local/share/buildkit
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         tolerations:
           - key: dedicated
             operator: Equal
@@ -49,49 +64,72 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+        volumes:
+          - name: share
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-incubator/compass:
-    - name: post-compass-components-schema-migrator
+    - name: post-schema-migrator-build
       annotations:
+        description: "Building Schema Migrator Compass component after merge"
+        owner: "compass"
         pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-compass-components-schema-migrator"
+        prow.k8s.io/pubsub.runID: "post-schema-migrator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^components/schema-migrator/|^scripts/'
+        preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
+      run_if_changed: '^components/schema-migrator/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-incubator/compass
+      decoration_config:
+        grace_period: 1m
+        timeout: 20m
       cluster: trusted-workload
       max_concurrency: 10
       branches:
         - ^main$
         - ^master$
         - ^hotfix-.*$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - "/image-builder"
             args:
-              - "/home/prow/go/src/github.com/kyma-incubator/compass/components/schema-migrator"
+              - "--name=incubator/compass-schema-migrator"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=components/schema-migrator"
+              - "--dockerfile=Dockerfile"
+              - "--platform=linux/amd64"
+            env:
+              - name: BUILDKITD_FLAGS
+                value: "--oci-worker-no-process-sandbox"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 1Gi
+                cpu: 1000m
+            volumeMounts:
+              - name: share
+                mountPath: /home/user/.local/share/buildkit
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
         tolerations:
           - key: dedicated
             operator: Equal
@@ -99,4 +137,12 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+        volumes:
+          - name: share
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   

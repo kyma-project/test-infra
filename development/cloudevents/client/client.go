@@ -25,14 +25,14 @@ type Client struct {
 	Logger        logging.LoggerInterface
 }
 
-// ClientOption is a client constructor configuration option for passing configuration to the client constructor.
-type ClientOption func(*Client) error
+// Option is a client constructor configuration option for passing configuration to the client constructor.
+type Option func(*Client) error
 
 // NewClient is a constructor function for cloudevents client.
-// A constructed client can be configured by providing ClientOptions.
+// A constructed client can be configured by providing Options.
 // Default constructed logger is a console logger.
 // Default listen port is 8080.
-func NewClient(options ...ClientOption) (*Client, error) {
+func NewClient(options ...Option) (*Client, error) {
 	cc := &Client{
 		Client:        nil,
 		listenPort:    8080,
@@ -58,7 +58,7 @@ func NewClient(options ...ClientOption) (*Client, error) {
 
 // WithListenPort is a client constructor configuration option specifying port number to listen on for a cloudevents.
 // If not provided default listen port is 8080.
-func WithListenPort(listenPort int) ClientOption {
+func WithListenPort(listenPort int) Option {
 	return func(cc *Client) error {
 		cc.listenPort = listenPort
 		return nil
@@ -66,7 +66,7 @@ func WithListenPort(listenPort int) ClientOption {
 }
 
 // WithDefaultMux is a client constructor configuration option enabling client default mux.
-func WithDefaultMux() ClientOption {
+func WithDefaultMux() Option {
 	return func(cc *Client) error {
 		cc.mux = cc.defaultMux
 		return nil
@@ -75,7 +75,7 @@ func WithDefaultMux() ClientOption {
 
 // FromConfig is a client constructor configuration option passing client Config struct.
 // Data from struct will be used to construct client.
-func FromConfig(config Config) ClientOption {
+func FromConfig(config Config) Option {
 	return func(cc *Client) error {
 		cc.listenPort = config.ListenPort
 		return nil
@@ -84,7 +84,7 @@ func FromConfig(config Config) ClientOption {
 
 // WithEventHandler is a client constructor configuration option adding event handler for event type.
 // Client use this handler to process every received event of assigned eventType.
-func WithEventHandler(eventType string, eventHandler func(*Client, cloudevents.Event)) ClientOption {
+func WithEventHandler(eventType string, eventHandler func(*Client, cloudevents.Event)) Option {
 	return func(cc *Client) error {
 		if _, ok := cc.eventHandlers[eventType]; !ok {
 			cc.eventHandlers[eventType] = eventHandler
@@ -97,7 +97,7 @@ func WithEventHandler(eventType string, eventHandler func(*Client, cloudevents.E
 
 // WithLogger is a client constructor configuration option passing logger instance.
 // If not provided default constructed logger is a console logger.
-func WithLogger(logger logging.LoggerInterface) ClientOption {
+func WithLogger(logger logging.LoggerInterface) Option {
 	return func(cc *Client) error {
 		cc.Logger = logger
 		return nil

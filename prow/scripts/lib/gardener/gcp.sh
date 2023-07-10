@@ -86,6 +86,11 @@ gardener::provision_cluster() {
         return 1
     fi
 
+    # set default value for minimum number of machines
+    if [ -z "$MACHINES_MIN" ]; then
+        export MACHINES_MIN="2"
+    fi
+
     CLEANUP_CLUSTER="true"
       # enable trap to catch kyma provision failures
       trap gardener::reprovision_cluster ERR
@@ -99,10 +104,11 @@ gardener::provision_cluster() {
         -z "${GARDENER_ZONES}" \
         -t "${MACHINE_TYPE}" \
         --scaler-max 4 \
-        --scaler-min 2 \
+        --scaler-min "${MACHINES_MIN}" \
         --kube-version="${GARDENER_CLUSTER_VERSION}" \
         --attempts 1 \
-        --verbose
+        --verbose \
+        --hibernation-start ""
     # trap cleanup we want other errors fail pipeline immediately
     trap - ERR
     if [ "$DEBUG_COMMANDO_OOM" = "true" ]; then
@@ -111,31 +117,6 @@ gardener::provision_cluster() {
     fi
 }
 
-gardener::install_kyma() {
-    log::info "Installing Kyma"
-
-    (
-    set -x
-    if [[ "$EXECUTION_PROFILE" == "evaluation" ]]; then
-        kyma install \
-            --ci \
-            --source "${KYMA_SOURCE}" \
-            --profile evaluation \
-            --timeout 90m
-    elif [[ "$EXECUTION_PROFILE" == "production" ]]; then
-        kyma install \
-            --ci \
-            --source "${KYMA_SOURCE}" \
-            --profile production \
-            --timeout 90m
-    else
-        kyma install \
-        --ci \
-        --source "${KYMA_SOURCE}" \
-        --timeout 90m
-    fi
-    )
-}
 
 gardener::deploy_kyma() {
     kyma deploy --ci --timeout 90m "$@"
@@ -160,9 +141,11 @@ gardener::test_fast_integration_kyma() {
 }
 
 gardener::pre_upgrade_test_fast_integration_kyma() {
-    log::info "Running pre-upgrade Kyma Fast Integration tests"
+    log::info "Running pre-upgrade Kyma Fast Integration tests - GCP"
 
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    kymaDirectory="$(utils::get_kyma_fast_integration_dir "$@")"
+    log::info "Switching directory to '$kymaDirectory'"
+    pushd "$kymaDirectory"
     make ci-pre-upgrade
     popd
 
@@ -170,9 +153,11 @@ gardener::pre_upgrade_test_fast_integration_kyma() {
 }
 
 gardener::post_upgrade_test_fast_integration_kyma() {
-    log::info "Running post-upgrade Kyma Fast Integration tests"
+    log::info "Running post-upgrade Kyma Fast Integration tests - GCP"
 
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+    kymaDirectory="$(utils::get_kyma_fast_integration_dir "$@")"
+    log::info "Switching directory to '$kymaDirectory'"
+    pushd "$kymaDirectory"
     make ci-post-upgrade
     popd
 

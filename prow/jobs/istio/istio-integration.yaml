@@ -1,0 +1,127 @@
+presubmits:
+  kyma-project/istio:
+    - name: pull-istio-integration
+      annotations:
+        owner: goat
+        description: Runs integration suite for istio operator
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-istio-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
+      cluster: untrusted-workload
+      decorate: true
+      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      spec:
+        hostAliases:
+          - ip: "127.0.0.1"
+            hostnames:
+              - "k3d-registry.localhost"
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230707-acfee029
+            command: ["/init.sh"]
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            args:
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                k3d registry create registry.localhost --port 5000
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=10g
+                IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
+            resources:
+              requests:
+                cpu: 1
+                memory: 1Gi
+              limits:
+                cpu: 1.5
+                memory: 2Gi
+    - name: pull-istio-integration-evaluation
+      annotations:
+        owner: goat
+        description: Runs integration suite for istio operator in evaluation profile
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-istio-integration-evaluation"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
+      cluster: untrusted-workload
+      decorate: true
+      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      spec:
+        hostAliases:
+          - ip: "127.0.0.1"
+            hostnames:
+              - "k3d-registry.localhost"
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230707-acfee029
+            command: ["/init.sh"]
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            args:
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                k3d registry create registry.localhost --port 5000
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=4g
+                IMG="k3d-registry.localhost:5000/istio-operator:latest" TEST_EVALUATION=TRUE make docker-build docker-push istio-integration-test
+            resources:
+              requests:
+                cpu: 1
+                memory: 1Gi
+              limits:
+                cpu: 1.5
+                memory: 2Gi
+postsubmits:
+  kyma-project/istio:
+    - name: post-istio-integration
+      annotations:
+        owner: goat
+        description: Runs integration suite for istio operator
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-istio-integration"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
+      cluster: untrusted-workload
+      decorate: true
+      skip_if_only_changed: '^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      spec:
+        hostAliases:
+          - ip: "127.0.0.1"
+            hostnames:
+              - "k3d-registry.localhost"
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230707-acfee029
+            command: ["/init.sh"]
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            args:
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                k3d registry create registry.localhost --port 5000
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=10g
+                IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
+            resources:
+              requests:
+                cpu: 1
+                memory: 1Gi
+              limits:
+                cpu: 1.5
+                memory: 2Gi

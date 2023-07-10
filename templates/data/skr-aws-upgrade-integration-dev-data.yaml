@@ -24,7 +24,6 @@ templates:
               preset-kyma-integration-subaccounnt: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
               preset-kcp-client-dev-envs: "true"
-              preset-btp-operator-stage-credentials: "true"
           keb_plan_aws:
             annotations:
               pipeline.platform: gardener_aws
@@ -36,6 +35,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "skr-aws-upgrade-integration-dev"
+                  annotations:
+                    owner: gopher
+                    description: skr upgrade test on aws
                   cron: "0 */4 * * *" # "Every four hours"
                   # labels:
                   #   preset-skr-al-service-key: "true"
@@ -47,7 +49,6 @@ templates:
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                     - "disable_testgrid"
-                    - "kyma_major_version_1"
                     - "kyma_project_dir"
                   local:
                     - "jobConfig_default"

@@ -23,7 +23,7 @@ func MissingCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "missing",
 		Short:   "Check if all images exists",
-		Long:    "Find all images taht don't exist",
+		Long:    "Find all images that don't exist",
 		Example: "image-url-helper missing",
 		Args:    cobra.ExactArgs(0),
 		Run: func(cmd *cobra.Command, args []string) {

@@ -6,11 +6,11 @@ import (
 	"flag"
 	"fmt"
 	"io/fs"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -100,7 +100,7 @@ func main() {
 	} else {
 		// read rendertemplate config file from local filesystem
 		// rendertemplate config contains global configsets
-		configFile, err = ioutil.ReadFile(*configFilePath)
+		configFile, err = os.ReadFile(*configFilePath)
 		if err != nil {
 			log.Fatalf("Cannot read config file from local filesystem: %s", err.Error())
 		}
@@ -118,7 +118,7 @@ func main() {
 		*dataDirPath = path.Dir(*dataFilePath)
 	} else if *dataFilePath == "" && *dataDirPath != "" {
 		// read all template data from data files
-		err = filepath.Walk(*dataDirPath, getFileWalkFunc(*dataDirPath, &dataFiles))
+		err = filepath.Walk(*dataDirPath, getFileWalkFunc(&dataFiles))
 		if err != nil {
 			log.Fatalf("Cannot read data file directory: %s", err)
 		}
@@ -156,6 +156,11 @@ func main() {
 	}
 
 	rtConfig.Merge(mergoConfig)
+
+	// sort template configs by value of FromTo (see: https://github.com/kyma-project/test-infra/issues/6694)
+	sort.Slice(rtConfig.TemplatesConfigs, func(i, j int) bool {
+		return rtConfig.TemplatesConfigs[i].FromTo[0].String() < rtConfig.TemplatesConfigs[j].FromTo[0].String()
+	})
 
 	// generate final .yaml files
 	for _, templateConfig := range rtConfig.TemplatesConfigs {
@@ -205,7 +210,7 @@ func getTemplateFromGithub(ghClient *github.Client, templateFileName string) (st
 }
 
 // getFileWalkFunc returns walk function that will recursively find YAML files and will return list of path to these files
-func getFileWalkFunc(dataFilesDir string, dataFiles *[]string) filepath.WalkFunc {
+func getFileWalkFunc(dataFiles *[]string) filepath.WalkFunc {
 	return func(path string, info fs.FileInfo, err error) error {
 		// pass the error further, this shouldn't ever happen
 		if err != nil {
@@ -312,7 +317,7 @@ func loadTemplateFromGithub(templateFileName string, tplCache map[string]*templa
 	}
 	templateString, err := getTemplateFromGithub(ghClient, templateFileName)
 	if err != nil {
-
+		return nil, err
 	}
 	templateInstance, err = template.
 		New(path.Base(templateFileName)).

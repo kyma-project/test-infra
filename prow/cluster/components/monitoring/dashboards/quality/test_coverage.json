@@ -466,7 +466,7 @@
           "orderBySort": "1",
           "queryType": "randomWalk",
           "rawQuery": true,
-          "rawSql": "SELECT\n    MIN(CAST(REGEXP_EXTRACT(textPayload, r\"(\\d+\\.\\d+)\") as float64)) as result\n  , labels.k8s_pod_prow_k8s_io_job as metric\n  , max(timestamp) as timestamp\nFROM `sap-kyma-prow.total_test_coverage.stdout`\nWHERE $__timeFilter(timestamp)\nGROUP BY resource.labels.pod_name, labels.k8s_pod_prow_k8s_io_job\n--HAVING labels.k8s_pod_prow_k8s_io_job = \"pre-rafter\"\nHAVING labels.k8s_pod_prow_k8s_io_job not like \"pre-%\"\nORDER BY timestamp ASC",
+          "rawSql": "SELECT\n    MIN(CAST(REGEXP_EXTRACT(textPayload, r\"(\\d+\\.\\d+)\") as float64)) as result\n  , labels.k8s_pod_prow_k8s_io_job as metric\n  , max(timestamp) as timestamp\nFROM `sap-kyma-prow.total_test_coverage.stdout`\nWHERE $__timeFilter(timestamp)\nGROUP BY resource.labels.pod_name, labels.k8s_pod_prow_k8s_io_job\n--HAVING labels.k8s_pod_prow_k8s_io_job not like \"pre-%\"\nORDER BY timestamp ASC",
           "refId": "A",
           "select": [
             [

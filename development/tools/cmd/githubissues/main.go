@@ -264,5 +264,5 @@ func main() {
 		fmt.Printf("Bq issues: %v", err)
 		os.Exit(1)
 	}
-	fmt.Println("Data was added succesfully")
+	fmt.Println("Data was added successfully")
 }

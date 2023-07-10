@@ -1,0 +1,129 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-dev.yaml
+        localSets:
+          trustedWorkload:
+            cluster: trusted-workload
+          unTrustedWorkload:
+            cluster: untrusted-workload
+        jobConfigs:
+          - repoName: "kyma-project/kyma-dashboard"
+            jobs:
+              - jobConfig:
+                  annotations:
+                    owner: "hasselhoff"
+                    description: "Kyma Dashboard Dev Job"
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                    preset-dind-enabled: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  env:
+                    DOCKER_PUSH_REPOSITORY: europe-docker.pkg.dev/kyma-project
+                  path: dev
+                  args:
+                    - "."
+                    - "release-dev"
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/"
+                  skipReleaseJobs: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+                    - "privileged_job"
+                  preConfigs:
+                    local:
+                      - "unTrustedWorkload"
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    local:
+                      - "trustedWorkload"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
+      - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-stage.yaml
+        localSets:
+          trustedWorkload:
+            cluster: trusted-workload
+          unTrustedWorkload:
+            cluster: untrusted-workload
+        jobConfigs:
+          - repoName: "kyma-project/kyma-dashboard"
+            jobs:
+              - jobConfig:
+                  annotations:
+                    owner: "hasselhoff"
+                    description: "Kyma Dashboard Stage Job"
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                    preset-dind-enabled: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  env:
+                    DOCKER_PUSH_REPOSITORY: europe-docker.pkg.dev/kyma-project
+                  path: stage
+                  args:
+                    - "."
+                    - "release-stage"
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/stage/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
+                  skipReleaseJobs: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+                    - "privileged_job"
+                  preConfigs:
+                    local:
+                      - "unTrustedWorkload"
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    local:
+                      - "trustedWorkload"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"
+      - to: ../../prow/jobs/kyma-dashboard/kyma-dashboard-prod.yaml
+        localSets:
+          trustedWorkload:
+            cluster: trusted-workload
+          unTrustedWorkload:
+            cluster: untrusted-workload
+        jobConfigs:
+          - repoName: "kyma-project/kyma-dashboard"
+            jobs:
+              - jobConfig:
+                  annotations:
+                    owner: "hasselhoff"
+                    description: "Kyma Dashboard Prod Job"
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                    preset-dind-enabled: "true"
+                  command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+                  env:
+                    DOCKER_PUSH_REPOSITORY: europe-docker.pkg.dev/kyma-project
+                  path: prod
+                  args:
+                    - "."
+                    - "release-prod"
+                  run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
+                  skipReleaseJobs: "true"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_buildpack-golang"
+                    - "extra_refs_test-infra"
+                    - "privileged_job"
+                  preConfigs:
+                    local:
+                      - "unTrustedWorkload"
+                    global:
+                      - "jobConfig_presubmit"
+                  postConfigs:
+                    local:
+                      - "trustedWorkload"
+                    global:
+                      - "jobConfig_postsubmit"
+                      - "disable_testgrid"

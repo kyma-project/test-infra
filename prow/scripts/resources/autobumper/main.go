@@ -21,7 +21,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -35,6 +35,7 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"autobumper/bumper"
+
 	imagebumper "k8s.io/test-infra/experiment/image-bumper/bumper"
 
 	"sigs.k8s.io/yaml"
@@ -172,7 +173,7 @@ func parseOptions() (*options, *bumper.Options, error) {
 	flag.Parse()
 
 	var pro bumper.Options
-	data, err := ioutil.ReadFile(config)
+	data, err := os.ReadFile(config)
 	if err != nil {
 		return nil, nil, fmt.Errorf("read %q: %w", config, err)
 	}
@@ -443,7 +444,7 @@ func parseUpstreamImageVersion(upstreamAddress, prefix string) (string, error) {
 	if resp.StatusCode != http.StatusOK {
 		return "", fmt.Errorf("HTTP error %d (%q) fetching upstream config file", resp.StatusCode, resp.Status)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("error reading the response body: %w", err)
 	}

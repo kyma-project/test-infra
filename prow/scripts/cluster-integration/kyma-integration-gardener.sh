@@ -25,6 +25,7 @@ ENABLE_TEST_LOG_COLLECTOR=false
 
 export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_SOURCES_DIR="${KYMA_PROJECT_DIR}/kyma"
+export API_GATEWAY_SOURCES_DIR="${KYMA_PROJECT_DIR}/api-gateway"
 export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
 
 # shellcheck source=prow/scripts/lib/log.sh
@@ -81,7 +82,7 @@ export COMMON_NAME
 
 export CLUSTER_NAME="${COMMON_NAME}"
 
-# set KYMA_SOURCE used by gardener::install_kyma
+# set KYMA_SOURCE used by kyma deploy
 utils::generate_vars_for_build \
     -b "$BUILD_TYPE" \
     -p "$PULL_NUMBER" \
@@ -103,30 +104,21 @@ gardener::generate_overrides
 export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
-if [[ "${KYMA_MAJOR_VERSION}" == "2" ]]; then
-  kyma::deploy_kyma \
-    -p "$EXECUTION_PROFILE" \
-    -d "$KYMA_SOURCES_DIR"
-  if [[ "${KYMA_DELETE}" == "true" ]]; then
-    sleep 30
-    kyma::undeploy_kyma
-    sleep 30
-    kyma::deploy_kyma \
-       -p "$EXECUTION_PROFILE" \
-       -d "$KYMA_SOURCES_DIR"
-  fi
 # this will be extended with the next components
-elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
-  api-gateway::prepare_components_file
-  integration_tests::install_kyma
-  api-gateway::deploy_login_consent_app
-else
-  gardener::install_kyma
+kyma::deploy_kyma \
+  -p "$EXECUTION_PROFILE" \
+  -d "$KYMA_SOURCES_DIR"
+if [[ "${KYMA_DELETE}" == "true" ]]; then
+  sleep 30
+  kyma::undeploy_kyma
+  sleep 30
+  kyma::deploy_kyma \
+      -p "$EXECUTION_PROFILE" \
+      -d "$KYMA_SOURCES_DIR"
 fi
 
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
-
 
 if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::hibernate_kyma
@@ -134,19 +126,9 @@ if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
     gardener::wake_up_kyma
 fi
 
-
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
     gardener::test_fast_integration_kyma
-# this will be extended with the next components
-elif [[ "${API_GATEWAY_INTEGRATION}" == "true" ]]; then
-    api-gateway::configure_ory_hydra
-    api-gateway::prepare_test_environments
-    api-gateway::launch_tests
 else
-    # enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-    if [[ "${BUILD_TYPE}" == "master" && -n "${LOG_COLLECTOR_SLACK_TOKEN}" ]]; then
-      export ENABLE_TEST_LOG_COLLECTOR=true
-    fi
     gardener::test_kyma
 fi
 

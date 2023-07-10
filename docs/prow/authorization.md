@@ -8,9 +8,7 @@ To deploy a Prow cluster, configure the following service accounts in the GCP pr
 | :---------------------------- | :----------------------------------------------------------| :------------- |
 | **sa-gke-kyma-integration**   | Runs integration tests on a GKE cluster. | `Cloud KMS CryptoKey Encrypter/Decrypter` (`roles/cloudkms.cryptoKeyVersions.useToDecrypt`,`roles/cloudkms.cryptoKeyVersions.useToEncrypt`,`roles/resourcemanager.projects.get`), `Compute Admin` (`roles/compute.admin`), `Compute Network Admin`,`Kubernetes Engine Admin` (`roles/container.admin`), `Kubernetes Engine Cluster Admin` (`roles/container.clusterAdmin`), `DNS Administrator` (`roles/dns.admin`), `Service Account User` (`roles/iam.serviceAccountUser`), `Storage Admin` (`roles/storage.admin`)
 | **sa-kyma-artifacts**         | Saves release and development artifacts to the GCS bucket. | `Storage Object Admin` (`roles/storage.objectAdmin`)
-| **sa-vm-kyma-integration**    | Runs integration tests on Minikube. | `Compute Instance Admin (beta)` (`roles/compute.instanceAdmin`), `Compute OS Admin Login` (`roles/compute.osAdminLogin`), `Service Account User` (`roles/iam.serviceAccountUser`)
-| **sa-kyma-aks-nightly** | Deploys the nightly cluster on AKS. | `Cloud KMS CryptoKey Encrypter/Decrypter` (`roles/cloudkms.cryptoKeyVersions.useToDecrypt`,`roles/cloudkms.cryptoKeyVersions.useToEncrypt`,`roles/resourcemanager.projects.get`), `DNS Administrator` (`roles/dns.admin`), `Storage Object Admin` (`roles/storage.objectAdmin`)
-| **sa-kyma-backup-restore** | Used for backups. | `Compute Storage Admin`, `Storage Admin` (`roles/storage.admin`), `Storage Object Admin` (`roles/storage.objectAdmin`)
+| **sa-vm-kyma-integration**    | Runs integration tests on k3d. | `Compute Instance Admin (beta)` (`roles/compute.instanceAdmin`), `Compute OS Admin Login` (`roles/compute.osAdminLogin`), `Service Account User` (`roles/iam.serviceAccountUser`)
 | **sa-stability-fluentd-storage-writer** | Used for fluentd storage. |  `Storage Object Admin` (`roles/storage.objectAdmin`)
 | **sa-gcs-plank**              | Currently not in use. | no roles attached
 | **sa-crier**                  | Reports Prow Job statuses to GitHub. | `Service Account User` |
@@ -66,4 +64,4 @@ Actions on Prow can be triggered only by webhooks. To configure them you must cr
 - `hmac-token` - used to validate webhook
 - `oauth-token` - stores the access token used by the GitHub bot
 
-Follow the official [Prow documentation](https://github.com/kubernetes/test-infra/blob/master/prow/getting_started_deploy.md#create-the-github-secrets) to learn how to create the Secrets.
+Follow the official [Prow documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/getting-started-deploy.md#create-the-github-secrets) to learn how to create the Secrets.

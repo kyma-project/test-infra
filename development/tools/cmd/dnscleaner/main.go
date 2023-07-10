@@ -15,6 +15,7 @@ import (
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/container/v1"
 	"google.golang.org/api/dns/v1"
+	"google.golang.org/api/option"
 )
 
 var (
@@ -64,7 +65,7 @@ func main() {
 		log.Fatalf("Could not get authenticated client: %v", err)
 	}
 
-	dnsSvc, err := dns.New(connection)
+	dnsSvc, err := dns.NewService(ctx, option.WithHTTPClient(connection))
 	if err != nil {
 		log.Fatalf("Could not initialize dns API client: %v", err)
 	}
@@ -76,8 +77,8 @@ func main() {
 	entryRemoverErr := der.Run(*project, *zone, *name, *address, *rtype, *ttl)
 
 	if entryRemoverErr != nil {
-		log.Fatalf("DNS Cleaner error: %v", entryRemoverErr)
 		log.Warn("Operation failed.")
+		log.Fatalf("DNS Cleaner error: %v", entryRemoverErr)
 	}
 
 	common.Shout("Finished")

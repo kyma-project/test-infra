@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# DEPRECATED DO NOT USE
 set -e
 
 readonly KYMA_DIR="/home/prow/go/src/github.com/kyma-project/kyma"

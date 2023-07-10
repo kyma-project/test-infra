@@ -18,9 +18,7 @@ spec:
       shootIssuers:
         enabled: true
   kubernetes:
-    allowPrivilegedContainers: true
     kubeAPIServer:
-      enableBasicAuthentication: false
       oidcConfig:
         clientID: 9bd05ed7-a930-44e6-8c79-e6defeb7dec9
         groupsClaim: groups
@@ -29,7 +27,7 @@ spec:
           - RS256
         usernameClaim: sub
         usernamePrefix: '-'
-    version: 1.21.8
+    version: 1.26.5
   networking:
     nodes: 10.250.0.0/16
     pods: 100.96.0.0/11
@@ -50,7 +48,7 @@ spec:
     - machine:
         image:
           name: gardenlinux
-          version: 576.9.0
+          version: 934.8.0
         type: n2-standard-8
       maxSurge: 1
       maxUnavailable: 0

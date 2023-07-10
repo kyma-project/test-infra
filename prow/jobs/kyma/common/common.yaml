@@ -5,14 +5,13 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-common
       annotations:
+        description: "Build the image used in Application Connector components for logging purposes"
+        owner: "framefrog"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-common"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
       run_if_changed: '^common/'
       skip_report: false
       decorate: true
@@ -21,20 +20,19 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - "make"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/common"
+              - "-C"
+              - "common"
               - "ci-pr"
             resources:
               requests:
@@ -52,15 +50,14 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-main-kyma-common
       annotations:
+        description: "Build the image used in Application Connector components for logging purposes"
+        owner: "framefrog"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kyma-common"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
       run_if_changed: '^common/'
       skip_report: false
       decorate: true
@@ -69,20 +66,19 @@ postsubmits: # runs on main
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - "make"
             args:
-              - "/home/prow/go/src/github.com/kyma-project/kyma/common"
+              - "-C"
+              - "common"
               - "ci-main"
             resources:
               requests:

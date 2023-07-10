@@ -1,0 +1,143 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/runtime-watcher/runtime-watcher.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+            securityContext:
+              privileged: "false"
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+            command: /image-builder
+            labels:
+              preset-sa-kyma-push-images: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+              - name: signify-secret
+                secretName: signify-dev-secret
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        jobConfigs:
+          - repoName: kyma-project/runtime-watcher
+            jobs:
+              - jobConfig:
+                  run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
+                  annotations:
+                    owner: jellyfish
+                    description: lint runtime watcher
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+                  name: pull-lint-skr
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd skr && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-tests-skr
+                  annotations:
+                    owner: jellyfish
+                    description: test runtime watcher
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd skr && make test" # run test make target of skr
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+                  name: "pull-lint-listener"
+                  annotations:
+                    owner: jellyfish
+                    description: lint runtime watcher listener
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd listener && golangci-lint run"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
+                  name: pull-tests-listener
+                  annotations:
+                    owner: jellyfish
+                    description: test runtime watcher listener
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd listener && make test" # run test make target of kcp
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - "image_buildpack-golang" # takes latest golang image
+                    - "jobConfig_default"
+                    - "jobConfig_presubmit"
+                    - "build_labels" # default labels
+              - jobConfig:
+                  name: pull-build-skr
+                  annotations:
+                    owner: jellyfish
+                    description: build runtime watcher skr
+                  run_if_changed: "^skr/"
+                  args:
+                    - "--name=runtime-watcher-skr"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=skr"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_presubmit
+                    - "unprivileged"
+              - jobConfig:
+                  name: main-build-skr
+                  annotations:
+                    owner: jellyfish
+                    description: build runtime watcher skr
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  always_run: true
+                  args:
+                    - "--name=runtime-watcher-skr"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=skr"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
+                inheritedConfigs:
+                  local:
+                    - default
+                  global:
+                    - jobConfig_postsubmit
+                    - "unprivileged"

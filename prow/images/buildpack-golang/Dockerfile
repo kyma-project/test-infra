@@ -1,6 +1,6 @@
 # Basic golang buildpack
 
-FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20220427-9543160d
+FROM eu.gcr.io/kyma-project/test-infra/bootstrap:v20221121-4ded4f32
 
 # Commit details
 
@@ -11,11 +11,11 @@ LABEL io.kyma-project.test-infra.commit=$commit
 # Versions
 
 ENV ARCH amd64
-ENV GO_VERSION 1.18.3
+ENV GO_VERSION 1.20.2
 ENV DEP_RELEASE_TAG v0.5.4
 ENV KUBEBUILDER_VERSION 2.3.2
 ENV KUSTOMIZE_VERSION 3.8.4
-ENV GOLANGCI_LINT_VERSION v1.45.2
+ENV GOLANGCI_LINT_VERSION v1.49.0
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -24,7 +24,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         rsync \
         procps \
         pkg-config \
-        libgit2-dev \
+        libgit2-dev  \
+        qemu \
+        qemu-system \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
@@ -40,9 +42,10 @@ RUN curl -fLSs -o go.tar.gz "https://dl.google.com/go/go${GO_VERSION}.linux-${AR
     mkdir -p "${GOPATH}/src" && \
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 
-# Install kubebuilder
-ENV PATH /usr/local/kubebuilder/bin:$PATH
 ENV PATH /home/prow/go/bin:$PATH
+# Install kubebuilder
+# Do not alter base image tools path with kubebuilder
+ENV PATH=$PATH:/usr/local/kubebuilder/bin
 
 RUN curl -fLSs -o kubebuilder.tar.gz "https://github.com/kubernetes-sigs/kubebuilder/releases/download/v${KUBEBUILDER_VERSION}/kubebuilder_${KUBEBUILDER_VERSION}_linux_${ARCH}.tar.gz" && \
     tar -zxvf kubebuilder.tar.gz && \
@@ -53,6 +56,14 @@ RUN curl -fLSs -o kubebuilder.tar.gz "https://github.com/kubernetes-sigs/kubebui
     tar -zxvf kustomize.tar.gz && \
     rm kustomize.tar.gz && \
     mv kustomize /usr/local/bin/kustomize
+
+# install img
+RUN export IMG_SHA256="cc9bf08794353ef57b400d32cd1065765253166b0a09fba360d927cfbd158088" && \
+    # Download and check the sha256sum.
+    curl -fSL "https://github.com/genuinetools/img/releases/download/v0.5.11/img-linux-amd64" -o "/usr/local/bin/img" \
+    	&& echo "${IMG_SHA256}  /usr/local/bin/img" | sha256sum -c - \
+    	&& chmod a+x "/usr/local/bin/img" && \
+    echo "img installed!"
 
 # Install golang toolbox
 RUN go install golang.org/x/tools/cmd/goimports@latest && \
@@ -70,6 +81,6 @@ ENV LICENSE_PULLER_PATH=/license-puller.sh
 
 # Prow Tools
 # hadolint ignore=DL3022
-COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20210804-d55639f9 /prow-tools /prow-tools
+COPY --from=eu.gcr.io/kyma-project/test-infra/prow-tools:v20230309-2448b8ca /prow-tools /prow-tools
 # for better access to prow-tools
 ENV PATH=$PATH:/prow-tools

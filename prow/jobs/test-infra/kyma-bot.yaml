@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-check-users-map
       annotations:
+        description: "Check pull request authors are present in users map file"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -12,7 +14,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-sap-token: "true"
         preset-bot-github-token: "true"
-        preset-prowjob-gcp-logging: "true"
       always_run: true
       optional: true
       skip_report: false
@@ -28,11 +29,15 @@ presubmits: # runs on PRs
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
+        serviceAccountName: sa-prowjob-gcp-logging-client
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:PR-4048"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             imagePullPolicy: Always
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "usersmapchecker"
             resources:

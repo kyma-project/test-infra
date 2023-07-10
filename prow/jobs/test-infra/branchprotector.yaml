@@ -1,11 +1,18 @@
 periodics:
   - name: ci-prow-branchprotector
+    labels:
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-prow-branchprotector"
+      prow.k8s.io/pubsub.topic: "prowjobs"
+      preset-bot-github-token: "true"
     cron: "54 * * * *" # at 54th minute every hour
     decorate: true
     decoration_config:
       timeout: 5h
     cluster: trusted-workload
     annotations:
+      owner: neighbors
+      description: "Periodic update of branch protection settings in GitHub"
       testgrid-create-test-group: "false"
     extra_refs:
       - org: kyma-project
@@ -14,8 +21,8 @@ periodics:
     spec:
       containers:
         - name: branchprotector
-          image: gcr.io/k8s-prow/branchprotector:v20220610-d59e6cd2db
-          command: [ "branchprotector" ]
+          image: gcr.io/k8s-prow/branchprotector:v20230705-6666368cff
+          command: ["branchprotector"]
           args:
             - --config-path=prow/config.yaml
             - --job-config-path=prow/jobs
@@ -23,11 +30,8 @@ periodics:
             - --confirm
             - --github-endpoint=http://ghproxy
             - --github-endpoint=https://api.github.com
-          volumeMounts:
-            - mountPath: /etc/github
-              name: oauth
-              readOnly: true
-      volumes:
-        - name: oauth
-          secret:
-            secretName: kyma-bot-github-token
+          securityContext:
+            privileged: false
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false

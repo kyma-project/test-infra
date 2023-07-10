@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-integration-k3d
       annotations:
+        description: "Kyma integration job on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -40,14 +42,134 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-kyma-integration-k3d-app-gateway
+      annotations:
+        description: "It tests the acceptance criteria of the (Central) Application Gateway component"
+        owner: "framefrog"
+        pipeline.clusterprovisioning: "k3d"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-app-gateway"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-app-connector-tests-app-gateway: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
+        preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      optional: false
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-incubator
+          repo: local-kyma
+          path_alias: github.com/kyma-incubator/local-kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-kyma-integration-k3d-app-conn-validator
+      annotations:
+        description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component"
+        owner: "framefrog"
+        pipeline.clusterprovisioning: "k3d"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-app-conn-validator"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-app-connector-tests-app-validator: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
+        preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '^((resources/application-connector\S+|installation\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      optional: false
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-incubator
+          repo: local-kyma
+          path_alias: github.com/kyma-incubator/local-kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             resources:
               requests:
                 memory: 100Mi
@@ -61,6 +183,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-central-app-connectivity-compass
       annotations:
+        description: "It tests Compass integration. It won't be needed after the implementation of this issue - https://github.com/kyma-project/kyma/issues/15037"
+        owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -78,7 +202,6 @@ presubmits: # runs on PRs
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-compass-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((tests/fast-integration\S+|resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
       decorate: true
@@ -99,14 +222,14 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -120,10 +243,12 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-serverless-integration-k3s
       annotations:
+        description: "serverless integration k3s job"
+        owner: "otters"
         pipeline.clusterprovisioning: "k3s"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3s"
-        pipeline.test: "helm serverless-test"
+        pipeline.test: "serverless-test"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"
       labels:
@@ -134,7 +259,7 @@ presubmits: # runs on PRs
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((resources/serverless\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((resources/serverless|tests/function-controller)\S+(\.[^.][^.][^.]+|\.[^.][^dD]|\.[^mM][^.]|\.[^.]$|/[^.]+))$'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -150,11 +275,14 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3s.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
             env:
               - name: INTEGRATION_SUITE
                 value: "serverless-integration"
@@ -169,8 +297,68 @@ presubmits: # runs on PRs
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
+    - name: pre-main-serverless-git-auth-integration-k3s
+      annotations:
+        description: "Serverless git-function authentication nightly integration tests"
+        owner: "otters"
+        pipeline.clusterprovisioning: "k3s"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3s"
+        pipeline.test: "serverless-test"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-serverless-git-auth-integration-k3s"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
+        preset-serverless-git-auth: "true"
+      run_if_changed: '^((resources/serverless|tests/function-controller)\S+(\.[^.][^.][^.]+|\.[^.][^dD]|\.[^mM][^.]|\.[^.]$|/[^.]+))$'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
+            env:
+              - name: INTEGRATION_SUITE
+                value: "git-auth-integration"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-telemetry
       annotations:
+        description: "runs telemetry integration tests on k3d"
+        owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -186,7 +374,7 @@ presubmits: # runs on PRs
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-telemetry-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry'
+      run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry/|^tests/fast-integration/telemetry-test/'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -202,14 +390,14 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 3Gi
@@ -223,6 +411,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-eval-istio-integration-k3d
       annotations:
+        description: "runs istio integration tests with evaluation profile on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -239,7 +429,6 @@ presubmits: # runs on PRs
         preset-kyma-integration-istio-evaluation: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)'
-      optional: true
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -255,14 +444,14 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 3Gi
@@ -276,6 +465,8 @@ presubmits: # runs on PRs
             dedicated: "high-cpu"
     - name: pre-main-kyma-prod-istio-integration-k3d
       annotations:
+        description: "runs istio integration tests with production profile on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -285,6 +476,60 @@ presubmits: # runs on PRs
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-prod-istio-integration-k3d"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-istio-production: "true"
+        preset-sa-vm-kyma-integration: "true"
+      run_if_changed: '(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)'
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
+    - name: pre-main-kyma-istio-reconcilation-k3d
+      annotations:
+        description: "runs istio reconcilation tests with production profile on k3d"
+        owner: "goat"
+        pipeline.clusterprovisioning: "k3d"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "fast-integration"
+        pipeline.trigger: "pr-submit"
+        pipeline.type: "integration"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-istio-reconcilation-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-gc-project-env: "true"
@@ -308,14 +553,17 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
             env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
+              - name: RECONCILATION_TEST
+                value: "true"
             resources:
               requests:
                 memory: 3Gi
@@ -333,6 +581,7 @@ postsubmits: # runs on main
     - name: post-main-kyma-integration-k3d
       annotations:
         description: "Kyma integration job on k3d."
+        owner: "huskies,goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -367,16 +616,19 @@ postsubmits: # runs on main
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -388,9 +640,10 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-main-kyma-integration-k3d-central-app-connectivity-compass
+    - name: post-main-kyma-integration-k3d-app-gateway
       annotations:
-        description: "Kyma integration job on k3d with central Application Gateway and Compass dev."
+        description: "Kyma integration job on k3d for testing application gateway."
+        owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -401,14 +654,13 @@ postsubmits: # runs on main
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-central-app-connectivity-compass"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-app-gateway"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-app-connector-tests-app-gateway: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
-        preset-kyma-integration-compass-dev: "true"
-        preset-kyma-integration-compass-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
       skip_report: false
       decorate: true
@@ -429,14 +681,14 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -448,25 +700,28 @@ postsubmits: # runs on main
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: post-main-kyma-integration-k3d-telemetry
+    - name: post-main-kyma-integration-k3d-app-conn-validator
       annotations:
+        description: "Kyma integration job on k3d for testing application connectivity validator."
+        owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-merge"
         pipeline.type: "integration"
-        testgrid-create-test-group: "false"
+        testgrid-dashboards: "kyma_integration"
+        testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-telemetry"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-app-conn-validator"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-main: "true"
         preset-gc-project-env: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-integration-telemetry-enabled: "true"
+        preset-kyma-integration-app-connector-tests-app-validator: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^resources/telemetry/|^installation/resources/crds/telemetry'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -476,24 +731,28 @@ postsubmits: # runs on main
         - ^master$
         - ^main$
       extra_refs:
+        - org: kyma-incubator
+          repo: local-kyma
+          path_alias: github.com/kyma-incubator/local-kyma
+          base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 100Mi
+                cpu: 50m
         tolerations:
           - key: dedicated
             operator: Equal
@@ -505,6 +764,8 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: utilities-kyma-integration-cleaner
       annotations:
+        description: "kyma integration cleaner"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -520,10 +781,14 @@ periodics: # runs on schedule
       path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       spec:
+        serviceAccountName: sa-prow-job-resource-cleaners
         containers:
           - image: "eu.gcr.io/kyma-project/prow/cleaner:0.0.1"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "./cleaner.sh"
             resources:
@@ -537,53 +802,10 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: orphaned-az-storage-accounts-cleaner
-      annotations:
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "orphaned-az-storage-accounts-cleaner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-az-kyma-prow-credentials: "true"
-      cron: "00 00 * * *"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/minio/azure-cleaner.sh"
-            env:
-              - name: AZURE_REGION
-                value: "westeurope"
-              - name: AZURE_RS_GROUP
-                value: "rafter-minio-gateway"
-              - name: MINIO_GATEWAY_MODE
-                value: "azure"
-            resources:
-              requests:
-                memory: 100Mi
-                cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-assetstore-gcp-bucket-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -592,7 +814,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.runID: "orphaned-assetstore-gcp-bucket-cleaner"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
-        preset-sa-prow-job-resource-cleaner: "true"
       cron: "00 00 * * *"
       skip_report: false
       decorate: true
@@ -605,9 +826,12 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220613-63e4233c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -626,6 +850,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-disks-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud disks"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -647,14 +873,17 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220613-63e4233c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
               - "-c"
-              - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='^gke-'"
+              - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='.*'"
             resources:
               requests:
                 memory: 100Mi
@@ -668,6 +897,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-ips-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud IPs"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -689,9 +920,12 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220613-63e4233c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -710,6 +944,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-clusters-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud clusters"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -731,14 +967,17 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220613-63e4233c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
               - "-c"
-              - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22"
+              - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22,persist"
             resources:
               requests:
                 memory: 100Mi
@@ -752,6 +991,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-vms-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud VMs"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -773,9 +1014,12 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220613-63e4233c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -794,6 +1038,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-loadbalancer-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud load balancers"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -815,9 +1061,12 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220613-63e4233c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -836,6 +1085,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: orphaned-dns-cleaner
       annotations:
+        description: "Periodic cleanup of orphaned Google cloud DNS records"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -858,9 +1109,12 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220613-63e4233c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -879,6 +1133,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: gcr-cleaner-prow-workloads
       annotations:
+        description: "Cleans up GCR images older than 7 days in eu.gcr.io/sap-kyma-prow-workloads"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -899,9 +1155,12 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220613-63e4233c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -920,6 +1179,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: github-issues
       annotations:
+        description: "Exports data from github to the big query (Grafana metrics)"
+        owner: "neighbors"
         pipeline.trigger: "periodic"
         pipeline.type: "integration"
         testgrid-create-test-group: "false"
@@ -942,9 +1203,12 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/prow-tools:v20220613-63e4233c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"
             resources:
@@ -958,64 +1222,10 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: serverless-function-benchmark
-      annotations:
-        description: "Serverless function runtime benchmarks"
-        pipeline.platform: "gke"
-        pipeline.test: "Serverless function benchmarks"
-        pipeline.trigger: "nightly"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "serverless-function-benchmark"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
-        preset-sa-gke-kyma-integration: "true"
-      cron: "0 1,13 * * *"
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-benchmarks-nightly.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: CLUSTER_PROVIDER
-                value: "gcp"
-              - name: INPUT_CLUSTER_NAME
-                value: "nightly"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
-              - name: PROVISION_REGIONAL_CLUSTER
-                value: "true"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: serverless-function-metrics-generator
       annotations:
         description: "Serverless function metrics generator"
+        owner: "otters"
         pipeline.platform: "gke"
         pipeline.test: "Serverless function metrics"
         pipeline.trigger: "nightly"
@@ -1042,9 +1252,12 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-metrics-nightly.sh"
             env:
@@ -1054,8 +1267,6 @@ periodics: # runs on schedule
                 value: "gcp"
               - name: INPUT_CLUSTER_NAME
                 value: "nightly"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: PROVISION_REGIONAL_CLUSTER
                 value: "true"
             resources:
@@ -1069,59 +1280,10 @@ periodics: # runs on schedule
             effect: NoSchedule
         nodeSelector:
             dedicated: "high-cpu"
-    - name: serverless-git-auth-integration-k3s-nightly
-      annotations:
-        description: "Serverless git-function authentication nightly integration tests"
-        pipeline.clusterprovisioning: "k3s"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3s"
-        pipeline.test: "helm serverless-test"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "serverless-git-auth-integration-k3s-nightly"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-main: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
-        preset-serverless-git-auth: "true"
-      cron: "0 3 * * 1-5"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3s.sh"
-            env:
-              - name: INTEGRATION_SUITE
-                value: "git-auth-integration"
-            resources:
-              requests:
-                memory: 100Mi
-                cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-upgrade-k3d-kyma2-to-main
       annotations:
         description: "K3d Kyma 2.0 to main branch."
+        owner: "jellyfish"
         pipeline.clusterprovisioning: "kyma cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -1162,14 +1324,15 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"
             env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: KYMA_PROJECT_DIR
                 value: "."
             resources:
@@ -1185,7 +1348,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: kyma-integration-k3d
       annotations:
-        description: "Kyma integration periodic job on k3d."
+        description: "Kyma integration periodic job on k3d"
+        owner: "goat"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -1222,14 +1386,14 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 100Mi
@@ -1243,6 +1407,8 @@ periodics: # runs on schedule
             dedicated: "high-cpu"
     - name: kyma-integration-k3d-telemetry
       annotations:
+        description: "runs telemetry integration tests on k3d"
+        owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
@@ -1259,7 +1425,7 @@ periodics: # runs on schedule
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-telemetry-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
-      cron: "00 07 * * *"
+      cron: "0 1,13 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -1273,16 +1439,19 @@ periodics: # runs on schedule
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-            env:
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
             resources:
               requests:
                 memory: 3Gi
@@ -1297,6 +1466,7 @@ periodics: # runs on schedule
     - name: kyma-gke-nightly
       annotations:
         description: "Kyma GKE nightly build (depraceted, needed for sec scans)"
+        owner: "neighbors"
         pipeline.clusterprovisioning: "gcloud cli"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "gke"
@@ -1315,7 +1485,6 @@ periodics: # runs on schedule
         preset-docker-push-repository-gke-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
-        preset-gke-pod-security-policy: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-artifacts-bucket: "true"
         preset-kyma-encryption-key: "true"
@@ -1324,7 +1493,6 @@ periodics: # runs on schedule
         preset-nightly-github-integration: "true"
         preset-sa-gke-kyma-integration: "true"
         preset-slack-alerts: "true"
-        preset-stability-checker-slack-notifications: "true"
       cron: "0 2 * * 1-5"
       skip_report: false
       decorate: true
@@ -1341,9 +1509,12 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "bash"
             args:
@@ -1385,60 +1556,4 @@ periodics: # runs on schedule
           - name: sa-stability-fluentd-storage-writer
             secret:
               secretName: sa-stability-fluentd-storage-writer
-    - name: kyma-gke-nightly-fast-integration
-      annotations:
-        description: "Kyma GKE nightly fast integration tests."
-        pipeline.platform: "gke"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "nightly"
-        testgrid-dashboards: "kyma_integration"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-gke-nightly-fast-integration"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
-        preset-sa-gke-kyma-integration: "true"
-      cron: "0 0-1,4-23 * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20220613-63e4233c"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: CLUSTER_PROVIDER
-                value: "gcp"
-              - name: INPUT_CLUSTER_NAME
-                value: "nightly"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
-              - name: PROVISION_REGIONAL_CLUSTER
-                value: "true"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

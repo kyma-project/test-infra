@@ -62,7 +62,7 @@ func matchLabels(jobBase config.JobBase) {
 	if len(runCfg.includePreset) > 0 {
 		includeok = false
 		for _, preset := range runCfg.includePreset {
-			if _, includeok = jobBase.Labels[preset]; includeok == false {
+			if _, includeok = jobBase.Labels[preset]; !includeok {
 				break
 			}
 		}
@@ -72,7 +72,7 @@ func matchLabels(jobBase config.JobBase) {
 	if len(runCfg.excludePreset) > 0 {
 		excludeok = true
 		for _, preset := range runCfg.excludePreset {
-			if _, excludeok = jobBase.Labels[preset]; excludeok == true {
+			if _, excludeok = jobBase.Labels[preset]; excludeok {
 				break
 			}
 		}

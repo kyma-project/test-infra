@@ -40,16 +40,16 @@ type OwnersClient struct {
 	Logger             logging.LoggerInterface
 }
 
-// RepoOwnersClientOption is a client constructor configuration option passing configuration to the constructor.
-type RepoOwnersClientOption func(*OwnersClientConfig) error
+// ClientOption is a client constructor configuration option passing configuration to the constructor.
+type ClientOption func(*OwnersClientConfig) error
 
-// NewRepoOwnersClient is a constructor of OwnersClient. Client can be configured with RepoOwnersClientOptions.
+// NewRepoOwnersClient is a constructor of OwnersClient. Client can be configured with ClientOption.
 // It provides console logger a default instance.
-func (o *OwnersClientConfig) NewRepoOwnersClient(options ...RepoOwnersClientOption) (*OwnersClient, error) {
+func (o *OwnersClientConfig) NewRepoOwnersClient(options ...ClientOption) (*OwnersClient, error) {
 	var err error
 	repoOwnersClient := &OwnersClient{}
 
-	// Run provided RepoOwnersClientOptions.
+	// Run provided ClientOption.
 	for _, opt := range options {
 		err := opt(o)
 		if err != nil {
@@ -87,7 +87,7 @@ func (o *OwnersClientConfig) NewRepoOwnersClient(options ...RepoOwnersClientOpti
 		// OwnersDirDenylist struct contains some defaults that's required by all
 		// repos, so this function cannot return nil
 		res := &config.OwnersDirDenylist{}
-		deprecated := repoOwnersClient.configAgent.Config().OwnersDirBlacklist
+		deprecated := repoOwnersClient.configAgent.Config().OwnersDirDenylist
 		if l := repoOwnersClient.configAgent.Config().OwnersDirDenylist; l != nil {
 			res = l
 		}
@@ -104,7 +104,7 @@ func (o *OwnersClientConfig) NewRepoOwnersClient(options ...RepoOwnersClientOpti
 
 	// Create client
 	repoOwnersClient.Client = repoowners.NewClient(o.gitClient,
-		o.githubClient,
+		*o.githubClient,
 		repoOwnersClient.PluginsConfigAgent.Config().MDYAMLEnabled,
 		repoOwnersClient.PluginsConfigAgent.Config().SkipCollaborators,
 		ownersDirDenylist,
@@ -113,31 +113,30 @@ func (o *OwnersClientConfig) NewRepoOwnersClient(options ...RepoOwnersClientOpti
 }
 
 // WithGitClient is constructor function configuration option providing git client.
-func WithGitClient(gitClient git.ClientFactory) RepoOwnersClientOption {
+func WithGitClient(gitClient git.ClientFactory) ClientOption {
 	return func(o *OwnersClientConfig) error {
 		if o.gitClient == nil {
 			o.gitClient = gitClient
 			return nil
-		} else {
-			return fmt.Errorf("git client already defined")
 		}
+		return fmt.Errorf("git client already defined")
+
 	}
 }
 
 // WithGithubClient is constructor function configuration option providing GitHub client.
-func WithGithubClient(githubClient *client.GithubClient) RepoOwnersClientOption {
+func WithGithubClient(githubClient *client.GithubClient) ClientOption {
 	return func(o *OwnersClientConfig) error {
 		if o.githubClient == nil {
 			o.githubClient = githubClient
 			return nil
-		} else {
-			return fmt.Errorf("github client already defined")
 		}
+		return fmt.Errorf("github client already defined")
 	}
 }
 
 // WithLogger is constructor function configuration option providing logger instance.
-func WithLogger(logger logging.LoggerInterface) RepoOwnersClientOption {
+func WithLogger(logger logging.LoggerInterface) ClientOption {
 	return func(o *OwnersClientConfig) error {
 		o.logger = logger
 		return nil

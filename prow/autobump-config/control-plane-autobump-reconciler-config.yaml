@@ -8,10 +8,10 @@ gitHubRepo: "control-plane"
 remoteName: "control-plane"
 upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/control-plane/main"
 includedConfigPaths:
-  - "resources/kcp/values.yaml"
-targetVersion: ""
+  - "resources/kcp/charts"
+targetVersion: "latest" #TODO THIS NEEDS TO BE REVERTED
 prefixes:
   - name: "Reconciler"
-    prefix: "eu.gcr.io/kyma-project/incubator/reconciler/"
+    prefix: "europe-docker.pkg.dev/kyma-project/prod/incubator/reconciler/"
     repo: "https://github.com/kyma-incubator/reconciler"
     summarise: true

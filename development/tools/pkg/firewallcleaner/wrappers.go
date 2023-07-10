@@ -10,21 +10,19 @@ import (
 	container "google.golang.org/api/container/v1"
 )
 
-//ComputeServiceWrapper A wrapper for compute API service connections.
+// ComputeServiceWrapper A wrapper for compute API service connections.
 type ComputeServiceWrapper struct {
 	Context   context.Context
 	Compute   *compute.Service
 	Container *container.Service
 }
 
-//LookupFirewallRule List of all available firewall rules for a project
+// LookupFirewallRule List of all available firewall rules for a project
 func (csw *ComputeServiceWrapper) LookupFirewallRule(project string) ([]*compute.Firewall, error) {
 	call := csw.Compute.Firewalls.List(project)
 	var items []*compute.Firewall
 	f := func(page *compute.FirewallList) error {
-		for _, list := range page.Items {
-			items = append(items, list)
-		}
+		items = append(items, page.Items...)
 		return nil
 	}
 	if err := call.Pages(csw.Context, f); err != nil {
@@ -33,7 +31,7 @@ func (csw *ComputeServiceWrapper) LookupFirewallRule(project string) ([]*compute
 	return items, nil
 }
 
-//LookupInstances ???
+// LookupInstances ???
 func (csw *ComputeServiceWrapper) LookupInstances(project string) ([]*compute.Instance, error) {
 	call := csw.Compute.Instances.AggregatedList(project)
 	var items []*compute.Instance
@@ -49,7 +47,7 @@ func (csw *ComputeServiceWrapper) LookupInstances(project string) ([]*compute.In
 	return items, nil
 }
 
-//LookupNodePools ???
+// LookupNodePools ???
 func (csw *ComputeServiceWrapper) LookupNodePools(clusters []*container.Cluster) ([]*container.NodePool, error) {
 
 	allClustersPools := []*container.NodePool{}
@@ -59,7 +57,7 @@ func (csw *ComputeServiceWrapper) LookupNodePools(clusters []*container.Cluster)
 	return allClustersPools, nil
 }
 
-//LookupClusters ???
+// LookupClusters ???
 func (csw *ComputeServiceWrapper) LookupClusters(project string) ([]*container.Cluster, error) {
 	resp, err := csw.Container.Projects.Zones.Clusters.List(project, "-").Do() // "-" will get clusters in all zones
 	if err != nil {
@@ -68,7 +66,7 @@ func (csw *ComputeServiceWrapper) LookupClusters(project string) ([]*container.C
 	return resp.Clusters, nil
 }
 
-//DeleteFirewallRule Delete firewall rule base on name in specifiec project
+// DeleteFirewallRule Delete firewall rule base on name in specifiec project
 func (csw *ComputeServiceWrapper) DeleteFirewallRule(project, firewall string) {
 	_, err := csw.Compute.Firewalls.Delete(project, firewall).Do()
 	if err != nil {

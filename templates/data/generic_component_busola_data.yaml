@@ -6,71 +6,125 @@ templates:
           - repoName: "github.com/kyma-project/busola"
             jobs:
               - jobConfig:
-                  path: 'web'
+                  name: pull-busola-web-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola frontend image and push to GCR
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/busola"
-                  run_if_changed: "^core/|^core-ui/|^shared/|^package.json|^Makefile|^Dockerfile$"
-                  release_since: "1.24"
+                    - --name=busola-web
+                    - --context=.
+                    - --dockerfile=Dockerfile
+                    - --config=/config/kaniko-build-config.yaml
+                    - --export-tags
+                  run_if_changed: "^public/|^src/|^package.json|^Makefile|^Dockerfile$"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_busola"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-busola-web-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola frontend image and push to GCR
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - --name=busola-web
+                    - --context=.
+                    - --dockerfile=Dockerfile
+                    - --config=/config/kaniko-build-config.yaml
+                    - --export-tags
+                    - --tag=latest
+                  run_if_changed: "^public/|^src/|^package.json|^Makefile|^Dockerfile$"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - kaniko_buildpack
+                    - "jobConfig_postsubmit"
+                    - "disable_testgrid"
       - to: ../../prow/jobs/busola/busola-backend/busola-backend.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
             jobs:
               - jobConfig:
-                  path: backend
+                  name: pull-busola-backend-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola backend image and push to GCR
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/busola/backend"
+                    - --name=busola-backend
+                    - --context=backend
+                    - --dockerfile=Dockerfile
+                    - --config=/config/kaniko-build-config.yaml
+                    - --export-tags
                   run_if_changed: "^backend/|^package.json"
-                  release_since: "1.19"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_busola"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-busola-backend-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola backend image and push to GCR
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - --name=busola-backend
+                    - --context=backend
+                    - --dockerfile=Dockerfile
+                    - --config=/config/kaniko-build-config.yaml
+                    - --export-tags
+                    - --tag=latest
+                  run_if_changed: "^backend/"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - image-builder-buildkit
+                    - "jobConfig_postsubmit"
+                    - "disable_testgrid"
+
       - to: ../../prow/jobs/busola/busola.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
             jobs:
               - jobConfig:
-                  path: local
+                  name: pull-busola-local-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola local image and push to GCR
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/busola"
-                    - "release-local"
-                  run_if_changed: "^backend/|^core/|^core-ui/|^shared/|^tests/|^package.json|^Makefile|^Dockerfile.local"
-                  release_since: "1.24"
+                    - --name=busola
+                    - --context=.
+                    - --dockerfile=Dockerfile.local
+                    - --config=/config/kaniko-build-config.yaml
+                    - --export-tags
+                  run_if_changed: "^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_busola"
-                    - "extra_refs_test-infra"
-                  preConfigs:
-                    global:
-                      - "jobConfig_presubmit"
-                  postConfigs:
-                    global:
-                      - "jobConfig_postsubmit"
-                      - "disable_testgrid"
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-busola-local-build
+                  annotations:
+                    owner: hasselhoff
+                    description: Building Busola local image and push to GCR
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - --name=busola
+                    - --context=.
+                    - --dockerfile=Dockerfile.local
+                    - --config=/config/kaniko-build-config.yaml
+                    - --export-tags
+                    - --tag=latest
+                  run_if_changed: "^backend/|^public/|^src/|^tests/|^package.json|^Makefile|^Dockerfile.local"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - kaniko_buildpack
+                    - "jobConfig_postsubmit"
+                    - "disable_testgrid"

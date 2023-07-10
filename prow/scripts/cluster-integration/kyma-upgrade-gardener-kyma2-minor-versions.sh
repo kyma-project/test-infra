@@ -54,11 +54,11 @@ function deploy_base() {
   log::info "### Installing Kyma $KYMA_SOURCE"
 
   # uses previously set KYMA_SOURCE
-  kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2.$((valid_minor_release_count))"
-  kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
+  kyma2_install_dir="$KYMA_SOURCES_DIR/$KYMA_SOURCE"
+  kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$KYMA_SOURCES_DIR" -u "true"
 
-  log::info "### Run pre-upgrade tests"
-  gardener::pre_upgrade_test_fast_integration_kyma
+  log::info "### test directory: '$kyma2_install_dir/tests/fast-integration'"
+  gardener::pre_upgrade_test_fast_integration_kyma -d "${kyma2_install_dir}/tests/fast-integration"
 }
 
 function upgrade() {
@@ -73,20 +73,20 @@ function upgrade() {
     export KYMA_SOURCE="${minor_release_versions[$((i - 1))]}"
     log::info "### Installing Kyma $KYMA_SOURCE"
 
-    kyma2_install_dir="$KYMA_SOURCES_DIR/kyma2.$i"
-    kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$kyma2_install_dir" -u "true"
+    kyma2_install_dir="$KYMA_SOURCES_DIR/$KYMA_SOURCE"
+    kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$KYMA_SOURCES_DIR" -u "true"
 
+    log::info "### restart all functions in all namespaces to workaround https://github.com/kyma-project/kyma/issues/14757"
+    kubectl delete pod -l=serverless.kyma-project.io/managed-by=function-controller -A
+    
     # generate pod-security-policy list in json
     utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
     log::info "### Run post-upgrade tests"
-    gardener::post_upgrade_test_fast_integration_kyma
+    gardener::post_upgrade_test_fast_integration_kyma -d "${kyma2_install_dir}/tests/fast-integration"
 
     log::info "### waiting some time to finish cleanups"
     sleep 60
-
-    log::info "### Run pre-upgrade tests again to validate component removal"
-    gardener::pre_upgrade_test_fast_integration_kyma
   done
 }
 

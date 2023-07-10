@@ -14,17 +14,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Config cleaner configuration
-type Config struct {
-	ProjectName            string
-	BucketLifespanDuration time.Duration
-	ExcludedBucketNames    []string
-	IsDryRun               bool
-	BucketNameRegexp       regexp.Regexp
-	WorkersNumber          int
-	LogLevel               logrus.Level
-}
-
 var (
 	argProjectName                string
 	argExcludedBucketNames        string

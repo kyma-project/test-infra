@@ -11,6 +11,9 @@
       {{- end}}
       {{- if or .JobConfig.labels .JobConfig.project .JobConfig.product false}}
       labels:
+        prow.k8s.io/pubsub.project: {{if .JobConfig.pubsub_project}}{{quote .JobConfig.pubsub_project}}{{else}}{{fail "mandatory .JobConfig.pubsub_project is not defined, probably globalSet jobConfig_default not inherited"}}{{end}}
+        prow.k8s.io/pubsub.runID: "{{default .JobConfig.repository .JobConfig.custom_projectname}}{{if .JobConfig.whitesource_release}}-{{.JobConfig.Release}}{{end}}-whitesource-scan"
+        prow.k8s.io/pubsub.topic: {{if .JobConfig.pubsub_topic}}{{quote .JobConfig.pubsub_topic}}{{else}}{{fail "mandatory .JobConfig.pubsub_topic is not defined, probably globalSet jobConfig_default not inherited"}}{{end}}
         {{- if .JobConfig.labels}}
         {{- range $key, $value := .JobConfig.labels}}
         {{$key}}: {{quote $value}}
@@ -84,10 +87,19 @@
             {{- if .JobConfig.automountServiceAccountToken}}
             automountServiceAccountToken: {{.JobConfig.automountServiceAccountToken}}
             {{- end}}
-            {{- if .JobConfig.privileged}}
             securityContext:
-              privileged: {{.JobConfig.privileged}}
-            {{- end}}
+              {{- /* if privileged is set to true then seccomp must be unconfined */}}
+              {{- if and .JobConfig.securityContext.privileged (eq .JobConfig.securityContext.privileged "true") (ne .JobConfig.securityContext.seccompProfile.type  "Unconfined")}}
+                {{- fail (printf ".JobConfig.securityContext.privileged and .JobConfig.securityContext.seccompProfile are mutually exclusive: %s %v" .JobConfig.securityContext.privileged .JobConfig.securityContext.seccompProfile.type)}}
+              {{- end}}
+              privileged: {{.JobConfig.securityContext.privileged}}
+              {{- if .JobConfig.securityContext.seccompProfile}}
+              seccompProfile: 
+                {{- range $key, $value := .JobConfig.securityContext.seccompProfile}}
+                {{$key}}: {{$value}}
+                {{- end}}
+              allowPrivilegeEscalation: {{ default "false" .JobConfig.securityContext.privileged }}
+              {{- end}}
             command:
               {{- if .JobConfig.command }}
               - {{ quote .JobConfig.command }}

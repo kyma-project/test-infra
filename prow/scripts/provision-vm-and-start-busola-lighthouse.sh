@@ -119,7 +119,16 @@ echo "VM creation time: $((ENDTIME - STARTTIME)) seconds."
 export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
 KYMA_CLUSTER_NAME="nkyma"
 log::info "KYMA_CLUSTER_NAME=${KYMA_CLUSTER_NAME}"
-kubectl get secrets "${KYMA_CLUSTER_NAME}.kubeconfig" -o jsonpath="{.data.kubeconfig}" | base64 -d > "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml"
+cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${KYMA_CLUSTER_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${TMP_DIR}/kubeconfig-${KYMA_CLUSTER_NAME}.yaml"
+{
+    "apiVersion": "authentication.gardener.cloud/v1alpha1",
+    "kind": "AdminKubeconfigRequest",
+    "spec": {
+        "expirationSeconds": 10800
+    }
+}
+EOF
+
 
 log::info "Copying Kyma kubeconfig to the instance"
 #shellcheck disable=SC2088
@@ -127,17 +136,11 @@ utils::send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "${TMP_DIR}/kubecon
 
 log::info "Copying Busola 'lighthouse' folder to the instance"
 #shellcheck disable=SC2088
-utils::compress_send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/lighthouse" "~/busola-tests"
+utils::compress_send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/tests/lighthouse" "~/busola-tests"
 
 log::info "Copying Busola 'resources' folder to the instance"
 #shellcheck disable=SC2088
 utils::compress_send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-project/busola/resources" "~/busola-resources"
-
-
-log::info "Copying Kyma-Local to the instance"
-#shellcheck disable=SC2088
-utils::send_to_vm "${ZONE}" "busola-lighthouse-${RANDOM_ID}" "/home/prow/go/src/github.com/kyma-incubator/local-kyma" "~/local-kyma"
-
 
 log::info "Launching the busola-lighthouse script"
 utils::ssh_to_vm_with_script -z "${ZONE}" -n "busola-lighthouse-${RANDOM_ID}" -c "sudo bash" -p "${SCRIPT_DIR}/cluster-integration/busola-lighthouse.sh"

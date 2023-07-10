@@ -21,9 +21,11 @@ plugins:
       - cat
       - shrug
       - pony
+      - skip
   kyma-project/test-infra:
     plugins:
       - config-updater
+      - require-matching-label
   kyma-incubator/compass:
     plugins:
       - approve
@@ -50,12 +52,18 @@ plugins:
       - cat
       - shrug
       - pony
+      - skip
 
 external_plugins:
   kyma-project:
     - name: cla-assistant
       events:
         - issue_comment
+  kyma-project/test-infra:
+    - name: automated-approver
+      events:
+        - pull_request
+        - pull_request_review
   kyma-incubator:
     - name: cla-assistant
       events:
@@ -81,6 +89,20 @@ config_updater:
       name: label-config
       clusters:
         trusted-workload:
+          - default
+    configs/gcbuild-config.yaml:
+      name: gcbuild-config
+      clusters:
+        trusted-workload:
+          - default
+        untrusted-workload:
+          - default
+    configs/kaniko-build-config.yaml:
+      name: kaniko-build-config
+      clusters:
+        trusted-workload:
+          - default
+        untrusted-workload:
           - default
     prow/cluster/static-files/*:
       name: static-files
@@ -124,3 +146,28 @@ approve:
       - kyma-incubator/compass
     require_self_approval: true # ignore authors of the PRs to be able to auto-approve their PR if they are owners
     ignore_review_state: false
+
+require_matching_label:
+  - org: kyma-project
+    branch: main
+    grace_period: 5s
+    issues: true
+    missing_comment: |
+      There is no `kind/` label present. Please add one by using the following command:
+      - `/kind <kind>
+      
+      Available kinds:
+      `deprecation`, `bug`, `chore`, `feature`, `flake`, `cleanup`, `missing-test`, `failing-test`
+    missing_label: needs-kind
+    prs: true
+    regexp: ^kind/
+  - org: kyma-project
+    branch: main
+    grace_period: 5s
+    issues: true
+    missing_comment: |
+      There are no `area/` labels present. Please add one by using the following command:
+      - `/area <area>`
+    missing_label: needs-area
+    prs: true
+    regexp: ^area/

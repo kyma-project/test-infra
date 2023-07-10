@@ -14,11 +14,9 @@ includedConfigPaths:
   - "." # test-infra root directory
 excludedConfigPaths:
   - "prow/staging"
-  - "prow/jobs/kyma/releases/kyma-release-23.yaml"
-  - "prow/jobs/kyma/releases/kyma-release-22.yaml"
-  - "prow/jobs/kyma/releases/kyma-release-21.yaml"
-extraFiles:
-  - "development/tools/jobs/tester/tester.go"
+  - "prow/jobs/kyma/releases/kyma-release-216.yaml"
+  - "prow/jobs/kyma/releases/kyma-release-215.yaml"
+  - "prow/jobs/kyma/releases/kyma-release-214.yaml"
 targetVersion: "latest"
 prefixes:
   - name: "test-infra"
@@ -28,3 +26,10 @@ prefixes:
     repo: "https://github.com/kyma-project/test-infra"
     summarise: true
     consistentImages: false
+  - name: "testimages"
+    prefix: "europe-docker.pkg.dev/kyma-project/prod/testimages/"
+    refConfigFile: "templates/config.yaml"
+    stagingRefConfigFile: "templates/config.yaml"
+    repo: "https://github.com/kyma-project/test-infra"
+    summarise: true
+    consistentImages: true

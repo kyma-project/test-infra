@@ -30,10 +30,6 @@ spec:
           ports:
             - containerPort: 8080
               protocol: TCP
-          resources:
-            limits:
-              cpu: 0.1m
-              memory: 128Mi
           livenessProbe:
             httpGet:
               path: /healthz

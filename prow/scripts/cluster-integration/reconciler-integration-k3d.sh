@@ -4,7 +4,7 @@ set -o errexit
 set -o pipefail
 
 readonly RECONCILER_DIR="./reconciler"
-readonly GO_VERSION=1.18
+readonly GO_VERSION=1.19
 readonly PG_MIGRATE_VERSION=v4.15.1
 readonly INSTALL_DIR="/usr/local/bin"
 
@@ -36,7 +36,7 @@ function install_cli() {
   fi
 
   pushd $INSTALL_DIR || exit
-  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
+  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-${os}"
   chmod +x kyma
   popd
 

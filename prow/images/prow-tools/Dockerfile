@@ -1,4 +1,4 @@
-FROM golang:1.18.3-alpine3.16 AS builder
+FROM golang:1.20.4-alpine3.16 AS builder
 
 # Commit details
 
@@ -15,12 +15,12 @@ RUN apk add --no-cache bash upx dep git && \
     CGO_ENABLED=0 go build -o /prow-tools/unique-jobs-name -ldflags="-s -w" development/checker/unique-jobs-name/main.go &&\
     CGO_ENABLED=0 go build -o /prow-tools/image-url-helper -ldflags="-s -w" development/image-url-helper/main.go
 
-FROM alpine:3.16.0
+FROM alpine:3.18.2
 
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
-RUN apk add --no-cache ca-certificates bash
+RUN apk add --no-cache ca-certificates bash git
 COPY --from=builder /go/src/github.com/kyma-project/test-infra/development/tools/bin /prow-tools
 COPY --from=builder /prow-tools/* /prow-tools/
 WORKDIR /prow-tools

@@ -23,6 +23,8 @@
         {{- else}}{{fail ".JobConfig.cron and .JobConfig.interval are not defined"}}{{end}}
       {{- else if .JobConfig.run_if_changed}}
       run_if_changed: {{squote .JobConfig.run_if_changed}}
+      {{- else if .JobConfig.skip_if_only_changed}}
+      skip_if_only_changed: {{squote .JobConfig.skip_if_only_changed}}
       {{- else if .JobConfig.always_run}}
       always_run: {{.JobConfig.always_run}}
       {{- end}}
@@ -74,6 +76,12 @@
           channel: {{ .JobConfig.slack_channel }}
       {{- end}}
       spec:
+        {{- if .JobConfig.serviceAccountName}}
+        serviceAccountName: {{.JobConfig.serviceAccountName}}
+        {{- end}}
+        {{- if .JobConfig.automountServiceAccountToken}}
+        automountServiceAccountToken: {{.JobConfig.automountServiceAccountToken}}
+        {{- end}}
         containers:
           - image: {{ if .JobConfig.image }}{{quote .JobConfig.image}}{{else}}{{ fail ".JobConfig.image is not defined" }}{{end}}
             {{- if .JobConfig.imagePullPolicy }}
@@ -82,9 +90,24 @@
             {{- if .JobConfig.automountServiceAccountToken}}
             automountServiceAccountToken: {{.JobConfig.automountServiceAccountToken}}
             {{- end}}
-            {{- if .JobConfig.privileged}}
             securityContext:
-              privileged: {{.JobConfig.privileged}}
+              {{- /* if privileged is set to true then seccomp must be unconfined */}}
+              {{- if and .JobConfig.securityContext.privileged (eq .JobConfig.securityContext.privileged "true") (ne .JobConfig.securityContext.seccompProfile.type  "Unconfined")}}
+                {{- fail (printf ".JobConfig.securityContext.privileged=true and .JobConfig.securityContext.seccompProfile!=Unconfied are mutually exclusive: %s %v" .JobConfig.securityContext.privileged .JobConfig.securityContext.seccompProfile.type)}}
+              {{- end}}
+              privileged: {{ default "false" .JobConfig.securityContext.privileged }}
+              {{- if .JobConfig.securityContext.seccompProfile}}
+              seccompProfile:
+                {{- range $key, $value := .JobConfig.securityContext.seccompProfile}}
+                {{$key}}: {{$value}}
+                {{- end}}
+              allowPrivilegeEscalation: {{ default "false" .JobConfig.securityContext.privileged }}
+              {{- end}}
+              {{- if .JobConfig.securityContext.runAsRoot}}
+              runAsUser: 0
+              {{- end}}
+            {{- if .JobConfig.workingDir}}
+            workingDir: {{quote .JobConfig.workingDir}}
             {{- end}}
             command:
               {{- if .JobConfig.command }}
@@ -104,8 +127,9 @@
                 value: "{{$value}}"
               {{- end}}
             {{- end}}
-            {{- if or .JobConfig.request_memory .JobConfig.request_cpu false}}
+            {{- if or .JobConfig.request_memory .JobConfig.request_cpu .JobConfig.limits_memory .JobConfig.limits_cpu false}}
             resources:
+              {{- if or .JobConfig.request_memory .JobConfig.request_cpu false}}
               requests:
                 {{- if .JobConfig.request_memory}}
                 memory: {{.JobConfig.request_memory}}
@@ -113,6 +137,16 @@
                 {{- if .JobConfig.request_cpu}}
                 cpu: {{.JobConfig.request_cpu}}
                 {{- end}}
+              {{- end}}
+              {{- if or .JobConfig.limits_memory .JobConfig.limits_cpu false}}
+              limits:
+                {{- if .JobConfig.limits_memory}}
+                memory: {{.JobConfig.limits_memory}}
+                {{- end}}
+                {{- if .JobConfig.limits_cpu}}
+                cpu: {{.JobConfig.limits_cpu}}
+                {{- end}}
+              {{- end}}
             {{- end}}
             {{- if .JobConfig.volumeMounts}}
             volumeMounts:

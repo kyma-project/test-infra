@@ -2,7 +2,8 @@ package dnsclient
 
 import (
 	"context"
-	"google.golang.org/api/dns/v2beta1"
+
+	dns "google.golang.org/api/dns/v2beta1"
 )
 
 type DNSAPIWrapper struct {
@@ -13,11 +14,10 @@ func NewService(ctx context.Context) (*DNSAPIWrapper, error) {
 	service, err := dns.NewService(ctx)
 	if err != nil {
 		return nil, err
-	} else {
-		return &DNSAPIWrapper{
-			service: service,
-		}, err
 	}
+	return &DNSAPIWrapper{
+		service: service,
+	}, err
 }
 
 func (api *DNSAPIWrapper) GetManagedZone(ctx context.Context, project string, managedZone string) (*dns.ManagedZone, error) {

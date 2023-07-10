@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###
-# Following script installs necessary tooling for Debian to deploy Kyma on Minikube.
+# Following script installs necessary tooling for Debian to deploy Kyma on k3d.
 #
 # REQUIREMENTS:
 # 64-bit version of one of these Debian versions:
@@ -14,15 +14,15 @@
 set -o errexit
 set -o pipefail
 
-MINIKUBE_VERSION=v1.14.2
-KUBECTL_CLI_VERSION=v1.21.9
+MINIKUBE_VERSION=v1.28.0
+KUBECTL_CLI_VERSION=v1.26.3
 CRICTL_VERSION=v1.12.0
-HELM_VERSION="v3.7.1"
-DOCKER_VERSION=5:20.10.5~3-0~debian-buster
+HELM_VERSION="v3.7.2"
+DOCKER_VERSION=5:20.10.21~3-0~debian-bullseye
 NODEJS_VERSION="14.x"
 K3D_VERSION="5.0.1"
 PG_MIGRATE_VERSION=v4.15.1
-GO_VERSION=1.18.3
+GO_VERSION=1.19.4
 
 # install docker
 sudo apt-get update
@@ -38,7 +38,9 @@ sudo apt-get install -y \
      build-essential \
      conntrack \
      software-properties-common \
-     postgresql-client-11
+     postgresql-client-13 \
+     pkg-config \
+     libgit2-dev
 
 curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 
@@ -63,8 +65,9 @@ wget https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz -O - | tar -xzO
 
 # install minikube
 curl -Lo /tmp/minikube https://storage.googleapis.com/minikube/releases/${MINIKUBE_VERSION}/minikube-linux-amd64 && \
- chmod +x /tmp/minikube && \
- sudo mv /tmp/minikube /usr/local/bin/minikube
+chmod +x /tmp/minikube && \
+sudo install /tmp/minikube /usr/local/bin/minikube
+
 
 # install postgres and migrate tool
 wget https://github.com/golang-migrate/migrate/releases/download/${PG_MIGRATE_VERSION}/migrate.linux-amd64.tar.gz -O - | tar -zxO migrate > /tmp/migrate && \
@@ -86,30 +89,25 @@ sudo apt-get -y install \
 # install k3d
 wget -q -O - https://raw.githubusercontent.com/rancher/k3d/main/install.sh | TAG=v${K3D_VERSION} bash
 
-# install monitoring agent
-# https://cloud.google.com/monitoring/agent/installation
-curl -sSO https://dl.google.com/cloudagents/add-monitoring-agent-repo.sh && \
-sudo bash add-monitoring-agent-repo.sh && \
-sudo apt-get update
-sudo apt-cache madison stackdriver-agent
-sudo apt-get install -y 'stackdriver-agent=6.*'
-
-# install logging agent
+# install cloud-ops agent
 # https://cloud.google.com/logging/docs/agent/installation
-curl -sSO https://dl.google.com/cloudagents/add-logging-agent-repo.sh && \
-sudo bash add-logging-agent-repo.sh && \
-sudo apt-get update
-sudo apt-cache madison google-fluentd
-sudo apt-get install -y 'google-fluentd=1.*'
-sudo apt-get install -y google-fluentd-catch-all-config
+curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
+sudo bash add-google-cloud-ops-agent-repo.sh \
+  --also-install \
+  --version=2.*.*
 
 # install go
 sudo mkdir /usr/local/go && \
      curl -fsSL -o /tmp/go.tar.gz "https://go.dev/dl/go${GO_VERSION}.linux-amd64.tar.gz" && \
      sudo tar xzf /tmp/go.tar.gz -C /usr/local && \
      rm /tmp/go.tar.gz
-echo "export PATH=\$PATH:/usr/local/go/bin" | sudo tee -a /etc/profile
+# shellcheck disable=SC2016
+echo 'export PATH="$PATH:/usr/local/go/bin"' | sudo tee -a /etc/profile
 
 # pre-fetch-docker-images
 sudo docker pull eu.gcr.io/kyma-project/external/cypress/included:8.7.0
 sudo docker pull eu.gcr.io/kyma-project/test-infra/docker-registry-2:20200202
+
+sudo sed -i 's/\(GRUB_CMDLINE_LINUX_DEFAULT="\)\(.*\)\("\)/\1\2 systemd.legacy_systemd_cgroup_controller=false systemd.unified_cgroup_hierarchy=false\3/' /etc/default/grub
+sudo sed -i 's/\(GRUB_CMDLINE_LINUX="\)\(.*\)\("\)/\1\2 systemd.legacy_systemd_cgroup_controller=false systemd.unified_cgroup_hierarchy=false\3/' /etc/default/grub
+sudo update-grub

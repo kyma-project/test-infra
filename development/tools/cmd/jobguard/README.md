@@ -1,4 +1,4 @@
 # Job Guard
 
-Job Guard was moved [here](../../../jobguard).
+Job Guard was moved [here](/development/jobguard).
 

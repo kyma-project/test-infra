@@ -3,11 +3,11 @@ kind: ServiceAccount
 metadata:
   namespace: default
   annotations:
-    iam.gke.io/gcp-service-account: control-plane@k8s-prow.iam.gserviceaccount.com
+    iam.gke.io/gcp-service-account: control-plane@sap-kyma-prow.iam.gserviceaccount.com
   name: deck
 ---
 kind: Role
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   namespace: default
   name: deck
@@ -30,7 +30,7 @@ rules:
   - get
 ---
 kind: RoleBinding
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   namespace: default
   name: deck

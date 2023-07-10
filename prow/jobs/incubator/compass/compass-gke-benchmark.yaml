@@ -5,6 +5,8 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-gke-benchmark
       annotations:
+        description: "Validate performance of the PR"
+        owner: "compass"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -12,7 +14,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-version: "true"
-        preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
@@ -41,217 +42,20 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
               - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-benchmark.sh"
+              - "installation/scripts/prow/jobs/compass-gke-benchmark.sh"
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
-              - name: MACHINE_TYPE
-                value: "n1-highcpu-16"
-              - name: NODES_PER_ZONE
-                value: "1"
-              - name: PROVISION_REGIONAL_CLUSTER
-                value: "true"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel23-compass-gke-benchmark
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel23-compass-gke-benchmark"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-cluster-version: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-gke-integration: "true"
-        preset-gardener-azure-kyma-integration: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-kyma-artifacts-bucket: "true"
-        preset-kyma-development-artifacts-bucket: "true"
-        preset-kyma-encryption-key: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-keyring: "true"
-        preset-sa-gke-kyma-integration: "true"
-      optional: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-incubator/compass
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.3
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.3
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-benchmark.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
-              - name: MACHINE_TYPE
-                value: "n1-highcpu-16"
-              - name: NODES_PER_ZONE
-                value: "1"
-              - name: PROVISION_REGIONAL_CLUSTER
-                value: "true"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel22-compass-gke-benchmark
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel22-compass-gke-benchmark"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-cluster-version: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-gke-integration: "true"
-        preset-gardener-azure-kyma-integration: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-kyma-artifacts-bucket: "true"
-        preset-kyma-development-artifacts-bucket: "true"
-        preset-kyma-encryption-key: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-keyring: "true"
-        preset-sa-gke-kyma-integration: "true"
-      optional: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-incubator/compass
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.2
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.2
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-benchmark.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
-              - name: MACHINE_TYPE
-                value: "n1-highcpu-16"
-              - name: NODES_PER_ZONE
-                value: "1"
-              - name: PROVISION_REGIONAL_CLUSTER
-                value: "true"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel21-compass-gke-benchmark
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel21-compass-gke-benchmark"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-release: "true"
-        preset-cluster-version: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-gke-integration: "true"
-        preset-gardener-azure-kyma-integration: "true"
-        preset-gc-compute-envs: "true"
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-kyma-artifacts-bucket: "true"
-        preset-kyma-development-artifacts-bucket: "true"
-        preset-kyma-encryption-key: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-keyring: "true"
-        preset-sa-gke-kyma-integration: "true"
-      optional: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-incubator/compass
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - release-2.1
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.1
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20220613-63e4233c"
-            securityContext:
-              privileged: true
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-benchmark.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: KYMA_MAJOR_VERSION
-                value: "2"
               - name: MACHINE_TYPE
                 value: "n1-highcpu-16"
               - name: NODES_PER_ZONE

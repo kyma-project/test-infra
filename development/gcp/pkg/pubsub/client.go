@@ -83,32 +83,14 @@ func NewClient(ctx context.Context, projectID string) (*Client, error) {
 	return &Client{Client: pubSubClient}, nil
 }
 
-// GetJobId will extract prowjob  ID from prowjob URL. Prowjob ID is a last element of prowjob URL.
-func GetJobId(jobUrl *string) (*string, error) {
-	jobURL, err := url.Parse(*jobUrl)
+// GetJobID will extract prowjob  ID from prowjob URL. Prowjob ID is a last element of prowjob URL.
+func GetJobID(jobURL *string) (*string, error) {
+	parsedJobURL, err := url.Parse(*jobURL)
 	if err != nil {
 		return nil, fmt.Errorf("failed parse test URL, error: %w", err)
 	}
-	jobID := path.Base(jobURL.Path)
+	jobID := path.Base(parsedJobURL.Path)
 	return github.String(jobID), nil
-}
-
-// PublishPubSubMessage is deprecated. Use Client.PublishMessage
-func PublishPubSubMessage(ctx context.Context, client *pubsub.Client, message interface{}, topicName string) (*string, error) {
-	bmessage, err := json.Marshal(message)
-	if err != nil {
-		return nil, fmt.Errorf("failed marshaling message to json, error: %w", err)
-	}
-	topic := client.Topic(topicName)
-	result := topic.Publish(ctx, &pubsub.Message{
-		// Set json marshaled message as a data payload of pubsub message.
-		Data: bmessage,
-	})
-	publishedID, err := result.Get(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed publishing to topic %s, error: %w", topicName, err)
-	}
-	return github.String(publishedID), nil
 }
 
 // publishPubSubMessage construct pubsub message and publish to pubsub topic.

@@ -26,32 +26,30 @@ type Client struct {
 
 // Message is the message sent to pubsub system.
 type Message struct {
-	Message      MessagePayload `json:"message"`
+	Message      pubsub.Message `json:"message"`
 	Subscription string         `json:"subscription"`
 }
 
 // MessagePayload is the pubsub message payload of pubsub message.
 type MessagePayload struct {
-	Attributes   map[string]string `json:"attributes"`
-	Data         []byte            `json:"data"` // This property is base64 encoded
-	MessageId    string            `json:"messageId"`
-	Message_Id   string            `json:"message_id"`
-	PublishTime  string            `json:"publishTime"`
-	Publish_time string            `json:"publish_time"`
+	Attributes  map[string]string `json:"attributes"`
+	Data        []byte            `json:"data"` // This property is base64 encoded
+	MessageID   string            `json:"messageId"`
+	PublishTime string            `json:"publishTime"`
 }
 
 // ProwMessage is the Data field of pubsub message payload, published by Prow.
 type ProwMessage struct {
-	Project *string `json:"project"`
-	Topic   *string `json:"topic"`
-	RunID   *string `json:"runid"`
-	Status  *string `json:"status"`
-	URL     *string `json:"url"`
-	GcsPath *string `json:"gcs_path"`
+	Project *string `json:"project" validate:"required,min=1"`
+	Topic   *string `json:"topic" validate:"required,min=1"`
+	RunID   *string `json:"runid" validate:"required,min=1"`
+	Status  *string `json:"status" validate:"required,min=1"`
+	URL     *string `json:"url" validate:"required,min=1"`
+	GcsPath *string `json:"gcs_path" validate:"required,min=1"`
 	// TODO: define refs type to force using pointers
-	Refs    []prowapi.Refs `json:"refs"`
-	JobType *string        `json:"job_type"`
-	JobName *string        `json:"job_name"`
+	Refs    []prowapi.Refs `json:"refs,omitempty"`
+	JobType *string        `json:"job_type" validate:"required,min=1"`
+	JobName *string        `json:"job_name" validate:"required,min=1"`
 }
 
 // FailingTestMessage is the Data field of pubsub message payload, published by ci-force automation.
@@ -63,8 +61,23 @@ type FailingTestMessage struct {
 	GithubIssueNumber     *int64   `json:"githubIssueNumber,omitempty"`
 	GithubIssueRepo       *string  `json:"githubIssueRepo,omitempty"`
 	GithubIssueOrg        *string  `json:"githubIssueOrg,omitempty"`
-	GithubIssueUrl        *string  `json:"githubIssueUrl,omitempty"`
+	GithubIssueURL        *string  `json:"githubIssueUrl,omitempty"`
 	SlackThreadID         *string  `json:"slackThreadId,omitempty"`
 	GithubCommitersLogins []string `json:"githubCommitersLogins,omitempty"`
 	CommitersSlackLogins  []string `json:"slackCommitersLogins,omitempty"`
+}
+
+type Rotation struct {
+	NextRotationTime string `yaml:"nextRotationTime"`
+	RotationPeriod   string `yaml:"rotationPeriod"`
+}
+
+// SecretRotateMessage is the Data field of pubsub message payload, published by secret rotation automation.
+type SecretRotateMessage struct {
+	Name       string              `yaml:"name"`
+	CreateTime string              `yaml:"createTime"`
+	Labels     map[string]string   `yaml:"labels,omitempty"`
+	Topics     []map[string]string `yaml:"topics,omitempty"`
+	Etag       string              `yaml:"etag"`
+	Rotation   Rotation            `yaml:"rotation,omitempty"`
 }

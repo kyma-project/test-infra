@@ -25,7 +25,7 @@ func NewCreator(github GithubAPI, storage StorageAPI) Creator {
 	}
 }
 
-//CreateNewRelease .
+// CreateNewRelease .
 func (c *creatorImpl) CreateNewRelease(ctx context.Context, relOpts *Options, artifactNames ...string) error {
 
 	//Release
