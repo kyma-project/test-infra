@@ -35,7 +35,7 @@ templates:
             jobs:
               - jobConfig:
                   name: "skr-aws-upgrade-integration-dev"
-                  slack_channel: "kyma-gophers-private-alerts"
+                  slack_channel: "kyma-gopher-private-alerts"
                   annotations:
                     owner: gopher
                     description: skr upgrade test on aws

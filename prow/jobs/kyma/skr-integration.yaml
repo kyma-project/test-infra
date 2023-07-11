@@ -37,7 +37,7 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-gophers-private-alerts
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -100,7 +100,7 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-gophers-private-alerts
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -163,7 +163,7 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-gophers-private-alerts
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -226,7 +226,7 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-gophers-private-alerts
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -289,7 +289,7 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-gophers-private-alerts
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -353,7 +353,7 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-gophers-private-alerts
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
@@ -416,7 +416,7 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-gophers-private-alerts
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
