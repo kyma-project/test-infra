@@ -1,8 +1,11 @@
-pjNames:
-     - pjName: "pre-main-compass-integration-no-dump"
-     - pjName: "pre-main-compass-integration-with-dump"
-     - pjName: "pre-main-compass-smoke-test"
-prConfigs:
-     kyma-incubator:
-       compass:
-         prNumber: 3165
+pjConfigs:
+  prowJobs:
+    kyma-incubator:
+      compass:
+        - pjName: "pre-main-compass-integration-no-dump"
+        - pjName: "pre-main-compass-integration-with-dump"
+        - pjName: "pre-main-compass-smoke-test"
+prConfigs: 
+  kyma-incubator:
+    compass:
+      prNumber: 3165
