@@ -35,7 +35,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_buildpack-golang"
+                    - "image_e2e-dind-k3d"
                     - "extra_refs_test-infra"
                     - "privileged_job"
                     - "kyma_project_dir"
