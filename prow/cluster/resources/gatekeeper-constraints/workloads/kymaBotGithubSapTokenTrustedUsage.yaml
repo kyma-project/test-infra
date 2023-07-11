@@ -23,4 +23,4 @@ spec:
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"\],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":\["\/home\/prow\/go\/src\/github\.com\/kyma-project\/test-infra\/prow\/scripts\/github-issues\.sh"\],"container_name":"test",.*}$'
