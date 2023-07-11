@@ -44,7 +44,7 @@ presubmits: # runs on PRs
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "[[/init.sh]]"
+              - "[/init.sh]"
             args:
               - "bash"
               - "-c"
