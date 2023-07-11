@@ -3,23 +3,10 @@
 set -e
 
 LOG_DIR=${ARTIFACTS:-"/var/log"}
-DOCKERD_PROCESS=""
-function cleanup() {
-  set +e
-  if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
-    echo "[ * * * ] Cleaning up Docker resources..."
-    docker stop "$(docker ps -aq)"
-    docker system prune --all -f --volumes
-    kill -SIGTSTP "$DOCKERD_PROCESS"
-  fi
-  set -e
-}
-trap cleanup INT ERR EXIT TERM
 
 if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
   echo "[ * * * ] Starting Docker in Docker"
   dockerd --data-root=/docker-graph > "${LOG_DIR}/dockerd.log" 2>&1 &
-  DOCKERD_PROCESS="$!"
   echo "Waiting for Docker to be up..."
   while [[ $(curl -s --unix-socket /var/run/docker.sock http/_ping 2>&1) != "OK" ]]; do
     sleep 1

@@ -374,7 +374,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230707-acfee029"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230711-39622544"
             securityContext:
               privileged: false
               seccompProfile:
@@ -433,7 +433,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230707-acfee029"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230711-39622544"
             securityContext:
               privileged: false
               seccompProfile:
@@ -494,7 +494,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230707-acfee029"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230711-39622544"
             securityContext:
               privileged: false
               seccompProfile:
@@ -556,7 +556,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230707-acfee029"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230711-39622544"
             securityContext:
               privileged: false
               seccompProfile:
@@ -925,7 +925,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230707-acfee029"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230711-39622544"
             securityContext:
               privileged: false
               seccompProfile:
@@ -984,7 +984,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230707-acfee029"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230711-39622544"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1207,7 +1207,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230705-6666368cff"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230710-68864df057"
             securityContext:
               privileged: false
               seccompProfile:

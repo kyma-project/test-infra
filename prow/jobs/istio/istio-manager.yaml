@@ -134,7 +134,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230707-acfee029"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230711-39622544"
             securityContext:
               privileged: false
               seccompProfile:
@@ -294,6 +294,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       optional: false
       skip_report: false
@@ -428,7 +429,7 @@ periodics: # runs on schedule
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230707-acfee029"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230711-39622544"
             securityContext:
               privileged: false
               seccompProfile:

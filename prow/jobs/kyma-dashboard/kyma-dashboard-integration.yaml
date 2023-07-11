@@ -1,18 +1,18 @@
 presubmits: # runs on PRs
   kyma-project/kyma-dashboard:
-    - name: pull-kyma-dashboard-smoke-test-prod
+    - name: pull-kyma-dashboard-integration
       annotations:
         owner: hasselhoff
-        description: "Kyma dashboard smoke testing prod"
+        description: "Kyma dashboard integration testing"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-smoke-test-prod"
+        prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-integration"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-gardener-gcp-kyma-integration: "true"
       decorate: true
-      run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
+      run_if_changed: "^Dockerfile.*|^package.json|^environments/dev/|^extensions|^gulpfile.js|^Makefile|^tests/"
       cluster: untrusted-workload
       branches:
         - ^master$
@@ -35,7 +35,7 @@ presubmits: # runs on PRs
               - tests/scripts/kyma-dashboard-integration.sh
             env:
               - name: SCOPE
-                value: "smoke-extensions"
+                value: "e2e"
             resources:
               requests:
                 memory: 6Gi
