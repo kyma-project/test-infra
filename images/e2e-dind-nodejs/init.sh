@@ -5,14 +5,17 @@ set -e
 LOG_DIR=${ARTIFACTS:-"/var/log"}
 DOCKERD_PROCESS=""
 function cleanup() {
+  ERR=$?
   set +e
   if [[ "${DOCKER_IN_DOCKER_ENABLED}" == "true" ]]; then
     echo "[ * * * ] Cleaning up Docker resources..."
-    docker stop "$(docker ps -aq)"
+    # shellcheck disable=SC2046
+    docker stop $(docker ps -aq)
     docker system prune --all -f --volumes
     kill -SIGTSTP "$DOCKERD_PROCESS"
   fi
   set -e
+  return "$ERR"
 }
 trap cleanup INT ERR EXIT TERM
 
@@ -41,3 +44,4 @@ if [[ "$K3D_ENABLED" == "true" ]]; then
   k3d cluster create k3d "${ARGS[@]}"
 fi
 bash -c "$@"
+}
