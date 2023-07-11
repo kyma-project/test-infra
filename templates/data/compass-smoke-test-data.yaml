@@ -7,8 +7,6 @@ templates:
             path_alias: github.com/kyma-incubator/compass
             command: "/init.sh"
             args:
-              - "bash"
-              - "-c"
               - "installation/scripts/prow/jobs/provision-vm-compass-smoke-test.sh"
             request_memory: 100Mi
             request_cpu: 50m
