@@ -37,13 +37,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-keda-module-build
       annotations:
         description: "keda module build job"
@@ -88,13 +81,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-keda-manager-operator-tests
       annotations:
         description: "keda operator tests"
@@ -131,13 +117,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-keda-manager-operator-build
       annotations:
         description: "keda operator build job"
@@ -242,13 +221,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/keda-manager:
@@ -350,13 +322,6 @@ postsubmits: # runs on main
               limits:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-keda-module-build
       annotations:
         description: "keda module build job"
@@ -399,13 +364,6 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-keda-manager-operator-build
       annotations:
         description: "keda module build job"
@@ -512,13 +470,6 @@ postsubmits: # runs on main
               requests:
                 memory: 200Mi
                 cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-main-keda-manager-upgrade-latest-to-main
       annotations:
         description: "upgrade keda manager test"
@@ -572,13 +523,6 @@ postsubmits: # runs on main
               requests:
                 memory: 200Mi
                 cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 periodics: # runs on schedule
     - name: keda-operator-nightly-periodic
@@ -656,13 +600,6 @@ periodics: # runs on schedule
               - name: sa-stability-fluentd-storage-writer
                 mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: sa-stability-fluentd-storage-writer
             secret:

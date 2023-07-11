@@ -36,13 +36,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/kyma:
     - name: pull-kyma-pjconfigtest
@@ -83,13 +76,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/busola:
     - name: pull-busola-pjconfigtest
@@ -130,13 +116,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/control-plane:
     - name: pull-control-plane-pjconfigtest
@@ -177,13 +156,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/cli:
     - name: pull-cli-pjconfigtest
@@ -224,13 +196,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/website:
     - name: pull-website-pjconfigtest
@@ -271,13 +236,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/lifecycle-manager:
     - name: pull-lifecycle-manager-pjconfigtest
@@ -318,13 +276,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/third-party-images:
     - name: pull-third-party-images-pjconfigtest
@@ -365,13 +316,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/community:
     - name: pull-community-pjconfigtest
@@ -412,13 +356,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/hydroform:
     - name: pull-hydroform-pjconfigtest
@@ -459,13 +396,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/istio-operator:
     - name: pull-istio-operator-pjconfigtest
@@ -506,13 +436,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/addons:
     - name: pull-addons-pjconfigtest
@@ -553,13 +476,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/private-fn-for-e2e-serverless-tests:
     - name: pull-private-fn-for-e2e-serverless-tests-pjconfigtest
@@ -600,13 +516,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/charts:
     - name: pull-charts-pjconfigtest
@@ -647,13 +556,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/examples:
     - name: pull-examples-pjconfigtest
@@ -694,13 +596,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/api-gateway:
     - name: pull-api-gateway-pjconfigtest
@@ -741,13 +636,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/istio:
     - name: pull-istio-pjconfigtest
@@ -788,13 +676,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/runtime-watcher:
     - name: pull-runtime-watcher-pjconfigtest
@@ -835,13 +716,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/keda-manager:
     - name: pull-keda-manager-pjconfigtest
@@ -882,13 +756,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/kyma-dashboard:
     - name: pull-kyma-dashboard-pjconfigtest
@@ -929,13 +796,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/application-connector-manager:
     - name: pull-application-connector-manager-pjconfigtest
@@ -976,13 +836,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/rafter:
     - name: pull-rafter-pjconfigtest
@@ -1023,13 +876,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/btp-manager:
     - name: pull-btp-manager-pjconfigtest
@@ -1070,13 +916,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/kyma-environment-broker:
     - name: pull-kyma-environment-broker-pjconfigtest
@@ -1117,13 +956,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/telemetry-manager:
     - name: pull-telemetry-manager-pjconfigtest
@@ -1164,13 +996,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/director-size-exporter:
     - name: pull-director-size-exporter-pjconfigtest
@@ -1211,13 +1036,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/compass-manager:
     - name: pull-compass-manager-pjconfigtest
@@ -1258,13 +1076,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/compass:
     - name: pull-compass-pjconfigtest
@@ -1305,13 +1116,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/ord-service:
     - name: pull-ord-service-pjconfigtest
@@ -1352,13 +1156,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/reconciler:
     - name: pull-reconciler-pjconfigtest
@@ -1399,13 +1196,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/bullseye-showcase:
     - name: pull-bullseye-showcase-pjconfigtest
@@ -1446,13 +1236,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/documentation-component:
     - name: pull-documentation-component-pjconfigtest
@@ -1493,13 +1276,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/compass-console:
     - name: pull-compass-console-pjconfigtest
@@ -1540,13 +1316,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/sap-btp-service-operator:
     - name: pull-sap-btp-service-operator-pjconfigtest
@@ -1587,13 +1356,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/milv:
     - name: pull-milv-pjconfigtest
@@ -1634,13 +1396,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/varkes:
     - name: pull-varkes-pjconfigtest
@@ -1681,13 +1436,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/slack-bot:
     - name: pull-slack-bot-pjconfigtest
@@ -1728,13 +1476,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/migrate:
     - name: pull-migrate-pjconfigtest
@@ -1775,13 +1516,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/github-dashboard:
     - name: pull-github-dashboard-pjconfigtest
@@ -1822,13 +1556,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/website-vuepress:
     - name: pull-website-vuepress-pjconfigtest
@@ -1869,13 +1596,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/kitbag:
     - name: pull-kitbag-pjconfigtest
@@ -1916,13 +1636,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/kyma-showcase:
     - name: pull-kyma-showcase-pjconfigtest
@@ -1963,13 +1676,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/hydra-login-consent:
     - name: pull-hydra-login-consent-pjconfigtest
@@ -2010,13 +1716,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/kymart:
     - name: pull-kymart-pjconfigtest
@@ -2057,13 +1756,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/examples:
     - name: pull-examples-pjconfigtest
@@ -2104,13 +1796,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/vstudio-extension:
     - name: pull-vstudio-extension-pjconfigtest
@@ -2151,13 +1836,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/wordpress-connector:
     - name: pull-wordpress-connector-pjconfigtest
@@ -2198,13 +1876,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/connector-tools:
     - name: pull-connector-tools-pjconfigtest
@@ -2245,13 +1916,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/artwork:
     - name: pull-artwork-pjconfigtest
@@ -2292,13 +1956,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/opensap:
     - name: pull-opensap-pjconfigtest
@@ -2339,13 +1996,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/testdrape:
     - name: pull-testdrape-pjconfigtest
@@ -2386,13 +2036,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/sc-removal:
     - name: pull-sc-removal-pjconfigtest
@@ -2433,13 +2076,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/service-catalog-tester:
     - name: pull-service-catalog-tester-pjconfigtest
@@ -2480,13 +2116,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/service-catalog:
     - name: pull-service-catalog-pjconfigtest
@@ -2527,11 +2156,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

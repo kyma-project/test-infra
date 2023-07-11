@@ -66,11 +66,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

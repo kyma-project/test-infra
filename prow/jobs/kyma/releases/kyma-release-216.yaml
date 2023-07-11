@@ -46,13 +46,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma:
@@ -104,13 +97,6 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-rel216-kyma-release-candidate
       annotations:
         description: "Release candidate job for Kyma 2.16."
@@ -183,13 +169,6 @@ postsubmits: # runs on main
               - name: kyma-tunas-release-testing-event-mesh
                 mountPath: /etc/credentials/kyma-tunas-release-testing-event-mesh
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: kyma-tunas-release-testing-event-mesh
             secret:
@@ -282,13 +261,6 @@ periodics: # runs on schedule
               - name: sa-stability-fluentd-storage-writer
                 mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: sa-stability-fluentd-storage-writer
             secret:
