@@ -44,10 +44,7 @@ presubmits: # runs on PRs
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "[/bin/bash]"
-            args:
-              - "-c"
-              - "installation/scripts/prow/jobs/provision-vm-compass-smoke-test.sh"
+              - "/init.sh && installation/scripts/prow/jobs/provision-vm-compass-smoke-test.sh"
             env:
               - name: GO111MODULE
                 value: "on"
