@@ -14,8 +14,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
-        preset-kind-volume-mounts: "true"
-        preset-k3d-enabled: “true”
         preset-docker-push-repository-kyma: "true"
         preset-kyma-development-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
@@ -43,10 +41,8 @@ presubmits: # runs on PRs
               seccompProfile:
                 type: Unconfined
               allowPrivilegeEscalation: true
-            command: ["/bin/bash"]
-            args:
-              - -c
-              - installation/scripts/prow/jobs/provision-vm-compass-smoke-test.sh
+            command:
+              - "installation/scripts/prow/jobs/provision-vm-compass-smoke-test.sh"
             env:
               - name: GO111MODULE
                 value: "on"
