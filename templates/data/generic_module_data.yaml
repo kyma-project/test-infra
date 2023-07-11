@@ -102,6 +102,7 @@ templates:
                     - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
                   global:
+                    - jobConfig_default
                     - jobConfig_postsubmit
                   local:
                     - job_build
@@ -228,6 +229,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
+                    - jobConfig_default
                     - jobConfig_presubmit
                   local:
                     - job_build
@@ -247,6 +249,7 @@ templates:
                     - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
                 inheritedConfigs:
                   global:
+                    - jobConfig_default
                     - jobConfig_postsubmit
                   local:
                     - job_build
