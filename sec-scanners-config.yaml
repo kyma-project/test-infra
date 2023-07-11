@@ -6,7 +6,7 @@ protecode:
     - eu.gcr.io/kyma-project/prow/cleaner:0.0.1
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a
     - eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230710-bedd2935
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230707-acfee029
     - eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17
     - gcr.io/k8s-prow/branchprotector:v20230710-68864df057
     - eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230330-3213bd39
@@ -25,9 +25,9 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230327-2887f8b7
     - aquasec/trivy:0.39.0
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230710-bedd2935
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230707-acfee029
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230710-bedd2935
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230707-acfee029
     - eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5
     - eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3
     - opa/gatekeeper/constraint-templates
@@ -67,6 +67,6 @@ protecode:
     - nginx:1.20-alpine
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230629-6b7922f4
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230710-bedd2935
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230707-acfee029
 whitesource:
     language: golang-mod
