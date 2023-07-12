@@ -160,6 +160,8 @@ templates:
 
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing-with-auth-manager
+                  labels:
+                    preset-kyma-eventing-auth-ias-creds: "true"
                   annotations:
                     owner: skydivingtunas
                     description: Execute fast integration job with focus on eventing on a gardener cluster

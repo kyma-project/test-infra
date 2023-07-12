@@ -166,6 +166,7 @@ presubmits: # runs on PRs
         preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
+        preset-kyma-eventing-auth-ias-creds: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
       skip_report: false
@@ -213,13 +214,6 @@ presubmits: # runs on PRs
               - name: kyma-tunas-prow-event-mesh
                 mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: kyma-tunas-prow-event-mesh
             secret:
