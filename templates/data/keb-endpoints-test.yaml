@@ -7,7 +7,7 @@ templates:
           jobConfig_default:
             annotations:
               pipeline.test: fast-integration
-            path_alias: github.com/kyma-project/kyma
+            path_alias: github.com/kyma-project/kyma-environment-broker
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/keb-endpoints-test.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
@@ -19,7 +19,7 @@ templates:
             env:
               KEB_SUBACCOUNT_ID: "prow-keb-integration"
         jobConfigs:
-          - repoName: "kyma-project/kyma"
+          - repoName: "kyma-project/kyma-environment-broker"
             jobs:
               - jobConfig:
                   name: "keb-endpoints-test"
@@ -33,7 +33,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"

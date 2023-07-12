@@ -131,7 +131,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230710-68864df057"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230712-b85330a1e4"
             securityContext:
               privileged: false
               seccompProfile:
@@ -158,7 +158,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230710-68864df057"
+          - image: "gcr.io/k8s-prow/label_sync:v20230712-b85330a1e4"
             securityContext:
               privileged: false
               seccompProfile:
@@ -206,7 +206,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230710-68864df057"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230712-b85330a1e4"
             securityContext:
               privileged: false
               seccompProfile:
@@ -281,7 +281,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230710-68864df057"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230712-b85330a1e4"
             securityContext:
               privileged: false
               seccompProfile:
