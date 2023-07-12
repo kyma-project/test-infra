@@ -39,7 +39,7 @@ templates:
                   annotations:
                     owner: gopher
                     description: skr upgrade test on aws
-                  cron: "0 */4 * * *" # "Every four hours"
+                  cron: "5 1 * * *" # "At 01:05"
                   # labels:
                   #   preset-skr-al-service-key: "true"
                 inheritedConfigs:
