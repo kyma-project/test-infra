@@ -19,6 +19,6 @@ fi
 
 pushd /home/prow/go/src/github.com/kyma-project/kyma-environment-broker/testing/fast-integration
 
-make ci-keb-endpoints
+make keb-endpoints
 
 log::success "all done"
