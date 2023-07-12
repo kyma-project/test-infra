@@ -11,6 +11,12 @@ resource "google_container_cluster" "trusted_workload" {
   workload_identity_config {
     workload_pool = "${var.gcp_project_id}.svc.id.goog"
   }
+  resource_labels = {
+    business_tag = "corporate"
+    exposure_tag = "internet_ingress"
+    landscape_tag = "production"
+    name_cluster = "trusted-workload-kyma-prow"
+  }
 }
 
 resource "google_container_node_pool" "preemptible_standard_pool" {
