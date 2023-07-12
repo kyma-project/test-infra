@@ -15,6 +15,8 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-k3d-enabled: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-development-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-gcr-push: "true"
@@ -35,13 +37,15 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230711-39622544"
             securityContext:
               privileged: true
               seccompProfile:
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
+              - "/init.sh"
+            args:
               - "installation/scripts/prow/jobs/provision-vm-compass-smoke-test.sh"
             env:
               - name: GO111MODULE
