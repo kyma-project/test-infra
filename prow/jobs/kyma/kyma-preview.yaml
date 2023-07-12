@@ -19,7 +19,7 @@ periodics:
         base_ref: main
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230712-4e8e9e8c
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230712-f514770d
           securityContext:
             privileged: true
             seccompProfile:
