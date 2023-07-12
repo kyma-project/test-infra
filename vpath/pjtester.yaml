@@ -1,14 +1,10 @@
-pjConfigs:   # map containing tests config
-  prConfig:  # map containing PR number with test prow job definition
-    kyma-project:  
+pjConfigs:
+  prowJobs:
+    kyma-project:
       kyma:
-        prNumber: 8139
-  prowJobs:   # map containing the config of prow jobs to test
-    kyma-project:  
-      kyma:
-      - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
-        report: true
-prConfigs: # map containing the numbers of the pull requests to use in test prowjobs
+        - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
+          report: false
+prConfigs: #
   kyma-project:
     kyma:
       prNumber: 17817
