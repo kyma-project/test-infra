@@ -127,7 +127,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230711-39622544"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230712-4e8e9e8c"
             securityContext:
               privileged: false
               seccompProfile:
@@ -401,7 +401,7 @@ periodics: # runs on schedule
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230711-39622544"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230712-4e8e9e8c"
             securityContext:
               privileged: false
               seccompProfile:
