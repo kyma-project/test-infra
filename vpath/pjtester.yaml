@@ -8,7 +8,7 @@ pjConfigs:   # map containing tests config
       kyma:
       - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
         report: true
-prConfigs:
-  kyma-incubator:
-    compass:
+prConfigs: # map containing the numbers of the pull requests to use in test prowjobs
+  kyma-project:
+    kyma:
       prNumber: 17817
