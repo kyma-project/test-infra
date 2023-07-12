@@ -61,9 +61,13 @@ templates:
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230705-8a78b1bd"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230712-4e8e9e8c"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
+          job_module_build:
+            labels:
+              preset-sa-kyma-push-images: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
@@ -72,8 +76,6 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio module image
-                  labels:
-                    preset-sa-kyma-push-images: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
@@ -88,12 +90,12 @@ templates:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
-                    - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_presubmit
                   local:
                     - job_default
                     - job_skip_config
+                    - job_module_build
               - jobConfig:
                   name: post-istio-module-build
                   annotations:
@@ -114,13 +116,13 @@ templates:
                     - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
-                    - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - jobConfig_slack_goat
                   local:
                     - job_default
                     - job_skip_config
+                    - job_module_build
               - jobConfig:
                   name: rel-istio-build
                   always_run: true
@@ -152,10 +154,12 @@ templates:
                     description: builds istio module template on release
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-sa-kyma-push-images: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod"
-                    IMG: "europe-docker.pkg.dev/kyma-project/dev/istio-manager:${PULL_BASE_REF}"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_REF}"
                   command: "make"
                   args:
                     - "-C"
@@ -163,12 +167,12 @@ templates:
                     - "all"
                 inheritedConfigs:
                   global:
-                    - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - jobConfig_slack_goat
                   local:
                     - job_default
+                    - job_module_build
               - jobConfig:
                   name: pull-istio-operator-build
                   annotations:
@@ -254,7 +258,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230705-8a78b1bd"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230712-4e8e9e8c"
                   securityContext: #temporary we need permissions to create folders for tooling, see `make install`
                     runAsRoot: true
                   command: "make"

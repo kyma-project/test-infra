@@ -53,6 +53,7 @@ images:
 - source: "nats@sha256:1fcdf0fc6d814697d943861211c1202f4e2301b59ded60d9e188366ac8df33d4"
   tag: "v20230620-2.9.18-alpine3.18"
 - source: "natsio/nats-server-config-reloader:0.10.1"
+- source: "natsio/nats-box:0.13.8"
 - source: "natsio/prometheus-nats-exporter:0.11.0"
 - source: "mockserver/mockserver:mockserver-5.11.2"
   amd64Only: true
@@ -63,3 +64,4 @@ images:
 - source: "ghcr.io/kedacore/keda-metrics-apiserver:2.10.1"
 - source: "nginx:1.23.3"
   amd64Only: true
+- source: "fluent/fluentd:v1.16-debian-1"

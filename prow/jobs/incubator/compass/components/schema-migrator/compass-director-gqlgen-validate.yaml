@@ -42,21 +42,17 @@ presubmits: # runs on PRs
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-compass-generic.sh"
+              - "installation/scripts/prow/jobs/validate-compass-generic.sh"
             args:
               - "--component"
               - "director"
               - "--command"
               - "make gqlgen check-gqlgen"
+            env:
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

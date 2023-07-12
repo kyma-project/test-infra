@@ -46,13 +46,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-rel216-kyma-artifacts
       annotations:
         description: "Build Kyma release artifacts"
@@ -95,13 +88,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-rel215-kyma-artifacts
       annotations:
         description: "Build Kyma release artifacts"
@@ -144,13 +130,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-rel214-kyma-artifacts
       annotations:
         description: "Build Kyma release artifacts"
@@ -193,13 +172,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-rel217-kyma-artifacts
       annotations:
         description: "Build Kyma release artifacts"
@@ -242,13 +214,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma:
@@ -296,13 +261,6 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-rel216-kyma-artifacts
       annotations:
         description: "Build Kyma release artifacts"
@@ -346,13 +304,6 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-rel215-kyma-artifacts
       annotations:
         description: "Build Kyma release artifacts"
@@ -396,13 +347,6 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-rel214-kyma-artifacts
       annotations:
         description: "Build Kyma release artifacts"
@@ -446,13 +390,6 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-rel217-kyma-artifacts
       annotations:
         description: "Build Kyma release artifacts"
@@ -496,11 +433,4 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 0.2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

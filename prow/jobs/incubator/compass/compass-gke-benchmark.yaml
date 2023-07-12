@@ -52,7 +52,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "${KYMA_PROJECT_DIR}/test-infra/prow/scripts/cluster-integration/compass-gke-benchmark.sh"
+              - "installation/scripts/prow/jobs/compass-gke-benchmark.sh"
             env:
               - name: CLOUDSDK_COMPUTE_ZONE
                 value: "europe-west4-b"
@@ -66,11 +66,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

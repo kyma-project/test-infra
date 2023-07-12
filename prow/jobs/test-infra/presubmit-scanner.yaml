@@ -722,6 +722,36 @@ presubmits: # runs on PRs
               - "-c"
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
+  kyma-project/kyma-environment-broker:
+    - name: pre-kyma-environment-broker-presubmit-scanner
+      annotations:
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for kyma-environment-broker"
+        owner: "neighbors"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-kyma-environment-broker-presubmit-scanner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
   kyma-project/telemetry-manager:
     - name: pre-telemetry-manager-presubmit-scanner
       annotations:
