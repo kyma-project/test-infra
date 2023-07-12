@@ -35,7 +35,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "/bin/terraform -chdir=./configs/terraform/environments/prod init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER -sha $PULL_PULL_SHA plan -- terraform -chdir=./configs/terraform/environments/prod plan -input=false -no-color"
+              - "/bin/terraform -chdir=./configs/terraform/environments/prod init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -pr $PULL_NUMBER -sha $PULL_PULL_SHA plan -- terraform -chdir=./configs/terraform/environments/prod plan -input=false -no-color; /ghcomment/github-comment hide --org $(REPO_OWNER) --repo $(REPO_NAME) -pr $(PULL_NUMBER) -sha1 $(PULL_PULL_SHA)"
             resources:
               requests:
                 memory: 3Gi
@@ -75,7 +75,7 @@ postsubmits: # runs on main
               - "/bin/sh"
             args:
               - "-c"
-              - "/bin/terraform -chdir=./configs/terraform/environments/prod init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -sha $PULL_BASE_SHA apply -- terraform -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve"
+              - "/bin/terraform -chdir=./configs/terraform/environments/prod init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -sha $PULL_BASE_SHA apply -- terraform -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve; /ghcomment/github-comment hide --org $(REPO_OWNER) --repo $(REPO_NAME) -pr $(PULL_NUMBER) -sha1 $(PULL_PULL_SHA)"
             resources:
               requests:
                 memory: 3Gi
