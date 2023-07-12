@@ -225,6 +225,8 @@ postsubmits: # runs on main
                 value: "v4.5.7"
               - name: MODULE_REGISTRY
                 value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+              - name: MODULE_SHA
+                value: "$(shell echo ${PULL_BASE_SHA} | head -c 8)"
             resources:
               requests:
                 memory: 3Gi

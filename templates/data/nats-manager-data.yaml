@@ -99,6 +99,7 @@ templates:
                     KUSTOMIZE_VERSION: "v4.5.7"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:$(shell date +v%Y%m%d)-$(shell echo ${PULL_BASE_SHA} | head -c 8)" # The tag script is evaluated in makefile.
+                    MODULE_SHA: "$(shell echo ${PULL_BASE_SHA} | head -c 8)" # The tag script is evaluated in makefile.
                   run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^internal/*/.*$|^cmd/*/.*$|^resources/*/.*$|^api/*/.*$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
                   command: "make"
                   args:
