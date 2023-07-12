@@ -5,8 +5,9 @@ templates:
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass
-            command: "installation/scripts/prow/jobs/provision-vm-compass.sh"
+            command: "/init.sh"
             args:
+              - "installation/scripts/prow/jobs/provision-vm-compass.sh"
               - "--dump-db"
             request_memory: 100Mi
             request_cpu: 50m
@@ -16,6 +17,8 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-sa-vm-kyma-integration: "true"
               preset-gc-project-env: "true"
+              preset-dind-enabled: "true"
+              preset-kind-volume-mounts: "true"
         jobConfigs:
           - repoName: "kyma-incubator/compass"
             jobs:
@@ -33,7 +36,7 @@ templates:
                     - ^hotfix-.*$
                 inheritedConfigs:
                   global:
-                    - "image_buildpack-golang-kubebuilder2"
+                    - "image_e2e-dind-k3d"
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"

@@ -13,7 +13,9 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-compass-integration-with-dump"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
+        preset-dind-enabled: "true"
         preset-gc-project-env: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^(chart|installation)/'
@@ -33,15 +35,16 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230710-bedd2935"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "installation/scripts/prow/jobs/provision-vm-compass.sh"
+              - "/init.sh"
             args:
+              - "installation/scripts/prow/jobs/provision-vm-compass.sh"
               - "--dump-db"
             env:
               - name: GO111MODULE
