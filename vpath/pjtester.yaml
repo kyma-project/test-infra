@@ -1,5 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-project:
-      kyma-environment-broker:
-        - pjName: "keb-endpoints-test"
