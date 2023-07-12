@@ -40,5 +40,6 @@ templates:
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                     - "kyma_project_dir"
+                    - "privileged_job"
                   local:
                     - "jobConfig_default"

@@ -37,10 +37,10 @@ presubmits: # runs on PRs
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230711-39622544"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/init.sh"
             args:
