@@ -1,0 +1,4 @@
+resources:
+  - tide_rbac.yaml
+  - tide_service.yaml
+  - tide_deployment.yaml

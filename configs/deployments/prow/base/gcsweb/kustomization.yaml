@@ -1,0 +1,3 @@
+resources:
+  - gcsweb_service.yaml
+  - gcsweb_deployment.yaml

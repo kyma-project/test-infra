@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: default
+  name: pushgateway-external
+  labels:
+    app: pushgateway-external
+spec:
+  ports:
+    - name: pushgateway-external
+      port: 80
+      targetPort: 8081
+  type: NodePort
+  selector:
+    app: pushgateway-proxy
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: default
+  name: pushgateway
+  labels:
+    app: pushgateway
+spec:
+  ports:
+    - name: pushgateway
+      port: 80
+      targetPort: http
+  type: NodePort
+  selector:
+    app: pushgateway

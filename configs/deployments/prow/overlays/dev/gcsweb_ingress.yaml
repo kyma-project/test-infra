@@ -1,3 +1,11 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: gcsweb-kyma-prow
+spec:
+  domains:
+    - gcsweb.build.kyma-project.io
+---
 apiVersion: networking.gke.io/v1beta1
 kind: FrontendConfig
 metadata:
@@ -19,13 +27,13 @@ metadata:
     networking.gke.io/v1beta1.FrontendConfig: "gcsweb-frontend-config"
 spec:
   rules:
-  - host: gcsweb.build.kyma-project.io
-    http:
-      paths:
-        - path: /*
-          pathType: ImplementationSpecific
-          backend:
-            service:
-              name: gcsweb
-              port:
-                number: 80
+    - host: gcsweb.build.kyma-project.io
+      http:
+        paths:
+          - path: /*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: gcsweb
+                port:
+                  number: 80

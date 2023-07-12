@@ -1,0 +1,4 @@
+resources:
+  - horologium_rbac.yaml
+  - horologium_service.yaml
+  - horologium_deployment.yaml

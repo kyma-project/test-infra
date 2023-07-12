@@ -1,0 +1,4 @@
+resources:
+  - crier_rbac.yaml
+  - crier_service.yaml
+  - crier_deployment.yaml

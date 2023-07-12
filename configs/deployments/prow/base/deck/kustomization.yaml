@@ -1,0 +1,4 @@
+resources:
+  - deck_rbac.yaml
+  - deck_service.yaml
+  - deck_deployment.yaml

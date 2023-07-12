@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  namespace: default
+  name: ghproxy
+  labels:
+    app: ghproxy
+spec:
+  serviceName: ghproxy
+  selector:
+    matchLabels:
+      app: ghproxy
+  replicas: 1  # TODO(fejta): this should be HA
+  template:
+    metadata:
+      labels:
+        app: ghproxy
+    spec:
+      containers:
+      - name: ghproxy
+        image: gcr.io/k8s-prow/ghproxy:v20230712-b85330a1e4
+        args:
+        - --cache-dir=/cache
+        - --cache-sizeGB=99
+        - --push-gateway=pushgateway
+        - --serve-metrics=true
+        ports:
+        - containerPort: 8888
+        volumeMounts:
+        - name: cache
+          mountPath: /cache
+      volumes:
+      - name: cache
+        persistentVolumeClaim:
+          claimName: ghproxy

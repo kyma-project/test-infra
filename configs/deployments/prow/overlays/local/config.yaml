@@ -1,0 +1,68 @@
+prowjob_namespace: default
+pod_namespace: default
+
+plank:
+  job_url_prefix_config:
+    "*": http://localhost/view/
+  report_templates:
+    "*": >-
+      [Full PR test history](http://localhost/pr-history?org={{.Spec.Refs.Org}}&repo={{.Spec.Refs.Repo}}&pr={{with index .Spec.Refs.Pulls 0}}{{.Number}}{{end}}).
+      [Your PR dashboard](http://localhost/pr?query=is:pr+state:open+author:{{with
+      index .Spec.Refs.Pulls 0}}{{.Author}}{{end}}).
+  default_decoration_config_entries:
+    - config:
+        timeout: 3h
+        grace_period: 10m
+        utility_images:
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230712-b85330a1e4
+          initupload: gcr.io/k8s-prow/initupload:v20230712-b85330a1e4
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230712-b85330a1e4
+          sidecar: gcr.io/k8s-prow/sidecar:v20230712-b85330a1e4
+deck:
+  spyglass:
+    gcs_browser_prefix: http://gcsweb/gcs/
+    testgrid_config: gs://k8s-testgrid/config
+    testgrid_root: https://testgrid.k8s.io/
+    lenses:
+      - lens:
+          name: metadata
+        required_files:
+          - ^(?:started|finished)\.json$
+        optional_files:
+          - ^(?:podinfo|prowjob)\.json$
+      - lens:
+          name: buildlog
+        required_files:
+          - ^.*build-log\.txt$
+      - lens:
+          name: junit
+        required_files:
+          - ^artifacts(/.*/|/)junit.*\.xml$
+      - lens:
+          name: coverage
+        required_files:
+          - ^artifacts/filtered\.cov$
+        optional_files:
+          - ^artifacts/filtered\.html$
+      - lens:
+          name: podinfo
+        required_files:
+          - ^podinfo\.json$
+        optional_files:
+          - ^prowjob\.json$
+      - lens:
+          name: links
+        required_files:
+          - artifacts/.*\.link\.txt
+      - lens:
+          name: html
+        required_files:
+          - ^artifacts/report.*\.html$
+
+# Add your required presets below and recreate the cluster
+presets: []
+
+# Add ProwJobs you want to include in your config
+presubmits: {}
+postsubmits: {}
+periodics: []

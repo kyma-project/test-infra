@@ -1,0 +1,8 @@
+resources:
+  - pushgateway_service.yaml
+  - pushgateway_deployment.yaml
+configMapGenerator:
+  - name: pushgateway-proxy-config
+    behavior: create
+    files:
+      - nginx.conf

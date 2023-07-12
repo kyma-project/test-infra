@@ -1,0 +1,4 @@
+resources:
+  - sinker_rbac.yaml
+  - sinker_service.yaml
+  - sinker_deployment.yaml

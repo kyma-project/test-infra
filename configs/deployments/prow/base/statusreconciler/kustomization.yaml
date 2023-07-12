@@ -1,0 +1,3 @@
+resources:
+  - statusreconciler_rbac.yaml
+  - statusreconciler_deployment.yaml

@@ -1,0 +1,4 @@
+resources:
+  - hook_rbac.yaml
+  - hook_service.yaml
+  - hook_deployment.yaml

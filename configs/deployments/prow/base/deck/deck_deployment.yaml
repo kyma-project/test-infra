@@ -1,4 +1,4 @@
-# Copyright 2017 The Kubernetes Authors All rights reserved.
+# Copyright 2016 The Kubernetes Authors All rights reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,41 +16,55 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: default
-  name: horologium
+  name: deck
   labels:
-    app: horologium
+    app: deck
 spec:
-  replicas: 1 # Do not scale up.
+  replicas: 3
   strategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
   selector:
     matchLabels:
-      app: horologium
+      app: deck
   template:
     metadata:
       labels:
-        app: horologium
+        app: deck
     spec:
-      serviceAccountName: horologium
+      serviceAccountName: deck
       terminationGracePeriodSeconds: 30
       containers:
-      - name: horologium
-        image: gcr.io/k8s-prow/horologium:v20230712-b85330a1e4
+      - name: deck
+        image: gcr.io/k8s-prow/deck:v20230712-b85330a1e4
+        imagePullPolicy: Always
+        ports:
+          - name: http
+            containerPort: 8080
+        env: []
         args:
         - --config-path=/etc/config/config.yaml
-        - --job-config-path=/etc/job-config
-        - --dry-run=false
+        - --spyglass=true
         volumeMounts:
         - name: config
           mountPath: /etc/config
           readOnly: true
-        - name: job-config
-          mountPath: /etc/job-config
-          readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /healthz/ready
+            port: 8081
+          initialDelaySeconds: 10
+          periodSeconds: 3
+          timeoutSeconds: 600
       volumes:
       - name: config
         configMap:
           name: config
-      - name: job-config
-        configMap:
-          name: job-config

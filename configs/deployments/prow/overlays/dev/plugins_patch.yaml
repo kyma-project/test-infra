@@ -1,0 +1,18 @@
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value:
+    --plugin-config=/etc/plugins/plugins.yaml
+
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    name: plugins
+    mountPath: /etc/plugins
+    readOnly: true
+
+- op: add
+  path: /spec/template/spec/volumes/-
+  value:
+    name: plugins
+    configMap:
+      name: plugins

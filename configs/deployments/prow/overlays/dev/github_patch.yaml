@@ -1,0 +1,22 @@
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --github-endpoint=http://ghproxy
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --github-endpoint=https://api.github.com
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --github-token-path=/etc/github/oauth
+
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    name: oauth
+    mountPath: /etc/github
+    readOnly: true
+- op: add
+  path: /spec/template/spec/volumes/-
+  value:
+    name: oauth
+    secret:
+      secretName: oauth-token

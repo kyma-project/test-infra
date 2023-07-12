@@ -1,0 +1,32 @@
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --slack-token-file=/etc/slack/token
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --slack-workers=1
+
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    name: slack
+    mountPath: /etc/slack
+    readOnly: true
+- op: add
+  path: /spec/template/spec/volumes/-
+  value:
+    name: slack
+    secret:
+      secretName: slack-token
+
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --pubsub-workers=5
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --github-workers=5
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --blob-storage-workers=1
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value: --kubernetes-blob-storage-workers=1

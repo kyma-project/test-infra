@@ -1,0 +1,67 @@
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value:
+    --tide-url=http://tide/
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value:
+    --hook-url=http://hook:8888/plugin-help
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value:
+    --redirect-http-to=status.build.kyma-project.io
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value:
+    --github-oauth-config-file=/etc/githuboauth/secret
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value:
+    --oauth-url=/github-login
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value:
+    --cookie-secret=/etc/cookie/secret
+- op: add
+  path: /spec/template/spec/containers/0/args/-
+  value:
+    --rerun-creates-job
+
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    name: oauth-config
+    mountPath: /etc/githuboauth
+    readOnly: true
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    name: cookie-secret
+    mountPath: /etc/cookie
+    readOnly: true
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    name: branding
+    mountPath: /static/extensions
+    readOnly: true
+
+- op: add
+  path: /spec/template/spec/volumes/-
+  value:
+    name: oauth-config
+    secret:
+      secretName: github-oauth-config
+- op: add
+  path: /spec/template/spec/volumes/-
+  value:
+    name: cookie-secret
+    secret:
+      secretName: cookie
+- op: add
+  path: /spec/template/spec/volumes/-
+  value:
+    name: branding
+    configMap:
+      defaultMode: 420
+      name: branding

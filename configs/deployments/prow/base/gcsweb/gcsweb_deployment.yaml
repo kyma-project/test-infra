@@ -44,18 +44,3 @@ spec:
             initialDelaySeconds: 3
             timeoutSeconds: 2
             failureThreshold: 2
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: gcsweb
-  labels:
-    app: gcsweb
-spec:
-  selector:
-    app: gcsweb
-  type: NodePort
-  ports:
-    - name: http
-      port: 80
-      targetPort: 8080

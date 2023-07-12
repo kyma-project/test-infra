@@ -1,0 +1,2 @@
+resources:
+  - prowjob_customresourcedefinition.yaml

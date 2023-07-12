@@ -1,0 +1,4 @@
+resources:
+  - prow_controller_manager_rbac.yaml
+  - prow_controller_manager_service.yaml
+  - prow_controller_manager_deployment.yaml

@@ -1,0 +1,4 @@
+resources:
+  - ghproxy_pvc.yaml
+  - ghproxy_service.yaml
+  - ghproxy_deployment.yaml

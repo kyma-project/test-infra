@@ -1,0 +1,46 @@
+#namespace: prow
+resources:
+  - ../../base/crds
+  - ../../base/crier
+  - ../../base/deck
+  - ../../base/gcsweb
+  - ../../base/ghproxy
+  - ../../base/hook
+  - ../../base/horologium
+  - ../../base/prow-controller-manager
+  - ../../base/pushgateway
+  - ../../base/sinker
+  - ../../base/statusreconciler
+  - ../../base/tide
+  - gce-ssd-retain_storageclass.yaml
+  - deck_ingress.yaml
+  - gcsweb_ingress.yaml
+patches:
+  - target:
+      kind: Deployment
+      name: crier|deck|prow-controller-manager|sinker|hook
+    path: kubeconfigs_patch.yaml
+  - target:
+      kind: Deployment
+      name: crier|deck|prow-controller-manager|horologium|sinker|tide|hook|statusreconciler
+    path: jobconfig_patch.yaml
+  - target:
+      kind: Deployment
+      name: deck|hook
+    path: plugins_patch.yaml
+  - target:
+      kind: Deployment
+      name: crier
+    path: crier_reporters_patch.yaml
+  - target:
+      kind: Deployment
+      name: crier|deck|hook|tide|statusreconciler
+    path: github_patch.yaml
+  - target:
+      kind: PersistentVolumeClaim
+      name: ghproxy
+    path: ghproxy_storageclass_patch.yaml
+  - target:
+      kind: Deployment
+      name: deck
+    path: deck_patch.yaml

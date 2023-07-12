@@ -1,0 +1,19 @@
+resources:
+  - ../../base/crds
+  - ../../base/horologium
+  - ../../base/deck
+  - ../../base/prow-controller-manager
+  - https://raw.githubusercontent.com/minio/docs/master/source/extra/examples/minio-dev.yaml
+configMapGenerator:
+  - name: config
+    behavior: create
+    files:
+      - config.yaml
+patches:
+  - target:
+      kind: Service
+      name: deck
+    patch: |-
+      - op: replace
+        path: /spec/type
+        value: ClusterIP

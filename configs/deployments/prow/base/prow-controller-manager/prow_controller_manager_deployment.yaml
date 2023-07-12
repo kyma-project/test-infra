@@ -39,35 +39,12 @@ spec:
         - --config-path=/etc/config/config.yaml
         - --dry-run=false
         - --enable-controller=plank
-        - --job-config-path=/etc/job-config
-        env:
-          - name: KUBECONFIG
-            value: "/etc/untrusted-workload-kubeconfig/config:/etc/trusted-workload-kubeconfig/config"
+        env: []
         volumeMounts:
-        - mountPath: /etc/untrusted-workload-kubeconfig
-          name: untrusted-workload-kubeconfig
-          readOnly: true
-        - mountPath: /etc/trusted-workload-kubeconfig
-          name: trusted-workload-kubeconfig
-          readOnly: true
         - name: config
           mountPath: /etc/config
           readOnly: true
-        - name: job-config
-          mountPath: /etc/job-config
-          readOnly: true
       volumes:
-      - name: untrusted-workload-kubeconfig
-        secret:
-          defaultMode: 420
-          secretName: untrusted-workload-kubeconfig
-      - name: trusted-workload-kubeconfig
-        secret:
-          defaultMode: 420
-          secretName: trusted-workload-kubeconfig
       - name: config
         configMap:
           name: config
-      - name: job-config
-        configMap:
-          name: job-config
