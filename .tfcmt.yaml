@@ -22,19 +22,19 @@ templates:
     {{if .CreatedResources}}
     * Create
     {{- range .CreatedResources}}
-      * {{wrapCode .}}
+      * {{avoidHTMLEscape .}}
     {{- end}}{{end}}{{if .UpdatedResources}}
     * Update
     {{- range .UpdatedResources}}
-      * {{wrapCode .}}
+      * {{avoidHTMLEscape .}}
     {{- end}}{{end}}{{if .DeletedResources}}
     * Delete
     {{- range .DeletedResources}}
-      * {{wrapCode .}}
+      * {{avoidHTMLEscape .}}
     {{- end}}{{end}}{{if .ReplacedResources}}
     * Replace
     {{- range .ReplacedResources}}
-      * {{wrapCode .}}
+      * {{avoidHTMLEscape .}}
     {{- end}}{{end}}
   deletion_warning: |
     {{if .HasDestroy}}
