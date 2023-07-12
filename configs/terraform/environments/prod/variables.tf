@@ -44,7 +44,7 @@ variable "trusted_workload_k8s_cluster" {
 
   default = {
     name     = "trusted-workload-kyma-prow"
-    location = "europe-west3"
+    location = "europe-west4"
   }
 
   description = "Details of the trusted-workload k8s cluster."
