@@ -80,13 +80,6 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-integration-production-gardener-azure
       annotations:
         description: "Production profile for Kyma Azure Gardener integration job."
@@ -165,13 +158,6 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-weekly-gardener-gcp-busola-kyma
       annotations:
         description: "set up nkyma cluster"
@@ -234,13 +220,6 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
       annotations:
         description: "Azure Kyma 2.0 to main branch."
@@ -312,13 +291,6 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-upgrade-gardener-kyma2-minor-versions
       annotations:
         description: "Azure Kyma 2 previous minor versions."
@@ -389,11 +361,4 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
