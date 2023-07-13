@@ -47,7 +47,7 @@ postsubmits:
               - "bash"
               - "-c"
               - |
-                chmod -x ./prow/publish-unstable-cli.sh
+                chmod +x ./prow/publish-unstable-cli.sh
                 ./prow/publish-unstable-cli.sh
             resources:
               requests:
