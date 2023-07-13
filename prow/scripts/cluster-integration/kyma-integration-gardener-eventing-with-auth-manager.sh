@@ -174,7 +174,7 @@ location=$(curl "${TEST_EVENTING_AUTH_IAS_URL}"'/Applications/v1/' \
     "urn:sap:identity:application:schemas:extension:sci:1.0:Authentication"
   ],
   "branding" : {
-    "displayName": "Prow - Kyma integration gardener Eventing with auth manager"
+    "displayName": "'"${KYMA_SOURCE}"' - Kyma integration gardener Eventing"
   },
   "urn:sap:identity:application:schemas:extension:sci:1.0:Authentication": {
     "ssoType": "openIdConnect",
