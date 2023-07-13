@@ -14,7 +14,7 @@ pjConfigs:
     kyma-project:
       cli:
         - pjName: "post-main-unstable-cli"
-  prConfigs: #
+  prConfig: #
     kyma-project:
       cli:
         prNumber: 1705
