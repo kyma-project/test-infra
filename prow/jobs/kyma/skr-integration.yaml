@@ -24,12 +24,12 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
@@ -80,12 +80,12 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
@@ -136,12 +136,12 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
@@ -192,12 +192,12 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
@@ -248,12 +248,12 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
@@ -305,12 +305,12 @@ periodics: # runs on schedule
       cron: "5 1,11 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
@@ -338,6 +338,7 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
+  
     - name: skr-aws-own-cluster-dev
       annotations:
         description: "skr integration test own cluster"
