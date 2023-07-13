@@ -1,8 +1,8 @@
 pjConfigs:
-  # prConfig:
-  #   kyma-project:
-  #     kyma:
-  #       prNumber: 1313
+  prConfig:
+     kyma-project:
+       kyma:
+         prNumber: 1705
   prowJobs:
     kyma-incubator:
       reconciler:
@@ -14,7 +14,7 @@ pjConfigs:
     kyma-project:
       cli:
         - pjName: "post-main-unstable-cli"
-  prConfig: #
+  prConfigs: #
     kyma-project:
       cli:
         prNumber: 1705
