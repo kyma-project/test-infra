@@ -71,18 +71,6 @@ updates:
       prefix: "ginkgo"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/prow/images/prow-tools"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "prow-tools"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/development/tools/cmd/githubrelease"
     labels:
       - "docker"
@@ -129,54 +117,6 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "test-log-coll"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/bootstrap"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "bootstrap"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/buildpack-golang"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "bp-golang"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/buildpack-node"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "bp-node"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/cleaner"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "cleaner"
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/clonerefs"
