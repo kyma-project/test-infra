@@ -224,7 +224,7 @@ function eventing::pre_upgrade_test_fast_integration() {
       log::info "Cloning kyma repository and checking out branch:${KYMA_BRANCH}"
       git clone https://github.com/friedrichwilken/kyma ~/.kyma_branch
       pushd ~/.kyma_branch
-      git checkout "test-fixed-eventing-upgrade-job"
+      git checkout "speed-up-upgrade-job"
       git status
       popd
 
