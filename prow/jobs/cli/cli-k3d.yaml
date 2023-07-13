@@ -44,6 +44,7 @@ postsubmits:
                 type: Unconfined
               allowPrivilegeEscalation: true
             args:
+              - "chmod -x prow/publish-unstable-cli.sh"
               - "bash"
               - "-c"
               - "./prow/publish-unstable-cli.sh"
