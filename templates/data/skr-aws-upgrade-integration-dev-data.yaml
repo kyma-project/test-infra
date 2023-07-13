@@ -9,7 +9,7 @@ templates:
               pipeline.clusterprovisioning: keb
               pipeline.installer: keb
               pipeline.test: fast-integration
-            path_alias: github.com/kyma-project/kyma
+            path_alias: github.com/kyma-project/kyma-project/kyma-environment-broker
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/skr-aws-upgrade-integration-dev.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
@@ -31,7 +31,7 @@ templates:
               KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15" # AWS
               SKIP_CLEANUP: "FALSE" # set to true if Cluster & Compass cleanup should be skipped
         jobConfigs:
-          - repoName: "kyma-project/kyma"
+          - repoName: "kyma-project/kyma-environment-broker"
             jobs:
               - jobConfig:
                   name: "skr-aws-upgrade-integration-dev"
@@ -48,7 +48,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                     - "kyma_project_dir"
                   local:

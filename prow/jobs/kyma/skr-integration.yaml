@@ -338,7 +338,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-  
     - name: skr-aws-own-cluster-dev
       annotations:
         description: "skr integration test own cluster"

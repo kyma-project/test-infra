@@ -39,7 +39,7 @@ export KYMA_VERSION="${minor_release_versions[1]:?}"
 log::info "### Getting the latest release version with decreased minor as input kyma version, got: ${KYMA_VERSION}"
 
 log::info "### Run make ci-skr-aws-upgrade-integration"
-make -C /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration ci-skr-aws-upgrade-integration
+make -C /home/prow/go/src/github.com/kyma-project/kyma-environment-broker/testing/fast-integration skr-aws-upgrade-integration
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

@@ -39,7 +39,7 @@ templates:
               GARDENER_REGION: "eu-central-1"
               GARDENER_ZONES: "eu-central-1b"
         jobConfigs:
-          - repoName: "kyma-project/kyma"
+          - repoName: "kyma-project/kyma-environment-broker"
             jobs:
               - jobConfig:
                   name: "skr-aws-own-cluster-dev"
