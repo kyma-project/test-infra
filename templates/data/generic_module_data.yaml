@@ -436,7 +436,8 @@ templates:
                         path_alias: github.com/kyma-project/serverless-manager
                 inheritedConfigs:
                   global:
-                    - jobConfig_privileged
+                    - jobConfig_default
+                    - privileged
                     - jobConfig_periodic
                     - extra_refs_test-infra
                   local:
@@ -589,7 +590,8 @@ templates:
                   optional: "false"
                 inheritedConfigs:
                   global:
-                    - jobConfig_privileged
+                    - jobConfig_default
+                    - privileged
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                   local:
@@ -608,7 +610,8 @@ templates:
                   optional: "true"
                 inheritedConfigs:
                   global:
-                    - jobConfig_privileged
+                    - jobConfig_default
+                    - privileged
                     - jobConfig_postsubmit
                     - extra_refs_test-infra
                   local:
