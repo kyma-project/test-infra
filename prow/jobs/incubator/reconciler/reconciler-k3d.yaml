@@ -48,6 +48,8 @@ presubmits:
                 kyma version --client
                 kyma provision k3d --ci
                 kyma deploy --ci --concurrency=8 --profile=evaluation --source=main
+                pwd
+                ls
                 pushd "../kyma/tests/fast-integration"
                 make ci
                 popd
