@@ -10,7 +10,6 @@ presubmits:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-main-cli-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
@@ -23,10 +22,6 @@ presubmits:
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -56,9 +51,6 @@ presubmits:
                 pushd "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
                 make ci
                 popd
-            env:
-              - name: GO11MODULE
-                value: "on"
             resources:
               requests:
                 cpu: 1
@@ -76,7 +68,6 @@ presubmits:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-main-cli-integration-k3d-latest"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
@@ -90,10 +81,6 @@ presubmits:
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -127,9 +114,6 @@ presubmits:
                 git reset --hard && git remote update && git fetch --all >/dev/null 2>&1 && git checkout "${KYMA_SOURCE}"
                 make ci
                 popd
-            env:
-              - name: GO11MODULE
-                value: "on"
             resources:
               requests:
                 cpu: 1
@@ -147,7 +131,6 @@ presubmits:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-main-cli-kyma-release-upgrade-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
@@ -161,10 +144,6 @@ presubmits:
         - org: kyma-project
           repo: kyma
           path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -205,9 +184,6 @@ presubmits:
                 git reset --hard && git remote update && git fetch --all >/dev/null 2>&1 && git checkout "${KYMA_UPGRADE_VERSION}"
                 make ci-post-upgrade
                 popd
-            env:
-              - name: GO11MODULE
-                value: "on"
             resources:
               requests:
                 cpu: 1
@@ -225,7 +201,6 @@ presubmits:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-main-reconciler-integration-k3d"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
       run_if_changed: '^(go.mod$|go.sum$)|((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
@@ -235,11 +210,6 @@ presubmits:
       max_concurrency: 10
       branches:
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
@@ -267,9 +237,6 @@ presubmits:
                 ./scripts/postgres.sh start
                 kyma provision k3d --ci
                 make test-all
-            env:
-              - name: GO11MODULE
-                value: "on"
             resources:
               requests:
                 cpu: 2

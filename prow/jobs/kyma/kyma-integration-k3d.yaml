@@ -33,10 +33,6 @@ periodics:
         repo: local-kyma
         path_alias: github.com/kyma-incubator/local-kyma
         base_ref: main
-      - org: kyma-project
-        repo: test-infra
-        path_alias: github.com/kyma-project/test-infra
-        base_ref: main
     reporter_config:
       slack:
         channel: jellyfish-notifications
