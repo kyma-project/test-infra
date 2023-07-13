@@ -771,13 +771,6 @@ templates:
                     preset-kms-gc-project-env: "true"
                     preset-certificates-bucket: "true"
                     preset-slack-alerts: "true"
-                  volumes:
-                    - name: sa-stability-fluentd-storage-writer
-                      secretName: sa-stability-fluentd-storage-writer
-                  volumeMounts:
-                    - name: sa-stability-fluentd-storage-writer
-                      mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-                      readOnly: true
                   command: "bash"
                   args:
                     - "-c"

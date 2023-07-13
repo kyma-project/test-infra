@@ -64,13 +64,6 @@ templates:
                     - -c
                     - |
                       make -C hack/ci run-with-lifecycle-manager
-                  volumes:
-                    - name: sa-stability-fluentd-storage-writer
-                      secretName: sa-stability-fluentd-storage-writer
-                  volumeMounts:
-                    - name: sa-stability-fluentd-storage-writer
-                      mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-                      readOnly: true
                   extra_refs:
                     keda-manager:
                       - org: kyma-project
@@ -371,13 +364,6 @@ templates:
                     testgrid-dashboards: serverless-operator-nightly
                     testgrid-days-of-results: "60"
                   cluster: "trusted-workload"
-                  volumes:
-                    - name: sa-stability-fluentd-storage-writer
-                      secretName: sa-stability-fluentd-storage-writer
-                  volumeMounts:
-                    - name: sa-stability-fluentd-storage-writer
-                      mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-                      readOnly: true
                   args:
                     - bash
                     - -c
