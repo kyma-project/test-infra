@@ -16,6 +16,7 @@ periodics:
       prow.k8s.io/pubsub.topic: "prowjobs"
       preset-kind-volume-mounts: "true"
       preset-dind-enabled: "true"
+      preset-kyma-guard-bot-github-token: "true"
     cron: "0 0 6-18/2 ? * 1-5"
     skip_report: false
     decorate: true

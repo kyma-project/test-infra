@@ -70,6 +70,7 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
+        preset-kyma-guard-bot-github-token: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
@@ -133,6 +134,7 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
+        preset-kyma-guard-bot-github-token: "true"
       run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
