@@ -88,10 +88,3 @@ periodics:
             limits:
               cpu: 2
               memory: 4Gi
-      tolerations:
-        - key: dedicated
-          operator: Equal
-          value: high-cpu
-          effect: NoSchedule
-      nodeSelector:
-        dedicated: "high-cpu"

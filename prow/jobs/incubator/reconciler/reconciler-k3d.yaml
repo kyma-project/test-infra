@@ -218,13 +218,6 @@ presubmits:
               limits:
                 cpu: 2
                 memory: 4Gi
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-reconciler-integration-k3d
       annotations:
         description: "int test reconciler"
@@ -288,10 +281,3 @@ presubmits:
               limits:
                 cpu: 4
                 memory: 6Gi
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-          dedicated: "high-cpu"
