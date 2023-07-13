@@ -3,8 +3,6 @@
 
 set -e
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# shellcheck source=prow/scripts/lib/docker.sh
-source "${SCRIPT_DIR}/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${SCRIPT_DIR}/lib/log.sh"
 
