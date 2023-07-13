@@ -131,7 +131,7 @@ presubmits:
               - "-c"
               - |
                 chmod +x ./scripts/prow/cli-integration-release-upgrade.sh
-                ./scripts/prow/cli-integration-latest-release-upgrade.sh
+                ./scripts/prow/cli-integration-release-upgrade.sh
             resources:
               requests:
                 cpu: 1
