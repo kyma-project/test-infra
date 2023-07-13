@@ -4,15 +4,15 @@ pjConfigs:
   #     kyma:
   #       prNumber: 1313
   prowJobs:
+    kyma-incubator:
+      reconciler:
+        - pjName: "pre-main-reconciler-cli-integration-kyma-main-k3d"
+        - pjName: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
+        - pjName: "pre-main-reconciler-integration-k3d"
+        - pjName: "kyma-upgrade-k3d-kyma2-to-main"
     kyma-project:
-      kyma:
-      - pjName: "post-main-unstable-cli"
-      - pjName: "pre-main-reconciler-integration-k3d"
-      - pjName: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
-      - pjName: "pre-main-reconciler-cli-integration-kyma-main-k3d"
-      - pjName: "pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d"
-      - pjName: "kyma-upgrade-k3d-kyma2-to-main"
-
+      cli:
+        - pjName: "post-main-unstable-cli"
 # prConfigs: #
 #   kyma-project:
 #     kyma:
