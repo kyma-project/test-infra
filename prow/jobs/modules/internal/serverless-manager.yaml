@@ -413,6 +413,13 @@ periodics: # runs on schedule
               - name: sa-stability-fluentd-storage-writer
                 mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
                 readOnly: true
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: high-cpu
+            effect: NoSchedule
+        nodeSelector:
+            dedicated: "high-cpu"
         volumes:
           - name: sa-stability-fluentd-storage-writer
             secret:
