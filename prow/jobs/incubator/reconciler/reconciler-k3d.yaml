@@ -130,6 +130,7 @@ presubmits:
               - "bash"
               - "-c"
               - |
+                pwd
                 chmod +x ./scripts/prow/cli-integration-release-upgrade.sh
                 ./scripts/prow/cli-integration-release-upgrade.sh
             resources:
