@@ -46,7 +46,8 @@ postsubmits:
             args:
               - "bash"
               - "-c"
-              - "prow/publish-unstable-cli.sh"
+              - "ls"
+              #- "prow/publish-unstable-cli.sh"
             resources:
               requests:
                 cpu: 1
