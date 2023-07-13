@@ -76,7 +76,9 @@ postsubmits:
                 cd ../kyma/tests/fast-integration && make ci
                 echo "Uninstalling Kyma"
                 kyma undeploy --ci --timeout=10m0s
-                echo "Publishing new unstable builds to 'gs://kyma-cli-unstable'"
+                export KYMA_CLI_UNSTABLE_BUCKET=gs://kyma-cli-unstable
+                export UNSTABLE=true
+                echo "Publishing new unstable builds to $KYMA_CLI_UNSTABLE_BUCKET"
                 make ci-main
                 echo "all done"
             resources:
