@@ -505,19 +505,6 @@ presets:
         mountPath: /etc/credentials/sa-test-gcr-push
         readOnly: true
   - labels:
-      preset-sa-gcr-push: "true" # Service account with "Storage Admin" role
-    env:
-      - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-gcr-push-kyma-project/service-account.json
-    volumes:
-      - name: sa-gcr-push-kyma-project
-        secret:
-          secretName: sa-gcr-push-kyma-project
-    volumeMounts:
-      - name: sa-gcr-push-kyma-project
-        mountPath: /etc/credentials/sa-gcr-push-kyma-project
-        readOnly: true
-  - labels:
       preset-sa-kyma-push-images: "true"
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
