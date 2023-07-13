@@ -22,8 +22,8 @@ export GARDENER_SHOOT_TEMPLATE=$(envsubst < "$SHOOT_DEFINITION_PATH" | base64)
 export GARDENER_KUBECONFIG=$GARDENER_KYMA_PROW_KUBECONFIG
 export KCP_GARDENER_NAMESPACE="garden-$GARDENER_KYMA_PROW_PROJECT_NAME"
 
-pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+pushd /home/prow/go/src/github.com/kyma-project/kyma-environment-broker/testing/fast-integration
 
-make ci-skr-own-cluster
+make skr-own-cluster
 
 log::success "all done"
