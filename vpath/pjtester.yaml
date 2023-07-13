@@ -1,7 +1,7 @@
 pjConfigs:
   prConfig:
      kyma-project:
-       kyma:
+       cli:
          prNumber: 1705
   prowJobs:
     kyma-incubator:
