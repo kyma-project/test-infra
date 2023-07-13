@@ -15,3 +15,6 @@ prConfigs:
   kyma-project:
     kyma:
       prNumber: 17825
+  kyma-incubator:
+    reconciler:
+      prNumber: 1372
