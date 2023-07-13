@@ -68,7 +68,7 @@ postsubmits:
                 echo "Installing Kyma"
                 kyma deploy --ci 
                 echo "Running fast-integration tests"
-                cd ../kyma/tests/fast-integration && make ci
+                make -C "../kyma/tests/fast-integration" "ci"
                 echo "Uninstalling Kyma"
                 kyma undeploy --ci --timeout=10m0s
                 export KYMA_CLI_UNSTABLE_BUCKET=gs://kyma-cli-unstable
