@@ -21,6 +21,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
+        - ^release-\d+\.\d+$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
@@ -65,8 +66,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-\d+\.\d+$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -123,8 +124,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-\d+\.\d+$
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230712-f514770d"
@@ -328,7 +329,6 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       reporter_config:
         slack:
