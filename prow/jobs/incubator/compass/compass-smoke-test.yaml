@@ -46,7 +46,7 @@ presubmits: # runs on PRs
             command:
               - "/init.sh"
             args:
-              - "installation/scripts/prow/jobs/provision-vm-compass-smoke-test.sh"
+              - "installation/scripts/prow/jobs/provision-compass-smoke-test.sh"
             env:
               - name: GO111MODULE
                 value: "on"

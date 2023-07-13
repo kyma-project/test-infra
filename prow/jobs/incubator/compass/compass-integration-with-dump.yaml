@@ -44,7 +44,7 @@ presubmits: # runs on PRs
             command:
               - "/init.sh"
             args:
-              - "installation/scripts/prow/jobs/provision-vm-compass.sh"
+              - "installation/scripts/prow/jobs/provision-compass.sh"
               - "--dump-db"
             env:
               - name: GO111MODULE
