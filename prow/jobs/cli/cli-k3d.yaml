@@ -14,7 +14,6 @@ postsubmits:
         prow.k8s.io/pubsub.runID: "post-main-unstable-cli"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
-        preset-docker-push-repository-incubator: "true"
         preset-kyma-cli-unstable: "true"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
