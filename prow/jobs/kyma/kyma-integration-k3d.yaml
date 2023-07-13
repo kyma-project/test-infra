@@ -14,7 +14,6 @@ periodics:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "kyma-upgrade-k3d-kyma2-to-main"
       prow.k8s.io/pubsub.topic: "prowjobs"
-      preset-kyma-guard-bot-github-token: "true"
       preset-kind-volume-mounts: "true"
       preset-dind-enabled: "true"
     cron: "0 0 6-18/2 ? * 1-5"
