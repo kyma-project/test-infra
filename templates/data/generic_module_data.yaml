@@ -43,7 +43,7 @@ templates:
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
             path_alias: github.com/kyma-project/keda-manager
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230712-f514770d
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -355,7 +355,7 @@ templates:
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
             path_alias: github.com/kyma-project/serverless-manager
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230712-f514770d
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
