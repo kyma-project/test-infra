@@ -3,6 +3,14 @@ pjConfigs:
     kyma-project:
       kyma-environment-broker:
         - pjName: "skr-azure-integration-dev"
+        - pjName: "skr-aws-own-cluster-dev"
+        - pjName: "skr-trial-integration-dev"
+        - pjName: "skr-preview-dev"
+        - pjName: "skr-free-aws-integration-dev"
+        - pjName: "skr-azure-lite-integration-dev"
+        - pjName: "skr-aws-upgrade-integration-dev"
+        - pjName: "skr-aws-integration-dev"
+        - pjName: "skr-azure-integration-dev"
 
 prConfigs:
   kyma-project:
