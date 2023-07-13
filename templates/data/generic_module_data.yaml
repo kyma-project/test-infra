@@ -79,7 +79,8 @@ templates:
                         path_alias: github.com/kyma-project/keda-manager
                 inheritedConfigs:
                   global:
-                    - jobConfig_privileged
+                    - jobConfig_default
+                    - privileged
                     - jobConfig_periodic
                     - extra_refs_test-infra
                   local:
@@ -267,7 +268,8 @@ templates:
                       make -C hack/ci k3d-integration-test
                 inheritedConfigs:
                   global:
-                    - jobConfig_privileged
+                    - jobConfig_default
+                    - privileged
                     - jobConfig_presubmit # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
@@ -286,7 +288,8 @@ templates:
                       make -C hack/ci k3d-lm-integration-test
                 inheritedConfigs:
                   global:
-                    - jobConfig_privileged
+                    - jobConfig_default
+                    - privileged
                     - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
@@ -305,7 +308,8 @@ templates:
                       make -C hack/ci k3d-upgrade-test
                 inheritedConfigs:
                   global:
-                    - jobConfig_privileged
+                    - jobConfig_default
+                    - privileged
                     - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
