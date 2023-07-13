@@ -42,14 +42,14 @@ require (
 	go.uber.org/zap v1.24.0
 	golang.org/x/net v0.12.0
 	golang.org/x/oauth2 v0.10.0
-	google.golang.org/api v0.130.0
+	google.golang.org/api v0.131.0
 	google.golang.org/grpc v1.56.2
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.24.2
 	k8s.io/apimachinery v0.24.2
 	k8s.io/client-go v0.24.2
-	k8s.io/test-infra v0.0.0-20230710160906-68864df0573a
+	k8s.io/test-infra v0.0.0-20230713105805-e8b989e9afd2
 	sigs.k8s.io/yaml v1.3.0
 )
 
@@ -140,7 +140,7 @@ require (
 	github.com/google/wire v0.5.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.5 // indirect
 	github.com/googleapis/gax-go v2.0.2+incompatible // indirect
-	github.com/googleapis/gax-go/v2 v2.11.0 // indirect
+	github.com/googleapis/gax-go/v2 v2.12.0 // indirect
 	github.com/gopherjs/gopherjs v1.17.2 // indirect
 	github.com/gregjones/httpcache v0.0.0-20190212212710-3befbb6ad0cc // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.11.3 // indirect
@@ -232,9 +232,9 @@ require (
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	gomodules.xyz/jsonpatch/v2 v2.2.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
-	google.golang.org/genproto v0.0.0-20230530153820-e85fd2cbaebc // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20230530153820-e85fd2cbaebc // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20230629202037-9506855d4529 // indirect
+	google.golang.org/genproto v0.0.0-20230629202037-9506855d4529 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20230629202037-9506855d4529 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20230706204954-ccb25ca9f130 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
