@@ -160,7 +160,7 @@ user="${TEST_EVENTING_AUTH_IAS_USER}:${TEST_EVENTING_AUTH_IAS_PASSWORD}"
 uuid=$(cat /proc/sys/kernel/random/uuid)
 
 # create application
-location=$(curl "${TEST_EVENTING_AUTH_IAS_URL}"'/Applications/v1/' \
+location=$(curl "${TEST_EVENTING_AUTH_IAS_URL}/Applications/v1/" \
 --silent \
 --include \
 --header 'Content-Type: application/json' \
