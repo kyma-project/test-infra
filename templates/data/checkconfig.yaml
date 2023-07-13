@@ -9,7 +9,7 @@ templates:
             max_concurrency: "10"
             decorate: "true"
             command: checkconfig
-            image: gcr.io/k8s-prow/checkconfig:v20230713-d6896fe09d
+            image: gcr.io/k8s-prow/checkconfig:v20230713-f0e2c76268
           jobConfig_inrepo:
             run_if_changed: "(^.prow/.*.yaml|^.prow.yaml)"
             args:
