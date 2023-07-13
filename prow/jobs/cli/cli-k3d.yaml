@@ -44,7 +44,7 @@ postsubmits:
                 type: Unconfined
               allowPrivilegeEscalation: true
             args:
-              - "sh"
+              - "bash"
               - "-c"
               - "./prow/publish-unstable-cli.sh"
             resources:
