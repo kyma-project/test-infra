@@ -16,7 +16,7 @@ templates:
               preset-sa-kyma-push-artifacts: "true"
               preset-bot-github-token: "true"
               preset-dind-enabled: "true"
-              preset-sa-gcr-push: "true"
+              preset-sa-kyma-artifacts: "true"
               preset-docker-push-repository-kyma: "true"
             securityContext:
               privileged: "true"
@@ -31,7 +31,7 @@ templates:
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
-              {{- range .Global.releases }}
+              {{- range (matchingReleases .Global.releases "2.0" "2.16") }}
               - jobConfig:
                   name: pre-rel{{ . | replace "." "" }}-kyma-artifacts
                   branches:
@@ -53,7 +53,7 @@ templates:
               {{- end }}
 
               # postsubmits
-              {{- range .Global.releases }}
+              {{- range (matchingReleases .Global.releases "2.0" "2.16") }}
               - jobConfig:
                   name: post-rel{{ . | replace "." "" }}-kyma-artifacts
                   branches:
