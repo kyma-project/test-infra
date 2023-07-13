@@ -19,7 +19,7 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230712-f514770d
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -32,7 +32,7 @@ presubmits:
               - |
                 set -e
                 k3d registry create registry.localhost --port 5000
-                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=10g
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=10g  --port 80:80@loadbalancer --port 443:443@loadbalancer --k3s-arg --disable=traefik@server:0
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
             resources:
               requests:
@@ -60,7 +60,7 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230712-f514770d
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -73,7 +73,7 @@ presubmits:
               - |
                 set -e
                 k3d registry create registry.localhost --port 5000
-                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=4g
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=4g  --port 80:80@loadbalancer --port 443:443@loadbalancer --k3s-arg --disable=traefik@server:0
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" TEST_EVALUATION=TRUE make docker-build docker-push istio-integration-test
             resources:
               requests:
@@ -103,7 +103,7 @@ postsubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230712-f514770d
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -116,7 +116,7 @@ postsubmits:
               - |
                 set -e
                 k3d registry create registry.localhost --port 5000
-                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=10g
+                k3d cluster create -a 0 --registry-use k3d-registry.localhost:5000 --servers-memory=10g --port 80:80@loadbalancer --port 443:443@loadbalancer --k3s-arg --disable=traefik@server:0
                 IMG="k3d-registry.localhost:5000/istio-operator:latest" make docker-build docker-push istio-integration-test
             resources:
               requests:

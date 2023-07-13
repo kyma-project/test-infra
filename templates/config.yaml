@@ -31,6 +31,7 @@ global:
         - name: "template-repository"
         - name: "rafter"
         - name: "btp-manager"
+        - name: "kyma-environment-broker"
         - name: "telemetry-manager"
         - name: "director-size-exporter"
         - name: "compass-manager"
@@ -104,13 +105,6 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    nodeSelector:
-      dedicated: high-cpu
-    tolerations:
-      - key: dedicated
-        value: high-cpu
-        operator: Equal
-        effect: NoSchedule
     image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     command: "/image-builder"
     request_memory: "1.5Gi"
@@ -195,7 +189,7 @@ globalSets:
   image_markdown_index:
     image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
   image_image_detector:
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230629-6b7922f4"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -212,13 +206,6 @@ globalSets:
     request_cpu: "2"
     cluster_presubmit: "untrusted-workload"
     cluster_postsubmit: "trusted-workload"
-    nodeSelector:
-      dedicated: high-cpu
-    tolerations:
-      - key: dedicated
-        value: high-cpu
-        operator: Equal
-        effect: NoSchedule
     <<: *pubsub_config
   jobConfig_kyma20_docu:
     skip_report: "false"
@@ -235,13 +222,6 @@ globalSets:
     request_cpu: "0.8"
     cluster_presubmit: "untrusted-workload"
     cluster_postsubmit: "trusted-workload"
-    nodeSelector:
-      dedicated: high-cpu
-    tolerations:
-      - key: dedicated
-        value: high-cpu
-        operator: Equal
-        effect: NoSchedule
     <<: *pubsub_config
   jobConfig_presubmit:
     annotations:
@@ -364,6 +344,13 @@ globalSets:
         - org: "kyma-project"
           repo: "btp-manager"
           path_alias: "github.com/kyma-project/btp-manager"
+          base_ref: "main"
+  extra_refs_kyma-environment-broker:
+    extra_refs:
+      kyma-environment-broker:
+        - org: "kyma-project"
+          repo: "kyma-environment-broker"
+          path_alias: "github.com/kyma-project/kyma-environment-broker"
           base_ref: "main"
   # labels sets
   build_labels:

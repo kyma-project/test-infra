@@ -45,13 +45,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -92,13 +85,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/kyma:
     - name: pull-kyma-pjtester
@@ -148,13 +134,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -195,13 +174,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/busola:
     - name: pull-busola-pjtester
@@ -251,13 +223,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -298,13 +263,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/control-plane:
     - name: pull-control-plane-pjtester
@@ -354,13 +312,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -401,13 +352,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/cli:
     - name: pull-cli-pjtester
@@ -457,13 +401,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -504,13 +441,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/website:
     - name: pull-website-pjtester
@@ -560,13 +490,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -607,13 +530,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/lifecycle-manager:
     - name: pull-lifecycle-manager-pjtester
@@ -663,13 +579,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -710,13 +619,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/third-party-images:
     - name: pull-third-party-images-pjtester
@@ -766,13 +668,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -813,13 +708,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/community:
     - name: pull-community-pjtester
@@ -869,13 +757,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -916,13 +797,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/hydroform:
     - name: pull-hydroform-pjtester
@@ -972,13 +846,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -1019,13 +886,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/istio-operator:
     - name: pull-istio-operator-pjtester
@@ -1075,13 +935,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -1122,13 +975,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/addons:
     - name: pull-addons-pjtester
@@ -1178,13 +1024,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -1225,13 +1064,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/private-fn-for-e2e-serverless-tests:
     - name: pull-private-fn-for-e2e-serverless-tests-pjtester
@@ -1281,13 +1113,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -1328,13 +1153,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/charts:
     - name: pull-charts-pjtester
@@ -1384,13 +1202,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -1431,13 +1242,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/examples:
     - name: pull-examples-pjtester
@@ -1487,13 +1291,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -1534,13 +1331,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/api-gateway:
     - name: pull-api-gateway-pjtester
@@ -1590,13 +1380,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -1637,13 +1420,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/istio:
     - name: pull-istio-pjtester
@@ -1693,13 +1469,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -1740,13 +1509,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/runtime-watcher:
     - name: pull-runtime-watcher-pjtester
@@ -1796,13 +1558,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -1843,13 +1598,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/keda-manager:
     - name: pull-keda-manager-pjtester
@@ -1899,13 +1647,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -1946,13 +1687,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/kyma-dashboard:
     - name: pull-kyma-dashboard-pjtester
@@ -2002,13 +1736,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -2049,13 +1776,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/application-connector-manager:
     - name: pull-application-connector-manager-pjtester
@@ -2105,13 +1825,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -2152,13 +1865,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/rafter:
     - name: pull-rafter-pjtester
@@ -2208,13 +1914,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -2255,13 +1954,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/btp-manager:
     - name: pull-btp-manager-pjtester
@@ -2311,13 +2003,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -2358,13 +2043,95 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+  
+  kyma-project/kyma-environment-broker:
+    - name: pull-kyma-environment-broker-pjtester
+      annotations:
+        description: "Schedule prowjobs tests using pjtester for kyma-environment-broker"
+        owner: "neighbors"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-kyma-environment-broker-pjtester"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "pjtester"
+            args:
+              - "--github-token-path=/etc/github/oauth"
+            env:
+              - name: KUBECONFIG_PATH
+                value: "/etc/kubeconfig/pjtester/config"
+            resources:
+              requests:
+                memory: 100M
+                cpu: 200m
+            volumeMounts:
+              - name: oauth
+                mountPath: /etc/github
+                readOnly: true
+              - name: pjtester-kubeconfig
+                mountPath: /etc/kubeconfig/pjtester
+                readOnly: true
+        volumes:
+          - name: oauth
+            secret:
+              secretName: pjtester-github-oauth-token
+          - name: pjtester-kubeconfig
+            secret:
+              secretName: pjtester-kubeconfig
+    - name: pull-kyma-environment-broker-vpathguard
+      annotations:
+        description: "Run pjtester vpathguard for kyma-environment-broker"
+        owner: "neighbors"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-kyma-environment-broker-vpathguard"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^(vpath/pjtester.yaml)'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^.*$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            imagePullPolicy: Always
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
+            resources:
+              requests:
+                memory: 100M
+                cpu: 200m
   
   kyma-project/telemetry-manager:
     - name: pull-telemetry-manager-pjtester
@@ -2414,13 +2181,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -2461,13 +2221,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/director-size-exporter:
     - name: pull-director-size-exporter-pjtester
@@ -2517,13 +2270,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -2564,13 +2310,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/compass-manager:
     - name: pull-compass-manager-pjtester
@@ -2620,13 +2359,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -2667,13 +2399,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/compass:
     - name: pull-compass-pjtester
@@ -2723,13 +2448,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -2770,13 +2488,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/ord-service:
     - name: pull-ord-service-pjtester
@@ -2826,13 +2537,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -2873,13 +2577,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/reconciler:
     - name: pull-reconciler-pjtester
@@ -2929,13 +2626,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -2976,13 +2666,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/bullseye-showcase:
     - name: pull-bullseye-showcase-pjtester
@@ -3032,13 +2715,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -3079,13 +2755,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/documentation-component:
     - name: pull-documentation-component-pjtester
@@ -3135,13 +2804,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -3182,13 +2844,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/compass-console:
     - name: pull-compass-console-pjtester
@@ -3238,13 +2893,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -3285,13 +2933,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/sap-btp-service-operator:
     - name: pull-sap-btp-service-operator-pjtester
@@ -3341,13 +2982,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -3388,13 +3022,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/milv:
     - name: pull-milv-pjtester
@@ -3444,13 +3071,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -3491,13 +3111,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/varkes:
     - name: pull-varkes-pjtester
@@ -3547,13 +3160,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -3594,13 +3200,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/slack-bot:
     - name: pull-slack-bot-pjtester
@@ -3650,13 +3249,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -3697,13 +3289,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/migrate:
     - name: pull-migrate-pjtester
@@ -3753,13 +3338,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -3800,13 +3378,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/github-dashboard:
     - name: pull-github-dashboard-pjtester
@@ -3856,13 +3427,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -3903,13 +3467,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/website-vuepress:
     - name: pull-website-vuepress-pjtester
@@ -3959,13 +3516,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -4006,13 +3556,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/kitbag:
     - name: pull-kitbag-pjtester
@@ -4062,13 +3605,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -4109,13 +3645,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/kyma-showcase:
     - name: pull-kyma-showcase-pjtester
@@ -4165,13 +3694,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -4212,13 +3734,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/hydra-login-consent:
     - name: pull-hydra-login-consent-pjtester
@@ -4268,13 +3783,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -4315,13 +3823,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/kymart:
     - name: pull-kymart-pjtester
@@ -4371,13 +3872,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -4418,13 +3912,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/examples:
     - name: pull-examples-pjtester
@@ -4474,13 +3961,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -4521,13 +4001,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/vstudio-extension:
     - name: pull-vstudio-extension-pjtester
@@ -4577,13 +4050,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -4624,13 +4090,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/wordpress-connector:
     - name: pull-wordpress-connector-pjtester
@@ -4680,13 +4139,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -4727,13 +4179,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/connector-tools:
     - name: pull-connector-tools-pjtester
@@ -4783,13 +4228,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -4830,13 +4268,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/artwork:
     - name: pull-artwork-pjtester
@@ -4886,13 +4317,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -4933,13 +4357,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/opensap:
     - name: pull-opensap-pjtester
@@ -4989,13 +4406,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -5036,13 +4446,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/testdrape:
     - name: pull-testdrape-pjtester
@@ -5092,13 +4495,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -5139,13 +4535,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/sc-removal:
     - name: pull-sc-removal-pjtester
@@ -5195,13 +4584,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -5242,13 +4624,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/service-catalog-tester:
     - name: pull-service-catalog-tester-pjtester
@@ -5298,13 +4673,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -5345,13 +4713,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/service-catalog:
     - name: pull-service-catalog-pjtester
@@ -5401,13 +4762,6 @@ presubmits: # runs on PRs
               - name: pjtester-kubeconfig
                 mountPath: /etc/kubeconfig/pjtester
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: oauth
             secret:
@@ -5448,11 +4802,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

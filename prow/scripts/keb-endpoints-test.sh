@@ -17,8 +17,8 @@ if [[ "${BUILD_TYPE}" == "pr" ]]; then
   "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
 fi
 
-pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
+pushd /home/prow/go/src/github.com/kyma-project/kyma-environment-broker/testing/fast-integration
 
-make ci-keb-endpoints
+make keb-endpoints
 
 log::success "all done"

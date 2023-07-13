@@ -48,13 +48,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-istio-operator-build
       annotations:
         description: "build istio operator image"
@@ -134,7 +127,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230712-f514770d"
             securityContext:
               privileged: false
               seccompProfile:
@@ -166,13 +159,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/istio:
@@ -222,13 +208,6 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: rel-istio-build
       annotations:
         description: "builds istio operator image on release"
@@ -294,6 +273,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       optional: false
       skip_report: false
@@ -321,22 +301,15 @@ postsubmits: # runs on main
               - "all"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/dev/istio-manager:${PULL_BASE_REF}"
+                value: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_REF}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/prod"
+                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
             resources:
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-istio-operator-build
       annotations:
         description: "build istio operator image"
@@ -428,7 +401,7 @@ periodics: # runs on schedule
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230712-f514770d"
             securityContext:
               privileged: false
               seccompProfile:
@@ -460,11 +433,4 @@ periodics: # runs on schedule
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

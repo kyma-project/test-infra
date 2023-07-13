@@ -54,13 +54,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-app-gateway
       annotations:
         description: "It tests the acceptance criteria of the (Central) Application Gateway component"
@@ -114,13 +107,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-app-conn-validator
       annotations:
         description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component"
@@ -174,13 +160,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-central-app-connectivity-compass
       annotations:
         description: "It tests Compass integration. It won't be needed after the implementation of this issue - https://github.com/kyma-project/kyma/issues/15037"
@@ -234,13 +213,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-serverless-integration-k3s
       annotations:
         description: "serverless integration k3s job"
@@ -290,13 +262,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-serverless-git-auth-integration-k3s
       annotations:
         description: "Serverless git-function authentication nightly integration tests"
@@ -348,13 +313,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-telemetry
       annotations:
         description: "runs telemetry integration tests on k3d"
@@ -402,13 +360,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-eval-istio-integration-k3d
       annotations:
         description: "runs istio integration tests with evaluation profile on k3d"
@@ -456,13 +407,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-prod-istio-integration-k3d
       annotations:
         description: "runs istio integration tests with production profile on k3d"
@@ -510,13 +454,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-istio-reconcilation-k3d
       annotations:
         description: "runs istio reconcilation tests with production profile on k3d"
@@ -568,13 +505,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma:
@@ -633,13 +563,6 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-main-kyma-integration-k3d-app-gateway
       annotations:
         description: "Kyma integration job on k3d for testing application gateway."
@@ -693,13 +616,6 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-main-kyma-integration-k3d-app-conn-validator
       annotations:
         description: "Kyma integration job on k3d for testing application connectivity validator."
@@ -753,13 +669,6 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 periodics: # runs on schedule
     - name: utilities-kyma-integration-cleaner
@@ -795,13 +704,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-assetstore-gcp-bucket-cleaner
       annotations:
         description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
@@ -841,13 +743,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-disks-cleaner
       annotations:
         description: "Periodic cleanup of orphaned Google cloud disks"
@@ -888,13 +783,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-ips-cleaner
       annotations:
         description: "Periodic cleanup of orphaned Google cloud IPs"
@@ -935,13 +823,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-clusters-cleaner
       annotations:
         description: "Periodic cleanup of orphaned Google cloud clusters"
@@ -982,13 +863,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-vms-cleaner
       annotations:
         description: "Periodic cleanup of orphaned Google cloud VMs"
@@ -1029,13 +903,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-loadbalancer-cleaner
       annotations:
         description: "Periodic cleanup of orphaned Google cloud load balancers"
@@ -1076,13 +943,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-dns-cleaner
       annotations:
         description: "Periodic cleanup of orphaned Google cloud DNS records"
@@ -1124,13 +984,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: gcr-cleaner-prow-workloads
       annotations:
         description: "Cleans up GCR images older than 7 days in eu.gcr.io/sap-kyma-prow-workloads"
@@ -1170,13 +1023,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: github-issues
       annotations:
         description: "Exports data from github to the big query (Grafana metrics)"
@@ -1215,13 +1061,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: serverless-function-metrics-generator
       annotations:
         description: "Serverless function metrics generator"
@@ -1273,13 +1112,65 @@ periodics: # runs on schedule
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+    - name: kyma-upgrade-k3d-kyma2-to-main
+      annotations:
+        description: "K3d Kyma 2.0 to main branch."
+        owner: "jellyfish"
+        pipeline.clusterprovisioning: "kyma cli"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "upgrade-fast-integration"
+        pipeline.trigger: "periodic"
+        pipeline.type: "integration"
+        testgrid-dashboards: "kyma_integration"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-upgrade-k3d-kyma2-to-main"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-sa-vm-kyma-integration: "true"
+      cron: "0 0 6-18/2 ? * 1-5"
+      skip_report: false
+      decorate: true
+      decoration_config:
+        grace_period: 600000000000
+        timeout: 7200000000000
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
+        - org: kyma-incubator
+          repo: local-kyma
+          path_alias: github.com/kyma-incubator/local-kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-upgrade-k3d.sh"
+            env:
+              - name: KYMA_PROJECT_DIR
+                value: "."
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
     - name: kyma-integration-k3d
       annotations:
         description: "Kyma integration periodic job on k3d"
@@ -1332,13 +1223,6 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-integration-k3d-telemetry
       annotations:
         description: "runs telemetry integration tests on k3d"
@@ -1390,13 +1274,6 @@ periodics: # runs on schedule
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-gke-nightly
       annotations:
         description: "Kyma GKE nightly build (depraceted, needed for sec scans)"
@@ -1479,13 +1356,6 @@ periodics: # runs on schedule
               - name: sa-stability-fluentd-storage-writer
                 mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: sa-stability-fluentd-storage-writer
             secret:

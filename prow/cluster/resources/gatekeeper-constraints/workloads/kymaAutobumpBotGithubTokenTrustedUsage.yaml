@@ -1,0 +1,51 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: SecretTrustedUsage
+metadata:
+  name: kyma-autobump-bot-github-token
+spec:
+  enforcementAction: warn
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    restrictedSecrets:
+      - kyma-autobump-bot-github-token
+    trustedImages:
+      # Prowjob name: post-test-infra-markdown-index-autobump
+      - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:*"
+        command:
+          - /tools/entrypoint
+        args: []
+        entrypoint_options: '^{.*"args":\["\/markdown-index","--config=prow\/markdown-index\/test-infra-markdown-index-autobump-config\.yaml","--labels-override=kind\/chore,area\/documentation"\],"container_name":"test",.*}$'
+      # Prowjob name: test-infra-image-detector-autobump
+      # Prowjob name: post-test-infra-image-detector-autobump
+      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:*"
+        command:
+          - /tools/entrypoint
+        args: []
+        entrypoint_options: '^{.*"args":\["\/imagedetector","--prow-config=prow\/config\.yaml","--prow-jobs-dir=prow\/jobs","--terraform-dir=configs\/terraform","--sec-scanner-config=sec-scanners-config\.yaml","--kubernetes-dir=prow\/cluster\/components","--autobump-config=prow\/image-detector\/test-infra-sec-config-autobump-config\.yaml","--inrepo-config=prow\/image-detector\/inrepo-config\.yaml"\],"container_name":"test",.*}$'
+      # Prowjob name: eventing-tools-autobump
+      - image: "gcr.io/k8s-prow/generic-autobumper:*"
+        command:
+          - /tools/entrypoint
+        args: []
+        entrypoint_options: '^{.*"args":\["generic-autobumper","--config=ci\/eventing-tools-autobump-config\.yaml"\],"container_name":"test",.*}$'
+      # Prowjob name: ci-prow-autobump
+      - image: "gcr.io/k8s-prow/generic-autobumper:*"
+        command:
+          - /tools/entrypoint
+        args: []
+        entrypoint_options: '^{.*"args":\["generic-autobumper","--config=prow\/autobump-config\/prow-cluster-autobump-config\.yaml","--labels-override=kind\/chore,area\/prow"\],"container_name":"test",.*}$'
+      # Prowjob name: ci-prow-autobump-jobs
+      - image: "gcr.io/k8s-prow/generic-autobumper:*"
+        command:
+          - /tools/entrypoint
+        args: []
+        entrypoint_options: '^{.*"args":\["generic-autobumper","--config=prow\/autobump-config\/test-infra-autobump-config\.yaml","--labels-override=kind\/chore,area\/prow"\],"container_name":"test",.*}$'
+      # Prowjob name: ci-prow-label-sync
+      - image: "gcr.io/k8s-prow/label_sync:*"
+        command:
+          - /tools/entrypoint
+        args: []
+        entrypoint_options: '^{.*"args":\["label_sync","--config=\/etc\/config\/labels\.yaml","--confirm=true","--orgs=kyma-project,kyma-incubator","--token=\/etc\/github\/token","--endpoint=http:\/\/ghproxy","--endpoint=https:\/\/api\.github\.com","--debug"\],"container_name":"test",.*}$'

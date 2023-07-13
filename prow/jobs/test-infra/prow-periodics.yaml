@@ -60,7 +60,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230629-6b7922f4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc"
             securityContext:
               privileged: false
               seccompProfile:
@@ -131,7 +131,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230630-9eecc0f38f"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230713-d5dc4d260b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -158,7 +158,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230630-9eecc0f38f"
+          - image: "gcr.io/k8s-prow/label_sync:v20230713-d5dc4d260b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -206,7 +206,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230630-9eecc0f38f"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230713-d5dc4d260b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -241,7 +241,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230629-6b7922f4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc"
             securityContext:
               privileged: false
               seccompProfile:
@@ -281,7 +281,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230630-9eecc0f38f"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230713-d5dc4d260b"
             securityContext:
               privileged: false
               seccompProfile:
