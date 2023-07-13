@@ -14,7 +14,6 @@ postsubmits:
         prow.k8s.io/pubsub.runID: "post-main-unstable-cli"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
-        preset-kyma-cli-unstable: "true"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
       skip_report: false
@@ -77,7 +76,7 @@ postsubmits:
                 cd ../kyma/tests/fast-integration && make ci
                 echo "Uninstalling Kyma"
                 kyma undeploy --ci --timeout=10m0s
-                echo "Publishing new unstable builds to $KYMA_CLI_UNSTABLE_BUCKET"
+                echo "Publishing new unstable builds to 'gs://kyma-cli-unstable'"
                 make ci-main
                 echo "all done"
             resources:
