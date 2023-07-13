@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      kyma-environment-broker:
+        - pjName: "skr-azure-integration-dev"
+
+prConfigs:
+  kyma-project:
+    kyma-environment-broker:
+      prNumber: 9
