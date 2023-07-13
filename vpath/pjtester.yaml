@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      serverless-manager:
+      - pjName: "post-main-serverless-manager-upgrade-latest-to-main"
+prConfigs:
+  kyma-project:
+    serverless-manager:
+      prNumber: 160
