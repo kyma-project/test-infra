@@ -1,151 +1,105 @@
 {
-  "definitions": {},
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://example.com/object1688725677.json",
-  "title": "Root",
+  "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
-  "required": [
-    "images"
-  ],
   "properties": {
     "images": {
-      "$id": "#root/images",
-      "title": "Images",
       "type": "array",
-      "default": [],
-      "items":{
-        "$id": "#root/images/items",
-        "title": "Items",
-        "type": "object",
-        "required": [
-          "registry",
-          "purpose",
-          "publisher",
-          "sourceCode",
-          "contributors",
-          "activity",
-          "comment",
-          "openSSF"
-        ],
-        "properties": {
-          "registry": {
-            "$id": "#root/images/items/registry",
-            "title": "Registry",
-            "type": "string",
-            "examples": [
-              "gcr.io/k8s-prow/*"
-            ]
-          },
-          "purpose": {
-            "$id": "#root/images/items/purpose",
-            "title": "Purpose",
-            "type": "string",
-            "examples": [
-              "Prow CI"
-            ]
-          },
-          "publisher": {
-            "$id": "#root/images/items/publisher",
-            "title": "Publisher",
-            "type": "string",
-            "examples": [
-              "Prow community"
-            ]
-          },
-          "sourceCode": {
-            "$id": "#root/images/items/sourceCode",
-            "title": "Sourcecode",
-            "type": "string",
-            "examples": [
-              "https://github.com/kubernetes/test-infra/tree/master/prow"
-            ]
-          },
-          "contributors": {
-            "$id": "#root/images/items/contributors",
-            "title": "Contributors",
-            "type": "integer"
-          },
-          "activity": {
-            "$id": "#root/images/items/activity",
-            "title": "Activity",
-            "type": "object",
-            "required": [
-              "frequency",
-              "evidence"
-            ],
-            "properties": {
-              "frequency": {
-                "$id": "#root/images/items/activity/frequency",
-                "title": "Frequency",
-                "type": "string",
-                "enum": ["daily", "weekly", "monthly"]
-              },
-              "evidence": {
-                "$id": "#root/images/items/activity/evidence",
-                "title": "Evidence",
-                "type": "string",
-                "default": "",
-                "examples": [
-                  "https://github.com/kubernetes/test-infra/commits/master/prow"
-                ]
-              }
-            }
-          }
-        ,
-          "comment": {
-            "$id": "#root/images/items/comment",
-            "title": "Comment",
-            "type": "string",
-            "default": ""
-          },
-          "openSSF": {
-            "$id": "#root/images/items/openSSF",
-            "title": "Openssf",
-            "type": "object",
-            "required": [
-              "score",
-              "review"
-            ],
-            "properties": {
-              "score": {
-                "$id": "#root/images/items/openSSF/score",
-                "title": "Score",
-                "type": "number",
-                "examples": [
-                  5.6
-                ],
-                "default": 0.0
-              },
-              "review": {
-                "$id": "#root/images/items/openSSF/review",
-                "title": "Review",
-                "type": "object",
-                "required": [
-                  "approvedImage",
-                  "reason"
-                ],
-                "properties": {
-                  "approvedImage": {
-                    "$id": "#root/images/items/openSSF/review/approvedImage",
-                    "title": "Approvedimage",
-                    "type": "boolean",
-                    "default": false
-                  },
-                  "reason": {
-                    "$id": "#root/images/items/openSSF/review/reason",
-                    "title": "Reason",
-                    "type": "string",
-                    "default": ""
-                  }
+      "items": [
+        {
+          "type": "object",
+          "properties": {
+            "registry": {
+              "type": "string"
+            },
+            "purpose": {
+              "type": "string"
+            },
+            "publisher": {
+              "type": "string"
+            },
+            "sourceCode": {
+              "type": "string"
+            },
+            "docker": {
+              "type": "object",
+              "properties": {
+                "verifiedPublisher": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "officialImage": {
+                  "type": "boolean",
+                  "default": false
+                },
+                "sponsoredOSS": {
+                  "type": "boolean",
+                  "default": false
                 }
               }
-
+            },
+            "manualAnalysis": {
+              "type": "object",
+              "properties": {
+                "contributors": {
+                  "type": "integer"
+                },
+                "activity": {
+                  "type": "object",
+                  "properties": {
+                    "commitFrequency": {
+                      "type": "string"
+                    },
+                    "evidence": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "commitFrequency",
+                    "evidence"
+                  ]
+                }
+              },
+              "required": [
+                "contributors",
+                "activity"
+              ]
+            },
+            "comment": {
+              "type": "string"
+            },
+            "openSSFScore": {
+              "type": "number"
+            },
+            "review": {
+              "type": "object",
+              "properties": {
+                "approvedImage": {
+                  "type": "boolean"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "approvedImage",
+                "reason"
+              ]
             }
-          }
-
+          },
+          "required": [
+            "registry",
+            "purpose",
+            "publisher",
+            "sourceCode",
+            "manualAnalysis",
+            "openSSFScore",
+            "review"
+          ]
         }
-      }
-
+      ]
     }
-  }
+  },
+  "required": [
+    "images"
+  ]
 }
