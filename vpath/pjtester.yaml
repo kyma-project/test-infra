@@ -3,3 +3,4 @@ pjConfigs:
     kyma-project:
       kyma:
         - pjName: "pre-main-kyma-gardener-gcp-eventing"
+        - pjName: "pre-main-kyma-gardener-gcp-eventing-with-auth-manager"
