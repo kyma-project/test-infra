@@ -2,8 +2,6 @@
 
 [gcp-artifact-registry-terraform](/configs/terraform/modules/artifact-registry/README.md) - This is the GCP private image registry. Use the registry to publish modules that should be accessible by internal SAP teams.
 
-[Development](/development/README.md) - The purpose of the folder is to store tools developed and used in the `test-infra` repository.
-
 [Create Custom Image](/development/custom-image/README.md) - The purpose of this document is to define how to create a new Google Compute Engine [custom image](https://cloud.google.com/compute/docs/images) with required dependencies. You can use the new image to provision virtual machine (VM) instances with all dependencies already installed.
 
 [gardener-rotate](/development/gardener-rotate/README.md) - The gardener-rotate tool allows you to generate a new access token for the Gardener service accounts and update kubeconfig stored in the Secret Manager.
