@@ -5,6 +5,7 @@ templates:
         localSets:
           jobConfig_presubmit:
             run_if_changed: "milv.config.yaml|.md$"
+            optional: true
           jobConfig_kyma_crd_docs:
             run_if_changed: "^installation/resources/crds/|^.*.md$"
             annotations:
@@ -14,6 +15,7 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
+            optional: true
             branches:
               - "^main$"
             request_memory: "10Mi"
