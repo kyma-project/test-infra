@@ -47,11 +47,7 @@ periodics:
               type: Unconfined
             allowPrivilegeEscalation: true
           args:
-            - "bash"
-            - "-c"
-            - |
-              chmod +x ./tests/fast-integration/prow/kyma-upgrade.sh
-              ./tests/fast-integration/prow/kyma-upgrade.sh
+            - ./tests/fast-integration/prow/kyma-upgrade.sh
           env:
             - name: KYMA_PROJECT_DIR
               value: "."
