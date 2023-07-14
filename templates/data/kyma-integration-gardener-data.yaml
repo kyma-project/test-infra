@@ -36,12 +36,6 @@ templates:
               pipeline.test: "fast-integration"
               pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
-          command_integration_eventing_with_auth_manager:
-            annotations:
-              pipeline.installer: kyma deploy
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: kyma cli
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing-with-auth-manager.sh"
           command_integration_skr_eventing:
             annotations:
               pipeline.installer: keb
@@ -128,6 +122,8 @@ templates:
 
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing
+                  labels:
+                    preset-kyma-eventing-auth-ias-creds: "true"
                   annotations:
                     owner: skydivingtunas
                     description: Execute fast integration job with focus on eventing on a gardener cluster
@@ -139,6 +135,7 @@ templates:
                   run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   env:
                     EXECUTION_PROFILE: "evaluation"
+                    EVENTING_WEBHOOK_AUTH_ENABLED: "false"
                   volumes:
                     - name: kyma-tunas-prow-event-mesh
                       secretName: kyma-tunas-prow-event-mesh
@@ -173,6 +170,7 @@ templates:
                   run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   env:
                     EXECUTION_PROFILE: "evaluation"
+                    EVENTING_WEBHOOK_AUTH_ENABLED: "true"
                   volumes:
                     - name: kyma-tunas-prow-event-mesh
                       secretName: kyma-tunas-prow-event-mesh
@@ -190,7 +188,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
-                    - command_integration_eventing_with_auth_manager
+                    - command_integration_eventing
 
   - fromTo:
       - from: generic.tmpl

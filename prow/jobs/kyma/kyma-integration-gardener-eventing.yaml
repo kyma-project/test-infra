@@ -98,6 +98,7 @@ presubmits: # runs on PRs
         preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
+        preset-kyma-eventing-auth-ias-creds: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
@@ -128,6 +129,8 @@ presubmits: # runs on PRs
             env:
               - name: CREDENTIALS_DIR
                 value: "/etc/credentials/kyma-tunas-prow-event-mesh"
+              - name: EVENTING_WEBHOOK_AUTH_ENABLED
+                value: "false"
               - name: EXECUTION_PROFILE
                 value: "evaluation"
               - name: GARDENER_REGION
@@ -194,10 +197,12 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing-with-auth-manager.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
             env:
               - name: CREDENTIALS_DIR
                 value: "/etc/credentials/kyma-tunas-prow-event-mesh"
+              - name: EVENTING_WEBHOOK_AUTH_ENABLED
+                value: "true"
               - name: EXECUTION_PROFILE
                 value: "evaluation"
               - name: GARDENER_REGION
