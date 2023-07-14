@@ -47,7 +47,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
@@ -116,7 +116,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true

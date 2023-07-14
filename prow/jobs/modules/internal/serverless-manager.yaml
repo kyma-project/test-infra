@@ -58,7 +58,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)'
       skip_report: false
       decorate: true

@@ -47,11 +47,6 @@ buildTarget="release"
 log::info "Build KCP CLI with target ${buildTarget}"
 make -C "${KCP_PATH}/tools/cli" ${buildTarget}
 
-log::info "Switch to a different service account to push to GCS bucket"
-export GOOGLE_APPLICATION_CREDENTIALS=/etc/credentials/sa-kyma-artifacts/service-account.json
-gcp::authenticate \
-    -c "${GOOGLE_APPLICATION_CREDENTIALS}"
-
 log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
 

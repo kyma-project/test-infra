@@ -10,7 +10,7 @@ templates:
             request_cpu: 0.2
             labels:
               preset-kyma-development-artifacts-bucket: "true"
-              preset-sa-gcr-push: "true"
+              preset-sa-kyma-artifacts: "true"
             volumeMounts:
               - name: sa-kyma-artifacts
                 mountPath: /etc/credentials/sa-kyma-artifacts
@@ -51,4 +51,3 @@ templates:
                     - disable_testgrid
                   local:
                     - jobConfig_default
-      
