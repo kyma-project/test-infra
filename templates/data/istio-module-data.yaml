@@ -13,9 +13,6 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            branches:
-              - "^master$"
-              - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
@@ -61,7 +58,7 @@ templates:
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230712-4e8e9e8c"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230713-3ebd2748"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
           job_module_build:
@@ -87,7 +84,8 @@ templates:
                     - "hack/ci"
                     - "all" # run test make target of operator
                   branches:
-                    - ^main$ # any pr against main triggers this
+                    - ^main$
+                    - ^release-\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -113,7 +111,7 @@ templates:
                     - "hack/ci"
                     - "all"
                   branches:
-                    - ^main$ # any pr against main triggers this
+                    - ^main$
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -183,6 +181,9 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                  branches:
+                    - ^main$
+                    - ^release-\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
@@ -203,6 +204,8 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
+                  branches:
+                    - ^main$
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
@@ -220,6 +223,9 @@ templates:
                   command: "make"
                   args:
                     - "gardener-istio-integration-test"
+                  branches:
+                    - ^main$
+                    - ^release-\d+\.\d+$
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -258,7 +264,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230712-4e8e9e8c"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230713-3ebd2748"
                   securityContext: #temporary we need permissions to create folders for tooling, see `make install`
                     runAsRoot: true
                   command: "make"

@@ -296,18 +296,25 @@ templates:
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
-          vm_job_template_serverless_k3s:
-            annotations:
-              pipeline.platform: k3s
-              pipeline.installer: kyma deploy
-              pipeline.test: serverless-test
-              pipeline.clusterprovisioning: k3s
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
           vm_job_labels_template:
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-sa-vm-kyma-integration: "true"
               preset-gc-project-env: "true"
+          dind_job_k3d:
+            annotations:
+              pipeline.platform: k3s
+              pipeline.installer: kyma deploy
+              pipeline.test: serverless-test
+              pipeline.clusterprovisioning: k3s
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748
+            command: "/init.sh"
+            request_memory: "4Gi"
+            request_cpu: "3"
           gke_job_template:
             annotations:
               pipeline.platform: gke
@@ -465,19 +472,23 @@ templates:
                     description: serverless integration k3s job
                   labels:
                     preset-build-pr: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh serverless-integration
                   env:
-                    INTEGRATION_SUITE: "serverless-integration"
+                    KYMA_SOURCES_DIR: /home/prow/go/src/github.com/kyma-project/kyma
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
+                    - "privileged"
                     - "jobConfig_presubmit"
-                    - "image_kyma-integration"
                     - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_serverless_k3s"
-                    - "vm_job_labels_template"
+                    - "dind_job_k3d"
               - jobConfig:
                   name: "serverless-function-metrics-generator"
                   cron: "0 0,12 * * *" # twice a day, midnight and noon, everyday
@@ -514,20 +525,27 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-serverless-git-auth: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      export APP_TEST_GITHUB_SSH_AUTH_KEY=\"${GH_AUTH_PRIVATE_KEY}\" &&
+                      export APP_TEST_AZURE_BASIC_AUTH_USERNAME=\"${AZURE_DEVOPS_AUTH_USERNAME}\" &&
+                      export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
+                      /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh git-auth-integration
                   env:
-                    INTEGRATION_SUITE: "git-auth-integration"
+                    KYMA_SOURCES_DIR: /home/prow/go/src/github.com/kyma-project/kyma
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
+                    - "privileged"
                     - "jobConfig_presubmit"
-                    - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "request_small"
-                    - "vm_job_template_serverless_k3s"
-                    - "vm_job_labels_template"
+                    - "dind_job_k3d"
               - jobConfig:
                   name: "pre-main-kyma-integration-k3d-telemetry"
                   annotations:
@@ -771,13 +789,6 @@ templates:
                     preset-kms-gc-project-env: "true"
                     preset-certificates-bucket: "true"
                     preset-slack-alerts: "true"
-                  volumes:
-                    - name: sa-stability-fluentd-storage-writer
-                      secretName: sa-stability-fluentd-storage-writer
-                  volumeMounts:
-                    - name: sa-stability-fluentd-storage-writer
-                      mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-                      readOnly: true
                   command: "bash"
                   args:
                     - "-c"

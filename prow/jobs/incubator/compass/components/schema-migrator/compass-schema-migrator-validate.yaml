@@ -17,7 +17,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-development-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^components/schema-migrator/'
       skip_report: false
       decorate: true

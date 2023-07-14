@@ -113,7 +113,7 @@ When you use the [`install-prow.sh`](../../prow/scripts/install-prow.sh) script 
 
 The `config.yaml` file contains the basic Prow configuration. When you create a particular Prow job, it uses the Preset definitions from this file. See the example of such a file [here](../../prow/config.yaml).
 
-For more details, see the [Kubernetes documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/getting-started-deploy.md#adding-more-jobs).
+For more details, see the [Kubernetes documentation](https://docs.prow.k8s.io/docs/jobs/#how-to-configure-new-jobs).
 
 ### The plugins.yaml file
 
@@ -125,7 +125,7 @@ For more details, see the [Kubernetes documentation](https://github.com/kubernet
 
 The `jobs` directory contains the Prow jobs configuration. See the example of such a file [here](../../prow/jobs).
 
-For more details, see the [Kubernetes documentation](https://github.com/kubernetes-sigs/prow/blob/main/site/content/en/docs/getting-started-deploy.md#adding-more-jobs).
+For more details, see the [Kubernetes documentation](https://docs.prow.k8s.io/docs/jobs/#how-to-configure-new-jobs).
 
 ### Verify the configuration
 

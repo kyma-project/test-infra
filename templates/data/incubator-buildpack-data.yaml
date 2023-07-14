@@ -153,7 +153,7 @@ templates:
             annotations:
               pipeline.installer: reconciler
           reconciler_e2e_image:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230712-4e8e9e8c
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230713-3ebd2748
             securityContext: #temporary we need permissions to create files before transfer them to remote vm
               runAsRoot: true
         jobConfigs:
@@ -612,7 +612,7 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  image: gcr.io/k8s-prow/generic-autobumper:v20230712-b85330a1e4
+                  image: gcr.io/k8s-prow/generic-autobumper:v20230714-b138fd6e05
                   command: generic-autobumper
                   args:
                     - --config=/home/prow/go/src/github.com/kyma-project/test-infra/prow/autobump-config/control-plane-autobump-reconciler-config.yaml

@@ -58,7 +58,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)'
       skip_report: false
       decorate: true
@@ -145,18 +145,17 @@ presubmits: # runs on PRs
       annotations:
         description: "serverless manager verify on k3d vm"
         owner: "otters"
-        pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
+        pipeline.test: "k3d-test"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-serverless-manager-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
       always_run: true
       optional: false
       skip_report: false
@@ -174,28 +173,23 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "bash"
+              - "/init.sh"
             args:
+              - "bash"
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: JOB_REPO_NAME
-                value: "serverless-manager"
-              - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin  && make -C hack/ci k3d-integration-test"
+              - "make -C hack/ci k3d-integration-test
+"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 4Gi
+                cpu: 3
   
 postsubmits: # runs on main
   kyma-project/serverless-manager:
@@ -304,18 +298,17 @@ postsubmits: # runs on main
       annotations:
         description: "serverless manager verify on k3d vm"
         owner: "otters"
-        pipeline.clusterprovisioning: "k3d"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
+        pipeline.test: "k3d-test"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-serverless-manager-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
       always_run: true
       optional: true
       skip_report: false
@@ -333,49 +326,42 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "bash"
+              - "/init.sh"
             args:
+              - "bash"
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: JOB_REPO_NAME
-                value: "serverless-manager"
-              - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin  && make -C hack/ci k3d-lm-integration-test"
+              - "make -C hack/ci k3d-integration-test
+"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 4Gi
+                cpu: 3
   
 periodics: # runs on schedule
     - name: serverless-operator-nightly-periodic
       annotations:
         description: "serverless operator nightly verify"
         owner: "otters"
-        pipeline.clusterprovisioning: "gcloud cli"
         pipeline.installer: "kyma deploy"
-        pipeline.platform: "gke"
-        pipeline.test: "fast-integration"
+        pipeline.platform: "k3d"
+        pipeline.test: "k3d-test"
         pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-dashboards: "serverless-operator-nightly"
         testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "serverless-operator-nightly-periodic"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
       cron: "0 6 * * 1-5"
       skip_report: false
       decorate: true
@@ -392,48 +378,21 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "bash"
+              - "/init.sh"
             args:
+              - "bash"
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: GITHUB_TEAMS_WITH_KYMA_ADMINS_RIGHTS
-                value: "cluster-access"
-              - name: INPUT_CLUSTER_NAME
-                value: "serverless-operator-nightly-periodic"
-              - name: JOB_REPO_NAME
-                value: "serverless-manager"
-              - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make -C hack/local run-with-lifecycle-manager"
-              - name: MACHINE_TYPE
-                value: "custom-8-15360"
-              - name: NODES_PER_ZONE
-                value: "1"
-              - name: PROVISION_REGIONAL_CLUSTER
-                value: "true"
-              - name: STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
-                value: "0.6.4"
-              - name: TEST_RESULT_WINDOW_TIME
-                value: "6h"
+              - "make -C hack/ci run-with-lifecycle-manager
+"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
-            volumeMounts:
-              - name: sa-stability-fluentd-storage-writer
-                mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-                readOnly: true
-        volumes:
-          - name: sa-stability-fluentd-storage-writer
-            secret:
-              secretName: sa-stability-fluentd-storage-writer
+                memory: 4Gi
+                cpu: 3
   

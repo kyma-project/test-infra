@@ -190,6 +190,8 @@ globalSets:
     image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
   image_image_detector:
     image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc"
+  image_e2e-dind-k3d:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -274,7 +276,7 @@ globalSets:
         type: Unconfined
     labels:
       preset-dind-enabled: "true"
-      preset-sa-gcr-push: "true"
+      preset-sa-kyma-push-images: "true"
       preset-kyma-kms-sign-key: "true"
     command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
   jobConfig_generic_component_kyma:
@@ -366,7 +368,7 @@ globalSets:
         type: "Unconfined"
     labels:
       preset-dind-enabled: "true"
-      preset-sa-gcr-push: "true"
+      preset-sa-kyma-push-images: "true"
       preset-docker-push-repository-kyma: "true"
   # gardener configs
   gardener_gcp_job:
