@@ -22,7 +22,7 @@ export GARDENER_SHOOT_TEMPLATE=$(envsubst < "$SHOOT_DEFINITION_PATH" | base64)
 export GARDENER_KUBECONFIG=$GARDENER_KYMA_PROW_KUBECONFIG
 export KCP_GARDENER_NAMESPACE="garden-$GARDENER_KYMA_PROW_PROJECT_NAME"
 
-pushd /home/prow/go/src/github.com/kyma-project/kyma-environment-broker/testing/fast-integration
+pushd /home/prow/go/src/github.com/kyma-project/kyma-environment-broker/testing/e2e/skr
 
 make skr-own-cluster
 

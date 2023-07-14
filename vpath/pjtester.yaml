@@ -10,7 +10,7 @@ pjConfigs:
         - pjName: "skr-azure-lite-integration-dev"
         - pjName: "skr-aws-upgrade-integration-dev"
         - pjName: "skr-aws-integration-dev"
-        - pjName: "skr-azure-integration-dev"
+        - pjName: "keb-endpoints-tests"
 
 prConfigs:
   kyma-project:
