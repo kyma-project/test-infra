@@ -16,7 +16,6 @@ templates:
               preset-sa-kyma-push-artifacts: "true"
               preset-bot-github-token: "true"
               preset-dind-enabled: "true"
-              preset-sa-kyma-artifacts: "true"
               preset-docker-push-repository-kyma: "true"
             securityContext:
               privileged: "true"

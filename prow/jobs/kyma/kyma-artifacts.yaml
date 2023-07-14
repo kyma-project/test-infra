@@ -16,7 +16,6 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-development-artifacts-bucket: "true"
-        preset-sa-kyma-artifacts: "true"
         preset-sa-kyma-push-artifacts: "true"
       always_run: true
       skip_report: false
@@ -58,7 +57,6 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-development-artifacts-bucket: "true"
-        preset-sa-kyma-artifacts: "true"
         preset-sa-kyma-push-artifacts: "true"
       always_run: true
       skip_report: false
@@ -100,7 +98,6 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-development-artifacts-bucket: "true"
-        preset-sa-kyma-artifacts: "true"
         preset-sa-kyma-push-artifacts: "true"
       always_run: true
       skip_report: false
@@ -146,7 +143,6 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-artifacts-bucket: "true"
-        preset-sa-kyma-artifacts: "true"
         preset-sa-kyma-push-artifacts: "true"
       always_run: true
       skip_report: false
@@ -189,7 +185,6 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-artifacts-bucket: "true"
-        preset-sa-kyma-artifacts: "true"
         preset-sa-kyma-push-artifacts: "true"
       always_run: true
       skip_report: false
@@ -232,7 +227,6 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-artifacts-bucket: "true"
-        preset-sa-kyma-artifacts: "true"
         preset-sa-kyma-push-artifacts: "true"
       always_run: true
       skip_report: false
