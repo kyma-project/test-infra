@@ -1,0 +1,20 @@
+pjConfigs:
+  prConfig:
+    kyma-incubator:
+      reconciler:
+        prNumber: 1372
+  prowJobs:
+    kyma-incubator:
+      reconciler:
+        - pjName: "pull-main-cli-integration-k3d"
+        - pjName: "pull-main-cli-integration-k3d-latest"
+        - pjName: "pull-main-cli-kyma-release-upgrade-k3d"
+        - pjName: "pull-main-reconciler-integration-k3d"
+        - pjName: "kyma-upgrade-k3d-kyma2-to-main"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 17825
+  kyma-incubator:
+    reconciler:
+      prNumber: 1372
