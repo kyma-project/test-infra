@@ -42,13 +42,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 0.2
-            volumeMounts:
-              - name: sa-kyma-artifacts
-                mountPath: /etc/credentials/sa-kyma-artifacts
-        volumes:
-          - name: sa-kyma-artifacts
-            secret:
-              secretName: sa-kyma-artifacts
   
 postsubmits: # runs on main
   kyma-project/control-plane:
@@ -92,11 +85,4 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 0.2
-            volumeMounts:
-              - name: sa-kyma-artifacts
-                mountPath: /etc/credentials/sa-kyma-artifacts
-        volumes:
-          - name: sa-kyma-artifacts
-            secret:
-              secretName: sa-kyma-artifacts
   

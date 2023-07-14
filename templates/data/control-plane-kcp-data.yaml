@@ -11,13 +11,6 @@ templates:
             labels:
               preset-kyma-development-artifacts-bucket: "true"
               preset-sa-kyma-artifacts: "true"
-            volumeMounts:
-              - name: sa-kyma-artifacts
-                mountPath: /etc/credentials/sa-kyma-artifacts
-            volumes:
-              # we cannot use preset-sa-kyma-artifacts because we are using preset-sa-gcr-push which also set environment variable: GOOGLE_APPLICATION_CREDENTIALS.
-              - name: sa-kyma-artifacts
-                secretName: sa-kyma-artifacts
         jobConfigs:
           - repoName: kyma-project/control-plane
             jobs:
