@@ -61,6 +61,11 @@ presubmits:
       max_concurrency: 10
       branches:
         - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
       spec:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
@@ -99,6 +104,11 @@ presubmits:
       max_concurrency: 10
       branches:
         - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          path_alias: github.com/kyma-project/kyma
+          base_ref: main
       spec:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
