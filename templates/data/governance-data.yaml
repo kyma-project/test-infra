@@ -5,8 +5,6 @@ templates:
         localSets:
           jobConfig_presubmit:
             run_if_changed: "milv.config.yaml|.md$"
-            labels:
-              preset-build-pr: "true"
           jobConfig_kyma_crd_docs:
             run_if_changed: "^installation/resources/crds/|^.*.md$"
             annotations:
@@ -25,35 +23,27 @@ templates:
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
           jobConfig_default:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
-            labels:
-              preset-dind-enabled: "true"
+            image: eu.gcr.io/kyma-project/incubator/milv:8649c2fb
+            command: "/app/main"
+            args:
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             request_memory: "10Mi"
             request_cpu: "100m"
-            securityContext:
-              privileged: "true"
-              seccompProfile:
-                type: "Unconfined"
         jobConfigs:
           - repoName: "github.com/kyma-project/busola"
             jobs:
               - jobConfig:
-                  name: "pre-main-busola-governance"
+                  name: "pull-busola-governance"
                   annotations:
                     owner: technical-writers
                     description: dead links governance job
-                  args:
-                    - "--repository"
-                    - "busola"
-                  path_alias: github.com/kyma-project/busola
                   branches:
                     - "^main$"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -68,40 +58,24 @@ templates:
                       - org: kyma-project
                         repo: busola
                         base_ref: main
-                        path_alias: github.com/kyma-project/busola
-                  args:
-                    - "--repository"
-                    - "busola"
-                    - "--repository-dir"
-                    - "/home/prow/go/src/github.com/kyma-project/busola"
-                    - "--full-validation"
-                    - "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_periodic"
                     - "disable_testgrid"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
           - repoName: "github.com/kyma-project/community"
             jobs:
               - jobConfig:
-                  name: "pre-main-community-governance"
+                  name: "pull-community-governance"
                   annotations:
                     owner: technical-writers
                     description: dead links governance job
-                  args:
-                    - "--repository"
-                    - "community"
-                  path_alias: github.com/kyma-project/community
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -116,40 +90,24 @@ templates:
                       - org: kyma-project
                         repo: community
                         base_ref: main
-                        path_alias: github.com/kyma-project/community
-                  args:
-                    - "--repository"
-                    - "community"
-                    - "--repository-dir"
-                    - "/home/prow/go/src/github.com/kyma-project/community"
-                    - "--full-validation"
-                    - "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_periodic"
                     - "disable_testgrid"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
           - repoName: "github.com/kyma-project/examples"
             jobs:
               - jobConfig:
-                  name: "pre-main-examples-governance"
+                  name: "pull-examples-governance"
                   annotations:
                     owner: technical-writers
                     description: dead links governance job
-                  args:
-                    - "--repository"
-                    - "examples"
-                  path_alias: github.com/kyma-project/examples
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -167,7 +125,6 @@ templates:
                     - "kyma"
                     - "--validator"
                     - "/home/prow/go/src/github.com/kyma-project/test-infra/development/tools/pkg/metadata/jsonmetadatavalidator.go"
-                  path_alias: github.com/kyma-project/kyma
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -178,20 +135,14 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
               - jobConfig:
-                  name: "pre-main-kyma-governance"
+                  name: "pull-kyma-governance"
                   annotations:
                     owner: technical-writers
                     description: dead links governance job
-                  args:
-                    - "--repository"
-                    - "kyma"
-                  path_alias: github.com/kyma-project/kyma
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -200,7 +151,6 @@ templates:
                   annotations:
                     owner: technical-writers
                     description: dead links governance job
-                  path_alias: github.com/kyma-project/kyma
                   command: "hack/verify-md.sh"
                 inheritedConfigs:
                   global:
@@ -214,40 +164,25 @@ templates:
                     owner: technical-writers
                     description: dead links governance job
                   cron: "0 4 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
-                  args:
-                    - "--repository"
-                    - "kyma"
-                    - "--repository-dir"
-                    - "/home/prow/go/src/github.com/kyma-project/kyma"
-                    - "--full-validation"
-                    - "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                     - "extra_refs_kyma"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  name: "pre-main-test-infra-governance"
+                  name: "pull-test-infra-governance"
                   annotations:
                     owner: "technical-writers"
                     description: "Looking for broken links in the test-infra repo"
-                  args:
-                    - "--repository"
-                    - "test-infra"
-                  path_alias: github.com/kyma-project/test-infra
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_presubmit"
-                    - "extra_refs_kyma"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -257,40 +192,24 @@ templates:
                     owner: technical-writers
                     description: dead links governance job
                   cron: "0 5 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
-                  args:
-                    - "--repository"
-                    - "test-infra"
-                    - "--repository-dir"
-                    - "/home/prow/go/src/github.com/kyma-project/test-infra"
-                    - "--full-validation"
-                    - "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_periodic"
                     - "disable_testgrid"
-                    - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
                   local:
                     - "jobConfig_default"
           - repoName: "github.com/kyma-project/website"
             jobs:
               - jobConfig:
-                  name: "pre-main-website-governance"
+                  name: "pull-website-governance"
                   annotations:
                     owner: technical-writers
                     description: dead links governance job
-                  args:
-                    - "--repository"
-                    - "website"
-                  path_alias: github.com/kyma-project/website
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -305,21 +224,11 @@ templates:
                       - org: kyma-project
                         repo: website
                         base_ref: main
-                        path_alias: github.com/kyma-project/website
-                  args:
-                    - "--repository"
-                    - "website"
-                    - "--repository-dir"
-                    - "/home/prow/go/src/github.com/kyma-project/website"
-                    - "--full-validation"
-                    - "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_periodic"
                     - "disable_testgrid"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
           - repoName: "github.com/kyma-incubator/documentation-component"
@@ -335,43 +244,24 @@ templates:
                       - org: kyma-incubator
                         repo: documentation-component
                         base_ref: main
-                        path_alias: github.com/kyma-incubator/documentation-component
-                  args:
-                    - "--repository"
-                    - "documentation-component"
-                    - "--repository-org"
-                    - "kyma-incubator"
-                    - "--repository-dir"
-                    - "/home/prow/go/src/github.com/kyma-incubator/documentation-component"
-                    - "--full-validation"
-                    - "true"
-
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_periodic"
                     - "disable_testgrid"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
           - repoName: "github.com/kyma-project/telemetry-manager"
             jobs:
               - jobConfig:
-                  name: "pre-main-telemetry-manager-governance"
+                  name: "pull-telemetry-manager-governance"
                   annotations:
                     owner: technical-writers
                     description: dead links governance job
-                  args:
-                    - "--repository"
-                    - "telemetry-manager"
-                  path_alias: github.com/kyma-project/telemetry-manager
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
@@ -379,20 +269,14 @@ templates:
           - repoName: "github.com/kyma-project/directory-size-exporter"
             jobs:
               - jobConfig:
-                  name: "pre-main-directory-size-exporter-governance"
+                  name: "pull-directory-size-exporter-governance"
                   annotations:
                     owner: technical-writers
                     description: dead links governance job
-                  args:
-                    - "--repository"
-                    - "directory-size-exporter"
-                  path_alias: github.com/kyma-project/directory-size-exporter
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_bootstrap"
                     - "jobConfig_presubmit"
-                    - "extra_refs_test-infra"
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
