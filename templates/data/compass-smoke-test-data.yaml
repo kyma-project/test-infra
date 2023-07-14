@@ -19,7 +19,7 @@ templates:
               preset-k3d-enabled: "true"
               preset-docker-push-repository-kyma: "true"
               preset-kyma-development-artifacts-bucket: "true"
-              preset-sa-gcr-push: "true"
+              preset-sa-vm-kyma-integration: "true"
         jobConfigs:
           - repoName: "kyma-incubator/compass"
             jobs:
