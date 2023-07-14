@@ -638,7 +638,7 @@
           "evidence": "https://github.com/grafana/grafana/commits/main"
         }
       },
-      "comment": "Will be replace by Plutono (https://github.com/kyma-project/test-infra/issues/8072)",
+      "comment": "Will be replaced by Plutono (https://github.com/kyma-project/test-infra/issues/8072)",
       "openSSFScore": 0,
       "review": {
         "approvedImage": false,
