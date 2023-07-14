@@ -47,7 +47,7 @@ templates:
                   annotations:
                     owner: gopher
                     description: skr integration test own cluster
-                  cron: "25 * * * *" # 25 past an hour (for testing), it was: "At 01:05"
+                  cron: "45 1 * * *" # "At 01:45"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"
