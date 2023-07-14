@@ -5,7 +5,9 @@ templates:
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass
-            command: "installation/scripts/prow/jobs/provision-vm-compass-smoke-test.sh"
+            command: "/init.sh"
+            args:
+              - "installation/scripts/prow/jobs/provision-compass-smoke-test.sh"
             request_memory: 100Mi
             request_cpu: 50m
             env:
@@ -13,6 +15,8 @@ templates:
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-dind-enabled: "true"
+              preset-kind-volume-mounts: "true"
+              preset-k3d-enabled: "true"
               preset-docker-push-repository-kyma: "true"
               preset-kyma-development-artifacts-bucket: "true"
               preset-sa-gcr-push: "true"
@@ -35,7 +39,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_buildpack-golang"
+                    - "image_e2e-dind-k3d"
                     - "extra_refs_test-infra"
                     - "privileged_job"
                     - "kyma_project_dir"
