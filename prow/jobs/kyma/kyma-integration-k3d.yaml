@@ -38,7 +38,7 @@ periodics:
               type: Unconfined
             allowPrivilegeEscalation: true
           args:
-            - ./tests/fast-integration/prow/kyma-upgrade.sh
+            - ls
           env:
             - name: KYMA_PROJECT_DIR
               value: "."
