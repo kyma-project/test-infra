@@ -19,7 +19,7 @@ presubmits: # runs on PRs
         preset-kind-volume-mounts: "true"
         preset-kyma-development-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^(chart|installation)/'
       skip_report: false
       decorate: true
