@@ -68,7 +68,5 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230629-6b7922f4
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230713-3ebd2748
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748
 whitesource:
     language: golang-mod
