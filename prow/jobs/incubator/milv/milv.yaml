@@ -15,7 +15,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -63,7 +63,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload

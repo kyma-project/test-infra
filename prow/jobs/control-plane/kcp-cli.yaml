@@ -13,7 +13,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-kcp-cli"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kyma-development-artifacts-bucket: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-artifacts: "true"
       run_if_changed: '^tools/cli|^components'
       skip_report: false
       decorate: true
@@ -42,13 +42,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 0.2
-            volumeMounts:
-              - name: sa-kyma-artifacts
-                mountPath: /etc/credentials/sa-kyma-artifacts
-        volumes:
-          - name: sa-kyma-artifacts
-            secret:
-              secretName: sa-kyma-artifacts
   
 postsubmits: # runs on main
   kyma-project/control-plane:
@@ -64,7 +57,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-artifacts-main: "true"
         preset-kyma-development-artifacts-bucket: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-artifacts: "true"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/control-plane
@@ -92,11 +85,4 @@ postsubmits: # runs on main
               requests:
                 memory: 1Gi
                 cpu: 0.2
-            volumeMounts:
-              - name: sa-kyma-artifacts
-                mountPath: /etc/credentials/sa-kyma-artifacts
-        volumes:
-          - name: sa-kyma-artifacts
-            secret:
-              secretName: sa-kyma-artifacts
   
