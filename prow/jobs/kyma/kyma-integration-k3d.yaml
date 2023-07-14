@@ -25,6 +25,11 @@ periodics:
       timeout: 7200000000000
     path_alias: github.com/kyma-project/kyma
     cluster: trusted-workload
+    extra_refs:
+      - org: kyma-project
+        repo: kyma
+        path_alias: github.com/kyma-project/kyma
+        base_ref: main
     reporter_config:
       slack:
         channel: jellyfish-notifications
@@ -38,7 +43,7 @@ periodics:
               type: Unconfined
             allowPrivilegeEscalation: true
           args:
-            - pwd
+            - ./tests/fast-integration/prow/kyma-upgrade.sh
           env:
             - name: KYMA_PROJECT_DIR
               value: "."
