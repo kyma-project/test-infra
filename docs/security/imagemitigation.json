@@ -1,231 +1,763 @@
 {
   "images": [
     {
-      "registry": "gcr.io/k8s-prow/*",
-      "purpose" : "Prow CI",
+      "registry": "gcr.io/k8s-prow/analyze",
+      "purpose": "Prow CI",
       "publisher": "Prow community",
       "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
-      "contributors": 1100,
-      "activity": {
-        "frequency": "high",
-        "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
       },
       "comment": "",
-      "openSSF": {
-        "score": 5.6,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
-        }
-      }
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
     },
     {
-      "registry": "docker.io/prom/*",
-      "purpose" : "Prometheus monitoring",
-      "publisher": "Prometheus community",
-      "sourceCode": "https://github.com/prometheus",
-      "contributors": 33,
-      "activity": {
-        "frequency": "high",
-        "evidence": "https://github.com/prometheus/prometheus/commits/main"
+      "registry": "gcr.io/k8s-prow/crier",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
       },
       "comment": "",
-      "openSSF": {
-        "score": 0,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/deck",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
         }
-      }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/ghproxy",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/hook",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/horologium",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/pipeline",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/prow-controller-manager",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/sinker",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/status-reconciler",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/tide",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/checkconfig",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/generic-autobumper",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/label_sync",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/branchprotector",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/commenter",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/gencred",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/sidecar",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/clonerefs",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/initupload",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "gcr.io/k8s-prow/entrypoint",
+      "purpose": "Prow CI",
+      "publisher": "Prow community",
+      "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/prow",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/prow"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 5.6
+    },
+    {
+      "registry": "docker.io/prom/pushgateway",
+      "purpose": "Prometheus monitoring Push Gateway",
+      "publisher": "Prometheus community",
+      "sourceCode": "https://github.com/prometheus/pushgateway",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 59,
+        "activity": {
+          "commitFrequency": "weekly",
+          "evidence": "https://github.com/prometheus/prometheus/commits/main"
+        }
+      },
+      "comment": "",
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      },
+      "openSSFScore": 0
     },
     {
       "registry": "k8s.gcr.io/gcsweb",
-      "purpose" : "Web UI for Google Cloud Storage",
+      "purpose": "Web UI for Google Cloud Storage",
       "publisher": "Kubernetes community",
       "sourceCode": "https://github.com/kubernetes/test-infra/tree/master/gcsweb",
-      "contributors": 1100,
-      "activity": {
-        "frequency": "low",
-        "evidence": "https://github.com/kubernetes/test-infra/commits/master/gcsweb"
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 1100,
+        "activity": {
+          "commitFrequency": "yearly",
+          "evidence": "https://github.com/kubernetes/test-infra/commits/master/gcsweb"
+        }
       },
       "comment": "GCR is deprecated, has to be relocated to https://github.com/kubernetes/registry.k8s.io",
-      "openSSF": {
-        "score": 5.6,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
-        }
+      "openSSFScore": 5.6,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
       }
     },
     {
       "registry": "docker.io/nginx",
-      "purpose" : "NGINX HTTP server",
+      "purpose": "NGINX HTTP server",
       "publisher": "Nginx Docker community",
       "sourceCode": "https://github.com/nginx/nginx",
-      "contributors": 36,
-      "activity": {
-        "frequency": "weekly",
-        "evidence": "https://github.com/nginxinc/docker-nginx/commits/master"
+      "docker": {
+        "verifiedPublisher": true,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 36,
+        "activity": {
+          "commitFrequency": "weekly",
+          "evidence": "https://github.com/nginxinc/docker-nginx/commits/master"
+        }
       },
       "comment": "Docker: verified publisher (https://hub.docker.com/_/nginx)",
-      "openSSF": {
-        "score": 4.4,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
-        }
+      "openSSFScore": 4.4,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
       }
     },
     {
       "registry": "europe[-*]-docker.pkg.dev/[kyma-project|sap-kyma-neighbors-dev]",
-      "purpose" : "Custom Kyma images",
+      "purpose": "Custom Kyma images",
       "publisher": "kyma project team",
       "sourceCode": "https://github.com/kyma-project/kyma",
-      "contributors": 190,
-      "activity": {
-        "frequency": "daily",
-        "evidence": "https://github.com/kyma-project/kyma/commits/main"
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
       },
-      "comment": "",
-      "openSSF": {
-        "score": 0,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
+      "manualAnalysis": {
+        "contributors": 190,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/kyma-project/kyma/commits/main"
         }
+      },
+      "comment": "Why is gcr.io trusted but this new domain not?",
+      "openSSFScore": 0,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
       }
     },
     {
       "registry": "ghcr.io/external-secrets/external-secrets",
-      "purpose" : "External Secrets Operator",
+      "purpose": "External Secrets Operator",
       "publisher": "",
       "sourceCode": "https://github.com/external-secrets/external-secrets",
-      "contributors": 230,
-      "activity": {
-        "frequency": "daily",
-        "evidence": "https://github.com/external-secrets/external-secrets/commits/main"
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 230,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/external-secrets/external-secrets/commits/main"
+        }
       },
       "comment": "",
-      "openSSF": {
-        "score": 7.2,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
-        }
+      "openSSFScore": 7.2,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
       }
     },
     {
       "registry": "docker.io/openpolicyagent/gatekeeper",
-      "purpose" : "OPA Gatekeeper",
+      "purpose": "OPA Gatekeeper",
       "publisher": "OPA Gatekeeper",
       "sourceCode": "https://github.com/open-policy-agent/gatekeeper",
-      "contributors": 180,
-      "activity": {
-        "frequency": "weekly",
-        "evidence": "https://github.com/open-policy-agent/gatekeeper/commits/master"
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false,
+        "sponsoredOSS": true
       },
-      "comment": "Docker: sponsored OSS",
-      "openSSF": {
-        "score": 6.2,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
+      "manualAnalysis": {
+        "contributors": 180,
+        "activity": {
+          "commitFrequency": "weekly",
+          "evidence": "https://github.com/open-policy-agent/gatekeeper/commits/master"
         }
+      },
+      "comment": "",
+      "openSSFScore": 6.2,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
       }
     },
     {
       "registry": "docker.io/grafana/grafana",
-      "purpose" : "Grafana Dashboard",
+      "purpose": "Grafana Dashboard",
       "publisher": "Grafana Community",
       "sourceCode": "https://github.com/grafana/grafana",
-      "contributors": 2000,
-      "activity": {
-        "frequency": "daily",
-        "evidence": "https://github.com/grafana/grafana/commits/main"
+      "docker": {
+        "verifiedPublisher": true,
+        "officialImage": false
       },
-      "comment": "Will be replaced by Plutono (https://github.com/kyma-project/test-infra/issues/8072)",
-      "openSSF": {
-        "score": 0,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
+      "manualAnalysis": {
+        "contributors": 2000,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/grafana/grafana/commits/main"
         }
+      },
+      "comment": "Will be replace by Plutono (https://github.com/kyma-project/test-infra/issues/8072)",
+      "openSSFScore": 0,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
       }
     },
     {
-      "registry": "quay.io/prometheus-operator/*",
-      "purpose" : "Prometheus (Monitoring) Operator",
+      "registry": "quay.io/prometheus-operator/prometheus-operator",
+      "purpose": "Prometheus (Monitoring) Operator",
       "publisher": "Prometheus Community",
       "sourceCode": "https://github.com/prometheus-operator/prometheus-operator",
-      "contributors": 500,
-      "activity": {
-        "frequency": "daily",
-        "evidence": "https://github.com/prometheus-operator/prometheus-operator/commits/main"
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 500,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/prometheus-operator/prometheus-operator/commits/main"
+        }
       },
       "comment": "",
-      "openSSF": {
-        "score": 6.5,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
+      "openSSFScore": 6.5,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      }
+    },
+    {
+      "registry": "quay.io/prometheus-operator/prometheus-config-reloader",
+      "purpose": "Prometheus (Monitoring) Operator Config Reloader",
+      "publisher": "Prometheus Community",
+      "sourceCode": "https://github.com/prometheus-operator/prometheus-operator",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 500,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/prometheus-operator/prometheus-operator/commits/main"
         }
+      },
+      "comment": "",
+      "openSSFScore": 6.5,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
       }
     },
     {
       "registry": "docker.io/aquasec/trivy",
-      "purpose" : "Security Scanner",
+      "purpose": "Security Scanner",
       "publisher": "Aqua Security",
       "sourceCode": "https://github.com/aquasecurity/trivy",
-      "contributors": 300,
-      "activity": {
-        "frequency": "daily",
-        "evidence": "https://github.com/aquasecurity/trivy/commits/main"
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 300,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/aquasecurity/trivy/commits/main"
+        }
       },
       "comment": "",
-      "openSSF": {
-        "score": 6.3,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
-        }
+      "openSSFScore": 6.3,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
       }
     },
     {
       "registry": "docker.io/zricethezav/gitleaks",
-      "purpose" : "Git Security Scanner",
+      "purpose": "Git Security Scanner",
       "publisher": "Public project of private person (Zachary Rice)",
       "sourceCode": "https://github.com/gitleaks/gitleaks",
-      "contributors": 140,
-      "activity": {
-        "frequency": "monthly",
-        "evidence": "https://github.com/gitleaks/gitleaks/commits/master"
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 140,
+        "activity": {
+          "commitFrequency": "monthly",
+          "evidence": "https://github.com/gitleaks/gitleaks/commits/master"
+        }
       },
       "comment": "Project sponsor: https://github.com/zricethezav",
-      "openSSF": {
-        "score": 4.9,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
-        }
+      "openSSFScore": 4.9,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
       }
     },
     {
       "registry": "docker.io/maven",
-      "purpose" : "Java package manager",
+      "purpose": "Java package manager",
       "publisher": "Maven community",
       "sourceCode": "https://github.com/apache/maven ",
-      "contributors": 170,
-      "activity": {
-        "frequency": "monthly",
-        "evidence": "https://github.com/apache/maven-sources/commits/master"
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": true
+      },
+      "manualAnalysis": {
+        "contributors": 170,
+        "activity": {
+          "commitFrequency": "monthly",
+          "evidence": "https://github.com/apache/maven-sources/commits/master"
+        }
       },
       "comment": "Docker: Official image, full source code distributed across many repositories",
-      "openSSF": {
-        "score": 4.1,
-        "review": {
-          "approvedImage": false,
-          "reason": ""
-        }
+      "openSSFScore": 4.1,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
       }
     }
   ]

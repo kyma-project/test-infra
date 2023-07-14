@@ -47,7 +47,8 @@
                   "type": "object",
                   "properties": {
                     "commitFrequency": {
-                      "type": "string"
+                      "type": "string",
+                      "enum": ["daily", "weekly", "monthly", "yearly"]
                     },
                     "evidence": {
                       "type": "string"
@@ -67,9 +68,6 @@
             "comment": {
               "type": "string"
             },
-            "openSSFScore": {
-              "type": "number"
-            },
             "review": {
               "type": "object",
               "properties": {
@@ -84,6 +82,9 @@
                 "approvedImage",
                 "reason"
               ]
+            },
+            "openSSFScore": {
+              "type": "number"
             }
           },
           "required": [
@@ -92,8 +93,8 @@
             "publisher",
             "sourceCode",
             "manualAnalysis",
-            "openSSFScore",
-            "review"
+            "review",
+            "openSSFScore"
           ]
         }
       ]
