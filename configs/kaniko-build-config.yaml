@@ -12,7 +12,7 @@ cache:
 sign-config:
   enabled-signers:
     '*':
-      - signify-dev
+#      - signify-dev
       - signify-prod
   signers:
     - name: signify-dev
