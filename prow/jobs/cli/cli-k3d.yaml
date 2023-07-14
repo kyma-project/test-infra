@@ -22,15 +22,6 @@ postsubmits:
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-incubator
-          repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
-          base_ref: main
       reporter_config:
         slack:
           channel: jellyfish-notifications
