@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/keda-manager:
     - name: pre-keda-manager-operator-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "executes the 'golangci-lint lint' command on keda-manager before any pull request."
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -39,6 +40,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-keda-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "keda module build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -83,6 +85,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-keda-manager-operator-tests
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "keda operator tests"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -119,6 +122,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-keda-manager-operator-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "keda operator build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -170,6 +174,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-keda-manager-verify
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs keda manager verity job on k3d VM"
         owner: "otters"
         pipeline.installer: "kyma deploy"
@@ -222,6 +227,7 @@ postsubmits: # runs on main
   kyma-project/keda-manager:
     - name: release-keda-manager-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Job to build keda module for a release."
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -277,6 +283,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: release-keda-manager-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Job to build keda module for a release."
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -320,6 +327,7 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-keda-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "keda module build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -362,6 +370,7 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-keda-manager-operator-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "keda module build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -415,6 +424,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-keda-manager-verify
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs keda manager verity job on k3d VM"
         owner: "otters"
         pipeline.installer: "kyma deploy"
@@ -464,6 +474,7 @@ postsubmits: # runs on main
                 cpu: 3
     - name: post-main-keda-manager-upgrade-latest-to-main
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "upgrade keda manager test"
         owner: "otters"
         pipeline.installer: "kyma deploy"
@@ -515,6 +526,7 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: keda-operator-nightly-periodic
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Keda nightly verify"
         owner: "otters"
         pipeline.installer: "kyma deploy"

@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-function-controller-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function controller build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -53,6 +54,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-function-webhook-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function webhook build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -101,6 +103,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-function-jobinit-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function jobinit build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -149,6 +152,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-function-registry-gc-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function registry build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -201,6 +205,7 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-function-controller-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function controller build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -251,6 +256,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-function-webhook-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function webhook build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -301,6 +307,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-function-jobinit-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function jobinit build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -351,6 +358,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-function-registry-gc-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function registry build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"

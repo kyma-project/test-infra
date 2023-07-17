@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-rel216-kyma-artifacts
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build Kyma release artifacts"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -46,6 +47,7 @@ presubmits: # runs on PRs
                 cpu: 0.2
     - name: pre-rel215-kyma-artifacts
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build Kyma release artifacts"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -87,6 +89,7 @@ presubmits: # runs on PRs
                 cpu: 0.2
     - name: pre-rel214-kyma-artifacts
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build Kyma release artifacts"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -131,6 +134,7 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-rel216-kyma-artifacts
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build Kyma release artifacts"
         owner: "neighbors"
         pipeline.trigger: "pr-merge"
@@ -173,6 +177,7 @@ postsubmits: # runs on main
                 cpu: 0.2
     - name: post-rel215-kyma-artifacts
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build Kyma release artifacts"
         owner: "neighbors"
         pipeline.trigger: "pr-merge"
@@ -215,6 +220,7 @@ postsubmits: # runs on main
                 cpu: 0.2
     - name: post-rel214-kyma-artifacts
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build Kyma release artifacts"
         owner: "neighbors"
         pipeline.trigger: "pr-merge"

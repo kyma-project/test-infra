@@ -11,6 +11,7 @@ periodics:
       owner: neighbors
       description: "Periodic close stale issues and PRs"
       testgrid-create-test-group: "false"
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     spec:
       containers:
         - image: gcr.io/k8s-prow/commenter:v20230714-24c9618c59
@@ -70,6 +71,7 @@ periodics:
       owner: neighbors
       description: "Periodic triage stale issues and PRs"
       testgrid-create-test-group: "false"
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     spec:
       containers:
         - image: gcr.io/k8s-prow/commenter:v20230714-24c9618c59

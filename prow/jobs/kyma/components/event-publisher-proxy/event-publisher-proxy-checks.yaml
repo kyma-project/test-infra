@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-event-publisher-proxy-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "lint the EPP"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -36,6 +37,7 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-event-publisher-proxy-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "run unit tests for EPP"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"

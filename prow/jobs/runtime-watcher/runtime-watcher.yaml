@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/runtime-watcher:
     - name: pull-lint-skr
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "lint runtime watcher"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -38,6 +39,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-tests-skr
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "test runtime watcher"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -74,6 +76,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-lint-listener
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "lint runtime watcher listener"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -107,6 +110,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-tests-listener
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "test runtime watcher listener"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -143,6 +147,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-build-skr
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build runtime watcher skr"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -192,6 +197,7 @@ postsubmits: # runs on main
   kyma-project/runtime-watcher:
     - name: main-build-skr
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build runtime watcher skr"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"
