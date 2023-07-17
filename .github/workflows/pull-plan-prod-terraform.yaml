@@ -1,0 +1,27 @@
+name: Pull Plan Prod Terraform
+run-name: pull-plan-prod-terraform
+concurrency:
+  group: ${{ github.head_ref }}
+on: # runs on main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+    - main
+    paths:
+    - 'configs/terraform/environments/prod/*'
+jobs:
+  pull-plan-prod-terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Wait for other terraform executions
+        uses: ahmadnassri/action-workflow-queue@v1
+      - name: HashiCorp - Setup Terraform
+        id: setup_terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+      - name: HashiCorp - Terraform Init
+        id: terraform_init
+        run: terraform -chdir=./configs/terraform/environments/prod init -input=false
+      - name: Terraform Plan
+        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr $PULL_NUMBER -sha $GITHUB_SHA plan -- terraform -chdir=./configs/terraform/environments/prod plan -input=false -no-color
