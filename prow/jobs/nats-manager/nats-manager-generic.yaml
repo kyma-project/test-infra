@@ -84,7 +84,7 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pull-nats-module-build
       annotations:
-        description: "nats module build pre-main job"
+        description: "NATS module build pre-main job"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
       labels:
@@ -182,7 +182,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-nats-module-build
       annotations:
-        description: "NATS module build job"
+        description: "NATS module build post-main job"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
       labels:

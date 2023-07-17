@@ -65,7 +65,7 @@ templates:
                   name: pull-nats-module-build
                   annotations:
                     owner: skydivingtunas
-                    description: nats module build pre-main job
+                    description: NATS module build pre-main job
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -92,7 +92,7 @@ templates:
                   name: post-nats-module-build
                   annotations:
                     owner: skydivingtunas
-                    description: NATS module build job
+                    description: NATS module build post-main job
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
