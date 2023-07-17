@@ -16,7 +16,7 @@ presubmits:
       run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/'
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee
             command: ["/init.sh"]
             args: ["bash", "-c", "make upgrade-test"]
             requests:
