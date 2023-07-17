@@ -9,4 +9,4 @@ pjConfigs:
 prConfigs: #
   kyma-project:
     nats-manager:
-      prNumber: 78
+      prNumber: 82
