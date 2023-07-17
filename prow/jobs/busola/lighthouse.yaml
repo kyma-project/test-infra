@@ -30,7 +30,7 @@ presubmits: # runs on PRs
             command:
               - /init.sh
             args:
-              - tests/scripts/busola-lighthouse.sh
+              - tests/lighthouse/scripts/busola-lighthouse.sh
             resources:
               requests:
                 memory: 4Gi
