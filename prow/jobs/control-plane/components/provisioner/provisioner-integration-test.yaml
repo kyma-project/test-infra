@@ -27,7 +27,7 @@ presubmits: # runs on PRs
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
             command:
-              - components/provisioner/integration_test/test.sh
+              - components/provisioner/e2e_test/test.sh
             resources:
               requests:
                 memory: 1Gi
