@@ -20,7 +20,7 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -62,7 +62,7 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -106,7 +106,7 @@ postsubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
             command: ["/init.sh"]
             securityContext:
               privileged: true
