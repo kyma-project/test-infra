@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/third-party-images:
     - name: pre-main-tpi-alertmanager
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Pre-submit job to build alertmanager image."
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -54,6 +55,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-cloudsql-proxy
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "builds cloudsql-proxy image"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -103,6 +105,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-configmap-reload
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Pre-submit job to build configmap-reload image."
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -152,6 +155,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-docker-registry
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "docker-registry tpi build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -201,6 +205,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-fluent-bit
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Pre-submit job to build Fluent Bit image."
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -250,6 +255,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-k8s-tools
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build tpi/k8s-tools image."
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -298,6 +304,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-oauth2-proxy
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Pre-submit job to build OAuth2 Proxy image."
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -347,6 +354,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-kiwigrid-sidecar
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Pre-submit job to build Kiwigrid-sidecar image."
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -396,6 +404,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-node-exporter
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Pre-submit job to build node_exporter image."
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -445,6 +454,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-grafana
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Pre-submit job to build Grafana image."
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -494,6 +504,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-kaniko-executer
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "kaniko-executer tpi build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -549,6 +560,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-kube-state-metrics
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Pre-submit job to build kube-state-metrics image."
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -598,6 +610,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-tpi-otel-collector
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Pre-submit job to build OpenTelemetry Collector image."
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -650,6 +663,7 @@ postsubmits: # runs on main
   kyma-project/third-party-images:
     - name: post-main-tpi-alertmanager
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to build alertmanager image."
         owner: "huskies"
         pipeline.trigger: "pr-merge"
@@ -704,6 +718,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-cloudsql-proxy
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "builds cloudsql-proxy image"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -755,6 +770,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-configmap-reload
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to build configmap-reload image."
         owner: "huskies"
         pipeline.trigger: "pr-merge"
@@ -809,6 +825,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-docker-registry
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "docker-registry tpi build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -860,6 +877,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-fluent-bit
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to build Fluent Bit image."
         owner: "huskies"
         pipeline.trigger: "pr-merge"
@@ -914,6 +932,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-k8s-tools
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build tpi/k8s-tools image."
         owner: "neighbors"
         pipeline.trigger: "pr-merge"
@@ -963,6 +982,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-oauth2-proxy
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to build OAuth2 Proxy image."
         owner: "huskies"
         pipeline.trigger: "pr-merge"
@@ -1017,6 +1037,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-kiwigrid-sidecar
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to build Kiwigrid-sidecar image."
         owner: "huskies"
         pipeline.trigger: "pr-merge"
@@ -1071,6 +1092,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-node-exporter
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to build node_exporter image."
         owner: "huskies"
         pipeline.trigger: "pr-merge"
@@ -1125,6 +1147,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-grafana
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to build Grafana image."
         owner: "huskies"
         pipeline.trigger: "pr-merge"
@@ -1179,6 +1202,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-kaniko-executer
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "kaniko-executer tpi build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -1236,6 +1260,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-kube-state-metrics
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to build kube-state-metrics image."
         owner: "huskies"
         pipeline.trigger: "pr-merge"
@@ -1290,6 +1315,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-tpi-otel-collector
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to build OpenTelemetry Collector image."
         owner: "huskies"
         pipeline.trigger: "pr-merge"

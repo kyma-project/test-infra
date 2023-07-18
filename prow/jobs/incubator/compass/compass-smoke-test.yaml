@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-smoke-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Compass smoke test"
         owner: "compass"
         pipeline.trigger: "pr-submit"

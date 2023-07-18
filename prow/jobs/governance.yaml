@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pull-busola-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "pr-submit"
@@ -41,6 +42,7 @@ presubmits: # runs on PRs
   kyma-project/community:
     - name: pull-community-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "pr-submit"
@@ -78,6 +80,7 @@ presubmits: # runs on PRs
   kyma-project/examples:
     - name: pull-examples-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "pr-submit"
@@ -115,6 +118,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: kyma-metadata-schema-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "pr-submit"
@@ -157,6 +161,7 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pull-kyma-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "pr-submit"
@@ -225,6 +230,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pull-test-infra-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Looking for broken links in the test-infra repo"
         owner: "technical-writers"
         pipeline.trigger: "pr-submit"
@@ -262,6 +268,7 @@ presubmits: # runs on PRs
   kyma-project/website:
     - name: pull-website-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "pr-submit"
@@ -301,6 +308,7 @@ presubmits: # runs on PRs
   kyma-project/telemetry-manager:
     - name: pull-telemetry-manager-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "pr-submit"
@@ -338,6 +346,7 @@ presubmits: # runs on PRs
   kyma-project/directory-size-exporter:
     - name: pull-directory-size-exporter-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "pr-submit"
@@ -375,6 +384,7 @@ presubmits: # runs on PRs
 periodics: # runs on schedule
     - name: busola-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "periodic"
@@ -411,6 +421,7 @@ periodics: # runs on schedule
   
     - name: community-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "periodic"
@@ -448,6 +459,7 @@ periodics: # runs on schedule
   
     - name: kyma-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "periodic"
@@ -485,6 +497,7 @@ periodics: # runs on schedule
   
     - name: test-infra-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "periodic"
@@ -517,6 +530,7 @@ periodics: # runs on schedule
   
     - name: website-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "periodic"
@@ -553,6 +567,7 @@ periodics: # runs on schedule
   
     - name: documentation-component-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "dead links governance job"
         owner: "technical-writers"
         pipeline.trigger: "periodic"

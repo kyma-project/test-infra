@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-director-gqlgen-validate
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate director graphQL schema was generated"
         owner: "compass"
         pipeline.trigger: "pr-submit"

@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pull-plan-prod-terraform
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Test terraform production environment config"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -45,6 +46,7 @@ postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-apply-prod-terraform
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Apply terraform production environment config."
         owner: "neighbors"
         pipeline.trigger: "pr-merge"

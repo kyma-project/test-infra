@@ -2,6 +2,7 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pull-busola-lighthouse
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Busola performance testing"
         owner: "hasselhoff"
         pipeline.trigger: "pr-submit"

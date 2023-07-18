@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/eventing-manager:
     - name: pull-eventing-manager-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build the eventing manager image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -53,6 +54,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-eventing-manager-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "run unit tests for eventing manager"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -87,6 +89,7 @@ postsubmits: # runs on main
   kyma-project/eventing-manager:
     - name: post-eventing-manager-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build the eventing manager image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"

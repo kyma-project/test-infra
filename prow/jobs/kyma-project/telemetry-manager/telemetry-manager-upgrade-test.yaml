@@ -4,6 +4,7 @@ presubmits:
       annotations:
         description: "Pre-submit job to execute upgrade test."
         owner: "huskies"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       optional: false
       labels:
         preset-dind-enabled: "true"
