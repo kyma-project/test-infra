@@ -6,4 +6,4 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma:
-        - pjName: "post-main-kyma-integration-k3d-app-gateway"
+        - pjName: "pre-main-kyma-integration-k3d-app-gateway"
