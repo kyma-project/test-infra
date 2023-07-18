@@ -644,29 +644,6 @@ templates:
                     - "vm_job_labels_template"
                     - "extra_refs_kyma-local"
               - jobConfig:
-                  name: "post-main-kyma-integration-k3d-app-gateway"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    owner: framefrog
-                    description: "Kyma integration job on k3d for testing application gateway."
-                    testgrid-days-of-results: "60"
-                  labels:
-                    preset-build-main: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
-                    preset-kyma-integration-app-connector-tests-app-gateway: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
                   name: "post-main-kyma-integration-k3d-app-conn-validator"
                   annotations:
                     testgrid-dashboards: kyma_integration
