@@ -571,6 +571,8 @@ postsubmits: # runs on main
         preset-kyma-integration-app-connector-tests-app-gateway: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
         preset-sa-vm-kyma-integration: "true"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -587,18 +589,30 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                k3d cluster create
+                kubectl cluster-info
+                make test -f Makefile.test-application-gateway
+                k3d cluster delete
             resources:
               requests:
-                memory: 100Mi
-                cpu: 50m
+                memory: 1Gi
+                cpu: 500m
+              limits:
+                cpu: 1
+                memory: 4Gi
     - name: post-main-kyma-integration-k3d-app-conn-validator
       annotations:
         description: "Kyma integration job on k3d for testing application connectivity validator."
