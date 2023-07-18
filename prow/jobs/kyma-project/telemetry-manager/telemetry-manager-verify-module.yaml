@@ -17,7 +17,7 @@ presubmits:
       skip_if_only_changed: '^docs/|\.md$|CODEOWNERS|\..*'
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
             command: ["/init.sh"]
             args: ["bash", "-c", "make e2e-deploy-module"]
             requests:
