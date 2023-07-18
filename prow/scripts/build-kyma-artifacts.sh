@@ -28,7 +28,7 @@ function copy_artifacts {
 }
 
 gcp::authenticate \
-  -c "${GOOGLE_APPLICATION_CREDENTIALS}"
+  -c "${SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
 if [ -n "${PULL_NUMBER}" ]; then
@@ -57,8 +57,6 @@ echo "DOCKER_TAG: ${DOCKER_TAG}"
 
 log::info "Content of the local artifacts directory"
 ls -la "${ARTIFACTS}"
-gcp::authenticate \
-  -c "$SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS"
 
 if [ -n "$PULL_NUMBER" ]; then
   copy_artifacts "${KYMA_DEVELOPMENT_ARTIFACTS_BUCKET}/${DOCKER_TAG}"
