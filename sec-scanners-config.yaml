@@ -14,7 +14,6 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230628-80b781e8
     - gcr.io/k8s-prow/gencred:v20230718-0a86ec6744
     - gcr.io/k8s-prow/commenter:v20230718-0a86ec6744
-    - eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     - maven:3.8.6-eclipse-temurin-11
     - gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744

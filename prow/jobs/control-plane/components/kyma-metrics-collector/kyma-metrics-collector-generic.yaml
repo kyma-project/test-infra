@@ -32,7 +32,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: true
               seccompProfile:
@@ -74,7 +74,7 @@ presubmits: # runs on PRs
           base_ref: release-2.16
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: true
               seccompProfile:
@@ -116,7 +116,7 @@ presubmits: # runs on PRs
           base_ref: release-2.15
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: true
               seccompProfile:
@@ -158,7 +158,7 @@ presubmits: # runs on PRs
           base_ref: release-2.14
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: true
               seccompProfile:
