@@ -4,6 +4,7 @@ presubmits:
       annotations:
         description: "Pre-submit job to verify successful deployment of telemetry module."
         owner: "huskies"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       optional: false
       labels:
         preset-dind-enabled: "true"
@@ -16,7 +17,7 @@ presubmits:
       skip_if_only_changed: '^docs/|\.md$|CODEOWNERS|\..*'
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230712-f514770d
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee
             command: ["/init.sh"]
             args: ["bash", "-c", "make e2e-deploy-module"]
             requests:

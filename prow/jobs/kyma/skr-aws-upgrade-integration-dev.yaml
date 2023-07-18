@@ -4,6 +4,7 @@
 periodics: # runs on schedule
     - name: skr-aws-upgrade-integration-dev
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "skr upgrade test on aws"
         owner: "gopher"
         pipeline.clusterprovisioning: "keb"
@@ -28,12 +29,12 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra

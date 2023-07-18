@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-incubator/milv:
     - name: pre-main-kyma-incubator-milv
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Builds milv image"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -15,7 +16,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -52,6 +53,7 @@ postsubmits: # runs on main
   kyma-incubator/milv:
     - name: post-main-kyma-incubator-milv
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Builds milv image"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -63,7 +65,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload

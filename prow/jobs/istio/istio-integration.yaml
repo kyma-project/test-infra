@@ -4,6 +4,7 @@ presubmits:
       annotations:
         owner: goat
         description: Runs integration suite for istio operator
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-integration"
@@ -19,7 +20,7 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230712-f514770d
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -45,6 +46,7 @@ presubmits:
       annotations:
         owner: goat
         description: Runs integration suite for istio operator in evaluation profile
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-integration-evaluation"
@@ -60,7 +62,7 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230712-f514770d
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -88,6 +90,7 @@ postsubmits:
       annotations:
         owner: goat
         description: Runs integration suite for istio operator
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-istio-integration"
@@ -103,7 +106,7 @@ postsubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230712-f514770d
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee
             command: ["/init.sh"]
             securityContext:
               privileged: true

@@ -11,7 +11,7 @@ templates:
               pipeline.clusterprovisioning: keb
               pipeline.installer: keb
               pipeline.test: fast-integration
-            path_alias: github.com/kyma-project/kyma
+            path_alias: github.com/kyma-project/kyma-environment-broker
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration-own-cluster.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
@@ -39,7 +39,7 @@ templates:
               GARDENER_REGION: "eu-central-1"
               GARDENER_ZONES: "eu-central-1b"
         jobConfigs:
-          - repoName: "kyma-project/kyma"
+          - repoName: "kyma-project/kyma-environment-broker"
             jobs:
               - jobConfig:
                   name: "skr-aws-own-cluster-dev"
@@ -47,14 +47,14 @@ templates:
                   annotations:
                     owner: gopher
                     description: skr integration test own cluster
-                  cron: "25 * * * *" # 25 past an hour (for testing), it was: "At 01:05"
+                  cron: "45 1 * * *" # "At 01:45"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"

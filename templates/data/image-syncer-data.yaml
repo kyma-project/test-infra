@@ -30,7 +30,7 @@ templates:
                     description: "Dry-run of sync images from external sources to Kyma owned registry"
                   labels:
                     preset-docker-push-repository: "true"
-                    preset-sa-gcr-push: "true"
+                    preset-sa-kyma-push-images: "true"
                     preset-dind-enabled: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
                   command: "bash"

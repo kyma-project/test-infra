@@ -2,6 +2,7 @@ postsubmits:
   kyma-project/cli:
     - name: post-main-unstable-cli
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Bump reconciler version used by CLI and publish the unstable CLI binaries"
         owner: "jellyfish"
         pipeline.clusterprovisioning: "reconciler"

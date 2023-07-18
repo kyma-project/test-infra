@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/template-operator:
     - name: pull-template-op-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "executes the 'golangci-lint lint' command in the template-operator repository before any pull request."
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -38,6 +39,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-template-op-tests
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "template operator test"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -47,7 +49,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^.*.go|^.*.sh|^go.mod|^go.sum|^Makefile'
       skip_report: false
       decorate: true
@@ -74,6 +76,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-build-template-operator
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "template operator build"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -124,6 +127,7 @@ postsubmits: # runs on main
   kyma-project/template-operator:
     - name: main-template-op-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "template operator build"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"

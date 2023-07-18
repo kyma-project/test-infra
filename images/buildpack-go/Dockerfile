@@ -43,7 +43,7 @@ COPY --from=deps /go/bin/kubebuilder /usr/local/bin/kubebuilder
 COPY --from=deps /go/bin/kustomize /usr/local/bin/kustomize
 COPY --from=deps /usr/bin/docker-credential-gcr /usr/bin/docker-credential-gcr
 COPY --from=tools /go/bin/jobguard /usr/local/bin/jobguard
-USER prow:prow
+#USER prow:prow
 
 RUN docker-credential-gcr configure-docker --registries=eu.gcr.io,europe-docker.pkg.dev
 

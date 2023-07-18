@@ -14,7 +14,7 @@ postsubmits:
         serviceAccountName: gencred-refresher
         containers:
           - name: gencred
-            image: gcr.io/k8s-prow/gencred:v20230713-d5dc4d260b
+            image: gcr.io/k8s-prow/gencred:v20230718-0a86ec6744
             command:
               - gencred
             args:
@@ -28,6 +28,7 @@ postsubmits:
         owner: neighbors
         description: "Refresh kubeconfigs for workload clusters after config change"
         testgrid-create-test-group: "false"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
 
 periodics:
   - cron: "17 */6 * * *" # Every 6 hours at 17 minutes past the hour
@@ -35,6 +36,7 @@ periodics:
     annotations:
       owner: neighbors
       description: "Periodic refresh kubeconfigs for workload clusters"
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "ci-gencred-refresh-kubeconfigs"
@@ -49,7 +51,7 @@ periodics:
       serviceAccountName: gencred-refresher
       containers:
         - name: gencred
-          image: gcr.io/k8s-prow/gencred:v20230713-d5dc4d260b
+          image: gcr.io/k8s-prow/gencred:v20230718-0a86ec6744
           command:
             - gencred
           args:
