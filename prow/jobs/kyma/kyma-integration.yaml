@@ -258,7 +258,7 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh serverless-integration
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh serverless-integration simple-tracing
 "
             env:
               - name: KYMA_SOURCES_DIR

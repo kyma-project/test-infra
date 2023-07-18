@@ -16,7 +16,7 @@ if [[ -z $REGISTRY_VALUES ]]; then
   export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000"
 fi
 
-export INTEGRATION_SUITE=${1:-serverless-integration}
+export INTEGRATION_SUITE=$@
 
 echo "--> Installing kyma-cli"
 install::kyma_cli
@@ -51,7 +51,8 @@ sleep 60
 ########
 
 set +o errexit
-run_tests "${INTEGRATION_SUITE}" "${KYMA_SOURCES_DIR}"
+
+run_tests "${INTEGRATION_SUITE}"
 TEST_STATUS=$?
 set -o errexit
 
