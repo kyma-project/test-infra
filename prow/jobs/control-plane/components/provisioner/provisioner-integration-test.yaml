@@ -1,6 +1,6 @@
 presubmits: # runs on PRs
   kyma-project/control-plane:
-    - name: pre-main-provisioner-integration-tests
+    - name: pre-main-provisioner-e2e-tests
       annotations:
         description: "It tests the component's correctness"
         owner: framefrog
@@ -9,7 +9,7 @@ presubmits: # runs on PRs
         pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-provisioner-integration-tests"
+        prow.k8s.io/pubsub.runID: "pre-main-provisioner-e2e-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
