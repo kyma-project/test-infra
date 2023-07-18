@@ -11,7 +11,7 @@ templates:
               - jobConfig:
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
                   name: pull-lifecycle-mgr-lint # "pre-main-lifecycle-manager-lint"
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: '^(go.mod|go.sum|Makefile|.*.sh)$|^.*\.go$'
                   annotations:
                     owner: jellyfish
                     description: executes the 'golangci-lint lint' command before any pull request.
@@ -26,7 +26,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: '^(go.mod|go.sum|Makefile|.*.sh)$|^.*\.go$'
                   name: pull-lifecycle-mgr-tests # pre-main-lifecycle-manager-tests
                   annotations:
                     owner: jellyfish
