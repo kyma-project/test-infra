@@ -1,0 +1,9 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      kyma:
+        prNumber: 17850
+  prowJobs:
+    kyma-project:
+      kyma:
+        - pjName: "post-main-kyma-integration-k3d-app-gateway"
