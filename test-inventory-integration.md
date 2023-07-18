@@ -15,7 +15,6 @@
 | pre-main-kyma-prod-istio-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-istio-reconcilation-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | post-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
-| post-main-kyma-integration-k3d-app-gateway | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | post-main-kyma-integration-k3d-app-conn-validator | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
 | kyma-integration-k3d | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
