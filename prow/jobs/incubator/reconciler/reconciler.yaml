@@ -145,7 +145,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230712-f514770d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -198,7 +198,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230712-f514770d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -253,7 +253,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230712-f514770d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -309,7 +309,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230712-f514770d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -350,7 +350,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -604,7 +604,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230712-f514770d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -657,7 +657,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230712-f514770d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -799,7 +799,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-incubator: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -870,7 +870,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230713-d5dc4d260b"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230718-0a86ec6744"
             securityContext:
               privileged: false
               seccompProfile:
