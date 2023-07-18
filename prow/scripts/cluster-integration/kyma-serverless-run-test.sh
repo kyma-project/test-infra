@@ -4,7 +4,7 @@ set -o pipefail # Fail a pipe if any sub-command fails.
 
 run_tests() {
   export SERVERLESS_OVERRIDES_DIR="./overrides"
-  export INTEGRATION_SUITE=($@)
+  export INTEGRATION_SUITE=("$@")
 
   date
 
