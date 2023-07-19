@@ -12,15 +12,15 @@ resource "google_container_cluster" "trusted_workload" {
     workload_pool = "${var.gcp_project_id}.svc.id.goog"
   }
   resource_labels = {
-    business_tag = "corporate"
-    exposure_tag = "internet_ingress"
+    business_tag  = "corporate"
+    exposure_tag  = "internet_ingress"
     landscape_tag = "production"
-    name_cluster = "trusted-workload-kyma-prow"
+    name_cluster  = "trusted-workload-kyma-prow"
   }
 }
 
-resource "google_container_node_pool" "preemptible_standard_pool" {
-  name    = "standard-pool"
+resource "google_container_node_pool" "prowjobs_pool" {
+  name    = "prowjobs-pool"
   cluster = google_container_cluster.trusted_workload.id
   autoscaling {
     max_node_count  = 16
@@ -38,15 +38,28 @@ resource "google_container_node_pool" "preemptible_standard_pool" {
       disable-legacy-endpoints = "true"
     }
     labels = {
-      workload = "prow-jobs"
+      workload = "prowjobs"
     }
+    taint {
+      effect = "NO_EXECUTE"
+      key    = "prow.k8s.io/jobs"
+      value  = ""
+    }
+  }
+  management {
+    auto_repair = true
+    auto_upgrade = true
   }
 }
 
-resource "google_container_node_pool" "general_trusted" {
+resource "google_container_node_pool" "components_pool" {
   cluster = google_container_cluster.trusted_workload.id
-  name = "general-pool"
-  node_count = 1
+  name = "components-pool"
+  autoscaling {
+    max_node_count = 2
+    min_node_count = 1
+    location_policy = "ANY"
+  }
   node_config {
     workload_metadata_config {
       mode = "GKE_METADATA"
@@ -57,7 +70,12 @@ resource "google_container_node_pool" "general_trusted" {
       disable-legacy-endpoints = "true"
     }
     labels = {
-      workload = "general-purpose"
+      workload = "components"
+    }
+    taint {
+      effect = "NO_SCHEDULE"
+      key    = "components.gke.io/gke-managed-components"
+      value  = "true"
     }
   }
 }
