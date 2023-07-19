@@ -1,10 +1,10 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      kyma:
-        - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
+      kyma-environment-broker:
+        - pjName: "skr-aws-own-cluster-dev"
 
 prConfigs:
   kyma-project:
-    kyma:
-      prNumber: 17831
+    kyma-environment-broker:
+      prNumber: 11
