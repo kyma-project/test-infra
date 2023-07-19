@@ -44,9 +44,10 @@ presubmits:
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "/bin/bash"
+              - "/init.sh"
             args:
-              - -c
+              - "bash"
+              - "-c"
               - |
                 set -e
                 k3d registry create k3d-registry --port 5000
@@ -109,9 +110,10 @@ postsubmits:
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "/bin/bash"
+              - "/init.sh"
             args:
-              - -c
+              - "bash"
+              - "-c"
               - |
                 set -e
                 k3d registry create k3d-registry --port 5000
