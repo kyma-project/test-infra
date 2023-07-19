@@ -31,16 +31,20 @@ postsubmits:
         slack:
           channel: jellyfish-notifications
       spec:
+        serviceAccountName: sa-gcr-push
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
-            command: [ "/init.sh" ]
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud
+            command: [ "bash" ]
             securityContext:
               privileged: true
               seccompProfile:
                 type: Unconfined
               allowPrivilegeEscalation: true
             args:
-              - ./prow/publish-unstable-cli.sh
+              - -c
+              - |-
+                make build
+                gsutil cp bin/* gs://kyma-cli-unstable
             resources:
               requests:
                 cpu: 1
