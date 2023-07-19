@@ -33,7 +33,7 @@ postsubmits:
       spec:
         serviceAccountName: sa-gcr-push
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
             command: [ "bash" ]
             securityContext:
               privileged: true
@@ -43,6 +43,7 @@ postsubmits:
             args:
               - -c
               - |-
+                export KYMA_CLI_UNSTABLE_BUCKET=gs://kyma-cli-unstable
                 make build
                 gsutil cp bin/* gs://kyma-cli-unstable
             resources:
