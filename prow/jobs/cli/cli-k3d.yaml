@@ -45,8 +45,8 @@ postsubmits:
               - |-
                 export KYMA_CLI_UNSTABLE_BUCKET=gs://kyma-cli-unstable
                 export UNSTABLE=true
-                make build
-                make upload-binaries
+                echo "Uploading CLI binaries to ${KYMA_CLI_UNSTABLE_BUCKET}"
+                make ci-publish
             resources:
               requests:
                 cpu: 1
