@@ -42,3 +42,22 @@ resource "google_container_node_pool" "preemptible_standard_pool" {
     }
   }
 }
+
+resource "google_container_node_pool" "general_trusted" {
+  cluster = google_container_cluster.trusted_workload.id
+  name = "general-pool"
+  node_count = 1
+  node_config {
+    workload_metadata_config {
+      mode = "GKE_METADATA"
+    }
+    preemptible = true
+    machine_type = "e2-medium"
+    metadata = {
+      disable-legacy-endpoints = "true"
+    }
+    labels = {
+      workload = "general-purpose"
+    }
+  }
+}

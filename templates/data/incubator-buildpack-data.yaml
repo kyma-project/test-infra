@@ -147,7 +147,7 @@ templates:
             annotations:
               pipeline.installer: reconciler
           reconciler_e2e_image:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a
             securityContext: #temporary we need permissions to create files before transfer them to remote vm
               runAsRoot: true
         jobConfigs:
