@@ -4,8 +4,7 @@ set -o pipefail # Fail a pipe if any sub-command fails.
 
 run_tests() {
   export SERVERLESS_OVERRIDES_DIR="./overrides"
-  export INTEGRATION_SUITE=${1:-serverless-integration}
-  export KYMA_SOURCES_DIR=${2:-./kyma}
+  export INTEGRATION_SUITE=("$@")
 
   date
 
@@ -19,6 +18,6 @@ run_tests() {
   export PATH=${PATH}:/usr/local/go/bin
 
   export APP_TEST_CLEANUP="onSuccessOnly"
-  (cd "${KYMA_SOURCES_DIR}/tests/function-controller" && make "${INTEGRATION_SUITE}")
+  (cd "${KYMA_SOURCES_DIR}/tests/function-controller" && make "${INTEGRATION_SUITE[@]}")
   return $?
 }
