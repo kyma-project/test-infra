@@ -16,6 +16,7 @@ postsubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
+        preset-sa-vm-kyma-integration: "true"
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -31,7 +32,6 @@ postsubmits:
         slack:
           channel: jellyfish-notifications
       spec:
-        serviceAccountName: sa-gcr-push
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a
             command: [ "bash" ]
@@ -44,8 +44,9 @@ postsubmits:
               - -c
               - |-
                 export KYMA_CLI_UNSTABLE_BUCKET=gs://kyma-cli-unstable
+                export UNSTABLE=true
                 make build
-                gsutil cp bin/* gs://kyma-cli-unstable
+                make upload-binaries
             resources:
               requests:
                 cpu: 1
