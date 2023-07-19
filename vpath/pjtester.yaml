@@ -1,5 +1,10 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      kyma-environment-broker:
-        - pjName: "skr-aws-upgrade-integration-dev"
+      kyma:
+        - pjName: "pre-main-kyma-gardener-gcp-eventing-upgrade"
+
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 17831

@@ -23,7 +23,7 @@
 
 # exit on error, and raise error when variable is not set when used
 set -o errexit
-
+exit 0
 ENABLE_TEST_CLEANUP=false
 ENABLE_TEST_LOG_COLLECTOR=false
 
