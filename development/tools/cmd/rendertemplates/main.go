@@ -58,10 +58,10 @@ var (
 		"hasPeriodic":      hasPeriodic,
 		"getRunId":         getRunID,
 	}
-	commentSignByFileExt = map[string]sets.String{
-		"//": sets.NewString(".go"),
-		"> ": sets.NewString(".md"),
-		"#":  sets.NewString(".yaml", ".yml"),
+	commentSignByFileExt = map[string]sets.Set[string]{
+		"//": sets.New[string](".go"),
+		"> ": sets.New[string](".md"),
+		"#":  sets.New[string](".yaml", ".yml"),
 	}
 )
 
