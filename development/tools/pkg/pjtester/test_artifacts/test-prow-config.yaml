@@ -801,13 +801,6 @@ presets:
       - name: STABLE
         value: "true"
   - labels:
-      preset-kyma-cli-unstable: "true"
-    env:
-      - name: KYMA_CLI_UNSTABLE_BUCKET
-        value: gs://kyma-cli-unstable
-      - name: UNSTABLE
-        value: "true"
-  - labels:
       preset-kyma-cli-pr-unstable: "true"
     env:
       - name: KYMA_CLI_PR_UNSTABLE_BUCKET
