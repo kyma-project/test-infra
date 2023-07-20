@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-main-control-plane-reconciler-e2e
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "control-plane reconciler e2e test"
         owner: "jellyfish"
         pipeline.platform: "gardener_gcp"
@@ -61,15 +62,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-control-plane-reconciler-e2e-latest-release
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "control-plane reconciler e2e test"
         owner: "jellyfish"
         pipeline.platform: "gardener_gcp"
@@ -129,11 +124,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

@@ -4,6 +4,7 @@ presubmits:
       annotations:
         description: "Pre-submit job to execute upgrade test."
         owner: "huskies"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       optional: false
       labels:
         preset-dind-enabled: "true"
@@ -16,7 +17,7 @@ presubmits:
       run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/'
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
             command: ["/init.sh"]
             args: ["bash", "-c", "make upgrade-test"]
             requests:

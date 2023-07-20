@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-validate-dockerfiles
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate Dockerfiles"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -50,11 +51,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

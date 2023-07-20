@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-schema-migrator-validate
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate new DB schema migrations"
         owner: "compass"
         pipeline.trigger: "pr-submit"
@@ -17,7 +18,7 @@ presubmits: # runs on PRs
         preset-docker-push-repository-kyma: "true"
         preset-kyma-development-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^components/schema-migrator/'
       skip_report: false
       decorate: true
@@ -42,21 +43,17 @@ presubmits: # runs on PRs
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-compass-generic.sh"
+              - "installation/scripts/prow/jobs/validate-compass-generic.sh"
             args:
               - "--component"
               - "schema-migrator"
               - "--command"
               - "make validate"
+            env:
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

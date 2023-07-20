@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-check-users-map
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Check pull request authors are present in users map file"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -44,11 +45,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

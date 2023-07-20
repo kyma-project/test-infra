@@ -13,9 +13,6 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            branches:
-              - "^master$"
-              - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
@@ -61,9 +58,13 @@ templates:
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230718-0d88cd1a"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
+          job_module_build:
+            labels:
+              preset-sa-kyma-push-images: "true"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
@@ -72,8 +73,6 @@ templates:
                   annotations:
                     owner: goat
                     description: build istio module image
-                  labels:
-                    preset-sa-kyma-push-images: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
@@ -85,15 +84,16 @@ templates:
                     - "hack/ci"
                     - "all" # run test make target of operator
                   branches:
-                    - ^main$ # any pr against main triggers this
+                    - ^main$
+                    - ^release-\d+\.\d+$
                 inheritedConfigs:
                   global:
-                    - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_presubmit
                   local:
                     - job_default
                     - job_skip_config
+                    - job_module_build
               - jobConfig:
                   name: post-istio-module-build
                   annotations:
@@ -111,16 +111,16 @@ templates:
                     - "hack/ci"
                     - "all"
                   branches:
-                    - ^main$ # any pr against main triggers this
+                    - ^main$
                 inheritedConfigs:
                   global:
-                    - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - jobConfig_slack_goat
                   local:
                     - job_default
                     - job_skip_config
+                    - job_module_build
               - jobConfig:
                   name: rel-istio-build
                   always_run: true
@@ -152,10 +152,12 @@ templates:
                     description: builds istio module template on release
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
+                  labels:
+                    preset-sa-kyma-push-images: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod"
-                    IMG: "europe-docker.pkg.dev/kyma-project/dev/istio-manager:${PULL_BASE_REF}"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_REF}"
                   command: "make"
                   args:
                     - "-C"
@@ -163,12 +165,12 @@ templates:
                     - "all"
                 inheritedConfigs:
                   global:
-                    - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - jobConfig_slack_goat
                   local:
                     - job_default
+                    - job_module_build
               - jobConfig:
                   name: pull-istio-operator-build
                   annotations:
@@ -179,6 +181,9 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                  branches:
+                    - ^main$
+                    - ^release-\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
@@ -199,6 +204,8 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
+                  branches:
+                    - ^main$
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
@@ -216,6 +223,9 @@ templates:
                   command: "make"
                   args:
                     - "gardener-istio-integration-test"
+                  branches:
+                    - ^main$
+                    - ^release-\d+\.\d+$
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -254,6 +264,9 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
+                  securityContext: #temporary we need permissions to create folders for tooling, see `make install`
+                    runAsRoot: true
                   command: "make"
                   args:
                     - "gardener-perf-test"
@@ -282,4 +295,3 @@ templates:
                     - jobConfig_slack_goat
                   local:
                     - job_default
-                    - e2e

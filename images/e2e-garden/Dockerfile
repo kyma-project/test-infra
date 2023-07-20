@@ -36,6 +36,6 @@ FROM base
 
 COPY --from=tools /go/bin/jobguard /usr/local/bin/jobguard
 
-USER prow:prow
+#USER prow:prow
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]

@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-validate-scripts
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate scripts."
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -33,6 +34,7 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-test-infra-validate-prow-tools
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate prow tools"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -67,15 +69,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-test-infra-validate-image-url-helper
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate image url helper tool"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -110,15 +106,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-test-infra-validate-prowjobparser
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate prowjobparser tool"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -153,15 +143,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-test-infra-validate-generated-files
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate rendertemplate generated files"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -193,15 +177,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-test-infra-validate-dockerfiles
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate Dockerfiles, run hadolint."
         owner: "neighbors"
         pipeline.trigger: "pr-submit"

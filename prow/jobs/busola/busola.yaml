@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pull-busola-local-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building Busola local image and push to GCR"
         owner: "hasselhoff"
         pipeline.trigger: "pr-submit"
@@ -48,13 +49,6 @@ presubmits: # runs on PRs
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: config
             configMap:
@@ -67,6 +61,7 @@ postsubmits: # runs on main
   kyma-project/busola:
     - name: post-busola-local-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building Busola local image and push to GCR"
         owner: "hasselhoff"
         pipeline.trigger: "pr-merge"
@@ -113,13 +108,6 @@ postsubmits: # runs on main
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: config
             configMap:

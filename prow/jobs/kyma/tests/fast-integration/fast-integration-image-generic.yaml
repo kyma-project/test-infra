@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -15,7 +16,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
@@ -46,15 +47,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-rel216-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -65,7 +60,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
@@ -95,15 +90,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-rel215-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -114,7 +103,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
@@ -144,15 +133,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-rel214-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -163,7 +146,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
@@ -193,18 +176,12 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
@@ -216,7 +193,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
@@ -247,15 +224,9 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-rel216-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
@@ -267,7 +238,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
@@ -297,15 +268,9 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-rel215-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
@@ -317,7 +282,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
@@ -347,15 +312,9 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-rel214-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
@@ -367,7 +326,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
@@ -397,11 +356,4 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

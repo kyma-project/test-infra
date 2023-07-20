@@ -7,6 +7,7 @@ presubmits: # runs on PRs
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-runtime-agent"
@@ -15,7 +16,7 @@ presubmits: # runs on PRs
         preset-kyma-integration-compass-dev: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
-      run_if_changed: '^((resources/compass-runtime-agent\S+|installation\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      run_if_changed: '^((resources/compass-runtime-agent\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
@@ -52,6 +53,7 @@ postsubmits: # runs on main
         pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-runtime-agent"

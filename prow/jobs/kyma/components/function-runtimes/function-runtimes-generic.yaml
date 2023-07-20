@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-function-java17-jvm-alpha-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function java 17 build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -53,6 +54,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-function-runtimes-nodejs-v16-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function nodejs16 build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -101,6 +103,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-function-runtimes-nodejs-v18-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function nodejs18 build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -149,6 +152,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-function-runtimes-python39-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function python3.9 build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -200,6 +204,7 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-function-java17-jvm-alpha-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function java 17 build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -250,6 +255,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-function-runtimes-nodejs-v16-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function nodejs16 build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -300,6 +306,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-function-runtimes-nodejs-v18-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function nodejs18 build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -350,6 +357,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-function-controller-python39-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function pytho3.9 build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"

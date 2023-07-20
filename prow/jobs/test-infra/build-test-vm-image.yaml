@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pull-build-test-vm-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build Google Cloud VM template image for test-vm-image"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -38,15 +39,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-test-k3d-on-vm-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Test k3d installation on Google Cloud VM template image for test-vm-image"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -80,18 +75,12 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-build-test-vm-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build Google Cloud VM template image for test-vm-image"
         owner: "neighbors"
         pipeline.trigger: "pr-merge"
@@ -126,11 +115,4 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

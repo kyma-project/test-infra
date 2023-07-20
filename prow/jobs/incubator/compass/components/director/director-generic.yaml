@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pull-director-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building Director Compass component"
         owner: "compass"
         pipeline.trigger: "pr-submit"
@@ -58,13 +59,6 @@ presubmits: # runs on PRs
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: share
           - name: config
@@ -75,6 +69,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-director-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Linter for the Compass Director component"
         owner: "compass"
         pipeline.trigger: "pr-submit"
@@ -107,6 +102,7 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-director-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Run unit tests for the Director Compass component"
         owner: "compass"
         pipeline.trigger: "pr-submit"
@@ -142,6 +138,7 @@ postsubmits: # runs on main
   kyma-incubator/compass:
     - name: post-director-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building Director Compass component after merge"
         owner: "compass"
         pipeline.trigger: "pr-merge"
@@ -196,13 +193,6 @@ postsubmits: # runs on main
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: share
           - name: config

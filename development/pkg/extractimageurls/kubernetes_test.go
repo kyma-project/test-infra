@@ -69,49 +69,6 @@ spec:
         targetPort: 8080`,
 		},
 		{
-			Name:           "tekton deployment, pass",
-			WantErr:        false,
-			ExpectedImages: []string{"gcr.io/tekton-releases/github.com/tektoncd/dashboard/cmd/dashboard:v0.34.0@sha256:3b62e3d2423d28200f4125852c89b23a0725b89af355c4768d60d45d8c30fc47"},
-			FileContent: `apiVersion: apps/v1
-kind: Deployment
-metadata:
-  labels:
-    app: tekton-dashboard
-    app.kubernetes.io/component: dashboard
-    app.kubernetes.io/instance: default
-    app.kubernetes.io/name: dashboard
-    app.kubernetes.io/part-of: tekton-dashboard
-    app.kubernetes.io/version: v0.34
-    dashboard.test.dev/release: v0.34
-    version: v0.34.0
-  name: tekton-dashboard
-  namespace: tekton-pipelines
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app.kubernetes.io/component: dashboard
-      app.kubernetes.io/instance: default
-      app.kubernetes.io/name: dashboard
-      app.kubernetes.io/part-of: tekton-dashboard
-  template:
-    metadata:
-      labels:
-        app: tekton-dashboard
-        app.kubernetes.io/component: dashboard
-        app.kubernetes.io/instance: default
-        app.kubernetes.io/name: dashboard
-        app.kubernetes.io/part-of: tekton-dashboard
-        app.kubernetes.io/version: v0.34.0
-      name: tekton-dashboard
-    spec:
-      containers:
-        - args:
-            - --port=1000
-          image: gcr.io/tekton-releases/github.com/tektoncd/dashboard/cmd/dashboard:v0.34.0@sha256:3b62e3d2423d28200f4125852c89b23a0725b89af355c4768d60d45d8c30fc47
-`,
-		},
-		{
 			Name:           "complex file with multiple resources, pass",
 			WantErr:        false,
 			ExpectedImages: []string{"test-image:test"},

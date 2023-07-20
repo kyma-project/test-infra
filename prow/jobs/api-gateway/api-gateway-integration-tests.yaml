@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/api-gateway:
     - name: pull-api-gateway-integration-aws
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs api-gateway integration tests on Gardener AWS cluster"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -54,18 +55,12 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/api-gateway:
     - name: post-api-gateway-integration-aws
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs api-gateway integration tests on Gardener AWS cluster"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -117,15 +112,9 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-api-gateway-custom-domain-integration-gcp
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs api-gateway integration tests with custom domain handling on Gardener GCP cluster"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -172,15 +161,9 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-api-gateway-custom-domain-integration-aws
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs api-gateway integration tests with custom domain handling on Gardener AWS cluster"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -227,11 +210,4 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

@@ -31,6 +31,7 @@ global:
         - name: "template-repository"
         - name: "rafter"
         - name: "btp-manager"
+        - name: "kyma-environment-broker"
         - name: "telemetry-manager"
         - name: "director-size-exporter"
         - name: "compass-manager"
@@ -104,13 +105,6 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    nodeSelector:
-      dedicated: high-cpu
-    tolerations:
-      - key: dedicated
-        value: high-cpu
-        operator: Equal
-        effect: NoSchedule
     image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     command: "/image-builder"
     request_memory: "1.5Gi"
@@ -181,7 +175,7 @@ globalSets:
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230718-0d88cd1a"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
   image_buildpack-golang-kubebuilder2:
@@ -196,6 +190,8 @@ globalSets:
     image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
   image_image_detector:
     image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230718-ba0c1ed7"
+  image_e2e-dind-k3d:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -212,13 +208,6 @@ globalSets:
     request_cpu: "2"
     cluster_presubmit: "untrusted-workload"
     cluster_postsubmit: "trusted-workload"
-    nodeSelector:
-      dedicated: high-cpu
-    tolerations:
-      - key: dedicated
-        value: high-cpu
-        operator: Equal
-        effect: NoSchedule
     <<: *pubsub_config
   jobConfig_kyma20_docu:
     skip_report: "false"
@@ -235,27 +224,23 @@ globalSets:
     request_cpu: "0.8"
     cluster_presubmit: "untrusted-workload"
     cluster_postsubmit: "trusted-workload"
-    nodeSelector:
-      dedicated: high-cpu
-    tolerations:
-      - key: dedicated
-        value: high-cpu
-        operator: Equal
-        effect: NoSchedule
     <<: *pubsub_config
   jobConfig_presubmit:
     annotations:
       pipeline.trigger: pr-submit
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"  
     type_presubmit: "true"
     cluster: "untrusted-workload"
   jobConfig_postsubmit:
     annotations:
       pipeline.trigger: pr-merge
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"  
     type_postsubmit: "true"
     cluster: "trusted-workload"
   jobConfig_periodic:
     annotations:
       pipeline.trigger: periodic
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"  
     type_periodic: "true"
     cluster: "untrusted-workload"
   unprivileged:
@@ -294,7 +279,7 @@ globalSets:
         type: Unconfined
     labels:
       preset-dind-enabled: "true"
-      preset-sa-gcr-push: "true"
+      preset-sa-kyma-push-images: "true"
       preset-kyma-kms-sign-key: "true"
     command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
   jobConfig_generic_component_kyma:
@@ -371,6 +356,13 @@ globalSets:
           repo: "btp-manager"
           path_alias: "github.com/kyma-project/btp-manager"
           base_ref: "main"
+  extra_refs_kyma-environment-broker:
+    extra_refs:
+      kyma-environment-broker:
+        - org: "kyma-project"
+          repo: "kyma-environment-broker"
+          path_alias: "github.com/kyma-project/kyma-environment-broker"
+          base_ref: "main"
   # labels sets
   build_labels:
     securityContext:
@@ -379,7 +371,7 @@ globalSets:
         type: "Unconfined"
     labels:
       preset-dind-enabled: "true"
-      preset-sa-gcr-push: "true"
+      preset-sa-kyma-push-images: "true"
       preset-docker-push-repository-kyma: "true"
   # gardener configs
   gardener_gcp_job:

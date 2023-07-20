@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-smoke-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Compass smoke test"
         owner: "compass"
         pipeline.trigger: "pr-submit"
@@ -15,9 +16,11 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-k3d-enabled: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-development-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^(chart|installation)/'
       skip_report: false
       decorate: true
@@ -35,26 +38,23 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
             securityContext:
               privileged: true
               seccompProfile:
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-compass-smoke-test.sh"
+              - "/init.sh"
+            args:
+              - "installation/scripts/prow/jobs/provision-compass-smoke-test.sh"
             env:
               - name: GO111MODULE
                 value: "on"
+              - name: KYMA_PROJECT_DIR
+                value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

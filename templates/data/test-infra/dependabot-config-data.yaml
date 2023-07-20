@@ -76,12 +76,6 @@ templates:
                   local:
                     - "dailyDockerEcosystem"
               - jobConfig:
-                  directory: "/prow/images/prow-tools"
-                  commitMsgPrefix: "prow-tools"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
                   directory: "/development/tools/cmd/githubrelease"
                   # commit message can be 15 characters max
                   commitMsgPrefix: "githubrelease"
@@ -105,30 +99,6 @@ templates:
                   directory: "/development/test-log-collector"
                   # commit message can be 15 characters max
                   commitMsgPrefix: "test-log-coll"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/prow/images/bootstrap"
-                  commitMsgPrefix: "bootstrap"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/prow/images/buildpack-golang"
-                  commitMsgPrefix: "bp-golang"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/prow/images/buildpack-node"
-                  commitMsgPrefix: "bp-node"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/prow/images/cleaner"
-                  commitMsgPrefix: "cleaner"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"

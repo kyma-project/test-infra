@@ -14,6 +14,7 @@ RUN set -eux; \
     curl \
     iptables \
     build-essential \
+    jq \
     libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb && \
     curl -sL https://get.docker.com | sh - && \
     update-alternatives --set iptables /usr/sbin/iptables-legacy && \
@@ -40,7 +41,7 @@ WORKDIR /workspace
 
 FROM golang:1.20.4 AS go-deps
 ENV CGO_ENABLED=0
-ARG K3D_VERSION=v5.4.9
+ARG K3D_VERSION=v5.5.1
 
 RUN apt-get install --no-install-recommends -y curl
 
@@ -53,7 +54,7 @@ RUN curl -Lso install.sh https://raw.githubusercontent.com/k3d-io/k3d/main/insta
 #ARG KIND_VERSION=v0.18.0
 #RUN go install sigs.k8s.io/kind@${KIND_VERSION}
 
-ARG CLUSTER_VERSION=v1.26.3
+ARG CLUSTER_VERSION=v1.26.6
 RUN curl -Lo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${CLUSTER_VERSION}/bin/linux/$(go env GOARCH)/kubectl" && \
     chmod +x /usr/local/bin/kubectl
 

@@ -4,6 +4,7 @@
 periodics: # runs on schedule
     - name: kyma-gardener-cleanup
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of Gardener clusters"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -45,11 +46,4 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

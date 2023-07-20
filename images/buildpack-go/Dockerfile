@@ -17,10 +17,10 @@ RUN adduser -D prow
 
 FROM base AS deps
 
-ARG KUSTOMIZE_VERSION=v5.0.3
-ARG KUBEBUILDER_VERSION=v3.10.0
+ARG KUSTOMIZE_VERSION=v5.1.0
+ARG KUBEBUILDER_VERSION=v3.11.0
 ARG KO_VERSION=cbb93deee1953c1e9d5f974abd62a96676aa68f9
-ARG DOCKER_CREDENTIAL_GCR_VERSION=2.1.8
+ARG DOCKER_CREDENTIAL_GCR_VERSION=2.1.10
 
 RUN set -eux; \
     curl -L -o kubebuilder "https://github.com/kubernetes-sigs/kubebuilder/releases/download/${KUBEBUILDER_VERSION}/kubebuilder_$(go env GOOS)_$(go env GOARCH)" && \
@@ -43,7 +43,7 @@ COPY --from=deps /go/bin/kubebuilder /usr/local/bin/kubebuilder
 COPY --from=deps /go/bin/kustomize /usr/local/bin/kustomize
 COPY --from=deps /usr/bin/docker-credential-gcr /usr/bin/docker-credential-gcr
 COPY --from=tools /go/bin/jobguard /usr/local/bin/jobguard
-USER prow:prow
+#USER prow:prow
 
 RUN docker-credential-gcr configure-docker --registries=eu.gcr.io,europe-docker.pkg.dev
 

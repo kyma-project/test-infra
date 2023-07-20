@@ -2,23 +2,23 @@ files-to-ignore: ["/vendor/"]
 timeout: 60
 request-repeats: 5
 files:
-  - path: "./test-infra/development/tools/cmd/clusterscollector/README.md"
+  - path: "./development/tools/cmd/clusterscollector/README.md"
     config:
       internal-links-to-ignore: ["pr|commit"]
-  - path: "./test-infra/.github/ISSUE_TEMPLATE/security-vulnerability.md"
+  - path: "./.github/ISSUE_TEMPLATE/security-vulnerability.md"
     config:
       internal-links-to-ignore: ["{CVSS"]
       external-links-to-ignore: ["https://www.first.org/cvss/calculator/3.0#CVSS:3.0/AV:N/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:N"]
-  - path: "./test-infra/docs/prow/prow-k8s-testgrid.md"
+  - path: "./docs/prow/prow-k8s-testgrid.md"
     config:
       external-links-to-ignore: ["https://github.com/kyma-project/test-infra/blob/60493dd61d77da363b8758b7e4c94f25d4b36501/prow/jobs/test-infra/test-infra-kind.yaml#L80-L83"]
-  - path: "./test-infra/docs/prow/prow-architecture.md"
+  - path: "./docs/prow/prow-architecture.md"
     config:
       external-links-to-ignore: ["https://status.build.kyma-project.io/hook"]
-  - path: "./test-infra/docs/prow/prow-monitoring.md"
+  - path: "./docs/prow/prow-monitoring.md"
     config:
       external-links-to-ignore: ["https://monitoring.build.kyma-project.io/login", "https://monitoring.build.kyma-project.io"]
-  - path: "./test-infra/prow/cluster/resources/external-secrets/README.md"
+  - path: "./prow/cluster/resources/external-secrets/README.md"
     config:
       external-links-to-ignore: ["https://external-secrets.github.io/kubernetes-external-secrets"]
 

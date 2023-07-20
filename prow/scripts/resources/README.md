@@ -21,6 +21,6 @@ It is administrator's responsibility to provide syntactically correct scrape con
 ## Debug commando
 
 Debug commando is a pod with debugging tools. It contains an oomfinder container which listens for oom events published by the containerisation engine. Oomfinder requires a privileged context. To allow this, the debug commando pod is running under a `gardener.cloud:psp:privileged` policy. To use debug commando, follow these steps: 
-* Make sure your Prow job calls [utils::debug_oom](https://github.com/kyma-project/test-infra/blob/732e1fc8cc887d4328ce457c7af9566fae79be97/prow/scripts/lib/utils.sh#L317) just after creating a k8s cluster.
-* Make sure your Prow job calls [utils::oom_get_output](https://github.com/kyma-project/test-infra/blob/732e1fc8cc887d4328ce457c7af9566fae79be97/prow/scripts/lib/utils.sh#L295) as a last step before cluster cleanup begins.
+* Make sure your Prow job calls [utils::debug_oom](https://github.com/kyma-project/test-infra/blob/732e1fc8cc887d4328ce457c7af9566fae79be97/prow/scripts/lib/utils.sh) just after creating a k8s cluster.
+* Make sure your Prow job calls [utils::oom_get_output](https://github.com/kyma-project/test-infra/blob/732e1fc8cc887d4328ce457c7af9566fae79be97/prow/scripts/lib/utils.sh) as a last step before cluster cleanup begins.
 * Label your Prow job with `preset-debug-commando-oom: "true"`.

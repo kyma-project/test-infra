@@ -9,12 +9,7 @@ See an overview of the Prow production cluster, its components, and interactions
 ![Prow architecture overview](./assets/prow-architecture.svg)
 
 ## Provisioning and Secrets
-The [set-up-workload-cluster.sh](../../prow/set-up-workload-cluster.sh) script provisions the cluster where Prow runs its workload Pods. To enable the Prow cluster to schedule jobs in the workload cluster, create a Secret using the [create-secrets-for-workload-cluster.sh](../../prow/create-secrets-for-workload-cluster.sh) script.
-The Prow administrator manually executes the [install-prow.sh](../../prow/scripts/install-prow.sh) script to provision the Prow main cluster. The script reads the full configuration from the `test-infra` repository. Based on that, the administrator can recreate clusters at any time. If you want to introduce changes to the configuration, do not change anything directly on the cluster. Commit your changes to the `test-infra` repository so that a reviewer can check them. The administrators upload any new configuration to the cluster.
-
-Secrets are stored in Google Cloud Storage (GCS) in a dedicated bucket and are encrypted by Key Management Service (KMS). At the time of provisioning, the provisioning script reads all Secrets from GCS and installs them as Kubernetes Secrets on the cluster. The script uses a dedicated service account to access cloud storage. This account is not present as a Secret at runtime.
-
-> **NOTE:** For more information on Secret management, read the [Prow Secret Management](./prow-secrets-management.md) document.
+For information on how to provision your own Prow cluster, read official [Prow docs](https://docs.prow.k8s.io/docs/).
 
 ## Components
 Prow components access the RBAC-protected API server using dedicated service accounts and are communicating without having TLS enabled.

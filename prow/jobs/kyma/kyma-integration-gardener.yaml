@@ -4,6 +4,7 @@
 periodics: # runs on schedule
     - name: kyma-integration-evaluation-gardener-azure
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Evaluation profile for Kyma Azure Gardener integration job."
         owner: "huskies"
         pipeline.clusterprovisioning: "kyma cli"
@@ -80,15 +81,9 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-integration-production-gardener-azure
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Production profile for Kyma Azure Gardener integration job."
         owner: "huskies"
         pipeline.clusterprovisioning: "kyma cli"
@@ -165,15 +160,9 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-weekly-gardener-gcp-busola-kyma
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "set up nkyma cluster"
         owner: "hasselhoff"
         pipeline.clusterprovisioning: "kubectl shootspec"
@@ -234,15 +223,9 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Azure Kyma 2.0 to main branch."
         owner: "jellyfish"
         pipeline.clusterprovisioning: "kyma cli"
@@ -312,15 +295,9 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-upgrade-gardener-kyma2-minor-versions
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Azure Kyma 2 previous minor versions."
         owner: "jellyfish"
         pipeline.clusterprovisioning: "kyma cli"
@@ -389,11 +366,4 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

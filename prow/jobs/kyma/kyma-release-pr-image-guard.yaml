@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-release-pr-image-guard
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Check if chart and manifests files use PR images."
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -41,11 +42,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

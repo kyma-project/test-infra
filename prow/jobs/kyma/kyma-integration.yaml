@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration job on k3d"
         owner: "goat"
         pipeline.clusterprovisioning: "k3d"
@@ -54,15 +55,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-app-gateway
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "It tests the acceptance criteria of the (Central) Application Gateway component"
         owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
@@ -114,15 +109,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-app-conn-validator
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component"
         owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
@@ -174,15 +163,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-integration-k3d-central-app-connectivity-compass
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "It tests Compass integration. It won't be needed after the implementation of this issue - https://github.com/kyma-project/kyma/issues/15037"
         owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
@@ -234,15 +217,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-serverless-integration-k3s
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "serverless integration k3s job"
         owner: "otters"
         pipeline.clusterprovisioning: "k3s"
@@ -256,9 +233,9 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-serverless-integration-k3s"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-        preset-gc-project-env: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
       run_if_changed: '^((resources/serverless|tests/function-controller)\S+(\.[^.][^.][^.]+|\.[^.][^dD]|\.[^mM][^.]|\.[^.]$|/[^.]+))$'
       skip_report: false
       decorate: true
@@ -275,30 +252,29 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh serverless-integration simple-tracing
+"
             env:
-              - name: INTEGRATION_SUITE
-                value: "serverless-integration"
+              - name: KYMA_SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/kyma"
             resources:
               requests:
-                memory: 100Mi
-                cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+                memory: 4Gi
+                cpu: 3
     - name: pre-main-serverless-git-auth-integration-k3s
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Serverless git-function authentication nightly integration tests"
         owner: "otters"
         pipeline.clusterprovisioning: "k3s"
@@ -313,9 +289,9 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-main-serverless-git-auth-integration-k3s"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
-        preset-gc-project-env: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
         preset-serverless-git-auth: "true"
       run_if_changed: '^((resources/serverless|tests/function-controller)\S+(\.[^.][^.][^.]+|\.[^.][^dD]|\.[^mM][^.]|\.[^.]$|/[^.]+))$'
       skip_report: false
@@ -333,30 +309,32 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-serverless-k3d.sh"
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "export APP_TEST_GITHUB_SSH_AUTH_KEY=\"${GH_AUTH_PRIVATE_KEY}\" &&
+export APP_TEST_AZURE_BASIC_AUTH_USERNAME=\"${AZURE_DEVOPS_AUTH_USERNAME}\" &&
+export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
+/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh git-auth-integration
+"
             env:
-              - name: INTEGRATION_SUITE
-                value: "git-auth-integration"
+              - name: KYMA_SOURCES_DIR
+                value: "/home/prow/go/src/github.com/kyma-project/kyma"
             resources:
               requests:
-                memory: 100Mi
-                cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+                memory: 4Gi
+                cpu: 3
     - name: pre-main-kyma-integration-k3d-telemetry
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs telemetry integration tests on k3d"
         owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
@@ -402,15 +380,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-eval-istio-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio integration tests with evaluation profile on k3d"
         owner: "goat"
         pipeline.clusterprovisioning: "k3d"
@@ -456,15 +428,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-prod-istio-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio integration tests with production profile on k3d"
         owner: "goat"
         pipeline.clusterprovisioning: "k3d"
@@ -510,15 +476,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-kyma-istio-reconcilation-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio reconcilation tests with production profile on k3d"
         owner: "goat"
         pipeline.clusterprovisioning: "k3d"
@@ -568,18 +528,12 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-main-kyma-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration job on k3d."
         owner: "huskies,goat"
         pipeline.clusterprovisioning: "k3d"
@@ -633,15 +587,9 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-main-kyma-integration-k3d-app-gateway
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration job on k3d for testing application gateway."
         owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
@@ -693,15 +641,9 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-main-kyma-integration-k3d-app-conn-validator
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration job on k3d for testing application connectivity validator."
         owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
@@ -753,17 +695,11 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 periodics: # runs on schedule
     - name: utilities-kyma-integration-cleaner
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "kyma integration cleaner"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -795,15 +731,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-assetstore-gcp-bucket-cleaner
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -841,15 +771,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-disks-cleaner
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud disks"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -888,15 +812,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-ips-cleaner
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud IPs"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -935,15 +853,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-clusters-cleaner
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud clusters"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -982,15 +894,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-vms-cleaner
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud VMs"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -1029,15 +935,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-loadbalancer-cleaner
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud load balancers"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -1076,15 +976,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: orphaned-dns-cleaner
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud DNS records"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -1124,15 +1018,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: gcr-cleaner-prow-workloads
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Cleans up GCR images older than 7 days in eu.gcr.io/sap-kyma-prow-workloads"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -1170,15 +1058,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: github-issues
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Exports data from github to the big query (Grafana metrics)"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -1215,15 +1097,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: serverless-function-metrics-generator
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Serverless function metrics generator"
         owner: "otters"
         pipeline.platform: "gke"
@@ -1273,15 +1149,9 @@ periodics: # runs on schedule
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-upgrade-k3d-kyma2-to-main
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "K3d Kyma 2.0 to main branch."
         owner: "jellyfish"
         pipeline.clusterprovisioning: "kyma cli"
@@ -1339,15 +1209,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration periodic job on k3d"
         owner: "goat"
         pipeline.clusterprovisioning: "k3d"
@@ -1398,15 +1262,9 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-integration-k3d-telemetry
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs telemetry integration tests on k3d"
         owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
@@ -1456,15 +1314,9 @@ periodics: # runs on schedule
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: kyma-gke-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma GKE nightly build (depraceted, needed for sec scans)"
         owner: "neighbors"
         pipeline.clusterprovisioning: "gcloud cli"
@@ -1541,19 +1393,4 @@ periodics: # runs on schedule
               requests:
                 memory: 200Mi
                 cpu: 80m
-            volumeMounts:
-              - name: sa-stability-fluentd-storage-writer
-                mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-                readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-        volumes:
-          - name: sa-stability-fluentd-storage-writer
-            secret:
-              secretName: sa-stability-fluentd-storage-writer
   

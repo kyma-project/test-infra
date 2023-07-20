@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/istio:
     - name: pull-istio-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build istio module image"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -21,6 +22,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
+        - ^release-\d+\.\d+$
       spec:
         containers:
           - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
@@ -48,15 +50,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-istio-operator-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build istio operator image"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -72,8 +68,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-\d+\.\d+$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -109,6 +105,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-istio-operator-integration-gcp
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio operator integration tests on Gardener GCP cluster"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -130,11 +127,11 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -166,18 +163,12 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/istio:
     - name: post-istio-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build istio module image"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -222,15 +213,9 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: rel-istio-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "builds istio operator image on release"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -287,6 +272,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: rel-istio-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "builds istio module template on release"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -294,6 +280,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-istio-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
       always_run: true
       optional: false
       skip_report: false
@@ -321,24 +308,18 @@ postsubmits: # runs on main
               - "all"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/dev/istio-manager:${PULL_BASE_REF}"
+                value: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_REF}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/prod"
+                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
             resources:
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-istio-operator-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build istio operator image"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -355,7 +336,6 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       reporter_config:
         slack:
@@ -398,6 +378,7 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: nightly-istio-performance-test-gcp
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio performance tests on Gardener GCP cluster"
         owner: "goat"
         pipeline.trigger: "periodic"
@@ -428,7 +409,7 @@ periodics: # runs on schedule
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230525-75242ac0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -460,11 +441,4 @@ periodics: # runs on schedule
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

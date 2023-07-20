@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-rel217-kyma-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "k3d int test"
         owner: "neighbors"
         pipeline.clusterprovisioning: "k3d"
@@ -46,18 +47,12 @@ presubmits: # runs on PRs
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-rel217-kyma-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration job on k3d."
         owner: "huskies,goat"
         pipeline.clusterprovisioning: "k3d"
@@ -104,15 +99,9 @@ postsubmits: # runs on main
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: post-rel217-kyma-release-candidate
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Release candidate job for Kyma 2.17."
         owner: "neighbors"
         pipeline.trigger: "pr-merge"
@@ -183,13 +172,6 @@ postsubmits: # runs on main
               - name: kyma-tunas-release-testing-event-mesh
                 mountPath: /etc/credentials/kyma-tunas-release-testing-event-mesh
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: kyma-tunas-release-testing-event-mesh
             secret:
@@ -198,6 +180,7 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: kyma-gke-nightly-rel217
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma GKE nightly build (release-2.17)"
         owner: "neighbors"
         pipeline.clusterprovisioning: "gcloud cli"
@@ -278,19 +261,4 @@ periodics: # runs on schedule
               requests:
                 memory: 200Mi
                 cpu: 80m
-            volumeMounts:
-              - name: sa-stability-fluentd-storage-writer
-                mountPath: /etc/credentials/sa-stability-fluentd-storage-writer
-                readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-        volumes:
-          - name: sa-stability-fluentd-storage-writer
-            secret:
-              secretName: sa-stability-fluentd-storage-writer
   

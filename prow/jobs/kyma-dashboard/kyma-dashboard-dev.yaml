@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma-dashboard:
     - name: pre-kyma-dashboard-dev
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma Dashboard Dev Job"
         owner: "hasselhoff"
         pipeline.trigger: "pr-submit"
@@ -47,18 +48,12 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma-dashboard:
     - name: post-kyma-dashboard-dev
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma Dashboard Dev Job"
         owner: "hasselhoff"
         pipeline.trigger: "pr-merge"
@@ -102,11 +97,4 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/runtime-watcher:
     - name: pull-lint-skr
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "lint runtime watcher"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -36,15 +37,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-tests-skr
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "test runtime watcher"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -54,7 +49,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^skr/(go.mod|go.sum)$|^skr/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
@@ -79,15 +74,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-lint-listener
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "lint runtime watcher listener"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -119,15 +108,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-tests-listener
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "test runtime watcher listener"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -137,7 +120,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)'
       skip_report: false
       decorate: true
@@ -162,15 +145,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-build-skr
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build runtime watcher skr"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -220,6 +197,7 @@ postsubmits: # runs on main
   kyma-project/runtime-watcher:
     - name: main-build-skr
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build runtime watcher skr"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"

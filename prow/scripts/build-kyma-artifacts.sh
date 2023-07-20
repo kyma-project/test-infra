@@ -27,8 +27,6 @@ function copy_artifacts {
   gsutil cp "${KYMA_RESOURCES_DIR}/components.yaml" "$BUCKET_PATH/kyma-components.yaml"
 }
 
-gcp::authenticate \
-  -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 docker::start
 
 if [ -n "${PULL_NUMBER}" ]; then

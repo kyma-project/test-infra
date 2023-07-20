@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/cli:
     - name: pre-kyma-cli
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint + Go test pre-PR + Build CLI pre-PR"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -36,15 +37,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-cli-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -76,6 +71,7 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-cli-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go test"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -110,6 +106,7 @@ postsubmits: # runs on main
   kyma-project/cli:
     - name: post-kyma-cli
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint + Go test post-PR + Build CLI post-PR"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"
@@ -141,15 +138,9 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: rel-kyma-cli
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint + Go test pre-rel + Build CLI pre-rel"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"
@@ -184,15 +175,9 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: unstable-cli
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Bump reconciler version used by CLI and publish the unstable CLI binaries"
         owner: "jellyfish"
         pipeline.clusterprovisioning: "reconciler"
@@ -246,11 +231,4 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
