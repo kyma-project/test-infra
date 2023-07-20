@@ -189,7 +189,7 @@ globalSets:
   image_markdown_index:
     image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
   image_image_detector:
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230718-ba0c1ed7"
   image_e2e-dind-k3d:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
   # JobConfig sets
@@ -265,12 +265,6 @@ globalSets:
   jobConfig_buildpack_incubator:
     labels:
       preset-docker-push-repository-incubator: "true"
-  jobConfig_reconciler_publish_unstable_cli:
-    command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
-    annotations:
-      pipeline.installer: reconciler
-      pipeline.test: "fast-integration"
-      pipeline.clusterprovisioning: reconciler
   # generic component jobConfigs
   jobConfig_generic_component:
     securityContext:
