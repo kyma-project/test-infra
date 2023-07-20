@@ -49,7 +49,7 @@ postsubmits:
               - name: KYMA_CLI_UNSTABLE_BUCKET
                 value: gs://kyma-cli-unstable
               - name: UNSTABLE
-                value: true
+                value: "true"
             resources:
               requests:
                 cpu: 1
