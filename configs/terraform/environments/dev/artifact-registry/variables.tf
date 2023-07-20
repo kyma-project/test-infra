@@ -15,7 +15,7 @@ variable "gcp_project_id" {
 variable "artifact_registry_names" {
   type        = list(string)
   description = "Artifact Registry names"
-  default     = ["ocim", "internal"]
+  default     = ["modules-ocim", "modules-internal"]
 }
 variable "artifact_registry_owner" {
   type        = string
@@ -32,10 +32,16 @@ variable "artifact_registry_type" {
   description = "Environment for the resources"
 }
 
-variable "artifact_registry_serviceaccount" {
+variable "artifact_registry_writer_serviceaccount" {
   type        = string
-  description = "Service Account"
+  description = "Service Account with write access"
 }
+
+variable "artifact_registry_reader_serviceaccounts" {
+  type        = list(string)
+  description = "Service Accounts with read access (lifecycle-maneger)"
+}
+
 
 variable "artifact_registry_multi_region" {
   type        = bool

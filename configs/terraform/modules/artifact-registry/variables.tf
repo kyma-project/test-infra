@@ -17,9 +17,14 @@ variable "artifact_registry_module" {
   description = "Module name"
 }
 
-variable "artifact_registry_serviceaccount" {
+variable "artifact_registry_writer_serviceaccount" {
   type        = string
   description = "Service Account"
+}
+
+variable "artifact_registry_reader_serviceaccounts" {
+  type        = list(string)
+  description = "Service Accounts with read access (lifecycle-maneger)"
 }
 
 variable "artifact_registry_type" {
