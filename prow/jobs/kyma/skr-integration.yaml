@@ -308,7 +308,7 @@ periodics: # runs on schedule
         preset-keb-dev-credentials: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
-      cron: "5 1,11 * * *"
+      cron: "5 1 * * *"
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma-environment-broker
