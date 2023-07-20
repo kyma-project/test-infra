@@ -11,7 +11,7 @@ require (
 	github.com/stretchr/testify v1.6.1
 	google.golang.org/api v0.20.0
 	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013
-	gopkg.in/yaml.v3 v2.2.8
+	gopkg.in/yaml.v2 v2.2.8
 	k8s.io/api v0.20.0
 	k8s.io/apimachinery v0.20.0
 	k8s.io/client-go v0.20.0
