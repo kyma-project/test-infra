@@ -7,7 +7,7 @@ import (
 	"os"
 	"strconv"
 
-	gogithub "github.com/google/go-github/v40/github"
+	gogithub "github.com/google/go-github/v48/github"
 
 	"github.com/kyma-project/test-infra/development/github/pkg/git"
 	prtagbuildermock "github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder/mocks"

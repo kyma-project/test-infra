@@ -15,12 +15,12 @@ import (
 	"text/template"
 
 	"github.com/Masterminds/sprig"
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v48/github"
 	"github.com/imdario/mergo"
 	"github.com/kyma-project/test-infra/development/github/pkg/client"
 	rt "github.com/kyma-project/test-infra/development/tools/pkg/rendertemplates"
 	"golang.org/x/net/context"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"k8s.io/apimachinery/pkg/util/sets"
 )
 
@@ -66,6 +66,7 @@ var (
 )
 
 func init() {
+	gob.Register(rt.ConfigSet{})
 	gob.Register(map[string]interface{}{})
 	gob.Register(map[interface{}]interface{}{})
 	gob.Register([]interface{}{})

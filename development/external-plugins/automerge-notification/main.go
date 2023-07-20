@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sort"
 
-	gogithub "github.com/google/go-github/v42/github"
+	gogithub "github.com/google/go-github/v48/github"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	toolsclient "github.com/kyma-project/test-infra/development/github/pkg/client"
 	"github.com/kyma-project/test-infra/development/github/pkg/client/v2"

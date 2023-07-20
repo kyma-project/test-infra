@@ -9,10 +9,10 @@ import (
 	"io/ioutil"
 
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
-//Configuration for prow config.
+// Configuration for prow config.
 type Config struct {
 	Project           string                          `yaml:"project"`
 	Region            string                          `yaml:"region"`
@@ -27,7 +27,7 @@ type Config struct {
 	Clusters          map[string]cluster.Cluster      `yaml:"clusters"`
 }
 
-//Get config configuration from yaml file.
+// Get config configuration from yaml file.
 func ReadConfig(configFilePath string) (*Config, error) {
 	log.Debugf("Reading config from %s", configFilePath)
 	var installerConfig Config
