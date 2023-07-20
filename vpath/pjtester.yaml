@@ -6,7 +6,6 @@ pjConfigs:
   prowJobs:
     kyma-project:
       cli:
-        - pjName: "post-main-unstable-cli"
         - pjName: "pre-main-cli-e2e"
 prConfigs:
   kyma-project:
