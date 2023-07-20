@@ -44,7 +44,7 @@ postsubmits:
               - -c
               - |-
                 echo "Uploading CLI binaries to ${KYMA_CLI_UNSTABLE_BUCKET}"
-                make ci-publish
+                make ci-main
             env:
               - name: KYMA_CLI_UNSTABLE_BUCKET
                 value: gs://kyma-cli-unstable
