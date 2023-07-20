@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-incubator/reconciler:
     - name: pre-main-reconciler-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "test reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -19,7 +20,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -36,6 +37,7 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pre-main-reconciler-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "lint reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -67,6 +69,7 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pre-main-reconciler-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "int test reconciler"
         owner: "jellyfish"
         pipeline.platform: "k3d"
@@ -110,6 +113,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-reconciler-publish-pr-cli
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "pre publish reconciler"
         owner: "jellyfish"
         pipeline.installer: "reconciler"
@@ -140,7 +144,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -154,6 +158,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-reconciler-cli-integration-kyma-latest-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "int test reconciler"
         owner: "jellyfish"
         pipeline.platform: "k3d"
@@ -205,6 +210,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-reconciler-cli-integration-kyma-main-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "int test reconciler"
         owner: "jellyfish"
         pipeline.platform: "k3d"
@@ -256,6 +262,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "upgrade test reconciler"
         owner: "jellyfish"
         pipeline.platform: "k3d"
@@ -309,6 +316,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-latest-istio-reconciler-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
@@ -339,7 +347,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -361,6 +369,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-istio-reconciler-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
@@ -391,7 +400,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -415,6 +424,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-ory-reconciler-eval-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs ory reconciler integration tests with evaluation profile on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
@@ -445,7 +455,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -469,6 +479,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-ory-reconciler-prod-integration-gcp
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs ory reconciler integration tests with production profile on Gardener GCP cluster"
         owner: "goat"
         pipeline.platform: "gardener_gcp"
@@ -500,7 +511,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -530,6 +541,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-dev-reconciler-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "int test reconciler"
         owner: "jellyfish"
         pipeline.platform: "k3d"
@@ -575,6 +587,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-kyma-incubator-mothership-reconciler
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build mothership reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -625,6 +638,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-kyma-incubator-component-reconciler
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build component reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -675,6 +689,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-reconciler-validate-dockerfiles
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "hadolint reconciler"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -717,6 +732,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-reconciler-validate-go-mod
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "validate gomod reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -760,6 +776,7 @@ postsubmits: # runs on main
   kyma-incubator/reconciler:
     - name: post-latest-istio-reconciler-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
@@ -790,7 +807,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -812,6 +829,7 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-main-istio-reconciler-integration-k3d
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
@@ -842,7 +860,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -866,6 +884,7 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-main-kyma-incubator-mothership-reconciler
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"
@@ -918,6 +937,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-kyma-incubator-component-reconciler
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build component reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"
@@ -972,6 +992,7 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: reconciler-control-plane-image-bump
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Reconciler image bump in control-plane"
         owner: "jellyfish"
         pipeline.trigger: "periodic"
@@ -1023,6 +1044,7 @@ periodics: # runs on schedule
                 cpu: 2
     - name: nightly-main-reconciler
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Creates and installs reconciler from main every night."
         owner: "jellyfish"
         pipeline.clusterprovisioning: "reconciler"
@@ -1086,6 +1108,7 @@ periodics: # runs on schedule
                 cpu: 2
     - name: nightly-main-reconciler-e2e
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Executes e2e test periodically on nightly cluster for reconciler."
         owner: "jellyfish"
         pipeline.installer: "reconciler"

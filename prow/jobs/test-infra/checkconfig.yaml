@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for test-infra"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -35,6 +36,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for kyma"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -70,6 +72,7 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pre-busola-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for busola"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -105,6 +108,7 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for control-plane"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -140,6 +144,7 @@ presubmits: # runs on PRs
   kyma-project/cli:
     - name: pre-cli-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for cli"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -175,6 +180,7 @@ presubmits: # runs on PRs
   kyma-project/website:
     - name: pre-website-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for website"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -210,6 +216,7 @@ presubmits: # runs on PRs
   kyma-project/lifecycle-manager:
     - name: pre-lifecycle-manager-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for lifecycle-manager"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -245,6 +252,7 @@ presubmits: # runs on PRs
   kyma-project/third-party-images:
     - name: pre-third-party-images-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for third-party-images"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -280,6 +288,7 @@ presubmits: # runs on PRs
   kyma-project/community:
     - name: pre-community-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for community"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -315,6 +324,7 @@ presubmits: # runs on PRs
   kyma-project/hydroform:
     - name: pre-hydroform-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for hydroform"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -350,6 +360,7 @@ presubmits: # runs on PRs
   kyma-project/istio-operator:
     - name: pre-istio-operator-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for istio-operator"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -385,6 +396,7 @@ presubmits: # runs on PRs
   kyma-project/addons:
     - name: pre-addons-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for addons"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -420,6 +432,7 @@ presubmits: # runs on PRs
   kyma-project/private-fn-for-e2e-serverless-tests:
     - name: pre-private-fn-for-e2e-serverless-tests-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for private-fn-for-e2e-serverless-tests"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -455,6 +468,7 @@ presubmits: # runs on PRs
   kyma-project/charts:
     - name: pre-charts-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for charts"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -490,6 +504,7 @@ presubmits: # runs on PRs
   kyma-project/examples:
     - name: pre-examples-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for examples"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -525,6 +540,7 @@ presubmits: # runs on PRs
   kyma-project/api-gateway:
     - name: pre-api-gateway-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for api-gateway"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -560,6 +576,7 @@ presubmits: # runs on PRs
   kyma-project/istio:
     - name: pre-istio-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for istio"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -595,6 +612,7 @@ presubmits: # runs on PRs
   kyma-project/runtime-watcher:
     - name: pre-runtime-watcher-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for runtime-watcher"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -630,6 +648,7 @@ presubmits: # runs on PRs
   kyma-project/keda-manager:
     - name: pre-keda-manager-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for keda-manager"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -665,6 +684,7 @@ presubmits: # runs on PRs
   kyma-project/kyma-dashboard:
     - name: pre-kyma-dashboard-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for kyma-dashboard"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -700,6 +720,7 @@ presubmits: # runs on PRs
   kyma-project/application-connector-manager:
     - name: pre-application-connector-manager-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for application-connector-manager"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -735,6 +756,7 @@ presubmits: # runs on PRs
   kyma-project/rafter:
     - name: pre-rafter-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for rafter"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -770,6 +792,7 @@ presubmits: # runs on PRs
   kyma-project/btp-manager:
     - name: pre-btp-manager-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for btp-manager"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -805,6 +828,7 @@ presubmits: # runs on PRs
   kyma-project/kyma-environment-broker:
     - name: pre-kyma-environment-broker-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for kyma-environment-broker"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -840,6 +864,7 @@ presubmits: # runs on PRs
   kyma-project/telemetry-manager:
     - name: pre-telemetry-manager-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for telemetry-manager"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -875,6 +900,7 @@ presubmits: # runs on PRs
   kyma-project/director-size-exporter:
     - name: pre-director-size-exporter-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for director-size-exporter"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -910,6 +936,7 @@ presubmits: # runs on PRs
   kyma-project/compass-manager:
     - name: pre-compass-manager-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for compass-manager"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -945,6 +972,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-compass-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for compass"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -980,6 +1008,7 @@ presubmits: # runs on PRs
   kyma-incubator/ord-service:
     - name: pre-ord-service-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for ord-service"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1015,6 +1044,7 @@ presubmits: # runs on PRs
   kyma-incubator/reconciler:
     - name: pre-reconciler-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for reconciler"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1050,6 +1080,7 @@ presubmits: # runs on PRs
   kyma-incubator/bullseye-showcase:
     - name: pre-bullseye-showcase-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for bullseye-showcase"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1085,6 +1116,7 @@ presubmits: # runs on PRs
   kyma-incubator/documentation-component:
     - name: pre-documentation-component-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for documentation-component"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1120,6 +1152,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass-console:
     - name: pre-compass-console-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for compass-console"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1155,6 +1188,7 @@ presubmits: # runs on PRs
   kyma-incubator/sap-btp-service-operator:
     - name: pre-sap-btp-service-operator-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for sap-btp-service-operator"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1190,6 +1224,7 @@ presubmits: # runs on PRs
   kyma-incubator/varkes:
     - name: pre-varkes-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for varkes"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1225,6 +1260,7 @@ presubmits: # runs on PRs
   kyma-incubator/slack-bot:
     - name: pre-slack-bot-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for slack-bot"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1260,6 +1296,7 @@ presubmits: # runs on PRs
   kyma-incubator/migrate:
     - name: pre-migrate-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for migrate"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1295,6 +1332,7 @@ presubmits: # runs on PRs
   kyma-incubator/github-dashboard:
     - name: pre-github-dashboard-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for github-dashboard"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1330,6 +1368,7 @@ presubmits: # runs on PRs
   kyma-incubator/website-vuepress:
     - name: pre-website-vuepress-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for website-vuepress"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1365,6 +1404,7 @@ presubmits: # runs on PRs
   kyma-incubator/kitbag:
     - name: pre-kitbag-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for kitbag"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1400,6 +1440,7 @@ presubmits: # runs on PRs
   kyma-incubator/kyma-showcase:
     - name: pre-kyma-showcase-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for kyma-showcase"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1435,6 +1476,7 @@ presubmits: # runs on PRs
   kyma-incubator/hydra-login-consent:
     - name: pre-hydra-login-consent-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for hydra-login-consent"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1470,6 +1512,7 @@ presubmits: # runs on PRs
   kyma-incubator/kymart:
     - name: pre-kymart-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for kymart"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1505,6 +1548,7 @@ presubmits: # runs on PRs
   kyma-incubator/examples:
     - name: pre-examples-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for examples"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1540,6 +1584,7 @@ presubmits: # runs on PRs
   kyma-incubator/vstudio-extension:
     - name: pre-vstudio-extension-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for vstudio-extension"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1575,6 +1620,7 @@ presubmits: # runs on PRs
   kyma-incubator/wordpress-connector:
     - name: pre-wordpress-connector-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for wordpress-connector"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1610,6 +1656,7 @@ presubmits: # runs on PRs
   kyma-incubator/connector-tools:
     - name: pre-connector-tools-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for connector-tools"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1645,6 +1692,7 @@ presubmits: # runs on PRs
   kyma-incubator/artwork:
     - name: pre-artwork-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for artwork"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1680,6 +1728,7 @@ presubmits: # runs on PRs
   kyma-incubator/opensap:
     - name: pre-opensap-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for opensap"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1715,6 +1764,7 @@ presubmits: # runs on PRs
   kyma-incubator/testdrape:
     - name: pre-testdrape-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for testdrape"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1750,6 +1800,7 @@ presubmits: # runs on PRs
   kyma-incubator/sc-removal:
     - name: pre-sc-removal-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for sc-removal"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1785,6 +1836,7 @@ presubmits: # runs on PRs
   kyma-incubator/service-catalog-tester:
     - name: pre-service-catalog-tester-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for service-catalog-tester"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -1820,6 +1872,7 @@ presubmits: # runs on PRs
   kyma-incubator/service-catalog:
     - name: pre-service-catalog-validate-inrepo-prow-configs
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate inrepo prow configs for service-catalog"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
