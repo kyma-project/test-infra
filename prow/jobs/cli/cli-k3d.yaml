@@ -58,13 +58,15 @@ presubmits:
     - name: pre-main-cli-e2e
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "Go lint + Go test pre-PR + Build CLI pre-PR"
+        description: "Run fast integration tests + Test Kyma CLI commands"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-cli-e2e"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
       always_run: true
       skip_report: false
       decorate: true
