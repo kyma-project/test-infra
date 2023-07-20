@@ -1,7 +1,7 @@
 package client
 
 import (
-	"github.com/google/go-github/v40/github"
+	"github.com/google/go-github/v48/github"
 )
 
 // IssueTransferredEvent represent GitHub.IssuesEvent for transferred action.

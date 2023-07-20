@@ -19,8 +19,6 @@ require (
 	github.com/fsouza/go-dockerclient v1.9.7
 	github.com/go-playground/validator/v10 v10.14.1
 	github.com/google/go-containerregistry v0.15.2
-	github.com/google/go-github/v40 v40.0.0
-	github.com/google/go-github/v42 v42.0.0
 	github.com/google/go-github/v48 v48.2.0
 	github.com/google/go-querystring v1.1.0
 	github.com/google/uuid v1.3.0
@@ -44,7 +42,6 @@ require (
 	golang.org/x/oauth2 v0.10.0
 	google.golang.org/api v0.132.0
 	google.golang.org/grpc v1.56.2
-	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.27.2
 	k8s.io/apimachinery v0.27.2
@@ -236,6 +233,7 @@ require (
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/robfig/cron.v2 v2.0.0-20150107220207-be2e0b0deed5 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 	k8s.io/component-base v0.27.2 // indirect
 	k8s.io/klog/v2 v2.90.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f // indirect
