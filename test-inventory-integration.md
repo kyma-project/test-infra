@@ -35,4 +35,9 @@
 | kyma-integration-production-gardener-azure | gardener_azure | kyma cli | kyma deploy | production | periodic |  fast-integration  |
 | kyma-weekly-gardener-gcp-busola-kyma | gardener_gcp | kubectl shootspec | kyma deploy |  | periodic |    |
 | kyma-upgrade-gardener-kyma2-to-main-reconciler-main | gardener_azure | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
-| kyma-upgrade-gardener-kyma2-minor-versions | gardener_azure | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
+| skr-azure-integration-dev | gardener_azure | keb | keb |  | periodic |  fast-integration  |
+| skr-azure-lite-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |
+| skr-aws-integration-dev | gardener_aws | keb | keb |  | periodic |  fast-integration  |
+| skr-trial-integration-dev | gardener_azure | keb | keb | evaluation | periodic |  fast-integration  |
+| skr-free-aws-integration-dev | gardener_aws | keb | keb | evaluation | periodic |  fast-integration  |
+| skr-preview-dev | gardener_aws | keb | keb |  | periodic |  fast-integration  |

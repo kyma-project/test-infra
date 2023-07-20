@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pull-unit-test-go
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Run unit tests for all modules in test-infra repository"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -39,6 +40,7 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pre-main-test-infra-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Run golangci-lint for all modules in test-infra repository"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"

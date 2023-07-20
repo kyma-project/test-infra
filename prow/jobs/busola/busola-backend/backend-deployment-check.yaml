@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pre-busola-backend-deployment-check
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Checking backend deployment update"
         owner: "hasselhoff"
         pipeline.trigger: "pr-submit"

@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-check-users-map
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Check pull request authors are present in users map file"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"

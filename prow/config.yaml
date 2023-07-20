@@ -1406,10 +1406,10 @@ presets:
   - labels:
       preset-compass-director-secret: "true"
     volumes:
-      - name: preset-compass-director-secret
+      - name: compass-director-secret
         secret:
-          secretName: preset-compass-director-secret
+          secretName: compass-director-secret
     volumeMounts:
-      - name: preset-compass-director-secret
-        mountPath: /preset-compass-director-secret
+      - name: compass-director-secret
+        mountPath: /compass-director-secret
         readOnly: true

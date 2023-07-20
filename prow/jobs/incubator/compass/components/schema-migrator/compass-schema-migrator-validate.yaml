@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-schema-migrator-validate
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate new DB schema migrations"
         owner: "compass"
         pipeline.trigger: "pr-submit"
