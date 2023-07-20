@@ -60,7 +60,7 @@ resource "google_container_node_pool" "components_pool" {
       mode = "GKE_METADATA"
     }
     preemptible = true
-    machine_type = "e2-medium"
+    machine_type = "n1-standard-2"
     metadata = {
       disable-legacy-endpoints = "true"
     }
