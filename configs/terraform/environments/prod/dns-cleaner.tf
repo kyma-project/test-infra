@@ -1,9 +1,9 @@
 resource "google_service_account" "sa_gke_kyma_integration" {
-  account_id   = "sa_gke_kyma_integration@sap-kyma-prow.iam.gserviceaccount.com"
-  display_name = "sa_gke_kyma_integration"
+  account_id   = "sa-gke-kyma-integration@sap-kyma-prow.iam.gserviceaccount.com"
+  display_name = "sa-gke-kyma-integration@sap-kyma-prow.iam.gserviceaccount.com"
 }
 
-resource "google_project_iam_binding" "view_container_analysis_ccurrences" {
+resource "google_project_iam_binding" "dns_cleaner_view_container_analysis_occurrences" {
   project = var.gcp_project_id
   role    = "roles/containeranalysis.occurrences.viewer"
   members = ["serviceAccount:${google_service_account.sa_gke_kyma_integration.email}"]
