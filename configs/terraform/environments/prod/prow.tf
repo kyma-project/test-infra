@@ -40,11 +40,6 @@ resource "google_container_node_pool" "prowjobs_pool" {
     labels = {
       workload = "prowjobs"
     }
-    taint {
-      effect = "NO_EXECUTE"
-      key    = "prow.k8s.io/jobs"
-      value  = ""
-    }
   }
   management {
     auto_repair = true
