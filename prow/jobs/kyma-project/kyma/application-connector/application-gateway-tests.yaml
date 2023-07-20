@@ -13,7 +13,6 @@ presubmits:
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-app-connector-tests-app-gateway: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
-        preset-sa-vm-kyma-integration: "true"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
       run_if_changed: '^((resources/application-connector\S+|installation/resources/crds/application-connector\S+|installation/resources/crds/istio\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
@@ -21,7 +20,7 @@ presubmits:
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
+      cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
@@ -81,7 +80,6 @@ postsubmits:
         preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-app-connector-tests-app-gateway: "true"
         preset-kyma-integration-central-app-connectivity-enabled: "true"
-        preset-sa-vm-kyma-integration: "true"
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
       skip_report: false
