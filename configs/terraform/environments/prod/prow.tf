@@ -12,10 +12,10 @@ resource "google_container_cluster" "trusted_workload" {
     workload_pool = "${var.gcp_project_id}.svc.id.goog"
   }
   resource_labels = {
-    business_tag = "corporate"
-    exposure_tag = "internet_ingress"
+    business_tag  = "corporate"
+    exposure_tag  = "internet_ingress"
     landscape_tag = "production"
-    name_cluster = "trusted-workload-kyma-prow"
+    name_cluster  = "trusted-workload-kyma-prow"
   }
 }
 
@@ -40,6 +40,15 @@ resource "google_container_node_pool" "prowjobs_pool" {
     labels = {
       workload = "prowjobs"
     }
+    taint {
+      effect = "NO_EXECUTE"
+      key    = "prow.k8s.io/jobs"
+      value  = ""
+    }
+  }
+  management {
+    auto_repair = true
+    auto_upgrade = true
   }
 }
 
@@ -66,7 +75,7 @@ resource "google_container_node_pool" "components_pool" {
     taint {
       effect = "NO_SCHEDULE"
       key    = "components.gke.io/gke-managed-components"
-      value  = ""
+      value  = "true"
     }
   }
 }
