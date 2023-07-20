@@ -24,10 +24,6 @@ postsubmits:
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          base_ref: main
       reporter_config:
         slack:
           channel: jellyfish-notifications
@@ -57,3 +53,48 @@ postsubmits:
               limits:
                 cpu: 2
                 memory: 4Gi
+presubmits:
+  kyma-project/cli:
+    - name: pre-main-cli-e2e
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Go lint + Go test pre-PR + Build CLI pre-PR"
+        owner: "jellyfish"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-cli-e2e"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: jellyfish-notifications
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+            command: [ "/init.sh" ]
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            args:
+              - ./prow/pre-cli-e2e.sh
+            resources:
+              requests:
+                cpu: 1
+                memory: 2Gi
+              limits:
+                cpu: 2
+                memory: 4Gi
+
