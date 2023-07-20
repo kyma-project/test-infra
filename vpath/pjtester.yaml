@@ -6,5 +6,5 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma:
-        - pjName: "pre-main-kyma-integration-k3d-app-conn-validator"
-        - pjName: "post-main-kyma-integration-k3d-app-conn-validator"
+        - pjName: "pre-main-kyma-integration-k3d-runtime-agent"
+        - pjName: "post-main-kyma-integration-k3d-runtime-agent"
