@@ -1,0 +1,133 @@
+presubmits:
+  kyma-project/kyma:
+    - name: pre-main-kyma-integration-k3d-app-conn-validator
+      annotations:
+        description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component"
+        owner: "framefrog"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-app-conn-validator"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-pr: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-app-connector-tests-app-validator: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
+        preset-sa-vm-kyma-integration: "true"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
+      run_if_changed: '^((resources/application-connector\S+|installation/resources/crds/application-connector\S+|installation/resources/crds/istio\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
+      optional: false
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-incubator
+          repo: local-kyma
+          path_alias: github.com/kyma-incubator/local-kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                k3d registry create k3d-registry --port 5000
+                k3d cluster create k3d --registry-use k3d-k3d-registry:5000
+                kubectl cluster-info
+                curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_Linux_x86_64.tar.gz" \
+                && mkdir kyma-release && tar -C kyma-release -zxvf kyma.tar.gz && chmod +x kyma-release/kyma && mv kyma-release/kyma /usr/local/bin \
+                && rm -rf kyma-release kyma.tar.gz && cd tests/components/application-connector && kyma deploy --ci --components-file ./resources/installation-config/mini-kyma-skr.yaml --source=local --workspace "/home/prow/go/src/github.com/kyma-project/kyma" --verbose
+                make test -f Makefile.test-application-conn-validator
+                k3d cluster delete
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 500m
+              limits:
+                cpu: 1
+                memory: 4Gi
+
+postsubmits:
+  kyma-project/kyma:
+    - name: post-main-kyma-integration-k3d-app-conn-validator
+      annotations:
+        description: "Kyma integration job on k3d for testing application connectivity validator."
+        owner: "framefrog"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-app-conn-validator"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-main: "true"
+        preset-gc-project-env: "true"
+        preset-kyma-guard-bot-github-token: "true"
+        preset-kyma-integration-app-connector-tests-app-validator: "true"
+        preset-kyma-integration-central-app-connectivity-enabled: "true"
+        preset-sa-vm-kyma-integration: "true"
+        preset-kind-volume-mounts: "true"
+        preset-dind-enabled: "true"
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/kyma
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-incubator
+          repo: local-kyma
+          path_alias: github.com/kyma-incubator/local-kyma
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - |
+                set -e
+                k3d registry create k3d-registry --port 5000
+                k3d cluster create k3d --registry-use k3d-k3d-registry:5000
+                kubectl cluster-info
+                curl -Lo kyma.tar.gz "https://github.com/kyma-project/cli/releases/download/$(curl -s https://api.github.com/repos/kyma-project/cli/releases/latest | grep tag_name | cut -d '"' -f 4)/kyma_Linux_x86_64.tar.gz" \
+                && mkdir kyma-release && tar -C kyma-release -zxvf kyma.tar.gz && chmod +x kyma-release/kyma && mv kyma-release/kyma /usr/local/bin \
+                && rm -rf kyma-release kyma.tar.gz && cd tests/components/application-connector && kyma deploy --ci --components-file ./resources/installation-config/mini-kyma-skr.yaml --source=local --workspace "/home/prow/go/src/github.com/kyma-project/kyma" --verbose
+                make test -f Makefile.test-application-conn-validator
+                k3d cluster delete
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 500m
+              limits:
+                cpu: 1
+                memory: 4Gi
