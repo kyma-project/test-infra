@@ -185,7 +185,7 @@ templates:
                   annotations:
                     owner: gopher
                     description: skr integration test preview
-                  cron: "5 1,11 * * *" # "At 01:05 and 11:05"
+                  cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"

@@ -55,9 +55,10 @@ images:
   amd64Only: true
 - source: "i331641/kyma-perf:v1"
   amd64Only: true
-- source: "ghcr.io/kedacore/keda:2.10.1"
-- source: "ghcr.io/kedacore/keda-admission-webhooks:2.10.1"
-- source: "ghcr.io/kedacore/keda-metrics-apiserver:2.10.1"
+- source: "ghcr.io/kedacore/keda:2.11.1"
+- source: "ghcr.io/kedacore/keda-admission-webhooks:2.11.1"
+- source: "ghcr.io/kedacore/keda-metrics-apiserver:2.11.1"
 - source: "nginx:1.23.3"
   amd64Only: true
-- source: "fluent/fluentd:v1.16-debian-1"
+- source: "fluent/fluentd@sha256:c8026af1f87f60db08e23ec0e62f779096abc93b2fc62aa4b57fc23a617451f6"
+  tag: "v1.16-debian-1"
