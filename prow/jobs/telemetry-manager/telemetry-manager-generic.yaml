@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/telemetry-manager:
     - name: pull-telemetry-manager-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Pre-submit job to build telemetry-manager image."
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -56,6 +57,7 @@ postsubmits: # runs on main
   kyma-project/telemetry-manager:
     - name: post-telemetry-manager-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to build telemetry-manager image."
         owner: "huskies"
         pipeline.trigger: "pr-merge"
@@ -112,6 +114,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-telemetry-manager-release-module
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to release telemetry module."
         owner: "huskies"
         pipeline.trigger: "pr-merge"

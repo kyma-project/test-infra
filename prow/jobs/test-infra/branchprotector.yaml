@@ -14,6 +14,7 @@ periodics:
       owner: neighbors
       description: "Periodic update of branch protection settings in GitHub"
       testgrid-create-test-group: "false"
+      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     extra_refs:
       - org: kyma-project
         repo: test-infra

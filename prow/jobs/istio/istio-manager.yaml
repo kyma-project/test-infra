@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/istio:
     - name: pull-istio-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build istio module image"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -51,6 +52,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-istio-operator-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build istio operator image"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -103,6 +105,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-istio-operator-integration-gcp
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio operator integration tests on Gardener GCP cluster"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -128,7 +131,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -165,6 +168,7 @@ postsubmits: # runs on main
   kyma-project/istio:
     - name: post-istio-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build istio module image"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -211,6 +215,7 @@ postsubmits: # runs on main
                 cpu: 2
     - name: rel-istio-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "builds istio operator image on release"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -267,6 +272,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: rel-istio-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "builds istio module template on release"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -313,6 +319,7 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-istio-operator-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build istio operator image"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -371,6 +378,7 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: nightly-istio-performance-test-gcp
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio performance tests on Gardener GCP cluster"
         owner: "goat"
         pipeline.trigger: "periodic"
@@ -401,7 +409,7 @@ periodics: # runs on schedule
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:

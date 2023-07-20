@@ -2,6 +2,7 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pull-busola-lighthouse
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Busola performance testing"
         owner: "hasselhoff"
         pipeline.trigger: "pr-submit"
@@ -21,7 +22,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230717-e09b0fee
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230718-0d88cd1a
             securityContext:
               privileged: true
               seccompProfile:

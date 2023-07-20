@@ -109,7 +109,7 @@ clean_serverless_integration_tests
 create_collector_namespace
 
 set +o errexit
-run_tests "${INTEGRATION_SUITE}" "${KYMA_SOURCES_DIR}"
+run_tests "${INTEGRATION_SUITE[@]}" "${KYMA_SOURCES_DIR}"
 TEST_STATUS=$?
 set -o errexit
 

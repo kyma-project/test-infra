@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/telemetry-manager:
     - name: pull-telemetry-manager-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs linting on telemetry-manager repo"
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -36,6 +37,7 @@ presubmits: # runs on PRs
                 cpu: 200m
     - name: pull-telemetry-manager-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs unit tests telemetry-manager repo"
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -69,6 +71,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-central-application-connectivity-validator-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "It unit tests the component"
         owner: "framefrog"
         pipeline.trigger: "pr-submit"
@@ -101,6 +104,7 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pull-central-application-gateway-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Linting the code, error checking"
         owner: "framefrog"
         pipeline.trigger: "pr-submit"
@@ -133,6 +137,7 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-central-application-gateway-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "It unit tests the central-application-gateway source code"
         owner: "framefrog"
         pipeline.trigger: "pr-submit"
@@ -165,6 +170,7 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pull-compass-runtime-agent-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Linting the code, error checking"
         owner: "framefrog"
         pipeline.trigger: "pr-submit"
@@ -197,6 +203,7 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-compass-runtime-agent-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "It tests the component source code"
         owner: "framefrog"
         pipeline.trigger: "pr-submit"
@@ -229,6 +236,7 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pull-function-controller-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function controller linting job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -261,6 +269,7 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-function-controller-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "run unit tests for function controller"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -294,6 +303,7 @@ presubmits: # runs on PRs
   kyma-project/directory-size-exporter:
     - name: pull-directory-size-exporter-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs linting on the repo"
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -325,6 +335,7 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-directory-size-exporter-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs unit tests on the repo"
         owner: "huskies"
         pipeline.trigger: "pr-submit"

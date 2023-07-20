@@ -5,6 +5,7 @@ presubmits: # runs on PRs
         owner: "gopher"
         description: "E2e provisioning testing pipeline"
         pipeline.trigger: "pr-submit"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-control-plane-tests-e2e-provisioning"

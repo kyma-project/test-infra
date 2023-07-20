@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/serverless-manager:
     - name: pull-serverless-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build serverless module"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -49,6 +50,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-serverless-manager-operator-tests
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "serverless manager tests"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -85,6 +87,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-serverless-manager-operator-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "serverless manager operator build"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -143,6 +146,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-serverless-manager-verify
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "serverless manager verify on k3d vm"
         owner: "otters"
         pipeline.installer: "kyma deploy"
@@ -173,7 +177,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
             securityContext:
               privileged: true
               seccompProfile:
@@ -195,6 +199,7 @@ postsubmits: # runs on main
   kyma-project/serverless-manager:
     - name: post-serverless-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "serverless module build"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -237,6 +242,7 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-serverless-manager-operator-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build serverless manager"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -296,6 +302,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-serverless-manager-verify
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "serverless manager verify on k3d vm"
         owner: "otters"
         pipeline.installer: "kyma deploy"
@@ -326,7 +333,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
             securityContext:
               privileged: true
               seccompProfile:
@@ -347,6 +354,7 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: serverless-operator-nightly-periodic
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "serverless operator nightly verify"
         owner: "otters"
         pipeline.installer: "kyma deploy"
@@ -378,7 +386,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
             securityContext:
               privileged: true
               seccompProfile:

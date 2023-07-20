@@ -5,6 +5,7 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -48,6 +49,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-rel216-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -90,6 +92,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-rel215-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -132,6 +135,7 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-rel214-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -177,6 +181,7 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
@@ -221,6 +226,7 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-rel216-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
@@ -264,6 +270,7 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-rel215-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
@@ -307,6 +314,7 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-rel214-kyma-tests-fast-integration-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build fast-integration image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
