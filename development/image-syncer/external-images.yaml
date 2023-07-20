@@ -50,7 +50,7 @@ images:
 - source: "quay.io/prometheus-operator/prometheus-operator:v0.64.1"
 - source: "quay.io/prometheus/alertmanager:v0.24.0"
 - source: "quay.io/prometheus/prometheus:v2.43.1"
-- source: "nats@sha256:d6c6ae7df4a0c5f7aa5ec8035501b7a594d065216aa227265c89909a3c31df96
+- source: "nats@sha256:d6c6ae7df4a0c5f7aa5ec8035501b7a594d065216aa227265c89909a3c31df96"
   tag: "v20230714-2.9.20-alpine3.18"
 - source: "natsio/nats-server-config-reloader:0.11.0"
 - source: "natsio/nats-box:0.13.8"
