@@ -175,7 +175,7 @@ globalSets:
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230718-0d88cd1a"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
   image_buildpack-golang-kubebuilder2:
