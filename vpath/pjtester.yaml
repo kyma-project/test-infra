@@ -6,5 +6,4 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma:
-        - pjName: "pre-main-kyma-integration-k3d-runtime-agent"
-        - pjName: "post-main-kyma-integration-k3d-runtime-agent"
+        - pjName: "pre-main-kyma-integration-k3d-app-gateway"
