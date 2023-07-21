@@ -109,8 +109,30 @@ resource "google_cloud_run_service" "run_service" {
   }
 }`,
 		},
-	}
+		{
+			Name:           "cloud run service with path in comment, pass",
+			ExpectedImages: []string{"gcr.io/google-samples/hello-app:1.0"},
+			WantErr:        false,
+			FileContent: `# development/tools/cmd/dnscollector
+resource "google_cloud_run_service" "run_service" {
+  name = "app"
+  location = "us-central1"
 
+  template {
+    spec {
+      containers {
+        image =  "gcr.io/google-samples/hello-app:1.0"
+      }
+    }
+  }
+
+  traffic {
+    percent         = 100
+    latest_revision = true
+  }
+}`,
+		},
+	}
 	for _, c := range tc {
 		t.Run(c.Name, func(t *testing.T) {
 			actual, err := FromTerraform(strings.NewReader(c.FileContent))
