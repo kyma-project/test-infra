@@ -1,27 +1,44 @@
 name: Pull Plan Prod Terraform
 run-name: pull-plan-prod-terraform
 concurrency:
-  group: ${{ github.head_ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref }}
 on: # runs on main
   pull_request:
-    types: [opened, synchronize, reopened]
+    types: [opened, edited, synchronize, reopened, ready_for_review]
     branches:
     - main
     paths:
-    - 'configs/terraform/environments/prod/*'
+    - '**.tf'
+    - '**.tfvars'
+    - '**.yaml'
+    - '**.yml'
 jobs:
   pull-plan-prod-terraform:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
+        id: checkout
         uses: actions/checkout@v3
-      - name: Wait for other terraform executions
+        
+      - name: 'Wait for other terraform executions'
+        id: wait_for_terraform
         uses: ahmadnassri/action-workflow-queue@v1
-      - name: HashiCorp - Setup Terraform
+        
+      - name: 'Authenticate to GCP'
+        id: gcp_auth
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ vars. }} #'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
+          service_account: ${{ vars. }} #'my-service-account@my-project.iam.gserviceaccount.com'
+          
+      - name: 'Setup Terraform'
         id: setup_terraform
         uses: hashicorp/setup-terraform@v2.0.3
-      - name: HashiCorp - Terraform Init
+        
+      - name: 'Terraform Init'
         id: terraform_init
         run: terraform -chdir=./configs/terraform/environments/prod init -input=false
-      - name: Terraform Plan
-        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr $PULL_NUMBER -sha $GITHUB_SHA plan -- terraform -chdir=./configs/terraform/environments/prod plan -input=false -no-color
+        
+      - name: 'Terraform Plan'
+        id: terraform_plan
+        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr $PULL_NUMBER -sha $GITHUB_SHA plan -- terraform -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
