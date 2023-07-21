@@ -136,8 +136,12 @@ metrics:
 
 nodeSelector:
   iam.gke.io/gke-metadata-server-enabled: "true"
+  workload: "components"
 
-tolerations: []
+tolerations:
+  - key: components.gke.io/gke-managed-components
+    operator: Exists
+    effect: NoSchedule
 
 affinity: {}
 
@@ -186,9 +190,13 @@ webhook:
     # -- The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template.
     name: ""
-  nodeSelector: {}
+  nodeSelector:
+    workload: "components"
 
-  tolerations: []
+  tolerations:
+    - key: components.gke.io/gke-managed-components
+      operator: Exists
+      effect: NoSchedule
 
   affinity: {}
 
@@ -303,9 +311,13 @@ certController:
     # -- The name of the service account to use.
     # If not set and create is true, a name is generated using the fullname template.
     name: ""
-  nodeSelector: {}
+  nodeSelector:
+    workload: "components"
 
-  tolerations: []
+  tolerations:
+    - key: components.gke.io/gke-managed-components
+      operator: Exists
+      effect: NoSchedule
 
   affinity: {}
 

@@ -51,7 +51,7 @@ resource "google_container_node_pool" "components_pool" {
   cluster = google_container_cluster.trusted_workload.id
   name = "components-pool"
   autoscaling {
-    max_node_count = 2
+    max_node_count = 1
     min_node_count = 1
     location_policy = "ANY"
   }
@@ -60,7 +60,7 @@ resource "google_container_node_pool" "components_pool" {
       mode = "GKE_METADATA"
     }
     preemptible = true
-    machine_type = "e2-medium"
+    machine_type = "n1-standard-2"
     metadata = {
       disable-legacy-endpoints = "true"
     }
@@ -72,5 +72,9 @@ resource "google_container_node_pool" "components_pool" {
       key    = "components.gke.io/gke-managed-components"
       value  = "true"
     }
+  }
+  management {
+    auto_repair = true
+    auto_upgrade = true
   }
 }
