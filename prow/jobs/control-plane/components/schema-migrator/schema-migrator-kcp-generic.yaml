@@ -5,7 +5,6 @@ presubmits: # runs on PRs
         owner: "gopher, framefrog"
         description: "Schema-migrator testing pipeline"
         pipeline.trigger: "pr-submit"
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-control-plane-components-schema-migrator"

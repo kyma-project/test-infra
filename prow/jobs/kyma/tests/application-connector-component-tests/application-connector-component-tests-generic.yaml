@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-application-connector-gateway-test-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building the images used in acceptance test"
         owner: "framefrog"
         pipeline.trigger: "pr-submit"
@@ -55,7 +54,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-application-connector-connectivity-validator-test-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building the images used in acceptance test"
         owner: "framefrog"
         pipeline.trigger: "pr-submit"
@@ -105,7 +103,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-application-connector-compass-runtime-agent-test-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building the images used in acceptance test"
         owner: "framefrog"
         pipeline.trigger: "pr-submit"
@@ -155,7 +152,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-application-connector-mock-app-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building the images using in acceptance test"
         owner: "framefrog"
         pipeline.trigger: "pr-submit"
@@ -208,7 +204,6 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-application-connector-gateway-test-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building the images used in acceptance test"
         owner: "framefrog"
         pipeline.trigger: "pr-merge"
@@ -259,7 +254,6 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-application-connector-connectivity-validator-test-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building the images used in acceptance test"
         owner: "framefrog"
         pipeline.trigger: "pr-merge"
@@ -310,7 +304,6 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-application-connector-compass-runtime-agent-test-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building the images used in acceptance test"
         owner: "framefrog"
         pipeline.trigger: "pr-merge"
@@ -361,7 +354,6 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-application-connector-mock-app-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building the images used in acceptance test"
         owner: "framefrog"
         pipeline.trigger: "pr-merge"

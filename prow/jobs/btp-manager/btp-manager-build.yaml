@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/btp-manager:
     - name: pull-btp-manager-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "BTP Manager image build on PR"
         owner: "gopher"
         pipeline.trigger: "pr-submit"
@@ -54,7 +53,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-btp-manager-module-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "BTP Manager template image build on PR"
         owner: "gopher"
         pipeline.trigger: "pr-submit"
@@ -101,7 +99,6 @@ postsubmits: # runs on main
   kyma-project/btp-manager:
     - name: post-btp-manager-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "BTP Manager image build on main"
         owner: "gopher"
         pipeline.trigger: "pr-merge"
@@ -154,7 +151,6 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-btp-manager-module-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "BTP Manager template image build on main"
         owner: "gopher"
         pipeline.trigger: "pr-merge"

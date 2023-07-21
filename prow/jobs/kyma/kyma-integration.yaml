@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration job on k3d"
         owner: "goat"
         pipeline.clusterprovisioning: "k3d"
@@ -57,7 +56,6 @@ presubmits: # runs on PRs
                 cpu: 50m
     - name: pre-main-kyma-integration-k3d-app-gateway
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "It tests the acceptance criteria of the (Central) Application Gateway component"
         owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
@@ -111,7 +109,6 @@ presubmits: # runs on PRs
                 cpu: 50m
     - name: pre-main-kyma-integration-k3d-app-conn-validator
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component"
         owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
@@ -165,7 +162,6 @@ presubmits: # runs on PRs
                 cpu: 50m
     - name: pre-main-kyma-integration-k3d-central-app-connectivity-compass
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "It tests Compass integration. It won't be needed after the implementation of this issue - https://github.com/kyma-project/kyma/issues/15037"
         owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
@@ -219,7 +215,6 @@ presubmits: # runs on PRs
                 cpu: 50m
     - name: pre-main-serverless-integration-k3s
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "serverless integration k3s job"
         owner: "otters"
         pipeline.clusterprovisioning: "k3s"
@@ -274,7 +269,6 @@ presubmits: # runs on PRs
                 cpu: 3
     - name: pre-main-serverless-git-auth-integration-k3s
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Serverless git-function authentication nightly integration tests"
         owner: "otters"
         pipeline.clusterprovisioning: "k3s"
@@ -334,7 +328,6 @@ export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
                 cpu: 3
     - name: pre-main-kyma-integration-k3d-telemetry
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs telemetry integration tests on k3d"
         owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
@@ -382,7 +375,6 @@ export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
                 cpu: 2
     - name: pre-main-kyma-eval-istio-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio integration tests with evaluation profile on k3d"
         owner: "goat"
         pipeline.clusterprovisioning: "k3d"
@@ -430,7 +422,6 @@ export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
                 cpu: 2
     - name: pre-main-kyma-prod-istio-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio integration tests with production profile on k3d"
         owner: "goat"
         pipeline.clusterprovisioning: "k3d"
@@ -478,7 +469,6 @@ export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
                 cpu: 2
     - name: pre-main-kyma-istio-reconcilation-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio reconcilation tests with production profile on k3d"
         owner: "goat"
         pipeline.clusterprovisioning: "k3d"
@@ -533,7 +523,6 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-main-kyma-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration job on k3d."
         owner: "huskies,goat"
         pipeline.clusterprovisioning: "k3d"
@@ -589,7 +578,6 @@ postsubmits: # runs on main
                 cpu: 50m
     - name: post-main-kyma-integration-k3d-app-gateway
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration job on k3d for testing application gateway."
         owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
@@ -643,7 +631,6 @@ postsubmits: # runs on main
                 cpu: 50m
     - name: post-main-kyma-integration-k3d-app-conn-validator
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration job on k3d for testing application connectivity validator."
         owner: "framefrog"
         pipeline.clusterprovisioning: "k3d"
@@ -699,7 +686,6 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: utilities-kyma-integration-cleaner
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "kyma integration cleaner"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -733,7 +719,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: orphaned-assetstore-gcp-bucket-cleaner
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -773,7 +758,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: orphaned-disks-cleaner
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud disks"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -814,7 +798,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: orphaned-ips-cleaner
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud IPs"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -855,7 +838,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: orphaned-clusters-cleaner
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud clusters"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -896,7 +878,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: orphaned-vms-cleaner
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud VMs"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -937,7 +918,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: orphaned-loadbalancer-cleaner
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud load balancers"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -978,7 +958,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: orphaned-dns-cleaner
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of orphaned Google cloud DNS records"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -1020,7 +999,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: gcr-cleaner-prow-workloads
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Cleans up GCR images older than 7 days in eu.gcr.io/sap-kyma-prow-workloads"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -1060,7 +1038,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: github-issues
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Exports data from github to the big query (Grafana metrics)"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -1099,7 +1076,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: serverless-function-metrics-generator
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Serverless function metrics generator"
         owner: "otters"
         pipeline.platform: "gke"
@@ -1151,7 +1127,6 @@ periodics: # runs on schedule
                 cpu: 2
     - name: kyma-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration periodic job on k3d"
         owner: "goat"
         pipeline.clusterprovisioning: "k3d"
@@ -1204,7 +1179,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: kyma-integration-k3d-telemetry
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs telemetry integration tests on k3d"
         owner: "huskies"
         pipeline.clusterprovisioning: "k3d"
@@ -1256,7 +1230,6 @@ periodics: # runs on schedule
                 cpu: 2
     - name: kyma-gke-nightly
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma GKE nightly build (depraceted, needed for sec scans)"
         owner: "neighbors"
         pipeline.clusterprovisioning: "gcloud cli"

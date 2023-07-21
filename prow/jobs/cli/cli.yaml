@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/cli:
     - name: pre-kyma-cli
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint + Go test pre-PR + Build CLI pre-PR"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -39,7 +38,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-cli-lint
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -71,7 +69,6 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-cli-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go test"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -106,7 +103,6 @@ postsubmits: # runs on main
   kyma-project/cli:
     - name: post-kyma-cli
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint + Go test post-PR + Build CLI post-PR"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"
@@ -140,7 +136,6 @@ postsubmits: # runs on main
                 cpu: 2
     - name: rel-kyma-cli
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint + Go test pre-rel + Build CLI pre-rel"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"
