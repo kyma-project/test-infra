@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"sort"
 
-	gogithub "github.com/google/go-github/v42/github"
+	gogithub "github.com/google/go-github/v48/github"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
 	toolsclient "github.com/kyma-project/test-infra/development/github/pkg/client"
 	"github.com/kyma-project/test-infra/development/github/pkg/client/v2"
@@ -146,7 +147,8 @@ func pullRequestEventHandler(_ *externalplugin.Plugin, event externalplugin.Even
 				logger.Errorw("failed resolve owners slack names", "error", err)
 			}
 			// Add slack names to notify to pubsub message payload.
-			mergeMsgPayload.OwnersSlackIDs = targets.List()
+			mergeMsgPayload.OwnersSlackIDs = targets.UnsortedList()
+			sort.Strings(mergeMsgPayload.OwnersSlackIDs)
 			if len(mergeMsgPayload.OwnersSlackIDs) > 0 {
 				// Set pubsub message attributes. This is used to filter messages in pubsub subscriptions.
 				attributes := map[string]string{"automerged": "true"}

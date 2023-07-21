@@ -3642,6 +3642,11 @@ spec:
           name: tmp-volume
       nodeSelector:
         kubernetes.io/os: linux
+        workload: components
+      tolerations:
+        - key: components.gke.io/gke-managed-components
+          operator: Exists
+          effect: NoSchedule
       priorityClassName: system-cluster-critical
       serviceAccountName: gatekeeper-admin
       terminationGracePeriodSeconds: 60
@@ -3760,6 +3765,11 @@ spec:
           readOnly: true
       nodeSelector:
         kubernetes.io/os: linux
+        workload: components
+      tolerations:
+        - key: components.gke.io/gke-managed-components
+          operator: Exists
+          effect: NoSchedule
       priorityClassName: system-cluster-critical
       serviceAccountName: gatekeeper-admin
       terminationGracePeriodSeconds: 60

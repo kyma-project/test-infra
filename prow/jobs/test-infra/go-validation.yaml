@@ -72,5 +72,5 @@ presubmits: # runs on PRs
             resources:
               requests:
                 memory: 1Gi
-                cpu: 500m
+                cpu: 2000m
   

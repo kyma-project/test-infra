@@ -8,17 +8,8 @@ protecode:
     - eu.gcr.io/sap-kyma-neighbors-dev/e2e-nodejs-chrome:test
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230718-0d88cd1a
     - eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17
-    - gcr.io/k8s-prow/branchprotector:v20230718-0a86ec6744
-    - eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230330-3213bd39
-    - gcr.io/k8s-prow/label_sync:v20230718-0a86ec6744
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230628-80b781e8
-    - gcr.io/k8s-prow/gencred:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/commenter:v20230718-0a86ec6744
-    - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
-    - maven:3.8.6-eclipse-temurin-11
-    - gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20230607-587d3f6a
-    - docker.io/zricethezav/gitleaks:v8.15.3
+    - eu.gcr.io/sap-kyma-neighbors-dev/automerge-notification-plugin:v0.1.28-test
+    - eu.gcr.io/sap-kyma-neighbors-dev/cla-assistant-plugin:v20220130-54e1f7f39-dirty-2
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
     - eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db
