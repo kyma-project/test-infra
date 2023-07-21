@@ -44,8 +44,6 @@
 
 [Disks Garbage Collector](/development/tools/cmd/diskscollector/README.md) - This command finds and removes orphaned disks created by the `kyma-gke-integration` job in a Google Cloud Platform (GCP) project.
 
-[DNS Cleaner](/development/tools/cmd/dnscleaner/README.md) - This command finds and removes DNS entries created by the `kyma-gke-long-lasting` job in a Google Cloud Platform (GCP) project.
-
 [IP Address and DNS Record Garbage Collector](/development/tools/cmd/dnscollector/README.md) - This command finds and removes orphaned IP Addresses and related DNS records created by GKE integration jobs in a Google Cloud Platform (GCP) project.
 
 [External Secrets Checker](/development/tools/cmd/externalsecretschecker/README.md) - This command checks external Secrets synchronization status, and if every Secret has a corresponding external Secret.
