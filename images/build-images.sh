@@ -22,6 +22,7 @@ e2e-dind-k3d
 e2e-gcloud
 buildpack-go
 e2e-garden
+hadolint
 )
 
 docker buildx create --driver docker-container --use --name builder
