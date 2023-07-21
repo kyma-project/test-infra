@@ -47,7 +47,7 @@ presubmits:
             args:
               - "bash"
               - "-c"
-              - "make -C tests/components/application-connector/hack/ci run-gateway-tests"
+              - "make -C tests/components/application-connector run-gateway-tests"
             resources:
               requests:
                 memory: 1Gi
