@@ -42,4 +42,4 @@ presubmits: # runs on PRs
                 cpu: 2
               limits:
                 memory: 8Gi
-                cpu: 3
+                cpu: 4
