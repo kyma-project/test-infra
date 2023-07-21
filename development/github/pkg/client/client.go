@@ -11,11 +11,11 @@ import (
 	"net/http"
 	"sync"
 
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v48/github"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	"github.com/kyma-project/test-infra/development/types"
 	"golang.org/x/oauth2"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"k8s.io/test-infra/prow/config/secret"
 )
 

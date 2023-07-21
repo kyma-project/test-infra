@@ -171,11 +171,11 @@ globalSets:
   image_bootstrap:
     image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
   image_prow-tools:
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230718-0d88cd1a"
   image_buildpack-golang:
     image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
   image_buildpack-golang-kubebuilder2:
@@ -189,9 +189,9 @@ globalSets:
   image_markdown_index:
     image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
   image_image_detector:
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230704-40bb02bc"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-e7d5039c"
   image_e2e-dind-k3d:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -232,7 +232,7 @@ globalSets:
     cluster: "untrusted-workload"
   jobConfig_postsubmit:
     annotations:
-      pipeline.trigger: pr-merge
+      pipeline.trigger: pr-merge  
     type_postsubmit: "true"
     cluster: "trusted-workload"
   jobConfig_periodic:
@@ -262,12 +262,6 @@ globalSets:
   jobConfig_buildpack_incubator:
     labels:
       preset-docker-push-repository-incubator: "true"
-  jobConfig_reconciler_publish_unstable_cli:
-    command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
-    annotations:
-      pipeline.installer: reconciler
-      pipeline.test: "fast-integration"
-      pipeline.clusterprovisioning: reconciler
   # generic component jobConfigs
   jobConfig_generic_component:
     securityContext:
@@ -382,7 +376,6 @@ globalSets:
       GARDENER_ZONES: "europe-west4-b"
     annotations:
       pipeline.platform: gardener_gcp
-
 templates:
   - from: test-infra-autobump-config.yaml
     render:

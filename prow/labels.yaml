@@ -307,11 +307,6 @@ default:
       target: both
       addedBy: label
     - color: 99DDFF
-      description: Issues or PRs related to automation.
-      name: area/automation
-      target: both
-      addedBy: label
-    - color: 99DDFF
       description: Related to all activities around the Busola UI and all its views
       name: area/busola
       target: both

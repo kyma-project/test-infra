@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230717-e09b0fee
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230718-0d88cd1a
             securityContext:
               privileged: true
               seccompProfile:
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
                 cpu: 2
               limits:
                 memory: 8Gi
-                cpu: 3
+                cpu: 4
     - name: pull-busola-integration-namespace-k3d
       annotations:
         owner: hasselhoff
@@ -60,7 +60,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230717-e09b0fee
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230718-0d88cd1a
             securityContext:
               privileged: true
               seccompProfile:
@@ -79,4 +79,4 @@ presubmits: # runs on PRs
                 cpu: 2
               limits:
                 memory: 8Gi
-                cpu: 3
+                cpu: 4

@@ -38,6 +38,7 @@
 /prow/jobs/eventing-tools/ @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/eventing-webhook/ @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/nats-manager/ @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
+/prow/jobs/eventing-manager/ @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/telemetry-manager @kyma-project/observability @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/directory-size-exporter @kyma-project/observability @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma/tests/fast-integration @kyma-project/prow @neighbors-dev-bot
@@ -53,6 +54,7 @@ templates/data/eventing-tools-data.yaml @kyma-project/prow @kyma-project/eventin
 templates/data/eventing-webhook-certificates-build.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
 templates/data/eventing-webhook-certificates-release.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
 templates/data/nats-manager-data.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
+templates/data/eventing-manager-data.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
 
 # All .md files
 *.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko @neighbors-dev-bot

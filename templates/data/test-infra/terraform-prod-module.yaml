@@ -49,7 +49,7 @@ templates:
                   command: /bin/sh
                   args:
                     - -c
-                    - /bin/terraform -chdir=./configs/terraform/environments/prod init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -sha $PULL_BASE_SHA apply -- terraform -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve; /ghcomment/github-comment hide --org $(REPO_OWNER) --repo $(REPO_NAME) -pr $(PULL_NUMBER) -sha1 $(PULL_PULL_SHA)
+                    - /bin/terraform -chdir=./configs/terraform/environments/prod init -input=false && /tfcmt/tfcmt -owner $REPO_OWNER -repo $REPO_NAME -sha $PULL_BASE_SHA apply -- terraform -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve; /ghcomment/github-comment hide --org $(REPO_OWNER) --repo $(REPO_NAME) -sha1 $(PULL_BASE_SHA)
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"

@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/kyma-project/test-infra/development/image-url-helper/pkg/common"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 func GetWalkFunc(resourcesDirectory string, images, testImages common.ComponentImageMap) filepath.WalkFunc {

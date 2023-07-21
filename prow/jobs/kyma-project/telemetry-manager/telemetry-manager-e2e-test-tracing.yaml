@@ -1,24 +1,24 @@
 presubmits:
   kyma-project/telemetry-manager:
-    - name: pull-telemetry-manager-verify-module
+    - name: pull-telemetry-manager-e2e-test-tracing
       annotations:
-        description: "Pre-submit job to verify successful deployment of telemetry module."
+        description: "Pre-submit job to execute e2e tracing test."
         owner: "huskies"
       optional: false
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-verify-module"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-e2e-test-tracing"
         prow.k8s.io/pubsub.topic: "prowjobs"
       cluster: untrusted-workload
       decorate: true
-      skip_if_only_changed: '^docs/|\.md$|CODEOWNERS|\..*'
+      run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/'
       spec:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
             command: ["/init.sh"]
-            args: ["bash", "-c", "make e2e-deploy-module"]
+            args: ["bash", "-c", "make e2e-test-tracing"]
             requests:
               memory: 4Gi
               cpu: 2
