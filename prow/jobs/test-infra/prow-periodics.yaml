@@ -62,7 +62,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230718-ba0c1ed7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230720-f6f2b65f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -244,7 +244,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230718-ba0c1ed7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230720-f6f2b65f"
             securityContext:
               privileged: false
               seccompProfile:
