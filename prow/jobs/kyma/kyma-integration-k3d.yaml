@@ -1,7 +1,7 @@
 periodics:
   - name: kyma-upgrade-k3d-kyma2-to-main
     annotations:
-      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      
       description: "K3d Kyma 2.0 to main branch."
       owner: "jellyfish"
       pipeline.clusterprovisioning: "kyma cli"

@@ -4,7 +4,7 @@ presubmits: # runs on PRs
       annotations:
         owner: tunas
         description: Runs integration suite for Eventing Auth Manager
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-eventing-auth-manager-integration-test"

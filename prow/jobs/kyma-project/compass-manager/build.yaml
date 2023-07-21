@@ -6,7 +6,7 @@ postsubmits: # runs on main
         owner: framefrog
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-compass-manager-build"

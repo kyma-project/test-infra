@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/api-gateway:
     - name: pull-api-gateway-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "builds api-gateway image"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -55,7 +54,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-api-gateway-webhook-certificates-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "builds webhook certificates image"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -108,7 +106,6 @@ postsubmits: # runs on main
   kyma-project/api-gateway:
     - name: post-api-gateway-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "builds api-gateway image"
         owner: "goat"
         pipeline.trigger: "pr-merge"
@@ -165,7 +162,6 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-api-gateway-webhook-certificates-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "builds webhook certificates image"
         owner: "goat"
         pipeline.trigger: "pr-merge"

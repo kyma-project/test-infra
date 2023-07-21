@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pull-busola-backend-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building Busola backend image and push to GCR"
         owner: "hasselhoff"
         pipeline.trigger: "pr-submit"
@@ -67,7 +66,6 @@ postsubmits: # runs on main
   kyma-project/busola:
     - name: post-busola-backend-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building Busola backend image and push to GCR"
         owner: "hasselhoff"
         pipeline.trigger: "pr-merge"

@@ -3,7 +3,7 @@ periodics:
     annotations:
       owner: huskies
       description: Runs fast-integration test on next k8s version
-      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      
     labels:
       preset-dind-enabled: "true"
       preset-kind-volume-mounts: "true"

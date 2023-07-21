@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/eventing-auth-manager:
     - name: pull-eventing-auth-manager-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build the eventing-auth-manager image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -54,7 +53,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-eventing-auth-manager-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "run unit tests for eventing auth manager"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -90,7 +88,6 @@ postsubmits: # runs on main
   kyma-project/eventing-auth-manager:
     - name: post-eventing-auth-manager-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build the eventing-auth-manager image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"

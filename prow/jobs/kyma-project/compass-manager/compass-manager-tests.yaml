@@ -7,7 +7,7 @@ presubmits: # runs on PRs
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-manager-tests"

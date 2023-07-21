@@ -2,7 +2,7 @@ postsubmits:
   kyma-project/cli:
     - name: post-main-unstable-cli
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        
         description: "Bump reconciler version used by CLI and publish the unstable CLI binaries"
         owner: "jellyfish"
         pipeline.clusterprovisioning: "reconciler"
@@ -57,7 +57,7 @@ presubmits:
   kyma-project/cli:
     - name: pre-main-cli-e2e
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        
         description: "Run fast integration tests + Test Kyma CLI commands"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"

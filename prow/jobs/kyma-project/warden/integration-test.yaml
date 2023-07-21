@@ -4,7 +4,7 @@ presubmits:
       annotations:
         owner: otters
         description: Warden integration test
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
