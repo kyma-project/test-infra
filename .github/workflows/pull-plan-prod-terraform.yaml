@@ -28,17 +28,31 @@ jobs:
         id: gcp_auth
         uses: google-github-actions/auth@v1
         with:
-          workload_identity_provider: ${{ vars. }} #'projects/123456789/locations/global/workloadIdentityPools/my-pool/providers/my-provider'
-          service_account: ${{ vars. }} #'my-service-account@my-project.iam.gserviceaccount.com'
+          workload_identity_provider: ${{ vars.gcp_terraform_executor_service_account_email }}
+          service_account: ${{ vars.gcp_terraform_executor_service_account_email }}
           
       - name: 'Setup Terraform'
         id: setup_terraform
         uses: hashicorp/setup-terraform@v2.0.3
+        
+      - name: "Setup GitHub comments"
+        id: setup-github-comment
+        uses: shmokmt/actions-setup-github-comment@v2
+        if: ${{ !cancelled() }}
         
       - name: 'Terraform Init'
         id: terraform_init
         run: terraform -chdir=./configs/terraform/environments/prod init -input=false
         
       - name: 'Terraform Plan'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: terraform_plan
         run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr $PULL_NUMBER -sha $GITHUB_SHA plan -- terraform -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
+      
+      - name: "Hide GitHub comment"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: hide-github-comment
+        run: github-comment hide --org $GITHUB_REPOSITORY_OWNER --repo ${{ github.event.repository.name }} -pr $PULL_NUMBER -sha1 $GITHUB_SHA
+        if: ${{ !cancelled() }}
