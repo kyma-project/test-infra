@@ -4,7 +4,6 @@
 periodics: # runs on schedule
     - name: keb-endpoints-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic job to check if KEB endpoints require authorization"
         owner: "gopher"
         pipeline.test: "fast-integration"

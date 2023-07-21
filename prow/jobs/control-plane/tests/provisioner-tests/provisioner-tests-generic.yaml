@@ -5,7 +5,6 @@ presubmits: # runs on PRs
         pipeline.trigger: "pr-submit"
         description: "It tests the acceptance criteria of the Provisioner component"
         owner: framefrog
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-control-plane-tests-provisioner-tests"

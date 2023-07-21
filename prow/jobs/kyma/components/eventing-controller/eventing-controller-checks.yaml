@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-eventing-controller-lint
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "lint the EC"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -37,7 +36,6 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-eventing-controller-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "run unit tests for EC"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"

@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-release-pr-image-guard
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Check if chart and manifests files use PR images."
         owner: "neighbors"
         pipeline.trigger: "pr-submit"

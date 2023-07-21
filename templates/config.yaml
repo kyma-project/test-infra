@@ -223,19 +223,16 @@ globalSets:
   jobConfig_presubmit:
     annotations:
       pipeline.trigger: pr-submit
-      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"  
     type_presubmit: "true"
     cluster: "untrusted-workload"
   jobConfig_postsubmit:
     annotations:
-      pipeline.trigger: pr-merge
-      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"  
+      pipeline.trigger: pr-merge  
     type_postsubmit: "true"
     cluster: "trusted-workload"
   jobConfig_periodic:
     annotations:
       pipeline.trigger: periodic
-      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"  
     type_periodic: "true"
     cluster: "untrusted-workload"
   unprivileged:
@@ -374,7 +371,6 @@ globalSets:
       GARDENER_ZONES: "europe-west4-b"
     annotations:
       pipeline.platform: gardener_gcp
-
 templates:
   - from: test-infra-autobump-config.yaml
     render:

@@ -11,7 +11,6 @@ periodics:
       owner: neighbors
       description: "Periodic close stale issues and PRs"
       testgrid-create-test-group: "false"
-      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     spec:
       containers:
         - image: gcr.io/k8s-prow/commenter:v20230718-0a86ec6744
@@ -58,7 +57,6 @@ periodics:
         - name: token
           secret:
             secretName: kyma-bot-triage-token
-
   - name: ci-kyma-bot-triage-stale
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -71,7 +69,6 @@ periodics:
       owner: neighbors
       description: "Periodic triage stale issues and PRs"
       testgrid-create-test-group: "false"
-      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     spec:
       containers:
         - image: gcr.io/k8s-prow/commenter:v20230718-0a86ec6744

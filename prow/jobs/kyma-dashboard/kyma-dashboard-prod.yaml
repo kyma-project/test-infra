@@ -2,7 +2,6 @@ presubmits: # runs on PRs
   kyma-project/kyma-dashboard:
     - name: pre-kyma-dashboard-prod
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma Dashboard Prod Job"
         owner: "hasselhoff"
         pipeline.trigger: "pr-submit"
@@ -51,7 +50,6 @@ postsubmits: # runs on main
   kyma-project/kyma-dashboard:
     - name: post-kyma-dashboard-prod
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma Dashboard Prod Job"
         owner: "hasselhoff"
         pipeline.trigger: "pr-merge"

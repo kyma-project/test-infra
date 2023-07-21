@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pull-connectivity-adapter-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building Connectivity Adapter Compass component"
         owner: "compass"
         pipeline.trigger: "pr-submit"
@@ -69,7 +68,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-connectivity-adapter-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Run unit tests for the Connectivity Adapter Compass component"
         owner: "compass"
         pipeline.trigger: "pr-submit"
@@ -105,7 +103,6 @@ postsubmits: # runs on main
   kyma-incubator/compass:
     - name: post-connectivity-adapter-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Building Connectivity Adapter Compass component after merge"
         owner: "compass"
         pipeline.trigger: "pr-merge"

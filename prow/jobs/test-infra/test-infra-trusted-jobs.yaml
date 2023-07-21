@@ -28,15 +28,12 @@ postsubmits:
         owner: neighbors
         description: "Refresh kubeconfigs for workload clusters after config change"
         testgrid-create-test-group: "false"
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-
 periodics:
   - cron: "17 */6 * * *" # Every 6 hours at 17 minutes past the hour
     name: ci-gencred-refresh-kubeconfigs
     annotations:
       owner: neighbors
       description: "Periodic refresh kubeconfigs for workload clusters"
-      cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "ci-gencred-refresh-kubeconfigs"

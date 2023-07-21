@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-components-kyma-metrics-collector
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build the kmc image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
