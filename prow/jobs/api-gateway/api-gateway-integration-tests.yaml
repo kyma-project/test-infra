@@ -29,8 +29,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-\d+\.\d+$
       extra_refs:
         - org: kyma-project
           repo: kyma
@@ -85,6 +85,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
+        - ^release-\d+\.\d+$
       extra_refs:
         - org: kyma-project
           repo: kyma
@@ -137,6 +138,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
+        - ^release-\d+\.\d+$
       reporter_config:
         slack:
           channel: goat-int
@@ -186,6 +188,7 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
+        - ^release-\d+\.\d+$
       reporter_config:
         slack:
           channel: goat-int
