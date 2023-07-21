@@ -271,23 +271,6 @@ templates:
                     - reconciler_component_gardener_integration_jobConfig
                     - reconciler_e2e_image
               - jobConfig:
-                  name: "pre-dev-kyma-incubator-reconciler"
-                  annotations:
-                    owner: jellyfish
-                    description: build reconciler
-                  always_run: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-                  local:
-                    - reconciler_dev_jobConfig
-                    - reconciler_jobConfig_args
-              - jobConfig:
                   name: "post-latest-istio-reconciler-integration-k3d"
                   annotations:
                     owner: goat
@@ -414,23 +397,6 @@ templates:
                   global:
                     - jobConfig_postsubmit
                     - kaniko_buildpack
-              - jobConfig:
-                  name: post-dev-kyma-incubator-reconciler
-                  annotations:
-                    owner: jellyfish
-                    description: build reconciler
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - extra_refs_test-infra
-                    - disable_testgrid
-                    - image_buildpack-golang
-                    - jobConfig_generic_component
-                    - jobConfig_buildpack_incubator
-                  local:
-                    - reconciler_dev_jobConfig
-                    - reconciler_jobConfig_args
               - jobConfig:
                   name: reconciler-control-plane-image-bump
                   annotations:

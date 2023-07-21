@@ -11,8 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-control-plane-tests-provisioner-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
-        preset-docker-push-repository-control-plane: "true"
-        preset-kyma-kms-sign-key: "true"
+        preset-kind-volume-mounts: "true"
       run_if_changed: "^tests/provisioner-tests/|^scripts/"
       skip_report: false
       decorate: true
@@ -22,23 +21,22 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - make
             args:
-              - "/home/prow/go/src/github.com/kyma-project/control-plane/tests/provisioner-tests"
+              - -C
+              - tests/provisioner-tests
+              - resolve-local
+              - fmt-local
+              - test-local
             resources:
               requests:
                 memory: 3Gi
