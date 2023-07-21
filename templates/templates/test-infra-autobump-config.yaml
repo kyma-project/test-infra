@@ -38,4 +38,4 @@ prefixes:
     stagingRefConfigFile: "templates/config.yaml"
     repo: "https://github.com/kyma-project/test-infra"
     summarise: true
-    consistentImages: true
+    consistentImages: false
