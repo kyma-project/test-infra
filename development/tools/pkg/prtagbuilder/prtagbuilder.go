@@ -9,7 +9,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/google/go-github/v40/github"
+	"github.com/google/go-github/v48/github"
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 )
 

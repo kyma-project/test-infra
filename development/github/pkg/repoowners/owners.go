@@ -100,12 +100,12 @@ func (c *OwnersClient) ParseOwnersFile(ownersFilePath, repoBase string, owners k
 }
 
 // ResolveSlackNames find all owners from allOwners, in repository owners aliases and users lists which have enabled pr automerge notifications.
-func (c *OwnersClient) ResolveSlackNames(allOwners AllOwners, aliases []toolstypes.Alias, users []toolstypes.User, repoAliases k8sowners.RepoAliases) (sets.String, error) {
+func (c *OwnersClient) ResolveSlackNames(allOwners AllOwners, aliases []toolstypes.Alias, users []toolstypes.User, repoAliases k8sowners.RepoAliases) (sets.Set[string], error) {
 	// Convert lists of aliases and users to maps for easy searching.
 	// Using gitHub alias and user names as searching keys.
 	aliasesMap := make(map[string]toolstypes.Alias)
 	usersMap := make(map[string]toolstypes.User)
-	targets := sets.NewString()
+	targets := sets.New[string]()
 	for _, alias := range aliases {
 		aliasesMap[alias.ComGithubAliasname] = alias
 	}
@@ -136,7 +136,7 @@ func (c *OwnersClient) ResolveSlackNames(allOwners AllOwners, aliases []toolstyp
 }
 
 // checkIfNotifyAlias checks in aliases map if owner is a repository owner alias and has enabled notifications for pr automerge events.
-func (c *OwnersClient) checkIfNotifyAlias(owner string, targets *sets.String, aliasesMap map[string]toolstypes.Alias) bool {
+func (c *OwnersClient) checkIfNotifyAlias(owner string, targets *sets.Set[string], aliasesMap map[string]toolstypes.Alias) bool {
 	if alias, ok := aliasesMap[owner]; ok {
 		if alias.AutomergeNotifications {
 			// Add owner to notification targets.
@@ -149,7 +149,7 @@ func (c *OwnersClient) checkIfNotifyAlias(owner string, targets *sets.String, al
 }
 
 // checkIfNotifyUser checks in users map  if owner is a repository owner user and has enabled notifications for pr automerge events.
-func (c *OwnersClient) checkIfNotifyUser(owner string, targets *sets.String, usersMap map[string]toolstypes.User) bool {
+func (c *OwnersClient) checkIfNotifyUser(owner string, targets *sets.Set[string], usersMap map[string]toolstypes.User) bool {
 	if user, ok := usersMap[owner]; ok {
 		if user.AutomergeNotifications {
 			// Add owner to notification targets.

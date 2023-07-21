@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v48/github"
 	"github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/apperrors"
 	git "github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/github"
 	"github.com/kyma-project/test-infra/development/kyma-github-connector/githubWebhookGateway/pkg/httperrors"
@@ -110,5 +110,5 @@ func (wh *WebHookHandler) checkIfEventSupported(allowed map[string]map[string]st
 		et := fmt.Sprintf("%s.%s", eventGroup, eventAction)
 		return et, true
 	}
-        return "", false
+	return "", false
 }
