@@ -26,11 +26,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: api-gateway
-          path_alias: github.com/kyma-project/api-gateway
           base_ref: main
       spec:
         containers:
@@ -82,11 +80,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: control-plane
-          path_alias: github.com/kyma-project/control-plane
           base_ref: main
       spec:
         containers:
@@ -138,11 +134,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
       spec:
         containers:
@@ -194,11 +188,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: lifecycle-manager
-          path_alias: github.com/kyma-project/lifecycle-manager
           base_ref: main
       spec:
         containers:
@@ -250,11 +242,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: runtime-watcher
-          path_alias: github.com/kyma-project/runtime-watcher
           base_ref: main
       spec:
         containers:
@@ -306,11 +296,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: busola
-          path_alias: github.com/kyma-project/busola
           base_ref: main
       spec:
         containers:
@@ -362,11 +350,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: cli
-          path_alias: github.com/kyma-project/cli
           base_ref: main
       spec:
         containers:
@@ -418,11 +404,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: hydroform
-          path_alias: github.com/kyma-project/hydroform
           base_ref: main
       spec:
         containers:
@@ -476,11 +460,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-incubator
           repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
           base_ref: main
       spec:
         containers:
@@ -532,11 +514,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: warden
-          path_alias: github.com/kyma-project/warden
           base_ref: main
       spec:
         containers:
@@ -588,11 +568,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: keda-manager
-          path_alias: github.com/kyma-project/keda-manager
           base_ref: main
       spec:
         containers:
@@ -646,11 +624,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: btp-manager
-          path_alias: github.com/kyma-project/btp-manager
           base_ref: main
       spec:
         containers:
@@ -702,11 +678,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: telemetry-manager
-          path_alias: github.com/kyma-project/telemetry-manager
           base_ref: main
       spec:
         containers:
@@ -758,11 +732,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: directory-size-exporter
-          path_alias: github.com/kyma-project/directory-size-exporter
           base_ref: main
       spec:
         containers:
@@ -810,11 +782,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: compass-manager
-          path_alias: github.com/kyma-project/compass-manager
           base_ref: main
       spec:
         containers:
@@ -868,11 +838,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: release-2.16
       spec:
         containers:
@@ -924,11 +892,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: cli
-          path_alias: github.com/kyma-project/cli
           base_ref: release-2.16
       spec:
         containers:
@@ -983,11 +949,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: release-2.15
       spec:
         containers:
@@ -1039,11 +1003,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
         - org: kyma-project
           repo: cli
-          path_alias: github.com/kyma-project/cli
           base_ref: release-2.15
       spec:
         containers:

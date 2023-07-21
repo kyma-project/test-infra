@@ -4,7 +4,6 @@ templates:
       - to: ../../prow/jobs/incubator/compass/compass-gke-benchmark.yaml
         localSets:
           jobConfig_default:
-            path_alias: github.com/kyma-incubator/compass
             command: "bash"
             args:
               - "-c"

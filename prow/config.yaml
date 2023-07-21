@@ -346,7 +346,6 @@ tide:
     - labels:
         - lgtm
       missingLabels:
-        - needs-rebase
         - needs-kind
         - needs-area
         - do-not-merge/hold
@@ -356,6 +355,19 @@ tide:
       orgs:
         - kyma-project
         - kyma-incubator
+      reviewApprovedRequired: true
+    - labels:
+        - lgtm
+        - approved
+      missingLabels:
+        - needs-kind
+        - needs-area
+        - do-not-merge/hold
+        - do-not-merge/work-in-progress
+        - do-not-merge/invalid-owners-file
+        - do-not-merge/invalid-commit-message
+      repos:
+        - kyma-incubator/compass
       reviewApprovedRequired: true
   context_options:
     from-branch-protection: true

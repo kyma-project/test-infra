@@ -11,7 +11,6 @@ templates:
               pipeline.clusterprovisioning: keb
               pipeline.installer: keb
               pipeline.test: fast-integration
-            path_alias: github.com/kyma-project/kyma-environment-broker
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi

@@ -19,7 +19,6 @@ presubmits: # runs on PRs
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -28,7 +27,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -62,7 +60,6 @@ presubmits: # runs on PRs
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -70,7 +67,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.16
       spec:
         containers:
@@ -104,7 +100,6 @@ presubmits: # runs on PRs
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -112,7 +107,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.15
       spec:
         containers:
@@ -146,7 +140,6 @@ presubmits: # runs on PRs
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -154,7 +147,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.14
       spec:
         containers:
@@ -192,7 +184,6 @@ postsubmits: # runs on main
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -201,7 +192,6 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -236,7 +226,6 @@ postsubmits: # runs on main
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -244,7 +233,6 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.16
       spec:
         containers:
@@ -279,7 +267,6 @@ postsubmits: # runs on main
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -287,7 +274,6 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.15
       spec:
         containers:
@@ -322,7 +308,6 @@ postsubmits: # runs on main
       run_if_changed: '^tests/fast-integration/image/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -330,7 +315,6 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.14
       spec:
         containers:

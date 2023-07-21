@@ -19,7 +19,6 @@ presubmits: # runs on PRs
       run_if_changed: '^components/kyma-metrics-collector/|^scripts/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/control-plane
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -28,7 +27,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -62,7 +60,6 @@ presubmits: # runs on PRs
       run_if_changed: '^components/kyma-metrics-collector/|^scripts/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/control-plane
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -70,7 +67,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.16
       spec:
         containers:
@@ -104,7 +100,6 @@ presubmits: # runs on PRs
       run_if_changed: '^components/kyma-metrics-collector/|^scripts/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/control-plane
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -112,7 +107,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.15
       spec:
         containers:
@@ -146,7 +140,6 @@ presubmits: # runs on PRs
       run_if_changed: '^components/kyma-metrics-collector/|^scripts/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/control-plane
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -154,7 +147,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.14
       spec:
         containers:

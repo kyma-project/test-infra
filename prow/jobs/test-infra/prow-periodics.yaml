@@ -127,7 +127,6 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: eventing-tools
-          path_alias: github.com/kyma-project/eventing-tools
           base_ref: main
       spec:
         containers:
@@ -199,7 +198,6 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -234,7 +232,6 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -274,7 +271,6 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:

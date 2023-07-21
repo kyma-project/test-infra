@@ -4,7 +4,6 @@ templates:
       - to: ../../prow/jobs/control-plane/control-plane-validation.yaml
         localSets:
           jobConfig_default:
-            path_alias: "github.com/kyma-project/control-plane"
             env:
               PROJECTNAME: control-plane
               DRYRUN: "false"

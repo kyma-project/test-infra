@@ -4,7 +4,6 @@ templates:
       - to: ../../prow/jobs/incubator/compass/components/schema-migrator/compass-schema-migrator-validate.yaml
         localSets:
           jobConfig_default:
-            path_alias: github.com/kyma-incubator/compass
             command: "installation/scripts/prow/jobs/validate-compass-generic.sh"
             args:
               - "--component"
@@ -48,7 +47,6 @@ templates:
       - to: ../../prow/jobs/incubator/compass/components/schema-migrator/compass-director-gqlgen-validate.yaml
         localSets:
           jobConfig_default:
-            path_alias: github.com/kyma-incubator/compass
             command: "installation/scripts/prow/jobs/validate-compass-generic.sh"
             args:
               - "--component"

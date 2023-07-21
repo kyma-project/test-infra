@@ -42,7 +42,6 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            path_alias: github.com/kyma-project/keda-manager
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
             command: "/init.sh"
             request_memory: "4Gi"
@@ -69,7 +68,6 @@ templates:
                       - org: kyma-project
                         repo: keda-manager
                         base_ref: main
-                        path_alias: github.com/kyma-project/keda-manager
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -347,7 +345,6 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            path_alias: github.com/kyma-project/serverless-manager
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
             command: "/init.sh"
             request_memory: "4Gi"
@@ -374,7 +371,6 @@ templates:
                       - org: kyma-project
                         repo: serverless-manager
                         base_ref: main
-                        path_alias: github.com/kyma-project/serverless-manager
                 inheritedConfigs:
                   global:
                     - jobConfig_default

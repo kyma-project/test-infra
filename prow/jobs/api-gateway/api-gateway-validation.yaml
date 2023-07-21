@@ -50,7 +50,6 @@ presubmits: # runs on PRs
       optional: false
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/api-gateway
       cluster: untrusted-workload
       max_concurrency: 10
       spec:

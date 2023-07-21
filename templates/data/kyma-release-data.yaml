@@ -25,14 +25,12 @@ templates:
               test-infra:
                 - org: kyma-project
                   repo: test-infra
-                  path_alias: github.com/kyma-project/test-infra
                   base_ref: release-{{ $rel }}
           kyma:
             extra_refs:
               kyma:
                 - org: kyma-project
                   repo: kyma
-                  path_alias: github.com/kyma-project/kyma
                   base_ref: release-{{ $rel }}
           request_small:
             request_memory: 100Mi
@@ -165,7 +163,6 @@ templates:
                     pipeline.type: integration
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     testgrid-days-of-results: "60"
-                  path_alias: github.com/kyma-project/kyma
                   cluster: "trusted-workload"
                   labels:
                     preset-kyma-keyring: "true"

@@ -36,7 +36,6 @@ templates:
           job_skip_config:
             skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
           vm_job_make:
-            path_alias: github.com/kyma-project/istio
             command: "bash"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
@@ -254,13 +253,11 @@ templates:
               - jobConfig:
                   name: nightly-istio-performance-test-gcp
                   cron: "0 0 * * *"
-                  path_alias: github.com/kyma-project/istio
                   extra_refs:
                     istio:
                       - org: kyma-project
                         repo: istio
                         base_ref: main
-                        path_alias: github.com/kyma-project/istio
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster

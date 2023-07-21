@@ -24,16 +24,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -80,16 +77,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -136,16 +130,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -192,16 +183,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -248,16 +236,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -305,16 +290,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:

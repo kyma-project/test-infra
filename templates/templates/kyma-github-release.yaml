@@ -1,7 +1,6 @@
 test_infra_ref: &test_infra_ref
   org: kyma-project
   repo: test-infra
-  path_alias: github.com/kyma-project/test-infra
 
 job_template: &job_template
   decorate: true
