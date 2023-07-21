@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-common
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Build the image used in Application Connector components for logging purposes"
+        owner: "framefrog"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -20,9 +23,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -33,18 +39,14 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-main-kyma-common
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Build the image used in Application Connector components for logging purposes"
+        owner: "framefrog"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -61,9 +63,12 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -74,11 +79,4 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

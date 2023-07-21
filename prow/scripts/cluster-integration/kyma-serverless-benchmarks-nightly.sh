@@ -7,7 +7,7 @@ export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
 export KYMA_DIR="${KYMA_PROJECT_DIR}/kyma"
 
 export TEST_NAMESPACE="serverless-benchmarks"
-export ALL_FUNCTIONS=(nodejs14-xs nodejs14-s nodejs14-m nodejs14-l nodejs14-xl python39-s python39-m python39-l python39-xl)
+export ALL_FUNCTIONS=(nodejs18-xs nodejs18-s nodejs18-m nodejs18-l nodejs18-xl python39-s python39-m python39-l python39-xl)
 
 
 # shellcheck source=prow/scripts/lib/utils.sh

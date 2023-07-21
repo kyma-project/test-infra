@@ -9,6 +9,12 @@ resource "google_storage_bucket_iam_member" "kyma_prow_logs_viewer" {
   member = "serviceAccount:${google_service_account.gcs_bucket_mover.email}"
 }
 
+resource "google_storage_bucket_iam_member" "kyma_prow_logs_object_admin" {
+  bucket = data.google_storage_bucket.kyma_prow_logs.name
+  role   = "roles/storage.objectAdmin"
+  member = "serviceAccount:${google_service_account.gcs_bucket_mover.email}"
+}
+
 resource "google_storage_bucket_iam_member" "kyma_prow_logs_secured_object_admin" {
   bucket = google_storage_bucket.kyma_prow_logs_secured.name
   role   = "roles/storage.objectAdmin"
@@ -41,7 +47,7 @@ resource "google_cloud_run_service" "gcs_bucket_mover" {
     spec {
       service_account_name = google_service_account.gcs_bucket_mover.email
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/movegcsbucket:v20230202-40569193"
+        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/movegcsbucket:v20230309-1d421c4f"
         env {
           name  = "PROJECT_ID"
           value = var.gcp_project_id
@@ -60,7 +66,11 @@ resource "google_cloud_run_service" "gcs_bucket_mover" {
         }
         env {
           name  = "DST_BUCKET_NAME"
-          value = "dev-prow-logs-secured"
+          value = google_storage_bucket.kyma_prow_logs_secured.name
+        }
+        env {
+          name  = "DRY_RUN"
+          value = "true"
         }
       }
     }

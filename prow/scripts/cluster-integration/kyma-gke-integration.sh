@@ -17,7 +17,6 @@
 # - GOOGLE_APPLICATION_CREDENTIALS - GCP Service Account key file path
 # - GKE_CLUSTER_VERSION - GKE cluster version
 # - KYMA_ARTIFACTS_BUCKET: GCP bucket
-# - LOG_COLLECTOR_SLACK_TOKEN: Slack token for test-log-collector
 # - MACHINE_TYPE - (optional) GKE machine type
 # - GKE_RELEASE_CHANNEL - (optional) GKE release channel
 #
@@ -161,7 +160,6 @@ gcp::provision_k8s_cluster \
     -r "$PROVISION_REGIONAL_CLUSTER" \
     -s "$STACKDRIVER_KUBERNETES" \
     -D "$CLUSTER_USE_SSD" \
-    -e "$GKE_ENABLE_POD_SECURITY_POLICY" \
     -P "$TEST_INFRA_SOURCES_DIR"
 export CLEANUP_CLUSTER="true"
 
@@ -213,11 +211,6 @@ utils::save_psp_list "$ARTIFACTS/kyma-psp.json"
 
 utils::kubeaudit_create_report "$ARTIFACTS/kubeaudit.log"
 utils::kubeaudit_check_report "$ARTIFACTS/kubeaudit.log"
-
-# enable test-log-collector before tests; if prowjob fails before test phase we do not have any reason to enable it earlier
-if [[ "$BUILD_TYPE" == "master" && -n "$LOG_COLLECTOR_SLACK_TOKEN" ]]; then
-    export ENABLE_TEST_LOG_COLLECTOR=true
-fi
 
 log::info "Test Kyma"
 # shellcheck disable=SC2031

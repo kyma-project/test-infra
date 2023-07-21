@@ -2,5 +2,6 @@
 
 # we don't use prow-installer anymore
 run:
+  timeout: 10m
   skip-dirs:
     - .

@@ -15,6 +15,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pre-control-plane-validate-dockerfiles"
+                  annotations:
+                    owner: neighbors
+                    description: "Validate Dockerfiles"
                   run_if_changed: ".*Dockerfile$"
                   command: "/bin/bash"
                   args: 

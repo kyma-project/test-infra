@@ -1,0 +1,26 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: SecretTrustedUsage
+metadata:
+  name: kyma-bot-github-sap-token
+spec:
+  enforcementAction: warn
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+  parameters:
+    restrictedSecrets:
+      - kyma-bot-github-sap-token
+    trustedImages:
+      # Prowjob name: pre-main-check-users-map
+      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"
+        command:
+          - /tools/entrypoint
+        args: []
+        entrypoint_options: '^{.*"args":\["usersmapchecker"\],"container_name":"test",.*}$'
+      # Prowjob name: github-issues
+      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"
+        command:
+          - /tools/entrypoint
+        args: []
+        entrypoint_options: '^{.*"args":\["\/home\/prow\/go\/src\/github\.com\/kyma-project\/test-infra\/prow\/scripts\/github-issues\.sh"\],"container_name":"test",.*}$'

@@ -1,6 +1,0 @@
-apiVersion: v2
-name: kyma-ci-force-bot
-description: Ci-force automation component running on tooling Kyma instance.
-type: application
-version: 2.0.0
-appVersion: 0.1.0

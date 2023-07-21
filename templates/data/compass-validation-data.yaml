@@ -5,7 +5,7 @@ templates:
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-compass-generic.sh"
+            command: "installation/scripts/prow/jobs/validate-compass-generic.sh"
             args:
               - "--component"
               - "schema-migrator"
@@ -18,12 +18,15 @@ templates:
               preset-dind-enabled: "true"
               preset-docker-push-repository-kyma: "true"
               preset-kyma-development-artifacts-bucket: "true"
-              preset-sa-gcr-push: "true"
+              preset-sa-vm-kyma-integration: "true"
         jobConfigs:
           - repoName: "kyma-incubator/compass"
             jobs:
               - jobConfig:
                   name: "pre-main-compass-schema-migrator-validate"
+                  annotations:
+                    owner: compass
+                    description: "Validate new DB schema migrations"
                   run_if_changed: "^components/schema-migrator/"
                   labels:
                     preset-build-pr: "true"
@@ -37,6 +40,8 @@ templates:
                     - "jobConfig_presubmit"
                     - "image_buildpack-golang"
                     - "extra_refs_test-infra"
+                    - "privileged_job"
+                    - "kyma_project_dir"
                   local:
                     - "jobConfig_default"
 
@@ -44,7 +49,7 @@ templates:
         localSets:
           jobConfig_default:
             path_alias: github.com/kyma-incubator/compass
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-compass-generic.sh"
+            command: "installation/scripts/prow/jobs/validate-compass-generic.sh"
             args:
               - "--component"
               - "director"
@@ -57,12 +62,15 @@ templates:
               preset-dind-enabled: "true"
               preset-docker-push-repository-kyma: "true"
               preset-kyma-development-artifacts-bucket: "true"
-              preset-sa-gcr-push: "true"
+              preset-sa-vm-kyma-integration: "true"
         jobConfigs:
           - repoName: "kyma-incubator/compass"
             jobs:
               - jobConfig:
                   name: "pre-main-compass-director-gqlgen-validate"
+                  annotations:
+                    owner: compass
+                    description: "Validate director graphQL schema was generated"
                   run_if_changed: "^components/director/"
                   labels:
                     preset-build-pr: "true"
@@ -76,5 +84,7 @@ templates:
                     - "jobConfig_presubmit"
                     - "image_buildpack-golang"
                     - "extra_refs_test-infra"
+                    - "privileged_job"
+                    - "kyma_project_dir"
                   local:
                     - "jobConfig_default"

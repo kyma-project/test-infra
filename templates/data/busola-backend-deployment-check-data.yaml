@@ -21,6 +21,9 @@ templates:
               # presubmits
               - jobConfig:
                   name: "pre-busola-backend-deployment-check"
+                  annotations:
+                    owner: hasselhoff
+                    description: Checking backend deployment update
                   optional: false
                   run_if_changed: "^backend/|^package.json"
                   labels:

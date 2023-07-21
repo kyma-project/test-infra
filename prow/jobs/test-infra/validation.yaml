@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-validate-scripts
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Validate scripts."
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -17,7 +20,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "prow/scripts/validate-scripts.sh"
             resources:
@@ -26,6 +34,9 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-test-infra-validate-prow-tools
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Validate prow tools"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -42,9 +53,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -55,15 +69,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-test-infra-validate-image-url-helper
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Validate image url helper tool"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -80,9 +90,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -93,15 +106,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-test-infra-validate-prowjobparser
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Validate prowjobparser tool"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -118,9 +127,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
@@ -131,15 +143,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-test-infra-validate-generated-files
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Validate rendertemplate generated files"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -157,58 +165,23 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-generated.sh"
             resources:
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-main-test-infra-validate-prow-installer-files
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prow-installer-files"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-      run_if_changed: '^development/prow-installer/cmd/|^development/prow-installer/pkg/'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
-            securityContext:
-              privileged: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow-installer/before-commit.sh"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-test-infra-validate-dockerfiles
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Validate Dockerfiles, run hadolint."
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -221,7 +194,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/bash"
             args:

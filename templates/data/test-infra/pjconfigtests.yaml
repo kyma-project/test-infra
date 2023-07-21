@@ -6,16 +6,19 @@
           localSets:
             jobConfig_default:
               imagePullPolicy: "Always"
-              privileged: "false"
+              securityContext:
+                privileged: "false"
               type_presubmit: "true"
               branches:
                 - ^.*$
               skip_report: "false"
               decorate: "true"
-              request_memory: 1Gi
+              request_memory: "100M"
+              request_cpu: "200m"
+              #request_memory: 1Gi
             jobConfig_pjconfigtest:
               run_if_changed: '^.prow/|^.prow.yaml'
-              image: "europe-docker.pkg.dev/kyma-project/dev/test-infra/ginkgo:PR-6825"
+              image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20230607-587d3f6a"
               command: "/ginkgo"
               args:
                 - "-r"
@@ -29,6 +32,9 @@
                 - repoName: "{{$org.name}}/{{$repo.name}}"
                   jobs:
                     - jobConfig:
+                        annotations:
+                          owner: neighbors
+                          description: "Run ginkgo suite tests for prowjobs definitions for {{$repo.name}}"
                         {{- if eq $repo.name "test-infra"}}
                         run_if_changed: '^prow/jobs/'
                         {{- end}}

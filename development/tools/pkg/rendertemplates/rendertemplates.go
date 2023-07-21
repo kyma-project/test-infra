@@ -199,7 +199,7 @@ func (tplCfg *TemplateConfig) generateRenderConfigs(config *Config, mergoConfig 
 		// generate component jobs
 		render.GenerateComponentJobs(config.Global)
 		// append all jobs to the list of values for the template
-		render.AppendJobs(config.Global)
+		render.AppendJobs()
 	}
 }
 
@@ -411,7 +411,7 @@ func ReleaseMatches(rel interface{}, since interface{}, until interface{}) bool 
 }
 
 // AppendJobs appends data of presubmit/postsubmit/common jobs to the values list
-func (r *RenderConfig) AppendJobs(global map[string]interface{}) {
+func (r *RenderConfig) AppendJobs() {
 	if present := len(r.JobConfigs); present > 0 {
 		for repoIndex, repo := range r.JobConfigs {
 			var jobs []Job

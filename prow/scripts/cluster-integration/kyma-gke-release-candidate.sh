@@ -243,8 +243,7 @@ gcp::provision_k8s_cluster \
         -P "$TEST_INFRA_SOURCES_DIR" \
         -r "$PROVISION_REGIONAL_CLUSTER" \
         -m "$MACHINE_TYPE" \
-        -D "$CLUSTER_USE_SSD" \
-        -e "$GKE_ENABLE_POD_SECURITY_POLICY"
+        -D "$CLUSTER_USE_SSD"
 CLEANUP_CLUSTER="true"
 
 kyma::install_cli

@@ -5,13 +5,15 @@ presubmits: # runs on PRs
   kyma-project/lifecycle-manager:
     - name: pull-lifecycle-mgr-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "executes the 'golangci-lint lint' command before any pull request."
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-lifecycle-mgr-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum|Makefile|.*.sh)$|^.*\.go$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -20,9 +22,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -32,15 +37,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-lifecycle-mgr-tests
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "run lm tests"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -48,8 +49,8 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
-      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^(go.mod|go.sum|Makefile|.*.sh)$|^.*\.go$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -58,9 +59,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "bash"
             args:
@@ -70,15 +74,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-lifecycle-mgr-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "run lm build"
+        owner: "jellyfish"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -92,7 +92,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -122,6 +127,9 @@ postsubmits: # runs on main
   kyma-project/lifecycle-manager:
     - name: main-lifecycle-mgr-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "build lifecycle manager"
+        owner: "jellyfish"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -138,7 +146,12 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:

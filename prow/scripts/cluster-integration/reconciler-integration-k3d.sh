@@ -36,7 +36,7 @@ function install_cli() {
   fi
 
   pushd $INSTALL_DIR || exit
-  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-${os}"
+  curl -Lo kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-${os}"
   chmod +x kyma
   popd
 

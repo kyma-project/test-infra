@@ -251,7 +251,7 @@ func Test_gatTags(t *testing.T) {
 		{
 			name:         "pr variable is present",
 			pr:           "1234",
-			expectResult: []tags.Tag{{Name: "PR", Value: "PR-1234"}},
+			expectResult: []tags.Tag{{Name: "default_tag", Value: "PR-1234"}},
 		},
 		{
 			name:      "sha is empty",

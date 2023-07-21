@@ -4,7 +4,8 @@ templates:
       - to: ../../prow/jobs/scans/whitesource-periodics.yaml
         localSets:
           jobConfig_default:
-            privileged: "false"
+            securityContext:
+              privileged: "false"
             cron: "0 4 * * *" # At 04:00 am every day
             command: "bash"
             args:
@@ -14,6 +15,8 @@ templates:
             request_memory: 1Gi
             cluster: "trusted-workload"
             annotations:
+              owner: "neighbors"
+              description: "Periodic whitesource scan of Kyma repositories"
               testgrid-create-test-group: "false"
             labels:
               preset-wssagent-keys: "true"
@@ -135,23 +138,6 @@ templates:
                     - "jobConfig_default"
                     - "product_kyma_test"
               - jobConfig:
-                  repository: "module-manager"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  subprojects: "false"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma_test"
-
-
-              - jobConfig:
                   repository: "busola"
                   language: "javascript"
                   project: "kyma-project"
@@ -238,6 +224,21 @@ templates:
                     - "product_control_plane"
               - jobConfig:
                   repository: "keda-manager"
+                  exclude: "**/test/**"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  base_ref: "main"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_kyma"
+              - jobConfig:
+                  repository: "btp-manager"
                   language: "golang-mod"
                   project: "kyma-project"
                   base_ref: "main"
@@ -278,3 +279,34 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_kyma"
+              - jobConfig:
+                  repository: "compass-manager"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  base_ref: "main"
+                  securityContext:
+                    privileged: "false"
+                  cron: "0 4 * * *" # At 04:00 am every day
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+                  request_cpu: 400m
+                  request_memory: 1Gi
+                  cluster: "trusted-workload"
+                  annotations:
+                    owner: "neighbors"
+                    description: "Periodic whitesource scan of Kyma repositories"
+                    testgrid-create-test-group: "false"
+                  labels:
+                    preset-wssagent-keys: "true"
+                  env:
+                    DRYRUN: "false"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "product_control_plane"

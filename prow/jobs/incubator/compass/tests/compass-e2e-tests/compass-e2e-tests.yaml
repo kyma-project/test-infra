@@ -5,8 +5,9 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pull-tests-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building Compass E2E Tests component"
+        owner: "compass"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -27,7 +28,12 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c-buildkit"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/image-builder"
             args:
@@ -53,13 +59,6 @@ presubmits: # runs on PRs
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: share
           - name: config
@@ -73,8 +72,9 @@ postsubmits: # runs on main
   kyma-incubator/compass:
     - name: post-tests-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building Compass Tests after merge"
+        owner: "compass"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -96,7 +96,12 @@ postsubmits: # runs on main
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c-buildkit"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/image-builder"
             args:
@@ -122,13 +127,6 @@ postsubmits: # runs on main
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: share
           - name: config

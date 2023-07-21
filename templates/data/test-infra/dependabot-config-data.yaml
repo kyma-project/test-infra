@@ -12,6 +12,7 @@ templates:
               - "go"
               - "skip-review"
               - "area/dependency"
+              - "kind/chore"
             ignore:
               - dependencyName: "github.com/go-logr/logr"
                 versions:
@@ -40,6 +41,7 @@ templates:
               - "docker"
               - "skip-review"
               - "area/dependency"
+              - "kind/chore"
           dailyTerraform:
             packageEcosystem: "terraform"
             scheduleInterval: "daily"
@@ -48,6 +50,7 @@ templates:
             labels:
               - "terraform"
               - "area/dependency"
+              - "kind/chore"
         jobConfigs:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
@@ -69,12 +72,6 @@ templates:
               - jobConfig:
                   directory: "/prow/images/ginkgo"
                   commitMsgPrefix: "ginkgo"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/prow/images/prow-tools"
-                  commitMsgPrefix: "prow-tools"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
@@ -102,30 +99,6 @@ templates:
                   directory: "/development/test-log-collector"
                   # commit message can be 15 characters max
                   commitMsgPrefix: "test-log-coll"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/prow/images/bootstrap"
-                  commitMsgPrefix: "bootstrap"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/prow/images/buildpack-golang"
-                  commitMsgPrefix: "bp-golang"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/prow/images/buildpack-node"
-                  commitMsgPrefix: "bp-node"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/prow/images/cleaner"
-                  commitMsgPrefix: "cleaner"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
@@ -228,6 +201,13 @@ templates:
                   directory: "/development/secrets-rotator/cloud-run/rotate-service-account"
                   # commit message can be 15 characters max
                   commitMsgPrefix: "docker-rotate-sa"
+                inheritedConfigs:
+                  local:
+                    - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/development/image-detector"
+                  # commit message can be 15 characters max
+                  commitMsgPrefix: "image-detector"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"

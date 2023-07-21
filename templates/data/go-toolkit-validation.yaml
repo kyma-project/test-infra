@@ -1,22 +1,6 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/eventing-tools/eventing-tools-checks.yaml
-        jobConfigs:
-          - repoName: "kyma-project/eventing-tools"
-            jobs:
-              - jobConfig:
-                  name: "pull-eventing-tools-unit-test"
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^.*$'
-                inheritedConfigs:
-                  global:
-                    - testing
-                    - "jobConfig_presubmit"
       - to: ../../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-checks.yaml
         jobConfigs:
           - repoName: "kyma-project/kyma"
@@ -29,10 +13,14 @@ templates:
                     - "-c"
                     - "cd components/event-publisher-proxy && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m"
                   run_if_changed: '^components/event-publisher-proxy/(.*\.go$|.golangcilint.yaml)'
+                  annotations:
+                    owner: skydivingtunas
+                    description: lint the EPP
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-event-publisher-proxy-unit-test"
                   optional: false
@@ -40,11 +28,15 @@ templates:
                   args:
                     - "-c"
                     - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/event-publisher-proxy/.*$'
+                  run_if_changed: "^components/event-publisher-proxy/.*$"
+                  annotations:
+                    owner: skydivingtunas
+                    description: run unit tests for EPP
                 inheritedConfigs:
                   global:
                     - testing
                     - "jobConfig_presubmit"
+                    - "unprivileged"
       - to: ../../prow/jobs/kyma/components/eventing-controller/eventing-controller-checks.yaml
         jobConfigs:
           - repoName: "kyma-project/kyma"
@@ -57,10 +49,14 @@ templates:
                     - "-c"
                     - "cd components/eventing-controller && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=10m"
                   run_if_changed: '^components/eventing-controller/(.*\.go$|.golangcilint.yaml)'
+                  annotations:
+                    owner: skydivingtunas
+                    description: lint the EC
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-eventing-controller-unit-test"
                   optional: false
@@ -68,11 +64,15 @@ templates:
                   args:
                     - "-c"
                     - "cd components/eventing-controller && KUBEBUILDER_CONTROLPLANE_START_TIMEOUT=50s go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/eventing-controller/.*$'
+                  run_if_changed: "^components/eventing-controller/.*$"
+                  annotations:
+                    owner: skydivingtunas
+                    description: run unit tests for EC
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/kyma/components/kyma-components-static-checks.yaml
@@ -82,7 +82,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 200Mi
@@ -92,7 +92,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -102,6 +102,11 @@ templates:
             jobs:
               - jobConfig:
                   name: "pull-telemetry-manager-lint"
+                  annotations:
+                    owner: huskies
+                    description: runs linting on telemetry-manager repo
+                  request_cpu: 200m
+                  request_memory: 500Mi
                   optional: false
                   command: "/bin/sh"
                   args:
@@ -112,45 +117,33 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-telemetry-manager-unit-test"
+                  annotations:
+                    owner: huskies
+                    description: runs unit tests telemetry-manager repo
+                  request_cpu: 200m
+                  request_memory: 1.5Gi
                   optional: false
                   command: "/bin/sh"
                   args:
                     - "-c"
                     - "make test"
-                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
+                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$|Makefile'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
 
           - repoName: "kyma-project/kyma"
             jobs:
               - jobConfig:
-                  name: "pull-application-operator-lint"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/application-operator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-                  run_if_changed: '^components/application-operator/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - linting
-              - jobConfig:
-                  name: "pull-application-operator-unit-test"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/application-operator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/application-operator/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
-              - jobConfig:
                   name: "pull-central-application-connectivity-validator-unit-test"
+                  annotations:
+                    owner: framefrog
+                    description: "It unit tests the component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -160,9 +153,13 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
 
               - jobConfig:
                   name: "pull-central-application-gateway-lint"
+                  annotations:
+                    owner: framefrog
+                    description: "Linting the code, error checking"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -172,8 +169,12 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-central-application-gateway-unit-test"
+                  annotations:
+                    owner: framefrog
+                    description: "It unit tests the central-application-gateway source code"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -183,9 +184,13 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
 
               - jobConfig:
                   name: "pull-compass-runtime-agent-lint"
+                  annotations:
+                    owner: framefrog
+                    description: "Linting the code, error checking"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -195,8 +200,12 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-compass-runtime-agent-unit-test"
+                  annotations:
+                    owner: framefrog
+                    description: "It tests the component source code"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -206,9 +215,13 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
 
               - jobConfig:
                   name: "pull-function-controller-lint"
+                  annotations:
+                    owner: otters
+                    description: function controller linting job
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -218,9 +231,14 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-function-controller-unit-test"
+                  annotations:
+                    owner: otters
+                    description: "run unit tests for function controller"
                   command: "/bin/sh"
+                  optional: false
                   args:
                     - "-c"
                     - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
@@ -229,9 +247,13 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
+                    - "unprivileged"
           - repoName: "kyma-project/directory-size-exporter"
             jobs:
               - jobConfig:
+                  annotations:
+                    owner: huskies
+                    description: runs linting on the repo
                   name: "pull-directory-size-exporter-lint"
                   optional: false
                   command: "/bin/sh"
@@ -243,8 +265,12 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-directory-size-exporter-unit-test"
+                  annotations:
+                    owner: huskies
+                    description: runs unit tests on the repo
                   optional: false
                   command: "/bin/sh"
                   args:
@@ -255,4 +281,4 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - testing
-
+                    - "unprivileged"

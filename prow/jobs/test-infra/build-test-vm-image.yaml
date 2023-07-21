@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pull-build-test-vm-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Build Google Cloud VM template image for test-vm-image"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -21,9 +24,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -33,15 +39,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-test-k3d-on-vm-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Test k3d installation on Google Cloud VM template image for test-vm-image"
+        owner: "neighbors"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -58,9 +60,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -70,18 +75,14 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-build-test-vm-image
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Build Google Cloud VM template image for test-vm-image"
+        owner: "neighbors"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -99,9 +100,12 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -111,11 +115,4 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

@@ -97,13 +97,12 @@ utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo sh -c 'mv /tm
 
 if [[ $testK3d == true ]]; then
     log::info "Testing k3d"
-    log::info "Download stable Kyma CLI"
-    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -Lo kyma https://storage.googleapis.com/kyma-cli-stable/kyma-linux"
+    log::info "Download latest CLI released"
+    utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "curl -Lo kyma.tar.gz https://github.com/kyma-project/cli/releases/latest/download/kyma_linux_x86_64.tar.gz && tar -zxvf kyma.tar.gz && chmod +x kyma"
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "chmod +x kyma && mkdir ./bin && mv ./kyma ./bin/kyma && sudo cp ./bin/kyma /usr/local/bin/kyma"
     log::info "Starting k3d instance"
     utils::ssh_to_vm_with_script -z "${ZONE}" -n "${VM_NAME}" -c "sudo kyma provision k3d --ci"
 fi
-
 
 log::info "Stopping $VM_NAME in zone ${ZONE} ..."
 gcloud compute instances stop --zone="${ZONE}" "$VM_NAME"

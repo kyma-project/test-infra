@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-operations-controller-build
+                  annotations:
+                    owner: compass
+                    description: "Building Operations Controller Compass component"
                   args:
                     - "--name=incubator/compass-operations-controller"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -30,6 +33,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-operations-controller-build
+                  annotations:
+                    owner: compass
+                    description: "Building Operations Controller component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -55,6 +61,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: "pull-operations-controller-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Operations Controller Compass component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -64,12 +73,16 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/connector/connector-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
                   name: pull-connector-build
+                  annotations:
+                    owner: compass
+                    description: "Building Connector Compass component"
                   args:
                     - "--name=incubator/compass-connector"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -93,6 +106,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-connector-build
+                  annotations:
+                    owner: compass
+                    description: "Building Connector Compass component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -118,6 +134,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: "pull-connector-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Connector Compass component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -127,12 +146,16 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/director/director-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
                   name: pull-director-build
+                  annotations:
+                    owner: compass
+                    description: "Building Director Compass component"
                   args:
                     - "--name=incubator/compass-director"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -156,6 +179,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-director-build
+                  annotations:
+                    owner: compass
+                    description: "Building Director Compass component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -181,6 +207,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: "pull-director-lint"
+                  annotations:
+                    owner: compass
+                    description: "Linter for the Compass Director component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -190,8 +219,12 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - linting
+                    - "unprivileged"
               - jobConfig:
                   name: "pull-director-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Director Compass component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -201,12 +234,16 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/hydrator/hydrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
                   name: pull-hydrator-build
+                  annotations:
+                    owner: compass
+                    description: "Building Hydrator Compass component"
                   args:
                     - "--name=incubator/compass-hydrator"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -230,6 +267,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-hydrator-build
+                  annotations:
+                    owner: compass
+                    description: "Building Hydrator Compass component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -255,6 +295,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: "pull-hydrator-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Hydrator Compass component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -264,12 +307,177 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
+      - to: ../../prow/jobs/incubator/compass/components/ias-adapter/ias-adapter-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
+              - jobConfig:
+                  name: pull-ias-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building IAS Adapter Compass component"
+                  args:
+                    - "--name=incubator/compass-ias-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/ias-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/ias-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-ias-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building IAS Adapter Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-ias-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/ias-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 1000m
+                  run_if_changed: "^components/ias-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-ias-adapter-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the IAS Adapter Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/ias-adapter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/ias-adapter/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
+      - to: ../../prow/jobs/incubator/compass/components/kyma-adapter/kyma-adapter-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-incubator/compass"
+            jobs:
+              - jobConfig:
+                  name: pull-kyma-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Kyma Adapter Compass component"
+                  args:
+                    - "--name=incubator/compass-kyma-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/kyma-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 2000m
+                  run_if_changed: "^components/kyma-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-kyma-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Kyma Adapter Compass component after merge"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=incubator/compass-kyma-adapter"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/kyma-adapter"
+                    - "--dockerfile=Dockerfile"
+                    - "--platform=linux/amd64"
+                    - "--platform=linux/arm64"
+                  decoration_config:
+                    timeout: 20m
+                    grace_period: 1m
+                  request_memory: 1Gi
+                  request_cpu: 2000m
+                  run_if_changed: "^components/kyma-adapter/"
+                  branches:
+                    - ^main$
+                    - ^master$
+                    - ^hotfix-.*$
+                inheritedConfigs:
+                  global:
+                    - image-builder-buildkit
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: "pull-kyma-adapter-lint"
+                  annotations:
+                    description: "Linter for the Kyma Adapter Compass component"
+                    owner: "compass"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/kyma-adapter && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=15m"
+                  run_if_changed: '^components/kyma-adapter/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - linting
+                    - "unprivileged"
+              - jobConfig:
+                  name: "pull-kyma-adapter-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Kyma Adapter Compass component"
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/kyma-adapter && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                  run_if_changed: '^components/kyma-adapter/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/system-broker/system-broker-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
                   name: pull-system-broker-build
+                  annotations:
+                    owner: compass
+                    description: "Building System Broker Compass component"
                   args:
                     - "--name=incubator/compass-system-broker"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -293,6 +501,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-system-broker-build
+                  annotations:
+                    owner: compass
+                    description: "Building System Broker Compass component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -318,6 +529,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: "pull-system-broker-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the System Broker Compass component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -327,12 +541,16 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/external-services-mock/external-services-mock-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
                   name: pull-external-services-mock-build
+                  annotations:
+                    owner: compass
+                    description: "Building External Services Mock Compass component"
                   args:
                     - "--name=incubator/compass-external-services-mock"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -356,6 +574,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-external-services-mock-build
+                  annotations:
+                    owner: compass
+                    description: "Building External Services Mock Compass component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -381,6 +602,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: "pull-external-services-mock-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the External Services Mock Compass component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -390,12 +614,16 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/connectivity-adapter/connectivity-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
                   name: pull-connectivity-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Connectivity Adapter Compass component"
                   args:
                     - "--name=incubator/compass-connectivity-adapter"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -419,6 +647,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-connectivity-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Connectivity Adapter Compass component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -444,6 +675,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: "pull-connectivity-adapter-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Connectivity Adapter Compass component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -453,12 +687,16 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/pairing-adapter/pairing-adapter-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
                   name: pull-pairing-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Pairing Adapter Compass component"
                   args:
                     - "--name=incubator/compass-pairing-adapter"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -482,6 +720,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-pairing-adapter-build
+                  annotations:
+                    owner: compass
+                    description: "Building Pairing Adapter Compass component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -507,6 +748,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: "pull-pairing-adapter-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Pairing Adapter Compass component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -516,12 +760,16 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/gateway/gateway-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
                   name: pull-gateway-build
+                  annotations:
+                    owner: compass
+                    description: "Building Compass Gateway component"
                   args:
                     - "--name=incubator/compass-gateway"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -545,6 +793,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-gateway-build
+                  annotations:
+                    owner: compass
+                    description: "Building Gateway Compass component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -570,6 +821,9 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   name: "pull-gateway-unit-test"
+                  annotations:
+                    owner: compass
+                    description: "Run unit tests for the Compass Gateway component"
                   command: "/bin/sh"
                   args:
                     - "-c"
@@ -579,12 +833,16 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - testing
+                    - "unprivileged"
       - to: ../../prow/jobs/incubator/compass/components/schema-migrator/schema-migrator-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/compass"
             jobs:
               - jobConfig:
                   name: pull-schema-migrator-build
+                  annotations:
+                    owner: compass
+                    description: "Building Schema Migrator Compass component"
                   args:
                     - "--name=incubator/compass-schema-migrator"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -607,6 +865,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-schema-migrator-build
+                  annotations:
+                    owner: compass
+                    description: "Building Schema Migrator Compass component after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -636,6 +897,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-tests-build
+                  annotations:
+                    owner: compass
+                    description: "Building Compass E2E Tests component"
                   args:
                     - "--name=incubator/compass-e2e-tests"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -659,6 +923,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-tests-build
+                  annotations:
+                    owner: compass
+                    description: "Building Compass Tests after merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:

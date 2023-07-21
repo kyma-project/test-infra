@@ -77,8 +77,8 @@ func main() {
 	entryRemoverErr := der.Run(*project, *zone, *name, *address, *rtype, *ttl)
 
 	if entryRemoverErr != nil {
-		log.Fatalf("DNS Cleaner error: %v", entryRemoverErr)
 		log.Warn("Operation failed.")
+		log.Fatalf("DNS Cleaner error: %v", entryRemoverErr)
 	}
 
 	common.Shout("Finished")

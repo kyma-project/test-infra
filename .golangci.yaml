@@ -1,7 +1,7 @@
 # https://golangci-lint.run/usage/configuration/
 
 run:
-  timeout: 5m
+  timeout: 10m
   # skip test files
   tests: false
 output:
@@ -24,4 +24,3 @@ issues:
   max-issues-per-linter: 0
   # show all issues of one type instead of only 3
   max-same-issues: 0
-  

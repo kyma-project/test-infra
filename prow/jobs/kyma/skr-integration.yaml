@@ -2,67 +2,11 @@
 
 
 periodics: # runs on schedule
-    - name: skr-azure-nightly
-      annotations:
-        pipeline.clusterprovisioning: "keb"
-        pipeline.installer: "keb"
-        pipeline.platform: "gardener_azure"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "skr-azure-nightly"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-btp-operator-stage-credentials: "true"
-        preset-build-main: "true"
-        preset-kcp-client-dev-envs: "true"
-        preset-keb-dev-credentials: "true"
-        preset-kyma-integration-compass-dev: "true"
-        preset-kyma-integration-kcp-client-credentials: "true"
-      cron: "5 1 * * *"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
-            securityContext:
-              privileged: true
-            command:
-              - "make"
-            args:
-              - "-C"
-              - "tests/fast-integration"
-              - "ci-skr-nightly"
-            env:
-              - name: KEB_PLAN_ID
-                value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
-              - name: KEB_SUBACCOUNT_ID
-                value: "kyma-skr-nightly"
-            resources:
-              requests:
-                memory: 100Mi
-                cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: skr-azure-integration-dev
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "skr integration test azure"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_azure"
@@ -73,7 +17,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "skr-azure-integration-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
@@ -82,22 +25,28 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -109,15 +58,11 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: skr-azure-lite-integration-dev
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "skr integration test azure"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_azure"
@@ -129,7 +74,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "skr-azure-lite-integration-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
@@ -138,22 +82,28 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -165,15 +115,11 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: skr-aws-integration-dev
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "skr integration test aws"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_aws"
@@ -184,7 +130,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "skr-aws-integration-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
@@ -194,22 +139,28 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -221,15 +172,11 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: skr-trial-integration-dev
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "skr integration test trial"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_azure"
@@ -241,7 +188,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "skr-trial-integration-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
@@ -250,22 +196,28 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -277,15 +229,11 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: skr-free-aws-integration-dev
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "skr integration test free"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_aws"
@@ -297,7 +245,6 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "skr-free-aws-integration-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
@@ -306,22 +253,28 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -335,15 +288,11 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: skr-preview-dev
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "skr integration test preview"
+        owner: "gopher"
         pipeline.clusterprovisioning: "keb"
         pipeline.installer: "keb"
         pipeline.platform: "gardener_aws"
@@ -354,31 +303,36 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "skr-preview-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
-      cron: "5 1,11 * * *"
+      cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
+      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
+          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             env:
@@ -390,71 +344,4 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: skr-aws-own-cluster-dev
-      annotations:
-        pipeline.clusterprovisioning: "keb"
-        pipeline.installer: "keb"
-        pipeline.platform: "gardener_aws"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "skr-aws-own-cluster-dev"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-btp-operator-stage-credentials: "true"
-        preset-build-main: "true"
-        preset-gardener-aws-kyma-integration: "true"
-        preset-kcp-client-dev-envs: "true"
-        preset-keb-dev-credentials: "true"
-        preset-kyma-integration-compass-dev: "true"
-        preset-kyma-integration-kcp-client-credentials: "true"
-      cron: "5 1 * * *"
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration-own-cluster.sh"
-            env:
-              - name: GARDENER_REGION
-                value: "eu-central-1"
-              - name: GARDENER_ZONES
-                value: "eu-central-1b"
-              - name: KEB_PLAN_ID
-                value: "03e3cb66-a4c6-4c6a-b4b0-5d42224debea"
-              - name: KEB_SUBACCOUNT_ID
-                value: "prow-keb-integration"
-            resources:
-              requests:
-                memory: 100Mi
-                cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

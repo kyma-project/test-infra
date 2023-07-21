@@ -8,7 +8,5 @@ prerequisites:
     namespace: "istio-system"
 components:
   - name: "istio-resources"
-  - name: "logging"
   - name: "monitoring"
   - name: "telemetry"
-  - name: "tracing"

@@ -5,7 +5,9 @@ presubmits: # runs on PRs
   kyma-project/keda-manager:
     - name: pre-keda-manager-operator-lint
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "executes the 'golangci-lint lint' command on keda-manager before any pull request."
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -21,7 +23,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -31,22 +38,18 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pull-keda-module-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "keda module build job"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keda-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
+      run_if_changed: '^keda.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -55,13 +58,18 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "make"
             args:
               - "-C"
               - "hack/ci"
-              - "all"
+              - "module-build"
             env:
               - name: IMG
                 value: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
@@ -75,15 +83,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-keda-manager-operator-tests
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "keda operator tests"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -91,7 +95,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)'
       skip_report: false
       decorate: true
@@ -101,7 +105,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "bash"
             args:
@@ -111,15 +120,11 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-keda-manager-operator-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "keda operator build job"
+        owner: "otters"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -136,7 +141,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -164,20 +174,22 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-keda-manager-verify
       annotations:
-        pipeline.clusterprovisioning: "k3d"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "runs keda manager verity job on k3d VM"
+        owner: "otters"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
+        pipeline.test: "k3d-test"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-keda-manager-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
       always_run: true
-      optional: true
+      optional: false
       skip_report: false
       decorate: true
       path_alias: github.com/kyma-project/keda-manager
@@ -193,167 +205,112 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "bash"
+              - "/init.sh"
             args:
+              - "bash"
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: JOB_REPO_NAME
-                value: "keda-manager"
-              - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make ci-k3d-integration-test"
+              - "make -C hack/ci k3d-integration-test
+"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-main-keda-manager-upgrade-main-to-pr
-      annotations:
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-keda-manager-upgrade-main-to-pr"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/keda-manager
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: JOB_REPO_NAME
-                value: "keda-manager"
-              - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && git checkout - && make -C hack/local run && git checkout - && make ci-k3d-upgrade-test"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-main-keda-manager-upgrade-main-to-channel
-      annotations:
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-keda-manager-upgrade-main-to-channel"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/keda-manager
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: JOB_REPO_NAME
-                value: "keda-manager"
-              - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make kyma && curl -s https://raw.githubusercontent.com/kyma-project/kyma/main/modules/alpha/moduletemplate-keda.yaml > ./bin/kyma-unstable alpha deploy --template _ && make ci-k3d-upgrade-test"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+                memory: 4Gi
+                cpu: 3
   
 postsubmits: # runs on main
   kyma-project/keda-manager:
-    - name: post-keda-module-build
+    - name: release-keda-manager-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Job to build keda module for a release."
+        owner: "otters"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-keda-module-build"
+        prow.k8s.io/pubsub.runID: "release-keda-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
+        preset-signify-prod-secret: "true"
+      always_run: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^main$
+        - ^\w+\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "make"
+              - "/image-builder"
             args:
-              - "-C"
-              - "hack/ci"
-              - "all"
+              - "--name=keda-manager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=Dockerfile"
+              - "--tag={{ .Env \"PULL_BASE_SHA\" }}"
+            resources:
+              requests:
+                memory: 1.5Gi
+                cpu: 1
+              limits:
+                memory: 3Gi
+                cpu: 2
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
+    - name: release-keda-manager-module-build
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Job to build keda module for a release."
+        owner: "otters"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "release-keda-manager-module-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-bot-github-token: "true"
+      always_run: true
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^\w+\d+\.\d+\.\d+(?:-.*)?$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "./scripts/release.sh"
+            args:
+              - "ci"
             env:
               - name: IMG
                 value: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
@@ -365,15 +322,57 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+              limits:
+                memory: 3Gi
+                cpu: 2
+    - name: post-keda-module-build
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "keda module build job"
+        owner: "otters"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-keda-module-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^keda.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "hack/ci"
+              - "module-build"
+            env:
+              - name: IMG
+                value: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
+              - name: KUSTOMIZE_VERSION
+                value: "v4.5.6"
+              - name: MODULE_REGISTRY
+                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
     - name: post-keda-manager-operator-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "keda module build job"
+        owner: "otters"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -391,7 +390,12 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -420,18 +424,20 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-keda-manager-verify
       annotations:
-        pipeline.clusterprovisioning: "k3d"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "runs keda manager verity job on k3d VM"
+        owner: "otters"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
+        pipeline.test: "k3d-test"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-keda-manager-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
       always_run: true
       optional: true
       skip_report: false
@@ -449,28 +455,124 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "bash"
+              - "/init.sh"
             args:
+              - "bash"
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            env:
-              - name: CLOUDSDK_COMPUTE_ZONE
-                value: "europe-west4-b"
-              - name: JOB_REPO_NAME
-                value: "keda-manager"
-              - name: JOB_VM_COMMAND
-                value: "export PATH=$PATH:$HOME/${JOB_REPO_NAME}/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin && make ci-k3d-integration-test"
+              - "make -C hack/ci k3d-lm-integration-test
+"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+                memory: 4Gi
+                cpu: 3
+    - name: post-main-keda-manager-upgrade-latest-to-main
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "upgrade keda manager test"
+        owner: "otters"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "k3d-test"
+        pipeline.trigger: "pr-merge"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-main-keda-manager-upgrade-latest-to-main"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        preset-kyma-guard-bot-github-token: "true"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/keda-manager
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "make -C hack/ci k3d-upgrade-test
+"
+            resources:
+              requests:
+                memory: 4Gi
+                cpu: 3
+  
+periodics: # runs on schedule
+    - name: keda-operator-nightly-periodic
+      annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Keda nightly verify"
+        owner: "otters"
+        pipeline.installer: "kyma deploy"
+        pipeline.platform: "k3d"
+        pipeline.test: "k3d-test"
+        pipeline.trigger: "periodic"
+        testgrid-dashboards: "keda-nightly"
+        testgrid-days-of-results: "60"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "keda-operator-nightly-periodic"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        preset-kyma-guard-bot-github-token: "true"
+      cron: "0 6 * * 1-5"
+      skip_report: false
+      decorate: true
+      path_alias: github.com/kyma-project/keda-manager
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: keda-manager
+          path_alias: github.com/kyma-project/keda-manager
+          base_ref: main
+        - org: kyma-project
+          repo: test-infra
+          path_alias: github.com/kyma-project/test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "make -C hack/ci run-with-lifecycle-manager
+"
+            resources:
+              requests:
+                memory: 4Gi
+                cpu: 3
   

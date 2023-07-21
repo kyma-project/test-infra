@@ -12,7 +12,7 @@ import (
 	events2 "github.com/containerd/containerd/api/events"
 	"github.com/containerd/containerd/events"
 	"github.com/containerd/containerd/namespaces"
-	"github.com/containerd/typeurl"
+	"github.com/containerd/typeurl/v2"
 	dockerclient "github.com/fsouza/go-dockerclient"
 	log "github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"

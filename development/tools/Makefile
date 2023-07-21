@@ -8,5 +8,3 @@ validate:
 clean:
 	rm -f $(APP_NAME)
 
-jobs-tests:
-	./before-commit.sh ./jobs/...

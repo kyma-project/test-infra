@@ -11,7 +11,7 @@ templates:
               pipeline.clusterprovisioning: keb
               pipeline.installer: keb
               pipeline.test: fast-integration
-            path_alias: github.com/kyma-project/kyma
+            path_alias: github.com/kyma-project/kyma-environment-broker
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
@@ -22,7 +22,6 @@ templates:
               preset-kyma-integration-compass-dev: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
               preset-kcp-client-dev-envs: "true"
-              preset-btp-operator-stage-credentials: "true"
           kyma_integration_subaccount:
             env:
               KEB_SUBACCOUNT_ID: "prow-keb-integration"
@@ -81,30 +80,14 @@ templates:
             env:
               KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9"
         jobConfigs:
-          - repoName: "kyma-project/kyma"
+          - repoName: "kyma-project/kyma-environment-broker"
             jobs:
               - jobConfig:
-                  name: "skr-azure-nightly"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "tests/fast-integration"
-                    - "ci-skr-nightly"
-                  cron: "5 1 * * *" # "At 01:05"
-                inheritedConfigs:
-                  global:
-                    - "image_kyma-integration"
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-                    - "keb_plan_azure"
-                    - "kyma_nightly_subaccount"
-              - jobConfig:
                   name: "skr-azure-integration-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
@@ -112,7 +95,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -120,6 +103,10 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-azure-lite-integration-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
@@ -127,7 +114,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -135,6 +122,10 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-aws-integration-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test aws
                   cron: "5 1 * * *" # "At 01:05"
                   labels:
                     preset-skr-al-service-key: "true"
@@ -144,7 +135,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -152,6 +143,10 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-trial-integration-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test trial
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
@@ -159,7 +154,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -167,6 +162,10 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-free-aws-integration-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test free
                   cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
@@ -174,7 +173,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -182,14 +181,18 @@ templates:
                     - "kyma_integration_subaccount"
               - jobConfig:
                   name: "skr-preview-dev"
-                  cron: "5 1,11 * * *" # "At 01:05 and 11:05"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test preview
+                  cron: "5 1 * * *" # "At 01:05"
                 inheritedConfigs:
                   global:
                     - "image_kyma-integration"
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"

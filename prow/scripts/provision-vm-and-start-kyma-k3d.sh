@@ -62,7 +62,7 @@ RANDOM_ID=$(openssl rand -hex 4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
-  LABELS=(--labels "branch=$PULL_BASE_REF,job-name=kyma-integration")
+  LABELS=(--labels "branch=${PULL_BASE_REF//./},job-name=kyma-integration")
 else
   LABELS=(--labels "pull-number=$PULL_NUMBER,job-name=kyma-integration")
 fi
@@ -137,7 +137,6 @@ envVars=(
   APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR
   APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT
   TELEMETRY_ENABLED
-  TELEMETRY_TRACING_ENABLED
   ISTIO_INTEGRATION_ENABLED
   API_GATEWAY_INTEGRATION
   GARDENER_ZONE

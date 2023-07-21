@@ -3,156 +3,133 @@
 
 presubmits: # runs on PRs
   kyma-project/busola:
-    - name: pre-main-busola-governance
+    - name: pull-busola-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-busola-governance"
+        prow.k8s.io/pubsub.runID: "pull-busola-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/busola
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "busola"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/community:
-    - name: pre-main-community-governance
+    - name: pull-community-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-community-governance"
+        prow.k8s.io/pubsub.runID: "pull-community-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/community
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "community"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/examples:
-    - name: pre-main-examples-governance
+    - name: pull-examples-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-examples-governance"
+        prow.k8s.io/pubsub.runID: "pull-examples-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/examples
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "examples"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/kyma:
     - name: kyma-metadata-schema-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-metadata-schema-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
       run_if_changed: '^resources/.*/values.schema.json$'
+      optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -165,9 +142,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/metadata-governance.sh"
             args:
@@ -179,116 +159,89 @@ presubmits: # runs on PRs
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-main-kyma-governance
+    - name: pull-kyma-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-governance"
+        prow.k8s.io/pubsub.runID: "pull-kyma-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-      run_if_changed: 'milv.config.yaml|.md$'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-project/kyma
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
-            args:
-              - "--repository"
-              - "kyma"
-            resources:
-              requests:
-                memory: 10Mi
-                cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-kyma-docu-2.0-governance
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-docu-2.0-governance"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
       optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^kyma-2.0-docu$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
+        - ^master$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "kyma"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
+    - name: pull-kyma-crd-governance
+      annotations:
+        description: "dead links governance job"
+        owner: "technical-writers"
+        pipeline.trigger: "pr-submit"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-kyma-crd-governance"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^installation/resources/crds/|^.*.md$'
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "hack/verify-md.sh"
+            resources:
+              requests:
+                memory: 10Mi
+                cpu: 100m
   
   kyma-project/test-infra:
-    - name: pre-main-test-infra-governance
+    - name: pull-test-infra-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Looking for broken links in the test-infra repo"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-test-infra-governance"
+        prow.k8s.io/pubsub.runID: "pull-test-infra-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/test-infra
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -296,222 +249,150 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "test-infra"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/website:
-    - name: pre-main-website-governance
+    - name: pull-website-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-website-governance"
+        prow.k8s.io/pubsub.runID: "pull-website-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/website
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "website"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-incubator/documentation-component:
-    - name: pre-documentation-component-governance
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-documentation-component-governance"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
-      run_if_changed: 'milv.config.yaml|.md$'
-      skip_report: false
-      decorate: true
-      path_alias: github.com/kyma-incubator/documentation-component
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
-            args:
-              - "--repository"
-              - "documentation-component"
-              - "--repository-org"
-              - "kyma-incubator"
-            resources:
-              requests:
-                memory: 10Mi
-                cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/telemetry-manager:
-    - name: pre-main-telemetry-manager-governance
+    - name: pull-telemetry-manager-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-telemetry-manager-governance"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/telemetry-manager
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "telemetry-manager"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   kyma-project/directory-size-exporter:
-    - name: pre-main-directory-size-exporter-governance
+    - name: pull-directory-size-exporter-governance
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-directory-size-exporter-governance"
+        prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/directory-size-exporter
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "directory-size-exporter"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 periodics: # runs on schedule
     - name: busola-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "busola-governance-nightly"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
       cron: "0 0 * * 1-5"
       skip_report: false
       decorate: true
@@ -519,47 +400,36 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: busola
-          path_alias: github.com/kyma-project/busola
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "busola"
-              - "--repository-dir"
-              - "/home/prow/go/src/github.com/kyma-project/busola"
-              - "--full-validation"
-              - "true"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
     - name: community-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "community-governance-nightly"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
       cron: "0 23 * * 1-5"
       skip_report: false
       decorate: true
@@ -567,95 +437,37 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: community
-          path_alias: github.com/kyma-project/community
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "community"
-              - "--repository-dir"
-              - "/home/prow/go/src/github.com/kyma-project/community"
-              - "--full-validation"
-              - "true"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
-    - name: examples-governance-nightly
-      annotations:
-        pipeline.trigger: "periodic"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "examples-governance-nightly"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-      cron: "0 1 * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: examples
-          path_alias: github.com/kyma-project/examples
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
-            securityContext:
-              privileged: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
-            args:
-              - "--repository"
-              - "examples"
-              - "--repository-dir"
-              - "/home/prow/go/src/github.com/kyma-project/examples"
-              - "--full-validation"
-              - "true"
-            resources:
-              requests:
-                memory: 10Mi
-                cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
     - name: kyma-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-governance-nightly"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
       cron: "0 4 * * 1-5"
       skip_report: false
       decorate: true
@@ -665,137 +477,105 @@ periodics: # runs on schedule
           repo: kyma
           path_alias: github.com/kyma-project/kyma
           base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "kyma"
-              - "--repository-dir"
-              - "/home/prow/go/src/github.com/kyma-project/kyma"
-              - "--full-validation"
-              - "true"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
     - name: test-infra-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "test-infra-governance-nightly"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
       cron: "0 5 * * 1-5"
       skip_report: false
       decorate: true
       cluster: untrusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "test-infra"
-              - "--repository-dir"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra"
-              - "--full-validation"
-              - "true"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
     - name: website-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "website-governance-nightly"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
       cron: "0 6 * * 1-5"
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-        - org: kyma-project
           repo: website
-          path_alias: github.com/kyma-project/website
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "website"
-              - "--repository-dir"
-              - "/home/prow/go/src/github.com/kyma-project/website"
-              - "--full-validation"
-              - "true"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
     - name: documentation-component-governance-nightly
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "dead links governance job"
+        owner: "technical-writers"
         pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "documentation-component-governance-nightly"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
       cron: "0 2 * * 1-5"
       skip_report: false
       decorate: true
@@ -803,39 +583,24 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-incubator
           repo: documentation-component
-          path_alias: github.com/kyma-incubator/documentation-component
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230119-993f0759"
+          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/governance.sh"
+              - "/app/main"
             args:
-              - "--repository"
-              - "documentation-component"
-              - "--repository-org"
-              - "kyma-incubator"
-              - "--repository-dir"
-              - "/home/prow/go/src/github.com/kyma-incubator/documentation-component"
-              - "--full-validation"
-              - "true"
+              - "-config-file=milv.config.yaml"
+              - "-base-path=."
             resources:
               requests:
                 memory: 10Mi
                 cpu: 100m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
   
   

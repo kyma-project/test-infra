@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-application-connector-gateway-test-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building the images used in acceptance test"
+        owner: "framefrog"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -19,7 +22,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -47,6 +55,9 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-application-connector-connectivity-validator-test-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building the images used in acceptance test"
+        owner: "framefrog"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -61,7 +72,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -89,6 +105,9 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-application-connector-compass-runtime-agent-test-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building the images used in acceptance test"
+        owner: "framefrog"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -103,7 +122,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -131,6 +155,9 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-application-connector-mock-app-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building the images using in acceptance test"
+        owner: "framefrog"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -145,7 +172,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -176,6 +208,9 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-application-connector-gateway-test-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building the images used in acceptance test"
+        owner: "framefrog"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -191,7 +226,12 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -219,6 +259,9 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-application-connector-connectivity-validator-test-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building the images used in acceptance test"
+        owner: "framefrog"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -234,7 +277,12 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -262,6 +310,9 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-application-connector-compass-runtime-agent-test-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building the images used in acceptance test"
+        owner: "framefrog"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -277,7 +328,12 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -305,6 +361,9 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-application-connector-mock-app-build
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building the images used in acceptance test"
+        owner: "framefrog"
         pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
@@ -320,7 +379,12 @@ postsubmits: # runs on main
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:

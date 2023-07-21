@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   path: tests/fast-integration/image
+                  annotations:
+                    owner: skydivingtunas
+                    description: build fast-integration image
                   args:
                     - "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration/image"
                   run_if_changed: "^tests/fast-integration/image/"

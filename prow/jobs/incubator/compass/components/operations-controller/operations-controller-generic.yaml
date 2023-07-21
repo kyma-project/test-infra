@@ -5,8 +5,9 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pull-operations-controller-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building Operations Controller Compass component"
+        owner: "compass"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -27,7 +28,12 @@ presubmits: # runs on PRs
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c-buildkit"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/image-builder"
             args:
@@ -53,13 +59,6 @@ presubmits: # runs on PRs
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: share
           - name: config
@@ -70,6 +69,9 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-operations-controller-unit-test
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Run unit tests for the Operations Controller Compass component"
+        owner: "compass"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -83,7 +85,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -98,8 +105,9 @@ postsubmits: # runs on main
   kyma-incubator/compass:
     - name: post-operations-controller-build
       annotations:
-        container.apparmor.security.beta.kubernetes.io/test: "unconfined"
-        container.seccomp.security.alpha.kubernetes.io/test: "unconfined"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "Building Operations Controller component after merge"
+        owner: "compass"
         pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -121,7 +129,12 @@ postsubmits: # runs on main
         - ^hotfix-.*$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230227-a5399439c-buildkit"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/image-builder"
             args:
@@ -147,13 +160,6 @@ postsubmits: # runs on main
               - name: signify-secret
                 mountPath: /secret
                 readOnly: true
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
         volumes:
           - name: share
           - name: config

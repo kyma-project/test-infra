@@ -5,15 +5,15 @@ templates:
         localSets:
           jobConfig_default:
             imagePullPolicy: "Always"
-            privileged: "false"
         jobConfigs:
           - repoName: kyma-project/lifecycle-manager
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230221-85b2d35f"
+                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
                   name: pull-lifecycle-mgr-lint # "pre-main-lifecycle-manager-lint"
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: '^(go.mod|go.sum|Makefile|.*.sh)$|^.*\.go$'
                   annotations:
+                    owner: jellyfish
                     description: executes the 'golangci-lint lint' command before any pull request.
                   command: "bash"
                   args:
@@ -26,8 +26,11 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: '^(go.mod|go.sum|Makefile|.*.sh)$|^.*\.go$'
                   name: pull-lifecycle-mgr-tests # pre-main-lifecycle-manager-tests
+                  annotations:
+                    owner: jellyfish
+                    description: run lm tests
                   command: "bash"
                   args:
                     - "-c"
@@ -42,6 +45,9 @@ templates:
                     - build_labels # default labels
               - jobConfig:
                   name: pull-lifecycle-mgr-build
+                  annotations:
+                    owner: jellyfish
+                    description: run lm build
                   always_run: true
                   args:
                     - "--name=lifecycle-manager"
@@ -53,6 +59,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-lifecycle-mgr-build
+                  annotations:
+                    owner: jellyfish
+                    description: build lifecycle manager
                   labels:
                     preset-signify-prod-secret: "true"
                   branches:

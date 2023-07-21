@@ -1,7 +1,6 @@
 # slackBotToken must be provided using --set argument to helm command.
 # It provides token value used to communicate with slack.
 slackApplicationEnabled: false
-slackBotTokenSecretEnabled: false
 global:
   # Slack connector application name.
   appName: "mp-slack-connector"

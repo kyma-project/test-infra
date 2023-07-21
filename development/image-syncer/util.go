@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	imagesyncer "github.com/kyma-project/test-infra/development/image-syncer/pkg"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 func getTarget(source, targetRepo, targetTag string) (string, error) {

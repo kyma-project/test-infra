@@ -3,7 +3,5 @@
 jobs-definitions:
 	go install github.com/kyma-project/test-infra/development/tools/cmd/rendertemplates
 	go run github.com/kyma-project/test-infra/development/tools/cmd/rendertemplates --config templates/config.yaml --templates templates/templates --data templates/data
-jobs-tests:
-	$(MAKE) -C development/tools $@
 
-jobs: jobs-definitions jobs-tests ;
+jobs: jobs-definitions ;

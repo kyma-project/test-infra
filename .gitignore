@@ -18,3 +18,6 @@ __debug_bin
 /development/kyma-slack-connector/issueLabeledFunction/venv/
 /development/kyma-slack-connector/oomFoundFunction/venv/
 /development/kyma-slack-connector/notifyCommiterFunction/venv/
+
+.terraform
+.terraform.lock.hcl

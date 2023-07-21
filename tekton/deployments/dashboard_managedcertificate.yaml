@@ -1,8 +1,0 @@
-apiVersion: networking.gke.io/v1
-kind: ManagedCertificate
-metadata:
-  name: tekton-kyma-prow
-  namespace: tekton-pipelines
-spec:
-  domains:
-    - tekton.build.kyma-project.io

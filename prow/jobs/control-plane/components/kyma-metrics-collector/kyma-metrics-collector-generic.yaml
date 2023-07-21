@@ -5,6 +5,9 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-components-kyma-metrics-collector
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "build the kmc image"
+        owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -13,7 +16,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-control-plane: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/kyma-metrics-collector/|^scripts/'
       skip_report: false
       decorate: true
@@ -30,9 +33,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -41,24 +47,20 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel211-control-plane-components-kyma-metrics-collector
+    - name: pre-rel216-control-plane-components-kyma-metrics-collector
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "build the kmc image"
+        owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel211-control-plane-components-kyma-metrics-collector"
+        prow.k8s.io/pubsub.runID: "pre-rel216-control-plane-components-kyma-metrics-collector"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-control-plane: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/kyma-metrics-collector/|^scripts/'
       skip_report: false
       decorate: true
@@ -66,17 +68,20 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - release-2.11
+        - release-2.16
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.11
+          base_ref: release-2.16
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -85,24 +90,20 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel210-control-plane-components-kyma-metrics-collector
+    - name: pre-rel215-control-plane-components-kyma-metrics-collector
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "build the kmc image"
+        owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel210-control-plane-components-kyma-metrics-collector"
+        prow.k8s.io/pubsub.runID: "pre-rel215-control-plane-components-kyma-metrics-collector"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-control-plane: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/kyma-metrics-collector/|^scripts/'
       skip_report: false
       decorate: true
@@ -110,17 +111,20 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - release-2.10
+        - release-2.15
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.10
+          base_ref: release-2.15
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -129,24 +133,20 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
-    - name: pre-rel29-control-plane-components-kyma-metrics-collector
+    - name: pre-rel214-control-plane-components-kyma-metrics-collector
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+        description: "build the kmc image"
+        owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rel29-control-plane-components-kyma-metrics-collector"
+        prow.k8s.io/pubsub.runID: "pre-rel214-control-plane-components-kyma-metrics-collector"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-control-plane: "true"
         preset-kyma-kms-sign-key: "true"
-        preset-sa-gcr-push: "true"
+        preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/kyma-metrics-collector/|^scripts/'
       skip_report: false
       decorate: true
@@ -154,17 +154,20 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - release-2.9
+        - release-2.14
       extra_refs:
         - org: kyma-project
           repo: test-infra
           path_alias: github.com/kyma-project/test-infra
-          base_ref: release-2.9
+          base_ref: release-2.14
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20221215-c20ffd65"
+          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
             securityContext:
               privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
             args:
@@ -173,11 +176,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
