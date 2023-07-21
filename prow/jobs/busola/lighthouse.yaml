@@ -2,7 +2,6 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pull-busola-lighthouse
       annotations:
-        
         description: "Busola performance testing"
         owner: "hasselhoff"
         pipeline.trigger: "pr-submit"

@@ -4,7 +4,6 @@ presubmits:
       annotations:
         description: "Pre-submit job to execute upgrade test."
         owner: "huskies"
-        
       optional: false
       labels:
         preset-dind-enabled: "true"

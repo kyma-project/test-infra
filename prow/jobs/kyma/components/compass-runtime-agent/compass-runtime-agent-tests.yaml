@@ -7,7 +7,6 @@ presubmits: # runs on PRs
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"
-        
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-runtime-agent"
@@ -53,7 +52,6 @@ postsubmits: # runs on main
         pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
-        
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kyma-integration-k3d-runtime-agent"

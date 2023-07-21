@@ -1,7 +1,6 @@
 periodics:
   - name: kyma-upgrade-k3d-kyma2-to-main
     annotations:
-      
       description: "K3d Kyma 2.0 to main branch."
       owner: "jellyfish"
       pipeline.clusterprovisioning: "kyma cli"

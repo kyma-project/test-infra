@@ -2,7 +2,6 @@ postsubmits:
   kyma-project/cli:
     - name: post-main-unstable-cli
       annotations:
-        
         description: "Bump reconciler version used by CLI and publish the unstable CLI binaries"
         owner: "jellyfish"
         pipeline.clusterprovisioning: "reconciler"

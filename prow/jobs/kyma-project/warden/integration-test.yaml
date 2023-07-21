@@ -4,7 +4,6 @@ presubmits:
       annotations:
         owner: otters
         description: Warden integration test
-        
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
