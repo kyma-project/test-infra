@@ -83,7 +83,7 @@ presubmits:
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230612-dadc01a7
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
             command: [ "/init.sh" ]
             securityContext:
               privileged: true
