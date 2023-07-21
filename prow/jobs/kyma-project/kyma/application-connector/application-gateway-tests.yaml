@@ -52,6 +52,7 @@ presubmits:
             args:
               - "bash"
               - "-c"
+              - "ls -l tests/components/application-connector"
               - "make -C tests/components/application-connector/hack/ci run-gateway-tests"
             resources:
               requests:
