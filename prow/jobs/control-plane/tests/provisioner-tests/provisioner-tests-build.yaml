@@ -56,7 +56,6 @@ postsubmits: # runs on main
         owner: framefrog
         description: build provisioner tests
         pipeline.trigger: "pr-merge"
-        
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-provisioner-tests-build"

@@ -56,7 +56,6 @@ presubmits:
   kyma-project/cli:
     - name: pre-main-cli-e2e
       annotations:
-        
         description: "Run fast integration tests + Test Kyma CLI commands"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"

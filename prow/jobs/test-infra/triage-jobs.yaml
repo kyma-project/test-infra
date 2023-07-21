@@ -69,7 +69,6 @@ periodics:
       owner: neighbors
       description: "Periodic triage stale issues and PRs"
       testgrid-create-test-group: "false"
-      
     spec:
       containers:
         - image: gcr.io/k8s-prow/commenter:v20230718-0a86ec6744
