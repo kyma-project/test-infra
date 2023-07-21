@@ -13,9 +13,9 @@ templates:
                   always_run: true
                   args:
                     - "--name=btp-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - "--config=/config/kaniko-build-config.yaml"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
