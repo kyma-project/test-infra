@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v48/github"
 	"github.com/kyma-project/test-infra/development/github/pkg/client"
 	"k8s.io/test-infra/prow/config"
 	"sigs.k8s.io/yaml"

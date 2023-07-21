@@ -13,6 +13,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-busola-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -48,6 +49,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-community-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -84,6 +86,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-examples-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -120,6 +123,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "kyma-metadata-schema-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^resources/.*/values.schema.json$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -161,6 +165,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-kyma-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -195,6 +200,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-kyma-crd-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^installation/resources/crds/|^.*.md$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -227,6 +233,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-test-infra-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -263,6 +270,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-website-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -301,6 +309,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -337,6 +346,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: 'milv.config.yaml|.md$'
+      optional: true
       skip_report: false
       decorate: true
       cluster: untrusted-workload

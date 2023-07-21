@@ -30,9 +30,9 @@ presubmits: # runs on PRs
               - "/image-builder"
             args:
               - "--name=btp-manager"
+              - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
-              - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
                 memory: 1.5Gi

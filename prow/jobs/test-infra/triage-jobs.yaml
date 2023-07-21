@@ -13,7 +13,7 @@ periodics:
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20230714-b138fd6e05
+        - image: gcr.io/k8s-prow/commenter:v20230718-0a86ec6744
           command:
             - commenter
           args:
@@ -57,7 +57,6 @@ periodics:
         - name: token
           secret:
             secretName: kyma-bot-triage-token
-
   - name: ci-kyma-bot-triage-stale
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -72,7 +71,7 @@ periodics:
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: gcr.io/k8s-prow/commenter:v20230714-b138fd6e05
+        - image: gcr.io/k8s-prow/commenter:v20230718-0a86ec6744
           command:
             - commenter
           args:

@@ -25,7 +25,7 @@ import (
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	"github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
