@@ -20,7 +20,6 @@ protecode:
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     - eu.gcr.io/sap-kyma-neighbors-dev/needs-tws:v20220119-9cd5b58e9-dirty
     - eu.gcr.io/sap-kyma-neighbors-dev/test-untrusted-plugin:v0.1.0
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/buildpack-golang:v20230323-a1ac96db
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/creategithubissue:v20230309-1d421c4f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20230712-f514770d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230615-186da159
