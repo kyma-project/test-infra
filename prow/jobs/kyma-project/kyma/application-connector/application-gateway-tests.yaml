@@ -4,7 +4,6 @@ presubmits:
       annotations:
         description: "It tests the acceptance criteria of the (Central) Application Gateway component"
         owner: "framefrog"
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         pipeline.installer: "kyma deploy"
         pipeline.platform: "k3d"
         pipeline.test: "k3d-test"
