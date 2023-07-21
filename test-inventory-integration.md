@@ -20,7 +20,6 @@
 | pre-main-kyma-prod-istio-integration-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | pre-main-kyma-istio-reconcilation-k3d | k3d | k3d | kyma deploy |  | pr-submit |  fast-integration  |
 | post-main-kyma-integration-k3d | k3d | k3d | kyma deploy |  | pr-merge |  fast-integration  |
-| kyma-upgrade-k3d-kyma2-to-main | k3d | kyma cli | kyma deploy |  | periodic |  upgrade-fast-integration  |
 | kyma-integration-k3d | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-integration-k3d-telemetry | k3d | k3d | kyma deploy |  | periodic |  fast-integration  |
 | kyma-gke-nightly | gke | gcloud cli | kyma deploy |  | periodic |    |
