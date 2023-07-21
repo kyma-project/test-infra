@@ -1,6 +1,7 @@
 resource "google_service_account" "sa_gke_kyma_integration" {
-  account_id   = "sa-gke-kyma-integration@sap-kyma-prow.iam.gserviceaccount.com"
-  display_name = "sa-gke-kyma-integration@sap-kyma-prow.iam.gserviceaccount.com"
+  account_id   = "sa-gke-kyma-integration"
+  display_name = "sa-gke-kyma-integration"
+  description  = "Service account is used by Prow to integrate with GKE."
 }
 
 resource "google_project_iam_binding" "dns_cleaner_view_container_analysis_occurrences" {
