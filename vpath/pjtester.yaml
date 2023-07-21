@@ -7,3 +7,7 @@ pjConfigs:
     kyma-project:
       kyma:
         - pjName: "pre-main-kyma-integration-k3d-app-gateway"
+prConfigs:
+  kyma-project:
+    kyma:
+      prNumber: 17850
