@@ -52,8 +52,7 @@ presubmits:
             args:
               - "bash"
               - "-c"
-              - "ls -l tests/components/application-connector"
-              - "make -C tests/components/application-connector/hack/ci run-gateway-tests"
+              - "make -C tests/components/application-connector/hack/ci k3d-gateway-tests"
             resources:
               requests:
                 memory: 1Gi
