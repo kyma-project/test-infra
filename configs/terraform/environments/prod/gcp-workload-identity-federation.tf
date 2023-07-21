@@ -6,18 +6,19 @@ module "gh_com_kyma_project_workload_identity_federation" {
   issuer_uri  = "https://token.actions.githubusercontent.com"
 
   attribute_mapping = {
-    "google.subject"                = "\"repository_id:\" + assertion.repository_id + \":repository_owner_id:\" + assertion.repository_owner_id + \":workflow_ref:\" + assertion.workflow_ref"
+    "google.subject"                = "\"repository_id:\" + assertion.repository_id + \":repository_owner_id:\" + assertion.repository_owner_id + \":workflow:\" + assertion.workflow"
     "attribute.actor"               = "assertion.actor"
     "attribute.aud"                 = "assertion.aud"
     "attribute.repository_id"       = "assertion.repository_id"
     "attribute.repository_owner_id" = "assertion.repository_owner_id"
+    "attribute.workflow"            = "assertion.workflow"
     "attribute.workflow_ref"        = "assertion.workflow_ref"
     "attribute.event_name"          = "assertion.event_name"
   }
   sa_mapping = {
-    (google_service_account.terraform_executor.account_id) = {
-      sa_name   = google_service_account.terraform_executor.name
-      attribute = "subject/repository_id:147495537:repository_owner_id:39153523:workflow_ref:kyma-project/test-infra/.github/workflows/post-prod-terraform-apply.yml@refs/heads/main"
+    "terraform_executor_pull_prod_plan" = {
+      sa_name   = "projects/${data.google_client_config.gcp.project}/serviceAccounts/${google_service_account.terraform_executor.email}"
+      attribute = "subject/repository_id:147495537:repository_owner_id:39153523:workflow:pull-plan-prod-terraform"
     }
   }
 }
