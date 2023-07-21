@@ -1,3 +1,5 @@
+#Service account and IAM bindings are needed for development/tools/cmd/dnscollector app which is used on orphaned-dns-cleaner prow job.
+
 resource "google_service_account" "sa_gke_kyma_integration" {
   account_id   = "sa-gke-kyma-integration"
   display_name = "sa-gke-kyma-integration"
