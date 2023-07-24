@@ -3,6 +3,7 @@ presubmits:
     - name: pull-test-infra-ko-build
       decorate: true
       cluster: untrusted-workload
+      run_if_changed: ^development/.*.go|^.koapps.yaml
       annotations:
         owner: neighbors
         description: Builds go-based toolkit in one go
@@ -29,16 +30,24 @@ presubmits:
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2000m
+              limits:
+                memory: 4Gi
+                cpu: 2500m
 postsubmits:
   kyma-project/test-infra:
     - name: post-test-infra-ko-build
       decorate: true
       cluster: trusted-workload
+      run_if_changed: ^development/.*.go|^.koapps.yaml
       annotations:
         owner: neighbors
         description: Builds go-based toolkit in one go
       labels:
-        preset-kyma-push-images: "true"
+        preset-sa-kyma-push-images: "true"
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-ko-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
@@ -62,3 +71,10 @@ postsubmits:
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2000m
+              limits:
+                memory: 4Gi
+                cpu: 2500m
