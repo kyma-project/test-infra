@@ -5,5 +5,5 @@ pjConfigs:
         prNumber: 8271
   prowJobs:
     kyma-project:
-      test-infra:
+      kyma:
         - pjName: "pre-main-check-users-map"
