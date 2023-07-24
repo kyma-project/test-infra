@@ -7,7 +7,6 @@ protecode:
     - docker.io/zricethezav/gitleaks:v8.15.3
     - eu.gcr.io/kyma-project/incubator/milv:8649c2fb
     - eu.gcr.io/kyma-project/prow/cleaner:0.0.1
-    - eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41
     - eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db
     - eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230330-3213bd39
     - eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7
@@ -35,6 +34,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230718-0d88cd1a
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230718-0d88cd1a
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230721-8ae5f7fd
     - gcr.io/k8s-prow/analyze:v20230718-0a86ec6744
     - gcr.io/k8s-prow/branchprotector:v20230718-0a86ec6744
     - gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744
