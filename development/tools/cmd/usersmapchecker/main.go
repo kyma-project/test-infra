@@ -60,6 +60,9 @@ import (
 //	  k8s-pod/prow_k8s_io/type: "postsubmit"
 //	}
 func main() {
+    log.Infoln("hello world1")
+    log.Println("hello world2")
+    log.Infoln("hello world3")
     // exitCode holds exit code to report at the end of main execution, it's safe to set it from multiple goroutines.
     var exitCode atomic.Value
     // Set exit code for exec. This will be call last when exiting from main function.
