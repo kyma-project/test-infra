@@ -7,6 +7,11 @@ pjConfigs:
     kyma-project:
       kyma:
         - pjName: "pre-main-kyma-integration-k3d-app-gateway"
+        - pjName: "post-main-kyma-integration-k3d-app-gateway"
+        - pjName: "pre-main-kyma-integration-k3d-runtime-agent"
+        - pjName: "post-main-kyma-integration-k3d-runtime-agent"
+        - pjName: "pre-main-kyma-integration-k3d-app-conn-validator"
+        - pjName: "post-main-kyma-integration-k3d-app-conn-validator"
 prConfigs:
   kyma-project:
     kyma:
