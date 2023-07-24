@@ -5,7 +5,6 @@ templates:
     render:
       - localSets:
           jobConfig_default:
-            path_alias: github.com/kyma-project/kyma
             annotations:
               pipeline.type: integration
           jobConfig_periodic:
@@ -266,10 +265,8 @@ templates:
               local-kyma:
                 - org: "kyma-incubator"
                   repo: "local-kyma"
-                  path_alias: "github.com/kyma-incubator/local-kyma"
                   base_ref: "main"
           jobConfig_default:
-            path_alias: github.com/kyma-project/kyma
             annotations:
               pipeline.type: integration
           jobConfig_periodic:

@@ -11,17 +11,14 @@ templates:
               kyma-local:
                 - org: "kyma-incubator"
                   repo: "local-kyma"
-                  path_alias: "github.com/kyma-incubator/local-kyma"
                   base_ref: "main"
           extra_refs_busola:
             extra_refs:
               busola:
                 - org: "kyma-project"
                   repo: "busola"
-                  path_alias: "github.com/kyma-project/busola"
                   base_ref: "main"
           jobConfig_default:
-            path_alias: github.com/kyma-project/kyma
             request_memory: 1Gi
             request_cpu: 400m
             labels:
@@ -162,7 +159,7 @@ templates:
                   annotations:
                     owner: skydivingtunas
                     description: Execute fast integration job with focus on eventing on a gardener cluster
-                  optional: true # TODO(marcobebway) make the job required when it is stable
+                  optional: false
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
@@ -202,17 +199,14 @@ templates:
               kyma-local:
                 - org: "kyma-incubator"
                   repo: "local-kyma"
-                  path_alias: "github.com/kyma-incubator/local-kyma"
                   base_ref: "main"
           extra_refs_busola:
             extra_refs:
               busola:
                 - org: "kyma-project"
                   repo: "busola"
-                  path_alias: "github.com/kyma-project/busola"
                   base_ref: "main"
           jobConfig_default:
-            path_alias: github.com/kyma-project/kyma
             request_memory: 1Gi
             request_cpu: 400m
             labels:

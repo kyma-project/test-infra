@@ -389,12 +389,10 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 14400000000000
-      path_alias: github.com/kyma-project/istio
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
           repo: istio
-          path_alias: github.com/kyma-project/istio
           base_ref: main
       reporter_config:
         slack:

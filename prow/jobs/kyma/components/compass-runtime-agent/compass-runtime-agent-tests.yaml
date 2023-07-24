@@ -18,7 +18,6 @@ presubmits: # runs on PRs
       run_if_changed: '^((resources/compass-runtime-agent\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -63,7 +62,6 @@ postsubmits: # runs on main
       run_if_changed: '^((resources/compass-runtime-agent\S+|installation\S+|tests/components/application-connector\S+|resources/istio\S+|resources/istio-resources\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       max_concurrency: 10
       branches:
