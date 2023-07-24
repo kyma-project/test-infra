@@ -293,6 +293,7 @@ function reconciler::disable_sidecar_injection_reconciler_ns() {
 # Export shoot cluster kubeconfig to ENV
 function reconciler::export_shoot_cluster_kubeconfig() {
   log::info "Export shoot cluster kubeconfig to ENV"
+  kubectl get pods -v=6
   export KUBECONFIG="${GARDENER_KYMA_PROW_KUBECONFIG}"
   local shoot_kubeconfig="/tmp/shoot-kubeconfig.yaml"
   cat <<EOF | kubectl create -f - --raw "/apis/core.gardener.cloud/v1beta1/namespaces/garden-kyma-prow/shoots/${INPUT_CLUSTER_NAME}/adminkubeconfig" | jq -r ".status.kubeconfig" | base64 -d > "${shoot_kubeconfig}"
