@@ -1,0 +1,22 @@
+pjConfigs:
+  prowJobs:
+    kyma-incubator:
+      compass:
+        - pjName: "pre-main-compass-gke-benchmark"
+        - pjName: "pull-connectivity-adapter-unit-test"
+        - pjName: "pull-director-unit-test"
+        - pjName: "pull-connector-unit-test"
+        - pjName: "pull-external-services-mock-unit-test"
+        - pjName: "pull-gateway-unit-test"
+        - pjName: "pull-hydrator-unit-test"
+        - pjName: "pull-ias-adapter-unit-test"
+        - pjName: "pull-kyma-adapter-unit-test"
+        - pjName: "pull-operations-controller-unit-test"
+        - pjName: "pull-pairing-adapter-unit-test"
+        - pjName: "pre-main-compass-director-gqlgen-validate"
+        - pjName: "pre-main-compass-schema-migrator-validate"
+        - pjName: "pull-system-broker-unit-test"
+prConfigs: #
+  kyma-incubator:
+    compass:
+      prNumber: 3178
