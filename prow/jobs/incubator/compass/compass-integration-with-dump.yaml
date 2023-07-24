@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-integration-with-dump
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Compass Integration Tests with DB dump"
         owner: "compass"
         pipeline.trigger: "pr-submit"

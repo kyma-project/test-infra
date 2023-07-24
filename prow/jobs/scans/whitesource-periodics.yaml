@@ -4,7 +4,6 @@
 periodics: # runs on schedule
     - name: api-gateway-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -61,7 +60,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: control-plane-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -118,7 +116,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: kyma-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -175,7 +172,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: lifecycle-manager-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -232,7 +228,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: runtime-watcher-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -289,7 +284,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: busola-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -346,7 +340,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: cli-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -403,7 +396,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: hydroform-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -462,7 +454,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: reconciler-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -519,7 +510,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: warden-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -576,7 +566,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: keda-manager-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -635,7 +624,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: btp-manager-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -692,7 +680,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: telemetry-manager-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -749,7 +736,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: directory-size-exporter-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -806,7 +792,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: compass-manager-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -861,7 +846,6 @@ periodics: # runs on schedule
 #-------------Release-----------------------------
     - name: kyma-2.16-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -918,7 +902,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: cli-2.16-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -978,7 +961,6 @@ periodics: # runs on schedule
 #-------------Previous Release--------------------
     - name: kyma-2.15-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -1035,7 +1017,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: cli-2.15-whitesource-scan
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         pipeline.trigger: "periodic"

@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-gke-benchmark
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate performance of the PR"
         owner: "compass"
         pipeline.trigger: "pr-submit"

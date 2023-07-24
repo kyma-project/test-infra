@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-main-test-infra-image-syncer-validate
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate sync images from external sources to Kyma owned registry"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -41,7 +40,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-test-infra-image-syncer-dry-run
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Dry-run of sync images from external sources to Kyma owned registry"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -82,7 +80,6 @@ postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-main-test-infra-image-syncer-run
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Sync images from external sources to Kyma owned registry"
         owner: "neighbors"
         pipeline.trigger: "pr-merge"

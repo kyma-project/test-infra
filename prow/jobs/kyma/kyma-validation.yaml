@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-validate-image-definitions
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "validates if all charts use correct image definition format"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -46,7 +45,6 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-kyma-validate-image-existence
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "his tool validates if all images defined in charts exist"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -87,7 +85,6 @@ presubmits: # runs on PRs
                 cpu: 0.8
     - name: pre-main-kyma-validate-dockerfiles
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate Dockerfiles, run hadolint."
         owner: "neighbors"
         pipeline.trigger: "pr-submit"

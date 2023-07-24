@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/directory-size-exporter:
     - name: pull-directory-size-exporter-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Pre-submit job to build directory-size-exporter image."
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -57,7 +56,6 @@ postsubmits: # runs on main
   kyma-project/directory-size-exporter:
     - name: post-directory-size-exporter-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Post-submit job to build directory-size-exporter image."
         owner: "huskies"
         pipeline.trigger: "pr-merge"
