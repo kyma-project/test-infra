@@ -1,8 +1,6 @@
 module-name: test-infra
 protecode:
     - aquasec/trivy:0.39.0
-    - development/gcp/workflows/secrets-leak-detector
-    - development/tools/cmd/dnscollector
     - docker.io/nginx:1.23.2-alpine
     - docker.io/zricethezav/gitleaks:v8.15.3
     - eu.gcr.io/kyma-project/incubator/milv:8649c2fb
@@ -55,15 +53,7 @@ protecode:
     - maven:3.8.6-eclipse-temurin-11
     - nginx:1
     - nginx:1.20-alpine
-    - opa/gatekeeper/constraint-templates
-    - opa/gatekeeper/deployments/gatekeeper
-    - opa/terraform/modules/gatekeeper
-    - projects/sap-kyma-prow/roles
     - prom/pushgateway:v1.5.1
-    - prow/cluster/resources/gatekeeper-constraints/prow
-    - prow/cluster/resources/gatekeeper-constraints/trusted
-    - prow/cluster/resources/gatekeeper-constraints/untrusted
-    - prow/cluster/resources/gatekeeper-constraints/workloads
     - quay.io/prometheus-operator/prometheus-operator:v0.61.1
 whitesource:
     language: golang-mod
