@@ -43,7 +43,7 @@ templates:
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
             path_alias: github.com/kyma-project/keda-manager
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -210,6 +210,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - build_labels # default labels
+                    - unprivileged
               - jobConfig:
                   name: pre-keda-manager-operator-build
                   annotations:
@@ -348,7 +349,7 @@ templates:
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
             path_alias: github.com/kyma-project/serverless-manager
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230713-3ebd2748
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -444,16 +445,13 @@ templates:
                     - "make test"
                   branches:
                     - ^main$ # any pr against main triggers this
-                  securityContext:
-                    privileged: "true"
-                    seccompProfile:
-                      type: "Unconfined"
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_presubmit
                     - build_labels # default labels
+                    - unprivileged
               - jobConfig:
                   name: pre-serverless-manager-operator-build
                   annotations:
@@ -473,14 +471,11 @@ templates:
                       --config=/config/kaniko-build-config.yaml
                       --context=.
                       --dockerfile=Dockerfile
-                  securityContext:
-                    privileged: "true"
-                    seccompProfile:
-                      type: Unconfined
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
                     - image-builder-buildkit
+                    - unprivileged
                   local:
                     - main_branches
                     - job_build_volumes
@@ -506,14 +501,11 @@ templates:
                       --context=.
                       --dockerfile=Dockerfile
                       --tag=$PULL_BASE_SHA
-                  securityContext:
-                    privileged: "true"
-                    seccompProfile:
-                      type: Unconfined
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
                     - image-builder-buildkit
+                    - unprivileged
                   local:
                     - main_branches
                     - job_build_volumes

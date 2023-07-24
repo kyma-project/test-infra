@@ -45,6 +45,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
+                    - unprivileged
               - jobConfig:
                   name: pull-build-template-operator
                   annotations:

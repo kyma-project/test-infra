@@ -29,9 +29,7 @@ templates:
                     owner: neighbors
                     description: "Dry-run of sync images from external sources to Kyma owned registry"
                   labels:
-                    preset-docker-push-repository: "true"
                     preset-sa-kyma-push-images: "true"
-                    preset-dind-enabled: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
                   command: "bash"
                   args:
@@ -42,7 +40,7 @@ templates:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
-                    - "privileged"
+                    - "unprivileged"
               - jobConfig:
                   name: "post-main-test-infra-image-syncer-run"
                   annotations:

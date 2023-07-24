@@ -40,7 +40,7 @@ templates:
                     - "jobConfig_presubmit"
                     - "image_buildpack-golang"
                     - "extra_refs_test-infra"
-                    - "privileged_job"
+                    - "unprivileged"
                     - "kyma_project_dir"
                   local:
                     - "jobConfig_default"
@@ -84,7 +84,7 @@ templates:
                     - "jobConfig_presubmit"
                     - "image_buildpack-golang"
                     - "extra_refs_test-infra"
-                    - "privileged_job"
+                    - "unprivileged"
                     - "kyma_project_dir"
                   local:
                     - "jobConfig_default"

@@ -24,7 +24,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -128,7 +128,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230713-3ebd2748"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -186,7 +186,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -288,7 +288,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -401,7 +401,7 @@ periodics: # runs on schedule
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230713-3ebd2748"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
             securityContext:
               privileged: false
               seccompProfile:

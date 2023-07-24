@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230721-8ae5f7fd"
             securityContext:
               privileged: false
               seccompProfile:
@@ -51,7 +51,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -87,7 +87,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -123,7 +123,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
               privileged: false
               seccompProfile:
@@ -148,8 +148,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-generated-files"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-dind-enabled: "true"
       run_if_changed: '^.github/dependabot.yml$|^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|pkg/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml'
       skip_report: false
       decorate: true
@@ -160,12 +158,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-generated.sh"
             resources:
@@ -188,7 +186,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230721-8ae5f7fd"
             securityContext:
               privileged: false
               seccompProfile:

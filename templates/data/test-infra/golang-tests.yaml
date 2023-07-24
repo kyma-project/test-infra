@@ -39,7 +39,7 @@ templates:
                     privileged: false
                   automountServiceAccountToken: true
                   request_memory: 1Gi
-                  request_cpu: 500m
+                  request_cpu: 2000m
                 inheritedConfigs:
                   global:
                     - jobConfig_default

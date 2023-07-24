@@ -2,8 +2,6 @@
 
 [gcp-artifact-registry-terraform](/configs/terraform/modules/artifact-registry/README.md) - This is the GCP private image registry. Use the registry to publish modules that should be accessible by internal SAP teams.
 
-[Development](/development/README.md) - The purpose of the folder is to store tools developed and used in the `test-infra` repository.
-
 [Create Custom Image](/development/custom-image/README.md) - The purpose of this document is to define how to create a new Google Compute Engine [custom image](https://cloud.google.com/compute/docs/images) with required dependencies. You can use the new image to provision virtual machine (VM) instances with all dependencies already installed.
 
 [gardener-rotate](/development/gardener-rotate/README.md) - The gardener-rotate tool allows you to generate a new access token for the Gardener service accounts and update kubeconfig stored in the Secret Manager.
@@ -45,8 +43,6 @@
 [Config Uploader](/development/tools/cmd/configuploader/README.md) - This command uploads Prow plugins, configuration, and jobs to a Prow cluster. Use it for a newly created Prow cluster and to update changes in the configuration on a cluster from a forked repository.
 
 [Disks Garbage Collector](/development/tools/cmd/diskscollector/README.md) - This command finds and removes orphaned disks created by the `kyma-gke-integration` job in a Google Cloud Platform (GCP) project.
-
-[DNS Cleaner](/development/tools/cmd/dnscleaner/README.md) - This command finds and removes DNS entries created by the `kyma-gke-long-lasting` job in a Google Cloud Platform (GCP) project.
 
 [IP Address and DNS Record Garbage Collector](/development/tools/cmd/dnscollector/README.md) - This command finds and removes orphaned IP Addresses and related DNS records created by GKE integration jobs in a Google Cloud Platform (GCP) project.
 
