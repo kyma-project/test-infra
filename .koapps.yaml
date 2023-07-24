@@ -1,0 +1,7 @@
+apps:
+  - ko://github.com/kyma-project/test-infra/development/tools/cmd/pjtester
+  - ko://github.com/kyma-project/test-infra/development/image-syncer
+  - ko://github.com/kyma-project/test-infra/development/image-detector
+  - ko://github.com/kyma-project/test-infra/development/image-url-helper
+  - ko://github.com/kyma-project/test-infra/development/markdown-index
+  - ko://github.com/kyma-project/test-infra/development/tools/cmd/usersmapchecker
