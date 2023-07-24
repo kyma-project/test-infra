@@ -15,17 +15,18 @@ templates:
                     description: "validates if all charts use correct image definition format"
                     owner: neighbors
                   run_if_changed: "^resources/"
-                  command: "bash"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20230724-5c48a0f9
+                  command: "/ko-app/image-url-helper"
                   args:
-                    - "-c"
-                    - 'echo \"This tool validates if all charts use correct image definition format. \nCheck https://github.com/kyma-project/test-infra/blob/main/development/image-url-helper/README.md for details\" && 
-                    /prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ check --excludes-list /home/prow/go/src/github.com/kyma-project/test-infra/development/image-url-helper/excludes.yaml && 
-                    echo \"Validation finished\"'
+                    - --resources-directory
+                    - /home/prow/go/src/github.com/kyma-project/kyma/resources/
+                    - check
+                    - --excludes-list
+                    - /home/prow/go/src/github.com/kyma-project/test-infra/development/image-url-helper/excludes.yaml
                   optional: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_prow-tools"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                   local:
@@ -36,17 +37,16 @@ templates:
                     description: "his tool validates if all images defined in charts exist"
                     owner: neighbors
                   run_if_changed: "^resources/"
-                  command: "bash"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20230724-5c48a0f9
+                  command: "/ko-app/image-url-helper"
                   args:
-                    - "-c"
-                    - 'echo \"This tool validates if all images defined in charts exist. \nCheck https://github.com/kyma-project/test-infra/blob/main/development/image-url-helper/README.md for details\" && 
-                    /prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ missing && 
-                    echo \"Validation finished\"'
+                    - --resources-directory
+                    - /home/prow/go/src/github.com/kyma-project/kyma/resources/
+                    - missing
                   optional: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_prow-tools"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                   local:
