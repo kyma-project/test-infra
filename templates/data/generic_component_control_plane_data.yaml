@@ -6,11 +6,16 @@ templates:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
               - jobConfig:
-                  path: components/kyma-metrics-collector
+                  name: pre-control-plane-components-kyma-metrics-collector
+                  command: make
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/components/kyma-metrics-collector"
+                    - -C
+                    - components/kyma-metrics-collector
+                    - resolve-local
+                    - vet-local
+                    - fmt-local
+                    - test-local
                   run_if_changed: "^components/kyma-metrics-collector/|^scripts/"
-                  release_since: "1.22"
                   annotations:
                     owner: skydivingtunas
                     description: build the kmc image
@@ -18,9 +23,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
+                    - unprivileged
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"
@@ -30,21 +33,23 @@ templates:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
               - jobConfig:
-                  path: components/kubeconfig-service
+                  name: pre-control-plane-components-kubeconfig-service
                   annotations:
                     owner: sre
                     description: "Builds and validates kubeconfig-service before merge"
+                  command: make
                   args:
-                    - "/home/prow/go/src/github.com/kyma-project/control-plane/components/kubeconfig-service"
+                    - -C
+                    - components/kubeconfig-service
+                    - resolve-local
+                    - fmt-local
+                    - test-local
                   run_if_changed: "^components/kubeconfig-service/|^scripts/"
-                  release_since: "1.14"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "image_buildpack-golang"
-                    - "jobConfig_generic_component"
-                    - "jobConfig_generic_component_control-plane"
-                    - "extra_refs_test-infra"
+                    - unprivileged
                   preConfigs:
                     global:
                       - "jobConfig_presubmit"

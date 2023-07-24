@@ -64,7 +64,7 @@ templates:
           job_module_build:
             labels:
               preset-sa-kyma-push-images: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
