@@ -82,6 +82,7 @@ func main() {
     // Create a stdout logger
     stdoutLogger := log.WithField("context", "checking if user exists in users map")
     fmt.Println("hello world")
+    log.Infoln("hello world")
     contextLogger := logger.WithContext("checking if user exists in users map")
 
     defer contextLogger.Flush()
