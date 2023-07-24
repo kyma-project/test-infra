@@ -305,6 +305,8 @@ function reconciler::export_shoot_cluster_kubeconfig() {
     }
 }
 EOF
+  mkdir -p $HOME/.kube
+  cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
   cat "${shoot_kubeconfig}" > "${LOCAL_KUBECONFIG}"
   export KUBECONFIG="${shoot_kubeconfig}"
 }
