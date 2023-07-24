@@ -304,7 +304,9 @@ function reconciler::export_shoot_cluster_kubeconfig() {
     }
 }
 EOF
-  ls $HOME
+  [ -d "${HOME}" ] && echo "Directory "${HOME}" exists."
+  cd "${HOME}"
+  ls
   cat "${shoot_kubeconfig}" > "${LOCAL_KUBECONFIG}"
   export KUBECONFIG="${shoot_kubeconfig}"
 }
