@@ -162,7 +162,7 @@ templates:
                   annotations:
                     owner: skydivingtunas
                     description: Execute fast integration job with focus on eventing on a gardener cluster
-                  optional: true # TODO(marcobebway) make the job required when it is stable
+                  optional: false
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
