@@ -759,6 +759,30 @@
         "approvedImage": false,
         "reason": ""
       }
+    },
+    {
+      "registry": "cgr.dev/chainguard/static:latest",
+      "purpose": "KO base image",
+      "publisher": "Chainguard",
+      "sourceCode": "https://github.com/chainguard-images/images/tree/main/images/static",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false,
+        "sponsoredOSS": false
+      },
+      "manualAnalysis": {
+        "contributors": 50,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/chainguard-images/images/commits/main/images"
+        }
+      },
+      "comment": "",
+      "openSSFScore": 0,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      }
     }
   ]
 }
