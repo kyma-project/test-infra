@@ -9,9 +9,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-control-plane-tests-e2e-provisioning"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-control-plane: "true"
-        preset-kyma-kms-sign-key: "true"
       run_if_changed: "^tests/e2e/provisioning/|^scripts/"
       skip_report: false
       decorate: true
@@ -20,23 +17,24 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
+              - make
             args:
-              - "/home/prow/go/src/github.com/kyma-project/control-plane/tests/e2e/provisioning"
+              - -C
+              - tests/e2e/provisioning
+              - resolve-local
+              - vet-local
+              - fmt-local
+              - test-local
             resources:
               requests:
                 memory: 3Gi
-                cpu: 2
+                cpu: 1

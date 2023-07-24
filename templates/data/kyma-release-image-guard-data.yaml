@@ -25,6 +25,6 @@ templates:
                     - "jobConfig_presubmit"
                     - "image_bootstrap"
                     - "extra_refs_test-infra"
-                    - "privileged"
+                    - "unprivileged"
                   local:
                     - "jobConfig_default"

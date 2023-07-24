@@ -96,9 +96,6 @@ templates:
                     owner: neighbors
                     description: "Validate rendertemplate generated files"
                   run_if_changed: "^.github/dependabot.yml$|^templates/|^prow/jobs/|^prow/config.yaml|^prow/scripts/|^development/tools/(cmd/rendertemplates/|pkg/rendertemplates/|jobs/releases/releases.go)|^prow/branchprotector-config.yaml"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-dind-enabled: "true"
                   command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/validate-generated.sh"
                 inheritedConfigs:
                   global:
@@ -106,7 +103,7 @@ templates:
                     - "image_buildpack-golang"
                     - "jobConfig_presubmit"
                     - "pubsub_labels"
-                    - "privileged"
+                    - "unprivileged"
               - jobConfig:
                   name: "pre-test-infra-validate-dockerfiles"
                   annotations:
