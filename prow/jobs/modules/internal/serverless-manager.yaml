@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
             securityContext:
               privileged: false
               seccompProfile:
@@ -68,7 +68,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
             securityContext:
               privileged: false
               seccompProfile:
@@ -160,7 +160,6 @@ presubmits: # runs on PRs
       optional: false
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/serverless-manager
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -169,11 +168,10 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd"
             securityContext:
               privileged: true
               seccompProfile:
@@ -212,7 +210,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
             securityContext:
               privileged: false
               seccompProfile:
@@ -313,7 +311,6 @@ postsubmits: # runs on main
       optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/serverless-manager
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -322,11 +319,10 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd"
             securityContext:
               privileged: true
               seccompProfile:
@@ -365,20 +361,17 @@ periodics: # runs on schedule
       cron: "0 6 * * 1-5"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/serverless-manager
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: serverless-manager
-          path_alias: github.com/kyma-project/serverless-manager
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd"
             securityContext:
               privileged: true
               seccompProfile:

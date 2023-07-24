@@ -60,7 +60,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-e7d5039c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-5905c114"
             securityContext:
               privileged: false
               seccompProfile:
@@ -127,11 +127,10 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: eventing-tools
-          path_alias: github.com/kyma-project/eventing-tools
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230724-364907e8c6"
             securityContext:
               privileged: false
               seccompProfile:
@@ -158,7 +157,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/label_sync:v20230724-364907e8c6"
             securityContext:
               privileged: false
               seccompProfile:
@@ -199,14 +198,13 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230724-364907e8c6"
             securityContext:
               privileged: false
               seccompProfile:
@@ -234,14 +232,13 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-e7d5039c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-5905c114"
             securityContext:
               privileged: false
               seccompProfile:
@@ -274,14 +271,13 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230724-364907e8c6"
             securityContext:
               privileged: false
               seccompProfile:

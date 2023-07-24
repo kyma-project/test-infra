@@ -35,20 +35,16 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 7200000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-incubator
           repo: local-kyma
-          path_alias: github.com/kyma-incubator/local-kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -113,20 +109,16 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 7200000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-incubator
           repo: local-kyma
-          path_alias: github.com/kyma-incubator/local-kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -184,20 +176,16 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 7200000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
           repo: busola
-          path_alias: github.com/kyma-project/busola
           base_ref: main
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -252,16 +240,13 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 7200000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -323,16 +308,13 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 7200000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:

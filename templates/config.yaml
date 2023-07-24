@@ -150,7 +150,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -174,9 +174,9 @@ globalSets:
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
   image_buildpack-node:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230718-0d88cd1a"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230721-8ae5f7fd"
   image_buildpack-golang:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
   image_gardener-rotate:
@@ -184,9 +184,9 @@ globalSets:
   image_markdown_index:
     image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
   image_image_detector:
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-e7d5039c"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-5905c114"
   image_e2e-dind-k3d:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -271,27 +271,21 @@ globalSets:
   jobConfig_generic_component_kyma:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/kyma"
   jobConfig_generic_component_control-plane:
     labels:
       preset-docker-push-repository-control-plane: "true"
-    path_alias: "github.com/kyma-project/control-plane"
   jobConfig_generic_component_api-gateway:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/api-gateway"
   jobConfig_generic_component_busola:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/busola"
   jobConfig_generic_component_kyma-dashboard:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/kyma-dashboard"
   jobConfig_generic_component_compass:
     labels:
       preset-docker-push-repository-incubator: "true"
-    path_alias: "github.com/kyma-incubator/compass"
   disable_report:
     skip_report: "true"
   # globalSet for prowjobs which doesn't inherit jobConfig_default globalSet
@@ -312,42 +306,36 @@ globalSets:
       test-infra:
         - org: "kyma-project"
           repo: "test-infra"
-          path_alias: "github.com/kyma-project/test-infra"
           base_ref: "main"
   extra_refs_kyma:
     extra_refs:
       kyma:
         - org: "kyma-project"
           repo: "kyma"
-          path_alias: "github.com/kyma-project/kyma"
           base_ref: "main"
   extra_refs_reconciler:
     extra_refs:
       reconciler:
         - org: "kyma-incubator"
           repo: "reconciler"
-          path_alias: "github.com/kyma-incubator/reconciler"
           base_ref: "main"
   extra_refs_control-plane:
     extra_refs:
       control-plane:
         - org: "kyma-project"
           repo: "control-plane"
-          path_alias: "github.com/kyma-project/control-plane"
           base_ref: "main"
   extra_refs_btp-manager:
     extra_refs:
       btp-manager:
         - org: "kyma-project"
           repo: "btp-manager"
-          path_alias: "github.com/kyma-project/btp-manager"
           base_ref: "main"
   extra_refs_kyma-environment-broker:
     extra_refs:
       kyma-environment-broker:
         - org: "kyma-project"
           repo: "kyma-environment-broker"
-          path_alias: "github.com/kyma-project/kyma-environment-broker"
           base_ref: "main"
   # labels sets
   build_labels:

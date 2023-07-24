@@ -20,7 +20,6 @@ presubmits: # runs on PRs
       run_if_changed: '^backend/|^package.json'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/busola
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -29,7 +28,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:

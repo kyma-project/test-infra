@@ -24,7 +24,6 @@ presubmits: # runs on PRs
       decoration_config:
         grace_period: 600000000000
         timeout: 14400000000000
-      path_alias: github.com/kyma-project/api-gateway
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -33,7 +32,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
       spec:
         containers:
@@ -78,7 +76,6 @@ postsubmits: # runs on main
       decoration_config:
         grace_period: 600000000000
         timeout: 14400000000000
-      path_alias: github.com/kyma-project/api-gateway
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -87,7 +84,6 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
       reporter_config:
         slack:
@@ -130,7 +126,6 @@ postsubmits: # runs on main
       optional: false
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/api-gateway
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -179,7 +174,6 @@ postsubmits: # runs on main
       optional: false
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/api-gateway
       cluster: untrusted-workload
       max_concurrency: 10
       branches:

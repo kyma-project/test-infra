@@ -4,7 +4,6 @@ templates:
       - to: ../../prow/jobs/incubator/compass/compass-smoke-test.yaml
         localSets:
           jobConfig_default:
-            path_alias: github.com/kyma-incubator/compass
             command: "/init.sh"
             args:
               - "installation/scripts/prow/jobs/provision-compass-smoke-test.sh"

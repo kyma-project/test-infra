@@ -36,7 +36,6 @@ templates:
           job_skip_config:
             skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
           vm_job_make:
-            path_alias: github.com/kyma-project/istio
             command: "bash"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
@@ -58,13 +57,13 @@ templates:
               pipeline.test: fast-integration
               pipeline.clusterprovisioning: k3d
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230718-0d88cd1a"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230721-8ae5f7fd"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
           job_module_build:
             labels:
               preset-sa-kyma-push-images: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
@@ -254,17 +253,15 @@ templates:
               - jobConfig:
                   name: nightly-istio-performance-test-gcp
                   cron: "0 0 * * *"
-                  path_alias: github.com/kyma-project/istio
                   extra_refs:
                     istio:
                       - org: kyma-project
                         repo: istio
                         base_ref: main
-                        path_alias: github.com/kyma-project/istio
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230721-8ae5f7fd"
                   securityContext: #temporary we need permissions to create folders for tooling, see `make install`
                     runAsRoot: true
                   command: "make"

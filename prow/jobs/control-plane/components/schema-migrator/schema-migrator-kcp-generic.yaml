@@ -14,7 +14,6 @@ presubmits: # runs on PRs
       run_if_changed: "^components/schema-migrator/|^scripts/"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/control-plane
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -22,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd"
             securityContext:
               privileged: true
               seccompProfile:

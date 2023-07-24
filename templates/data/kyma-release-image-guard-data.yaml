@@ -7,7 +7,6 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/pr-image-guard.sh"
             branches:
               - ^release-.*$
-            path_alias: github.com/kyma-project/kyma
             labels:
               preset-dind-enabled: "true"
               preset-bot-github-token: "true"

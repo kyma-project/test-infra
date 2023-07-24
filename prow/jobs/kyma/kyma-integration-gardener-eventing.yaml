@@ -28,7 +28,6 @@ presubmits: # runs on PRs
       decoration_config:
         grace_period: 600000000000
         timeout: 14400000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -37,7 +36,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -105,7 +103,6 @@ presubmits: # runs on PRs
       decoration_config:
         grace_period: 600000000000
         timeout: 14400000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -114,7 +111,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -176,7 +172,6 @@ presubmits: # runs on PRs
       decoration_config:
         grace_period: 600000000000
         timeout: 14400000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -185,7 +180,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:

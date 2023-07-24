@@ -15,7 +15,6 @@ presubmits: # runs on PRs
       run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/compass-manager
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
