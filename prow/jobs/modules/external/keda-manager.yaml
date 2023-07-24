@@ -187,7 +187,6 @@ presubmits: # runs on PRs
       optional: false
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/keda-manager
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -196,7 +195,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -432,7 +430,6 @@ postsubmits: # runs on main
       optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/keda-manager
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -441,7 +438,6 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -481,7 +477,6 @@ postsubmits: # runs on main
       optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/keda-manager
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -490,7 +485,6 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -533,16 +527,13 @@ periodics: # runs on schedule
       cron: "0 6 * * 1-5"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/keda-manager
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: keda-manager
-          path_alias: github.com/kyma-project/keda-manager
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:

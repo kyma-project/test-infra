@@ -89,11 +89,9 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: cli
-          path_alias: github.com/kyma-project/cli
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -133,11 +131,9 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -185,11 +181,9 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -239,11 +233,9 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -294,11 +286,9 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -450,7 +440,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -493,7 +482,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -539,11 +527,9 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -591,11 +577,9 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -749,15 +733,12 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: control-plane
-          path_alias: github.com/kyma-project/control-plane
           base_ref: main
         - org: kyma-incubator
           repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -807,11 +788,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: control-plane
-          path_alias: github.com/kyma-project/control-plane
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -869,15 +848,12 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: control-plane
-          path_alias: github.com/kyma-project/control-plane
           base_ref: main
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:

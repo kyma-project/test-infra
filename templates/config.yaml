@@ -271,27 +271,21 @@ globalSets:
   jobConfig_generic_component_kyma:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/kyma"
   jobConfig_generic_component_control-plane:
     labels:
       preset-docker-push-repository-control-plane: "true"
-    path_alias: "github.com/kyma-project/control-plane"
   jobConfig_generic_component_api-gateway:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/api-gateway"
   jobConfig_generic_component_busola:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/busola"
   jobConfig_generic_component_kyma-dashboard:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/kyma-dashboard"
   jobConfig_generic_component_compass:
     labels:
       preset-docker-push-repository-incubator: "true"
-    path_alias: "github.com/kyma-incubator/compass"
   disable_report:
     skip_report: "true"
   # globalSet for prowjobs which doesn't inherit jobConfig_default globalSet
@@ -312,42 +306,36 @@ globalSets:
       test-infra:
         - org: "kyma-project"
           repo: "test-infra"
-          path_alias: "github.com/kyma-project/test-infra"
           base_ref: "main"
   extra_refs_kyma:
     extra_refs:
       kyma:
         - org: "kyma-project"
           repo: "kyma"
-          path_alias: "github.com/kyma-project/kyma"
           base_ref: "main"
   extra_refs_reconciler:
     extra_refs:
       reconciler:
         - org: "kyma-incubator"
           repo: "reconciler"
-          path_alias: "github.com/kyma-incubator/reconciler"
           base_ref: "main"
   extra_refs_control-plane:
     extra_refs:
       control-plane:
         - org: "kyma-project"
           repo: "control-plane"
-          path_alias: "github.com/kyma-project/control-plane"
           base_ref: "main"
   extra_refs_btp-manager:
     extra_refs:
       btp-manager:
         - org: "kyma-project"
           repo: "btp-manager"
-          path_alias: "github.com/kyma-project/btp-manager"
           base_ref: "main"
   extra_refs_kyma-environment-broker:
     extra_refs:
       kyma-environment-broker:
         - org: "kyma-project"
           repo: "kyma-environment-broker"
-          path_alias: "github.com/kyma-project/kyma-environment-broker"
           base_ref: "main"
   # labels sets
   build_labels:

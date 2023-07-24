@@ -9,7 +9,6 @@ templates:
               seccompProfile:
                 type: RuntimeDefault
             optional: "false"
-            path_alias: github.com/kyma-project/api-gateway
             labels:
               preset-debug-commando-oom: "true"
               preset-kyma-guard-bot-github-token: "true"

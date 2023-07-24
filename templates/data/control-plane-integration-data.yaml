@@ -68,7 +68,8 @@ templates:
           - repoName: kyma-project/control-plane
             jobs:
               - jobConfig:
-                  name: pre-main-control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener
+#                  name: pre-main-control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener
+                  name: pull-control-plane-rec-upgrade-kyma2-stable-to-main-grdnr
                   annotations:
                     owner: jellyfish
                     description: control-plane reconciler e2e test

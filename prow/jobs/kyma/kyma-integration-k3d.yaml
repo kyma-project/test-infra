@@ -19,7 +19,6 @@ periodics:
     cron: "0 0 6-18/2 ? * 1-5"
     skip_report: false
     decorate: true
-    path_alias: github.com/kyma-project/kyma
     cluster: trusted-workload
     extra_refs:
       - org: kyma-project
