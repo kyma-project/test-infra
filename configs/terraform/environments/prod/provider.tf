@@ -12,6 +12,10 @@ terraform {
       source  = "gavinbunney/kubectl"
       version = ">= 1.14.0"
     }
+    github = {
+      source  = "integrations/github"
+      version = "~> 5.0"
+    }
   }
 }
 
@@ -100,4 +104,14 @@ provider "kubectl" {
     data.google_container_cluster.untrusted_workload_k8s_cluster.master_auth[0].cluster_ca_certificate,
   )
   load_config_file = false
+}
+
+provider "github" {
+  alias = "kyma_project"
+  owner = var.kyma-project-github-org
+}
+
+provider "github" {
+  alias = "kyma_incubator"
+  owner = var.kyma-incubator-github-org
 }
