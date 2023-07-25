@@ -471,7 +471,6 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - image-builder-buildkit
-                    - unprivileged
                   local:
                     - main_branches
                     - job_build_volumes
@@ -501,7 +500,6 @@ templates:
                   global:
                     - jobConfig_postsubmit
                     - image-builder-buildkit
-                    - unprivileged
                   local:
                     - main_branches
                     - job_build_volumes
@@ -537,6 +535,26 @@ templates:
                       make -C hack/ci k3d-integration-test
                   always_run: "true"
                   optional: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
+              - jobConfig:
+                  name: post-main-serverless-manager-upgrade-latest-to-main
+                  annotations:
+                    owner: otters
+                    description: upgrade serverless manager test
+                  always_run: "true"
+                  optional: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-upgrade-test
                 inheritedConfigs:
                   global:
                     - jobConfig_default

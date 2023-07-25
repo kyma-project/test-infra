@@ -63,7 +63,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/eventing-controller && KUBEBUILDER_CONTROLPLANE_START_TIMEOUT=50s go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "cd components/eventing-controller && make test-local"
                   run_if_changed: "^components/eventing-controller/.*$"
                   annotations:
                     owner: skydivingtunas
