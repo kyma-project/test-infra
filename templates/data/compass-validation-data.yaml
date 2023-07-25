@@ -11,8 +11,8 @@ templates:
               - "schema-migrator"
               - "--command"
               - "make validate"
-            request_memory: 100Mi
-            request_cpu: 50m
+            request_memory: 1Gi
+            request_cpu: 1
             labels:
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
