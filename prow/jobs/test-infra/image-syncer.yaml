@@ -21,10 +21,6 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230724-5c48a0f9"
@@ -66,10 +62,6 @@ postsubmits: # runs on main
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230724-5c48a0f9"

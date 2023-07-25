@@ -23,10 +23,8 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
                     - "jobConfig_presubmit"
                     - "unprivileged"
-                    - extra_refs_test-infra
               - jobConfig:
                   name: "post-main-test-infra-image-syncer-run"
                   annotations:
@@ -44,6 +42,4 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
                     - "jobConfig_postsubmit"
-                    - extra_refs_test-infra
