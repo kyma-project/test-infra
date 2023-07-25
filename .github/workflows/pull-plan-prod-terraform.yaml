@@ -28,7 +28,7 @@ jobs:
         id: gcp_auth
         uses: google-github-actions/auth@v1
         with:
-          workload_identity_provider: ${{ vars.gcp_terraform_executor_service_account_email }}
+          workload_identity_provider: ${{ vars.gh_com_kyma_project_gcp_workload_identity_federation_provider }}
           service_account: ${{ vars.gcp_terraform_executor_service_account_email }}
           
       - name: 'Setup Terraform'
