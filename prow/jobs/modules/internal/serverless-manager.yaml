@@ -341,7 +341,6 @@ postsubmits: # runs on main
                 cpu: 3
     - name: post-main-serverless-manager-upgrade-latest-to-main
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "upgrade serverless manager test"
         owner: "otters"
         pipeline.installer: "kyma deploy"
@@ -359,7 +358,6 @@ postsubmits: # runs on main
       optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/serverless-manager
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -368,11 +366,10 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd"
             securityContext:
               privileged: true
               seccompProfile:
