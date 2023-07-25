@@ -9,25 +9,23 @@ import (
 
 // Creator exposes a function to create complete Github releases
 type Creator interface {
-	CreateNewRelease(ctx context.Context, relOpts *Options, artifactNames ...string) error
+	CreateNewRelease(ctx context.Context, relOpts *Options) error
 }
 
 // creatorImpl provides functions to create a complete Github Release
 type creatorImpl struct {
-	github  GithubAPI
-	storage StorageAPI
+	github GithubAPI
 }
 
 // NewCreator returns implementation of Creator interface
-func NewCreator(github GithubAPI, storage StorageAPI) Creator {
+func NewCreator(github GithubAPI) Creator {
 	return &creatorImpl{
-		github:  github,
-		storage: storage,
+		github: github,
 	}
 }
 
 // CreateNewRelease .
-func (c *creatorImpl) CreateNewRelease(ctx context.Context, relOpts *Options, artifactNames ...string) error {
+func (c *creatorImpl) CreateNewRelease(ctx context.Context, relOpts *Options) error {
 
 	//Release
 	release, _, err := c.github.CreateGithubRelease(ctx, relOpts)
@@ -35,18 +33,16 @@ func (c *creatorImpl) CreateNewRelease(ctx context.Context, relOpts *Options, ar
 		return errors.Wrap(err, "while creating Github release")
 	}
 
-	for _, artifact := range artifactNames {
-		if err = c.createReleaseArtifact(ctx, *release.ID, artifact); err != nil {
-			return errors.Wrapf(err, "while creating release artifact: %s", artifact)
-		}
+	if err = c.createReleaseArtifact(ctx, *release.ID, relOpts.KymaComponentsName, relOpts.KymaComponentsPath); err != nil {
+		return errors.Wrapf(err, "while creating release artifact: %s", relOpts.KymaComponentsName)
 	}
 
 	return nil
 }
 
-func (c *creatorImpl) createReleaseArtifact(ctx context.Context, releaseID int64, artifactName string) error {
+func (c *creatorImpl) createReleaseArtifact(ctx context.Context, releaseID int64, artifactName, componentsPath string) error {
 
-	components, err := os.Open("installation/resources/components.yaml")
+	components, err := os.Open(componentsPath)
 	if err != nil {
 		return errors.Wrapf(err, "while opening components.yaml file")
 	}
