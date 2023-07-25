@@ -2,10 +2,10 @@ pjConfigs:
   prowJobs:
     kyma-project:
       telemetry-manager:
-        - pjName: "pull-telemetry-manager-e2e-test-logging-dev"
+        - pjName: "pull-telemetry-manager-e2e-test-logging"
         - pjName: "pull-telemetry-manager-e2e-test-logging-release"
-        - pjName: "pull-telemetry-manager-e2e-test-metrics-dev"
-        - pjName: "pull-telemetry-manager-e2e-test-tracing-dev"
+        - pjName: "pull-telemetry-manager-e2e-test-metrics"
+        - pjName: "pull-telemetry-manager-e2e-test-tracing"
         - pjName: "pull-telemetry-manager-e2e-test-tracing-release"
         - pjName: "pull-telemetry-manager-upgrade-test"
 
