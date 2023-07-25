@@ -63,8 +63,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -100,8 +100,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -137,8 +137,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -174,8 +174,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -211,8 +211,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -248,8 +248,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -285,8 +285,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -322,8 +322,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -359,8 +359,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -396,8 +396,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -433,8 +433,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -470,8 +470,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -507,8 +507,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -544,8 +544,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -581,8 +581,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -618,8 +618,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -655,8 +655,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -692,8 +692,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -729,8 +729,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -766,8 +766,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -803,8 +803,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -840,8 +840,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -877,8 +877,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -914,8 +914,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -951,8 +951,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -988,8 +988,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1025,8 +1025,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1062,8 +1062,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1099,8 +1099,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1136,8 +1136,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1173,8 +1173,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1210,8 +1210,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1247,8 +1247,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1284,8 +1284,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1321,8 +1321,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1358,8 +1358,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1395,8 +1395,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1432,8 +1432,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1469,8 +1469,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1506,8 +1506,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1543,8 +1543,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1580,8 +1580,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1617,8 +1617,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1654,8 +1654,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1691,8 +1691,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1728,8 +1728,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1765,8 +1765,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1802,8 +1802,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1839,8 +1839,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1876,8 +1876,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1913,8 +1913,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1950,8 +1950,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
