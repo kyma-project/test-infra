@@ -4,7 +4,6 @@ readonly RECONCILER_SUFFIX="-reconciler"
 readonly RECONCILER_NAMESPACE=reconciler
 readonly RECONCILER_TIMEOUT=1200 # in secs
 readonly RECONCILER_DELAY=15 # in secs
-readonly LOCAL_KUBECONFIG="$HOME/.kube/config"
 readonly MOTHERSHIP_RECONCILER_VALUES_FILE="../../resources/kcp/charts/mothership-reconciler/values.yaml"
 
 # shellcheck source=prow/scripts/lib/log.sh
@@ -174,9 +173,6 @@ function reconciler::wait_until_test_pod_is_deleted() {
 # Initializes test pod which will send reconcile requests to reconciler
 function reconciler::initialize_test_pod() {
   log::info "Set up test pod environment"
-  # Define KUBECONFIG env variable
-  export KUBECONFIG="${LOCAL_KUBECONFIG}"
-
   if [[ ! $KYMA_UPGRADE_SOURCE ]]; then
     KYMA_UPGRADE_SOURCE="main"
   fi
@@ -304,7 +300,6 @@ function reconciler::export_shoot_cluster_kubeconfig() {
     }
 }
 EOF
-  cat "${shoot_kubeconfig}" > "${LOCAL_KUBECONFIG}"
   export KUBECONFIG="${shoot_kubeconfig}"
 }
 
