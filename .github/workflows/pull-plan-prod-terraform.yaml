@@ -24,12 +24,20 @@ jobs:
         id: wait_for_terraform
         uses: ahmadnassri/action-workflow-queue@v1
         
+      - name: Use variables
+        run: |
+            echo "repository variable : $GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL"
+            echo "variable from shell environment : $GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER"
+        env:
+            GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL: ${{ vars.GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL }}
+            GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+        
       - name: 'Authenticate to GCP'
         id: gcp_auth
         uses: google-github-actions/auth@v1
         with:
-          workload_identity_provider: ${{ vars.gh_com_kyma_project_gcp_workload_identity_federation_provider }}
-          service_account: ${{ vars.gcp_terraform_executor_service_account_email }}
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+          service_account: ${{ vars.GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL }}
           
       - name: 'Setup Terraform'
         id: setup_terraform
