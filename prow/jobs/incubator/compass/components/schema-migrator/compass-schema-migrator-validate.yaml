@@ -14,10 +14,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-kyma-development-artifacts-bucket: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
+        preset-kind-volume-mounts: "true"
       run_if_changed: '^components/schema-migrator/'
       skip_report: false
       decorate: true
@@ -33,15 +30,16 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "installation/scripts/prow/jobs/validate-compass-generic.sh"
+              - "/init.sh"
             args:
+              - "installation/scripts/prow/jobs/validate-compass-generic.sh"
               - "--component"
               - "schema-migrator"
               - "--command"
