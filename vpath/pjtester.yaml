@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      cli:
+        prNumber: 1711
+  prowJobs:
+    kyma-project:
+      cli:
+        - pjName: "pre-main-cli-e2e"
+prConfigs: #
+  kyma-project:
+    cli:
+      prNumber: 1711
