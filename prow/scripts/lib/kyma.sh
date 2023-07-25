@@ -137,7 +137,7 @@ function kyma::get_offset_minor_releases() {
     PATCH=$(echo "$base" | sed -e "s#$RE#\\3#")
 
     local index=0
-    minor_release_versions[$index]=$base
+    minor_release_versions[index]=$base
 
     # PREVIOUS_MINOR_VERSION_COUNT - Count of last Kyma2 minor versions to be upgraded from
     while [ $index -lt "$PREVIOUS_MINOR_VERSION_COUNT" ]; do
@@ -173,7 +173,7 @@ function kyma::get_offset_minor_releases() {
         index=$((index+1))
 
         # shellcheck disable=SC2034
-        minor_release_versions[$index]=$newVersion
+        minor_release_versions[index]=$newVersion
     done
 
     log::info "#### Valid minor versions to be tested:" "${minor_release_versions[@]}"

@@ -202,8 +202,9 @@ function testing::inject_testing_addons() {
 
 function removeTestingAddons() {
     result=$(executeKubectlWithRetries "kubectl delete clusteraddonsconfiguration ${TESTING_ADDONS_CFG_NAME}")
+    code=$?
     echo "${result}"
-    if [[ $? -eq 1 ]]; then
+    if [[ $code -eq 1 ]]; then
         return 1
     fi
     log::success "Testing addons removed"
@@ -221,7 +222,8 @@ function testing::remove_addons_if_necessary() {
   then
       log::info "- Removing ClusterAddonsConfiguration which provides the testing addons"
       testing::remove_testing_addons
-      if [[ $? -eq 1 ]]; then
+      local res=$?
+      if [[ $res -eq 1 ]]; then
         log::error "Failed to remove testing addons"
         exit 1
       fi
