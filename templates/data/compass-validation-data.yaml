@@ -4,8 +4,9 @@ templates:
       - to: ../../prow/jobs/incubator/compass/components/schema-migrator/compass-schema-migrator-validate.yaml
         localSets:
           jobConfig_default:
-            command: "installation/scripts/prow/jobs/validate-compass-generic.sh"
+            command: "/init.sh"
             args:
+              - "installation/scripts/prow/jobs/validate-compass-generic.sh"
               - "--component"
               - "schema-migrator"
               - "--command"
@@ -13,11 +14,8 @@ templates:
             request_memory: 100Mi
             request_cpu: 50m
             labels:
-              preset-kyma-guard-bot-github-token: "true"
+              preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-              preset-docker-push-repository-kyma: "true"
-              preset-kyma-development-artifacts-bucket: "true"
-              preset-sa-vm-kyma-integration: "true"
         jobConfigs:
           - repoName: "kyma-incubator/compass"
             jobs:
@@ -37,7 +35,7 @@ templates:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-                    - "image_buildpack-golang"
+                    - "image_e2e-dind-k3d"
                     - "extra_refs_test-infra"
                     - "unprivileged"
                     - "kyma_project_dir"
