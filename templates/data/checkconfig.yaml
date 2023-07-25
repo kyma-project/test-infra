@@ -1,4 +1,4 @@
-{{$exclude := list "template-repository"}}
+{{$exclude := list "template-repository" "reconciler"}}
 templates:
   - from: generic.tmpl
     render:
