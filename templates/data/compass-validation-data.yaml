@@ -16,6 +16,10 @@ templates:
             labels:
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
+              preset-kyma-guard-bot-github-token: "true"
+              preset-docker-push-repository-kyma: "true"
+              preset-kyma-development-artifacts-bucket: "true"
+              preset-sa-vm-kyma-integration: "true"
         jobConfigs:
           - repoName: "kyma-incubator/compass"
             jobs:

@@ -50,6 +50,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
-                    - "image_e2e-dind-k3d"
+                    - "image_buildpack-golang"
                   local:
                     - "jobConfig_default"
