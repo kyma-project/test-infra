@@ -1,8 +1,6 @@
 module-name: test-infra
 protecode:
     - aquasec/trivy:0.39.0
-    - development/gcp/workflows/secrets-leak-detector
-    - development/tools/cmd/dnscollector
     - docker.io/nginx:1.23.2-alpine
     - docker.io/zricethezav/gitleaks:v8.15.3
     - eu.gcr.io/kyma-project/incubator/milv:8649c2fb
@@ -21,50 +19,41 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/creategithubissue:v20230309-1d421c4f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20230712-f514770d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230615-186da159
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-e7d5039c
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-5905c114
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/movegcsbucket:v20230309-1d421c4f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/scanlogsforsecrets:v20230309-1d421c4f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/searchgithubissue:v20230309-1d421c4f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20230309-1d421c4f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230717-e09b0fee
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230717-e09b0fee
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230718-0d88cd1a
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230718-0d88cd1a
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230721-8ae5f7fd
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230721-8ae5f7fd
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230721-8ae5f7fd
     - europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230721-8ae5f7fd
-    - gcr.io/k8s-prow/analyze:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/branchprotector:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/commenter:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/crier:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/deck:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/gencred:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/generic-autobumper:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/ghproxy:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/hook:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/horologium:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/label_sync:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/prow-controller-manager:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/sinker:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/status-reconciler:v20230718-0a86ec6744
-    - gcr.io/k8s-prow/tide:v20230718-0a86ec6744
+    - gcr.io/k8s-prow/analyze:v20230725-371721ec95
+    - gcr.io/k8s-prow/branchprotector:v20230725-371721ec95
+    - gcr.io/k8s-prow/checkconfig:v20230725-371721ec95
+    - gcr.io/k8s-prow/commenter:v20230725-371721ec95
+    - gcr.io/k8s-prow/crier:v20230725-371721ec95
+    - gcr.io/k8s-prow/deck:v20230725-371721ec95
+    - gcr.io/k8s-prow/gencred:v20230725-371721ec95
+    - gcr.io/k8s-prow/generic-autobumper:v20230725-371721ec95
+    - gcr.io/k8s-prow/ghproxy:v20230725-371721ec95
+    - gcr.io/k8s-prow/hook:v20230725-371721ec95
+    - gcr.io/k8s-prow/horologium:v20230725-371721ec95
+    - gcr.io/k8s-prow/label_sync:v20230725-371721ec95
+    - gcr.io/k8s-prow/prow-controller-manager:v20230725-371721ec95
+    - gcr.io/k8s-prow/sinker:v20230725-371721ec95
+    - gcr.io/k8s-prow/status-reconciler:v20230725-371721ec95
+    - gcr.io/k8s-prow/tide:v20230725-371721ec95
     - grafana/grafana:7.5.17
     - k8s.gcr.io/gcsweb:v1.1.0
     - maven:3.8.6-eclipse-temurin-11
     - nginx:1
     - nginx:1.20-alpine
-    - opa/gatekeeper/constraint-templates
-    - opa/gatekeeper/deployments/gatekeeper
-    - opa/terraform/modules/gatekeeper
-    - projects/sap-kyma-prow/roles
     - prom/pushgateway:v1.5.1
-    - prow/cluster/resources/gatekeeper-constraints/prow
-    - prow/cluster/resources/gatekeeper-constraints/trusted
-    - prow/cluster/resources/gatekeeper-constraints/untrusted
-    - prow/cluster/resources/gatekeeper-constraints/workloads
     - quay.io/prometheus-operator/prometheus-operator:v0.61.1
 whitesource:
     language: golang-mod
