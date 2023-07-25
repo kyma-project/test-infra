@@ -1,15 +1,15 @@
 presubmits:
   kyma-project/telemetry-manager:
-    - name: pull-telemetry-manager-e2e-test-metrics-dev
+    - name: pull-telemetry-manager-e2e-test-tracing
       annotations:
-        description: "Pre-submit job to execute e2e metrics test for the development variant."
+        description: "Pre-submit job to execute e2e tracing test."
         owner: "huskies"
       optional: false
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-e2e-test-metrics-dev"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-e2e-test-tracing-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
       cluster: untrusted-workload
       decorate: true
@@ -18,7 +18,7 @@ presubmits:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd
             command: ["/init.sh"]
-            args: ["bash", "-c", "make e2e-test-metrics-dev"]
+            args: ["bash", "-c", "make e2e-test-tracing"]
             requests:
               memory: 4Gi
               cpu: 2

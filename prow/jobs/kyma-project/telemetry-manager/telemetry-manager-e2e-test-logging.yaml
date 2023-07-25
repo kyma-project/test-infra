@@ -1,15 +1,15 @@
 presubmits:
   kyma-project/telemetry-manager:
-    - name: pull-telemetry-manager-e2e-test-logging-dev
+    - name: pull-telemetry-manager-e2e-test-logging
       annotations:
-        description: "Pre-submit job to execute e2e logging test for the development variant."
+        description: "Pre-submit job to execute e2e logging test."
         owner: "huskies"
       optional: false
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-e2e-test-logging-dev"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-e2e-test-logging"
         prow.k8s.io/pubsub.topic: "prowjobs"
       cluster: untrusted-workload
       decorate: true
@@ -18,7 +18,7 @@ presubmits:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd
             command: ["/init.sh"]
-            args: ["bash", "-c", "make e2e-test-logging-dev"]
+            args: ["bash", "-c", "make e2e-test-logging"]
             requests:
               memory: 4Gi
               cpu: 2
