@@ -2,6 +2,7 @@ package release
 
 import (
 	"context"
+	"os"
 
 	"github.com/pkg/errors"
 )
@@ -35,7 +36,7 @@ func (c *creatorImpl) CreateNewRelease(ctx context.Context, relOpts *Options, ar
 	}
 
 	for _, artifact := range artifactNames {
-		if err = c.createReleaseArtifact(ctx, *release.ID, artifact, relOpts.Version); err != nil {
+		if err = c.createReleaseArtifact(ctx, *release.ID, artifact); err != nil {
 			return errors.Wrapf(err, "while creating release artifact: %s", artifact)
 		}
 	}
@@ -43,18 +44,19 @@ func (c *creatorImpl) CreateNewRelease(ctx context.Context, relOpts *Options, ar
 	return nil
 }
 
-func (c *creatorImpl) createReleaseArtifact(ctx context.Context, releaseID int64, artifactName, folderName string) error {
+func (c *creatorImpl) createReleaseArtifact(ctx context.Context, releaseID int64, artifactName string) error {
 
-	fullArtifactName := folderName + "/" + artifactName
-
-	artifactData, size, err := c.storage.ReadBucketObject(ctx, fullArtifactName)
+	components, err := os.Open("installation/resources/components.yaml")
 	if err != nil {
-		return errors.Wrapf(err, "while reading %s file", artifactName)
+		return errors.Wrapf(err, "while opening components.yaml file")
+	}
+	defer components.Close()
+	fi, err := components.Stat()
+	if err != nil {
+		return errors.Wrapf(err, "while getting components.yaml file info")
 	}
 
-	defer artifactData.Close()
-
-	_, err = c.github.UploadContent(ctx, releaseID, artifactName, artifactData, size)
+	_, err = c.github.UploadContent(ctx, releaseID, artifactName, components, fi.Size())
 	if err != nil {
 		return errors.Wrapf(err, "while uploading %s file", artifactName)
 	}
