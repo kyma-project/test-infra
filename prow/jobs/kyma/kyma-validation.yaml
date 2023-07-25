@@ -27,17 +27,20 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20230724-5c48a0f9"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/image-url-helper"
             args:
-              - "-c"
-              - "echo \"This tool validates if all charts use correct image definition format. \nCheck https://github.com/kyma-project/test-infra/blob/main/development/image-url-helper/README.md for details\" && /prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ check --excludes-list /home/prow/go/src/github.com/kyma-project/test-infra/development/image-url-helper/excludes.yaml && echo \"Validation finished\""
+              - "--resources-directory"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/resources/"
+              - "check"
+              - "--excludes-list"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-url-helper/excludes.yaml"
             resources:
               requests:
                 memory: 1.5Gi
@@ -66,17 +69,18 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20230724-5c48a0f9"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/image-url-helper"
             args:
-              - "-c"
-              - "echo \"This tool validates if all images defined in charts exist. \nCheck https://github.com/kyma-project/test-infra/blob/main/development/image-url-helper/README.md for details\" && /prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ missing && echo \"Validation finished\""
+              - "--resources-directory"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/resources/"
+              - "missing"
             resources:
               requests:
                 memory: 1.5Gi

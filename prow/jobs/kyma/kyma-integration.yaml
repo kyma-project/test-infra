@@ -699,23 +699,22 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230725-c5e3d104"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/gcscleaner"
             args:
-              - "-c"
-              - "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
+              - "-project=$(CLOUDSDK_CORE_PROJECT)"
+              - "-bucketNameRegexp='^.+-([a-z0-9]+$)'"
+              - "-excludedBuckets='kyma-prowjobs-secrets,kyma-prow-logs,kyma-prow-artifacts,kyma-development-artifacts,kyma-backup-restore,eu.artifacts.sap-kyma-prow.appspot.com,kyma-prow-access-storage-logs,kyma-prow-workloads-logs,eu.artifacts.sap-kyma-prow-workloads.appspot.com'"
+              - "-workerNumber=10"
+              - "-logLevel=info"
             resources:
               requests:
                 memory: 100Mi
@@ -737,23 +736,20 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20230725-c5e3d104"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/diskscollector"
             args:
-              - "-c"
-              - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='.*'"
+              - "-project=$(CLOUDSDK_CORE_PROJECT)"
+              - "-dryRun=false"
+              - "-diskNameRegex='.*'"
             resources:
               requests:
                 memory: 100Mi
@@ -775,23 +771,20 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20230725-c5e3d104"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/ipcleaner"
             args:
-              - "-c"
-              - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-exclude-name-regex='^nightly|nightly-(.*)|weekly|weekly-(.*)|nat-auto-ip'"
+              - "-project=$(CLOUDSDK_CORE_PROJECT)"
+              - "-dry-run=false"
+              - "-ip-exclude-name-regex='^nightly|nightly-(.*)|weekly|weekly-(.*)|nat-auto-ip'"
             resources:
               requests:
                 memory: 100Mi
@@ -813,23 +806,20 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20230725-c5e3d104"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/clusterscollector"
             args:
-              - "-c"
-              - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22,persist"
+              - "-project=$(CLOUDSDK_CORE_PROJECT)"
+              - "-dryRun=false"
+              - "-excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22,persist"
             resources:
               requests:
                 memory: 100Mi
@@ -851,23 +841,21 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20230725-c5e3d104"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/vmscollector"
             args:
-              - "-c"
-              - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*|gke-gke-release-.*' -jobLabelRegexp='kyma-gke-nightly|kyma-gke-nightly-.*|kyma-gke-weekly|kyma-gke-weekly-.*|post-rel.*-kyma-release-candidate' -dryRun=false"
+              - "-project=$(CLOUDSDK_CORE_PROJECT)"
+              - "-vmNameRegexp='gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*|gke-gke-release-.*'"
+              - "-jobLabelRegexp='kyma-gke-nightly|kyma-gke-nightly-.*|kyma-gke-weekly|kyma-gke-weekly-.*|post-rel.*-kyma-release-candidate'"
+              - "-dryRun=false"
             resources:
               requests:
                 memory: 100Mi
@@ -889,23 +877,19 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20230725-c5e3d104"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/orphanremover"
             args:
-              - "-c"
-              - "/prow-tools/orphanremover -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+              - "-project=$(CLOUDSDK_CORE_PROJECT)"
+              - "-dryRun=false"
             resources:
               requests:
                 memory: 100Mi
@@ -928,23 +912,22 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230725-c5e3d104"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/dnscollector"
             args:
-              - "-c"
-              - "/prow-tools/dnscollector -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"
+              - "-project=$(CLOUDSDK_CORE_PROJECT)"
+              - "-dnsZone=$(CLOUDSDK_DNS_ZONE_NAME)"
+              - "-ageInHours=2"
+              - "-regions=$(CLOUDSDK_COMPUTE_REGION)"
+              - "-dryRun=false"
             resources:
               requests:
                 memory: 100Mi
@@ -965,23 +948,20 @@ periodics: # runs on schedule
       skip_report: false
       decorate: true
       cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcrcleaner:v20230725-c5e3d104"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/gcrcleaner"
             args:
-              - "-c"
-              - "/prow-tools/gcrcleaner --repository=eu.gcr.io/sap-kyma-prow-workloads --age-in-hours=168 --dry-run=false"
+              - "--repository=eu.gcr.io/sap-kyma-prow-workloads"
+              - "--age-in-hours=168"
+              - "--dry-run=false"
             resources:
               requests:
                 memory: 100Mi
