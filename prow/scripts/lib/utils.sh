@@ -875,7 +875,7 @@ function utils::get_kyma_fast_integration_dir {
   do
     case "$arg" in
         -d)
-          if [ ! -z "$2" ]; then
+          if [ -n "$2" ]; then
             kymaDirectory="$2"
           fi
           shift 2
