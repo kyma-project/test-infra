@@ -66,3 +66,17 @@ resource "kubernetes_service_account" "untrusted_workload_terraform_executor" {
   }
   automount_service_account_token = true
 }
+
+resource "github_actions_variable" "gcp_terraform_executor_service_account_email" {
+  provider      = github.kyma_project
+  repository    = "test-infra"
+  variable_name = "gcp_terraform_executor_service_account_email"
+  value         = google_service_account.terraform_executor.email
+}
+
+resource "github_actions_variable" "gh_com_kyma_project_gcp_workload_identity_federation_provider" {
+  provider      = github.kyma_incubator
+  repository    = "test-infra"
+  variable_name = "gh_com_kyma_project_gcp_workload_identity_federation_provider"
+  value         = module.gh_com_kyma_project_workload_identity_federation.provider_name
+}
