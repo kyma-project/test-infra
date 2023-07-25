@@ -8,7 +8,6 @@ The folder contains documents that provide an insight into Prow configuration, d
 
 Read the documents to learn how to:
 
-- [Configure Prow on a production cluster](./production-cluster-configuration.md) based on the preconfigured Google Cloud Storage (GCS) resources.
 - [Create a service account](./prow-secrets-management.md) and store its encrypted key in a GCS bucket.
 - [Install and manage monitoring](./prow-monitoring.md) on a Prow cluster.
 - [Create, modify, and remove component jobs using templates](./manage-component-jobs-with-templates.md) for the Prow pipeline.

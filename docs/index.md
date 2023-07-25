@@ -170,8 +170,6 @@
 
 [Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
 
-[Cluster](/prow/scripts/README.md) - The folder contains scripts involved in integration tests.
-
 [Cluster Integration Job](/prow/scripts/cluster-integration/README.md) - The folder contains the source code for the integration job that installs and tests Kyma on a temporary cluster provisioned on Google Kubernetes Engine (GKE).
 
 [Cluster](/prow/scripts/lib/README.md) - The folder contains helper scripts with commonly used functions.
