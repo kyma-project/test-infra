@@ -20,6 +20,8 @@ templates:
                     preset-bot-github-sap-token: "true"
                     preset-bot-github-token: "true"
                 inheritedConfigs:
+                  local:
+                    - "default"
                   global:
                     - "jobConfig_default"
                     - "image_prow-tools"
