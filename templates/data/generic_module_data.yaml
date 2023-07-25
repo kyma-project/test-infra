@@ -471,7 +471,6 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - image-builder-buildkit
-                    - unprivileged
                   local:
                     - main_branches
                     - job_build_volumes
@@ -501,7 +500,6 @@ templates:
                   global:
                     - jobConfig_postsubmit
                     - image-builder-buildkit
-                    - unprivileged
                   local:
                     - main_branches
                     - job_build_volumes
