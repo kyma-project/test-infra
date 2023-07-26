@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/keda-manager:
     - name: pre-keda-manager-operator-lint
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "executes the 'golangci-lint lint' command on keda-manager before any pull request."
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -40,7 +39,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-keda-module-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "keda module build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -58,7 +56,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -85,7 +83,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-keda-manager-operator-tests
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "keda operator tests"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -105,12 +102,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "bash"
             args:
@@ -122,7 +119,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-keda-manager-operator-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "keda operator build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -174,7 +170,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-keda-manager-verify
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs keda manager verity job on k3d VM"
         owner: "otters"
         pipeline.installer: "kyma deploy"
@@ -192,7 +187,6 @@ presubmits: # runs on PRs
       optional: false
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/keda-manager
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -201,11 +195,10 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f"
             securityContext:
               privileged: true
               seccompProfile:
@@ -227,7 +220,6 @@ postsubmits: # runs on main
   kyma-project/keda-manager:
     - name: release-keda-manager-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Job to build keda module for a release."
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -283,7 +275,6 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: release-keda-manager-module-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Job to build keda module for a release."
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -301,7 +292,7 @@ postsubmits: # runs on main
         - ^\w+\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -327,7 +318,6 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-keda-module-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "keda module build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -345,7 +335,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -370,7 +360,6 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-keda-manager-operator-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "keda module build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -424,7 +413,6 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-keda-manager-verify
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs keda manager verity job on k3d VM"
         owner: "otters"
         pipeline.installer: "kyma deploy"
@@ -442,7 +430,6 @@ postsubmits: # runs on main
       optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/keda-manager
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -451,11 +438,10 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f"
             securityContext:
               privileged: true
               seccompProfile:
@@ -474,7 +460,6 @@ postsubmits: # runs on main
                 cpu: 3
     - name: post-main-keda-manager-upgrade-latest-to-main
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "upgrade keda manager test"
         owner: "otters"
         pipeline.installer: "kyma deploy"
@@ -492,7 +477,6 @@ postsubmits: # runs on main
       optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/keda-manager
       cluster: trusted-workload
       max_concurrency: 10
       branches:
@@ -501,11 +485,10 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f"
             securityContext:
               privileged: true
               seccompProfile:
@@ -526,7 +509,6 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: keda-operator-nightly-periodic
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Keda nightly verify"
         owner: "otters"
         pipeline.installer: "kyma deploy"
@@ -545,20 +527,17 @@ periodics: # runs on schedule
       cron: "0 6 * * 1-5"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/keda-manager
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: keda-manager
-          path_alias: github.com/kyma-project/keda-manager
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f"
             securityContext:
               privileged: true
               seccompProfile:

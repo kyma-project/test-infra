@@ -7,7 +7,6 @@ templates:
             securityContext:
               privileged: false
           vm_job_make:
-            path_alias: github.com/kyma-project/telemetry-manager
             command: "bash"
             env:
               JOB_REPO_NAME: "telemetry-manager"

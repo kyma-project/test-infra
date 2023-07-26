@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-incubator/reconciler:
     - name: pre-main-reconciler-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "test reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -20,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -37,7 +36,6 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pre-main-reconciler-lint
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "lint reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -67,53 +65,8 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
-    - name: pre-main-reconciler-integration-k3d
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "int test reconciler"
-        owner: "jellyfish"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-reconciler-integration-k3d"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^(go.mod$|go.sum$)|((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
-            env:
-              - name: GO11MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: pre-main-reconciler-publish-pr-cli
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "pre publish reconciler"
         owner: "jellyfish"
         pipeline.installer: "reconciler"
@@ -136,15 +89,13 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: cli
-          path_alias: github.com/kyma-project/cli
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -156,167 +107,8 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: pre-main-reconciler-cli-integration-kyma-latest-k3d
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "int test reconciler"
-        owner: "jellyfish"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-reconciler-cli-integration-kyma-latest-k3d"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
-            env:
-              - name: EXECUTION_PROFILE
-                value: "evaluation"
-              - name: GO11MODULE
-                value: "on"
-              - name: KYMA_TEST_SOURCE
-                value: "latest-release"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-    - name: pre-main-reconciler-cli-integration-kyma-main-k3d
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "int test reconciler"
-        owner: "jellyfish"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-reconciler-cli-integration-kyma-main-k3d"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
-            env:
-              - name: EXECUTION_PROFILE
-                value: "evaluation"
-              - name: GO11MODULE
-                value: "on"
-              - name: KYMA_TEST_SOURCE
-                value: "main"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-    - name: pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "upgrade test reconciler"
-        owner: "jellyfish"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-reconciler-cli-kyma-prev-to-last-release-upgrade-k3d"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-test-reconciler-with-cli-k3d.sh"
-            env:
-              - name: EXECUTION_PROFILE
-                value: "evaluation"
-              - name: GO11MODULE
-                value: "on"
-              - name: KYMA_TEST_SOURCE
-                value: "previous-release"
-              - name: KYMA_UPGRADE_SOURCE
-                value: "latest-release"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: pre-latest-istio-reconciler-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
@@ -339,15 +131,13 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -369,7 +159,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-istio-reconciler-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
@@ -392,15 +181,13 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -424,7 +211,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-ory-reconciler-eval-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs ory reconciler integration tests with evaluation profile on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
@@ -447,15 +233,13 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -479,7 +263,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-ory-reconciler-prod-integration-gcp
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs ory reconciler integration tests with production profile on Gardener GCP cluster"
         owner: "goat"
         pipeline.platform: "gardener_gcp"
@@ -503,15 +286,13 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -539,100 +320,8 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: pre-dev-reconciler-integration-k3d
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "int test reconciler"
-        owner: "jellyfish"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-dev-reconciler-integration-k3d"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-build-pr: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-guard-bot-github-token: "true"
-        preset-sa-vm-kyma-integration: "true"
-      run_if_changed: '^((cmd\S+|configs\S+|internal\S+|pkg\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^develop$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-reconciler-k3d.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
-            env:
-              - name: GO11MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-    - name: pre-dev-kyma-incubator-reconciler
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "build reconciler"
-        owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-dev-kyma-incubator-reconciler"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-kyma-push-images: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^develop$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            securityContext:
-              privileged: true
-              seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
-            env:
-              - name: GO11MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: pre-main-kyma-incubator-mothership-reconciler
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build mothership reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -683,7 +372,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-kyma-incubator-component-reconciler
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build component reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -734,7 +422,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pre-main-reconciler-validate-dockerfiles
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "hadolint reconciler"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -753,11 +440,10 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -777,7 +463,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-reconciler-validate-go-mod
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "validate gomod reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -797,7 +482,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -821,7 +505,6 @@ postsubmits: # runs on main
   kyma-incubator/reconciler:
     - name: post-latest-istio-reconciler-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
@@ -844,15 +527,13 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -874,7 +555,6 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-main-istio-reconciler-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
         pipeline.platform: "k3d"
@@ -897,15 +577,13 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -929,7 +607,6 @@ postsubmits: # runs on main
                 cpu: 2
     - name: post-main-kyma-incubator-mothership-reconciler
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"
@@ -982,7 +659,6 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-main-kyma-incubator-component-reconciler
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build component reconciler"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"
@@ -1033,56 +709,10 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-dev-kyma-incubator-reconciler
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "build reconciler"
-        owner: "jellyfish"
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-dev-kyma-incubator-reconciler"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-incubator: "true"
-        preset-kyma-kms-sign-key: "true"
-        preset-sa-kyma-push-images: "true"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^develop$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            securityContext:
-              privileged: true
-              seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
-            env:
-              - name: GO11MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
   
 periodics: # runs on schedule
     - name: reconciler-control-plane-image-bump
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Reconciler image bump in control-plane"
         owner: "jellyfish"
         pipeline.trigger: "periodic"
@@ -1103,22 +733,19 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: control-plane
-          path_alias: github.com/kyma-project/control-plane
           base_ref: main
         - org: kyma-incubator
           repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1134,7 +761,6 @@ periodics: # runs on schedule
                 cpu: 2
     - name: nightly-main-reconciler
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Creates and installs reconciler from main every night."
         owner: "jellyfish"
         pipeline.clusterprovisioning: "reconciler"
@@ -1162,11 +788,9 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: control-plane
-          path_alias: github.com/kyma-project/control-plane
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -1198,7 +822,6 @@ periodics: # runs on schedule
                 cpu: 2
     - name: nightly-main-reconciler-e2e
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Executes e2e test periodically on nightly cluster for reconciler."
         owner: "jellyfish"
         pipeline.installer: "reconciler"
@@ -1225,15 +848,12 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: control-plane
-          path_alias: github.com/kyma-project/control-plane
           base_ref: main
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:

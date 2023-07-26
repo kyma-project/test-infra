@@ -7,7 +7,6 @@ presubmits: # runs on PRs
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-manager-lint"
@@ -16,14 +15,13 @@ presubmits: # runs on PRs
       run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/compass-manager
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230327-2887f8b7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230615-186da159"
             command:
               - "/bin/sh"
             args:

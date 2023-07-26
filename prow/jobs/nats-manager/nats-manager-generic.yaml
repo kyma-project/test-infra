@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/nats-manager:
     - name: pull-nats-manager-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build nats manager image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -54,7 +53,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-nats-manager-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "ran nats manager unit tests"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -69,7 +67,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -86,7 +84,6 @@ presubmits: # runs on PRs
                 cpu: 100m
     - name: pull-nats-module-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "NATS module build pre-main job"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -104,7 +101,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -134,7 +131,6 @@ postsubmits: # runs on main
   kyma-project/nats-manager:
     - name: post-nats-manager-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build nats manager image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
@@ -186,7 +182,6 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-nats-module-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "NATS module build post-main job"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"
@@ -204,7 +199,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:

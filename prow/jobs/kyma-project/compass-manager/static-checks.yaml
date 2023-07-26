@@ -7,7 +7,6 @@ presubmits: # runs on PRs
         pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-compass-manager-trivy"
@@ -15,7 +14,6 @@ presubmits: # runs on PRs
       run_if_changed: ".+"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:

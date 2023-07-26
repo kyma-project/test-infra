@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-gardener-gcp-eventing-upgrade
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Execute a kyma upgrade with special focus on the eventing component"
         owner: "skydivingtunas"
         pipeline.clusterprovisioning: "kyma cli"
@@ -29,7 +28,6 @@ presubmits: # runs on PRs
       decoration_config:
         grace_period: 600000000000
         timeout: 14400000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -38,7 +36,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -83,7 +80,6 @@ presubmits: # runs on PRs
               secretName: kyma-tunas-prow-event-mesh
     - name: pre-main-kyma-gardener-gcp-eventing
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Execute fast integration job with focus on eventing on a gardener cluster"
         owner: "skydivingtunas"
         pipeline.clusterprovisioning: "kyma cli"
@@ -107,7 +103,6 @@ presubmits: # runs on PRs
       decoration_config:
         grace_period: 600000000000
         timeout: 14400000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -116,7 +111,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -155,7 +149,6 @@ presubmits: # runs on PRs
               secretName: kyma-tunas-prow-event-mesh
     - name: pre-main-kyma-gardener-gcp-eventing-with-auth-manager
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Execute fast integration job with focus on eventing on a gardener cluster"
         owner: "skydivingtunas"
         pipeline.clusterprovisioning: "kyma cli"
@@ -174,13 +167,11 @@ presubmits: # runs on PRs
         preset-kyma-cli-stable: "true"
         preset-kyma-eventing-auth-ias-creds: "true"
       run_if_changed: '^((tests/fast-integration\S+|resources/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
-      optional: true
       skip_report: false
       decorate: true
       decoration_config:
         grace_period: 600000000000
         timeout: 14400000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -189,7 +180,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:

@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-smoke-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Compass smoke test"
         owner: "compass"
         pipeline.trigger: "pr-submit"
@@ -24,7 +23,6 @@ presubmits: # runs on PRs
       run_if_changed: '^(chart|installation)/'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-incubator/compass
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -34,11 +32,10 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f"
             securityContext:
               privileged: true
               seccompProfile:

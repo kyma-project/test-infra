@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/telemetry-manager:
     - name: pull-telemetry-manager-lint
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs linting on telemetry-manager repo"
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -37,7 +36,6 @@ presubmits: # runs on PRs
                 cpu: 200m
     - name: pull-telemetry-manager-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs unit tests telemetry-manager repo"
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -52,7 +50,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -69,174 +67,8 @@ presubmits: # runs on PRs
                 cpu: 200m
   
   kyma-project/kyma:
-    - name: pull-central-application-connectivity-validator-unit-test
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "It unit tests the component"
-        owner: "framefrog"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-central-application-connectivity-validator-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/central-application-connectivity-validator/.*\.go$'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/central-application-connectivity-validator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
-    - name: pull-central-application-gateway-lint
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "Linting the code, error checking"
-        owner: "framefrog"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-central-application-gateway-lint"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/central-application-gateway/(.*\.go$|.golangcilint.yaml)'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/central-application-gateway && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-    - name: pull-central-application-gateway-unit-test
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "It unit tests the central-application-gateway source code"
-        owner: "framefrog"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-central-application-gateway-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/central-application-gateway/.*\.go$'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/central-application-gateway && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
-    - name: pull-compass-runtime-agent-lint
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "Linting the code, error checking"
-        owner: "framefrog"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-compass-runtime-agent-lint"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/compass-runtime-agent/(.*\.go$|.golangcilint.yaml)'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/compass-runtime-agent && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
-    - name: pull-compass-runtime-agent-unit-test
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "It tests the component source code"
-        owner: "framefrog"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-compass-runtime-agent-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/compass-runtime-agent/.*\.go$'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "cd components/compass-runtime-agent && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
     - name: pull-function-controller-lint
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "function controller linting job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -269,7 +101,6 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-function-controller-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "run unit tests for function controller"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -284,7 +115,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -303,7 +134,6 @@ presubmits: # runs on PRs
   kyma-project/directory-size-exporter:
     - name: pull-directory-size-exporter-lint
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs linting on the repo"
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -335,7 +165,6 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-directory-size-exporter-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs unit tests on the repo"
         owner: "huskies"
         pipeline.trigger: "pr-submit"
@@ -350,7 +179,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:

@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/eventing-auth-manager:
     - name: pull-eventing-auth-manager-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build the eventing-auth-manager image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -54,7 +53,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-eventing-auth-manager-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "run unit tests for eventing auth manager"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -70,7 +68,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -80,7 +78,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "make test"
             resources:
               requests:
                 memory: 1Gi
@@ -90,7 +88,6 @@ postsubmits: # runs on main
   kyma-project/eventing-auth-manager:
     - name: post-eventing-auth-manager-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build the eventing-auth-manager image"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"

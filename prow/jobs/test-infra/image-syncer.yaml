@@ -3,45 +3,8 @@
 
 presubmits: # runs on PRs
   kyma-project/test-infra:
-    - name: pre-main-test-infra-image-syncer-validate
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "Validate sync images from external sources to Kyma owned registry"
-        owner: "neighbors"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-test-infra-image-syncer-validate"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(go.mod|go.sum|development/image-syncer)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "make"
-            args:
-              - "-C"
-              - "development/image-syncer"
-              - "validate"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: pre-main-test-infra-image-syncer-dry-run
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Dry-run of sync images from external sources to Kyma owned registry"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -49,8 +12,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-image-syncer-dry-run"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository: "true"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^(development/image-syncer/external-images.yaml)'
       skip_report: false
@@ -62,17 +23,19 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230726-19a09015"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/image-syncer"
             args:
-              - "-c"
-              - "make -C development/image-syncer dry-run"
+              - "--dry-run"
+              - "--debug"
+              - "--images-file=development/image-syncer/external-images.yaml"
+              - "--target-repo-auth-key=$(GOOGLE_APPLICATION_CREDENTIALS)"
             resources:
               requests:
                 memory: 3Gi
@@ -82,7 +45,6 @@ postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-main-test-infra-image-syncer-run
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Sync images from external sources to Kyma owned registry"
         owner: "neighbors"
         pipeline.trigger: "pr-merge"
@@ -102,17 +64,17 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230726-19a09015"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/image-syncer"
             args:
-              - "-c"
-              - "make -C development/image-syncer run"
+              - "--images-file=development/image-syncer/external-images.yaml"
+              - "--target-repo-auth-key=$(GOOGLE_APPLICATION_CREDENTIALS)"
             resources:
               requests:
                 memory: 3Gi

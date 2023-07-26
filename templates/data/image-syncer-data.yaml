@@ -6,43 +6,25 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  name: "pre-main-test-infra-image-syncer-validate"
-                  annotations:
-                    owner: neighbors
-                    description: "Validate sync images from external sources to Kyma owned registry"
-                  securityContext:
-                    privileged: "false"
-                  run_if_changed: "^(go.mod|go.sum|development/image-syncer)"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "development/image-syncer"
-                    - "validate"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_presubmit"
-              - jobConfig:
                   name: "pre-main-test-infra-image-syncer-dry-run"
                   annotations:
                     owner: neighbors
                     description: "Dry-run of sync images from external sources to Kyma owned registry"
                   labels:
-                    preset-docker-push-repository: "true"
                     preset-sa-kyma-push-images: "true"
-                    preset-dind-enabled: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
-                  command: "bash"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230726-19a09015
+                  command: "/ko-app/image-syncer"
                   args:
-                    - "-c"
-                    - "make -C development/image-syncer dry-run"
+                    - --dry-run
+                    - --debug
+                    - --images-file=development/image-syncer/external-images.yaml
+                    - --target-repo-auth-key=$(GOOGLE_APPLICATION_CREDENTIALS)
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
                     - "jobConfig_presubmit"
-                    - "privileged"
+                    - "unprivileged"
               - jobConfig:
                   name: "post-main-test-infra-image-syncer-run"
                   annotations:
@@ -52,12 +34,12 @@ templates:
                   labels:
                     preset-sa-kyma-push-images: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
-                  command: "bash"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230726-19a09015
+                  command: "/ko-app/image-syncer"
                   args:
-                    - "-c"
-                    - "make -C development/image-syncer run"
+                    - --images-file=development/image-syncer/external-images.yaml
+                    - --target-repo-auth-key=$(GOOGLE_APPLICATION_CREDENTIALS)
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_buildpack-golang"
                     - "jobConfig_postsubmit"

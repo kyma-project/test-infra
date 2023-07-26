@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/cli:
     - name: pre-kyma-cli
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint + Go test pre-PR + Build CLI pre-PR"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -23,7 +22,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -39,7 +38,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-cli-lint
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -71,7 +69,6 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-cli-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go test"
         owner: "jellyfish"
         pipeline.trigger: "pr-submit"
@@ -86,7 +83,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -106,7 +103,6 @@ postsubmits: # runs on main
   kyma-project/cli:
     - name: post-kyma-cli
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint + Go test post-PR + Build CLI post-PR"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"
@@ -124,7 +120,7 @@ postsubmits: # runs on main
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -140,7 +136,6 @@ postsubmits: # runs on main
                 cpu: 2
     - name: rel-kyma-cli
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Go lint + Go test pre-rel + Build CLI pre-rel"
         owner: "jellyfish"
         pipeline.trigger: "pr-merge"
@@ -161,7 +156,7 @@ postsubmits: # runs on main
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -171,62 +166,6 @@ postsubmits: # runs on main
               - "make"
             args:
               - "ci-release"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-    - name: unstable-cli
-      annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
-        description: "Bump reconciler version used by CLI and publish the unstable CLI binaries"
-        owner: "jellyfish"
-        pipeline.clusterprovisioning: "reconciler"
-        pipeline.installer: "reconciler"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-merge"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "unstable-cli"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-bot-github-token: "true"
-        preset-docker-push-repository-incubator: "true"
-        preset-gc-project-env: "true"
-        preset-kyma-cli-unstable: "true"
-        preset-sa-vm-kyma-integration: "true"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
-          base_ref: main
-        - org: kyma-incubator
-          repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
-      reporter_config:
-        slack:
-          channel: jellyfish-notifications
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
             resources:
               requests:
                 memory: 3Gi

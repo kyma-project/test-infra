@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-validate-image-definitions
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "validates if all charts use correct image definition format"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -25,28 +24,29 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20230726-19a09015"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/image-url-helper"
             args:
-              - "-c"
-              - "echo \"This tool validates if all charts use correct image definition format. \nCheck https://github.com/kyma-project/test-infra/blob/main/development/image-url-helper/README.md for details\" && /prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ check --excludes-list /home/prow/go/src/github.com/kyma-project/test-infra/development/image-url-helper/excludes.yaml && echo \"Validation finished\""
+              - "--resources-directory"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/resources/"
+              - "check"
+              - "--excludes-list"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-url-helper/excludes.yaml"
             resources:
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-main-kyma-validate-image-existence
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "his tool validates if all images defined in charts exist"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -66,28 +66,27 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20230726-19a09015"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "/ko-app/image-url-helper"
             args:
-              - "-c"
-              - "echo \"This tool validates if all images defined in charts exist. \nCheck https://github.com/kyma-project/test-infra/blob/main/development/image-url-helper/README.md for details\" && /prow-tools/image-url-helper --resources-directory /home/prow/go/src/github.com/kyma-project/kyma/resources/ missing && echo \"Validation finished\""
+              - "--resources-directory"
+              - "/home/prow/go/src/github.com/kyma-project/kyma/resources/"
+              - "missing"
             resources:
               requests:
                 memory: 1.5Gi
                 cpu: 0.8
     - name: pre-main-kyma-validate-dockerfiles
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate Dockerfiles, run hadolint."
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -105,7 +104,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:

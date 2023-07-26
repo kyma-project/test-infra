@@ -4,7 +4,6 @@
 periodics: # runs on schedule
     - name: kyma-integration-evaluation-gardener-azure
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Evaluation profile for Kyma Azure Gardener integration job."
         owner: "huskies"
         pipeline.clusterprovisioning: "kyma cli"
@@ -36,20 +35,16 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 7200000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-incubator
           repo: local-kyma
-          path_alias: github.com/kyma-incubator/local-kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -83,7 +78,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: kyma-integration-production-gardener-azure
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Production profile for Kyma Azure Gardener integration job."
         owner: "huskies"
         pipeline.clusterprovisioning: "kyma cli"
@@ -115,20 +109,16 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 7200000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-incubator
           repo: local-kyma
-          path_alias: github.com/kyma-incubator/local-kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -162,7 +152,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: kyma-weekly-gardener-gcp-busola-kyma
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "set up nkyma cluster"
         owner: "hasselhoff"
         pipeline.clusterprovisioning: "kubectl shootspec"
@@ -187,20 +176,16 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 7200000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
           repo: busola
-          path_alias: github.com/kyma-project/busola
           base_ref: main
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -225,7 +210,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Azure Kyma 2.0 to main branch."
         owner: "jellyfish"
         pipeline.clusterprovisioning: "kyma cli"
@@ -256,16 +240,13 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 7200000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -297,7 +278,6 @@ periodics: # runs on schedule
                 cpu: 400m
     - name: kyma-upgrade-gardener-kyma2-minor-versions
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Azure Kyma 2 previous minor versions."
         owner: "jellyfish"
         pipeline.clusterprovisioning: "kyma cli"
@@ -328,16 +308,13 @@ periodics: # runs on schedule
       decoration_config:
         grace_period: 600000000000
         timeout: 7200000000000
-      path_alias: github.com/kyma-project/kyma
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:

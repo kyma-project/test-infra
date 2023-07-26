@@ -4,7 +4,6 @@
 periodics: # runs on schedule
     - name: kyma-gardener-cleanup
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Periodic cleanup of Gardener clusters"
         owner: "neighbors"
         pipeline.trigger: "periodic"
@@ -24,7 +23,6 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:

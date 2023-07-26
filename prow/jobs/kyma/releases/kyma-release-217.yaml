@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-rel217-kyma-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "k3d int test"
         owner: "neighbors"
         pipeline.clusterprovisioning: "k3d"
@@ -31,7 +30,6 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.17
       spec:
         containers:
@@ -52,7 +50,6 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-rel217-kyma-integration-k3d
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma integration job on k3d."
         owner: "huskies,goat"
         pipeline.clusterprovisioning: "k3d"
@@ -80,7 +77,6 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.17
       reporter_config:
         slack:
@@ -101,7 +97,6 @@ postsubmits: # runs on main
                 cpu: 50m
     - name: post-rel217-kyma-release-candidate
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Release candidate job for Kyma 2.17."
         owner: "neighbors"
         pipeline.trigger: "pr-merge"
@@ -135,7 +130,6 @@ postsubmits: # runs on main
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.17
       reporter_config:
         slack:
@@ -180,7 +174,6 @@ postsubmits: # runs on main
 periodics: # runs on schedule
     - name: kyma-gke-nightly-rel217
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Kyma GKE nightly build (release-2.17)"
         owner: "neighbors"
         pipeline.clusterprovisioning: "gcloud cli"
@@ -213,16 +206,13 @@ periodics: # runs on schedule
       cron: "0 3 * * 1-5"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: release-2.17
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: release-2.17
       reporter_config:
         slack:

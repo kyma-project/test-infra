@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-validate-dockerfiles
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate Dockerfiles"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -16,7 +15,6 @@ presubmits: # runs on PRs
       run_if_changed: '.*Dockerfile$'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/control-plane
       cluster: untrusted-workload
       max_concurrency: 1
       branches:
@@ -25,11 +23,10 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:

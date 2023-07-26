@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-check-users-map
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Check pull request authors are present in users map file"
         owner: "neighbors"
         pipeline.trigger: "pr-submit"
@@ -24,15 +23,10 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
         serviceAccountName: sa-prowjob-gcp-logging-client
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -40,7 +34,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "usersmapchecker"
+              - "/ko-app/usersmapchecker"
             resources:
               requests:
                 memory: 3Gi

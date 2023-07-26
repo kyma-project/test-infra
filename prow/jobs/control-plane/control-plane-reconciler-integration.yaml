@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-main-control-plane-reconciler-e2e
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "control-plane reconciler e2e test"
         owner: "jellyfish"
         pipeline.platform: "gardener_gcp"
@@ -29,15 +28,12 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-incubator
           repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
@@ -64,7 +60,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pre-main-control-plane-reconciler-e2e-latest-release
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "control-plane reconciler e2e test"
         owner: "jellyfish"
         pipeline.platform: "gardener_gcp"
@@ -89,15 +84,12 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-incubator
           repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:

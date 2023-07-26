@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/warden:
     - name: pull-admission-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Warden admission build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -54,7 +53,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-operator-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Warden operator build job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -103,7 +101,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-warden-lint
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "executes the 'golangci-lint lint' command before any pull request."
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -138,7 +135,6 @@ presubmits: # runs on PRs
                 cpu: 2
     - name: pull-warden-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Warden unit test job"
         owner: "otters"
         pipeline.trigger: "pr-submit"
@@ -153,7 +149,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -173,7 +169,6 @@ postsubmits: # runs on main
   kyma-project/warden:
     - name: post-admission-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Warden admission build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"
@@ -223,7 +218,6 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-operator-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Warden operator build job"
         owner: "otters"
         pipeline.trigger: "pr-merge"

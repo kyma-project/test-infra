@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-main-compass-gke-benchmark
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Validate performance of the PR"
         owner: "compass"
         pipeline.trigger: "pr-submit"
@@ -30,7 +29,6 @@ presubmits: # runs on PRs
       optional: true
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-incubator/compass
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
@@ -39,11 +37,10 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:

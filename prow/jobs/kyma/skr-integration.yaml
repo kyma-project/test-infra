@@ -4,7 +4,6 @@
 periodics: # runs on schedule
     - name: skr-azure-integration-dev
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "skr integration test azure"
         owner: "gopher"
         pipeline.clusterprovisioning: "keb"
@@ -25,16 +24,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -60,7 +56,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: skr-azure-lite-integration-dev
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "skr integration test azure"
         owner: "gopher"
         pipeline.clusterprovisioning: "keb"
@@ -82,16 +77,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -117,7 +109,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: skr-aws-integration-dev
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "skr integration test aws"
         owner: "gopher"
         pipeline.clusterprovisioning: "keb"
@@ -139,16 +130,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -174,7 +162,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: skr-trial-integration-dev
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "skr integration test trial"
         owner: "gopher"
         pipeline.clusterprovisioning: "keb"
@@ -196,16 +183,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -231,7 +215,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: skr-free-aws-integration-dev
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "skr integration test free"
         owner: "gopher"
         pipeline.clusterprovisioning: "keb"
@@ -253,16 +236,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
@@ -290,7 +270,6 @@ periodics: # runs on schedule
                 cpu: 50m
     - name: skr-preview-dev
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "skr integration test preview"
         owner: "gopher"
         pipeline.clusterprovisioning: "keb"
@@ -311,16 +290,13 @@ periodics: # runs on schedule
       cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma-environment-broker
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
           repo: kyma-environment-broker
-          path_alias: github.com/kyma-project/kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:

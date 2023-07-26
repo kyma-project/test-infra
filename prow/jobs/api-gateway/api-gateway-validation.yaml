@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/api-gateway:
     - name: pull-api-gateway-lint
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs api-gateway linting"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -38,7 +37,6 @@ presubmits: # runs on PRs
                 cpu: 500m
     - name: pull-api-gateway-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "runs api-gateway unit tests"
         owner: "goat"
         pipeline.trigger: "pr-submit"
@@ -52,12 +50,11 @@ presubmits: # runs on PRs
       optional: false
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/api-gateway
       cluster: untrusted-workload
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:

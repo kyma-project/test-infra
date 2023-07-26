@@ -69,6 +69,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
+                    - unprivileged
               - jobConfig:
                   run_if_changed: "^listener/(go.mod|go.sum)$|^listener/*/(.*.go|Makefile|.*.sh)"
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
@@ -104,6 +105,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "build_labels" # default labels
+                    - unprivileged
               - jobConfig:
                   name: pull-build-skr
                   annotations:

@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-kyma-common
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build the image used in Application Connector components for logging purposes"
         owner: "framefrog"
         pipeline.trigger: "pr-submit"
@@ -23,7 +22,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -44,7 +43,6 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-main-kyma-common
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "Build the image used in Application Connector components for logging purposes"
         owner: "framefrog"
         pipeline.trigger: "pr-merge"
@@ -63,7 +61,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:

@@ -5,7 +5,6 @@ presubmits: # runs on PRs
   kyma-project/eventing-tools:
     - name: pull-eventing-tools-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build the eventing tools (eventing test suite)"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -54,7 +53,6 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-eventing-tools-unit-test
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "run unit tests for eventing tools"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-submit"
@@ -69,7 +67,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -89,7 +87,6 @@ postsubmits: # runs on main
   kyma-project/eventing-tools:
     - name: post-eventing-tools-build
       annotations:
-        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         description: "build the eventing tools (eventing test suite)"
         owner: "skydivingtunas"
         pipeline.trigger: "pr-merge"

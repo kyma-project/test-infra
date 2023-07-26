@@ -42,8 +42,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            path_alias: github.com/kyma-project/keda-manager
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -69,7 +68,6 @@ templates:
                       - org: kyma-project
                         repo: keda-manager
                         base_ref: main
-                        path_alias: github.com/kyma-project/keda-manager
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -210,6 +208,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - build_labels # default labels
+                    - unprivileged
               - jobConfig:
                   name: pre-keda-manager-operator-build
                   annotations:
@@ -347,8 +346,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            path_alias: github.com/kyma-project/serverless-manager
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230718-0d88cd1a
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -374,7 +372,6 @@ templates:
                       - org: kyma-project
                         repo: serverless-manager
                         base_ref: main
-                        path_alias: github.com/kyma-project/serverless-manager
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -444,16 +441,13 @@ templates:
                     - "make test"
                   branches:
                     - ^main$ # any pr against main triggers this
-                  securityContext:
-                    privileged: "true"
-                    seccompProfile:
-                      type: "Unconfined"
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_presubmit
                     - build_labels # default labels
+                    - unprivileged
               - jobConfig:
                   name: pre-serverless-manager-operator-build
                   annotations:
@@ -473,10 +467,6 @@ templates:
                       --config=/config/kaniko-build-config.yaml
                       --context=.
                       --dockerfile=Dockerfile
-                  securityContext:
-                    privileged: "true"
-                    seccompProfile:
-                      type: Unconfined
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
@@ -506,10 +496,6 @@ templates:
                       --context=.
                       --dockerfile=Dockerfile
                       --tag=$PULL_BASE_SHA
-                  securityContext:
-                    privileged: "true"
-                    seccompProfile:
-                      type: Unconfined
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
@@ -549,6 +535,26 @@ templates:
                       make -C hack/ci k3d-integration-test
                   always_run: "true"
                   optional: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
+              - jobConfig:
+                  name: post-main-serverless-manager-upgrade-latest-to-main
+                  annotations:
+                    owner: otters
+                    description: upgrade serverless manager test
+                  always_run: "true"
+                  optional: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-upgrade-test
                 inheritedConfigs:
                   global:
                     - jobConfig_default
