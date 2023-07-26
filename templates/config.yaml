@@ -180,11 +180,11 @@ globalSets:
   image_wssagent:
     image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
   image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20230725-c5e3d104
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20230726-19a09015
   image_markdown_index:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20230725-c5e3d104
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20230726-19a09015
   image_image_detector:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230725-c5e3d104
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230726-19a09015
   image_e2e-dind-k3d:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f"
   # JobConfig sets
