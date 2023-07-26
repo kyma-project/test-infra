@@ -52,10 +52,6 @@ templates:
               preset-gc-project-env: "true"
           vm_job_k3d:
             annotations:
-              pipeline.platform: k3d
-              pipeline.installer: kyma deploy
-              pipeline.test: fast-integration
-              pipeline.clusterprovisioning: k3d
           e2e:
             image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230726-6389623f"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`

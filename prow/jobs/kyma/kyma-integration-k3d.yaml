@@ -3,12 +3,6 @@ periodics:
     annotations:
       description: "K3d Kyma 2.0 to main branch."
       owner: "jellyfish"
-      pipeline.clusterprovisioning: "kyma cli"
-      pipeline.installer: "kyma deploy"
-      pipeline.platform: "k3d"
-      pipeline.test: "upgrade-fast-integration"
-      pipeline.trigger: "periodic"
-      pipeline.type: "integration"
       testgrid-dashboards: "kyma_integration"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"

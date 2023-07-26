@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "build istio module image"
         owner: "goat"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-module-build"
@@ -53,7 +52,6 @@ presubmits: # runs on PRs
       annotations:
         description: "build istio operator image"
         owner: "goat"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-operator-build"
@@ -105,7 +103,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs istio operator integration tests on Gardener GCP cluster"
         owner: "goat"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-operator-integration-gcp"
@@ -167,7 +164,6 @@ postsubmits: # runs on main
       annotations:
         description: "build istio module image"
         owner: "goat"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-istio-module-build"
@@ -213,7 +209,6 @@ postsubmits: # runs on main
       annotations:
         description: "builds istio operator image on release"
         owner: "goat"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-istio-build"
@@ -269,7 +264,6 @@ postsubmits: # runs on main
       annotations:
         description: "builds istio module template on release"
         owner: "goat"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-istio-module-build"
@@ -315,7 +309,6 @@ postsubmits: # runs on main
       annotations:
         description: "build istio operator image"
         owner: "goat"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-istio-operator-build"
@@ -373,7 +366,6 @@ periodics: # runs on schedule
       annotations:
         description: "runs istio performance tests on Gardener GCP cluster"
         owner: "goat"
-        pipeline.trigger: "periodic"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "nightly-istio-performance-test-gcp"

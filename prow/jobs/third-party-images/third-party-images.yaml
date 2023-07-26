@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Pre-submit job to build alertmanager image."
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-alertmanager"
@@ -56,7 +55,6 @@ presubmits: # runs on PRs
       annotations:
         description: "builds cloudsql-proxy image"
         owner: "goat"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-cloudsql-proxy"
@@ -105,7 +103,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Pre-submit job to build configmap-reload image."
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-configmap-reload"
@@ -154,7 +151,6 @@ presubmits: # runs on PRs
       annotations:
         description: "docker-registry tpi build job"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-docker-registry"
@@ -203,7 +199,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Pre-submit job to build Fluent Bit image."
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-fluent-bit"
@@ -252,7 +247,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Build tpi/k8s-tools image."
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-k8s-tools"
@@ -300,7 +294,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Pre-submit job to build OAuth2 Proxy image."
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-oauth2-proxy"
@@ -349,7 +342,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Pre-submit job to build Kiwigrid-sidecar image."
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-kiwigrid-sidecar"
@@ -398,7 +390,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Pre-submit job to build node_exporter image."
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-node-exporter"
@@ -447,7 +438,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Pre-submit job to build Grafana image."
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-grafana"
@@ -496,7 +486,6 @@ presubmits: # runs on PRs
       annotations:
         description: "kaniko-executer tpi build job"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-kaniko-executer"
@@ -551,7 +540,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Pre-submit job to build kube-state-metrics image."
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-kube-state-metrics"
@@ -600,7 +588,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Pre-submit job to build OpenTelemetry Collector image."
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-tpi-otel-collector"
@@ -652,7 +639,6 @@ postsubmits: # runs on main
       annotations:
         description: "Post-submit job to build alertmanager image."
         owner: "huskies"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-alertmanager"
@@ -706,7 +692,6 @@ postsubmits: # runs on main
       annotations:
         description: "builds cloudsql-proxy image"
         owner: "goat"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-cloudsql-proxy"
@@ -757,7 +742,6 @@ postsubmits: # runs on main
       annotations:
         description: "Post-submit job to build configmap-reload image."
         owner: "huskies"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-configmap-reload"
@@ -811,7 +795,6 @@ postsubmits: # runs on main
       annotations:
         description: "docker-registry tpi build job"
         owner: "otters"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-docker-registry"
@@ -862,7 +845,6 @@ postsubmits: # runs on main
       annotations:
         description: "Post-submit job to build Fluent Bit image."
         owner: "huskies"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-fluent-bit"
@@ -916,7 +898,6 @@ postsubmits: # runs on main
       annotations:
         description: "Build tpi/k8s-tools image."
         owner: "neighbors"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-k8s-tools"
@@ -965,7 +946,6 @@ postsubmits: # runs on main
       annotations:
         description: "Post-submit job to build OAuth2 Proxy image."
         owner: "huskies"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-oauth2-proxy"
@@ -1019,7 +999,6 @@ postsubmits: # runs on main
       annotations:
         description: "Post-submit job to build Kiwigrid-sidecar image."
         owner: "huskies"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-kiwigrid-sidecar"
@@ -1073,7 +1052,6 @@ postsubmits: # runs on main
       annotations:
         description: "Post-submit job to build node_exporter image."
         owner: "huskies"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-node-exporter"
@@ -1127,7 +1105,6 @@ postsubmits: # runs on main
       annotations:
         description: "Post-submit job to build Grafana image."
         owner: "huskies"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-grafana"
@@ -1181,7 +1158,6 @@ postsubmits: # runs on main
       annotations:
         description: "kaniko-executer tpi build job"
         owner: "otters"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-kaniko-executer"
@@ -1238,7 +1214,6 @@ postsubmits: # runs on main
       annotations:
         description: "Post-submit job to build kube-state-metrics image."
         owner: "huskies"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-kube-state-metrics"
@@ -1292,7 +1267,6 @@ postsubmits: # runs on main
       annotations:
         description: "Post-submit job to build OpenTelemetry Collector image."
         owner: "huskies"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-tpi-otel-collector"

@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "build serverless module"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-serverless-module-build"
@@ -51,7 +50,6 @@ presubmits: # runs on PRs
       annotations:
         description: "serverless manager tests"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-serverless-manager-operator-tests"
@@ -87,7 +85,6 @@ presubmits: # runs on PRs
       annotations:
         description: "serverless manager operator build"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-serverless-manager-operator-build"
@@ -145,10 +142,6 @@ presubmits: # runs on PRs
       annotations:
         description: "serverless manager verify on k3d vm"
         owner: "otters"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "k3d-test"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-serverless-manager-verify"
@@ -195,7 +188,6 @@ postsubmits: # runs on main
       annotations:
         description: "serverless module build"
         owner: "otters"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-module-build"
@@ -237,7 +229,6 @@ postsubmits: # runs on main
       annotations:
         description: "build serverless manager"
         owner: "otters"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-manager-operator-build"
@@ -296,10 +287,6 @@ postsubmits: # runs on main
       annotations:
         description: "serverless manager verify on k3d vm"
         owner: "otters"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "k3d-test"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-serverless-manager-verify"
@@ -343,10 +330,6 @@ postsubmits: # runs on main
       annotations:
         description: "upgrade serverless manager test"
         owner: "otters"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "k3d-test"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-serverless-manager-upgrade-latest-to-main"
@@ -392,10 +375,6 @@ periodics: # runs on schedule
       annotations:
         description: "serverless operator nightly verify"
         owner: "otters"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "k3d-test"
-        pipeline.trigger: "periodic"
         testgrid-dashboards: "serverless-operator-nightly"
         testgrid-days-of-results: "60"
       labels:

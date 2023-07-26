@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Check if chart and manifests files use PR images."
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-release-pr-image-guard"

@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for test-infra"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-test-infra-checkconfig"
@@ -38,7 +37,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for kyma"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-checkconfig"
@@ -75,7 +73,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for busola"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-busola-checkconfig"
@@ -112,7 +109,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for control-plane"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-control-plane-checkconfig"
@@ -149,7 +145,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for cli"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-cli-checkconfig"
@@ -186,7 +181,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for website"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-checkconfig"
@@ -223,7 +217,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for lifecycle-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-lifecycle-manager-checkconfig"
@@ -260,7 +253,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for third-party-images"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-third-party-images-checkconfig"
@@ -297,7 +289,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for community"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-community-checkconfig"
@@ -334,7 +325,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for hydroform"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydroform-checkconfig"
@@ -371,7 +361,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for istio-operator"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-operator-checkconfig"
@@ -408,7 +397,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for addons"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-addons-checkconfig"
@@ -445,7 +433,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for private-fn-for-e2e-serverless-tests"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-private-fn-for-e2e-serverless-tests-checkconfig"
@@ -482,7 +469,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for charts"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-charts-checkconfig"
@@ -519,7 +505,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for examples"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-checkconfig"
@@ -556,7 +541,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for api-gateway"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-checkconfig"
@@ -593,7 +577,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for istio"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-istio-checkconfig"
@@ -630,7 +613,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for runtime-watcher"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-runtime-watcher-checkconfig"
@@ -667,7 +649,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for keda-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keda-manager-checkconfig"
@@ -704,7 +685,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for kyma-dashboard"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-checkconfig"
@@ -741,7 +721,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for application-connector-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-application-connector-manager-checkconfig"
@@ -778,7 +757,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for rafter"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-rafter-checkconfig"
@@ -815,7 +793,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for btp-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-btp-manager-checkconfig"
@@ -852,7 +829,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for kyma-environment-broker"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-environment-broker-checkconfig"
@@ -889,7 +865,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for telemetry-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-checkconfig"
@@ -926,7 +901,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for director-size-exporter"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-director-size-exporter-checkconfig"
@@ -963,7 +937,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for compass-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-manager-checkconfig"
@@ -1000,7 +973,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for compass"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-checkconfig"
@@ -1037,7 +1009,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for ord-service"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-ord-service-checkconfig"
@@ -1074,7 +1045,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for reconciler"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-reconciler-checkconfig"
@@ -1111,7 +1081,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for bullseye-showcase"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-bullseye-showcase-checkconfig"
@@ -1148,7 +1117,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for documentation-component"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-documentation-component-checkconfig"
@@ -1185,7 +1153,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for compass-console"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-console-checkconfig"
@@ -1222,7 +1189,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for sap-btp-service-operator"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sap-btp-service-operator-checkconfig"
@@ -1259,7 +1225,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for varkes"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-varkes-checkconfig"
@@ -1296,7 +1261,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for slack-bot"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-slack-bot-checkconfig"
@@ -1333,7 +1297,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for migrate"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-migrate-checkconfig"
@@ -1370,7 +1333,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for github-dashboard"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-github-dashboard-checkconfig"
@@ -1407,7 +1369,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for website-vuepress"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-website-vuepress-checkconfig"
@@ -1444,7 +1405,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for kitbag"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kitbag-checkconfig"
@@ -1481,7 +1441,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for kyma-showcase"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-showcase-checkconfig"
@@ -1518,7 +1477,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for hydra-login-consent"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-hydra-login-consent-checkconfig"
@@ -1555,7 +1513,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for kymart"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kymart-checkconfig"
@@ -1592,7 +1549,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for examples"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-examples-checkconfig"
@@ -1629,7 +1585,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for vstudio-extension"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-vstudio-extension-checkconfig"
@@ -1666,7 +1621,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for wordpress-connector"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-wordpress-connector-checkconfig"
@@ -1703,7 +1657,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for connector-tools"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-connector-tools-checkconfig"
@@ -1740,7 +1693,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for artwork"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-artwork-checkconfig"
@@ -1777,7 +1729,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for opensap"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-opensap-checkconfig"
@@ -1814,7 +1765,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for testdrape"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-testdrape-checkconfig"
@@ -1851,7 +1801,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for sc-removal"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-sc-removal-checkconfig"
@@ -1888,7 +1837,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for service-catalog-tester"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-tester-checkconfig"
@@ -1925,7 +1873,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate inrepo prow configs for service-catalog"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-service-catalog-checkconfig"

@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "executes the 'golangci-lint lint' command in the template-operator repository before any pull request."
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-template-op-lint"
@@ -40,7 +39,6 @@ presubmits: # runs on PRs
       annotations:
         description: "template operator test"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-template-op-tests"
@@ -76,7 +74,6 @@ presubmits: # runs on PRs
       annotations:
         description: "template operator build"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-build-template-operator"
@@ -126,7 +123,6 @@ postsubmits: # runs on main
       annotations:
         description: "template operator build"
         owner: "jellyfish"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "main-template-op-build"

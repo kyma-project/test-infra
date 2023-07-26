@@ -7,11 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Execute a kyma upgrade with special focus on the eventing component"
         owner: "skydivingtunas"
-        pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_gcp"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-gcp-eventing-upgrade"
@@ -82,11 +77,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Execute fast integration job with focus on eventing on a gardener cluster"
         owner: "skydivingtunas"
-        pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_gcp"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-gcp-eventing"
@@ -151,11 +141,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Execute fast integration job with focus on eventing on a gardener cluster"
         owner: "skydivingtunas"
-        pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_gcp"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-gcp-eventing-with-auth-manager"

@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Go lint + Go test pre-PR + Build CLI pre-PR"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-cli"
@@ -40,7 +39,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Go lint"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-cli-lint"
@@ -71,7 +69,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Go test"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-cli-unit-test"
@@ -105,7 +102,6 @@ postsubmits: # runs on main
       annotations:
         description: "Go lint + Go test post-PR + Build CLI post-PR"
         owner: "jellyfish"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -138,7 +134,6 @@ postsubmits: # runs on main
       annotations:
         description: "Go lint + Go test pre-rel + Build CLI pre-rel"
         owner: "jellyfish"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

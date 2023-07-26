@@ -2,8 +2,6 @@ templates:
   - fromTo:
       - from: generic.tmpl
         to: ../../prow/jobs/kyma/kyma-integration-gardener-eventing.yaml
-      - from: test-inventory.tmpl
-        to: ../../test-inventory-integration.md
     render:
       - localSets:
           extra_refs_kyma-local:
@@ -28,16 +26,8 @@ templates:
             labels:
               preset-build-pr: "true"
           command_integration_eventing:
-            annotations:
-              pipeline.installer: kyma deploy
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing.sh"
           command_integration_skr_eventing:
-            annotations:
-              pipeline.installer: keb
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: keb
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-skr-eventing.sh"
             labels:
               preset-keb-dev-credentials: "true"
@@ -47,10 +37,6 @@ templates:
               preset-kyma-integration-subaccounnt: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
           command_upgrade_eventing:
-            annotations:
-              pipeline.installer: kyma deploy
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener-eventing-upgrade.sh"
           gardener_gcp_job_eventing:
             labels:
@@ -62,20 +48,12 @@ templates:
               GARDENER_REGION: "europe-west4"
               GARDENER_ZONES: "europe-west4-b"
               CREDENTIALS_DIR: "/etc/credentials/kyma-tunas-prow-event-mesh"
-            annotations:
-              pipeline.platform: gardener_gcp
           evaluation_profile:
             env:
               EXECUTION_PROFILE: "evaluation"
-            annotations:
-              pipeline.test: fast-integration
-              pipeline.profile: evaluation
           production_profile:
             env:
               EXECUTION_PROFILE: "production"
-            annotations:
-              pipeline.test: fast-integration
-              pipeline.profile: production
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
@@ -190,8 +168,6 @@ templates:
   - fromTo:
       - from: generic.tmpl
         to: ../../prow/jobs/kyma/kyma-integration-gardener.yaml
-      - from: test-inventory.tmpl
-        to: ../../test-inventory-integration.md
     render:
       - localSets:
           extra_refs_kyma-local:
@@ -216,27 +192,12 @@ templates:
             labels:
               preset-build-pr: "true"
           command_integration:
-            annotations:
-              pipeline.installer: kyma install
-              pipeline.test: octopus
-              pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
           command_busola_long_lasting:
-            annotations:
-              pipeline.installer: kyma deploy
-              pipeline.clusterprovisioning: kubectl shootspec
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
           command_upgrade_gardener_kyma2_to_main:
-            annotations:
-              pipeline.installer: kyma deploy
-              pipeline.test: upgrade-fast-integration
-              pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-to-main.sh"
           command_upgrade_gardener_kyma2_minor_versions:
-            annotations:
-              pipeline.installer: kyma deploy
-              pipeline.test: upgrade-fast-integration
-              pipeline.clusterprovisioning: kyma cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-minor-versions.sh"
           gardener_gcp_job:
             labels:
@@ -247,11 +208,7 @@ templates:
               KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
               GARDENER_REGION: "europe-west4"
               GARDENER_ZONES: "europe-west4-b"
-            annotations:
-              pipeline.platform: gardener_gcp
           gardener_azure_job:
-            annotations:
-              pipeline.platform: gardener_azure
             env:
               RS_GROUP: "kyma-gardener-azure"
               REGION: "northeurope"
@@ -271,8 +228,6 @@ templates:
               preset-cluster-version: "true"
           # remove after kyma-upgrade-gardener-kyma2-minor-versions is compatible with k8s 1.23
           gardener_azure_job_old_version:
-            annotations:
-              pipeline.platform: gardener_azure
             env:
               RS_GROUP: "kyma-gardener-azure"
               REGION: "northeurope"
@@ -290,21 +245,12 @@ templates:
               preset-sa-test-gcr-push: "true" # required for pushing images
               preset-sa-gardener-logs: "true" # required for writing logs to Stackdriver
               preset-cluster-version-previous: "true"
-          installer_2:
-            annotations:
-              pipeline.installer: kyma deploy
           evaluation_profile:
             env:
               EXECUTION_PROFILE: "evaluation"
-            annotations:
-              pipeline.test: fast-integration
-              pipeline.profile: evaluation
           production_profile:
             env:
               EXECUTION_PROFILE: "production"
-            annotations:
-              pipeline.test: fast-integration
-              pipeline.profile: production
         jobConfigs:
           - repoName: kyma-project/kyma
             jobs:
@@ -336,7 +282,6 @@ templates:
                     - extra_refs_kyma-local
                     - command_integration
                     - evaluation_profile
-                    - installer_2
               - jobConfig:
                   name: kyma-integration-production-gardener-azure
                   annotations:
@@ -364,7 +309,6 @@ templates:
                     - extra_refs_kyma-local
                     - command_integration
                     - production_profile
-                    - installer_2
               - jobConfig:
                   name: kyma-weekly-gardener-gcp-busola-kyma
                   annotations:

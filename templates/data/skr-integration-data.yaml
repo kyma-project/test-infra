@@ -2,15 +2,9 @@ templates:
   - fromTo:
       - from: generic.tmpl
         to: ../../prow/jobs/kyma/skr-integration.yaml
-      - from: test-inventory.tmpl
-        to: ../../test-inventory-integration.md
     render:
       - localSets:
           jobConfig_default:
-            annotations:
-              pipeline.clusterprovisioning: keb
-              pipeline.installer: keb
-              pipeline.test: fast-integration
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
@@ -28,54 +22,32 @@ templates:
             env:
               KEB_SUBACCOUNT_ID: "kyma-skr-nightly"
           keb_plan_azure:
-            annotations:
-              pipeline.platform: gardener_azure
             env:
               KEB_PLAN_ID: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
           keb_plan_gcp:
-            annotations:
-              pipeline.platform: gardener_gcp
             env:
               KEB_PLAN_ID: "ca6e5357-707f-4565-bbbd-b3ab732597c6"
           keb_plan_aws:
-            annotations:
-              pipeline.platform: gardener_aws
             env:
               KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15"
           keb_plan_azure_lite:
-            annotations:
-              pipeline.platform: gardener_azure
-              pipeline.profile: evaluation
             env:
               KEB_PLAN_ID: "8cb22518-aa26-44c5-91a0-e669ec9bf443"
           keb_plan_trial:
-            annotations:
-              pipeline.platform: gardener_azure
-              pipeline.profile: evaluation
             env:
               KEB_PLAN_ID: "7d55d31d-35ae-4438-bf13-6ffdfa107d9f"
           keb_plan_openstack:
-            annotations:
-              pipeline.platform: gardener_openstack
             env:
               KEB_PLAN_ID: "03b812ac-c991-4528-b5bd-08b303523a63"
           keb_plan_free_aws:
-            annotations:
-              pipeline.platform: gardener_aws
-              pipeline.profile: evaluation
             env:
               KEB_PLAN_ID: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
               KEB_REGION: "cf-eu10"
           keb_plan_free_azure:
-            annotations:
-              pipeline.platform: gardener_azure
-              pipeline.profile: evaluation
             env:
               KEB_PLAN_ID: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
               KEB_REGION: "cf-eu20"
           keb_plan_preview:
-            annotations:
-              pipeline.platform: gardener_aws
             env:
               KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9"
         jobConfigs:

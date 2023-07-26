@@ -7,8 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "control-plane reconciler e2e test"
         owner: "jellyfish"
-        pipeline.platform: "gardener_gcp"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-control-plane-reconciler-e2e"
@@ -62,8 +60,6 @@ presubmits: # runs on PRs
       annotations:
         description: "control-plane reconciler e2e test"
         owner: "jellyfish"
-        pipeline.platform: "gardener_gcp"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-control-plane-reconciler-e2e-latest-release"

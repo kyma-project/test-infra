@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "validates if all charts use correct image definition format"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-validate-image-definitions"
@@ -49,7 +48,6 @@ presubmits: # runs on PRs
       annotations:
         description: "his tool validates if all images defined in charts exist"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-validate-image-existence"
@@ -89,7 +87,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate Dockerfiles, run hadolint."
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-validate-dockerfiles"

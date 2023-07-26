@@ -127,7 +127,6 @@ templates:
                   annotations:
                     owner: "gopher"
                     description: "KEB image build on PR"
-                    pipeline.trigger: "pr-submit"
                   run_if_changed: "^components/kyma-environment-broker"
                   args:
                     - --name=control-plane/kyma-environment-broker
@@ -143,7 +142,6 @@ templates:
                   annotations:
                     owner: "gopher"
                     description: "KEB image build on main"
-                    pipeline.trigger: "pr-merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"

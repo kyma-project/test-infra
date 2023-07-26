@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for test-infra"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-presubmit-scanner"
@@ -37,7 +36,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for kyma"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-presubmit-scanner"
@@ -67,7 +65,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for busola"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-busola-presubmit-scanner"
@@ -97,7 +94,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for control-plane"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-control-plane-presubmit-scanner"
@@ -127,7 +123,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for cli"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-cli-presubmit-scanner"
@@ -157,7 +152,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for website"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-website-presubmit-scanner"
@@ -187,7 +181,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for lifecycle-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-lifecycle-manager-presubmit-scanner"
@@ -217,7 +210,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for third-party-images"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-third-party-images-presubmit-scanner"
@@ -247,7 +239,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for community"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-community-presubmit-scanner"
@@ -277,7 +268,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for hydroform"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-hydroform-presubmit-scanner"
@@ -307,7 +297,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for istio-operator"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-istio-operator-presubmit-scanner"
@@ -337,7 +326,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for addons"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-addons-presubmit-scanner"
@@ -367,7 +355,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for private-fn-for-e2e-serverless-tests"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-private-fn-for-e2e-serverless-tests-presubmit-scanner"
@@ -397,7 +384,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for charts"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-charts-presubmit-scanner"
@@ -427,7 +413,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for examples"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-examples-presubmit-scanner"
@@ -457,7 +442,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for api-gateway"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-api-gateway-presubmit-scanner"
@@ -487,7 +471,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for istio"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-istio-presubmit-scanner"
@@ -517,7 +500,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for runtime-watcher"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-runtime-watcher-presubmit-scanner"
@@ -547,7 +529,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for keda-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-keda-manager-presubmit-scanner"
@@ -577,7 +558,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for kyma-dashboard"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-presubmit-scanner"
@@ -607,7 +587,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for application-connector-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-application-connector-manager-presubmit-scanner"
@@ -637,7 +616,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for template-repository"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-template-repository-presubmit-scanner"
@@ -667,7 +645,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for rafter"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rafter-presubmit-scanner"
@@ -697,7 +674,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for btp-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-btp-manager-presubmit-scanner"
@@ -727,7 +703,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for kyma-environment-broker"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-environment-broker-presubmit-scanner"
@@ -757,7 +732,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for telemetry-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-telemetry-manager-presubmit-scanner"
@@ -787,7 +761,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for director-size-exporter"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-director-size-exporter-presubmit-scanner"
@@ -817,7 +790,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for compass-manager"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-compass-manager-presubmit-scanner"
@@ -847,7 +819,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for compass"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-compass-presubmit-scanner"
@@ -877,7 +848,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for ord-service"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-ord-service-presubmit-scanner"
@@ -907,7 +877,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for reconciler"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-reconciler-presubmit-scanner"
@@ -937,7 +906,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for bullseye-showcase"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-bullseye-showcase-presubmit-scanner"
@@ -967,7 +935,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for documentation-component"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-documentation-component-presubmit-scanner"
@@ -997,7 +964,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for compass-console"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-compass-console-presubmit-scanner"
@@ -1027,7 +993,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for sap-btp-service-operator"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-sap-btp-service-operator-presubmit-scanner"
@@ -1057,7 +1022,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for varkes"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-varkes-presubmit-scanner"
@@ -1087,7 +1051,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for slack-bot"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-slack-bot-presubmit-scanner"
@@ -1117,7 +1080,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for migrate"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-migrate-presubmit-scanner"
@@ -1147,7 +1109,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for github-dashboard"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-github-dashboard-presubmit-scanner"
@@ -1177,7 +1138,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for website-vuepress"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-website-vuepress-presubmit-scanner"
@@ -1207,7 +1167,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for kitbag"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kitbag-presubmit-scanner"
@@ -1237,7 +1196,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for kyma-showcase"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-showcase-presubmit-scanner"
@@ -1267,7 +1225,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for hydra-login-consent"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-hydra-login-consent-presubmit-scanner"
@@ -1297,7 +1254,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for kymart"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kymart-presubmit-scanner"
@@ -1327,7 +1283,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for examples"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-examples-presubmit-scanner"
@@ -1357,7 +1312,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for vstudio-extension"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-vstudio-extension-presubmit-scanner"
@@ -1387,7 +1341,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for wordpress-connector"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-wordpress-connector-presubmit-scanner"
@@ -1417,7 +1370,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for connector-tools"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-connector-tools-presubmit-scanner"
@@ -1447,7 +1399,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for artwork"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-artwork-presubmit-scanner"
@@ -1477,7 +1428,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for opensap"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-opensap-presubmit-scanner"
@@ -1507,7 +1457,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for testdrape"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-testdrape-presubmit-scanner"
@@ -1537,7 +1486,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for sc-removal"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-sc-removal-presubmit-scanner"
@@ -1567,7 +1515,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for service-catalog-tester"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-service-catalog-tester-presubmit-scanner"
@@ -1597,7 +1544,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run Gitleaks presubmit scanner to detect commited sensitive data for service-catalog"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-service-catalog-presubmit-scanner"

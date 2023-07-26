@@ -37,9 +37,6 @@ templates:
                     - disable_testgrid
       - to: ../../prow/jobs/incubator/reconciler/reconciler.yaml
         localSets:
-          command_integration:
-            annotations:
-              pipeline.clusterprovisioning: kyma cli
           extra_refs_kyma-1-24:
             extra_refs:
               kyma-1-24:
@@ -85,11 +82,6 @@ templates:
               - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
           reconciler_nightly_cluster_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
-            annotations:
-              pipeline.platform: "gardener_gcp"
-              pipeline.installer: reconciler
-              pipeline.test: "fast-integration"
-              pipeline.clusterprovisioning: reconciler
           reconciler_main_nightly_cluster_input_name:
             env:
               INPUT_CLUSTER_NAME: "rec-main"
@@ -98,8 +90,6 @@ templates:
               INPUT_CLUSTER_NAME: "rec-dev"
           reconciler_publish_pr_cli_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-pr-cli.sh"
-            annotations:
-              pipeline.installer: reconciler
           reconciler_e2e_image:
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230726-6389623f
             securityContext: #temporary we need permissions to create files before transfer them to remote vm
@@ -165,7 +155,6 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio reconciler integration tests on k3d
-                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:
@@ -191,7 +180,6 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio reconciler integration tests on k3d
-                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:
@@ -218,7 +206,6 @@ templates:
                   annotations:
                     owner: goat
                     description: runs ory reconciler integration tests with evaluation profile on k3d
-                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/ory\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -245,7 +232,6 @@ templates:
                   annotations:
                     owner: goat
                     description: runs ory reconciler integration tests with production profile on Gardener GCP cluster
-                    pipeline.platform: gardener_gcp
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/ory\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -273,7 +259,6 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio reconciler integration tests on k3d
-                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:
@@ -299,7 +284,6 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio reconciler integration tests on k3d
-                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((pkg/reconciler/instances/istio\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))|Dockerfile\\.cr$"
                   labels:
@@ -452,10 +436,6 @@ templates:
                   annotations:
                     owner: jellyfish
                     description: Executes e2e test periodically on nightly cluster for reconciler.
-                    pipeline.installer: "reconciler"
-                    pipeline.platform: "gcp"
-                    pipeline.test: "fast-integration"
-                    pipeline.trigger: "nightly"
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min

@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "executes the 'golangci-lint lint' command on keda-manager before any pull request."
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-keda-manager-operator-lint"
@@ -41,7 +40,6 @@ presubmits: # runs on PRs
       annotations:
         description: "keda module build job"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keda-module-build"
@@ -85,7 +83,6 @@ presubmits: # runs on PRs
       annotations:
         description: "keda operator tests"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-keda-manager-operator-tests"
@@ -121,7 +118,6 @@ presubmits: # runs on PRs
       annotations:
         description: "keda operator build job"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-keda-manager-operator-build"
@@ -172,10 +168,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs keda manager verity job on k3d VM"
         owner: "otters"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "k3d-test"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-keda-manager-verify"
@@ -222,7 +214,6 @@ postsubmits: # runs on main
       annotations:
         description: "Job to build keda module for a release."
         owner: "otters"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-keda-manager-build"
@@ -277,7 +268,6 @@ postsubmits: # runs on main
       annotations:
         description: "Job to build keda module for a release."
         owner: "otters"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "release-keda-manager-module-build"
@@ -320,7 +310,6 @@ postsubmits: # runs on main
       annotations:
         description: "keda module build job"
         owner: "otters"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-keda-module-build"
@@ -362,7 +351,6 @@ postsubmits: # runs on main
       annotations:
         description: "keda module build job"
         owner: "otters"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-keda-manager-operator-build"
@@ -415,10 +403,6 @@ postsubmits: # runs on main
       annotations:
         description: "runs keda manager verity job on k3d VM"
         owner: "otters"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "k3d-test"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-keda-manager-verify"
@@ -462,10 +446,6 @@ postsubmits: # runs on main
       annotations:
         description: "upgrade keda manager test"
         owner: "otters"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "k3d-test"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-keda-manager-upgrade-latest-to-main"
@@ -511,10 +491,6 @@ periodics: # runs on schedule
       annotations:
         description: "Keda nightly verify"
         owner: "otters"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "k3d-test"
-        pipeline.trigger: "periodic"
         testgrid-dashboards: "keda-nightly"
         testgrid-days-of-results: "60"
       labels:

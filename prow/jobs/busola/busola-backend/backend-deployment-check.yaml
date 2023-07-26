@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Checking backend deployment update"
         owner: "hasselhoff"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-busola-backend-deployment-check"

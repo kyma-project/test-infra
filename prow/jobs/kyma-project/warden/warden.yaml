@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Warden admission build job"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-admission-build"
@@ -55,7 +54,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Warden operator build job"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-operator-build"
@@ -103,7 +101,6 @@ presubmits: # runs on PRs
       annotations:
         description: "executes the 'golangci-lint lint' command before any pull request."
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-warden-lint"
@@ -137,7 +134,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Warden unit test job"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-warden-unit-test"
@@ -171,7 +167,6 @@ postsubmits: # runs on main
       annotations:
         description: "Warden admission build job"
         owner: "otters"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-admission-build"
@@ -220,7 +215,6 @@ postsubmits: # runs on main
       annotations:
         description: "Warden operator build job"
         owner: "otters"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-operator-build"

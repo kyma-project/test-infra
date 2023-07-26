@@ -11,7 +11,6 @@ templates:
                   annotations:
                     owner: neighbors
                     description: "Run unit tests for all modules in test-infra repository"
-                    pipeline.trigger: "pr-submit"
                   run_if_changed: '.*\.go$'
                   cluster: untrusted-workload
                   optional: false

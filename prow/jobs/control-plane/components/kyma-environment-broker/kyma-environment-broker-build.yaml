@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "KEB image build on PR"
         owner: "gopher"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keb-build"
@@ -55,7 +54,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Clean up DEV from Kyma runtimes older than day job build on PR"
         owner: "gopher"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keb-cleanup-job-build"
@@ -104,7 +102,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Removes SKRs when BTP subaccount is deleted job build on PR"
         owner: "gopher"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keb-subaccount-cleanup-job-build"
@@ -153,7 +150,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Removes trials after 14 days job build on PR"
         owner: "gopher"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keb-trial-cleanup-job-build"
@@ -202,7 +198,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Retries deprovisioned SKRs where some steps have failed job build on PR"
         owner: "gopher"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keb-deprovision-retrigger-job-build"
@@ -251,7 +246,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Job to build runtime-reconciler image on PR submit"
         owner: "gopher"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-keb-runtime-reconciler-job-build"
@@ -305,7 +299,6 @@ postsubmits: # runs on main
       annotations:
         description: "KEB image build on main"
         owner: "gopher"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-keb-build"
@@ -356,7 +349,6 @@ postsubmits: # runs on main
       annotations:
         description: "Clean up DEV from Kyma runtimes older than day job build on main"
         owner: "gopher"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-keb-cleanup-job-build"
@@ -408,7 +400,6 @@ postsubmits: # runs on main
       annotations:
         description: "Removes SKRs when BTP subaccount is deleted job build on main"
         owner: "gopher"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-keb-subaccount-cleanup-job-build"
@@ -460,7 +451,6 @@ postsubmits: # runs on main
       annotations:
         description: "Removes trials after 14 days job build on main"
         owner: "gopher"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-keb-trial-cleanup-job-build"
@@ -512,7 +502,6 @@ postsubmits: # runs on main
       annotations:
         description: "Retries deprovisioned SKRs where some steps have failed job build on main"
         owner: "gopher"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-keb-deprovision-retrigger-job-build"
@@ -564,7 +553,6 @@ postsubmits: # runs on main
       annotations:
         description: "Job to build runtime-reconciler image after PR merge"
         owner: "gopher"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-keb-runtime-reconciler-job-build"

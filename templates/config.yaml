@@ -221,18 +221,12 @@ globalSets:
     cluster_postsubmit: "trusted-workload"
     <<: *pubsub_config
   jobConfig_presubmit:
-    annotations:
-      pipeline.trigger: pr-submit
     type_presubmit: "true"
     cluster: "untrusted-workload"
   jobConfig_postsubmit:
-    annotations:
-      pipeline.trigger: pr-merge  
     type_postsubmit: "true"
     cluster: "trusted-workload"
   jobConfig_periodic:
-    annotations:
-      pipeline.trigger: periodic
     type_periodic: "true"
     cluster: "untrusted-workload"
   unprivileged:
@@ -357,8 +351,6 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
       GARDENER_REGION: "europe-west4"
       GARDENER_ZONES: "europe-west4-b"
-    annotations:
-      pipeline.platform: gardener_gcp
 templates:
   - from: test-infra-autobump-config.yaml
     render:

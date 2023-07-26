@@ -2,7 +2,6 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-tests-provisioner-tests
       annotations:
-        pipeline.trigger: "pr-submit"
         description: "It tests the acceptance criteria of the Provisioner component"
         owner: framefrog
       labels:

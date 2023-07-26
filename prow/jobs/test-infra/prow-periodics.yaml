@@ -9,7 +9,6 @@ postsubmits: # runs on main
       annotations:
         description: "autobump markdown index.md"
         owner: "neighbors"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -42,7 +41,6 @@ postsubmits: # runs on main
       annotations:
         description: "autobump prow images for scan"
         owner: "neighbors"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -80,7 +78,6 @@ postsubmits: # runs on main
       annotations:
         description: "Deploy prow components"
         owner: "neighbors"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
