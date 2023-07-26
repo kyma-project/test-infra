@@ -5,10 +5,8 @@ protecode:
     - docker.io/zricethezav/gitleaks:v8.15.3
     - eu.gcr.io/kyma-project/incubator/milv:8649c2fb
     - eu.gcr.io/kyma-project/prow/cleaner:0.0.1
-    - eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230330-3213bd39
     - eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7
     - eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
-    - eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3
     - eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17
     - eu.gcr.io/sap-kyma-neighbors-dev/automerge-notification-plugin:v0.1.28-test
     - eu.gcr.io/sap-kyma-neighbors-dev/cla-assistant-plugin:v20220130-54e1f7f39-dirty-2
@@ -19,19 +17,33 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/creategithubissue:v20230309-1d421c4f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20230712-f514770d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230615-186da159
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-5905c114
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcrcleaner:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20230726-19a09015
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20230726-19a09015
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/movegcsbucket:v20230309-1d421c4f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/scanlogsforsecrets:v20230309-1d421c4f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/searchgithubissue:v20230309-1d421c4f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20230309-1d421c4f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230721-8ae5f7fd
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230721-8ae5f7fd
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230721-8ae5f7fd
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230721-8ae5f7fd
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230726-6389623f
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230726-6389623f
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230726-6389623f
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230726-6389623f
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230726-6389623f
     - gcr.io/k8s-prow/analyze:v20230725-371721ec95
     - gcr.io/k8s-prow/branchprotector:v20230725-371721ec95
     - gcr.io/k8s-prow/checkconfig:v20230725-371721ec95

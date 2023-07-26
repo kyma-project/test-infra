@@ -44,7 +44,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "make test"
                   run_if_changed: "\\.go$|^go.(sum|mod)"
                   annotations:
                     owner: skydivingtunas

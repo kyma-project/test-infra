@@ -103,7 +103,7 @@ templates:
                     description: daily detect prow images for scan
                   cron: "0 8 * * *"
                   slack_channel: kyma-prow-alerts
-                  command: /imagedetector
+                  command: /ko-app/image-detector
                   args:
                     - --prow-config=prow/config.yaml
                     - --prow-jobs-dir=prow/jobs
@@ -134,7 +134,7 @@ templates:
                   skip_report: "false"
                   max_concurrency: "10"
                   type_postsubmit: "true"
-                  command: /markdown-index
+                  command: /ko-app/markdown-index
                   args:
                     - --config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml
                     - --labels-override=kind/chore,area/documentation
@@ -159,7 +159,7 @@ templates:
                   skip_report: "false"
                   max_concurrency: "10"
                   type_postsubmit: "true"
-                  command: /imagedetector
+                  command: /ko-app/image-detector
                   args:
                     - --prow-config=prow/config.yaml
                     - --prow-jobs-dir=prow/jobs
