@@ -32,15 +32,15 @@ func NewOptions(releaseVersionFilePath, releaseChangelogName, commitSHA, kymaCom
 
 	//Changelog
 	var releaseChangelogData string
-	if _, err := os.Stat(releaseChangelogName); err == nil {
-		clb, err := os.ReadFile(releaseChangelogName)
-		if err != nil {
-			return nil, errors.Wrapf(err, "while reading %s file", releaseChangelogName)
-		}
-		releaseChangelogData = string(clb)
-	} else {
+	_, err = os.Stat(releaseChangelogName)
+	if err != nil {
 		return nil, errors.Wrapf(err, "while reading %s file", releaseChangelogName)
 	}
+	clb, err := os.ReadFile(releaseChangelogName)
+	if err != nil {
+		return nil, errors.Wrapf(err, "while reading %s file", releaseChangelogName)
+	}
+	releaseChangelogData = string(clb)
 
 	relOpts.Version = releaseVersion
 	relOpts.IsPreRelease = isPreRelease
