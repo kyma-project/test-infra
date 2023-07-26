@@ -29,6 +29,7 @@ templates:
                     - jobConfig_default
               - jobConfig:
                   name: post-main-kcp-cli
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230721-8ae5f7fd
                   annotations:
                     owner: sre
                     description: "Builds and validates KCP CLI before merge"
