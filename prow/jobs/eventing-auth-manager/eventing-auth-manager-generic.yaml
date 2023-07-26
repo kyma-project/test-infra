@@ -78,7 +78,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "make test"
             resources:
               requests:
                 memory: 1Gi
