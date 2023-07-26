@@ -72,10 +72,6 @@ presubmits:
       max_concurrency: 10
       branches:
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          base_ref: main
       reporter_config:
         slack:
           channel: jellyfish-notifications
