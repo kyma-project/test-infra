@@ -1,5 +1,5 @@
 module "artifact_registry" {
-  source                                   = "../../../modules/artifact-registry"
+  source                                   = "../../modules/artifact-registry"
   for_each                                 = toset(var.artifact_registry_names)
   artifact_registry_name                   = each.value
   artifact_registry_type                   = var.artifact_registry_type
@@ -9,4 +9,6 @@ module "artifact_registry" {
   artifact_registry_owner                  = var.artifact_registry_owner
   artifact_registry_writer_serviceaccount  = var.artifact_registry_writer_serviceaccount
   artifact_registry_reader_serviceaccounts = var.artifact_registry_reader_serviceaccounts
+
+
 }
