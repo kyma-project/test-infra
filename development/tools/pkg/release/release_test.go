@@ -9,11 +9,9 @@ import (
 )
 
 const (
-	mockLocalConfigArtifactName    = "kyma-config-local.yaml"
-	mockLocalInstallerArtifactName = "kyma-installer-local.yaml"
-	mockChangelogFileName          = "change-record.md"
-	mockCommitiSHA                 = "a1b2c3d4"
-	mockComponentsPath             = "kyma-components.yaml"
+	mockChangelogFileName = "change-record.md"
+	mockCommitiSHA        = "a1b2c3d4"
+	mockComponentsPath    = "kyma-components.yaml"
 )
 
 func TestCreateRelease(t *testing.T) {

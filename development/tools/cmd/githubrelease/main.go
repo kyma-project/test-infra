@@ -16,7 +16,6 @@ import (
 
 var (
 	targetCommit           = flag.String("targetCommit", "", "Target commitish [Required]")
-	kymaComponents         = flag.String("kymaComponents", "kyma-components.yaml", "Filename for kyma-components.yaml file. [Optional]")
 	kymaComponentsPath     = flag.String("kymaComponentsPath", "installation/resources/components.yaml", "File path for components.yaml file. [Optional]")
 	kymaChangelog          = flag.String("kymaChangelog", "release-changelog.md", "Filename for release changelog [Optional]")
 	githubRepoOwner        = flag.String("githubRepoOwner", "", "Github repository owner [Required]")
@@ -24,6 +23,8 @@ var (
 	githubAccessToken      = flag.String("githubAccessToken", "", "Github access token [Required]")
 	releaseVersionFilePath = flag.String("releaseVersionFilePath", "", "Full path to a file containing release version [Required]")
 )
+
+const kymaComponentsFileName = "kyma-components.yaml"
 
 func main() {
 	flag.Parse()
@@ -64,7 +65,7 @@ func main() {
 
 	c := release.NewCreator(ga)
 
-	relOpts, err := release.NewOptions(*releaseVersionFilePath, *kymaChangelog, *targetCommit, *kymaComponents, *kymaComponentsPath, nil)
+	relOpts, err := release.NewOptions(*releaseVersionFilePath, *kymaChangelog, *targetCommit, kymaComponentsFileName, *kymaComponentsPath, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
