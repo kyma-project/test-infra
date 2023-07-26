@@ -45,7 +45,7 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
                   cron: "00 00 * * *" # "At 00:00 each day"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230725-c5e3d104
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230726-19a09015
                   labels:
                     preset-gc-project-env: "true"
                   command: "/ko-app/gcscleaner"
@@ -70,7 +70,7 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud disks"
                   cron: "30 * * * *" # "At 30 minutes past every hour"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20230725-c5e3d104
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
@@ -94,7 +94,7 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud IPs"
                   cron: "0 1 * * *" # "At 1:00 each day"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20230725-c5e3d104
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
@@ -118,7 +118,7 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud clusters"
                   cron: "0 * * * *" # "At 0 minute every hour"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20230725-c5e3d104
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
@@ -142,7 +142,7 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud VMs"
                   cron: "15,45 * * * *" # "At 15 and 45 past every hour"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20230725-c5e3d104
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
@@ -167,7 +167,7 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud load balancers"
                   cron: "15 * * * *" # "At 15 past every hour"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20230725-c5e3d104
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
@@ -190,7 +190,7 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud DNS records"
                   cron: "30 * * * *" # "At minute 30 past every hour"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230725-c5e3d104
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
@@ -217,7 +217,7 @@ templates:
                     owner: "neighbors"
                     description: "Cleans up GCR images older than 7 days in eu.gcr.io/sap-kyma-prow-workloads"
                   cron: "0 1 * * *" # "At 1:00am every day"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcrcleaner:v20230725-c5e3d104
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcrcleaner:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                   command: "/ko-app/gcrcleaner"
