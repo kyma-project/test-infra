@@ -3,7 +3,7 @@ run-name: pull-plan-prod-terraform
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref }}
 on: # runs on main
-  pull_request:
+  pull_request_target:
     types: [opened, edited, synchronize, reopened, ready_for_review]
     branches:
     - main
@@ -19,7 +19,9 @@ jobs:
       - name: Checkout
         id: checkout
         uses: actions/checkout@v3
-        
+        with:
+          ref: ${{ github.head_ref }}
+      
       - name: 'Wait for other terraform executions'
         id: wait_for_terraform
         uses: ahmadnassri/action-workflow-queue@v1
@@ -28,10 +30,10 @@ jobs:
         id: gcp_auth
         uses: google-github-actions/auth@v1
         with:
-#          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
-#          service_account: ${{ vars.GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL }}
-          workload_identity_provider: "projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/providers/github-com-kyma-project"
-          service_account: "terraform-executor@sap-kyma-prow.iam.gserviceaccount.com"
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }}
+          service_account: ${{ vars.GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL }}
+#          workload_identity_provider: "projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/providers/github-com-kyma-project"
+#          service_account: "terraform-executor@sap-kyma-prow.iam.gserviceaccount.com"
           
       - name: 'Setup Terraform'
         id: setup_terraform
