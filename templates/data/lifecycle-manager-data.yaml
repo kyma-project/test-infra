@@ -10,7 +10,7 @@ templates:
             jobs:
               - jobConfig:
                   image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
-                  name: pull-lifecycle-mgr-lint # "pre-main-lifecycle-manager-lint"
+                  name: pull-lifecycle-mgr-lint
                   run_if_changed: '^(go.mod|go.sum|Makefile|.*.sh)$|^.*\.go$'
                   annotations:
                     owner: jellyfish
@@ -18,7 +18,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "golangci-lint run"
+                    - "golangci-lint run -v --timeout=20m --new-from-rev=$PULL_BASE_SHA ./..."
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -27,22 +27,22 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   run_if_changed: '^(go.mod|go.sum|Makefile|.*.sh)$|^.*\.go$'
-                  name: pull-lifecycle-mgr-tests # pre-main-lifecycle-manager-tests
+                  name: pull-lifecycle-mgr-tests
                   annotations:
                     owner: jellyfish
                     description: run lm tests
                   command: "bash"
                   args:
                     - "-c"
-                    - "make test" # run test make target of operator
+                    - "make test"
                   branches:
-                    - ^main$ # any pr against main triggers this
+                    - ^main$
                 inheritedConfigs:
                   global:
-                    - image_buildpack-golang # takes latest golang image
+                    - image_buildpack-golang
                     - jobConfig_default
                     - jobConfig_presubmit
-                    - build_labels # default labels
+                    - build_labels
                     - unprivileged
               - jobConfig:
                   name: pull-lifecycle-mgr-build
@@ -66,7 +66,7 @@ templates:
                   labels:
                     preset-signify-prod-secret: "true"
                   branches:
-                    - ^main$ # any pr against main triggers this
+                    - ^main$
                   always_run: true
                   args:
                     - "--name=lifecycle-manager"
