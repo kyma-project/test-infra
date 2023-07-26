@@ -22,6 +22,5 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_prow-tools"
                     - "extra_refs_test-infra"
-                    - "jobConfig_postsubmit"
+                    - "jobConfig_presubmit"
