@@ -20,7 +20,7 @@ presubmits: # runs on PRs
         - ^.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -28,7 +28,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -108,7 +108,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -116,7 +116,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -196,7 +196,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -204,7 +204,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -284,7 +284,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -292,7 +292,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -372,7 +372,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -380,7 +380,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -460,7 +460,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -468,7 +468,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -548,7 +548,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -556,7 +556,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -636,7 +636,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -644,7 +644,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -724,7 +724,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -732,7 +732,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -812,7 +812,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -820,7 +820,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -900,7 +900,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -908,7 +908,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -988,7 +988,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -996,7 +996,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -1076,7 +1076,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1084,7 +1084,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -1164,7 +1164,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1172,7 +1172,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -1252,7 +1252,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1260,7 +1260,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -1340,7 +1340,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1348,7 +1348,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -1428,7 +1428,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1436,7 +1436,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -1516,7 +1516,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1524,7 +1524,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -1604,7 +1604,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1612,7 +1612,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -1692,7 +1692,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1700,7 +1700,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -1780,7 +1780,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1788,7 +1788,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -1868,7 +1868,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1876,7 +1876,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -1956,7 +1956,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -1964,7 +1964,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -2044,7 +2044,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2052,7 +2052,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -2132,7 +2132,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2140,7 +2140,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -2220,7 +2220,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2228,7 +2228,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -2308,7 +2308,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2316,7 +2316,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -2396,7 +2396,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2404,7 +2404,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -2484,7 +2484,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2492,7 +2492,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -2572,7 +2572,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2580,7 +2580,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -2660,7 +2660,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2668,7 +2668,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -2748,7 +2748,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2756,7 +2756,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -2836,7 +2836,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2844,7 +2844,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -2924,7 +2924,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -2932,7 +2932,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3012,7 +3012,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3020,7 +3020,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3100,7 +3100,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3108,7 +3108,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3188,7 +3188,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3196,7 +3196,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3276,7 +3276,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3284,7 +3284,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3364,7 +3364,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3372,7 +3372,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3452,7 +3452,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3460,7 +3460,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3540,7 +3540,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3548,7 +3548,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3628,7 +3628,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3636,7 +3636,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3716,7 +3716,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3724,7 +3724,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3804,7 +3804,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3812,7 +3812,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3892,7 +3892,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3900,7 +3900,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -3980,7 +3980,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -3988,7 +3988,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -4068,7 +4068,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -4076,7 +4076,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -4156,7 +4156,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -4164,7 +4164,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -4244,7 +4244,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -4252,7 +4252,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -4332,7 +4332,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -4340,7 +4340,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -4420,7 +4420,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -4428,7 +4428,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -4508,7 +4508,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -4516,7 +4516,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:
@@ -4596,7 +4596,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015"
             imagePullPolicy: Always
             securityContext:
               privileged: false
@@ -4604,7 +4604,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "pjtester"
+              - "/ko-app/pjtester"
             args:
               - "--github-token-path=/etc/github/oauth"
             env:

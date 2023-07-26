@@ -45,18 +45,20 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
                   cron: "00 00 * * *" # "At 00:00 each day"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230726-19a09015
                   labels:
                     preset-gc-project-env: "true"
-                  command: "bash"
+                  command: "/ko-app/gcscleaner"
                   args:
-                    - "-c"
-                    - "prow/scripts/assetstore-gcp-bucket-cleaner.sh -project=${CLOUDSDK_CORE_PROJECT}"
+                    - -project=$(CLOUDSDK_CORE_PROJECT)
+                    - -bucketNameRegexp='^.+-([a-z0-9]+$)'
+                    - -excludedBuckets='kyma-prowjobs-secrets,kyma-prow-logs,kyma-prow-artifacts,kyma-development-artifacts,kyma-backup-restore,eu.artifacts.sap-kyma-prow.appspot.com,kyma-prow-access-storage-logs,kyma-prow-workloads-logs,eu.artifacts.sap-kyma-prow-workloads.appspot.com'
+                    - -workerNumber=10
+                    - -logLevel=info
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -68,19 +70,19 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud disks"
                   cron: "30 * * * *" # "At 30 minutes past every hour"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
-                  command: "bash"
+                  command: "/ko-app/diskscollector"
                   args:
-                    - "-c"
-                    - "/prow-tools/diskscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -diskNameRegex='.*'"
+                    - -project=$(CLOUDSDK_CORE_PROJECT)
+                    - -dryRun=false
+                    - -diskNameRegex='.*'
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -92,19 +94,19 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud IPs"
                   cron: "0 1 * * *" # "At 1:00 each day"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
-                  command: "bash"
+                  command: "/ko-app/ipcleaner"
                   args:
-                    - "-c"
-                    - "/prow-tools/ipcleaner -project=${CLOUDSDK_CORE_PROJECT} -dry-run=false -ip-exclude-name-regex='^nightly|nightly-(.*)|weekly|weekly-(.*)|nat-auto-ip'"
+                    - -project=$(CLOUDSDK_CORE_PROJECT)
+                    - -dry-run=false
+                    - -ip-exclude-name-regex='^nightly|nightly-(.*)|weekly|weekly-(.*)|nat-auto-ip'
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
-                    - "image_prow-tools"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -116,19 +118,19 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud clusters"
                   cron: "0 * * * *" # "At 0 minute every hour"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
-                  command: "bash"
+                  command: "/ko-app/clusterscollector"
                   args:
-                    - "-c"
-                    - "/prow-tools/clusterscollector -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22,persist"
+                    - -project=$(CLOUDSDK_CORE_PROJECT)
+                    - -dryRun=false
+                    - -excluded-clusters=kyma-prow,workload-kyma-prow,nightly,weekly,nightly-20,nightly-21,nightly-22,persist
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -140,19 +142,20 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud VMs"
                   cron: "15,45 * * * *" # "At 15 and 45 past every hour"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
-                  command: "bash"
+                  command: "/ko-app/vmscollector"
                   args:
-                    - "-c"
-                    - "/prow-tools/vmscollector -project=${CLOUDSDK_CORE_PROJECT} -vmNameRegexp='gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*|gke-gke-release-.*' -jobLabelRegexp='kyma-gke-nightly|kyma-gke-nightly-.*|kyma-gke-weekly|kyma-gke-weekly-.*|post-rel.*-kyma-release-candidate' -dryRun=false"
+                    - -project=$(CLOUDSDK_CORE_PROJECT)
+                    - -vmNameRegexp='gke-nightly-.*|gke-weekly.*|shoot--kyma-prow.*|gke-gke-release-.*'
+                    - -jobLabelRegexp='kyma-gke-nightly|kyma-gke-nightly-.*|kyma-gke-weekly|kyma-gke-weekly-.*|post-rel.*-kyma-release-candidate'
+                    - -dryRun=false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -164,19 +167,18 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud load balancers"
                   cron: "15 * * * *" # "At 15 past every hour"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
-                  command: "bash"
+                  command: "/ko-app/orphanremover"
                   args:
-                    - "-c"
-                    - "/prow-tools/orphanremover -project=${CLOUDSDK_CORE_PROJECT} -dryRun=false"
+                    - -project=$(CLOUDSDK_CORE_PROJECT)
+                    - -dryRun=false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -188,20 +190,22 @@ templates:
                     owner: "neighbors"
                     description: "Periodic cleanup of orphaned Google cloud DNS records"
                   cron: "30 * * * *" # "At minute 30 past every hour"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
                     preset-gc-compute-envs: "true"
-                  command: "bash"
+                  command: "/ko-app/dnscollector"
                   args:
-                    - "-c"
-                    - "/prow-tools/dnscollector -project=${CLOUDSDK_CORE_PROJECT} -dnsZone=${CLOUDSDK_DNS_ZONE_NAME} -ageInHours=2 -regions=${CLOUDSDK_COMPUTE_REGION} -dryRun=false"
+                    - -project=$(CLOUDSDK_CORE_PROJECT)
+                    - -dnsZone=$(CLOUDSDK_DNS_ZONE_NAME)
+                    - -ageInHours=2
+                    - -regions=$(CLOUDSDK_COMPUTE_REGION)
+                    - -dryRun=false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -213,18 +217,18 @@ templates:
                     owner: "neighbors"
                     description: "Cleans up GCR images older than 7 days in eu.gcr.io/sap-kyma-prow-workloads"
                   cron: "0 1 * * *" # "At 1:00am every day"
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcrcleaner:v20230726-19a09015
                   labels:
                     preset-sa-gke-kyma-integration: "true"
-                  command: "bash"
+                  command: "/ko-app/gcrcleaner"
                   args:
-                    - "-c"
-                    - "/prow-tools/gcrcleaner --repository=eu.gcr.io/sap-kyma-prow-workloads --age-in-hours=168 --dry-run=false"
+                    - --repository=eu.gcr.io/sap-kyma-prow-workloads
+                    - --age-in-hours=168
+                    - --dry-run=false
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "image_prow-tools"
-                    - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
@@ -299,7 +303,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -363,56 +367,6 @@ templates:
                   labels:
                     preset-build-pr: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "pre-main-kyma-integration-k3d-app-gateway"
-                  annotations:
-                    pipeline.platform: k3d
-                    owner: framefrog
-                    description: "It tests the acceptance criteria of the (Central) Application Gateway component"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  optional: "false"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
-                    preset-kyma-integration-app-connector-tests-app-gateway: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_presubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "pre-main-kyma-integration-k3d-app-conn-validator"
-                  annotations:
-                    pipeline.platform: k3d
-                    owner: framefrog
-                    description: "It tests the acceptance criteria of the (Central) Application Connectivity Validator component"
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((resources/application-connector\\S+|installation\\S+|tests/components/application-connector\\S+|resources/istio\\S+|resources/istio-resources\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  optional: "false"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
-                    preset-kyma-integration-app-connector-tests-app-validator: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -627,52 +581,6 @@ templates:
                     preset-build-main: "true"
                     preset-kyma-integration-central-app-connectivity-enabled: "true"
                   slack_channel: huskies-notifications
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "post-main-kyma-integration-k3d-app-gateway"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    owner: framefrog
-                    description: "Kyma integration job on k3d for testing application gateway."
-                    testgrid-days-of-results: "60"
-                  labels:
-                    preset-build-main: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
-                    preset-kyma-integration-app-connector-tests-app-gateway: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_postsubmit"
-                    - "image_kyma-integration"
-                    - "extra_refs_test-infra"
-                  local:
-                    - "jobConfig_default"
-                    - "request_small"
-                    - "vm_job_template_k3d"
-                    - "vm_job_labels_template"
-                    - "extra_refs_kyma-local"
-              - jobConfig:
-                  name: "post-main-kyma-integration-k3d-app-conn-validator"
-                  annotations:
-                    testgrid-dashboards: kyma_integration
-                    owner: framefrog
-                    description: "Kyma integration job on k3d for testing application connectivity validator."
-                    testgrid-days-of-results: "60"
-                  labels:
-                    preset-build-main: "true"
-                    preset-kyma-integration-central-app-connectivity-enabled: "true"
-                    preset-kyma-integration-app-connector-tests-app-validator: "true"
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
