@@ -41,7 +41,7 @@ templates:
                     - "jobConfig_presubmit"
                     - "image_e2e-dind-k3d"
                     - "extra_refs_test-infra"
-                    - "unprivileged"
+                    - "privileged_job"
                     - "kyma_project_dir"
                   local:
                     - "jobConfig_default"
