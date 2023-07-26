@@ -43,6 +43,10 @@ jobs:
         id: setup-github-comment
         uses: shmokmt/actions-setup-github-comment@v2
         if: ${{ !cancelled() }}
+      
+      - name: "setup tfcmt"
+        id: setup-tfcmt
+        uses: shmokmt/actions-setup-tfcmt@v2
         
       - name: 'Terraform Init'
         id: terraform_init
