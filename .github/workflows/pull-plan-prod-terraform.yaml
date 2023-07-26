@@ -14,7 +14,13 @@ on: # runs on main
     - '**.yml'
 jobs:
   pull-plan-prod-terraform:
+    
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout
         id: checkout
