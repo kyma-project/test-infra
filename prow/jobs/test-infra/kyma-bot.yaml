@@ -28,10 +28,15 @@ presubmits: # runs on PRs
           repo: test-infra
           base_ref: main
       spec:
-        serviceAccountName: sa-prowjob-gcp-logging-client
+        serviceAccountName: prowjob-default-sa
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
             imagePullPolicy: Always
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "usersmapchecker"
             resources:
