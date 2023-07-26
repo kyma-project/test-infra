@@ -31,4 +31,4 @@ presubmits:
             resources:
               requests:
                 memory: 1Gi
-                cpu: 100m
+                cpu: 1Gi

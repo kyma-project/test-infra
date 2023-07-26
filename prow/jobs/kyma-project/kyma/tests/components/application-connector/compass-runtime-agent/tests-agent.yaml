@@ -4,14 +4,10 @@ presubmits: # runs on PRs
       annotations:
         description: "Kyma integration job on k3d for testing compass runtime agent."
         owner: framefrog
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-runtime-agent"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-kyma-guard-bot-github-token: "true"
         preset-kyma-integration-compass-dev: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"

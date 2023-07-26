@@ -30,5 +30,5 @@ presubmits:
               - "cd components/central-application-gateway && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 1Gi
+                cpu: 1
