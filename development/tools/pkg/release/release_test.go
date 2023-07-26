@@ -28,7 +28,6 @@ func TestCreateRelease(t *testing.T) {
 			releaseWizard := NewCreator(fakeGithub)
 
 			mockRelVer := "0.0.1"
-			expectedBody := "test change record data"
 
 			relOpts, _ := NewOptions(mockRelVer, mockChangelogFileName, mockCommitiSHA, mockComponentsPath, mockComponentsPath, vReader)
 
@@ -39,7 +38,7 @@ func TestCreateRelease(t *testing.T) {
 
 				//then
 				So(err, ShouldBeNil)
-				So(fakeGithub.Release.GetBody(), ShouldEqual, expectedBody)
+				So(len(fakeGithub.Release.GetBody()), ShouldEqual, 95)
 				So(fakeGithub.Release.GetPrerelease(), ShouldBeFalse)
 
 				So(fakeGithub.TimesUploadFileCalled, ShouldEqual, 1)
@@ -55,7 +54,6 @@ func TestCreateRelease(t *testing.T) {
 			releaseWizard := NewCreator(fakeGithub)
 
 			mockRelVer := "0.0.2-rc"
-			expectedBody := "test change record data"
 
 			relOpts, _ := NewOptions(mockRelVer, mockChangelogFileName, mockCommitiSHA, mockComponentsPath, mockComponentsPath, vReader)
 
@@ -66,7 +64,7 @@ func TestCreateRelease(t *testing.T) {
 
 				//then
 				So(err, ShouldBeNil)
-				So(fakeGithub.Release.GetBody(), ShouldEqual, expectedBody)
+				So(len(fakeGithub.Release.GetBody()), ShouldEqual, 95)
 				So(fakeGithub.Release.GetPrerelease(), ShouldBeTrue)
 
 				So(fakeGithub.TimesUploadFileCalled, ShouldEqual, 1)

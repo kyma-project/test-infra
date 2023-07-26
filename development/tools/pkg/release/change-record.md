@@ -1,1 +1,1 @@
-test change record data
+Content of this file is used in the release_test.go unit tests. Please do not change this file.
