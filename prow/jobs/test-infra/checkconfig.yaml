@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -54,7 +54,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -63,8 +63,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -91,7 +91,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -100,8 +100,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -128,7 +128,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -137,8 +137,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -165,7 +165,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -174,8 +174,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -202,7 +202,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -211,8 +211,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -239,7 +239,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -248,8 +248,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -276,7 +276,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -285,8 +285,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -313,7 +313,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -322,8 +322,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -350,7 +350,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -359,8 +359,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -387,7 +387,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -396,8 +396,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -424,7 +424,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -433,8 +433,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -461,7 +461,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -470,8 +470,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -498,7 +498,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -507,8 +507,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -535,7 +535,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -544,8 +544,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -572,7 +572,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -581,8 +581,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -609,7 +609,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -618,8 +618,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -646,7 +646,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -655,8 +655,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -683,7 +683,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -692,8 +692,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -720,7 +720,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -729,8 +729,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -757,7 +757,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -766,8 +766,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -794,7 +794,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -803,8 +803,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -831,7 +831,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -840,8 +840,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -868,7 +868,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -877,8 +877,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -905,7 +905,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -914,8 +914,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -942,7 +942,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -951,8 +951,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -979,7 +979,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -988,8 +988,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1016,7 +1016,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1025,8 +1025,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1053,7 +1053,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1062,8 +1062,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1090,7 +1090,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1099,8 +1099,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1127,7 +1127,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1136,8 +1136,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1164,7 +1164,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1173,8 +1173,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1201,7 +1201,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1210,8 +1210,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1238,7 +1238,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1247,8 +1247,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1275,7 +1275,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1284,8 +1284,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1312,7 +1312,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1321,8 +1321,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1349,7 +1349,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1358,8 +1358,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1386,7 +1386,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1395,8 +1395,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1423,7 +1423,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1432,8 +1432,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1460,7 +1460,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1469,8 +1469,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1497,7 +1497,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1506,8 +1506,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1534,7 +1534,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1543,8 +1543,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1571,7 +1571,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1580,8 +1580,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1608,7 +1608,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1617,8 +1617,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1645,7 +1645,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1654,8 +1654,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1682,7 +1682,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1691,8 +1691,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1719,7 +1719,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1728,8 +1728,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1756,7 +1756,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1765,8 +1765,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1793,7 +1793,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1802,8 +1802,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1830,7 +1830,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1839,8 +1839,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1867,7 +1867,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1876,8 +1876,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1904,7 +1904,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1913,8 +1913,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"
@@ -1941,7 +1941,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/checkconfig:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1950,8 +1950,8 @@ presubmits: # runs on PRs
             command:
               - "checkconfig"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - "--strict"
               - "--required-job-annotations=owner"

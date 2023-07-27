@@ -18,12 +18,6 @@ source "${CURRENT_PATH}/lib/kyma.sh"
 
 kc="kubectl $(context_arg)"
 
-cleanup() {
-    rm -rf "${TMP_DIR}"
-}
-
-trap cleanup EXIT
-
 function printUsage() {
   echo "
   Usage:

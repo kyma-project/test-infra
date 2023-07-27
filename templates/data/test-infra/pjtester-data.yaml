@@ -22,7 +22,8 @@
                 - "-c"
                 - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
             jobConfig_pjtester:
-              command: "pjtester"
+              command: "/ko-app/pjtester"
+              image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230726-19a09015
               env:
                 KUBECONFIG_PATH: /etc/kubeconfig/pjtester/config
               volumeMounts:
@@ -58,7 +59,6 @@
                           - "jobConfig_pjtester"
                         global:
                           - "jobConfig_default"
-                          - "image_prow-tools"
                           - "trusted_cluster"
                           {{/* For test-infra repository test-infra as extra refs is not needed. */}}
                           {{- if ne $repo.name "test-infra"}}

@@ -27,14 +27,14 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230404-24c76bf3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20230726-19a09015"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/markdown-index"
+              - "/ko-app/markdown-index"
             args:
               - "--config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml"
               - "--labels-override=kind/chore,area/documentation"
@@ -60,14 +60,14 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-5905c114"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230726-19a09015"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/imagedetector"
+              - "/ko-app/image-detector"
             args:
               - "--prow-config=prow/config.yaml"
               - "--prow-jobs-dir=prow/jobs"
@@ -130,7 +130,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -157,7 +157,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/label_sync:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -204,7 +204,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
@@ -238,14 +238,14 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:v20230721-5905c114"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230726-19a09015"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/imagedetector"
+              - "/ko-app/image-detector"
             args:
               - "--prow-config=prow/config.yaml"
               - "--prow-jobs-dir=prow/jobs"
@@ -277,7 +277,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230718-0a86ec6744"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230725-371721ec95"
             securityContext:
               privileged: false
               seccompProfile:
