@@ -86,7 +86,7 @@ postsubmits: # runs on main
                   && chmod +x docker-credential-gcr && mv docker-credential-gcr /usr/bin/
                 fi
                 docker-credential-gcr configure-docker --registries=europe-docker.pkg.dev
-                DOCKER_TAG="${PULL_BASE_SHA::8}" make release-stage"
+                DOCKER_TAG="${PULL_BASE_SHA::8}" make release-stage
             env:
               - name: DOCKER_PUSH_REPOSITORY
                 value: "europe-docker.pkg.dev/kyma-project"
