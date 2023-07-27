@@ -1,7 +1,16 @@
-
-
 pjConfigs:
-  prowJobs:
+  prConfig:
     kyma-project:
       cli:
+        prNumber: 1707
+  prowJobs:
+    kyma-project:
+      kyma:
       - pjName: "pull-cli-lint"
+      - pjName: "pull-cli-unit-test"
+      - pjName: "pull-cli-e2e"
+      - pjName: "pull-kyma-cli"
+prConfigs: #
+  kyma-project:
+    cli:
+      prNumber: 1707
