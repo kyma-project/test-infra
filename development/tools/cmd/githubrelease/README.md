@@ -1,4 +1,4 @@
-# Github Release
+# GitHub release
 
 ## Overview
 
@@ -20,15 +20,15 @@ env GOOGLE_APPLICATION_CREDENTIALS={path to the service account file} go run mai
 
 See the list of available flags:
 
-| Name                                         | Required  | Description                                         |
-|:---------------------------------------------|:---------:|:----------------------------------------------------|
-| **--targetCommit**                           |    Yes    | The string value which specifies the [commitish value](https://docs.github.com/en/rest/releases/releases#create-a-release) that the GitHub tag refers to.|
-| **--kymaComponentsPath**                     |    No     | The string value with the path to the Kyma `components.yaml`. It defaults to `installation/resources/components.yaml`.|                                   
-| **--kymaChangelog**                          |    No     | The string value with the name of the release changelog file. It defaults to `release-changelog.md`.|                                                      
-| **--githubRepoOwner**                        |    Yes    | The string value with the name of the GitHub repository owner.|                                                                                            
-| **--githubRepoName**                         |    Yes    | The string value with the name of the GitHub repository.|                                                                                                
-| **--githubAccessToken**                      |    Yes    | The string value with the name of the GitHub OAuth2 access token.|                                                                                        
-| **--releaseVersionFilePath**                 |    Yes    | The string value with the full path to the `RELEASE_VERSION` file.|                                                                                       
+| Name | Required | Description |
+|---|:---:|---|
+| **--targetCommit** | Yes | The string value which specifies the [commitish value](https://docs.github.com/en/rest/releases/releases#create-a-release) that the GitHub tag refers to.|
+| **--kymaComponentsPath**  | No | The string value with the path to the Kyma `components.yaml`. <br> It defaults to `installation/resources/components.yaml`.|                        
+| **--kymaChangelog** | No | The string value with the name of the release changelog file. <br> It defaults to `release-changelog.md`.|                                                      
+| **--githubRepoOwner** | Yes | The string value with the name of the GitHub repository owner.|                                                                                            
+| **--githubRepoName** | Yes| The string value with the name of the GitHub repository.|                                                                                                
+| **--githubAccessToken** | Yes | The string value with the name of the GitHub OAuth2 access token.|                                                                                        
+| **--releaseVersionFilePath** | Yes | The string value with the full path to the `RELEASE_VERSION` file.|                                                                                       
 
 ### Environment variables
 
