@@ -23,7 +23,7 @@
                 - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/vpathguard.sh"
             jobConfig_pjtester:
               command: "/ko-app/pjtester"
-              image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230727-773a210a
+              image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230727-e7022891
               env:
                 KUBECONFIG_PATH: /etc/kubeconfig/pjtester/config
               volumeMounts:
