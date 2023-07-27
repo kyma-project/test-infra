@@ -8,8 +8,10 @@ templates:
             args:
               - "installation/scripts/prow/jobs/provision-compass.sh"
               - "--dump-db"
-            request_memory: 100Mi
-            request_cpu: 50m
+            request_memory: 2Gi
+            request_cpu: 1
+            limits_memory: 3Gi
+            limits_cpu: 2
             env:
               GO111MODULE: "on"
             labels:
