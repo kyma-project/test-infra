@@ -2,19 +2,15 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "4.64.0"
+      version = ">= 4.64.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.20.0"
+      version = ">= 2.20.0"
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
       version = ">= 1.14.0"
-    }
-    github = {
-      source  = "integrations/github"
-      version = "~> 5.0"
     }
   }
 }
@@ -104,14 +100,4 @@ provider "kubectl" {
     data.google_container_cluster.untrusted_workload_k8s_cluster.master_auth[0].cluster_ca_certificate,
   )
   load_config_file = false
-}
-
-provider "github" {
-  alias = "kyma_project"
-  owner = var.kyma-project-github-org
-}
-
-provider "github" {
-  alias = "kyma_incubator"
-  owner = var.kyma-incubator-github-org
 }

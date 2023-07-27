@@ -13,8 +13,8 @@ templates:
           jobConfig_inrepo:
             run_if_changed: "(^.prow/.*.yaml|^.prow.yaml)"
             args:
-              - "--plugin-config=../test-infra/prow/plugins.yaml"
-              - "--config-path=../test-infra/prow/config.yaml"
+              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
+              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
               - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
               - --strict
               - --required-job-annotations=owner
