@@ -4,10 +4,6 @@ postsubmits:
       annotations:
         description: "Bump reconciler version used by CLI and publish the unstable CLI binaries"
         owner: "jellyfish"
-        pipeline.clusterprovisioning: "reconciler"
-        pipeline.installer: "reconciler"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -56,7 +52,6 @@ postsubmits:
       annotations:
         description: "Go lint + Go test post-PR + Build CLI post-PR"
         owner: "jellyfish"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -89,7 +84,6 @@ postsubmits:
       annotations:
         description: "Go lint + Go test pre-rel + Build CLI pre-rel"
         owner: "jellyfish"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
