@@ -96,8 +96,6 @@
 
 [Presets](/docs/prow/presets.md) - This document contains the list of all Presets available in the [`config.yaml`](/prow/config.yaml) file. Use them to define Prow Jobs for your components.
 
-[Production Cluster Configuration](/docs/prow/production-cluster-configuration.md) - This instruction provides the steps required to deploy a production cluster for Prow.
-
 [Prow Architecture](/docs/prow/prow-architecture.md) - The document outlines Prow architecture and interconnections between different systems and components that are involved in it.
 
 [Prow cluster update](/docs/prow/prow-cluster-update.md) - Updating a Prow cluster requires an improved Prow version. The Kubernetes Prow instance gets updated via a shell script. The shell script offers only a short list of the last pushed container tags and as a result, limits the versions to choose from. To cherry-pick updates, monitor [Prow announcements](https://github.com/kubernetes/test-infra/blob/master/prow/ANNOUNCEMENTS.md) to see when fixes or important changes are merged into the Kubernetes repository. This document describes how to update a Prow cluster using a cherry-picked Prow version.
@@ -108,17 +106,9 @@
 
 [Prow Jobs QuickStart](/docs/prow/prow-jobs-quick-start.md) - This document provides an overview of how to quickly start working with Prow jobs.
 
-[Prow jobs](/docs/prow/prow-jobs.md) - This document provides an overview of Prow jobs.  
-
 [TestGrid](/docs/prow/prow-k8s-testgrid.md) - [TestGrid](https://testgrid.k8s.io) is an interactive dashboard for viewing tests results in a grid. It parses JUnit reports for generating a grid view from the tests.
 
-[Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`. 
-
-[Naming conventions](/docs/prow/prow-naming-convention.md) - This document describes the naming conventions for the Prow test instance and its resources hosted in Google Cloud Platform.
-
-[KMS Secrets Management](/docs/prow/prow-secrets-management.md) - Some jobs require using sensitive data. Encrypt the data using Key Management Service (KMS) and store it in Google Cloud Storage (GCS).
-
-[Prow Secrets](/docs/prow/prow-secrets.md) - This document lists all types of Secrets used in the `kyma-prow` and `workload-kyma-prow` clusters, where all Prow Jobs are executed.
+[Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`.
 
 [Quality metrics](/docs/prow/quality-metrics.md) - This document describes reports that provide an overview of the basic quality measures for the Kyma project.
 

@@ -60,10 +60,6 @@ Read the [`docs`](../docs/prow/README.md) to learn how to configure the producti
 
 ## Development
 
-### Prow jobs
-
-Read [this](../docs/prow/prow-jobs.md) document to learn more about Prow job definitions.
-
 ### Upload configuration to the production Prow cluster
 
 Prow configuration is automatically uploaded to the production cluster from the `main` branch by the **Config Updater** plugin.
