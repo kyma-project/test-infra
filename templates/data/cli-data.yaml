@@ -76,8 +76,10 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - golangci-lint run -v --timeout=20m --new-from-rev=$PULL_BASE_SHA ./...
-                  run_if_changed: '^(.*\.go$|.golangci.yaml)'
+                    - |-
+                      pwd
+                      golangci-lint run -v -c .golangci.yml
+                  run_if_changed: '^(.*\.go$|.golangci.yaml|.golangci.yml)'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
