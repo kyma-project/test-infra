@@ -1,7 +1,7 @@
 baseImageOverrides:
-  github.com/kyma-project/test-infra/development/tools/cmd/pjtester: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20230726-6389623f
-  github.com/kyma-project/test-infra/development/markdown-index: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20230726-6389623f
-  github.com/kyma-project/test-infra/development/image-detector: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20230726-6389623f
+  github.com/kyma-project/test-infra/development/tools/cmd/pjtester: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20230727-b686c8e3
+  github.com/kyma-project/test-infra/development/markdown-index: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20230727-b686c8e3
+  github.com/kyma-project/test-infra/development/image-detector: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20230727-b686c8e3
 defaultPlatforms:
   - linux/arm64
   - linux/amd64

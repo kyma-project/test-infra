@@ -39,7 +39,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230727-b686c8e3
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -340,7 +340,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230727-b686c8e3
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
