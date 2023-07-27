@@ -7,12 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Kyma integration job on k3d"
         owner: "goat"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d"
@@ -55,12 +49,6 @@ presubmits: # runs on PRs
       annotations:
         description: "It tests Compass integration. It won't be needed after the implementation of this issue - https://github.com/kyma-project/kyma/issues/15037"
         owner: "framefrog"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-central-app-connectivity-compass"
@@ -105,12 +93,6 @@ presubmits: # runs on PRs
       annotations:
         description: "serverless integration k3s job"
         owner: "otters"
-        pipeline.clusterprovisioning: "k3s"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3s"
-        pipeline.test: "serverless-test"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-serverless-integration-k3s"
@@ -157,12 +139,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Serverless git-function authentication nightly integration tests"
         owner: "otters"
-        pipeline.clusterprovisioning: "k3s"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3s"
-        pipeline.test: "serverless-test"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -214,12 +190,6 @@ export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
       annotations:
         description: "runs telemetry integration tests on k3d"
         owner: "huskies"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-integration-k3d-telemetry"
@@ -259,12 +229,6 @@ export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
       annotations:
         description: "runs istio integration tests with evaluation profile on k3d"
         owner: "goat"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-eval-istio-integration-k3d"
@@ -304,12 +268,6 @@ export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
       annotations:
         description: "runs istio integration tests with production profile on k3d"
         owner: "goat"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-prod-istio-integration-k3d"
@@ -349,12 +307,6 @@ export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
       annotations:
         description: "runs istio reconcilation tests with production profile on k3d"
         owner: "goat"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-istio-reconcilation-k3d"
@@ -401,12 +353,6 @@ postsubmits: # runs on main
       annotations:
         description: "Kyma integration job on k3d."
         owner: "huskies,goat"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-merge"
-        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
         testgrid-days-of-results: "60"
       labels:
@@ -455,8 +401,6 @@ periodics: # runs on schedule
       annotations:
         description: "kyma integration cleaner"
         owner: "neighbors"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -487,8 +431,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
         owner: "neighbors"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -523,8 +465,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic cleanup of orphaned Google cloud disks"
         owner: "neighbors"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -558,8 +498,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic cleanup of orphaned Google cloud IPs"
         owner: "neighbors"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -593,8 +531,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic cleanup of orphaned Google cloud clusters"
         owner: "neighbors"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -628,8 +564,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic cleanup of orphaned Google cloud VMs"
         owner: "neighbors"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -664,8 +598,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic cleanup of orphaned Google cloud load balancers"
         owner: "neighbors"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -698,8 +630,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic cleanup of orphaned Google cloud DNS records"
         owner: "neighbors"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -736,8 +666,6 @@ periodics: # runs on schedule
       annotations:
         description: "Cleans up GCR images older than 7 days in eu.gcr.io/sap-kyma-prow-workloads"
         owner: "neighbors"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -770,8 +698,6 @@ periodics: # runs on schedule
       annotations:
         description: "Exports data from github to the big query (Grafana metrics)"
         owner: "neighbors"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -806,9 +732,6 @@ periodics: # runs on schedule
       annotations:
         description: "Serverless function metrics generator"
         owner: "otters"
-        pipeline.platform: "gke"
-        pipeline.test: "Serverless function metrics"
-        pipeline.trigger: "nightly"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -855,12 +778,6 @@ periodics: # runs on schedule
       annotations:
         description: "Kyma integration periodic job on k3d"
         owner: "goat"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -903,12 +820,6 @@ periodics: # runs on schedule
       annotations:
         description: "runs telemetry integration tests on k3d"
         owner: "huskies"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -951,11 +862,6 @@ periodics: # runs on schedule
       annotations:
         description: "Kyma GKE nightly build (depraceted, needed for sec scans)"
         owner: "neighbors"
-        pipeline.clusterprovisioning: "gcloud cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gke"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

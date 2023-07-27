@@ -4,7 +4,6 @@ presubmits:
       annotations:
         description: "Linting the code, error checking"
         owner: "framefrog"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-central-application-gateway-lint"

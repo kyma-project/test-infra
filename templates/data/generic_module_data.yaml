@@ -35,9 +35,6 @@ templates:
             limits_cpu: 2
           dind_job_k3d:
             annotations:
-              pipeline.platform: k3d
-              pipeline.installer: kyma deploy
-              pipeline.test: k3d-test
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
@@ -339,9 +336,6 @@ templates:
                 readOnly: true
           dind_job_k3d:
             annotations:
-              pipeline.platform: k3d
-              pipeline.installer: kyma deploy
-              pipeline.test: k3d-test
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"

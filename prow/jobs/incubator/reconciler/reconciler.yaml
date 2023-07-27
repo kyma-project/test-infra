@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "test reconciler"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-reconciler-unit-test"
@@ -38,7 +37,6 @@ presubmits: # runs on PRs
       annotations:
         description: "lint reconciler"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-reconciler-lint"
@@ -69,8 +67,6 @@ presubmits: # runs on PRs
       annotations:
         description: "pre publish reconciler"
         owner: "jellyfish"
-        pipeline.installer: "reconciler"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-reconciler-publish-pr-cli"
@@ -111,8 +107,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-latest-istio-reconciler-integration-k3d"
@@ -161,8 +155,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-istio-reconciler-integration-k3d"
@@ -213,8 +205,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs ory reconciler integration tests with evaluation profile on k3d"
         owner: "goat"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-ory-reconciler-eval-integration-k3d"
@@ -265,8 +255,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs ory reconciler integration tests with production profile on Gardener GCP cluster"
         owner: "goat"
-        pipeline.platform: "gardener_gcp"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-ory-reconciler-prod-integration-gcp"
@@ -324,7 +312,6 @@ presubmits: # runs on PRs
       annotations:
         description: "build mothership reconciler"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-incubator-mothership-reconciler"
@@ -374,7 +361,6 @@ presubmits: # runs on PRs
       annotations:
         description: "build component reconciler"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-kyma-incubator-component-reconciler"
@@ -424,7 +410,6 @@ presubmits: # runs on PRs
       annotations:
         description: "hadolint reconciler"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-reconciler-validate-dockerfiles"
@@ -465,7 +450,6 @@ presubmits: # runs on PRs
       annotations:
         description: "validate gomod reconciler"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-reconciler-validate-go-mod"
@@ -507,8 +491,6 @@ postsubmits: # runs on main
       annotations:
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-latest-istio-reconciler-integration-k3d"
@@ -557,8 +539,6 @@ postsubmits: # runs on main
       annotations:
         description: "runs istio reconciler integration tests on k3d"
         owner: "goat"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-istio-reconciler-integration-k3d"
@@ -609,7 +589,6 @@ postsubmits: # runs on main
       annotations:
         description: "build reconciler"
         owner: "jellyfish"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kyma-incubator-mothership-reconciler"
@@ -661,7 +640,6 @@ postsubmits: # runs on main
       annotations:
         description: "build component reconciler"
         owner: "jellyfish"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kyma-incubator-component-reconciler"
@@ -715,7 +693,6 @@ periodics: # runs on schedule
       annotations:
         description: "Reconciler image bump in control-plane"
         owner: "jellyfish"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -763,11 +740,6 @@ periodics: # runs on schedule
       annotations:
         description: "Creates and installs reconciler from main every night."
         owner: "jellyfish"
-        pipeline.clusterprovisioning: "reconciler"
-        pipeline.installer: "reconciler"
-        pipeline.platform: "gardener_gcp"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -824,10 +796,6 @@ periodics: # runs on schedule
       annotations:
         description: "Executes e2e test periodically on nightly cluster for reconciler."
         owner: "jellyfish"
-        pipeline.installer: "reconciler"
-        pipeline.platform: "gcp"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "nightly"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

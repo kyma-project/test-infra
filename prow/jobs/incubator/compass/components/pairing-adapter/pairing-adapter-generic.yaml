@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Building Pairing Adapter Compass component"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-pairing-adapter-build"
@@ -70,7 +69,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run unit tests for the Pairing Adapter Compass component"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-pairing-adapter-unit-test"
@@ -105,7 +103,6 @@ postsubmits: # runs on main
       annotations:
         description: "Building Pairing Adapter Compass component after merge"
         owner: "compass"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-pairing-adapter-build"

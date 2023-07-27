@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Building Director Compass component"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-director-build"
@@ -70,7 +69,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Linter for the Compass Director component"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-director-lint"
@@ -102,7 +100,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run unit tests for the Director Compass component"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-director-unit-test"
@@ -137,7 +134,6 @@ postsubmits: # runs on main
       annotations:
         description: "Building Director Compass component after merge"
         owner: "compass"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-director-build"

@@ -6,11 +6,6 @@ periodics: # runs on schedule
       annotations:
         description: "skr upgrade test on aws"
         owner: "gopher"
-        pipeline.clusterprovisioning: "keb"
-        pipeline.installer: "keb"
-        pipeline.platform: "gardener_aws"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

@@ -4,9 +4,6 @@ templates:
         to: ../../prow/jobs/kyma/kyma-integration.yaml
     render:
       - localSets:
-          jobConfig_default:
-            annotations:
-              pipeline.type: integration
           jobConfig_periodic:
             cluster: "trusted-workload"
           request_small:
@@ -36,7 +33,6 @@ templates:
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
@@ -61,7 +57,6 @@ templates:
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
@@ -85,7 +80,6 @@ templates:
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
@@ -109,7 +103,6 @@ templates:
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
@@ -133,7 +126,6 @@ templates:
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
@@ -158,7 +150,6 @@ templates:
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
@@ -181,7 +172,6 @@ templates:
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
@@ -208,7 +198,6 @@ templates:
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
@@ -231,7 +220,6 @@ templates:
                     - "jobConfig_periodic"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
               - jobConfig:
@@ -254,14 +242,11 @@ templates:
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
   - fromTo:
       - from: generic.tmpl
         to: ../../prow/jobs/kyma/kyma-integration.yaml
-      - from: test-inventory.tmpl
-        to: ../../test-inventory-integration.md
     render:
       - localSets:
           extra_refs_kyma-local:
@@ -270,9 +255,6 @@ templates:
                 - org: "kyma-incubator"
                   repo: "local-kyma"
                   base_ref: "main"
-          jobConfig_default:
-            annotations:
-              pipeline.type: integration
           jobConfig_periodic:
             cluster: "trusted-workload"
           request_small:
@@ -282,11 +264,6 @@ templates:
             request_memory: 200Mi
             request_cpu: 80m
           vm_job_template_k3d:
-            annotations:
-              pipeline.platform: k3d
-              pipeline.installer: kyma deploy
-              pipeline.test: fast-integration
-              pipeline.clusterprovisioning: k3d
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
           vm_job_labels_template:
             labels:
@@ -294,11 +271,6 @@ templates:
               preset-sa-vm-kyma-integration: "true"
               preset-gc-project-env: "true"
           dind_job_k3d:
-            annotations:
-              pipeline.platform: k3s
-              pipeline.installer: kyma deploy
-              pipeline.test: serverless-test
-              pipeline.clusterprovisioning: k3s
             labels:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
@@ -308,11 +280,6 @@ templates:
             request_memory: "4Gi"
             request_cpu: "3"
           gke_job_template:
-            annotations:
-              pipeline.platform: gke
-              pipeline.installer: kyma install
-              pipeline.test: octopus
-              pipeline.clusterprovisioning: gcloud cli
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-gke-integration.sh"
             env:
               CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
@@ -333,23 +300,14 @@ templates:
               preset-cluster-version: "true"
           fast_integration_template:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/fast-integration-test.sh"
-            annotations:
-              pipeline.trigger: nightly
-              pipeline.test: fast-integration
             labels:
               preset-sa-gke-kyma-integration: "true"
           serverless_metrics_template:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-metrics-nightly.sh"
-            annotations:
-              pipeline.trigger: nightly
-              pipeline.test: Serverless function metrics
             labels:
               preset-sa-gke-kyma-integration: "true"
           serverless_benchmarks_template:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-benchmarks-nightly.sh"
-            annotations:
-              pipeline.trigger: nightly
-              pipeline.test: Serverless function benchmarks
             labels:
               preset-sa-gke-kyma-integration: "true"
         jobConfigs:
@@ -361,7 +319,6 @@ templates:
                   annotations:
                     owner: goat
                     description: Kyma integration job on k3d
-                    pipeline.platform: k3d
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((tests/fast-integration\\S+|resources\\S+|installation\\S+|tools/kyma-installer\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
@@ -374,7 +331,6 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
@@ -399,7 +355,6 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
@@ -409,7 +364,6 @@ templates:
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
-                    pipeline.platform: k3s
                     owner: "otters"
                     description: serverless integration k3s job
                   labels:
@@ -428,7 +382,6 @@ templates:
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "dind_job_k3d"
               - jobConfig:
@@ -436,7 +389,6 @@ templates:
                   cron: "0 0,12 * * *" # twice a day, midnight and noon, everyday
                   annotations:
                     description: Serverless function metrics generator
-                    pipeline.platform: gke
                     owner: "otters"
                   labels:
                     preset-gc-compute-envs: "true"
@@ -462,7 +414,6 @@ templates:
                   run_if_changed: "^((resources/serverless|tests/function-controller)\\S+(\\.[^.][^.][^.]+|\\.[^.][^dD]|\\.[^mM][^.]|\\.[^.]$|/[^.]+))$"
                   annotations:
                     description: Serverless git-function authentication nightly integration tests
-                    pipeline.platform: k3s
                     owner: "otters"
                   labels:
                     preset-build-pr: "true"
@@ -485,7 +436,6 @@ templates:
                     - "extra_refs_test-infra"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "dind_job_k3d"
               - jobConfig:
@@ -504,7 +454,6 @@ templates:
                     - "extra_refs_test-infra"
                     - "jobConfig_presubmit"
                   local:
-                    - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               - jobConfig:
@@ -524,7 +473,6 @@ templates:
                     - "extra_refs_test-infra"
                     - "jobConfig_presubmit"
                   local:
-                    - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               - jobConfig:
@@ -544,7 +492,6 @@ templates:
                     - "extra_refs_test-infra"
                     - "jobConfig_presubmit"
                   local:
-                    - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               - jobConfig:
@@ -566,7 +513,6 @@ templates:
                     - "extra_refs_test-infra"
                     - "jobConfig_presubmit"
                   local:
-                    - "jobConfig_default"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
               # postsubmits
@@ -588,7 +534,6 @@ templates:
                     - "image_kyma-integration"
                     - "extra_refs_test-infra"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
@@ -614,7 +559,6 @@ templates:
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma"
                   local:
-                    - "jobConfig_default"
                     - "request_small"
                     - "jobConfig_periodic"
                     - "vm_job_template_k3d"
@@ -639,7 +583,6 @@ templates:
                     - "extra_refs_kyma"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "vm_job_template_k3d"
                     - "vm_job_labels_template"
@@ -649,9 +592,6 @@ templates:
                   annotations:
                     description: Kyma GKE nightly build (depraceted, needed for sec scans)
                     owner: "neighbors"
-                    pipeline.platform: gke
-                    pipeline.installer: kyma deploy
-                    pipeline.clusterprovisioning: gcloud cli
                   labels:
                     preset-kyma-keyring: "true"
                     preset-kyma-encryption-key: "true"
@@ -686,7 +626,6 @@ templates:
                     - "extra_refs_kyma"
                     - "disable_testgrid"
                   local:
-                    - "jobConfig_default"
                     - "request_big"
                     - "jobConfig_periodic"
                     - "gke_job_labels_template"

@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs api-gateway linting"
         owner: "goat"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-lint"
@@ -39,7 +38,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs api-gateway unit tests"
         owner: "goat"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-test"

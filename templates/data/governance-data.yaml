@@ -9,7 +9,6 @@ templates:
           jobConfig_kyma_crd_docs:
             run_if_changed: "^installation/resources/crds/|^.*.md$"
             annotations:
-              pipeline.trigger: pr-submit
             type_presubmit: "true"
             cluster: "untrusted-workload"
             skip_report: "false"

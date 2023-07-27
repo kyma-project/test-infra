@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Building System Broker Compass component"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-system-broker-build"
@@ -70,7 +69,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run unit tests for the System Broker Compass component"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-system-broker-unit-test"
@@ -105,7 +103,6 @@ postsubmits: # runs on main
       annotations:
         description: "Building System Broker Compass component after merge"
         owner: "compass"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-system-broker-build"

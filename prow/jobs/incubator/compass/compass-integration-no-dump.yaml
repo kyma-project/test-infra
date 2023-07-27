@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Compass Integration Tests without DB dump"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-compass-integration-no-dump"

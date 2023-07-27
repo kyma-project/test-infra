@@ -4,7 +4,6 @@ postsubmits: # runs on main
       annotations:
         description: "Build the component image"
         owner: framefrog
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

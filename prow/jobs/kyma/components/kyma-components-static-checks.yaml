@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs linting on telemetry-manager repo"
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-lint"
@@ -38,7 +37,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs unit tests telemetry-manager repo"
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-telemetry-manager-unit-test"
@@ -71,7 +69,6 @@ presubmits: # runs on PRs
       annotations:
         description: "function controller linting job"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-function-controller-lint"
@@ -103,7 +100,6 @@ presubmits: # runs on PRs
       annotations:
         description: "run unit tests for function controller"
         owner: "otters"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-function-controller-unit-test"
@@ -136,7 +132,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs linting on the repo"
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-lint"
@@ -167,7 +162,6 @@ presubmits: # runs on PRs
       annotations:
         description: "runs unit tests on the repo"
         owner: "huskies"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-unit-test"

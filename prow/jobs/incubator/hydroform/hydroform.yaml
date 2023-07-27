@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "hydroform tests and validation"
         owner: "janmedrek"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-hydroform"
@@ -43,7 +42,6 @@ postsubmits: # runs on main
       annotations:
         description: "hydroform tests and validation"
         owner: "janmedrek"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

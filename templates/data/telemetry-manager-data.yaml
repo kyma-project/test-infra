@@ -22,9 +22,6 @@ templates:
               preset-gc-project-env: "true"
           vm_job_k3d:
             annotations:
-              pipeline.platform: k3d
-              pipeline.installer: kyma deploy
-              pipeline.clusterprovisioning: k3d
         jobConfigs:
           - repoName: "github.com/kyma-project/telemetry-manager"
             jobs:

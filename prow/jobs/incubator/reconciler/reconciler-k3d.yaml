@@ -4,8 +4,6 @@ presubmits:
       annotations:
         owner: "jellyfish"
         description: "int test reconciler"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-main-cli-integration-k3d"
@@ -44,8 +42,6 @@ presubmits:
       annotations:
         owner: "jellyfish"
         description: "int test reconciler"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-main-cli-integration-k3d-latest"
@@ -85,8 +81,6 @@ presubmits:
       annotations:
         owner: "jellyfish"
         description: "upgrade test reconciler"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-main-cli-kyma-release-upgrade-k3d"
@@ -126,8 +120,6 @@ presubmits:
       annotations:
         description: "int test reconciler"
         owner: "jellyfish"
-        pipeline.platform: "k3d"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-main-reconciler-integration-k3d"

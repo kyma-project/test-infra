@@ -2,7 +2,6 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-components-provisioner
       annotations:
-        pipeline.trigger: "pr-submit"
         description: "It unit test the Provisioner's code"
         owner: framefrog
       labels:

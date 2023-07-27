@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Dry-run of sync images from external sources to Kyma owned registry"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-image-syncer-dry-run"
@@ -47,7 +46,6 @@ postsubmits: # runs on main
       annotations:
         description: "Sync images from external sources to Kyma owned registry"
         owner: "neighbors"
-        pipeline.trigger: "pr-merge"
         testgrid-dashboards: "kyma_experimental"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

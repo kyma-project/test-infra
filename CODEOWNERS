@@ -59,8 +59,6 @@ templates/data/eventing-manager-data.yaml @kyma-project/prow @kyma-project/event
 # All .md files
 *.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko @neighbors-dev-bot
 
-# Don't require human review for auto generated files
-/test-inventory-integration.md
 
 # File index.md must be owned by prow group in case it will get changes in a pull request which is not allowed to be approved by approval bot.
 # In such case a human approver from prow group must approve the pull request.

@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "build the eventing manager image"
         owner: "skydivingtunas"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-eventing-manager-build"
@@ -55,7 +54,6 @@ presubmits: # runs on PRs
       annotations:
         description: "run unit tests for eventing manager"
         owner: "skydivingtunas"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-eventing-manager-unit-test"
@@ -89,7 +87,6 @@ postsubmits: # runs on main
       annotations:
         description: "build the eventing manager image"
         owner: "skydivingtunas"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

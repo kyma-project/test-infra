@@ -4,9 +4,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Scans the component for security vulnerabilities"
         owner: framefrog
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-compass-manager-trivy"

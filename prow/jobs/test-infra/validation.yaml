@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate scripts."
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-validate-scripts"
@@ -35,7 +34,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate prow tools"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prow-tools"
@@ -71,7 +69,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate image url helper tool"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-image-url-helper"
@@ -107,7 +104,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate prowjobparser tool"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-prowjobparser"
@@ -143,7 +139,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate rendertemplate generated files"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-test-infra-validate-generated-files"
@@ -174,7 +169,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate Dockerfiles, run hadolint."
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-validate-dockerfiles"
