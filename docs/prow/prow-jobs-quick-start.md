@@ -58,5 +58,4 @@ This document provides an overview of how to quickly start working with Prow job
 
    
 7. Run the test with a comment on your `test-infra` pull request (PR), for example, using `/test all`.
-   - To learn more about interacting with Prow, read [Interact with Prow](./prow-jobs.md#interact-with-prow).
    - Look also on [prow command help](https://prow.k8s.io/command-help) for more commands.
