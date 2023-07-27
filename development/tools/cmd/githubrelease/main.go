@@ -16,14 +16,15 @@ import (
 
 var (
 	targetCommit           = flag.String("targetCommit", "", "Target commitish [Required]")
-	bucketName             = flag.String("bucketName", "kyma-prow-artifacts", "Google bucket name where artifacts are stored [Optional]")
-	kymaComponents         = flag.String("kymaComponents", "kyma-components.yaml", "Filename for kyma-components.yaml file. [Optional]")
+	kymaComponentsPath     = flag.String("kymaComponentsPath", "installation/resources/components.yaml", "File path for components.yaml file. [Optional]")
 	kymaChangelog          = flag.String("kymaChangelog", "release-changelog.md", "Filename for release changelog [Optional]")
 	githubRepoOwner        = flag.String("githubRepoOwner", "", "Github repository owner [Required]")
 	githubRepoName         = flag.String("githubRepoName", "", "Github repository name [Required]")
 	githubAccessToken      = flag.String("githubAccessToken", "", "Github access token [Required]")
 	releaseVersionFilePath = flag.String("releaseVersionFilePath", "", "Full path to a file containing release version [Required]")
 )
+
+const kymaComponentsFileName = "kyma-components.yaml"
 
 func main() {
 	flag.Parse()
@@ -62,20 +63,15 @@ func main() {
 
 	ga := release.NewGithubAPI(ctx, *githubAccessToken, *githubRepoOwner, *githubRepoName)
 
-	sa, err := release.NewStorageAPI(ctx, *bucketName)
-	if err != nil {
-		log.Fatal(err)
-	}
+	c := release.NewCreator(ga)
 
-	c := release.NewCreator(ga, sa)
-
-	relOpts, err := release.NewOptions(ctx, sa, *releaseVersionFilePath, *kymaChangelog, *targetCommit, nil)
+	relOpts, err := release.NewOptions(*releaseVersionFilePath, *kymaChangelog, *targetCommit, kymaComponentsFileName, *kymaComponentsPath, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	// Github release
-	err = c.CreateNewRelease(ctx, relOpts, *kymaComponents)
+	err = c.CreateNewRelease(ctx, relOpts)
 	if err != nil {
 		log.Fatal(err)
 	}
