@@ -91,7 +91,7 @@ templates:
           reconciler_publish_pr_cli_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-pr-cli.sh"
           reconciler_e2e_image:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230726-6389623f
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230727-b686c8e3
             securityContext: #temporary we need permissions to create files before transfer them to remote vm
               runAsRoot: true
         jobConfigs:
