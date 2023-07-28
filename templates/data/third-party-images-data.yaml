@@ -95,28 +95,6 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - "kaniko_buildpack"
-
-              - jobConfig:
-                  name: "post-main-tpi-configmap-reload"
-                  annotations:
-                    owner: huskies
-                    description: Post-submit job to build configmap-reload image.
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  slack_channel: huskies-notifications
-                  run_if_changed: "^configmap-reload/"
-                  args:
-                    - "--name=tpi/configmap-reload"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=configmap-reload"
-                    - "--dockerfile=Dockerfile"
-                    - "--env-file=envs"
-                    - '--tag=v{{`{{ .Env \"CONFIGMAP_RELOAD_VERSION\" }}-{{ .ShortSHA }}`}}'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_postsubmit"
-                    - "kaniko_buildpack"
-
               - jobConfig:
                   name: "pre-main-tpi-docker-registry"
                   annotations:
