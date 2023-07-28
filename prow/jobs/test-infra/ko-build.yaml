@@ -22,7 +22,7 @@ presubmits:
               - resolve
               - -f
               - .koapps.yaml
-              - --push=true
+              - --push=false
               - --base-import-paths
               - -j4
             securityContext:
