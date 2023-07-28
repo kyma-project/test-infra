@@ -4,7 +4,6 @@ presubmits: # runs on PRs
       annotations:
         owner: "gopher, framefrog"
         description: "Schema-migrator testing pipeline"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-control-plane-components-schema-migrator"
@@ -21,7 +20,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230727-b686c8e3"
             securityContext:
               privileged: true
               seccompProfile:

@@ -1,45 +1,6 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/control-plane/components/provisioner/provisioner-build.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/control-plane"
-            jobs:
-              - jobConfig:
-                  name: pull-provisioner-build
-                  annotations:
-                    owner: framefrog
-                    description: "It builds the pull request Provisioner image"
-                  run_if_changed: "^components/provisioner"
-                  args:
-                    - --name=control-plane/provisioner
-                    - --context=components/provisioner
-                    - --dockerfile=Dockerfile
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-provisioner-build
-                  annotations:
-                    owner: framefrog
-                    description: "It builds the post commit Provisioner's image"
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/provisioner"
-                  branches:
-                    - ^main$
-                  args:
-                    - --name=control-plane/provisioner
-                    - --context=components/provisioner
-                    - --dockerfile=Dockerfile
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-
       - to: ../../prow/jobs/control-plane/components/schema-migrator/schema-migrator-build.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
@@ -166,7 +127,6 @@ templates:
                   annotations:
                     owner: "gopher"
                     description: "KEB image build on PR"
-                    pipeline.trigger: "pr-submit"
                   run_if_changed: "^components/kyma-environment-broker"
                   args:
                     - --name=control-plane/kyma-environment-broker
@@ -182,7 +142,6 @@ templates:
                   annotations:
                     owner: "gopher"
                     description: "KEB image build on main"
-                    pipeline.trigger: "pr-merge"
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/kyma-environment-broker"
@@ -268,44 +227,6 @@ templates:
                     - --context=components/kyma-environment-broker
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=accountcleanup
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-              - jobConfig:
-                  name: pull-keb-subscription-cleanup-job-build
-                  annotations:
-                    owner: "framefrog"
-                    description: "Cleaning dirty secrets and Azure resources job build on PR https://github.com/kyma-project/control-plane/issues/42"
-                  run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
-                  args:
-                    - --name=control-plane/kyma-environment-subscription-cleanup-job
-                    - --context=components/kyma-environment-broker
-                    - --dockerfile=Dockerfile.job
-                    - --build-arg=BIN=subscriptioncleanup
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-keb-subscription-cleanup-job-build
-                  annotations:
-                    owner: "framefrog"
-                    description: "Cleaning dirty secrets and Azure resources job build on main https://github.com/kyma-project/control-plane/issues/42"
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/kyma-environment-broker"
-                  image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
-                  branches:
-                    - ^main$
-                  args:
-                    - --name=control-plane/kyma-environment-subscription-cleanup-job
-                    - --context=components/kyma-environment-broker
-                    - --dockerfile=Dockerfile.job
-                    - --build-arg=BIN=subscriptioncleanup
                     - --config=/config/kaniko-build-config.yaml
                 inheritedConfigs:
                   global:

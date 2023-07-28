@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Validate new DB schema migrations"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-compass-schema-migrator-validate"
@@ -15,6 +14,7 @@ presubmits: # runs on PRs
         preset-build-pr: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
+        preset-kind-volume-mounts: "true"
         preset-kyma-development-artifacts-bucket: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-vm-kyma-integration: "true"
@@ -33,15 +33,16 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230727-b686c8e3"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
-              - "installation/scripts/prow/jobs/validate-compass-generic.sh"
+              - "/init.sh"
             args:
+              - "installation/scripts/prow/jobs/validate-compass-generic.sh"
               - "--component"
               - "schema-migrator"
               - "--command"
@@ -51,6 +52,6 @@ presubmits: # runs on PRs
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
-                memory: 100Mi
-                cpu: 50m
+                memory: 1Gi
+                cpu: 1
   

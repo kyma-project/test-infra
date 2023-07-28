@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Go lint + Go test pre-PR + Build CLI pre-PR"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-cli"
@@ -22,7 +21,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230727-b686c8e3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -36,42 +35,10 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: pull-cli-lint
-      annotations:
-        description: "Go lint"
-        owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-cli-lint"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(.*\.go$|.golangci.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "golangci-lint run -v --timeout=20m --new-from-rev=$PULL_BASE_SHA ./..."
-            resources:
-              requests:
-                memory: 200Mi
-                cpu: 80m
     - name: pull-cli-unit-test
       annotations:
         description: "Go test"
         owner: "jellyfish"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-cli-unit-test"
@@ -83,7 +50,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230727-b686c8e3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -105,7 +72,6 @@ postsubmits: # runs on main
       annotations:
         description: "Go lint + Go test post-PR + Build CLI post-PR"
         owner: "jellyfish"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -120,7 +86,7 @@ postsubmits: # runs on main
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230727-b686c8e3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -138,7 +104,6 @@ postsubmits: # runs on main
       annotations:
         description: "Go lint + Go test pre-rel + Build CLI pre-rel"
         owner: "jellyfish"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -156,7 +121,7 @@ postsubmits: # runs on main
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230727-b686c8e3"
             securityContext:
               privileged: false
               seccompProfile:

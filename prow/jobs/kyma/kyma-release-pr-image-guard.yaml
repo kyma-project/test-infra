@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Check if chart and manifests files use PR images."
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-release-pr-image-guard"
@@ -27,7 +26,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230727-b686c8e3"
             securityContext:
               privileged: false
               seccompProfile:

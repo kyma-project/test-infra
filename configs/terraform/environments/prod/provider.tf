@@ -2,11 +2,11 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "4.64.0"
+      version = ">= 4.64.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "2.20.0"
+      version = ">= 2.20.0"
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
@@ -23,6 +23,11 @@ terraform {
 # Cluster details are used to configure the k8s and kubectl providers.
 
 provider "google" {
+  project = var.gcp_project_id
+  region  = var.gcp_region
+}
+
+provider "google-beta" {
   project = var.gcp_project_id
   region  = var.gcp_region
 }

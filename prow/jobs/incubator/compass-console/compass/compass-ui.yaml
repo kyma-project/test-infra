@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Building Compass Console component"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-console-build"
@@ -62,7 +61,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Linter for the Compass Console component"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-console-lint"
@@ -75,7 +73,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230727-b686c8e3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -94,7 +92,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Run unit tests for the Compass Console component"
         owner: "compass"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-console-test"
@@ -107,7 +104,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230727-b686c8e3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -129,7 +126,6 @@ postsubmits: # runs on main
       annotations:
         description: "Building Compass Console component after merge"
         owner: "compass"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-compass-console-build"

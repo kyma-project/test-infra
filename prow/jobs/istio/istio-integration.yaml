@@ -19,7 +19,7 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230727-b686c8e3
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -60,7 +60,7 @@ presubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230727-b686c8e3
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -88,7 +88,6 @@ postsubmits:
       annotations:
         owner: goat
         description: Runs integration suite for istio operator
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-istio-integration"
@@ -104,7 +103,7 @@ postsubmits:
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230727-b686c8e3
             command: ["/init.sh"]
             securityContext:
               privileged: true

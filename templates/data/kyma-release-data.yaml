@@ -37,10 +37,6 @@ templates:
             request_cpu: 50m
           vm_job_template_k3d:
             annotations:
-              pipeline.platform: k3d
-              pipeline.installer: kyma deploy
-              pipeline.test: fast-integration
-              pipeline.clusterprovisioning: k3d
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-start-kyma-k3d.sh"
         jobConfigs:
           - repoName: kyma-project/kyma
@@ -58,7 +54,6 @@ templates:
                   annotations:
                     description: "Kyma integration job on k3d."
                     owner: "huskies,goat"
-                    pipeline.platform: k3d
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     testgrid-days-of-results: "60"
                 inheritedConfigs:
@@ -83,7 +78,6 @@ templates:
                   annotations:
                     owner: neighbors
                     description: k3d int test
-                    pipeline.platform: k3d
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -157,10 +151,6 @@ templates:
                   annotations:
                     owner: neighbors
                     description: Kyma GKE nightly build (release-{{ $rel }})
-                    pipeline.platform: gke
-                    pipeline.installer: kyma deploy
-                    pipeline.clusterprovisioning: gcloud cli
-                    pipeline.type: integration
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     testgrid-days-of-results: "60"
                   cluster: "trusted-workload"

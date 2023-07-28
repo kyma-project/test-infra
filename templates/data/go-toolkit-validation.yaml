@@ -63,7 +63,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/eventing-controller && KUBEBUILDER_CONTROLPLANE_START_TIMEOUT=50s go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "cd components/eventing-controller && make test-local"
                   run_if_changed: "^components/eventing-controller/.*$"
                   annotations:
                     owner: skydivingtunas
@@ -92,7 +92,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230721-8ae5f7fd"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230727-b686c8e3"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -139,84 +139,6 @@ templates:
 
           - repoName: "kyma-project/kyma"
             jobs:
-              - jobConfig:
-                  name: "pull-central-application-connectivity-validator-unit-test"
-                  annotations:
-                    owner: framefrog
-                    description: "It unit tests the component"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/central-application-connectivity-validator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/central-application-connectivity-validator/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
-                    - "unprivileged"
-
-              - jobConfig:
-                  name: "pull-central-application-gateway-lint"
-                  annotations:
-                    owner: framefrog
-                    description: "Linting the code, error checking"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/central-application-gateway && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-                  run_if_changed: '^components/central-application-gateway/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - linting
-                    - "unprivileged"
-              - jobConfig:
-                  name: "pull-central-application-gateway-unit-test"
-                  annotations:
-                    owner: framefrog
-                    description: "It unit tests the central-application-gateway source code"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/central-application-gateway && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/central-application-gateway/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
-                    - "unprivileged"
-
-              - jobConfig:
-                  name: "pull-compass-runtime-agent-lint"
-                  annotations:
-                    owner: framefrog
-                    description: "Linting the code, error checking"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/compass-runtime-agent && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
-                  run_if_changed: '^components/compass-runtime-agent/(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - linting
-                    - "unprivileged"
-              - jobConfig:
-                  name: "pull-compass-runtime-agent-unit-test"
-                  annotations:
-                    owner: framefrog
-                    description: "It tests the component source code"
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "cd components/compass-runtime-agent && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
-                  run_if_changed: '^components/compass-runtime-agent/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
-                    - "unprivileged"
-
               - jobConfig:
                   name: "pull-function-controller-lint"
                   annotations:

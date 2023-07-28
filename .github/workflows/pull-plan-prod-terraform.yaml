@@ -1,0 +1,77 @@
+name: Pull Plan Prod Terraform
+run-name: pull-plan-prod-terraform
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref }}
+on: # runs on main
+  pull_request_target:
+    types: [opened, edited, synchronize, reopened, ready_for_review]
+    branches:
+    - main
+    paths:
+    - '**.tf'
+    - '**.tfvars'
+    - '**.yaml'
+    - '**.yml'
+jobs:
+  pull-plan-prod-terraform:
+    
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+      
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v3
+        with:
+          ref: "refs/pull/${{ github.event.number }}/merge"
+          fetch-depth: 50
+      
+      # Important security check: https://github.com/actions/checkout/issues/518
+      - name: Sanity check
+        id: sanity-check
+        run: |
+          [[ "$(git rev-parse 'HEAD^1')" == "${{ github.event.pull_request.head.sha }}" || "$(git rev-parse 'HEAD^2')" == "${{ github.event.pull_request.head.sha }}" ]]
+      
+      - name: Wait for other terraform executions
+        id: wait_for_terraform
+        uses: ahmadnassri/action-workflow-queue@v1
+        
+      - name: Authenticate to GCP
+        id: gcp_auth
+        uses: google-github-actions/auth@v1
+        with:
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }} #workload_identity_provider: "projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/providers/github-com-kyma-project"
+          service_account: ${{ vars.GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL }} #service_account: "terraform-executor@sap-kyma-prow.iam.gserviceaccount.com"
+          
+      - name: Setup Terraform
+        id: setup_terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+        
+      - name: Setup GitHub comments
+        id: setup-github-comment
+        uses: shmokmt/actions-setup-github-comment@v2
+        if: ${{ !cancelled() }}
+      
+      - name: setup tfcmt
+        id: setup-tfcmt
+        uses: shmokmt/actions-setup-tfcmt@v2
+        
+      - name: Terraform Init
+        id: terraform_init
+        run: terraform -chdir=./configs/terraform/environments/prod init -input=false
+        
+      - name: Terraform Plan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: terraform_plan
+        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number }} -sha ${{ github.event.pull_request.head.sha }} plan -- terraform -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
+      
+      - name: Hide GitHub comment
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: hide-github-comment
+        run: github-comment hide --org $GITHUB_REPOSITORY_OWNER --repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number }} -sha1 ${{ github.event.pull_request.head.sha }}
+        if: ${{ !cancelled() }}

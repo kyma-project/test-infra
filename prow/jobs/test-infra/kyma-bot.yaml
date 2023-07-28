@@ -7,7 +7,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Check pull request authors are present in users map file"
         owner: "neighbors"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-check-users-map"
@@ -23,10 +22,6 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         serviceAccountName: sa-prowjob-gcp-logging-client
         containers:
@@ -37,7 +32,7 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "usersmapchecker"
+              - "/ko-app/usersmapchecker"
             resources:
               requests:
                 memory: 3Gi

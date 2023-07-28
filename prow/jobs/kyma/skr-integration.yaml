@@ -6,11 +6,6 @@ periodics: # runs on schedule
       annotations:
         description: "skr integration test azure"
         owner: "gopher"
-        pipeline.clusterprovisioning: "keb"
-        pipeline.installer: "keb"
-        pipeline.platform: "gardener_azure"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -58,12 +53,6 @@ periodics: # runs on schedule
       annotations:
         description: "skr integration test azure"
         owner: "gopher"
-        pipeline.clusterprovisioning: "keb"
-        pipeline.installer: "keb"
-        pipeline.platform: "gardener_azure"
-        pipeline.profile: "evaluation"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -111,11 +100,6 @@ periodics: # runs on schedule
       annotations:
         description: "skr integration test aws"
         owner: "gopher"
-        pipeline.clusterprovisioning: "keb"
-        pipeline.installer: "keb"
-        pipeline.platform: "gardener_aws"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -164,12 +148,6 @@ periodics: # runs on schedule
       annotations:
         description: "skr integration test trial"
         owner: "gopher"
-        pipeline.clusterprovisioning: "keb"
-        pipeline.installer: "keb"
-        pipeline.platform: "gardener_azure"
-        pipeline.profile: "evaluation"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -217,12 +195,6 @@ periodics: # runs on schedule
       annotations:
         description: "skr integration test free"
         owner: "gopher"
-        pipeline.clusterprovisioning: "keb"
-        pipeline.installer: "keb"
-        pipeline.platform: "gardener_aws"
-        pipeline.profile: "evaluation"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -272,11 +244,6 @@ periodics: # runs on schedule
       annotations:
         description: "skr integration test preview"
         owner: "gopher"
-        pipeline.clusterprovisioning: "keb"
-        pipeline.installer: "keb"
-        pipeline.platform: "gardener_aws"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

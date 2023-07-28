@@ -6,7 +6,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic cleanup of Gardener clusters"
         owner: "neighbors"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

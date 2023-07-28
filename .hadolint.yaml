@@ -5,3 +5,4 @@ ignored:
   - DL3013 # pip pin version. Disabled bcause hard dependencies management
   - DL3018 # apk pin version. Disabled bcause hard dependencies management
   - DL3033 # yum pin version. Disabled bcause hard dependencies management
+  - DL3007 # We use tagging of local images in build chain as latest.

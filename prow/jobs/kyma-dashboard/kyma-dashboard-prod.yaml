@@ -4,7 +4,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Kyma Dashboard Prod Job"
         owner: "hasselhoff"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-prod"
@@ -22,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230727-b686c8e3"
             securityContext:
               privileged: true
               seccompProfile:
@@ -37,7 +36,7 @@ presubmits: # runs on PRs
                   && chmod +x docker-credential-gcr && mv docker-credential-gcr /usr/bin/
                 fi
                 docker-credential-gcr configure-docker --registries=europe-docker.pkg.dev
-                DOCKER_TAG="PR-$PULL_NUMBER" make release-prod"
+                DOCKER_TAG="PR-$PULL_NUMBER" make release-prod
             env:
               - name: DOCKER_PUSH_REPOSITORY
                 value: "europe-docker.pkg.dev/kyma-project"
@@ -52,7 +51,6 @@ postsubmits: # runs on main
       annotations:
         description: "Kyma Dashboard Prod Job"
         owner: "hasselhoff"
-        pipeline.trigger: "pr-merge"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -71,7 +69,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230721-8ae5f7fd"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230727-b686c8e3"
             securityContext:
               privileged: true
               seccompProfile:
@@ -86,7 +84,7 @@ postsubmits: # runs on main
                   && chmod +x docker-credential-gcr && mv docker-credential-gcr /usr/bin/
                 fi
                 docker-credential-gcr configure-docker --registries=europe-docker.pkg.dev
-                DOCKER_TAG="${PULL_BASE_SHA::8}" make release-prod"
+                DOCKER_TAG="${PULL_BASE_SHA::8}" make release-prod
             env:
               - name: DOCKER_PUSH_REPOSITORY
                 value: "europe-docker.pkg.dev/kyma-project"
