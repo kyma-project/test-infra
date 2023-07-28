@@ -90,13 +90,6 @@ config_updater:
       clusters:
         trusted-workload:
           - default
-    configs/gcbuild-config.yaml:
-      name: gcbuild-config
-      clusters:
-        trusted-workload:
-          - default
-        untrusted-workload:
-          - default
     configs/kaniko-build-config.yaml:
       name: kaniko-build-config
       clusters:

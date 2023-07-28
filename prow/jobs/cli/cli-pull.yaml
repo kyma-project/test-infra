@@ -1,15 +1,14 @@
 presubmits:
-  kyma-project/kyma:
-    - name: pull-central-application-connectivity-validator-lint
+  kyma-project/cli:
+    - name: pull-cli-lint
       annotations:
-        description: "Linting the code, error checking"
-        owner: "framefrog"
+        description: "Go lint"
+        owner: "jellyfish"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-central-application-connectivity-validator-lint"
+        prow.k8s.io/pubsub.runID: "pull-cli-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/central-application-connectivity-validator/(.*\.go$|.golangcilint.yaml)'
-      optional: true
+      run_if_changed: '^(.*\.go$|.golangci.yaml|.golangci.yml)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -26,8 +25,10 @@ presubmits:
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/central-application-connectivity-validator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+              - |-
+                pwd
+                golangci-lint run -v -c .golangci.yml
             resources:
               requests:
-                memory: 1Gi
-                cpu: 1
+                memory: 200Mi
+                cpu: 80m

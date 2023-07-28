@@ -7,11 +7,6 @@ presubmits: # runs on PRs
       annotations:
         owner: neighbors
         description: k3d int test
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-rel214-kyma-integration-k3d"
@@ -52,11 +47,6 @@ postsubmits: # runs on main
       annotations:
         description: "Kyma integration job on k3d."
         owner: "huskies,goat"
-        pipeline.clusterprovisioning: "k3d"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "k3d"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-merge"
         testgrid-dashboards: "kyma_release-2.14"
         testgrid-days-of-results: "60"
       labels:
@@ -99,7 +89,6 @@ postsubmits: # runs on main
       annotations:
         owner: neighbors
         description: "Release candidate job for Kyma 2.14."
-        pipeline.trigger: "pr-merge"
         testgrid-dashboards: "kyma_release-2.14"
         testgrid-days-of-results: "60"
       labels:
@@ -176,11 +165,6 @@ periodics: # runs on schedule
       annotations:
         owner: neighbors
         description: "Kyma GKE nightly build (release-2.14)"
-        pipeline.clusterprovisioning: "gcloud cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gke"
-        pipeline.trigger: "periodic"
-        pipeline.type: "integration"
         testgrid-dashboards: "kyma_release-2.14"
         testgrid-days-of-results: "60"
       labels:

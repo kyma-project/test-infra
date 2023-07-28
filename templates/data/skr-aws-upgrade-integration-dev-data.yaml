@@ -5,10 +5,6 @@ templates:
     render:
       - localSets:
           jobConfig_default:
-            annotations:
-              pipeline.clusterprovisioning: keb
-              pipeline.installer: keb
-              pipeline.test: fast-integration
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/skr-aws-upgrade-integration-dev.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
@@ -24,8 +20,6 @@ templates:
               preset-kyma-integration-kcp-client-credentials: "true"
               preset-kcp-client-dev-envs: "true"
           keb_plan_aws:
-            annotations:
-              pipeline.platform: gardener_aws
             env:
               KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15" # AWS
               SKIP_CLEANUP: "FALSE" # set to true if Cluster & Compass cleanup should be skipped

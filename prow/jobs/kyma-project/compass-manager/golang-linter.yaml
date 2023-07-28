@@ -4,9 +4,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Linting the code, error checking"
         owner: framefrog
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "pr-submit"
-        pipeline.type: "integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-compass-manager-lint"
