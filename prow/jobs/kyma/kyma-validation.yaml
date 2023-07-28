@@ -101,7 +101,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230727-b686c8e3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230728-28f05d3a"
             securityContext:
               privileged: false
               seccompProfile:

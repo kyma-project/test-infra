@@ -24,7 +24,7 @@ postsubmits:
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230727-b686c8e3
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230728-28f05d3a
             command: [ "bash" ]
             securityContext:
               privileged: false
@@ -72,7 +72,7 @@ presubmits:
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230727-b686c8e3
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-28f05d3a
             command: [ "/init.sh" ]
             securityContext:
               privileged: true
