@@ -372,7 +372,7 @@ templates:
                     - bash
                     - -c
                     - |
-                      /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh serverless-integration simple-tracing
+                      /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh serverless-integration simple-tracing simple-api-gateway
                   env:
                     KYMA_SOURCES_DIR: /home/prow/go/src/github.com/kyma-project/kyma
                 inheritedConfigs:
