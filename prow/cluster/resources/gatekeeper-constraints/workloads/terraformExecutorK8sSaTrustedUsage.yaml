@@ -13,42 +13,30 @@ spec:
     restrictedServiceAccounts:
       - terraform-executor
     trustedImages:
-      # postsubmit prowjob environment prod root module
+      # pull-plan-prod-terraform
       - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:*"
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["\/bin\/sh","-c","\/bin\/terraform -chdir=\.\/configs\/terraform\/environments\/prod init -input=false \\u0026\\u0026 \/tfcmt\/tfcmt -owner \$REPO_OWNER -repo \$REPO_NAME -sha \$PULL_BASE_SHA apply -- terraform -chdir=\.\/configs\/terraform\/environments\/prod apply -input=false -no-color -auto-approve; \/ghcomment\/github-comment hide --org \$(REPO_OWNER) --repo \$(REPO_NAME) -pr \$(PULL_NUMBER) -sha1 \$(PULL_PULL_SHA)"\],"container_name":"test",.*}$'
-      # presubmit prowjob environment prod root module
+        entrypoint_options: '^.*"args":\["\/bin\/sh","-c","\/bin\/terraform -chdir=\.\/configs\/terraform\/environments\/prod init -input=false \\u0026\\u0026 \/tfcmt\/tfcmt -owner \$REPO_OWNER -repo \$REPO_NAME -pr \$PULL_NUMBER -sha \$PULL_PULL_SHA plan -- terraform -chdir=\.\/configs\/terraform\/environments\/prod plan -input=false\ -no-color; \/ghcomment\/github-comment hide --org \$\(REPO_OWNER\) --repo \$\(REPO_NAME\) -pr \$\(PULL_NUMBER\) -sha1 \$\(PULL_PULL_SHA\)\"\],"container_name":"test",.*$'
+      # post-apply-prod-terraform
       - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:*"
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["\/bin\/sh","-c","\/bin\/terraform -chdir=\.\/configs\/terraform\/environments\/prod init -input=false \\u0026\\u0026 \/tfcmt\/tfcmt -owner \$REPO_OWNER -repo \$REPO_NAME -pr \$PULL_NUMBER -sha \$PULL_PULL_SHA plan -- terraform -chdir=\.\/configs\/terraform\/environments\/prod plan -input=false -no-color; \/ghcomment\/github-comment hide --org \$(REPO_OWNER) --repo \$(REPO_NAME) -pr \$(PULL_NUMBER) -sha1 \$(PULL_PULL_SHA)"\],"container_name":"test",.*}$'
-      # presubmit prowjob environment prod secrets-rotator module
+        entrypoint_options: '^{.*"args":\["\/bin\/sh","-c","\/bin\/terraform -chdir=\.\/configs\/terraform\/environments\/prod init -input=false \\u0026\\u0026 \/tfcmt\/tfcmt -owner \$REPO_OWNER -repo \$REPO_NAME -sha \$PULL_BASE_SHA apply -- terraform -chdir=\.\/configs\/terraform\/environments\/prod apply -input=false -no-color -auto-approve; \/ghcomment\/github-comment hide --org \$\(REPO_OWNER\) --repo \$\(REPO_NAME\) -sha1 \$\(PULL_BASE_SHA\)"\],"container_name":"test",.*$'
+      # pull-secrets-rotator-tf-plan
       - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:*"
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["\/bin\/sh","-c","\/bin\/terraform -chdir=\.\/development\/secrets-rotator\/terraform\/environments\/prod init -input=false \\u0026\\u0026 \/tfcmt\/tfcmt -owner \$REPO_OWNER -repo \$REPO_NAME -pr \$PULL_NUMBER -sha \$PULL_PULL_SHA plan -- terraform -chdir=\.\/development\/secrets-rotator\/terraform\/environments\/prod plan -input=false -no-color; \/ghcomment\/github-comment hide --org \$(REPO_OWNER) --repo \$(REPO_NAME) -pr \$(PULL_NUMBER) -sha1 \$(PULL_PULL_SHA)"\],"container_name":"test",.*}$'
-      # postsubmit prowjob environment prod secrets-rotator module
+        entrypoint_options: '^{.*"args":\["\/bin\/sh","-c","\/bin\/terraform -chdir=\.\/development\/secrets-rotator\/terraform\/environments\/prod init -input=false \\u0026\\u0026 \/tfcmt\/tfcmt -owner \$REPO_OWNER -repo \$REPO_NAME -pr \$PULL_NUMBER -sha \$PULL_PULL_SHA plan -- terraform -chdir=\.\/development\/secrets-rotator\/terraform\/environments\/prod plan -input=false -var-file=\./terraform\.tfvars"\],"container_name":"test",.*}$'
+      # post-secrets-rotator-tf-apply
       - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:*"
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["\/bin\/sh","-c","\/bin\/terraform -chdir=\.\/development\/secrets-rotator\/terraform\/environments\/prod init -input=false \\u0026\\u0026 \/tfcmt\/tfcmt -owner \$REPO_OWNER -repo \$REPO_NAME -sha \$PULL_PULL_SHA apply -- terraform -chdir=\.\/development\/secrets-rotator\/terraform\/environments\/prod apply -input=false -no-color -auto-approve; \/ghcomment\/github-comment hide --org \$(REPO_OWNER) --repo \$(REPO_NAME) -pr \$(PULL_NUMBER) -sha1 \$(PULL_PULL_SHA)"\],"container_name":"test",.*}$'
-      # presubmit prowjob environment prod secret-leak-log-scanner module
-      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:*"
-        command:
-          - /tools/entrypoint
-        args: []
-        entrypoint_options: '^{.*"args":\["\/bin\/sh","-c","\/bin\/terraform -chdir=\.\/configs\/terraform\/secrets-leaks-log-scanner init -input=false \\u0026\\u0026 \/tfcmt\/tfcmt -owner \$REPO_OWNER -repo \$REPO_NAME -pr \$PULL_NUMBER -sha \$PULL_PULL_SHA plan -- terraform -chdir=\.\/configs\/terraform\/secrets-leaks-log-scanner plan -input=false -no-color; \/ghcomment\/github-comment hide --org \$(REPO_OWNER) --repo \$(REPO_NAME) -pr \$(PULL_NUMBER) -sha1 \$(PULL_PULL_SHA)"\],"container_name":"test",.*}$'
-      # postsubmit prowjob environment prod secret-leak-log-scanner module
-      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:*"
-        command:
-          - /tools/entrypoint
-        args: []
-        entrypoint_options: '^{.*"args":\["\/bin\/sh","-c","\/bin\/terraform -chdir=\.\/configs\/terraform\/secrets-leaks-log-scanner init -input=false \\u0026\\u0026 \/tfcmt\/tfcmt -owner \$REPO_OWNER -repo \$REPO_NAME -sha \$PULL_PULL_SHA apply -- terraform -chdir=\.\/configs\/terraform\/secrets-leaks-log-scanner apply -input=false -no-color -auto-approve; \/ghcomment\/github-comment hide --org \$(REPO_OWNER) --repo \$(REPO_NAME) -pr \$(PULL_NUMBER) -sha1 \$(PULL_PULL_SHA)"\],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":\["\/bin\/sh","-c","\/bin\/terraform -chdir=\.\/development\/secrets-rotator\/terraform\/environments\/prod init -input=false \\u0026\\u0026 \/tfcmt\/tfcmt -owner \$REPO_OWNER -repo \$REPO_NAME -sha \$PULL_BASE_SHA apply -- terraform -chdir=\.\/development\/secrets-rotator\/terraform\/environments\/prod apply -input=false -auto-approve -var-file=\./terraform\.tfvars"\],"container_name":"test",.*}$'
       # prow decoration
       - image: "gcr.io/k8s-prow/sidecar:*"
         command: []

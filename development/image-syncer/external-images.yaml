@@ -26,7 +26,6 @@ images:
 - source: "istio/install-cni:1.18.2-distroless"
 - source: "istio/istioctl:1.18.2"
 - source: "jettech/kube-webhook-certgen:v1.5.0"
-- source: "jimmidyson/configmap-reload:v0.8.0"
 - source: "kennethreitz/httpbin:latest"
   amd64Only: true
 - source: "oryd/hydra-maester:v0.0.25"

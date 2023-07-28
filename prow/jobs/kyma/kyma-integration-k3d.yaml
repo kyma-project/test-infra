@@ -294,7 +294,7 @@ periodics:
         channel: jellyfish-notifications
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-90a0fc69
           command: [ "/init.sh" ]
           securityContext:
             privileged: true
