@@ -13,6 +13,7 @@ templates:
                     testgrid-create-test-group: "false"
                   type_periodic: "true"
                   cluster: "trusted-workload"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69
                   decorate: "true"
                   skip_report: "false"
                   cron: "0 5 1 * *" # At 05:00 on day-of-month 1.
@@ -25,7 +26,6 @@ templates:
                     GARDENER_ZONES: "europe-west4-b"
                 inheritedConfigs:
                   global:
-                    - "image_kyma-integration"
                     - "extra_refs_test-infra"
                     - "pubsub_labels"
                     - "unprivileged"
