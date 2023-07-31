@@ -186,7 +186,7 @@ templates:
                   branches:
                     - ^main$
                   run_if_changed: "prow/cluster/components/"
-                  env:
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230728-90a0fc69
                   command: prow/cluster/deploy.sh
                   serviceAccountName: sa-prow-deploy
                   skip_report: "false"
@@ -196,7 +196,6 @@ templates:
                   cluster: "trusted-workload"
                 inheritedConfigs:
                   global:
-                    - image_kyma-integration
                     - jobConfig_postsubmit
                     - disable_testgrid
                     - pubsub_labels
