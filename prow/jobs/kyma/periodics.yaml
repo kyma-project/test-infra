@@ -273,7 +273,6 @@ periodics: # runs on schedule
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "github-issues"
       prow.k8s.io/pubsub.topic: "prowjobs"
-      preset-bot-github-sap-token: "true"
       preset-bot-github-token: "true"
       preset-sa-prow-job-github-issues: "true"
     cron: "0 6 * * *"
@@ -286,15 +285,68 @@ periodics: # runs on schedule
         base_ref: main
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:v20230731-68ff41ff"
           securityContext:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
           command:
-            - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/github-issues.sh"
+            - /ko-app/githubissues
+          args:
+          - --githubOrgName kyma-project
+          - --bqProjectID sap-kyma-prow
+          - --bqDataset github_issues
+          - --bqTable github_com_kyma_project
+          - --bqCredentials $(GOOGLE_APPLICATION_CREDENTIALS)
+          - --githubToken $(BOT_GITHUB_TOKEN)
           resources:
             requests:
+              memory: 100Mi
+              cpu: 50m
+            limits:
+              memory: 100Mi
+              cpu: 50m
+  - name: github-issues-internal
+    annotations:
+      description: "Exports data from github to the big query (Grafana metrics)"
+      owner: "neighbors"
+      testgrid-create-test-group: "false"
+    labels:
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "github-issues"
+      prow.k8s.io/pubsub.topic: "prowjobs"
+      preset-bot-github-sap-token: "true"
+      preset-sa-prow-job-github-issues: "true"
+    cron: "0 6 * * *"
+    skip_report: false
+    decorate: true
+    cluster: trusted-workload
+    extra_refs:
+      - org: kyma-project
+        repo: test-infra
+        base_ref: main
+    spec:
+      containers:
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:v20230731-68ff41ff"
+          securityContext:
+            privileged: false
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+          command:
+            - /ko-app/githubissues
+          args:
+            - --githubOrgName kyma-project
+            - --bqProjectID sap-kyma-prow
+            - --bqDataset github_issues
+            - --bqTable github_com_kyma_project
+            - --bqCredentials $(GOOGLE_APPLICATION_CREDENTIALS)
+            - --githubToken $(BOT_GITHUB_SAP_TOKEN)
+          resources:
+            requests:
+              memory: 100Mi
+              cpu: 50m
+            limits:
               memory: 100Mi
               cpu: 50m
