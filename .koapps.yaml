@@ -13,7 +13,6 @@ apps:
   - ko://github.com/kyma-project/test-infra/development/tools/cmd/orphanremover
   - ko://github.com/kyma-project/test-infra/development/tools/cmd/dnscollector
   - ko://github.com/kyma-project/test-infra/development/tools/cmd/gcrcleaner
-  - ko://github.com/kyma-project/test-infra/development/tools/cmd/githubrelease
   - ko://github.com/kyma-project/test-infra/development/tools/cmd/githubissues
   - ko://github.com/kyma-project/test-infra/development/gardener-rotate
   - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/gardener-sa-rotate
