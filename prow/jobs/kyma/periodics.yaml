@@ -45,7 +45,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230726-19a09015"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230728-3f40532d"
           securityContext:
             privileged: false
             seccompProfile:
@@ -80,7 +80,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20230726-19a09015"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20230728-3f40532d"
           securityContext:
             privileged: false
             seccompProfile:
@@ -113,7 +113,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20230726-19a09015"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20230728-3f40532d"
           securityContext:
             privileged: false
             seccompProfile:
@@ -146,7 +146,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20230726-19a09015"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20230728-3f40532d"
           securityContext:
             privileged: false
             seccompProfile:
@@ -179,7 +179,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20230726-19a09015"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20230728-3f40532d"
           securityContext:
             privileged: false
             seccompProfile:
@@ -213,7 +213,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20230726-19a09015"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20230728-3f40532d"
           securityContext:
             privileged: false
             seccompProfile:
@@ -246,7 +246,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230726-19a09015"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230728-3f40532d"
           securityContext:
             privileged: false
             seccompProfile:
