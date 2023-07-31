@@ -41,6 +41,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 1
+              limits:
+                memory: 8Gi
+                cpu: 4
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -99,6 +102,9 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 1
+              limits:
+                memory: 8Gi
+                cpu: 4
             volumeMounts:
               - name: config
                 mountPath: /config
