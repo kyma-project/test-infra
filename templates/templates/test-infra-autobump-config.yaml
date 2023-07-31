@@ -12,6 +12,7 @@ includedConfigPaths:
   - "." # test-infra root directory
 excludedConfigPaths:
   - "prow/staging"
+  - "sec-scanners-config.yaml"
 {{- range .Global.releases }}
 {{- $rel := . | replace "." "" }}
   - "prow/jobs/kyma/releases/kyma-release-{{ $rel }}.yaml"
