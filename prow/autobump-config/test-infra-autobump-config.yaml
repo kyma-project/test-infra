@@ -15,9 +15,9 @@ includedConfigPaths:
 excludedConfigPaths:
   - "prow/staging"
   - "sec-scanners-config.yaml"
+  - "prow/jobs/kyma/releases/kyma-release-217.yaml"
   - "prow/jobs/kyma/releases/kyma-release-216.yaml"
   - "prow/jobs/kyma/releases/kyma-release-215.yaml"
-  - "prow/jobs/kyma/releases/kyma-release-214.yaml"
 targetVersion: "latest"
 prefixes:
   - name: "test-infra"
