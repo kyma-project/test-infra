@@ -79,9 +79,9 @@ templates:
                     - "release"
                   branches:
                     - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Regex for release tag
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230728-90a0fc69"
                 inheritedConfigs:
                   global:
-                    - image_buildpack-golang
                     - jobConfig_default
                     - jobConfig_postsubmit
                   local:
