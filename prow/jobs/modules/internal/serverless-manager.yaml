@@ -181,6 +181,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 4Gi
                 cpu: 3
+              limits:
+                memory: 4Gi
+                cpu: 3
   
 postsubmits: # runs on main
   kyma-project/serverless-manager:
@@ -326,6 +329,9 @@ postsubmits: # runs on main
               requests:
                 memory: 4Gi
                 cpu: 3
+              limits:
+                memory: 4Gi
+                cpu: 3
     - name: post-main-serverless-manager-upgrade-latest-to-main
       annotations:
         description: "upgrade serverless manager test"
@@ -367,6 +373,9 @@ postsubmits: # runs on main
 "
             resources:
               requests:
+                memory: 4Gi
+                cpu: 3
+              limits:
                 memory: 4Gi
                 cpu: 3
   
@@ -412,6 +421,9 @@ periodics: # runs on schedule
 "
             resources:
               requests:
+                memory: 4Gi
+                cpu: 3
+              limits:
                 memory: 4Gi
                 cpu: 3
   
