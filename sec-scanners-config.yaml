@@ -22,7 +22,6 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20230728-3f40532d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230728-3f40532d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20230728-3f40532d
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcrcleaner:v20230728-3f40532d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230728-3f40532d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230728-3f40532d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230728-3f40532d
