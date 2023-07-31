@@ -226,25 +226,9 @@ templates:
               preset-sa-test-gcr-push: "true" # required for pushing images
               preset-sa-gardener-logs: "true" # required for writing logs to Stackdriver
               preset-cluster-version: "true"
-          # remove after kyma-upgrade-gardener-kyma2-minor-versions is compatible with k8s 1.23
-          gardener_azure_job_old_version:
-            env:
-              RS_GROUP: "kyma-gardener-azure"
-              REGION: "northeurope"
-              KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
-              GARDENER_REGION: "northeurope"
-              GARDENER_ZONES: "1"
-            labels:
-              preset-gardener-azure-kyma-integration: "true"
-              preset-docker-push-repository-gke-integration: "true"
-              preset-kyma-cli-stable: "true"
-              preset-az-kyma-prow-credentials: "true"
-              preset-dind-enabled: "true" # we need to be able to start docker
-              preset-gc-compute-envs: "true" # prrovides the GCP region
-              preset-gc-project-env: "true" # required to be able to delete images
-              preset-sa-test-gcr-push: "true" # required for pushing images
-              preset-sa-gardener-logs: "true" # required for writing logs to Stackdriver
-              preset-cluster-version-previous: "true"
+          installer_2:
+            annotations:
+              pipeline.installer: kyma deploy
           evaluation_profile:
             env:
               EXECUTION_PROFILE: "evaluation"
