@@ -379,6 +379,59 @@ templates:
                   local:
                     - dind_job_k3d
               - jobConfig:
+                  name: release-serverless-manager-build
+                  annotations:
+                    owner: otters
+                    description: Job to build serverless operator for a release.
+                  always_run: true
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  command: sh
+                  args:
+                    - -c
+                    - >-
+                      git config --global --add safe.directory $(pwd)/module-chart
+                      &&
+                      ./hack/generate_module-chart.sh
+                      &&
+                      /image-builder
+                      --name=serverless-manager
+                      --config=/config/kaniko-build-config.yaml
+                      --context=.
+                      --dockerfile=Dockerfile
+                      --tag=$PULL_BASE_SHA
+                branches:
+                  - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - image-builder-buildkit
+                  local:
+                    - main_branches
+                    - job_build_volumes
+              - jobConfig:
+                  name: release-serverless-manager-module-build
+                  annotations:
+                    owner: otters
+                    description: Job to build serverless module for a release.
+                  always_run: true
+                  labels:
+                    preset-bot-github-token: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
+                  command: "./scripts/release.sh"
+                  args:
+                    - "ci"
+                  branches:
+                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+              - jobConfig:
                   name: post-serverless-module-build
                   annotations:
                     owner: otters
