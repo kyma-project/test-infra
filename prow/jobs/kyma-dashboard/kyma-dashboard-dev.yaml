@@ -48,6 +48,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
+              limits:
+                memory: 8Gi
+                cpu: 4
   
 postsubmits: # runs on main
   kyma-project/kyma-dashboard:
@@ -96,3 +99,6 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
+              limits:
+                memory: 8Gi
+                cpu: 4
