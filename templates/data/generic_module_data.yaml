@@ -43,6 +43,8 @@ templates:
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
+            limits_memory: "4Gi"
+            limits_cpu: "3"
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
@@ -344,6 +346,8 @@ templates:
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
+            limits_memory: "4Gi"
+            limits_cpu: "3"
         jobConfigs:
           - repoName: kyma-project/serverless-manager
             jobs:
