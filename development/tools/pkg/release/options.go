@@ -25,6 +25,9 @@ func NewOptions(releaseVersionFilePath, releaseChangelogName, commitSHA, kymaCom
 		KymaComponentsPath: kymaComponentsPath,
 	}
 
+	if r == nil {
+		r = NewVersionReader()
+	}
 	releaseVersion, isPreRelease, err := r.ReadFromFile(releaseVersionFilePath)
 	if err != nil {
 		return nil, errors.Wrapf(err, "while reading %s file", releaseVersionFilePath)
