@@ -40,6 +40,9 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 1
+              limits:
+                memory: 8Gi
+                cpu: 4
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit
@@ -103,6 +106,9 @@ postsubmits: # runs on main
               requests:
                 memory: 1.5Gi
                 cpu: 1
+              limits:
+                memory: 8Gi
+                cpu: 4
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit
