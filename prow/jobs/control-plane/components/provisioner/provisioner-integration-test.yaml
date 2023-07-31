@@ -4,7 +4,6 @@ presubmits: # runs on PRs
       annotations:
         description: "It tests the component's correctness"
         owner: framefrog
-        pipeline.test: "fast-integration"
         pipeline.trigger: "pr-submit"
         pipeline.type: "integration"
       labels:
