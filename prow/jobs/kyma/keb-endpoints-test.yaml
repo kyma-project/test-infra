@@ -6,8 +6,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic job to check if KEB endpoints require authorization"
         owner: "gopher"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

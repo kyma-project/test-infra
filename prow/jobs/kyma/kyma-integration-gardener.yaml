@@ -6,12 +6,6 @@ periodics: # runs on schedule
       annotations:
         description: "Evaluation profile for Kyma Azure Gardener integration job."
         owner: "huskies"
-        pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
-        pipeline.profile: "evaluation"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -80,12 +74,6 @@ periodics: # runs on schedule
       annotations:
         description: "Production profile for Kyma Azure Gardener integration job."
         owner: "huskies"
-        pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
-        pipeline.profile: "production"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -154,10 +142,6 @@ periodics: # runs on schedule
       annotations:
         description: "set up nkyma cluster"
         owner: "hasselhoff"
-        pipeline.clusterprovisioning: "kubectl shootspec"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_gcp"
-        pipeline.trigger: "periodic"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -212,11 +196,6 @@ periodics: # runs on schedule
       annotations:
         description: "Azure Kyma 2.0 to main branch."
         owner: "jellyfish"
-        pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
-        pipeline.test: "upgrade-fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -280,11 +259,6 @@ periodics: # runs on schedule
       annotations:
         description: "Azure Kyma 2 previous minor versions."
         owner: "jellyfish"
-        pipeline.clusterprovisioning: "kyma cli"
-        pipeline.installer: "kyma deploy"
-        pipeline.platform: "gardener_azure"
-        pipeline.test: "upgrade-fast-integration"
-        pipeline.trigger: "periodic"
         testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

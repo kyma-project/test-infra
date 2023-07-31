@@ -1,2 +1,0 @@
-project: sap-kyma-prow # project where all gcloud builds will run
-tagTemplate: 'v{{ .Date }}-{{ .ShortSHA }}' # tag template which all images will be tagged

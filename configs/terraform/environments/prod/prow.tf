@@ -1,10 +1,15 @@
 resource "google_container_cluster" "trusted_workload" {
+  provider = google-beta
   name                     = "trusted-workload-kyma-prow"
   location                 = var.gcp_region
   remove_default_node_pool = true
   initial_node_count       = 1
   release_channel {
     channel = "REGULAR"
+  }
+  cluster_autoscaling {
+    enabled = false
+    autoscaling_profile = "OPTIMIZE_UTILIZATION"
   }
   enable_shielded_nodes = true
   description           = "Prow control-plane cluster"
@@ -68,7 +73,7 @@ resource "google_container_node_pool" "components_pool" {
       workload = "components"
     }
     taint {
-      effect = "NO_SCHEDULE"
+      effect = "PREFER_NO_SCHEDULE"
       key    = "components.gke.io/gke-managed-components"
       value  = "true"
     }

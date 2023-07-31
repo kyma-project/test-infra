@@ -7,7 +7,6 @@ postsubmits: # runs on main
       annotations:
         description: "Image to generate certificates for eventing webhooks."
         owner: "skydivingtunas"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-eventing-webhook-certificates-build"

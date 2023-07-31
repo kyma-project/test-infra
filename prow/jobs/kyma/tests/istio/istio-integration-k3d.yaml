@@ -1,0 +1,166 @@
+presubmits:
+  kyma-project/kyma:
+    - name: pre-main-kyma-prod-istio-integration-k3d
+      annotations:
+        description: "runs istio integration tests with production profile on k3d"
+        owner: "goat"
+      labels:
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-prod-istio-integration-k3d"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      branches:
+        - ^release-.*$
+        - ^main$
+        - ^master$
+      decorate: true
+      cluster: untrusted-workload
+      run_if_changed: '(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)'
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-90a0fc69
+            env:
+              - name: EXPORT_RESULT
+                value: "true"
+              - name: KYMA_PROFILE
+                value: production
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command: [ "/init.sh" ]
+            args:
+              - bash
+              - -c
+              - |
+                set -e
+                curl -sSLo /usr/local/bin/kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-linux?alt=media"
+                chmod +x /usr/local/bin/kyma
+                kyma provision k3d --ci -k 1.26.6
+                kubectl get nodes
+                kyma deploy --ci --source=local --workspace "$(pwd)" -p $KYMA_PROFILE \
+                --components-file ../test-infra/prow/scripts/cluster-integration/kyma-integration-k3d-istio-components.yaml
+                make -C tests/components/istio test
+            resources:
+              requests:
+                cpu: 1
+                memory: 2Gi
+              limits:
+                cpu: 2
+                memory: 4Gi
+    - name: pre-main-kyma-eval-istio-integration-k3d
+      annotations:
+        description: "runs istio integration tests with evaluation profile on k3d"
+        owner: "goat"
+      labels:
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-eval-istio-integration-k3d"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^release-.*$
+        - ^main$
+        - ^master$
+      run_if_changed: '(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)'
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-90a0fc69
+            env:
+              - name: EXPORT_RESULT
+                value: "true"
+              - name: KYMA_PROFILE
+                value: evaluation
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command: [ "/init.sh" ]
+            args:
+              - bash
+              - -c
+              - |
+                set -e
+                curl -sSLo /usr/local/bin/kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-linux?alt=media"
+                chmod +x /usr/local/bin/kyma
+                kyma provision k3d --ci -k 1.26.6
+                kubectl get nodes
+                kyma deploy --ci --source=local --workspace "$(pwd)" -p $KYMA_PROFILE \
+                --components-file ../test-infra/prow/scripts/cluster-integration/kyma-integration-k3d-istio-components.yaml
+                make -C tests/components/istio test
+            resources:
+              requests:
+                cpu: 1
+                memory: 2Gi
+              limits:
+                cpu: 2
+                memory: 4Gi
+    - name: pre-main-kyma-istio-reconcilation-k3d
+      annotations:
+        description: "runs istio reconcilation tests with production profile on k3d"
+        owner: "goat"
+      labels:
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-istio-reconcilation-k3d"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      decorate: true
+      cluster: untrusted-workload
+      branches:
+        - ^release-.*$
+        - ^main$
+        - ^master$
+      run_if_changed: '(^resources/istio/.*)|(^resources/istio-resources/.*)|(^tests/components/istio/.*)'
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: main
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-90a0fc69
+            env:
+              - name: EXPORT_RESULT
+                value: "true"
+              - name: KYMA_PROFILE
+                value: production
+              - name: RECONCILATION_TEST
+                value: "true"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command: [ "/init.sh" ]
+            args:
+              - bash
+              - -c
+              - |
+                set -e
+                curl -sSLo /usr/local/bin/kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-linux?alt=media"
+                chmod +x /usr/local/bin/kyma
+                kyma provision k3d --ci -k 1.26.6
+                kubectl get nodes
+                kyma deploy --ci --source=local --workspace "$(pwd)" -p $KYMA_PROFILE \
+                --components-file ../test-infra/prow/scripts/cluster-integration/kyma-integration-k3d-istio-components.yaml
+                make -C tests/components/istio test
+            resources:
+              requests:
+                cpu: 1
+                memory: 2Gi
+              limits:
+                cpu: 2
+                memory: 4Gi

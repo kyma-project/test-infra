@@ -14,8 +14,8 @@ images:
 - source: "gcr.io/google-containers/pause:3.2"
 - source: "goreleaser/goreleaser:v1.11.5"
 # Golang image is pinned because it is force updated in the upstream
-- source: "golang@sha256:b036c52b3bcc8e4e31be19a7a902bb9897b2bf18028f40fd306a9778bab5771c"
-  tag: "1.20.5-alpine3.18"
+- source: "golang@sha256:6f592e0689192b7e477313264bb190024d654ef0a08fb1732af4f4b498a2e8ad"
+  tag: "1.20.6-alpine3.18"
   amd64Only: true
 - source: "grafana/grafana-image-renderer:3.2.1"
   amd64Only: true
@@ -26,7 +26,6 @@ images:
 - source: "istio/install-cni:1.18.2-distroless"
 - source: "istio/istioctl:1.18.2"
 - source: "jettech/kube-webhook-certgen:v1.5.0"
-- source: "jimmidyson/configmap-reload:v0.8.0"
 - source: "kennethreitz/httpbin:latest"
   amd64Only: true
 - source: "oryd/hydra-maester:v0.0.25"

@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230725-371721ec95
-          initupload: gcr.io/k8s-prow/initupload:v20230725-371721ec95
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230725-371721ec95
-          sidecar: gcr.io/k8s-prow/sidecar:v20230725-371721ec95
+          clonerefs: gcr.io/k8s-prow/clonerefs:v20230728-f11c40f6c3
+          initupload: gcr.io/k8s-prow/initupload:v20230728-f11c40f6c3
+          entrypoint: gcr.io/k8s-prow/entrypoint:v20230728-f11c40f6c3
+          sidecar: gcr.io/k8s-prow/sidecar:v20230728-f11c40f6c3
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
@@ -374,11 +374,6 @@ tide:
 
 presets:
   - labels:
-      preset-execute-fast-integration-tests: "true"
-    env:
-      - name: EXECUTE_FAST_INTEGRATION_TESTS
-        value: "true"
-  - labels:
       preset-recreate-cluster: "true"
     env:
       - name: RECREATE_CLUSTER
@@ -395,26 +390,6 @@ presets:
             key: secret
       - name: KYMA_ALERTS_CHANNEL
         value: "#kyma-ci-force"
-  # remove when control plane jobs will work with the new version of k8s
-  - labels:
-      preset-cluster-version-previous: "true"
-    env:
-      - name: AKS_CLUSTER_VERSION
-        value: "1.21"
-      - name: GKE_CLUSTER_VERSION
-        value: "1.21"
-      - name: GARDENER_CLUSTER_VERSION
-        value: "1.21"
-  # previous cluster version which is still supported
-  - labels:
-      preset-cluster-version-old: "true"
-    env:
-      - name: AKS_CLUSTER_VERSION
-        value: "1.25"
-      - name: GKE_CLUSTER_VERSION
-        value: "1.25"
-      - name: GARDENER_CLUSTER_VERSION
-        value: "1.25"
   # cluster version
   - labels:
       preset-cluster-version: "true"
@@ -534,19 +509,6 @@ presets:
       preset-sa-kyma-artifacts: "true"
     env:
       - name: GOOGLE_APPLICATION_CREDENTIALS
-        value: /etc/credentials/sa-kyma-artifacts/service-account.json
-    volumes:
-      - name: sa-kyma-artifacts
-        secret:
-          secretName: sa-kyma-artifacts
-    volumeMounts:
-      - name: sa-kyma-artifacts
-        mountPath: /etc/credentials/sa-kyma-artifacts
-  # Gardener presets
-  - labels:
-      preset-sa-kyma-push-artifacts: "true"
-    env:
-      - name: SA_KYMA_ARTIFACTS_GOOGLE_APPLICATION_CREDENTIALS
         value: /etc/credentials/sa-kyma-artifacts/service-account.json
     volumes:
       - name: sa-kyma-artifacts
@@ -690,11 +652,6 @@ presets:
       - name: docker-graph
         mountPath: /docker-graph
   - labels:
-      preset-docker-push-repository: "true"
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/kyma-project"
-  - labels:
       preset-docker-push-repository-kyma: "true"
     env:
       - name: DOCKER_PUSH_REPOSITORY
@@ -704,31 +661,6 @@ presets:
     env:
       - name: DOCKER_PUSH_REPOSITORY
         value: "eu.gcr.io/sap-kyma-prow-workloads"
-  - labels:
-      preset-docker-push-repository-test-infra: "true"
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/kyma-project/test-infra"
-  - labels:
-      preset-docker-push-repository-incubator: "true"
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/kyma-project/incubator"
-  - labels:
-      preset-docker-push-repository-tpi: "true"
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/kyma-project/tpi"
-  - labels:
-      preset-docker-push-repository-control-plane: "true"
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "eu.gcr.io/kyma-project/control-plane"
-  - labels:
-      preset-docker-push-repository-global: "true"
-    env:
-      - name: DOCKER_PUSH_REPOSITORY
-        value: "gcr.io/kyma-project"
   - labels:
       preset-build-pr: "true"
     env:
@@ -749,23 +681,10 @@ presets:
       - name: BUILD_TYPE
         value: master
   - labels:
-      preset-build-console-main: "true"
-    env:
-      - name: BUILD_TYPE
-        value: master
-  - labels:
       preset-build-release: "true"
     env:
       - name: BUILD_TYPE
         value: release
-  - labels:
-      preset-bot-npm-token: "true"
-    env:
-      - name: BOT_NPM_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: kyma-bot-npm-token
-            key: token
   # Kyma-bot
   - labels:
       preset-bot-github-token: "true"
@@ -806,13 +725,6 @@ presets:
           secretKeyRef:
             name: kyma-bot-github-sap-token
             key: token
-  - labels:
-      preset-bot-github-identity: "true"
-    env:
-      - name: BOT_GITHUB_EMAIL
-        value: "kyma.bot@sap.com"
-      - name: BOT_GITHUB_USER
-        value: "Kyma Bot"
   # BTP-Manager Bot
   - labels:
       preset-kyma-btp-manager-bot-github-token: "true"
@@ -853,21 +765,6 @@ presets:
         mountPath: /etc/github
         readOnly: true
   - labels:
-      preset-kyma-guard-bot-github-identity: "true"
-    env:
-      - name: BOT_GITHUB_EMAIL
-        value: "kymabotguard@gmail.com"
-      - name: BOT_GITHUB_USER
-        value: "kyma-guard-bot"
-  - labels:
-      preset-sap-slack-bot-token: "true"
-    env:
-      - name: SAP_SLACK_BOT_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: sap-slack-bot-token
-            key: token
-  - labels:
       preset-kyma-artifacts-bucket: "true"
     env:
       - name: KYMA_ARTIFACTS_BUCKET
@@ -900,32 +797,6 @@ presets:
             name: nightly-github-integration-app-client-secret
             key: client-secret
   - labels:
-      preset-weekly-github-integration: "true"
-    env:
-      - name: GITHUB_INTEGRATION_APP_CLIENT_ID
-        valueFrom:
-          secretKeyRef:
-            name: weekly-github-integration-app-client-id
-            key: client-id
-      - name: GITHUB_INTEGRATION_APP_CLIENT_SECRET
-        valueFrom:
-          secretKeyRef:
-            name: weekly-github-integration-app-client-secret
-            key: client-secret
-  - labels:
-      preset-nightly-aks-github-integration: "true"
-    env:
-      - name: GITHUB_INTEGRATION_APP_CLIENT_ID
-        valueFrom:
-          secretKeyRef:
-            name: nightly-aks-github-integration-app-client-id
-            key: client-id
-      - name: GITHUB_INTEGRATION_APP_CLIENT_SECRET
-        valueFrom:
-          secretKeyRef:
-            name: nightly-aks-github-integration-app-client-secret
-            key: client-secret
-  - labels:
       preset-kyma-keyring: "true"
     env:
       - name: KYMA_KEYRING
@@ -940,11 +811,6 @@ presets:
     env:
       - name: KYMA_ENCRYPTION_KEY
         value: prow-workloads-encrypt
-  - labels:
-      preset-kyma-slack-channel: "true"
-    env:
-      - name: SLACK_CHANNEL
-        value: CBMPTMCV9
   - labels:
       preset-whitesource-product-kyma: "true"
     env:
@@ -1096,21 +962,6 @@ presets:
       - name: COMPASS_INTEGRATION_ENABLED
         value: "true"
   - labels:
-      preset-kyma-integration-app-connector-tests-app-gateway: "true"
-    env:
-      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_GATEWAY
-        value: "true"
-  - labels:
-      preset-kyma-integration-app-connector-tests-app-validator: "true"
-    env:
-      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_VALIDATOR
-        value: "true"
-  - labels:
-      preset-kyma-integration-app-connector-tests-runtime-agent: "true"
-    env:
-      - name: APPLICATION_CONNECTOR_COMPONENT_TESTS_ENABLED_RUNTIME_AGENT
-        value: "true"
-  - labels:
       preset-kyma-integration-istio-evaluation: "true"
     env:
       - name: ISTIO_INTEGRATION_ENABLED
@@ -1139,11 +990,6 @@ presets:
     env:
       - name: KEB_SUBACCOUNT_ID
         value: "prow-keb-integration"
-  - labels:
-      preset-svcat-migration-subaccounnt: "true"
-    env:
-      - name: KEB_SUBACCOUNT_ID
-        value: "19ea2000-865d-42fd-8d6f-3e3e2dcce3c8"
   - labels:
       preset-keb-dev-credentials: "true"
     env:
@@ -1182,92 +1028,10 @@ presets:
         mountPath: "/gardener"
         readOnly: true
   - labels:
-      preset-btp-admin-stage-credentials: "true"
-    env:
-      - name: BTP_SM_ADMIN_CLIENTID
-        valueFrom:
-          secretKeyRef:
-            name: btp-admin-credentials
-            key: clientid
-      - name: BTP_SM_ADMIN_CLIENTSECRET
-        valueFrom:
-          secretKeyRef:
-            name: btp-admin-credentials
-            key: clientsecret
-      - name: BTP_SM_ADMIN_URL
-        valueFrom:
-          secretKeyRef:
-            name: btp-admin-credentials
-            key: url
-      - name: BTP_SM_ADMIN_TOKENURL
-        valueFrom:
-          secretKeyRef:
-            name: btp-admin-credentials
-            key: tokenurl
-      - name: BTP_SM_ADMIN_CLUSTERID
-        valueFrom:
-          secretKeyRef:
-            name: btp-admin-credentials
-            key: clusterid
-  - labels:
       preset-keb-plan-azure: "true"
     env:
       - name: KEB_PLAN_ID
         value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
-  - labels:
-      preset-keb-plan-gcp: "true"
-    env:
-      - name: KEB_PLAN_ID
-        value: "ca6e5357-707f-4565-bbbd-b3ab732597c6"
-  - labels:
-      preset-keb-plan-aws: "true"
-    env:
-      - name: KEB_PLAN_ID
-        value: "361c511f-f939-4621-b228-d0fb79a1fe15"
-  - labels:
-      preset-keb-plan-azure-lite: "true"
-    env:
-      - name: KEB_PLAN_ID
-        value: "8cb22518-aa26-44c5-91a0-e669ec9bf443"
-  - labels:
-      preset-keb-plan-trial: "true"
-    env:
-      - name: KEB_PLAN_ID
-        value: "7d55d31d-35ae-4438-bf13-6ffdfa107d9f"
-  - labels:
-      preset-keb-plan-openstack: "true"
-    env:
-      - name: KEB_PLAN_ID
-        value: "03b812ac-c991-4528-b5bd-08b303523a63"
-  - labels:
-      preset-keb-plan-free-aws: "true"
-    env:
-      - name: KEB_PLAN_ID
-        value: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
-      - name: KEB_REGION
-        value: "cf-eu10"
-  - labels:
-      preset-keb-plan-free-azure: "true"
-    env:
-      - name: KEB_PLAN_ID
-        value: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
-      - name: KEB_REGION
-        value: "cf-eu20"
-  - labels:
-      preset-gke-upgrade-pre-job: "true"
-    env:
-      - name: SCENARIO_TYPE
-        value: pre
-  - labels:
-      preset-gke-upgrade-pre-release-job: "true"
-    env:
-      - name: SCENARIO_TYPE
-        value: release
-  - labels:
-      preset-gke-upgrade-post-job: "true"
-    env:
-      - name: SCENARIO_TYPE
-        value: post
   - labels:
       preset-busola-nightly-provision-type-kyma: "true"
     env:
@@ -1281,16 +1045,6 @@ presets:
           secretKeyRef:
             name: skr-al-secret-key
             key: secret.json
-  - labels:
-      preset-kyma-periodic-nightly-letsencypt-protection: "true"
-    env:
-      - name: LETSENCRYPT_LIMITS_PROTECTION
-        value: "true"
-  - labels:
-      preset-kyma-kms-sign-key: "true"
-    env:
-      - name: KMS_KEY_URL
-        value: "gcpkms://projects/sap-kyma-prow/locations/global/keyRings/kyma-prow/cryptoKeys/image-signing"
   - labels:
       preset-kyma-integration-kcp-client-credentials: "true"
     env:
@@ -1370,14 +1124,6 @@ presets:
       - name: signify-prod-secret
         mountPath: /secret-prod
         readOnly: true
-  - labels:
-      preset-azure-devops-sa-token: "true"
-    env:
-      - name: AZURE_DEVOPS_SA_TOKEN
-        valueFrom:
-          secretKeyRef:
-            name: azure-devops-token
-            key: azure-devops-token
   - labels:
       preset-tunas-github-bot-token: "true"
     volumes:

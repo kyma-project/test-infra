@@ -7,7 +7,6 @@ postsubmits: # runs on main
       annotations:
         description: "builds api-gateway image"
         owner: "goat"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-api-gateway-build"
@@ -63,7 +62,6 @@ postsubmits: # runs on main
       annotations:
         description: "builds webhook certificates image"
         owner: "goat"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-api-gateway-webhook-certificates-build"
@@ -119,7 +117,6 @@ postsubmits: # runs on main
       annotations:
         description: "creates api-gateway GitHub release with artifacts"
         owner: "goat"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-api-gateway-goreleaser"

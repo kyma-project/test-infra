@@ -2,7 +2,6 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-components-provisioner
       annotations:
-        pipeline.trigger: "pr-submit"
         description: "It unit test the Provisioner's code"
         owner: framefrog
       labels:
@@ -21,7 +20,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230726-6389623f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-90a0fc69"
             securityContext:
               privileged: true
               seccompProfile:

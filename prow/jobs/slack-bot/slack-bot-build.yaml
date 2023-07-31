@@ -7,7 +7,6 @@ postsubmits: # runs on main
       annotations:
         description: "gopher Bot build pipeline"
         owner: "gopher"
-        pipeline.trigger: "pr-merge"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "merge-slack-bot-build"
