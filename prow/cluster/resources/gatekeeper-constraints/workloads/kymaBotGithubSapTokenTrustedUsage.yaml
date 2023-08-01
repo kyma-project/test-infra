@@ -17,7 +17,7 @@ spec:
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["usersmapchecker"\],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":\["/ko-app/usersmapchecker"\],"container_name":"test",.*}$'
       # Prowjob name: github-issues
       - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"
         command:
