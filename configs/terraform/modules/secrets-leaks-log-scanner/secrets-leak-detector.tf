@@ -26,14 +26,16 @@ resource "google_project_iam_member" "project_workflows_invoker" {
 }
 
 locals {
-  scan_logs_for_secrets_yaml = templatefile("${path.module}/../../../development/gcp/workflows/secrets-leak-detector.yaml", {
+  scan_logs_for_secrets_yaml = templatefile(("${path.module}/../../../../development/gcp/workflows/secrets-leak-detector.yaml"), {
     scan-logs-for-secrets-url = google_cloud_run_service.secrets_leak_log_scanner.status[0].url
     move-gcs-bucket-url       = google_cloud_run_service.gcs_bucket_mover.status[0].url
     search-github-issue-url   = google_cloud_run_service.github_issue_finder.status[0].url
     create-github-issue-url   = google_cloud_run_service.github_issue_creator.status[0].url
-    send-slack-message-url    = google_cloud_run_service.slack_message_sender.status[0].url
-  })
+    send-slack-message-url    = var.slack_message_sender_url
+    }
+  )
 }
+
 
 resource "google_workflows_workflow" "secrets_leak_detector" {
   name            = "secrets-leak-detector"
