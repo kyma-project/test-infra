@@ -1,9 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-incubator:
-      ord-service:
-        - pjName: "pull-ord-service-unit-test"
-prConfigs: 
-  kyma-incubator:
-    ord-service:
-      prNumber: 96
