@@ -1,12 +1,8 @@
 terraform {
-  backend "gcs" {
-    bucket = "tf-state-kyma-project"
-    prefix = "secret-leaks-log-scanner"
-  }
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "4.76.0"
+      version = ">=4.76.0"
     }
   }
 }
@@ -19,12 +15,6 @@ variable "gcp_project_id" {
 variable "prow_pubsub_topic_name" {
   type    = string
   default = "prowjobs"
-}
-
-provider "google" {
-  project = var.gcp_project_id
-  region  = "europe-west3"
-  zone    = "europe-west3-a"
 }
 
 # Used to retrieve project_number later
@@ -40,6 +30,6 @@ data "google_secret_manager_secret" "gh_tools_kyma_bot_token" {
   secret_id = "trusted_default_kyma-bot-github-sap-token"
 }
 
-data "google_secret_manager_secret" "common_slack_bot_token" {
-  secret_id = "common-slack-bot-token"
+variable "slack_message_sender_url" {
+  type = string
 }

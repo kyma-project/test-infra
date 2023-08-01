@@ -25,23 +25,24 @@ resource "google_project_iam_member" "project_workflows_invoker" {
   member  = "serviceAccount:${google_service_account.secrets_leak_detector.email}"
 }
 
-data "template_file" "scan_logs_for_secrets_yaml" {
-  template = file("${path.module}/../../../development/gcp/workflows/secrets-leak-detector.yaml")
-  vars = {
+locals {
+  scan_logs_for_secrets_yaml = templatefile(("${path.module}/../../../../development/gcp/workflows/secrets-leak-detector.yaml"), {
     scan-logs-for-secrets-url = google_cloud_run_service.secrets_leak_log_scanner.status[0].url
     move-gcs-bucket-url       = google_cloud_run_service.gcs_bucket_mover.status[0].url
     search-github-issue-url   = google_cloud_run_service.github_issue_finder.status[0].url
     create-github-issue-url   = google_cloud_run_service.github_issue_creator.status[0].url
-    send-slack-message-url    = google_cloud_run_service.slack_message_sender.status[0].url
-  }
+    send-slack-message-url    = var.slack_message_sender_url
+    }
+  )
 }
+
 
 resource "google_workflows_workflow" "secrets_leak_detector" {
   name            = "secrets-leak-detector"
   region          = "europe-west3"
   description     = "Workflow is triggered by message published to prowjobs PubSub topic and scans prowjobs logs for secrets."
   service_account = google_service_account.secrets_leak_detector.id
-  source_contents = data.template_file.scan_logs_for_secrets_yaml.rendered
+  source_contents = local.scan_logs_for_secrets_yaml
 }
 
 resource "google_eventarc_trigger" "secrets_leak_detector_workflow" {

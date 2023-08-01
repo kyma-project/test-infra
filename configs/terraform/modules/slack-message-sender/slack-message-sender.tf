@@ -3,6 +3,20 @@ resource "google_service_account" "slack_message_sender" {
   description = "Identity of cloud run instance running slack message sender service."
 }
 
+resource "google_project_iam_member" "project_run_invoker" {
+  project = var.gcp_project_id
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.slack_message_sender.email}"
+}
+
+data "google_iam_policy" "run_invoker" {
+  binding {
+    role    = "roles/run.invoker"
+    members = ["serviceAccount:${google_service_account.slack_message_sender.email}"]
+  }
+}
+
+
 resource "google_secret_manager_secret_iam_member" "slack_msg_sender_common_slack_bot_token_accessor" {
   secret_id = data.google_secret_manager_secret.common_slack_bot_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
@@ -24,7 +38,7 @@ resource "google_cloud_run_service" "slack_message_sender" {
     spec {
       service_account_name = google_service_account.slack_message_sender.email
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20230725-f46dea4c"
+        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20230309-1d421c4f"
         env {
           name  = "PROJECT_ID"
           value = var.gcp_project_id
@@ -40,6 +54,10 @@ resource "google_cloud_run_service" "slack_message_sender" {
         env {
           name  = "SLACK_CHANNEL_ID"
           value = "C01KSP10MB5"
+        }
+        env {
+          name  = "SLACK_RELEASE_CHANNEL_ID"
+          value = "C01KKPXCPK8"
         }
         env {
           name  = "SLACK_BASE_URL"
@@ -79,7 +97,7 @@ resource "google_monitoring_alert_policy" "slack_message_sender" {
   conditions {
     display_name = "error-log-message"
     condition_matched_log {
-      filter = "resource.type=cloud_run_revision AND severity>=ERROR AND jsonPayload.component=slack-message-sender AND labels.io.kyma.app=secrets-leaks-detector"
+      filter = "resource.type=cloud_run_revision AND severity>=ERROR AND jsonPayload.component=slack-message-sender"
     }
   }
   notification_channels = ["projects/${var.gcp_project_id}/notificationChannels/5909844679104799956"]
@@ -91,6 +109,6 @@ resource "google_monitoring_alert_policy" "slack_message_sender" {
   }
   user_labels = {
     component = "slack-message-sender"
-    app       = "secrets-leak-detector"
+    app       = "slack-messagesender"
   }
 }
