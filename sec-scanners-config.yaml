@@ -6,6 +6,7 @@ protecode:
     - eu.gcr.io/kyma-project/incubator/milv:8649c2fb
     - eu.gcr.io/kyma-project/prow/cleaner:0.0.1
     - eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7
+    - eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230119-993f0759
     - eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
     - eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17
     - eu.gcr.io/sap-kyma-neighbors-dev/automerge-notification-plugin:v0.1.28-test
@@ -23,6 +24,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230728-3f40532d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20230728-3f40532d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230728-3f40532d
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:v20230731-68ff41ff
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230728-3f40532d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230728-3f40532d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20230728-3f40532d
@@ -33,11 +35,11 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20230728-3f40532d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20230728-3f40532d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/movegcsbucket:v20230721-e7d5039c
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/scanlogsforsecrets:v20230721-e7d5039c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/searchgithubissue:v20230721-e7d5039c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20230725-f46dea4c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20230728-90a0fc69
     - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230728-90a0fc69
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-90a0fc69
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69
@@ -62,7 +64,7 @@ protecode:
     - gcr.io/k8s-prow/tide:v20230728-f11c40f6c3
     - grafana/grafana:7.5.17
     - k8s.gcr.io/gcsweb:v1.1.0
-    - maven:3.8.6-eclipse-temurin-11
+    - maven:3.9.3-eclipse-temurin-17
     - nginx:1
     - nginx:1.20-alpine
     - prom/pushgateway:v1.5.1
