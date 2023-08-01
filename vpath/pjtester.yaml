@@ -1,0 +1,5 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      cli:
+      - pjName: "pre-main-cli-e2e"
