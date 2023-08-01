@@ -1,7 +1,7 @@
 pjConfigs:
   prowJobs:
     kyma-incubator:
-      compass:
+      ord-service:
         - pjName: "pull-ord-service-unit-test"
 prConfigs: 
   kyma-incubator:
