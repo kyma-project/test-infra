@@ -45,12 +45,12 @@ periodics: # runs on schedule
           channel: huskies-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
             env:
@@ -113,12 +113,12 @@ periodics: # runs on schedule
           channel: huskies-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
             env:
@@ -173,7 +173,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
             securityContext:
               privileged: false
               seccompProfile:
@@ -232,12 +232,12 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-to-main.sh"
             env:
@@ -292,12 +292,12 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-minor-versions.sh"
             env:

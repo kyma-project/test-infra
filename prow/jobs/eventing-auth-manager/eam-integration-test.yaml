@@ -11,6 +11,8 @@ presubmits: # runs on PRs
         preset-kind-volume-mounts: "true"
         preset-dind-enabled: "true"
         preset-kyma-eventing-auth-ias-creds: "true"
+        preset-k3d-enabled: "true"
+        preset-provision-registry: "true"
       cluster: untrusted-workload
       decorate: true
       always_run: true
@@ -20,8 +22,8 @@ presubmits: # runs on PRs
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
-            command: ["/bin/bash"]
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-90a0fc69
+            command: ["/init.sh"]
             securityContext:
               privileged: true
               seccompProfile:
@@ -29,7 +31,9 @@ presubmits: # runs on PRs
               allowPrivilegeEscalation: true
             args:
               - -c
-              - scripts/run-integration-test.sh
+              - |
+                export KUBECONFIG=$(k3d kubeconfig write kcp)
+                TEST_EVENTING_AUTH_TARGET_KUBECONFIG_PATH=${KUBECONFIG} USE_EXISTING_CLUSTER=true make test
             resources:
               requests:
                 cpu: 1

@@ -169,8 +169,6 @@ globalSets:
   # Image sets
   image_bootstrap:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230728-90a0fc69"
-  image_prow-tools:
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230710-20c3f243"
   image_kyma-integration:
     image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
   image_buildpack-node:

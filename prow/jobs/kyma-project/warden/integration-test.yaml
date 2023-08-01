@@ -7,6 +7,7 @@ presubmits:
       labels:
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
+        preset-k3d-enabled: "true"
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-warden-integration-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
@@ -15,15 +16,11 @@ presubmits:
       run_if_changed: '.*\.go$|charts/'
       spec:
         containers:
-          - image: eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501
-            command:
-              - /bin/bash
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-90a0fc69
+            command: ["/init.sh"]
             args:
               - -c
               - |
-                service docker start
-                curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
-                k3d cluster create
                 kubectl cluster-info
                 make install run-integration-tests
                 failed=$?

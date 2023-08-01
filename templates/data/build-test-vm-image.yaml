@@ -26,7 +26,6 @@ templates:
                     - jobConfig_presubmit
                     - jobConfig_default
                     - pubsub_labels
-                    - image_kyma-integration
               - jobConfig:
                   name: pull-test-k3d-on-vm-image
                   image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230728-90a0fc69
@@ -48,7 +47,6 @@ templates:
                     - jobConfig_presubmit
                     - jobConfig_default
                     - pubsub_labels
-                    - image_kyma-integration
               - jobConfig:
                   name: post-build-test-vm-image
                   annotations:

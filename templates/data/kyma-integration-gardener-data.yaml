@@ -21,6 +21,7 @@ templates:
             request_cpu: 400m
             labels:
               preset-debug-commando-oom: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69
           jobConfig_presubmit:
             optional: true
             labels:
@@ -88,7 +89,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
-                    - image_kyma-integration
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -123,7 +123,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
-                    - image_kyma-integration
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -158,7 +157,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
-                    - image_kyma-integration
                   local:
                     - jobConfig_default
                     - jobConfig_presubmit
@@ -183,6 +181,7 @@ templates:
                   repo: "busola"
                   base_ref: "main"
           jobConfig_default:
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69
             request_memory: 1Gi
             request_cpu: 400m
             labels:
@@ -258,8 +257,6 @@ templates:
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
-                    - image_kyma-integration
-                    - "privileged"
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -285,8 +282,6 @@ templates:
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
-                    - image_kyma-integration
-                    - "privileged"
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -312,7 +307,6 @@ templates:
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
-                    - image_kyma-integration
                     - disable_testgrid
                   local:
                     - jobConfig_default
@@ -337,9 +331,7 @@ templates:
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
-                    - image_kyma-integration
                     - jobConfig_slack_jellyfish
-                    - "privileged"
                   local:
                     - jobConfig_default
                     - gardener_azure_job
@@ -362,9 +354,7 @@ templates:
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
-                    - image_kyma-integration
                     - kyma_minor_upgrade
-                    - "privileged"
                   local:
                     - jobConfig_default
                     - gardener_azure_job
