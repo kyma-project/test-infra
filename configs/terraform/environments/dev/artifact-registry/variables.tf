@@ -15,7 +15,7 @@ variable "gcp_project_id" {
 variable "artifact_registry_names" {
   type        = list(string)
   description = "Artifact Registry names"
-  default     = ["modules-internal"]
+  default     = ["module-templates"]
 }
 variable "artifact_registry_owner" {
   type        = string
