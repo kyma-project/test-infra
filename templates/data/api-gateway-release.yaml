@@ -7,7 +7,7 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230728-90a0fc69"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -79,8 +79,9 @@ templates:
                     preset-bot-github-token: "true"
                   command: "/bin/bash"
                   args:
-                    - "-c"
-                    - hack/release.sh
+                    - -c
+                    - >-
+                      mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && hack/release.sh
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit

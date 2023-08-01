@@ -29,21 +29,10 @@
 
 # Exit on error, and raise error when variable is not set when used
 set -e
+pwd
 
-# Exported variables
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-
-# shellcheck source=prow/scripts/lib/log.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/utils.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck source=prow/scripts/lib/kyma.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
-# shellcheck source=prow/scripts/lib/gardener/gardener.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
-# shellcheck source=prow/scripts/cluster-integration/helpers/reconciler.sh
-source "${TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS}/reconciler.sh"
+# shellcheck source=prow/scripts/reconciler/common.sh
+source "../../kyma-project/test-infra/prow/scripts/reconciler/common.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
@@ -59,24 +48,19 @@ requiredVars=(
 )
 
 utils::check_required_vars "${requiredVars[@]}"
-
-if [[ $GARDENER_PROVIDER == "azure" ]]; then
-    # shellcheck source=prow/scripts/lib/gardener/azure.sh
-    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/azure.sh"
-elif [[ $GARDENER_PROVIDER == "aws" ]]; then
-    # shellcheck source=prow/scripts/lib/gardener/aws.sh
-    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/aws.sh"
-elif [[ $GARDENER_PROVIDER == "gcp" ]]; then
-    # shellcheck source=prow/scripts/lib/gardener/gcp.sh
-    source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gcp.sh"
-else
-    log::error "GARDENER_PROVIDER ${GARDENER_PROVIDER} is not yet supported"
-    exit 1
-fi
-
 # Used to detect errors for logging purposes
 ERROR_LOGGING_GUARD="true"
 export ERROR_LOGGING_GUARD
+
+if  ! command -v helm &> /dev/null ; then
+  echo "helm not found"
+  mkdir -p bin
+  HELM_VERSION=v3.12.1
+  curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" && \
+  tar -xzOf helm.tar.gz linux-amd64/helm > bin/helm && \
+  chmod +x bin/helm
+  export PATH="$PWD/bin:$PATH"
+fi
 
 ## ---------------------------------------------------------------------------------------
 ## Provision Gardener cluster
@@ -91,7 +75,7 @@ export CLEANUP_CLUSTER="true"
 export INPUT_CLUSTER_NAME="${utils_generate_commonName_return_commonName:?}"
 export CLUSTER_NAME="${INPUT_CLUSTER_NAME}"
 
-log::banner "Provision Gardener cluster"
+echo ">>> Provision Gardener cluster"
 trap gardener::cleanup EXIT INT
 reconciler::provision_cluster
 reconciler::export_shoot_cluster_kubeconfig
@@ -117,10 +101,14 @@ reconciler::wait_until_is_ready
 ## ---------------------------------------------------------------------------------------
 
 # Get Kyma2 latest release version
-kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
 
-# Exported variables
+pushd ../../kyma-project/kyma
+git remote add origin https://github.com/kyma-project/kyma.git
+git reset --hard && git remote update && git fetch --tags --all >/dev/null 2>&1
+kyma_get_last_release_version_return_version=$(git tag -l '[0-9]*.[0-9]*.[0-9]*'| sort -r -V | grep '^[^-rc]*$'| head -n1)
 export KYMA_UPGRADE_SOURCE="${kyma_get_last_release_version_return_version:?}"
+git reset --hard && git checkout tags/"${KYMA_UPGRADE_SOURCE}"
+popd
 
 # Set up test pod environment
 reconciler::deploy_test_pod
@@ -128,20 +116,13 @@ reconciler::wait_until_test_pod_is_ready
 reconciler::initialize_test_pod
 
 # Trigger the reconciliation through test pod
-log::banner "Reconcile Kyma2 version: ${KYMA_UPGRADE_SOURCE}"
+echo ">>> Reconcile Kyma2 version: ${KYMA_UPGRADE_SOURCE}"
 reconciler::trigger_kyma_reconcile
 
 # Wait until reconciliation is complete
 reconciler::wait_until_kyma_reconciled
 
-# run the fast integration test before reconciliation
-log::banner "Executing pre-upgrade test"
-log::info "### switching local Kyma sources to the ${KYMA_UPGRADE_SOURCE}"
-pushd "${KYMA_PROJECT_DIR}/kyma"
-git reset --hard
-git checkout tags/"${KYMA_UPGRADE_SOURCE}"
-popd
-gardener::pre_upgrade_test_fast_integration_kyma -d "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
+make -C "../../kyma-project/kyma/tests/fast-integration" ci-pre-upgrade
 
 ## ---------------------------------------------------------------------------------------
 ## Reconcile and test Kyma2 main
@@ -156,21 +137,21 @@ reconciler::wait_until_test_pod_is_ready
 reconciler::initialize_test_pod
 
 # Trigger the reconciliation through test pod
-log::banner "Reconcile Kyma2 version: ${KYMA_UPGRADE_SOURCE}"
+echo ">>> Reconcile Kyma2 version: ${KYMA_UPGRADE_SOURCE}"
 reconciler::trigger_kyma_reconcile
 
 # Wait until reconciliation is complete
 reconciler::wait_until_kyma_reconciled
 
 # run the fast integration test after reconciliation
-log::banner "Executing post-upgrade test"
-log::info "### switching local Kyma sources to the ${KYMA_UPGRADE_SOURCE}"
+echo ">>> Executing post-upgrade test"
+echo "switching local Kyma sources to the ${KYMA_UPGRADE_SOURCE}"
 pushd "${KYMA_PROJECT_DIR}/kyma"
 git reset --hard
 git checkout "${KYMA_UPGRADE_SOURCE}"
 popd
 
-gardener::post_upgrade_test_fast_integration_kyma -d "/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
+make -C "../../kyma-project/kyma/tests/fast-integration" ci-post-upgrade
 
 # Must be at the end of the script
 ERROR_LOGGING_GUARD="false"
