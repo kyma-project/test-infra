@@ -5,8 +5,13 @@ templates:
     render:
       - localSets:
           jobConfig_default:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/keb-endpoints-test.sh"
+            command: make
+            args:
+              - -C
+              - testing/e2e/skr
+              - keb-endpoints
             cluster: "trusted-workload"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69
             request_memory: 100Mi
             request_cpu: 50m
             labels:
@@ -26,10 +31,8 @@ templates:
                     description: "Periodic job to check if KEB endpoints require authorization"
                 inheritedConfigs:
                   global:
-                    - "image_kyma-integration"
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
                     - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
