@@ -3,6 +3,20 @@ resource "google_service_account" "slack_message_sender" {
   description = "Identity of cloud run instance running slack message sender service."
 }
 
+resource "google_project_iam_member" "project_run_invoker" {
+  project = var.gcp_project_id
+  role    = "roles/run.invoker"
+  member  = "serviceAccount:${google_service_account.slack_message_sender.email}"
+}
+
+data "google_iam_policy" "run_invoker" {
+  binding {
+    role    = "roles/run.invoker"
+    members = ["serviceAccount:${google_service_account.slack_message_sender.email}"]
+  }
+}
+
+
 resource "google_secret_manager_secret_iam_member" "slack_msg_sender_common_slack_bot_token_accessor" {
   secret_id = data.google_secret_manager_secret.common_slack_bot_token.secret_id
   role      = "roles/secretmanager.secretAccessor"
