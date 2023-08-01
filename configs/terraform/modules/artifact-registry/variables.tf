@@ -50,3 +50,9 @@ variable "immutable_artifact_registry" {
   description = "Is Artifact registry immutable"
   default     = false
 }
+
+variable "artifact_registry_public" {
+  type        = bool
+  description = "Is Artifact registry public"
+  default     = false
+}

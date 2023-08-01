@@ -15,7 +15,7 @@ variable "gcp_project_id" {
 variable "artifact_registry_names" {
   type        = list(string)
   description = "Artifact Registry names"
-  default     = ["modules-ocim", "modules-internal"]
+  default     = ["modules-internal"]
 }
 variable "artifact_registry_owner" {
   type        = string
@@ -58,5 +58,11 @@ variable "artifact_registry_primary_area" {
 variable "immutable_artifact_registry" {
   type        = bool
   description = "Is Artifact registry immutable?"
+  default     = false
+}
+
+variable "artifact_registry_public" {
+  type        = bool
+  description = "Is Artifact registry public"
   default     = false
 }

@@ -18,6 +18,7 @@ resource "google_artifact_registry_repository" "artifact_registry" {
 }
 
 resource "google_artifact_registry_repository_iam_member" "member_service_account" {
+  count      = var.artifact_registry_writer_serviceaccount == "" ? 0 : 1
   project    = data.google_client_config.this.project
   location   = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : data.google_client_config.this.region
   repository = google_artifact_registry_repository.artifact_registry.name
@@ -32,4 +33,13 @@ resource "google_artifact_registry_repository_iam_member" "reader_service_accoun
   repository = google_artifact_registry_repository.artifact_registry.name
   role       = "roles/artifactregistry.reader"
   member     = "serviceAccount:${each.value}"
+}
+
+resource "google_artifact_registry_repository_iam_member" "public_access" {
+  count      = var.artifact_registry_public == true ? 1 : 0
+  project    = data.google_client_config.this.project
+  location   = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : data.google_client_config.this.region
+  repository = google_artifact_registry_repository.artifact_registry.name
+  role       = "roles/artifactregistry.reader"
+  member     = "allUsers"
 }
