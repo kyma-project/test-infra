@@ -29,31 +29,31 @@ plank:
           clonerefs:
             requests:
               cpu: 100m
-              memory: 100Mi
+              memory: 250Mi
             limits:
               cpu: 100m
-              memory: 100Mi
+              memory: 250Mi
           initupload:
             requests:
               cpu: 100m
-              memory: 100Mi
+              memory: 250Mi
             limits:
               cpu: 100m
-              memory: 100Mi
+              memory: 250Mi
           place_entrypoint:
             requests:
-              cpu: 10m
-              memory: 50Mi
+              cpu: 100m
+              memory: 250Mi
             limits:
-              cpu: 10m
-              memory: 50Mi
+              cpu: 100m
+              memory: 250Mi
           sidecar:
             requests:
-              cpu: 10m
-              memory: 50Mi
+              cpu: 100m
+              memory: 250Mi
             limits:
-              cpu: 10m
-              memory: 50Mi
+              cpu: 100m
+              memory: 250Mi
         gcs_configuration:
           bucket: kyma-prow-logs
           path_strategy: "explicit"
