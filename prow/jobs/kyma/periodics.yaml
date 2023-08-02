@@ -301,12 +301,12 @@ periodics: # runs on schedule
           command:
             - /ko-app/githubissues
           args:
-          - --githubOrgName kyma-project
-          - --bqProjectID sap-kyma-prow
-          - --bqDataset github_issues
-          - --bqTable github_com_kyma_project
-          - --bqCredentials $(GOOGLE_APPLICATION_CREDENTIALS)
-          - --githubToken $(BOT_GITHUB_TOKEN)
+          - --githubOrgName=kyma-project
+          - --bqProjectID=sap-kyma-prow
+          - --bqDataset=github_issues
+          - --bqTable=github_com_kyma_project
+          - --bqCredentials=$(GOOGLE_APPLICATION_CREDENTIALS)
+          - --githubToken=$(BOT_GITHUB_TOKEN)
           resources:
             requests:
               memory: 100Mi
@@ -344,12 +344,13 @@ periodics: # runs on schedule
           command:
             - /ko-app/githubissues
           args:
-            - --githubOrgName kyma-project
-            - --bqProjectID sap-kyma-prow
-            - --bqDataset github_issues
-            - --bqTable github_com_kyma_project
-            - --bqCredentials $(GOOGLE_APPLICATION_CREDENTIALS)
-            - --githubToken $(BOT_GITHUB_SAP_TOKEN)
+            - --githubOrgName=kyma
+            - --githubBaseURL=https://github.tools.sap/api/v3/
+            - --bqProjectID=sap-kyma-prow
+            - --bqDataset=github_issues
+            - --bqTable=github_tools_sap_kyma
+            - --bqCredentials=$(GOOGLE_APPLICATION_CREDENTIALS)
+            - --githubToken=$(BOT_GITHUB_SAP_TOKEN)
           resources:
             requests:
               memory: 100Mi
