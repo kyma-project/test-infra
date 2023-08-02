@@ -38,7 +38,7 @@ require (
 	github.com/tidwall/gjson v1.15.0
 	github.com/zricethezav/gitleaks/v8 v8.17.0
 	go.uber.org/zap v1.24.0
-	golang.org/x/net v0.12.0
+	golang.org/x/net v0.13.0
 	golang.org/x/oauth2 v0.10.0
 	google.golang.org/api v0.134.0
 	google.golang.org/grpc v1.57.0
