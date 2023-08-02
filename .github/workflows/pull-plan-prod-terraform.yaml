@@ -1,7 +1,7 @@
 name: Pull Plan Prod Terraform
 run-name: pull-plan-prod-terraform
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref }}
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
 on: # runs on main
   pull_request_target:
     types: [opened, edited, synchronize, reopened, ready_for_review]
