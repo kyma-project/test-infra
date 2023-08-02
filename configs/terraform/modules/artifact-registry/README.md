@@ -18,7 +18,7 @@ artifact_registry_primary_area  = "europe"
 When you use the GCP private image registry, consider the following:
 
 - The solution is prepared for the GCP Service Account related execution.
-- The `roles/artifactregistry.writer` role binding is part of the solution. To learn more, read [Artifact Registry Repository Access Control](https://cloud.google.com/artifact-registry/docs/access-control). (If this variable is empty the solution won't add any service account with writer permission)
+- The `roles/artifactregistry.writer` role binding is part of the solution. To learn more, read [Artifact Registry Repository Access Control](https://cloud.google.com/artifact-registry/docs/access-control). If this variable is empty, the solution won't add any service account with the `writer` permission.
 - The `roles/artifactregistry.reader` role binding is required for lifecycle-manager service accounts. To learn more, read [Artifact Registry Repository Access Control](https://cloud.google.com/artifact-registry/docs/access-control).
-- You can make repository to public if you use the `artifact_registry_public = true` in the `terraform.tfvars`
+- You can make your repository public if you use the `artifact_registry_public = true` in the `terraform.tfvars`
 - Vulnerability scanning is enabled by default.
