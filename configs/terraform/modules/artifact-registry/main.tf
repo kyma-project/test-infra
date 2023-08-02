@@ -7,10 +7,9 @@ resource "google_artifact_registry_repository" "artifact_registry" {
   format        = "DOCKER"
 
   labels = {
-    name   = "${lower(var.artifact_registry_name)}"
-    owner  = var.artifact_registry_owner
-    module = var.artifact_registry_module
-    type   = var.artifact_registry_type
+    name  = "${lower(var.artifact_registry_name)}"
+    owner = var.artifact_registry_owner
+    type  = var.artifact_registry_type
   }
   docker_config {
     immutable_tags = var.immutable_artifact_registry

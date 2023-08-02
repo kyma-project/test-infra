@@ -1,13 +1,13 @@
 module "artifact_registry" {
-  source                                   = "../../../modules/artifact-registry"
-  for_each                                 = toset(var.artifact_registry_names)
-  artifact_registry_name                   = each.value
-  artifact_registry_type                   = var.artifact_registry_type
-  artifact_registry_module                 = var.artifact_registry_module
-  immutable_artifact_registry              = var.immutable_artifact_registry
-  artifact_registry_multi_region           = var.artifact_registry_multi_region
-  artifact_registry_owner                  = var.artifact_registry_owner
-  artifact_registry_writer_serviceaccount  = var.artifact_registry_writer_serviceaccount
-  artifact_registry_reader_serviceaccounts = var.artifact_registry_reader_serviceaccounts
-  artifact_registry_public                 = var.artifact_registry_public
+  source = "../../../modules/artifact-registry"
+
+  for_each                                 = { for i, v in var.artifact_registry_list : i => v }
+  artifact_registry_name                   = each.value.name
+  artifact_registry_type                   = each.value.type
+  immutable_artifact_registry              = each.value.immutable
+  artifact_registry_multi_region           = each.value.multi_region
+  artifact_registry_owner                  = each.value.owner
+  artifact_registry_writer_serviceaccount  = each.value.writer_serviceaccount
+  artifact_registry_reader_serviceaccounts = each.value.reader_serviceaccounts
+  artifact_registry_public                 = each.value.public
 }

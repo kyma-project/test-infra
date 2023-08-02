@@ -12,11 +12,6 @@ variable "artifact_registry_owner" {
   default     = "neighbors"
 }
 
-variable "artifact_registry_module" {
-  type        = string
-  description = "Module name"
-}
-
 variable "artifact_registry_writer_serviceaccount" {
   type        = string
   description = "Service Account"
