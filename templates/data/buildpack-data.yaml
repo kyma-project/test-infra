@@ -46,38 +46,6 @@ templates:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:
               - jobConfig:
-                  name: "pre-test-infra-cleaner"
-                  annotations:
-                    description: "Build test-infra/cleaner image"
-                    owner: neighbors
-                  run_if_changed: "^prow/images/cleaner/"
-                  args:
-                    - "--name=test-infra/cleaner"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=prow/images/cleaner"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  local:
-                    - "default"
-                    - "presubmit"
-              - jobConfig:
-                  name: "post-test-infra-cleaner"
-                  annotations:
-                    description: "Build test-infra/cleaner image"
-                    owner: neighbors
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^prow/images/cleaner/"
-                  args:
-                    - "--name=test-infra/cleaner"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=prow/images/cleaner"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  local:
-                    - "default"
-                    - "postsubmit"
-              - jobConfig:
                   name: "pre-test-infra-whitesource-scanner"
                   annotations:
                     description: "Build test-infra/whitesource-scanner image"
