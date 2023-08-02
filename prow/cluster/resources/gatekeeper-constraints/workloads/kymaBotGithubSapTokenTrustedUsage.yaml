@@ -24,3 +24,9 @@ spec:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["\/home\/prow\/go\/src\/github\.com\/kyma-project\/test-infra\/prow\/scripts\/github-issues\.sh"\],"container_name":"test",.*}$'
+      # github-issues-internal
+      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:*"
+        command:
+          - /tools/entrypoint
+        args: []
+        entrypoint_options: '^.*"args":\["\/ko-app\/githubissues","--githubOrgName kyma-project","--bqProjectID sap-kyma-prow","--bqDataset github_issues","--bqTable github_com_kyma_project","--bqCredentials \$\(GOOGLE_APPLICATION_CREDENTIALS\)","--githubToken \$\(BOT_GITHUB_SAP_TOKEN\)"\],"container_name":"test",.*$'
