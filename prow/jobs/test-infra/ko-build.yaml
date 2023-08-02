@@ -32,11 +32,11 @@ presubmits:
               allowPrivilegeEscalation: false
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2000m
+                memory: 6Gi
+                cpu: 3
               limits:
-                memory: 4Gi
-                cpu: 2500m
+                memory: 6Gi
+                cpu: 3
 postsubmits:
   kyma-project/test-infra:
     - name: post-test-infra-ko-build
@@ -75,8 +75,8 @@ postsubmits:
               allowPrivilegeEscalation: false
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2000m
+                memory: 6Gi
+                cpu: 3
               limits:
-                memory: 4Gi
-                cpu: 2500m
+                memory: 6Gi
+                cpu: 3
