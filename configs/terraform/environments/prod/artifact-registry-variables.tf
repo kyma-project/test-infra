@@ -5,7 +5,7 @@
 variable "artifact_registry_names" {
   type        = list(string)
   description = "Artifact Registry names"
-  default     = ["module-templates"]
+  default     = ["modules-internal"]
 }
 variable "artifact_registry_owner" {
   type        = string
