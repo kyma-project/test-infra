@@ -26,6 +26,7 @@ periodics:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
+            allowPrivilegeEscalation: false
           resources:
             requests:
               cpu: 500m
