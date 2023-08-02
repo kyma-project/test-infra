@@ -1,7 +1,7 @@
 periodics: # runs on schedule
-  - name: utilities-kyma-integration-cleaner
+  - name: gcloud-ssh-keys-cleaner
     annotations:
-      description: "kyma integration cleaner"
+      description: "gcloud-ssh-keys-cleaner"
       owner: "neighbors"
       testgrid-create-test-group: "false"
     labels:
@@ -9,22 +9,29 @@ periodics: # runs on schedule
       prow.k8s.io/pubsub.runID: "utilities-kyma-integration-cleaner"
       prow.k8s.io/pubsub.topic: "prowjobs"
       preset-gc-project-env: "true"
-      preset-sa-vm-kyma-integration: "true"
-    cron: "30 * * * *"
+    cron: "30 * * * 1-5"
     skip_report: false
     decorate: true
     cluster: trusted-workload
     spec:
       serviceAccountName: sa-prow-job-resource-cleaners
       containers:
-        - image: "eu.gcr.io/kyma-project/prow/cleaner:0.0.1"
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230728-90a0fc69
           securityContext:
             privileged: false
             seccompProfile:
               type: RuntimeDefault
             allowPrivilegeEscalation: false
-          command:
-            - "./cleaner.sh"
+          command: ["/bin/bash", "-c"]
+          args:
+            - |-
+              gcloud config set project "${CLOUDSDK_CORE_PROJECT}"
+              out=$(gcloud compute os-login ssh-keys list | sed '1 d' | awk -F "\\t" '{print $1}')
+
+              for id in ${out}; do
+                  echo "Removing key ${id} ..."
+                  gcloud compute os-login ssh-keys remove --key "${id}"
+              done;
           resources:
             requests:
               memory: 100Mi

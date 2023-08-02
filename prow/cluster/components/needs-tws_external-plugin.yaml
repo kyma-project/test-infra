@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: needs-tws
-        image: eu.gcr.io/sap-kyma-neighbors-dev/needs-tws:v20220119-9cd5b58e9-dirty
+        image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/needs-tws:v20230802-a960e47d
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy
