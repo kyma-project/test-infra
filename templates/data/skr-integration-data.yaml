@@ -5,7 +5,6 @@ templates:
     render:
       - localSets:
           jobConfig_default:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/skr-integration.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
@@ -60,12 +59,16 @@ templates:
                     owner: gopher
                     description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
                 inheritedConfigs:
                   global:
-                    - "image_kyma-integration"
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
                     - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
@@ -79,12 +82,16 @@ templates:
                     owner: gopher
                     description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
                 inheritedConfigs:
                   global:
-                    - "image_kyma-integration"
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
                     - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
@@ -100,12 +107,16 @@ templates:
                   cron: "5 1 * * *" # "At 01:05"
                   labels:
                     preset-skr-al-service-key: "true"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
                 inheritedConfigs:
                   global:
-                    - "image_kyma-integration"
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
                     - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
@@ -119,12 +130,16 @@ templates:
                     owner: gopher
                     description: skr integration test trial
                   cron: "5 1 * * *" # "At 01:05"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
                 inheritedConfigs:
                   global:
-                    - "image_kyma-integration"
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
                     - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
@@ -138,12 +153,16 @@ templates:
                     owner: gopher
                     description: skr integration test free
                   cron: "5 1 * * *" # "At 01:05"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
                 inheritedConfigs:
                   global:
-                    - "image_kyma-integration"
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
                     - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:
@@ -157,12 +176,16 @@ templates:
                     owner: gopher
                     description: skr integration test preview
                   cron: "5 1 * * *" # "At 01:05"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
                 inheritedConfigs:
                   global:
-                    - "image_kyma-integration"
                     - "jobConfig_default"
                     - "jobConfig_periodic"
-                    - "extra_refs_test-infra"
                     - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                   local:

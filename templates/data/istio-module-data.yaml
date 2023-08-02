@@ -284,7 +284,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_periodic
-                    - image_kyma-integration
                     - jobConfig_slack_goat
                   local:
                     - job_default

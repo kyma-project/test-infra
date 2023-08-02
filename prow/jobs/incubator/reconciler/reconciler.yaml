@@ -288,7 +288,7 @@ presubmits: # runs on PRs
               allowPrivilegeEscalation: false
               runAsUser: 0
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-component-provision-gardener.sh"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler/reconciler-component-provision-gardener.sh"
             env:
               - name: EXECUTION_PROFILE
                 value: "production"
@@ -439,44 +439,6 @@ presubmits: # runs on PRs
             args:
               - "-c"
               - "shopt -s globstar; hadolint --config .hadolint.yaml --no-color **/Dockerfile"
-            env:
-              - name: GO11MODULE
-                value: "on"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
-    - name: pre-main-reconciler-validate-go-mod
-      annotations:
-        description: "validate gomod reconciler"
-        owner: "jellyfish"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-reconciler-validate-go-mod"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-kyma-guard-bot-github-token: "true"
-      run_if_changed: '^go\.mod$'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-validate-go-mod.sh"
             env:
               - name: GO11MODULE
                 value: "on"
@@ -745,17 +707,12 @@ periodics: # runs on schedule
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "nightly-main-reconciler"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-bot-github-token: "true"
         preset-cluster-version: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
-        preset-log-collector-slack-token: "true"
       cron: "0 0 * * 1-5"
       skip_report: false
       decorate: true
-      decoration_config:
-        grace_period: 600000000000
-        timeout: 14400000000000
       cluster: untrusted-workload
       extra_refs:
         - org: kyma-project
@@ -769,16 +726,14 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-gardener-long-lasting.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler/reconciler-gardener-long-lasting.sh"
             env:
               - name: GARDENER_REGION
                 value: "europe-west4"
@@ -828,16 +783,14 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-nightly-gardener.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler/reconciler-e2e-nightly-gardener.sh"
             env:
               - name: GARDENER_REGION
                 value: "europe-west4"

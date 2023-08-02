@@ -34,14 +34,17 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "./tests/integration/scripts/test-gardener-aws.sh"
+              - "bash"
+            args:
+              - "-c"
+              - "mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/test-gardener-aws.sh"
             env:
               - name: JOB_NAME_PATTERN
                 value: "pull-api-gateway-build"
@@ -88,14 +91,17 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "./tests/integration/scripts/test-gardener-aws.sh"
+              - "bash"
+            args:
+              - "-c"
+              - "mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/test-gardener-aws.sh"
             env:
               - name: JOB_NAME_PATTERN
                 value: "post-api-gateway-build"
@@ -133,14 +139,17 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "./tests/integration/scripts/custom-domain-gardener-gcp.sh"
+              - "bash"
+            args:
+              - "-c"
+              - "mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/custom-domain-gardener-gcp.sh"
             env:
               - name: JOB_NAME_PATTERN
                 value: "post-api-gateway-build"
@@ -180,14 +189,17 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "./tests/integration/scripts/custom-domain-gardener-aws.sh"
+              - "bash"
+            args:
+              - "-c"
+              - "mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/custom-domain-gardener-aws.sh"
             env:
               - name: JOB_NAME_PATTERN
                 value: "post-api-gateway-build"

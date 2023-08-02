@@ -36,16 +36,14 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230414-8e724501"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69"
             securityContext:
-              privileged: true
+              privileged: false
               seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-upgrade-kyma2-latest-to-main-gardener.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler/reconciler-upgrade-kyma2-latest-to-main-gardener.sh"
             env:
               - name: GARDENER_REGION
                 value: "europe-west4"
