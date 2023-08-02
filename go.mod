@@ -5,7 +5,7 @@ go 1.19
 require (
 	cloud.google.com/go/bigquery v1.53.0
 	cloud.google.com/go/compute/metadata v0.2.3
-	cloud.google.com/go/firestore v1.11.0
+	cloud.google.com/go/firestore v1.12.0
 	cloud.google.com/go/kms v1.15.0
 	cloud.google.com/go/logging v1.7.0
 	cloud.google.com/go/pubsub v1.33.0
