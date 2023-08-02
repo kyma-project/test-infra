@@ -21,7 +21,7 @@ templates:
             request_cpu: 400m
             labels:
               preset-debug-commando-oom: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230802-a3ac0e08
           jobConfig_presubmit:
             optional: true
             labels:
@@ -181,7 +181,7 @@ templates:
                   repo: "busola"
                   base_ref: "main"
           jobConfig_default:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230802-a3ac0e08
             request_memory: 1Gi
             request_cpu: 400m
             labels:

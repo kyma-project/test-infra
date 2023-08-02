@@ -51,7 +51,7 @@ templates:
                     testgrid-dashboards: kyma_release-{{ $rel }}
                     description: Release candidate job for Kyma {{ $rel }}.
                     testgrid-days-of-results: "60"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230728-90a0fc69
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230802-a3ac0e08
                   labels:
                     preset-dind-enabled: "true"
                     preset-sa-gke-kyma-integration: "true"
