@@ -1,7 +1,7 @@
 module-name: test-infra
 protecode:
     - aquasec/trivy:0.39.0
-    - docker.io/nginx:1.23.2-alpine
+    - docker.io/library/nginx:1.23.2-alpine
     - docker.io/zricethezav/gitleaks:v8.15.3
     - eu.gcr.io/kyma-project/incubator/milv:8649c2fb
     - eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7
@@ -62,8 +62,6 @@ protecode:
     - grafana/grafana:7.5.17
     - k8s.gcr.io/gcsweb:v1.1.0
     - maven:3.9.3-eclipse-temurin-17
-    - nginx:1
-    - nginx:1.20-alpine
     - prom/pushgateway:v1.5.1
     - quay.io/prometheus-operator/prometheus-operator:v0.61.1
 whitesource:
