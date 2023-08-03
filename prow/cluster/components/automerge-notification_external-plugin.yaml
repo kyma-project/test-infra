@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: automerge-notification
-        image: eu.gcr.io/sap-kyma-neighbors-dev/automerge-notification-plugin:v0.1.28-test
+        image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automerge-notification:v20230802-8f9064f7
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy

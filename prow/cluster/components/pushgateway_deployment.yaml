@@ -87,7 +87,7 @@ spec:
         ports:
           - name: http
             containerPort: 8081
-        image: nginx:1
+        image: docker.io/library/nginx:1.23.2-alpine
         volumeMounts:
         - name: config-volume
           mountPath: /etc/nginx/
