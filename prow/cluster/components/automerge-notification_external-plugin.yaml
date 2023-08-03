@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: automerge-notification
-        image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automerge-notification:v20230802-8f9064f7
+        image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automerge-notification:v20230803-a462adcf
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy
