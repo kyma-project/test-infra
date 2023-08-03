@@ -6,9 +6,9 @@ import (
 	"os"
 	"sync"
 	"sync/atomic"
-	
+
 	log "github.com/sirupsen/logrus"
-	
+
 	gcplogging "github.com/kyma-project/test-infra/development/gcp/pkg/logging"
 	"github.com/kyma-project/test-infra/development/github/pkg/client"
 	"github.com/kyma-project/test-infra/development/prow"
@@ -127,7 +127,7 @@ func main() {
 	if err != nil {
 		logger.LogError(fmt.Sprintf("failed creating sap tools github client, got error: %v", err))
 	}
-	
+
 	githubComClient, err := client.NewClient(ctx, githubComAccessToken)
 	if err != nil {
 		logger.LogError(fmt.Sprintf("failed creating github.com client, got error: %v", err))
@@ -144,7 +144,7 @@ func main() {
 			logger.LogError(fmt.Sprintf("error when getting pr author for presubmit: got error %v", err))
 		}
 	}
-	
+
 	org, err := prow.GetOrgForPresubmit()
 	if err != nil {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
@@ -181,7 +181,7 @@ func main() {
 	if exitCode.Load() == nil {
 		logger.LogInfo("all authors present in users map or are not members of pull request github organisation")
 		logger.Flush()
-		
+
 		// Report successful prowjob execution.
 		exitCode.Store(0)
 	}
