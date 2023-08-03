@@ -66,7 +66,7 @@ type Logger interface {
 	Flush()
 }
 
-// DualLogger implements MyLogger
+// DualLogger implements Logger
 type DualLogger struct {
 	gcpLogger    *gcplogging.Logger
 	logrusLogger *log.Entry
@@ -95,22 +95,26 @@ func (dl *DualLogger) Flush() {
 }
 
 func main() {
+	// exitCode holds exit code to report at the end of main execution, it's safe to set it from multiple goroutines.
 	var exitCode atomic.Value
+	// Set exit code for exec. This will be call last when exiting from main function.
 	defer func() {
 		os.Exit(exitCode.Load().(int))
 	}()
 	ctx := context.Background()
 	var wg sync.WaitGroup
+	// Serviceaccount credentials to access google cloud logging API.
 	saProwjobGcpLoggingClientKeyPath := os.Getenv("SA_PROWJOB_GCP_LOGGING_CLIENT_KEY_PATH")
+	// Create kyma implementation Google cloud logging client with defaults for logging from prowjobs.
 	logClient, err := gcplogging.NewProwjobClient(ctx, saProwjobGcpLoggingClientKeyPath, gcplogging.ProwLogsProjectID)
 	if err != nil {
 		log.Errorf("creating gcp logging client failed, got error: %v", err)
 	}
 	gcpLogger := logClient.NewProwjobLogger().WithGeneratedTrace()
+	// Flush all buffered messages when exiting from main function.
 	logger := NewDualLogger(gcpLogger, "checking if user exists in users map")
-	
 	defer logger.Flush()
-	
+	// Github access token, provided by preset-bot-github-sap-token
 	accessToken := os.Getenv("BOT_GITHUB_SAP_TOKEN")
 	githubComAccessToken := os.Getenv("BOT_GITHUB_TOKEN")
 	saptoolsClient, err := client.NewSapToolsClient(ctx, accessToken)
@@ -167,9 +171,12 @@ func main() {
 		}
 	}
 	wg.Wait()
+	// If exitcode is nil, that means no errors were reported.
 	if exitCode.Load() == nil {
 		logger.LogInfo("all authors present in users map or are not members of pull request github organisation")
 		logger.Flush()
+		
+		// Report successful prowjob execution.
 		exitCode.Store(0)
 	}
 }
