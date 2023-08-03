@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"os"
-	
+
 	log "github.com/sirupsen/logrus"
-	
+
 	"github.com/kyma-project/test-infra/development/github/pkg/client"
 	"github.com/kyma-project/test-infra/development/prow"
 )
@@ -59,7 +59,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	
+
 	log.SetFormatter(&log.JSONFormatter{})
 	// Github access token, provided by preset-bot-github-sap-token
 	accessToken := os.Getenv("BOT_GITHUB_SAP_TOKEN")
@@ -68,7 +68,7 @@ func main() {
 	if err != nil {
 		log.Fatalf(fmt.Sprintf("failed creating sap tools github client, got error: %v", err))
 	}
-	
+
 	githubComClient, err := client.NewClient(ctx, githubComAccessToken)
 	if err != nil {
 		log.Fatalf(fmt.Sprintf("failed creating github.com client, got error: %v", err))
@@ -85,7 +85,7 @@ func main() {
 			log.Fatalf(fmt.Sprintf("error when getting pr author for presubmit: got error %v", err))
 		}
 	}
-	
+
 	org, err := prow.GetOrgForPresubmit()
 	if err != nil {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
@@ -94,7 +94,7 @@ func main() {
 			log.Fatalf(fmt.Sprintf("error when getting org for presubmit: got error %v", err))
 		}
 	}
-	
+
 	log.Infof(fmt.Sprintf("found %d authors in job spec env variable", len(authors)))
 	for _, author := range authors {
 		member, _, err := githubComClient.Organizations.IsMember(ctx, org, author)
