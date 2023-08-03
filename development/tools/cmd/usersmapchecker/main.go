@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"os"
-	
+
 	log "github.com/sirupsen/logrus"
-	
+
 	"github.com/kyma-project/test-infra/development/github/pkg/client"
 	"github.com/kyma-project/test-infra/development/prow"
 	"github.com/kyma-project/test-infra/development/types"
@@ -72,7 +72,7 @@ func checkUserInMap(author string, usersMap []types.User) bool {
 func main() {
 	ctx := context.Background()
 	var missingUsers []string
-	
+
 	log.SetFormatter(&log.JSONFormatter{})
 	// GitHub access token, provided by preset-bot-github-sap-token
 	accessToken := os.Getenv("BOT_GITHUB_SAP_TOKEN")
@@ -81,7 +81,7 @@ func main() {
 	if err != nil {
 		log.Fatalf(fmt.Sprintf("failed creating sap tools github client, got error: %v", err))
 	}
-	
+
 	githubComClient, err := client.NewClient(ctx, githubComAccessToken)
 	if err != nil {
 		log.Fatalf(fmt.Sprintf("failed creating github.com client, got error: %v", err))
@@ -98,7 +98,7 @@ func main() {
 			log.Fatalf(fmt.Sprintf("error when getting pr author for presubmit: got error %v", err))
 		}
 	}
-	
+
 	org, err := prow.GetOrgForPresubmit()
 	if err != nil {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
@@ -107,9 +107,9 @@ func main() {
 			log.Fatalf(fmt.Sprintf("error when getting org for presubmit: got error %v", err))
 		}
 	}
-	
+
 	log.Infof(fmt.Sprintf("found %d authors in job spec env variable", len(authors)))
-	
+
 	for _, author := range authors {
 		// Check if author is a member of the organization.
 		member, _, err := githubComClient.Organizations.IsMember(ctx, org, author)
@@ -121,11 +121,10 @@ func main() {
 			missingUsers = append(missingUsers, author)
 		}
 	}
-	
+
 	// If there are missing users, log a fatal error with all missing users, otherwise log an info message.
 	if len(missingUsers) > 0 {
 		log.Fatalf("users not present in users map: %v, please add them to users-map.yaml file.", missingUsers)
-	} else {
-		log.Infof("all authors present in users map")
 	}
+	log.Infof("all authors present in users map")
 }
