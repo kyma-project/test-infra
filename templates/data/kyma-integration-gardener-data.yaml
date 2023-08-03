@@ -22,6 +22,10 @@ templates:
             labels:
               preset-debug-commando-oom: "true"
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230803-991588f3
+          jobConfig_buildpack_node:
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69"
+            request_memory: 1Gi
+            request_cpu: 400m
           jobConfig_presubmit:
             optional: true
             labels:
@@ -86,11 +90,11 @@ templates:
                       readOnly: true
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                   local:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_upgrade_eventing
@@ -120,11 +124,11 @@ templates:
                       readOnly: true
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                   local:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
@@ -154,11 +158,11 @@ templates:
                       readOnly: true
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                   local:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
@@ -186,6 +190,10 @@ templates:
             request_cpu: 400m
             labels:
               preset-debug-commando-oom: "true"
+          jobConfig_buildpack_node:
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69"
+            request_memory: 1Gi
+            request_cpu: 400m
           jobConfig_presubmit:
             optional: true
             labels:
