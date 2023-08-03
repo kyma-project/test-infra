@@ -285,4 +285,38 @@ periodics: # runs on schedule
             args:
               - "--config=prow/autobump-config/test-infra-autobump-config.yaml"
               - "--labels-override=skip-review,area/ci,kind/chore"
+    - name: ci-dockerhub-autobump
+      annotations:
+        description: "Autobump images from docker.io"
+        owner: "neighbors"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "ci-dockerhub-autobump"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
+      cron: "55 * * * 1-5"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-alerts
+      spec:
+        containers:
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230802-d51826a399"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "generic-autobumper"
+            args:
+              - "--config=prow/autobump-config/dockerhub-autobump.yaml"
+              - "--labels-override=skip-review,area/ci,kind/chore"
   
