@@ -4,7 +4,7 @@ kind: ServiceAccountTrustedUsage
 metadata:
   name: terraform-executor
 spec:
-  enforcementAction: warn
+  enforcementAction: deny
   match:
     kinds:
       - apiGroups: [""]
