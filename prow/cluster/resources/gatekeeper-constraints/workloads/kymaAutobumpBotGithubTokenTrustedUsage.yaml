@@ -20,7 +20,7 @@ spec:
         entrypoint_options: '^{.*"args":\["\/markdown-index","--config=prow\/markdown-index\/test-infra-markdown-index-autobump-config\.yaml","--labels-override=kind\/chore,area\/documentation"\],"container_name":"test",.*}$'
       # Prowjob name: test-infra-image-detector-autobump
       # Prowjob name: post-test-infra-image-detector-autobump
-      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/image-detector:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:*"
         command:
           - /tools/entrypoint
         args: []
