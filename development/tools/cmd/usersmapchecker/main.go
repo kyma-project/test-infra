@@ -60,18 +60,21 @@ import (
 //	  k8s-pod/prow_k8s_io/type: "postsubmit"
 //	}
 
+// Logger is an interface for logging messages.
 type Logger interface {
 	LogInfo(message string)
 	LogError(message string)
 	Flush()
 }
 
-// DualLogger implements Logger
+// DualLogger is a type that implements the Logger interface.
+// It writes log messages to two destinations - a GCP logger and a Logrus logger.
 type DualLogger struct {
 	gcpLogger    *gcplogging.Logger
 	logrusLogger *log.Entry
 }
 
+// NewDualLogger creates a new DualLogger.
 func NewDualLogger(gcpLogger *gcplogging.Logger, context string) Logger {
 	logrusLogger := log.WithField("context", context)
 	return &DualLogger{
@@ -80,16 +83,19 @@ func NewDualLogger(gcpLogger *gcplogging.Logger, context string) Logger {
 	}
 }
 
+// LogInfo logs an information message using both the GCP and Logrus loggers.
 func (dl *DualLogger) LogInfo(message string) {
 	dl.gcpLogger.LogInfo(message)
 	dl.logrusLogger.Info(message)
 }
 
+// LogError logs an error message using both the GCP and Logrus loggers.
 func (dl *DualLogger) LogError(message string) {
 	dl.gcpLogger.LogError(message)
 	dl.logrusLogger.Error(message)
 }
 
+// Flush flushes the GCP logger to ensure all log messages are written.
 func (dl *DualLogger) Flush() {
 	dl.gcpLogger.Flush()
 }
