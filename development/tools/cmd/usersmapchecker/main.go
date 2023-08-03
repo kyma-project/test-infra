@@ -4,11 +4,12 @@ import (
 	"context"
 	"fmt"
 	"os"
-
+	
 	log "github.com/sirupsen/logrus"
-
+	
 	"github.com/kyma-project/test-infra/development/github/pkg/client"
 	"github.com/kyma-project/test-infra/development/prow"
+	"github.com/kyma-project/test-infra/development/types"
 )
 
 // Example fields in gcp logging.
@@ -57,18 +58,30 @@ import (
 //	  k8s-pod/prow_k8s_io/type: "postsubmit"
 //	}
 
+// checkUserInMap is a function that checks if the author exists in the usersMap.
+// It returns true if found and false otherwise.
+func checkUserInMap(author string, usersMap []types.User) bool {
+	for _, user := range usersMap {
+		if user.ComGithubUsername == author {
+			return true
+		}
+	}
+	return false
+}
+
 func main() {
 	ctx := context.Background()
-
+	var missingUsers []string
+	
 	log.SetFormatter(&log.JSONFormatter{})
-	// Github access token, provided by preset-bot-github-sap-token
+	// GitHub access token, provided by preset-bot-github-sap-token
 	accessToken := os.Getenv("BOT_GITHUB_SAP_TOKEN")
 	githubComAccessToken := os.Getenv("BOT_GITHUB_TOKEN")
 	saptoolsClient, err := client.NewSapToolsClient(ctx, accessToken)
 	if err != nil {
 		log.Fatalf(fmt.Sprintf("failed creating sap tools github client, got error: %v", err))
 	}
-
+	
 	githubComClient, err := client.NewClient(ctx, githubComAccessToken)
 	if err != nil {
 		log.Fatalf(fmt.Sprintf("failed creating github.com client, got error: %v", err))
@@ -85,7 +98,7 @@ func main() {
 			log.Fatalf(fmt.Sprintf("error when getting pr author for presubmit: got error %v", err))
 		}
 	}
-
+	
 	org, err := prow.GetOrgForPresubmit()
 	if err != nil {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
@@ -94,22 +107,25 @@ func main() {
 			log.Fatalf(fmt.Sprintf("error when getting org for presubmit: got error %v", err))
 		}
 	}
-
+	
 	log.Infof(fmt.Sprintf("found %d authors in job spec env variable", len(authors)))
+	
 	for _, author := range authors {
+		// Check if author is a member of the organization.
 		member, _, err := githubComClient.Organizations.IsMember(ctx, org, author)
 		if err != nil {
 			log.Fatalf(fmt.Sprintf("failed check if user %s is an github organisation member", author))
 		}
-		if member {
-			for _, user := range usersMap {
-				if user.ComGithubUsername == author {
-					log.Infof(fmt.Sprintf("user %s is present in users map", author))
-					break
-				}
-			}
-			log.Fatalf(fmt.Sprintf("user %s is not present in users map, please add user to users-map.yaml file.", author))
+		// If the author is a member of the organization but not present in usersMap, add to missingUsers.
+		if member && !checkUserInMap(author, usersMap) {
+			missingUsers = append(missingUsers, author)
 		}
 	}
-	log.Infof("all authors present in users map")
+	
+	// If there are missing users, log a fatal error with all missing users, otherwise log an info message.
+	if len(missingUsers) > 0 {
+		log.Fatalf("users not present in users map: %v, please add them to users-map.yaml file.", missingUsers)
+	} else {
+		log.Infof("all authors present in users map")
+	}
 }
