@@ -124,8 +124,8 @@ presubmits: # runs on PRs
               - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
-                memory: 1Gi
-                cpu: 100m
+                memory: 2Gi
+                cpu: 2000m
   
   kyma-project/directory-size-exporter:
     - name: pull-directory-size-exporter-lint
@@ -186,6 +186,6 @@ presubmits: # runs on PRs
               - "make test"
             resources:
               requests:
-                memory: 1Gi
-                cpu: 100m
+                memory: 2Gi
+                cpu: 2000m
   

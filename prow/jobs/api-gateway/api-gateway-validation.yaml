@@ -62,6 +62,6 @@ presubmits: # runs on PRs
               - "./tests/integration/scripts/code-coverage-guard.sh"
             resources:
               requests:
-                memory: 1Gi
-                cpu: 500m
+                memory: 2Gi
+                cpu: 2000m
   

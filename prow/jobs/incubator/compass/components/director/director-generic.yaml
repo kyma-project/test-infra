@@ -125,8 +125,8 @@ presubmits: # runs on PRs
               - "cd components/director && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
-                memory: 1Gi
-                cpu: 100m
+                memory: 2Gi
+                cpu: 2000m
   
 postsubmits: # runs on main
   kyma-incubator/compass:

@@ -153,8 +153,8 @@ globalSets:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230803-991588f3"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    request_memory: 1Gi
-    request_cpu: 100m
+    request_memory: 2Gi
+    request_cpu: 2000m
   # Kyma major version sets
   kyma_major_upgrade:
     env:
