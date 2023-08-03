@@ -291,6 +291,9 @@ periodics: # runs on schedule
         repo: test-infra
         base_ref: main
     spec:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
       containers:
         - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:v20230802-8f9064f7"
           securityContext:
@@ -334,6 +337,9 @@ periodics: # runs on schedule
         repo: test-infra
         base_ref: main
     spec:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
       containers:
         - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:v20230802-8f9064f7"
           securityContext:
