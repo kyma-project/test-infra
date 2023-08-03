@@ -3,7 +3,7 @@ kind: SecretTrustedUsage
 metadata:
   name: kyma-autobump-bot-github-token
 spec:
-  enforcementAction: warn
+  enforcementAction: deny
   match:
     kinds:
       - apiGroups: [""]

@@ -3,7 +3,7 @@ kind: SecretTrustedUsage
 metadata:
   name: kyma-bot-github-sap-token
 spec:
-  enforcementAction: warn
+  enforcementAction: deny
   match:
     kinds:
       - apiGroups: [""]
