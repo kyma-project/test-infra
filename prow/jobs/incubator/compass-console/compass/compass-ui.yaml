@@ -41,8 +41,11 @@ presubmits: # runs on PRs
               - "--dockerfile=compass/Dockerfile"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 1
+                memory: 6Gi
+                cpu: 3
+              limits:
+                memory: 6Gi
+                cpu: 3
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -86,8 +89,11 @@ presubmits: # runs on PRs
               - "./scripts/prow-lint.sh"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 100m
+                memory: 6Gi
+                cpu: 3
+              limits:
+                memory: 6Gi
+                cpu: 3
     - name: pull-compass-console-test
       annotations:
         description: "Run unit tests for the Compass Console component"
@@ -117,8 +123,11 @@ presubmits: # runs on PRs
               - "./scripts/prow-test.sh"
             resources:
               requests:
-                memory: 500Mi
-                cpu: 500m
+                memory: 6Gi
+                cpu: 3
+              limits:
+                memory: 6Gi
+                cpu: 3
   
 postsubmits: # runs on main
   kyma-incubator/compass-console:
@@ -161,8 +170,11 @@ postsubmits: # runs on main
               - "--dockerfile=compass/Dockerfile"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 1
+                memory: 6Gi
+                cpu: 3
+              limits:
+                memory: 6Gi
+                cpu: 3
             volumeMounts:
               - name: config
                 mountPath: /config

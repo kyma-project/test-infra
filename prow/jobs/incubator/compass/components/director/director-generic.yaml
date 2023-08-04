@@ -97,8 +97,11 @@ presubmits: # runs on PRs
               - "cd components/director && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=15m"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 6Gi
+                cpu: 3
+              limits:
+                memory: 6Gi
+                cpu: 3
     - name: pull-director-unit-test
       annotations:
         description: "Run unit tests for the Director Compass component"
