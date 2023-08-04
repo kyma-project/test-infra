@@ -35,7 +35,7 @@ presubmits: # runs on PRs
               - "module-build"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/dev/serverless-manager:PR-${PULL_NUMBER}"
+                value: "europe-docker.pkg.dev/kyma-project/dev/serverless-operator:PR-${PULL_NUMBER}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
@@ -46,13 +46,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: pre-serverless-manager-operator-tests
+    - name: pre-serverless-operator-tests
       annotations:
-        description: "serverless manager tests"
+        description: "serverless operator tests"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-serverless-manager-operator-tests"
+        prow.k8s.io/pubsub.runID: "pre-serverless-operator-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
@@ -81,13 +81,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: pre-serverless-manager-operator-build
+    - name: pre-serverless-operator-build
       annotations:
-        description: "serverless manager operator build"
+        description: "serverless operator image build"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-serverless-manager-operator-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       always_run: true
@@ -110,7 +110,7 @@ presubmits: # runs on PRs
               - "sh"
             args:
               - "-c"
-              - "git config --global --add safe.directory $(pwd)/module-chart && ./hack/generate_module-chart.sh && /image-builder --name=serverless-manager --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile"
+              - "git config --global --add safe.directory $(pwd)/module-chart && ./hack/generate_module-chart.sh && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -138,13 +138,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pre-main-serverless-manager-verify
+    - name: pre-main-serverless-operator-verify
       annotations:
         description: "serverless manager verify on k3d vm"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-serverless-manager-verify"
+        prow.k8s.io/pubsub.runID: "pre-main-serverless-operator-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -187,13 +187,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/serverless-manager:
-    - name: release-serverless-manager-build
+    - name: release-serverless-operator-build
       annotations:
         description: "Job to build serverless operator for a release."
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "release-serverless-manager-build"
+        prow.k8s.io/pubsub.runID: "release-serverless-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -217,7 +217,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "git config --global --add safe.directory $(pwd)/module-chart && ./hack/generate_module-chart.sh && /image-builder --name=serverless-manager --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_SHA"
+              - "git config --global --add safe.directory $(pwd)/module-chart && ./hack/generate_module-chart.sh && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_SHA"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -245,13 +245,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: release-serverless-manager-module-build
+    - name: release-serverless-module-build
       annotations:
         description: "Job to build serverless module for a release."
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "release-serverless-manager-module-build"
+        prow.k8s.io/pubsub.runID: "release-serverless-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
       always_run: true
@@ -275,7 +275,7 @@ postsubmits: # runs on main
               - "ci"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
+                value: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
@@ -316,7 +316,7 @@ postsubmits: # runs on main
               - "module-build"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
+                value: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
@@ -325,13 +325,13 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: post-serverless-manager-operator-build
+    - name: post-serverless-operator-build
       annotations:
-        description: "build serverless manager"
+        description: "build serverless operator"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-serverless-manager-operator-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -355,7 +355,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "git config --global --add safe.directory $(pwd)/module-chart && ./hack/generate_module-chart.sh && /image-builder --name=serverless-manager --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_SHA"
+              - "git config --global --add safe.directory $(pwd)/module-chart && ./hack/generate_module-chart.sh && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_SHA"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -383,13 +383,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-main-serverless-manager-verify
+    - name: post-main-serverless-operator-verify
       annotations:
         description: "serverless manager verify on k3d vm"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-serverless-manager-verify"
+        prow.k8s.io/pubsub.runID: "post-main-serverless-operator-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -429,13 +429,13 @@ postsubmits: # runs on main
               limits:
                 memory: 4Gi
                 cpu: 3
-    - name: post-main-serverless-manager-upgrade-latest-to-main
+    - name: post-main-serverless-operator-upgrade-latest-to-main
       annotations:
-        description: "upgrade serverless manager test"
+        description: "upgrade serverless operator test"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-serverless-manager-upgrade-latest-to-main"
+        prow.k8s.io/pubsub.runID: "post-main-serverless-operator-upgrade-latest-to-main"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
