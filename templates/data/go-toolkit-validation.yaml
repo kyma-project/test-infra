@@ -159,11 +159,12 @@ templates:
                   annotations:
                     owner: otters
                     description: "run unit tests for function controller"
-                  command: "/bin/sh"
+                  command: "make"
                   optional: false
                   args:
-                    - "-c"
-                    - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "-C"
+                    - "components/function-controller"
+                    - "test"
                   run_if_changed: '^components/function-controller/.*\.go$'
                 inheritedConfigs:
                   global:
