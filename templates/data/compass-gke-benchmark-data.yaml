@@ -13,8 +13,10 @@ templates:
               PROVISION_REGIONAL_CLUSTER: "true"
               NODES_PER_ZONE: "1"
               MACHINE_TYPE: "n1-highcpu-16"
-            request_memory: 200Mi
-            request_cpu: 80m
+            request_memory: 2Gi
+            request_cpu: 2
+            limits_memory: 3Gi
+            limits_cpu: 3
             labels:
               preset-kyma-keyring: "true"
               preset-kyma-encryption-key: "true"
@@ -28,6 +30,8 @@ templates:
               preset-gardener-azure-kyma-integration: "true"
               preset-kyma-development-artifacts-bucket: "true"
               preset-cluster-version: "true"
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
         jobConfigs:
           - repoName: kyma-incubator/compass
             jobs:
@@ -50,6 +54,7 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
                     - "extra_refs_test-infra"
-                    - "image_buildpack-golang"
+                    - "image_e2e-dind-k3d"
+                    - "privileged_job"
                   local:
                     - "jobConfig_default"

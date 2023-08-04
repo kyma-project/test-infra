@@ -13,10 +13,12 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-version: "true"
+        preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
+        preset-kind-volume-mounts: "true"
         preset-kms-gc-project-env: "true"
         preset-kyma-artifacts-bucket: "true"
         preset-kyma-development-artifacts-bucket: "true"
@@ -39,12 +41,12 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230803-991588f3"
             securityContext:
-              privileged: false
+              privileged: true
               seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
+                type: Unconfined
+              allowPrivilegeEscalation: true
             command:
               - "bash"
             args:
@@ -61,6 +63,9 @@ presubmits: # runs on PRs
                 value: "true"
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 2Gi
+                cpu: 2
+              limits:
+                memory: 3Gi
+                cpu: 3
   
