@@ -8,12 +8,11 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-kyma-dashboard-smoke-test-prod"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-k3d-enabled: "true"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-gardener-gcp-kyma-integration: "true"
       decorate: true
-      run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js"
+      run_if_changed: "^Dockerfile.*|^package.json|^environments/prod/|^extensions|^gulpfile.js|^Makefile|^tests/cypress-smoke.json|^tests/tests/.*/test-check-extensions.spec.js|^tests/scripts/"
       cluster: untrusted-workload
       branches:
         - ^master$
