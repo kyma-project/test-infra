@@ -58,10 +58,16 @@ ARG CLUSTER_VERSION=v1.26.6
 RUN curl -Lo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${CLUSTER_VERSION}/bin/linux/$(go env GOARCH)/kubectl" && \
     chmod +x /usr/local/bin/kubectl
 
+ARG HELM_VERSION=v3.12.1
+RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-amd64.tar.gz" && \
+    tar -xzOf helm.tar.gz linux-amd64/helm > /usr/local/bin/helm && \
+    chmod +x /usr/local/bin/helm
+
 FROM base
 
 COPY init.sh /
 COPY --from=go-deps /usr/local/bin/k3d /usr/local/bin/
 COPY --from=go-deps /usr/local/bin/kubectl /usr/local/bin/
+COPY --from=go-deps /usr/local/bin/helm /usr/local/bin/
 
 ENTRYPOINT [ "/init.sh" ]
