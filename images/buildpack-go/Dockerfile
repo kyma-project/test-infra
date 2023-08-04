@@ -12,6 +12,7 @@ RUN set -eux; \
     yq \
     binutils \
     dumb-init \
+    pkgconf \
     libgit2-dev
 
 RUN adduser -D prow
