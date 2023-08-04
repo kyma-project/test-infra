@@ -118,10 +118,11 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/bin/sh"
+              - "make"
             args:
-              - "-c"
-              - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "-C"
+              - "components/function-controller"
+              - "test"
             resources:
               requests:
                 memory: 1Gi
