@@ -45,7 +45,7 @@ periodics: # runs on schedule
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230804-3d27136f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -113,7 +113,7 @@ periodics: # runs on schedule
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230804-3d27136f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -173,7 +173,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230804-3d27136f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -232,7 +232,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230804-3d27136f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -292,7 +292,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230804-3d27136f"
             securityContext:
               privileged: false
               seccompProfile:

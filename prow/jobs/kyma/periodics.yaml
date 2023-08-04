@@ -16,7 +16,7 @@ periodics: # runs on schedule
     spec:
       serviceAccountName: sa-prow-job-resource-cleaners
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230803-991588f3
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-3d27136f
           securityContext:
             privileged: false
             seccompProfile:
