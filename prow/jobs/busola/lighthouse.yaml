@@ -32,8 +32,8 @@ presubmits: # runs on PRs
               - tests/lighthouse/scripts/busola-lighthouse.sh
             resources:
               requests:
-                memory: 4Gi
-                cpu: 1
-              limits:
                 memory: 6Gi
                 cpu: 2
+              limits:
+                memory: 8Gi
+                cpu: 4
