@@ -15,17 +15,12 @@ source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 
 requiredVars=(
 	INPUT_CLUSTER_NAME
-	DOCKER_PUSH_REPOSITORY
-	DOCKER_PUSH_DIRECTORY
 	KYMA_PROJECT_DIR
 	CLOUDSDK_CORE_PROJECT
 	CLOUDSDK_COMPUTE_REGION
 	CLOUDSDK_COMPUTE_ZONE
 	CLOUDSDK_DNS_ZONE_NAME
 	GOOGLE_APPLICATION_CREDENTIALS
-	# SLACK_CLIENT_TOKEN
-	# SLACK_CLIENT_WEBHOOK_URL
-	# STABILITY_SLACK_CLIENT_CHANNEL_ID
 	STACKDRIVER_COLLECTOR_SIDECAR_IMAGE_TAG
 	CERTIFICATES_BUCKET
 	GKE_CLUSTER_VERSION
@@ -81,8 +76,6 @@ fi
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/kyma.sh"
-# shellcheck source=prow/scripts/lib/docker.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 
 function createCluster() {
 	log::info "Reserve IP Address for Ingressgateway"
@@ -186,8 +179,6 @@ function installStackdriverPrometheusCollector(){
 log::info "Authenticate"
 gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
-docker::start
-
 
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN

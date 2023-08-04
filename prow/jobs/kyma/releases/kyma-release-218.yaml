@@ -16,8 +16,6 @@ postsubmits: # runs on main
         preset-certificates-bucket: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-gke-kyma-developers-group: "true"

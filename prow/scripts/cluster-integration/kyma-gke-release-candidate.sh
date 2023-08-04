@@ -37,8 +37,6 @@ export TTL_HOURS=168 #7 days
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
 # shellcheck source=prow/scripts/lib/log.sh
 source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/docker.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/docker.sh"
 # shellcheck source=prow/scripts/lib/gcp.sh
 source "$TEST_INFRA_SOURCES_DIR/prow/scripts/lib/gcp.sh"
 # shellcheck source=prow/scripts/lib/kyma.sh
@@ -193,7 +191,6 @@ ERROR_LOGGING_GUARD="true"
 log::info "Authenticate"
 gcp::authenticate \
     -c "${GOOGLE_APPLICATION_CREDENTIALS}"
-docker::start
 DNS_DOMAIN="$(gcloud dns managed-zones describe "${CLOUDSDK_DNS_ZONE_NAME}" --format="value(dnsName)")"
 export DNS_DOMAIN
 DOMAIN="${DNS_SUBDOMAIN}.${DNS_DOMAIN%?}"
