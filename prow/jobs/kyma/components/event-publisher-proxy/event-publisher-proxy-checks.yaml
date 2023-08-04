@@ -61,9 +61,6 @@ presubmits: # runs on PRs
               - "cd components/event-publisher-proxy && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
-                memory: 6Gi
-                cpu: 3
-              limits:
-                memory: 6Gi
-                cpu: 3
+                memory: 1Gi
+                cpu: 100m
   

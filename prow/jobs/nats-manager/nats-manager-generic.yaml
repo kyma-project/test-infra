@@ -78,11 +78,8 @@ presubmits: # runs on PRs
               - "make test-only"
             resources:
               requests:
-                memory: 6Gi
-                cpu: 3
-              limits:
-                memory: 6Gi
-                cpu: 3
+                memory: 1Gi
+                cpu: 100m
     - name: pull-nats-module-build
       annotations:
         description: "NATS module build pre-main job"

@@ -31,11 +31,8 @@ presubmits: # runs on PRs
               - "make test"
             resources:
               requests:
-                memory: 6Gi
-                cpu: 3
-              limits:
-                memory: 6Gi
-                cpu: 3
+                memory: 1Gi
+                cpu: 100m
     - name: pre-main-reconciler-lint
       annotations:
         description: "lint reconciler"

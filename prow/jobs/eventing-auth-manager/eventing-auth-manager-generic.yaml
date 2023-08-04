@@ -79,11 +79,8 @@ presubmits: # runs on PRs
               - "make test"
             resources:
               requests:
-                memory: 6Gi
-                cpu: 3
-              limits:
-                memory: 6Gi
-                cpu: 3
+                memory: 1Gi
+                cpu: 100m
   
 postsubmits: # runs on main
   kyma-project/eventing-auth-manager:
