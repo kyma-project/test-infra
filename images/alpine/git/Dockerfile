@@ -1,3 +1,3 @@
-FROM europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:latest
+FROM local/alpine
 
 RUN apk add --no-cache git
