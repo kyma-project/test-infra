@@ -16,8 +16,6 @@ postsubmits: # runs on main
         preset-certificates-bucket: "true"
         preset-cluster-use-ssd: "true"
         preset-cluster-version: "true"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
         preset-gc-compute-envs: "true"
         preset-gc-project-env: "true"
         preset-gke-kyma-developers-group: "true"
@@ -43,7 +41,7 @@ postsubmits: # runs on main
           channel: kyma-skr-release
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-3d27136f"
             securityContext:
               privileged: false
               seccompProfile:
