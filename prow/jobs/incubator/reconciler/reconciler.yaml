@@ -61,8 +61,11 @@ presubmits: # runs on PRs
               - "golangci-lint run -v --timeout=20m --new-from-rev=$PULL_BASE_SHA ./..."
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 8Gi
+                cpu: 4
+              limits:
+                memory: 8Gi
+                cpu: 4
     - name: pre-main-reconciler-publish-pr-cli
       annotations:
         description: "pre publish reconciler"
@@ -91,7 +94,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230804-3d27136f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-3d27136f"
             securityContext:
               privileged: false
               seccompProfile:
