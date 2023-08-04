@@ -335,13 +335,13 @@ templates:
                     preset-bot-github-token: "true"
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - jobConfig_slack_jellyfish
                   local:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma2_to_main
               - jobConfig:
@@ -358,12 +358,12 @@ templates:
                     preset-bot-github-token: "true"
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - kyma_minor_upgrade
                   local:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma2_minor_versions
