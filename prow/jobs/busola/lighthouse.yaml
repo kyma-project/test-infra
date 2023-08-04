@@ -8,6 +8,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-busola-lighthouse"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-k3d-enabled: "true"
         preset-dind-enabled: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-kind-volume-mounts: "true"
