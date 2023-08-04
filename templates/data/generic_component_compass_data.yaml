@@ -20,8 +20,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/operations-controller/"
                   branches:
                     - ^main$
@@ -31,6 +29,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-operations-controller-build
                   annotations:
@@ -48,8 +47,7 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
+                  limits_cpu: 2
                   run_if_changed: "^components/operations-controller/"
                   branches:
                     - ^main$
@@ -59,6 +57,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
               - jobConfig:
                   name: "pull-operations-controller-unit-test"
                   annotations:
@@ -93,8 +92,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/connector/"
                   branches:
                     - ^main$
@@ -104,6 +101,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-connector-build
                   annotations:
@@ -121,8 +119,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/connector/"
                   branches:
                     - ^main$
@@ -132,6 +128,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
               - jobConfig:
                   name: "pull-connector-unit-test"
                   annotations:
@@ -166,8 +163,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 2000m
                   run_if_changed: "^components/director/"
                   branches:
                     - ^main$
@@ -177,6 +172,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-director-build
                   annotations:
@@ -194,8 +190,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 2000m
                   run_if_changed: "^components/director/"
                   branches:
                     - ^main$
@@ -205,6 +199,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
               - jobConfig:
                   name: "pull-director-lint"
                   annotations:
@@ -254,8 +249,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/hydrator/"
                   branches:
                     - ^main$
@@ -265,6 +258,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-hydrator-build
                   annotations:
@@ -282,8 +276,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/hydrator/"
                   branches:
                     - ^main$
@@ -293,6 +285,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
               - jobConfig:
                   name: "pull-hydrator-unit-test"
                   annotations:
@@ -327,8 +320,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/ias-adapter/"
                   branches:
                     - ^main$
@@ -338,6 +329,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-ias-adapter-build
                   annotations:
@@ -355,8 +347,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/ias-adapter/"
                   branches:
                     - ^main$
@@ -366,6 +356,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
               - jobConfig:
                   name: "pull-ias-adapter-unit-test"
                   annotations:
@@ -400,8 +391,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 2000m
                   run_if_changed: "^components/kyma-adapter/"
                   branches:
                     - ^main$
@@ -411,6 +400,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-kyma-adapter-build
                   annotations:
@@ -428,8 +418,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 2000m
                   run_if_changed: "^components/kyma-adapter/"
                   branches:
                     - ^main$
@@ -439,6 +427,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
               - jobConfig:
                   name: "pull-kyma-adapter-lint"
                   annotations:
@@ -488,8 +477,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/system-broker/"
                   branches:
                     - ^main$
@@ -499,6 +486,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-system-broker-build
                   annotations:
@@ -516,8 +504,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/system-broker/"
                   branches:
                     - ^main$
@@ -527,6 +513,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
               - jobConfig:
                   name: "pull-system-broker-unit-test"
                   annotations:
@@ -561,8 +548,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/external-services-mock/"
                   branches:
                     - ^main$
@@ -572,6 +557,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-external-services-mock-build
                   annotations:
@@ -589,8 +575,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/external-services-mock/"
                   branches:
                     - ^main$
@@ -600,6 +584,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
               - jobConfig:
                   name: "pull-external-services-mock-unit-test"
                   annotations:
@@ -634,8 +619,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/connectivity-adapter/"
                   branches:
                     - ^main$
@@ -645,6 +628,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-connectivity-adapter-build
                   annotations:
@@ -662,8 +646,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/connectivity-adapter/"
                   branches:
                     - ^main$
@@ -673,6 +655,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
               - jobConfig:
                   name: "pull-connectivity-adapter-unit-test"
                   annotations:
@@ -707,8 +690,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/pairing-adapter/"
                   branches:
                     - ^main$
@@ -718,6 +699,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-pairing-adapter-build
                   annotations:
@@ -735,8 +717,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/pairing-adapter/"
                   branches:
                     - ^main$
@@ -746,6 +726,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
               - jobConfig:
                   name: "pull-pairing-adapter-unit-test"
                   annotations:
@@ -780,8 +761,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/gateway/"
                   branches:
                     - ^main$
@@ -791,6 +770,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-gateway-build
                   annotations:
@@ -808,8 +788,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/gateway/"
                   branches:
                     - ^main$
@@ -819,6 +797,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
               - jobConfig:
                   name: "pull-gateway-unit-test"
                   annotations:
@@ -852,8 +831,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/schema-migrator/"
                   branches:
                     - ^main$
@@ -863,6 +840,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-schema-migrator-build
                   annotations:
@@ -879,8 +857,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 1000m
                   run_if_changed: "^components/schema-migrator/"
                   branches:
                     - ^main$
@@ -890,6 +866,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building
 
       - to: ../../prow/jobs/incubator/compass/tests/compass-e2e-tests/compass-e2e-tests.yaml
         jobConfigs:
@@ -910,8 +887,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 2000m
                   run_if_changed: "^tests/"
                   branches:
                     - ^main$
@@ -921,6 +896,7 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_presubmit
+                    - building
               - jobConfig:
                   name: post-tests-build
                   annotations:
@@ -938,8 +914,6 @@ templates:
                   decoration_config:
                     timeout: 20m
                     grace_period: 1m
-                  request_memory: 1Gi
-                  request_cpu: 2000m
                   run_if_changed: "^tests/"
                   branches:
                     - ^main$
@@ -949,3 +923,4 @@ templates:
                   global:
                     - image-builder-buildkit
                     - jobConfig_postsubmit
+                    - building

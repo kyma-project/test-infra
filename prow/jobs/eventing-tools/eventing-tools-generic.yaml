@@ -78,8 +78,11 @@ presubmits: # runs on PRs
               - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
-                memory: 2Gi
-                cpu: 2000m
+                memory: 4Gi
+                cpu: 2
+              limits:
+                memory: 4Gi
+                cpu: 2
   
 postsubmits: # runs on main
   kyma-project/eventing-tools:

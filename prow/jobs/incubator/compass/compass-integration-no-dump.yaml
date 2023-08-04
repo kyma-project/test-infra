@@ -49,9 +49,9 @@ presubmits: # runs on PRs
                 value: "/home/prow/go/src/github.com/kyma-project"
             resources:
               requests:
-                memory: 2Gi
-                cpu: 1
+                memory: 8Gi
+                cpu: 4
               limits:
-                memory: 3Gi
-                cpu: 2
+                memory: 8Gi
+                cpu: 4
   

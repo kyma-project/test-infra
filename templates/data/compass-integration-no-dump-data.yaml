@@ -7,10 +7,6 @@ templates:
             command: "/init.sh"
             args:
               - "installation/scripts/prow/jobs/provision-compass.sh"
-            request_memory: 2Gi
-            request_cpu: 1
-            limits_memory: 3Gi
-            limits_cpu: 2
             env:
               GO111MODULE: "on"
             labels:
@@ -42,5 +38,6 @@ templates:
                     - "extra_refs_test-infra"
                     - "kyma_project_dir"
                     - "privileged_job"
+                    - "e2e-testing"
                   local:
                     - "jobConfig_default"

@@ -61,6 +61,9 @@ presubmits: # runs on PRs
               - "cd components/eventing-controller && make test-local"
             resources:
               requests:
-                memory: 2Gi
-                cpu: 2000m
+                memory: 4Gi
+                cpu: 2
+              limits:
+                memory: 4Gi
+                cpu: 2
   
