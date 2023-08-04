@@ -34,11 +34,11 @@ presubmits: # runs on PRs
               - "./..."
             resources:
               requests:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
               limits:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
     - name: pre-main-test-infra-lint
       annotations:
         description: "Run golangci-lint for all modules in test-infra repository"

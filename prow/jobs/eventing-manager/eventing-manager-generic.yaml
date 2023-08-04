@@ -78,11 +78,11 @@ presubmits: # runs on PRs
               - "make test-only"
             resources:
               requests:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
               limits:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
   
 postsubmits: # runs on main
   kyma-project/eventing-manager:

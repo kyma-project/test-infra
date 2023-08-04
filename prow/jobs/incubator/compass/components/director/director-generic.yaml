@@ -46,11 +46,11 @@ presubmits: # runs on PRs
                 value: "--oci-worker-no-process-sandbox"
             resources:
               requests:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
               limits:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit
@@ -128,11 +128,11 @@ presubmits: # runs on PRs
               - "cd components/director && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
               limits:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
   
 postsubmits: # runs on main
   kyma-incubator/compass:
@@ -180,11 +180,11 @@ postsubmits: # runs on main
                 value: "--oci-worker-no-process-sandbox"
             resources:
               requests:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
               limits:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit

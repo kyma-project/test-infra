@@ -63,11 +63,11 @@ presubmits: # runs on PRs
               - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
               limits:
-                memory: 4Gi
-                cpu: 2
+                memory: 6Gi
+                cpu: 3
   
 postsubmits: # runs on main
   kyma-project/cli:
