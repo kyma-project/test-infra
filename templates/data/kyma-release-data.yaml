@@ -14,7 +14,6 @@ templates:
               preset-sa-gke-kyma-integration: "true"
               preset-gc-compute-envs: "true"
               preset-docker-push-repository-gke-integration: "true"
-              preset-dind-enabled: "true"
               preset-kyma-artifacts-bucket: "true"
               preset-cluster-use-ssd: "true"
               preset-cluster-version: "true"
@@ -53,11 +52,9 @@ templates:
                     testgrid-days-of-results: "60"
                   image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230803-991588f3
                   labels:
-                    preset-dind-enabled: "true"
                     preset-sa-gke-kyma-integration: "true"
                     preset-gc-project-env: "true"
                     preset-gke-kyma-developers-group: "true"
-                    preset-docker-push-repository-kyma: "true"
                     preset-cluster-version: "true"
                     preset-gc-compute-envs: "true"
                     preset-certificates-bucket: "true"
