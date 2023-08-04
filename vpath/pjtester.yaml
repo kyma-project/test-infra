@@ -7,4 +7,4 @@ pjConfigs:
 prConfigs:
   kyma-project:
     kyma-environment-broker:
-      prNumber: 13
+      prNumber: 14
