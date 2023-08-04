@@ -14,7 +14,6 @@ presubmits: # runs on PRs
         preset-bot-github-token: "true"
         preset-build-pr: "true"
         preset-cluster-version: "true"
-        preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
       run_if_changed: '^((tests/fast-integration/eventing-test\S+|tests/fast-integration/utils\S+|tests/fast-integration/monitoring\S+|tests/fast-integration/test/fixtures/commerce-mock\S+|resources/eventing\S+|installation/resources/crds/eventing\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
@@ -34,7 +33,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230802-a3ac0e08"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230803-991588f3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -83,7 +82,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-version: "true"
-        preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
         preset-kyma-eventing-auth-ias-creds: "true"
@@ -104,7 +102,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230802-a3ac0e08"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230803-991588f3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -147,7 +145,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-version: "true"
-        preset-debug-commando-oom: "true"
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
         preset-kyma-eventing-auth-ias-creds: "true"
@@ -168,7 +165,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230802-a3ac0e08"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230803-991588f3"
             securityContext:
               privileged: false
               seccompProfile:

@@ -11,7 +11,8 @@ RUN set -eux; \
     gettext \
     yq \
     binutils \
-    dumb-init
+    dumb-init \
+    libgit2-dev
 
 RUN adduser -D prow
 
