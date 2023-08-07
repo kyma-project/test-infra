@@ -38,7 +38,7 @@ require (
 	github.com/tidwall/gjson v1.15.0
 	github.com/zricethezav/gitleaks/v8 v8.17.0
 	go.uber.org/zap v1.25.0
-	golang.org/x/net v0.13.0
+	golang.org/x/net v0.14.0
 	golang.org/x/oauth2 v0.10.0
 	google.golang.org/api v0.134.0
 	google.golang.org/grpc v1.57.0
@@ -214,12 +214,12 @@ require (
 	go.uber.org/multierr v1.10.0 // indirect
 	go4.org v0.0.0-20201209231011-d4a079459e60 // indirect
 	gocloud.dev v0.19.0 // indirect
-	golang.org/x/crypto v0.11.0 // indirect
+	golang.org/x/crypto v0.12.0 // indirect
 	golang.org/x/mod v0.10.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
-	golang.org/x/sys v0.10.0 // indirect
-	golang.org/x/term v0.10.0 // indirect
-	golang.org/x/text v0.11.0 // indirect
+	golang.org/x/sys v0.11.0 // indirect
+	golang.org/x/term v0.11.0 // indirect
+	golang.org/x/text v0.12.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
 	golang.org/x/tools v0.9.3 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
