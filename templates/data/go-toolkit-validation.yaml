@@ -92,7 +92,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230803-991588f3"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230804-a5b27764"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -159,11 +159,12 @@ templates:
                   annotations:
                     owner: otters
                     description: "run unit tests for function controller"
-                  command: "/bin/sh"
+                  command: "make"
                   optional: false
                   args:
-                    - "-c"
-                    - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "-C"
+                    - "components/function-controller"
+                    - "test"
                   run_if_changed: '^components/function-controller/.*\.go$'
                 inheritedConfigs:
                   global:

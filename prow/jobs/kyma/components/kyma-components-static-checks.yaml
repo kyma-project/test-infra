@@ -48,7 +48,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
@@ -111,17 +111,18 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/bin/sh"
+              - "make"
             args:
-              - "-c"
-              - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "-C"
+              - "components/function-controller"
+              - "test"
             resources:
               requests:
                 memory: 1Gi
@@ -173,7 +174,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:

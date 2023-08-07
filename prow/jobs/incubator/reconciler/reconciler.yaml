@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
@@ -61,8 +61,11 @@ presubmits: # runs on PRs
               - "golangci-lint run -v --timeout=20m --new-from-rev=$PULL_BASE_SHA ./..."
             resources:
               requests:
-                memory: 200Mi
-                cpu: 80m
+                memory: 8Gi
+                cpu: 4
+              limits:
+                memory: 8Gi
+                cpu: 4
     - name: pre-main-reconciler-publish-pr-cli
       annotations:
         description: "pre publish reconciler"
@@ -91,7 +94,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
@@ -131,7 +134,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
@@ -179,7 +182,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
@@ -229,7 +232,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
@@ -280,7 +283,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
@@ -428,7 +431,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
@@ -477,7 +480,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
@@ -525,7 +528,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
@@ -684,7 +687,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230802-d51826a399"
+          - image: "gcr.io/k8s-prow/generic-autobumper:v20230804-795d03a2b1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -726,7 +729,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:
@@ -783,7 +786,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230803-991588f3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230804-a5b27764"
             securityContext:
               privileged: false
               seccompProfile:

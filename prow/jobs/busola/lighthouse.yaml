@@ -8,6 +8,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-busola-lighthouse"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-k3d-enabled: "true"
         preset-dind-enabled: "true"
         preset-gardener-azure-kyma-integration: "true"
         preset-kind-volume-mounts: "true"
@@ -20,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230803-991588f3
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230804-a5b27764
             securityContext:
               privileged: true
               seccompProfile:
@@ -32,8 +33,8 @@ presubmits: # runs on PRs
               - tests/lighthouse/scripts/busola-lighthouse.sh
             resources:
               requests:
-                memory: 4Gi
-                cpu: 1
-              limits:
                 memory: 6Gi
                 cpu: 2
+              limits:
+                memory: 8Gi
+                cpu: 4

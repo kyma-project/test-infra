@@ -4,13 +4,12 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"sync"
-	"sync/atomic"
 
-	gcplogging "github.com/kyma-project/test-infra/development/gcp/pkg/logging"
+	log "github.com/sirupsen/logrus"
+
 	"github.com/kyma-project/test-infra/development/github/pkg/client"
 	"github.com/kyma-project/test-infra/development/prow"
-	log "github.com/sirupsen/logrus"
+	"github.com/kyma-project/test-infra/development/types"
 )
 
 // Example fields in gcp logging.
@@ -58,98 +57,74 @@ import (
 //	  k8s-pod/prow_k8s_io/refs_repo: "kyma"
 //	  k8s-pod/prow_k8s_io/type: "postsubmit"
 //	}
-func main() {
-	// exitCode holds exit code to report at the end of main execution, it's safe to set it from multiple goroutines.
-	var exitCode atomic.Value
-	// Set exit code for exec. This will be call last when exiting from main function.
-	defer func() {
-		os.Exit(exitCode.Load().(int))
-	}()
-	ctx := context.Background()
-	var wg sync.WaitGroup
-	// Serviceaccount credentials to access google cloud logging API.
-	saProwjobGcpLoggingClientKeyPath := os.Getenv("SA_PROWJOB_GCP_LOGGING_CLIENT_KEY_PATH")
-	// Create kyma implementation Google cloud logging client with defaults for logging from prowjobs.
-	logClient, err := gcplogging.NewProwjobClient(ctx, saProwjobGcpLoggingClientKeyPath, gcplogging.ProwLogsProjectID)
-	if err != nil {
-		log.Errorf("creating gcp logging client failed, got error: %v", err)
+
+// checkUserInMap is a function that checks if the author exists in the usersMap.
+// It returns true if found and false otherwise.
+func checkUserInMap(author string, usersMap []types.User) bool {
+	for _, user := range usersMap {
+		if user.ComGithubUsername == author {
+			return true
+		}
 	}
-	logger := logClient.NewProwjobLogger().WithGeneratedTrace()
-	// Flush all buffered messages when exiting from main function.
-	defer logger.Flush()
-	// Github access token, provided by preset-bot-github-sap-token
+	return false
+}
+
+func main() {
+	ctx := context.Background()
+	var missingUsers []string
+
+	log.SetFormatter(&log.JSONFormatter{})
+	// GitHub access token, provided by preset-bot-github-sap-token
 	accessToken := os.Getenv("BOT_GITHUB_SAP_TOKEN")
 	githubComAccessToken := os.Getenv("BOT_GITHUB_TOKEN")
-	contextLogger := logger.WithContext("checking if user exists in users map")
-	defer contextLogger.Flush()
-	// Create SAP tools github client.
 	saptoolsClient, err := client.NewSapToolsClient(ctx, accessToken)
 	if err != nil {
-		contextLogger.LogError(fmt.Sprintf("failed creating sap tools github client, got error: %v", err))
+		log.Fatalf(fmt.Sprintf("failed creating sap tools github client, got error: %v", err))
 	}
+
 	githubComClient, err := client.NewClient(ctx, githubComAccessToken)
 	if err != nil {
-		contextLogger.LogError(fmt.Sprintf("failed creating github.com client, got error: %v", err))
+		log.Fatalf(fmt.Sprintf("failed creating github.com client, got error: %v", err))
 	}
-	// Get file with usernames mappings.
 	usersMap, err := saptoolsClient.GetUsersMap(ctx)
 	if err != nil {
-		contextLogger.LogError(fmt.Sprintf("error when getting users map: got error %v", err))
+		log.Fatalf(fmt.Sprintf("error when getting users map: got error %v", err))
 	}
-	// Get authors of github pull request.
 	authors, err := prow.GetPrAuthorForPresubmit()
 	if err != nil {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
-			contextLogger.LogInfo(err.Error())
+			log.Infof(err.Error())
 		} else {
-			contextLogger.LogError(fmt.Sprintf("error when getting pr author for presubmit: got error %v", err))
+			log.Fatalf(fmt.Sprintf("error when getting pr author for presubmit: got error %v", err))
 		}
 	}
+
 	org, err := prow.GetOrgForPresubmit()
 	if err != nil {
 		if notPresubmit := prow.IsNotPresubmitError(err); *notPresubmit {
-			contextLogger.LogInfo(err.Error())
+			log.Infof(err.Error())
 		} else {
-			contextLogger.LogError(fmt.Sprintf("error when getting org for presubmit: got error %v", err))
+			log.Fatalf(fmt.Sprintf("error when getting org for presubmit: got error %v", err))
 		}
 	}
-	// TODO: move searching of user in to kymabot package
-	wg.Add(len(authors))
-	contextLogger.LogInfo(fmt.Sprintf("found %d authors in job spec env variable", len(authors)))
-	// Search entries for authors github usernames.
+
+	log.Infof(fmt.Sprintf("found %d authors in job spec env variable", len(authors)))
+
 	for _, author := range authors {
+		// Check if author is a member of the organization.
 		member, _, err := githubComClient.Organizations.IsMember(ctx, org, author)
 		if err != nil {
-			contextLogger.LogInfo(fmt.Sprintf("failed check if user %s is an github organisation member", author))
+			log.Fatalf(fmt.Sprintf("failed check if user %s is an github organisation member", author))
 		}
-		if member {
-			// Use goroutines.
-			go func(wg *sync.WaitGroup, author string, exitCode *atomic.Value) {
-				// Notify goroutine is done when exiting from it.
-				defer wg.Done()
-				for _, user := range usersMap {
-					if user.ComGithubUsername == author {
-						contextLogger.LogInfo(fmt.Sprintf("user %s is present in users map", author))
-						return
-					}
-				}
-				contextLogger.LogError(fmt.Sprintf("user %s is not present in users map, please add user to users-map.yaml file.", author))
-				// Set exitcode to 1, to report failed prowjob execution.
-				exitCode.Store(1)
-			}(&wg, author, &exitCode)
-		} else {
-			wg.Done()
+		// If the author is a member of the organization but not present in usersMap, add to missingUsers.
+		if member && !checkUserInMap(author, usersMap) {
+			missingUsers = append(missingUsers, author)
 		}
 	}
-	wg.Wait()
-	// If exitcode is nil, that means no errors were reported.
-	if exitCode.Load() == nil {
-		contextLogger.LogInfo("all authors present in users map or are not members of pull request github organisation")
-		err := contextLogger.Flush()
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		// Report successful prowjob execution.
-		exitCode.Store(0)
+
+	// If there are missing users, log a fatal error with all missing users, otherwise log an info message.
+	if len(missingUsers) > 0 {
+		log.Fatalf("users not present in users map: %v, please add them to users-map.yaml file.", missingUsers)
 	}
+	log.Infof("all authors present in users map")
 }

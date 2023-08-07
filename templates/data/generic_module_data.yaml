@@ -39,7 +39,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230803-991588f3
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230804-a5b27764
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -342,7 +342,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230803-991588f3
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230804-a5b27764
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -379,7 +379,7 @@ templates:
                   local:
                     - dind_job_k3d
               - jobConfig:
-                  name: release-serverless-manager-build
+                  name: release-serverless-operator-build
                   annotations:
                     owner: otters
                     description: Job to build serverless operator for a release.
@@ -395,7 +395,7 @@ templates:
                       ./hack/generate_module-chart.sh
                       &&
                       /image-builder
-                      --name=serverless-manager
+                      --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
                       --dockerfile=Dockerfile
@@ -410,7 +410,7 @@ templates:
                     - main_branches
                     - job_build_volumes
               - jobConfig:
-                  name: release-serverless-manager-module-build
+                  name: release-serverless-module-build
                   annotations:
                     owner: otters
                     description: Job to build serverless module for a release.
@@ -420,7 +420,7 @@ templates:
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
                   command: "./scripts/release.sh"
                   args:
                     - "ci"
@@ -441,7 +441,7 @@ templates:
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
                   run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   command: "make"
                   args:
@@ -465,7 +465,7 @@ templates:
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/dev/serverless-manager:PR-${PULL_NUMBER}"
+                    IMG: "europe-docker.pkg.dev/kyma-project/dev/serverless-operator:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
                   run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   command: "make"
@@ -481,10 +481,10 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
-                  name: pre-serverless-manager-operator-tests
+                  name: pre-serverless-operator-tests
                   annotations:
                     owner: otters
-                    description: serverless manager tests
+                    description: serverless operator tests
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
                   command: "bash"
                   args:
@@ -500,10 +500,10 @@ templates:
                     - build_labels # default labels
                     - unprivileged
               - jobConfig:
-                  name: pre-serverless-manager-operator-build
+                  name: pre-serverless-operator-build
                   annotations:
                     owner: otters
-                    description: serverless manager operator build
+                    description: serverless operator image build
                   always_run: true
                   command: sh
                   args:
@@ -514,7 +514,7 @@ templates:
                       ./hack/generate_module-chart.sh
                       &&
                       /image-builder
-                      --name=serverless-manager
+                      --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
                       --dockerfile=Dockerfile
@@ -526,10 +526,10 @@ templates:
                     - main_branches
                     - job_build_volumes
               - jobConfig:
-                  name: post-serverless-manager-operator-build
+                  name: post-serverless-operator-build
                   annotations:
                     owner: otters
-                    description: build serverless manager
+                    description: build serverless operator
                   always_run: true
                   labels:
                     preset-signify-prod-secret: "true"
@@ -542,7 +542,7 @@ templates:
                       ./hack/generate_module-chart.sh
                       &&
                       /image-builder
-                      --name=serverless-manager
+                      --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
                       --dockerfile=Dockerfile
@@ -555,7 +555,7 @@ templates:
                     - main_branches
                     - job_build_volumes
               - jobConfig:
-                  name: pre-main-serverless-manager-verify
+                  name: pre-main-serverless-operator-verify
                   annotations:
                     owner: otters
                     description: serverless manager verify on k3d vm
@@ -575,7 +575,7 @@ templates:
                   local:
                     - dind_job_k3d
               - jobConfig:
-                  name: post-main-serverless-manager-verify
+                  name: post-main-serverless-operator-verify
                   annotations:
                     owner: otters
                     description: serverless manager verify on k3d vm
@@ -595,10 +595,10 @@ templates:
                   local:
                     - dind_job_k3d
               - jobConfig:
-                  name: post-main-serverless-manager-upgrade-latest-to-main
+                  name: post-main-serverless-operator-upgrade-latest-to-main
                   annotations:
                     owner: otters
-                    description: upgrade serverless manager test
+                    description: upgrade serverless operator test
                   always_run: "true"
                   optional: "true"
                   args:
