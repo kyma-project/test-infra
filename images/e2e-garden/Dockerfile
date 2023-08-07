@@ -22,7 +22,7 @@ RUN set -eux; \
 
 RUN adduser -D prow
 
-ARG CLUSTER_VERSION=v1.26.6
+ARG CLUSTER_VERSION=v1.26.7
 RUN curl -Lo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${CLUSTER_VERSION}/bin/linux/$(go env GOARCH)/kubectl" && \
     chmod +x /usr/local/bin/kubectl
 

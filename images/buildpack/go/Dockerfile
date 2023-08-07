@@ -2,12 +2,13 @@ FROM local/buildpack:latest
 
 ARG KUSTOMIZE_VERSION=v5.1.1
 ARG KUBEBUILDER_VERSION=v3.11.1
-ARG KO_VERSION=81c1c704e1c9dba030532af19a774d4677f40dce
+ARG KO_VERSION=5742ca84ab5abd394d5378656f91876aa65b014d
 ARG GO_VERSION=1.20.7
 
 # install go
-ENV PATH /usr/local/go/bin:$PATH
-SHELL [ "/bin/ash" ]
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+SHELL [ "/bin/ash", "-c" ]
 RUN set -eux; \
 	apk add --no-cache --virtual .fetch-deps gnupg; \
 	arch="$(apk --print-arch)"; \
@@ -43,7 +44,7 @@ RUN set -eux; \
 	if [ -z "$url" ]; then \
 # https://github.com/golang/go/issues/38536#issuecomment-616897960
 		build=1; \
-		url='https://dl.google.com/go/go${GO_VERSION}.src.tar.gz'; \
+		url="https://dl.google.com/go/go${GO_VERSION}.src.tar.gz"; \
 #		sha256='2c5ee9c9ec1e733b0dbbc2bdfed3f62306e51d8172bf38f4f4e542b27520f597'; \
 # the precompiled binaries published by Go upstream are not compatible with Alpine, so we always build from source here 😅
 	fi; \
@@ -102,18 +103,17 @@ RUN set -eux; \
 	\
 	apk del --no-network .fetch-deps; \
 	\
-	go version
-
-ENV GOPATH /go
-ENV PATH $GOPATH/bin:$PATH
-RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 1777 "$GOPATH"
+	go version; \
+    mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 1777 "$GOPATH"
 
 RUN set -eux; \
     curl -L -o kubebuilder "https://github.com/kubernetes-sigs/kubebuilder/releases/download/${KUBEBUILDER_VERSION}/kubebuilder_$(go env GOOS)_$(go env GOARCH)" && \
     chmod +x kubebuilder && mv kubebuilder /go/bin/ && \
     CGO_ENABLED=0 go install "github.com/google/ko@${KO_VERSION}" && \
     CGO_ENABLED=0 go install "sigs.k8s.io/kustomize/kustomize/v5@${KUSTOMIZE_VERSION}" && \
-    CGO_ENABLED=0 go install github.com/kyma-project/test-infra/development/jobguard/cmd/jobguard@main
+    CGO_ENABLED=0 go install github.com/kyma-project/test-infra/development/jobguard/cmd/jobguard@main; \
+    go clean -cache; \
+    go clean -modcache
 
 #USER prow:prow
 

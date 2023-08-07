@@ -2,7 +2,7 @@ FROM golang:1.20.7-alpine as base
 
 
 RUN set -eux; \
-    akp upgrade --no-cache && \
+    apk upgrade --no-cache && \
     apk add --no-cache \
     build-base \
     ca-certificates \
@@ -54,7 +54,7 @@ RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go en
     tar -xzOf helm.tar.gz "linux-$(go env GOARCH)/helm" > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm
 
-ARG CLUSTER_VERSION=v1.26.6
+ARG CLUSTER_VERSION=v1.26.7
 RUN curl -Lo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${CLUSTER_VERSION}/bin/linux/$(go env GOARCH)/kubectl" && \
     chmod +x /usr/local/bin/kubectl
 
