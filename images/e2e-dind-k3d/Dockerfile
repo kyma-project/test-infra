@@ -1,7 +1,8 @@
-FROM golang:1.20.4-alpine as base
+FROM golang:1.20.7-alpine as base
 
 
 RUN set -eux; \
+    akp upgrade --no-cache && \
     apk add --no-cache \
     build-base \
     ca-certificates \
@@ -20,11 +21,10 @@ RUN set -eux; \
     fuse-overlayfs \
     device-mapper \
     openssh-client \
-    gettext
-
-ARG DUMB_INIT_VERSION=1.2.5
-RUN curl -Lo /usr/local/bin/dumb-init "https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_$(uname -m)" && \
-    chmod +x /usr/local/bin/dumb-init
+    libgit2-dev \
+    pkgconf \
+    gettext \
+    dumb-init
 
 RUN set -eux; \
     addgroup -S dockremap 	&& \
@@ -39,7 +39,7 @@ WORKDIR /workspace
 
 FROM base AS go-deps
 ENV CGO_ENABLED=0
-ARG K3D_VERSION=v5.5.1
+ARG K3D_VERSION=v5.5.2
 
 RUN curl -Lso install.sh https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh && \
     chmod +x ./install.sh &&\
@@ -49,9 +49,7 @@ RUN curl -Lso install.sh https://raw.githubusercontent.com/k3d-io/k3d/main/insta
 ARG KIND_VERSION=v0.20.0
 RUN go install sigs.k8s.io/kind@${KIND_VERSION}
 
-#RUN go install github.com/kyma-project/control-plane/tools/cli/cmd/kcp@main
-
-ARG HELM_VERSION=v3.12.1
+ARG HELM_VERSION=v3.12.2
 RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go env GOARCH).tar.gz" && \
     tar -xzOf helm.tar.gz "linux-$(go env GOARCH)/helm" > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm

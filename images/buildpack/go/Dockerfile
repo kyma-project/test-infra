@@ -1,13 +1,13 @@
-FROM local/buildpack AS base
+FROM local/buildpack:latest
 
 ARG KUSTOMIZE_VERSION=v5.1.1
 ARG KUBEBUILDER_VERSION=v3.11.1
 ARG KO_VERSION=81c1c704e1c9dba030532af19a774d4677f40dce
-ARG DOCKER_CREDENTIAL_GCR_VERSION=2.1.11
 ARG GO_VERSION=1.20.7
 
 # install go
 ENV PATH /usr/local/go/bin:$PATH
+SHELL [ "/bin/ash" ]
 RUN set -eux; \
 	apk add --no-cache --virtual .fetch-deps gnupg; \
 	arch="$(apk --print-arch)"; \
@@ -43,14 +43,14 @@ RUN set -eux; \
 	if [ -z "$url" ]; then \
 # https://github.com/golang/go/issues/38536#issuecomment-616897960
 		build=1; \
-		url='https://dl.google.com/go/go1.20.7.src.tar.gz'; \
-		sha256='2c5ee9c9ec1e733b0dbbc2bdfed3f62306e51d8172bf38f4f4e542b27520f597'; \
+		url='https://dl.google.com/go/go${GO_VERSION}.src.tar.gz'; \
+#		sha256='2c5ee9c9ec1e733b0dbbc2bdfed3f62306e51d8172bf38f4f4e542b27520f597'; \
 # the precompiled binaries published by Go upstream are not compatible with Alpine, so we always build from source here 😅
 	fi; \
 	\
-	wget -O go.tgz.asc "$url.asc"; \
-	wget -O go.tgz "$url"; \
-	echo "$sha256 *go.tgz" | sha256sum -c -; \
+	curl -L -o go.tgz.asc "$url.asc"; \
+	curl -L -o go.tgz "$url"; \
+#	echo "$sha256 *go.tgz" | sha256sum -c -; \
 	\
 # https://github.com/golang/go/issues/14739#issuecomment-324767697
 	GNUPGHOME="$(mktemp -d)"; export GNUPGHOME; \
@@ -112,17 +112,9 @@ RUN set -eux; \
     curl -L -o kubebuilder "https://github.com/kubernetes-sigs/kubebuilder/releases/download/${KUBEBUILDER_VERSION}/kubebuilder_$(go env GOOS)_$(go env GOARCH)" && \
     chmod +x kubebuilder && mv kubebuilder /go/bin/ && \
     CGO_ENABLED=0 go install "github.com/google/ko@${KO_VERSION}" && \
-    CGO_ENABLED=0 go install "sigs.k8s.io/kustomize/kustomize/v5@${KUSTOMIZE_VERSION}"
+    CGO_ENABLED=0 go install "sigs.k8s.io/kustomize/kustomize/v5@${KUSTOMIZE_VERSION}" && \
+    CGO_ENABLED=0 go install github.com/kyma-project/test-infra/development/jobguard/cmd/jobguard@main
 
-RUN curl -fsSLo docker-credential-gcr.tar.gz "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v${DOCKER_CREDENTIAL_GCR_VERSION}/docker-credential-gcr_$(go env GOOS)_$(go env GOARCH)-${DOCKER_CREDENTIAL_GCR_VERSION}.tar.gz" && \
-    tar xzf docker-credential-gcr.tar.gz \
-    && chmod +x docker-credential-gcr && mv docker-credential-gcr /usr/bin/
-
-RUN CGO_ENABLED=0 go install github.com/kyma-project/test-infra/development/jobguard/cmd/jobguard@main
-
-FROM base
-
-RUN docker-credential-gcr configure-docker --registries=eu.gcr.io,europe-docker.pkg.dev
 #USER prow:prow
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
