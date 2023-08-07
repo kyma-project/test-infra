@@ -136,22 +136,21 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		sender := event.(*github.IssuesEvent).GetSender()
 
 		// add Slack user name, or empty string
-		asigneeSlackUsername := getSlackUsername(usersMap, *is.Assignee.Login, r.URL.Host)
-		senderSlackUsername := getSlackUsername(usersMap, *sender.Login, r.URL.Host)
-
 		var payloadInterface map[string]any
 		json.Unmarshal(payload, &payloadInterface)
-		payloadInterface["asigneeSlackUsername"] = asigneeSlackUsername
+
+		assigneeSlackUsername := getSlackUsername(usersMap, *is.Assignee.Login, r.URL.Host)
+		payloadInterface["assigneeSlackUsername"] = assigneeSlackUsername
+
+		senderSlackUsername := getSlackUsername(usersMap, *sender.Login, r.URL.Host)
 		payloadInterface["senderSlackUsername"] = senderSlackUsername
 
-		// send
-		pubsubClient.PublishMessage(ctx, payloadInterface, pubsubTopic)
-
+		// send message to a pubsub topic
+		_, err = pubsubClient.PublishMessage(ctx, payloadInterface, pubsubTopic)
 		if err != nil {
 			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed sending, error: %s", err)
 			return
 		}
-
 	} else {
 		logger.LogInfo("received unsupported event")
 	}

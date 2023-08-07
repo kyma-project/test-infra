@@ -294,7 +294,7 @@ def issue_labeled() -> Response:
             issue_url = payload["issue"]["html_url"]
 
             assignee = f"Issue #{number} in repository {org}/{repo} is not assigned."
-            if payload["asigneeSlackUsername"]:
+            if payload["assigneeSlackUsername"]:
                 assignee = f"Issue #{number} in repository {org}/{repo} is assigned to <@{payload['slackUsername']}>"
 
             sender = payload["senderSlackUsername"]
