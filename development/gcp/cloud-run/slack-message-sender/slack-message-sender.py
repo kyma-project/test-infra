@@ -341,7 +341,7 @@ def issue_labeled() -> Response:
                         "text":
                             {
                                 "type": "mrkdwn",
-                                "text": f"@here {sender} labeled issue `{title}` as `{label}`.\n{assignee} <{issue_url}|See issue here.>"
+                                "text": f"@here {sender} labeled issue `{title}` as `{label}`.\n{assignee} <{issue_url}|See the issue here.>"
                             }
                     },
                 ],
