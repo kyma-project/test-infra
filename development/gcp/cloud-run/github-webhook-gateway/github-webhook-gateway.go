@@ -30,14 +30,15 @@ var (
 		},
 	}
 
-	componentName   string
-	applicationName string
-	projectID       string
-	githubToken     string
-	pubsubTopic     string
-	listenPort      string
-	sapToolsClient  *toolsclient.SapToolsClient
-	pubsubClient    *pubsub.Client
+	componentName        string
+	applicationName      string
+	projectID            string
+	toolsGithubTokenPath string
+	githubToken          []byte
+	pubsubTopic          string
+	listenPort           string
+	sapToolsClient       *toolsclient.SapToolsClient
+	pubsubClient         *pubsub.Client
 )
 
 func main() {
@@ -49,21 +50,20 @@ func main() {
 	projectID = os.Getenv("PROJECT_ID")
 	listenPort = os.Getenv("LISTEN_PORT")
 	pubsubTopic = os.Getenv("PUBSUB_TOPIC")
-	githubTokenPath := os.Getenv("GITHUB_TOKEN_PATH")
+	toolsGithubTokenPath = os.Getenv("GITHUB_TOKEN_PATH")
 
 	mainLogger := cloudfunctions.NewLogger()
 	mainLogger.WithComponent(componentName) // search-github-issue
 	mainLogger.WithLabel("io.kyma.app", applicationName)
 	mainLogger.WithLabel("io.kyma.component", componentName)
 
-	githubTokenBytes, err := os.ReadFile(githubTokenPath)
+	githubToken, err = os.ReadFile(toolsGithubTokenPath)
 	if err != nil {
 		mainLogger.LogCritical("failed read github token from file, error: %s", err)
 	}
-	githubToken = string(githubTokenBytes)
 
 	// Create tools github client.
-	sapToolsClient, err = toolsclient.NewSapToolsClient(ctx, githubToken)
+	sapToolsClient, err = toolsclient.NewSapToolsClient(ctx, string(githubToken))
 	if err != nil {
 		mainLogger.LogCritical("Failed creating tools GitHub client: %s", err)
 	}
@@ -101,7 +101,7 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 	logger.WithLabel("io.kyma.app", applicationName)
 	logger.WithLabel("io.kyma.component", componentName)
 
-	logger.LogInfo("Got Github payload ID %s", githubDeliveryID)
+	logger.LogInfo("Got Github payload ID %s from %s", githubDeliveryID, r.URL.Host)
 
 	// payload stores JSON string with webhook data
 	payload, err := github.ValidatePayload(r, []byte(githubToken))
@@ -124,11 +124,29 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		supported = false
 	}
 	if supported {
+		var usersMap []types.User
 		ctx := context.Background()
-		usersMap, err := sapToolsClient.GetUsersMap(ctx)
+		sapToolsClient.WrapperClientMu.RLock()
+		usersMap, err = sapToolsClient.GetUsersMap(ctx)
+		sapToolsClient.WrapperClientMu.RUnlock()
 		if err != nil {
-			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed getting user map, error: %s", err)
-			return
+			githubToken, err := os.ReadFile(toolsGithubTokenPath)
+			if err != nil {
+				logger.LogCritical("failed read github token from file, error: %s", err)
+			}
+			_, err = sapToolsClient.Reauthenticate(ctx, logger, githubToken)
+			if err != nil {
+				logger.LogCritical("failed reauthenticate github client, error %s", err)
+			}
+
+			// retry
+			sapToolsClient.WrapperClientMu.RLock()
+			usersMap, err = sapToolsClient.GetUsersMap(ctx)
+			sapToolsClient.WrapperClientMu.RUnlock()
+			if err != nil {
+				crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed getting user map, error: %s", err)
+				return
+			}
 		}
 		// CloudEvents sourceID.
 		logger.LogInfo("received event of type: %s", eventType)
