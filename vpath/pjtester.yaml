@@ -2,7 +2,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       telemetry-manager:
-        - pjName: "pull-telemetry-manager-integration-test-istio"
+        - pjName: "pull-telemetry-test-matchers"
           report: true
 prConfigs:
   kyma-project:
