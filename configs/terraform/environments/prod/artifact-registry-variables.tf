@@ -2,9 +2,9 @@
 ###################################
 # Artifact Registry related values
 ###################################
-variable "artifact_registry_list" {
+variable "artifact_registry_collection" {
   description = "Artifact Registry related data set"
-  type = list(object({
+  type = map(object({
     name                   = string
     owner                  = string
     type                   = string

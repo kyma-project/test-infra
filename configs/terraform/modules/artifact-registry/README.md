@@ -6,32 +6,33 @@ This is the GCP image registry creator tool. Use the registry to publish modules
 
 Configure Artifact Registry related values in the `terraform.tfvars` file. **!Please, do not delete or update existing registry related data set without knowing what you are doing!**
 
-You can configure multiple artifact registries as a list of objects in `artifact_registry_list`.
+You can configure multiple artifact registries as a list of objects in `artifact_registry_collection`.
 
 ```terraform
-artifact_registry_list = [
-  {
+artifact_registry_collection = {
+  modules-internal={
     name                   = "modules-internal"
     owner                  = "neighbors"
     type                   = "production"
     reader_serviceaccounts = ["klm-controller-manager@sap-ti-dx-kyma-mps-dev.iam.gserviceaccount.com", "klm-controller-manager@sap-ti-dx-kyma-mps-stage.iam.gserviceaccount.com", "klm-controller-manager@sap-ti-dx-kyma-mps-prod.iam.gserviceaccount.com"]
+    writer_serviceaccount  = "kyma-submission-pipeline@kyma-project.iam.gserviceaccount.com"
   },
-]
+}
 ```
 
 If you would like to crete a new Artifact registry please copy an existing registry data then modify the **required** parameters according to your requirements. **!Please, do not delete or update existing registry related data set without knowing what you are doing!**
 
 ```terraform
-artifact_registry_list = [
+artifact_registry_collection = {
     ...
-  {
+  <your registry's name>={
     name                   = "<your registry's name>"
     owner                  = "<registry owner>"
     type                   = "<type: development or production>"
     reader_serviceaccounts = ["<service account 1>", "<service account 2>"]
   },
   ...
-]
+}
 ```
 
 Additionally you have chance to define optional parameters. Here you can find all parameters you can use:

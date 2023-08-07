@@ -12,9 +12,9 @@ variable "gcp_project_id" {
   description = "Google Cloud project to create resources."
 }
 
-variable "artifact_registry_list" {
+variable "artifact_registry_collection" {
   description = "Artifact Registry related data set"
-  type = list(object({
+  type = map(object({
     name                   = string
     owner                  = string
     type                   = string
@@ -26,4 +26,3 @@ variable "artifact_registry_list" {
     immutable              = optional(bool, false)
   }))
 }
-

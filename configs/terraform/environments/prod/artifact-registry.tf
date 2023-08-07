@@ -1,6 +1,6 @@
 module "artifact_registry" {
   source                                   = "../../modules/artifact-registry"
-  for_each                                 = { for i, v in var.artifact_registry_list : i => v }
+  for_each                                 = var.artifact_registry_collection
   artifact_registry_name                   = each.value.name
   artifact_registry_type                   = each.value.type
   immutable_artifact_registry              = each.value.immutable
