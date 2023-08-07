@@ -400,8 +400,8 @@ templates:
                       --context=.
                       --dockerfile=Dockerfile
                       --tag=$PULL_BASE_SHA
-                branches:
-                  - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                  branches:
+                     - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
