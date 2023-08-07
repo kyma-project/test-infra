@@ -16,25 +16,6 @@ readonly SECONDS_PER_HOUR=3600
 
 set -e
 
-#Exported variables
-export TEST_INFRA_SOURCES_DIR="${KYMA_PROJECT_DIR}/test-infra"
-export TEST_INFRA_CLUSTER_INTEGRATION_SCRIPTS="${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/helpers"
-
-# shellcheck source=prow/scripts/lib/utils.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/utils.sh"
-# shellcheck source=prow/scripts/lib/log.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/log.sh"
-# shellcheck source=prow/scripts/lib/gardener/gardener.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/lib/gardener/gardener.sh"
-
-requiredVars=(
-    KYMA_PROJECT_DIR
-    GARDENER_KYMA_PROW_KUBECONFIG
-    GARDENER_KYMA_PROW_PROJECT_NAME
-)
-
-utils::check_required_vars "${requiredVars[@]}"
-
 EXCLUDED_CLUSTERS_REGEX=""
 while [[ $# -gt 0 ]]
 do
@@ -69,27 +50,34 @@ do
         # check cluster age
         # shellcheck disable=SC2016
         CREATION_TIME="$(kubectl --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" -n garden-"${GARDENER_KYMA_PROW_PROJECT_NAME}" get shoots "$CLUSTER" -o go-template='{{.metadata.creationTimestamp}}')"
-
         # convert to timestamp for age calculation
-        CREATION_TS="$(date -d "${CREATION_TIME}" +%s)" # On macOS use: CREATION_TS=$(date -jf "%Y-%m-%dT%H:%M:%SZ" ${CREATION_TIME} +%s)
+        CREATION_TS="$(date -D "${CREATION_TIME}" +%s)" # On macOS use: CREATION_TS=$(date -jf "%Y-%m-%dT%H:%M:%SZ" ${CREATION_TIME} +%s)
         NOW_TS="$(date +%s)"
         HOURS_OLD=$(( (NOW_TS - CREATION_TS) / SECONDS_PER_HOUR ))
 
-
+        NS="garden-$GARDENER_KYMA_PROW_PROJECT_NAME"
         # clusters older than 24h get deleted
         # it matches clusters with day-of-week appended to the name, example: np1kyma
         if [[ ${HOURS_OLD} -ge 24 && "$CLUSTER" =~ np?[0-9].* ]]; then
-            log::info "Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
-            utils::deprovision_gardener_cluster "${GARDENER_KYMA_PROW_PROJECT_NAME}" "${CLUSTER}" "${GARDENER_KYMA_PROW_KUBECONFIG}"
+            echo ">>> Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
+              remove_cluster "$CLUSTER" "$NS"
         elif [[ ${HOURS_OLD} -ge 4 && ! "$CLUSTER" =~ np?[0-9].* ]]; then
             # clusters older than 4h get deleted
-            log::info "Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
-            gardener::deprovision_cluster \
-                -p "${GARDENER_KYMA_PROW_PROJECT_NAME}" \
-                -c "${CLUSTER}" \
-                -f "${GARDENER_KYMA_PROW_KUBECONFIG}"
+            echo ">>> Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
+              remove_cluster "$CLUSTER" "$NS"
         fi
     else
         echo "level=warning msg=\"Cluster is excluded, deletion will be skipped. Name: \"${CLUSTER}\""
     fi
 done
+
+function remove_cluster() {
+  kubectl annotate shoot "${1}" confirmation.gardener.cloud/deletion=true \
+      --overwrite \
+      -n "${2}" \
+      --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    kubectl delete shoot "${1}" \
+      --wait="true" \
+      --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+      -n "${2}"
+}
