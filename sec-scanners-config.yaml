@@ -43,22 +43,22 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230728-90a0fc69
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-a5b27764
     - europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230804-a5b27764
-    - gcr.io/k8s-prow/analyze:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/branchprotector:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/checkconfig:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/commenter:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/crier:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/deck:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/gencred:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/generic-autobumper:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/ghproxy:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/hook:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/horologium:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/label_sync:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/prow-controller-manager:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/sinker:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/status-reconciler:v20230804-795d03a2b1
-    - gcr.io/k8s-prow/tide:v20230804-795d03a2b1
+    - gcr.io/k8s-prow/analyze:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/branchprotector:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/checkconfig:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/commenter:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/crier:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/deck:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/gencred:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/generic-autobumper:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/ghproxy:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/hook:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/horologium:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/label_sync:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/prow-controller-manager:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/sinker:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/status-reconciler:v20230807-9c9d12bda4
+    - gcr.io/k8s-prow/tide:v20230807-9c9d12bda4
     - grafana/grafana:7.5.17
     - k8s.gcr.io/gcsweb:v1.1.0
     - maven:3.9.3-eclipse-temurin-17
