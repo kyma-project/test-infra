@@ -19,6 +19,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230804-37bc3313
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20230804-37bc3313
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230804-37bc3313
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20230802-a960e47d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:v20230804-37bc3313
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230804-37bc3313
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230804-37bc3313
@@ -40,7 +41,6 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230804-a5b27764
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230804-a5b27764
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230804-a5b27764
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230728-90a0fc69
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230804-a5b27764
     - europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230804-a5b27764
     - gcr.io/k8s-prow/analyze:v20230808-2811823aac
