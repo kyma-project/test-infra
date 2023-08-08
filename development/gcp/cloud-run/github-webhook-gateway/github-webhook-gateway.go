@@ -46,7 +46,7 @@ func main() {
 	projectID = os.Getenv("PROJECT_ID")
 	listenPort = os.Getenv("LISTEN_PORT")
 	pubsubTopic = os.Getenv("PUBSUB_TOPIC")
-	toolsGithubTokenPath = os.Getenv("GITHUB_TOKEN_PATH")
+	toolsGithubTokenPath = os.Getenv("TOOLS_GITHUB_TOKEN_PATH")
 
 	mainLogger := cloudfunctions.NewLogger()
 	mainLogger.WithComponent(componentName) // search-github-issue
