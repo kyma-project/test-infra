@@ -50,7 +50,7 @@
 
 [Github issues](/development/tools/cmd/githubissues/README.md) - This command queries all open Github issues in an organization or repository, and loads that data to a BigQuery table.
 
-[Github Release](/development/tools/cmd/githubrelease/README.md) - This command creates GitHub releases based on artifacts stored in a Google bucket. Each release requires the following set of artifacts:
+[GitHub release](/development/tools/cmd/githubrelease/README.md) - This command creates GitHub releases.
 
 [GitHub Statistics](/development/tools/cmd/githubstats/README.md) - `githubstats` fetches statistics for GitHub issues and prints the following JSON object:
 
@@ -70,7 +70,7 @@
 
 [PR Tag Builder](/development/tools/pkg/prtagbuilder/README.md) - PR Tag Builder is a tool that finds a pull request number for a commit.
 
-[Documentation guidelines](/docs/documentation_guidelines.md) - 1. Each repository must contain an automatically updated index page in `docs` directory.
+/development/tools/pkg/release/change-record.md[Documentation guidelines](/docs/documentation_guidelines.md) - 1. Each repository must contain an automatically updated index page in `docs` directory.
 
 [Documentation](/docs/how-to/ado/README.md) - The folder contains documents that provide an insight into Azure DevOps (ADO) configuration, development, and testing.
 
@@ -108,7 +108,7 @@
 
 [TestGrid](/docs/prow/prow-k8s-testgrid.md) - [TestGrid](https://testgrid.k8s.io) is an interactive dashboard for viewing tests results in a grid. It parses JUnit reports for generating a grid view from the tests.
 
-[Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`.
+[Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`. 
 
 [Quality metrics](/docs/prow/quality-metrics.md) - This document describes reports that provide an overview of the basic quality measures for the Kyma project.
 
