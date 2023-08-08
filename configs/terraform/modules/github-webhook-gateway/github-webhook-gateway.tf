@@ -40,11 +40,11 @@ resource "google_cloud_run_service" "github_webhook_gateway" {
         }
         env {
           name  = "COMPONENT_NAME"
-          value = "github-webhook-gatewaydge"
+          value = "github-webhook-gateway"
         }
         env {
           name  = "APPLICATION_NAME"
-          value = "github-webhook-gatewaydge"
+          value = "github-webhook-gateway"
         }
         env {
           name  = "LISTEN_PORT"

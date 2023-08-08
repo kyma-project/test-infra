@@ -30,9 +30,9 @@ app = Flask(__name__)
 project_id: str = os.getenv('PROJECT_ID', '')
 component_name: str = os.getenv('COMPONENT_NAME', '')
 application_name: str = os.getenv('APPLICATION_NAME', '')
-slack_channel_id: str = os.getenv('SLACK_CHANNEL_ID', '')
-slack_release_channel_id: str = os.getenv('SLACK_RELEASE_CHANNEL_ID', '')
-slack_team_channel_id: str = os.getenv('SLACK_TEAM_CHANNEL_ID', '')
+slack_channel_id: str = os.getenv('PROW_DEV_NULL_SLACK_CHANNEL_ID', '')
+slack_release_channel_id: str = os.getenv('RELEASE_SLACK_CHANNEL_ID', '')
+slack_team_channel_id: str = os.getenv('KYMA_TEAM_SLACK_CHANNEL_ID', '')
 slack_base_url: str = os.getenv('SLACK_BASE_URL', '')  # https://slack.com/api
 kyma_security_slack_group_name: str = os.getenv('KYMA_SECURITY_SLACK_GROUP_NAME', '')
 # TODO: make it configurable through env vars

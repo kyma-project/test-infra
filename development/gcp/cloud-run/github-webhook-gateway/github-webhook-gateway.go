@@ -16,10 +16,6 @@ import (
 	"github.com/kyma-project/test-infra/development/types"
 )
 
-const (
-	SapToolsGithubURL = "https://github.tools.sap/"
-)
-
 var (
 	// TODO: allowedEvents map should be populated from configuration.
 	//  This will allow to limit allowed events by instance, event when code support it.
