@@ -18,7 +18,7 @@ resource "google_pubsub_topic" "issue_labeled" {
   name = var.pubsub_topic_name
 }
 
-resource "google_cloud_run_service" "github_bridge" {
+resource "google_cloud_run_service" "github_webhook_gateway" {
   depends_on = [google_secret_manager_secret_iam_member.gh_issue_finder_gh_tools_kyma_bot_token_accessor]
   name       = "github-webhook-gateway"
   location   = "europe-west3"
