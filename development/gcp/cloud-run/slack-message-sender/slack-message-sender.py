@@ -30,8 +30,9 @@ app = Flask(__name__)
 project_id: str = os.getenv('PROJECT_ID', '')
 component_name: str = os.getenv('COMPONENT_NAME', '')
 application_name: str = os.getenv('APPLICATION_NAME', '')
-slack_channel_id: str = os.getenv('SLACK_CHANNEL_ID', '')
-slack_release_channel_id: str = os.getenv('SLACK_RELEASE_CHANNEL_ID', '')
+slack_channel_id: str = os.getenv('PROW_DEV_NULL_SLACK_CHANNEL_ID', '')
+slack_release_channel_id: str = os.getenv('RELEASE_SLACK_CHANNEL_ID', '')
+slack_team_channel_id: str = os.getenv('KYMA_TEAM_SLACK_CHANNEL_ID', '')
 slack_base_url: str = os.getenv('SLACK_BASE_URL', '')  # https://slack.com/api
 kyma_security_slack_group_name: str = os.getenv('KYMA_SECURITY_SLACK_GROUP_NAME', '')
 # TODO: make it configurable through env vars
@@ -63,7 +64,6 @@ def prepare_log_fields() -> Dict[str, Any]:
             log_fields["logging.googleapis.com/trace"] = f"projects/{project_id}/traces/{trace[0]}"
     log_fields["Component"] = "slack-message-sender"
     log_fields["labels"] = {
-        "io.kyma.app": "secret-leak-found",
         "io.kyma.component": "slack-message-sender"
     }
     return log_fields
@@ -111,6 +111,7 @@ def prepare_error_response(err: str, log_fields: Dict[str, Any]) -> Response:
 def secret_leak_found() -> Response:
     '''secret_leak_found handles found secret leak Slack messages'''
     log_fields: Dict[str, Any] = prepare_log_fields()
+    log_fields["labels"]["io.kyma.app"] = "secret-leak-found"
 
     # create a CloudEvent
     event = from_http(request.headers, request.get_data())
@@ -204,13 +205,14 @@ def secret_leak_found() -> Response:
 def release_cluster_created() -> Response:
     '''this function sends kubeconfig in a Slack channel for newly created release cluster'''
     log_fields: Dict[str, Any] = prepare_log_fields()
+    log_fields["labels"]["io.kyma.app"] = "release-cluster-created"
     try:
         pubsub_message = get_pubsub_message()
         if isinstance(pubsub_message, dict) and "data" in pubsub_message:
             release_info = json.loads(base64.b64decode(pubsub_message["data"]).decode("utf-8").strip())
             print(LogEntry(
                 severity="INFO",
-                message=f"Sending notification to {slack_channel_id}.",
+                message=f"Sending notification to {slack_release_channel_id}.",
                 **log_fields,
             ))
 
@@ -272,3 +274,88 @@ def release_cluster_created() -> Response:
     # pylint: disable=broad-exception-caught
     except Exception as err:
         return prepare_error_response(str(err), log_fields)
+
+
+@app.route("/issue-labeled", methods=["POST"])
+def issue_labeled() -> Response:
+    '''this function sends information about labeled issues in a Slack channel'''
+    log_fields: Dict[str, Any] = prepare_log_fields()
+    log_fields["labels"]["io.kyma.app"] = "issue-labeled"
+    try:
+        pubsub_message = get_pubsub_message()
+        if isinstance(pubsub_message, dict) and "data" in pubsub_message:
+            payload = json.loads(base64.b64decode(pubsub_message["data"]).decode("utf-8").strip())
+
+            label = payload["label"]["name"]
+            title = payload["issue"]["title"]
+            number = payload["issue"]["number"]
+            repo = payload["repository"]["name"]
+            org = payload["repository"]["owner"]["login"]
+            issue_url = payload["issue"]["html_url"]
+
+            assignee = f"Issue #{number} in repository {org}/{repo} is not assigned."
+            if payload["assigneeSlackUsername"]:
+                assignee = f"Issue #{number} in repository {org}/{repo} is assigned to <@{payload['slackUsername']}>"
+
+            sender = payload["senderSlackUsername"]
+            if payload["senderSlackUsername"]:
+                sender = f"<@{payload['senderSlackUsername']}>"
+
+            print(LogEntry(
+                severity="INFO",
+                message=f"Sending notification to {slack_team_channel_id}.",
+                **log_fields,
+            ))
+
+            result = slack_app.client.chat_postMessage(
+                channel=slack_team_channel_id,
+                text=f"issue {title} #{number} labeld as {label} in {repo}",
+                username="GithubBot",
+                unfurl_links=True,
+                unfurl_media=True,
+                blocks=[
+                    {
+                        "type": "context",
+                        "elements":
+                            [
+                                {
+                                    "type": "image",
+                                    "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
+                                    "alt_text": "label"
+                                },
+                                {
+                                    "type": "mrkdwn",
+                                    "text": "SAP Github issue labeled"
+                                }
+                            ]
+                    },
+                    {
+                        "type": "header",
+                        "text": {
+                            "type": "plain_text",
+                            "text": f"SAP Github {label}"
+                        }
+                    },
+                    {
+                        "type": "section",
+                        "text":
+                            {
+                                "type": "mrkdwn",
+                                "text": f"@here {sender} labeled issue `{title}` as `{label}`.\n{assignee} <{issue_url}|See the issue here.>"
+                            }
+                    },
+                ],
+            )
+            print(LogEntry(
+                severity="INFO",
+                message=f'Slack message send, message id: {result["ts"]}',
+                **log_fields,
+            ))
+
+            return prepare_success_response()
+
+        return prepare_error_response("Cannot parse pubsub data", log_fields)
+    # pylint: disable=broad-exception-caught
+    except Exception as err:
+        return prepare_error_response(str(err), log_fields)
+ 
