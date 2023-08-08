@@ -33,7 +33,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20230802-a960e47d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20230804-37bc3313
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20230804-37bc3313
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20230309-1d421c4f
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20230807-e8c26d5b
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20230804-a5b27764
     - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230804-a5b27764
