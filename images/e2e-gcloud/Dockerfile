@@ -1,6 +1,7 @@
-FROM golang:1.20.4-alpine as base
+FROM golang:1.20.7-alpine as base
 
 RUN set -eux; \
+    apk upgrade --no-cache; \
     apk add --no-cache \
     build-base \
     ca-certificates \
@@ -19,17 +20,15 @@ RUN set -eux; \
     py3-openssl \
     gnupg \
     libc6-compat \
-    gettext
-
-ARG DUMB_INIT_VERSION=1.2.5
-RUN curl -Lo /usr/local/bin/dumb-init "https://github.com/Yelp/dumb-init/releases/download/v${DUMB_INIT_VERSION}/dumb-init_${DUMB_INIT_VERSION}_$(uname -m)" && \
-    chmod +x /usr/local/bin/dumb-init
+    gettext \
+    libgit2-dev \
+    pkgconf
 
 RUN adduser -D prow
 
 ENV USE_GKE_GCLOUD_AUTH_PLUGIN=True
 ENV PATH=/google-cloud-sdk/bin:${PATH}
-ARG GCLOUD_CLI_VERSION=437.0.1
+ARG GCLOUD_CLI_VERSION=441.0.0
 
 RUN curl -fLSs -o gc-sdk.tar.gz "https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/google-cloud-cli-${GCLOUD_CLI_VERSION}-linux-$(uname -m).tar.gz" && \
     tar xzf gc-sdk.tar.gz -C / && \
@@ -41,7 +40,7 @@ RUN curl -fLSs -o gc-sdk.tar.gz "https://dl.google.com/dl/cloudsdk/channels/rapi
     gcloud --version; \
     kubectl version --client
 
-ARG HELM_VERSION=v3.12.1
+ARG HELM_VERSION=v3.12.2
 RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go env GOARCH).tar.gz" && \
     tar -xzOf helm.tar.gz linux-amd64/helm > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm

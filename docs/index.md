@@ -122,8 +122,6 @@
 
 [Prow runtime images](/images/README.md) - This directory contains images that can be used as runtime images for all ProwJobs in Kyma's Prow Instance.
 
-[buildpack-go](/images/buildpack-go/README.md) - This image contains a common toolchain for building and running Go-based applications and container images.
-
 [E2E DinD K3d](/images/e2e-dind-k3d/README.md) - This image contains common tools for all jobs/tasks that test Kyma modules in K3d.
 
 [Prow](/prow/README.md) - Prow is a Kubernetes-developed system that you can use as a Continuous Integration (CI) tool for validating your GitHub repositories and components, managing automatic validation of pull requests (PRs), applying and removing labels, or opening and closing issues.
