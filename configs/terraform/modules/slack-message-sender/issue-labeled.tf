@@ -1,5 +1,5 @@
-resource "google_eventarc_trigger" "release_cluster_created" {
-  name     = "release-cluster-created"
+resource "google_eventarc_trigger" "issue_labeled" {
+  name     = "issue-labeled"
   location = google_cloud_run_service.slack_message_sender.location
   matching_criteria {
     attribute = "type"
@@ -9,7 +9,7 @@ resource "google_eventarc_trigger" "release_cluster_created" {
     cloud_run_service {
       service = google_cloud_run_service.slack_message_sender.name
       region  = google_cloud_run_service.slack_message_sender.location
-      path    = var.release_cluster_created_cloud_run_path
+      path    = var.issue_labeled_cloud_run_path
     }
   }
   service_account = google_service_account.slack_message_sender.id
@@ -18,7 +18,7 @@ resource "google_eventarc_trigger" "release_cluster_created" {
   }
   transport {
     pubsub {
-      topic = "projects/${var.gcp_project_id}/topics/${var.release_cluster_created_pubsub_topic_name}"
+      topic = "projects/${var.gcp_project_id}/topics/${var.issue_labeled_pubsub_topic_name}"
     }
   }
 }
