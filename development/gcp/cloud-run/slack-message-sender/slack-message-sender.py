@@ -358,4 +358,3 @@ def issue_labeled() -> Response:
     # pylint: disable=broad-exception-caught
     except Exception as err:
         return prepare_error_response(str(err), log_fields)
- 

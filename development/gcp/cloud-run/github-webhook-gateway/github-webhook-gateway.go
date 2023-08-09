@@ -169,7 +169,6 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		logger.LogInfo("received unsupported event")
 	}
 	w.WriteHeader(http.StatusOK)
-
 }
 
 // checkIfEventSupported will check if eventGroup and eventAction are present in allowed map of allowed event types for this instance.
