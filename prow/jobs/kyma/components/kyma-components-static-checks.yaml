@@ -63,7 +63,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 200m
-  
+
   kyma-project/kyma:
     - name: pull-function-controller-lint
       annotations:
@@ -127,7 +127,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
-  
+
   kyma-project/directory-size-exporter:
     - name: pull-directory-size-exporter-lint
       annotations:
@@ -189,4 +189,3 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
-  
