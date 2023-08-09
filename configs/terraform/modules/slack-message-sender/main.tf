@@ -23,7 +23,18 @@ variable "release_cluster_created_pubsub_topic_name" {
 }
 
 
-variable "release_cluster_created_could_run_path" {
+variable "issue_labeled_pubsub_topic_name" {
+  type    = string
+  default = "issue-labeled"
+}
+
+variable "release_cluster_created_cloud_run_path" {
   type    = string
   default = "/release-cluster-created"
+}
+
+
+variable "issue_labeled_cloud_run_path" {
+  type    = string
+  default = "/issue-labeled"
 }
