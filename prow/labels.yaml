@@ -483,3 +483,11 @@ repos: # repo-specific labels
         name: terraform
         target: both
         addedBy: anyone
+  kyma-project/btp-manager:
+    labels:
+      - color: c7def8
+        description: Categorizes issue or PR as related to modifying or improving an existing feature
+        name: kind/enhancement
+        target: both
+        prowPlugin: label
+        addedBy: anyone
