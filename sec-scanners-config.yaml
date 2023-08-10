@@ -21,15 +21,15 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230810-671e968d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20230810-671e968d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:v20230810-671e968d
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230810-671e968d
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230810-a917845a
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230810-671e968d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20230810-671e968d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20230810-671e968d
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20230810-671e968d
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20230810-a917845a
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/move-gcs-bucket:v20230802-a960e47d
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/needs-tws:v20230810-671e968d
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/needs-tws:v20230810-a917845a
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20230810-671e968d
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230810-671e968d
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20230810-a917845a
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/scan-logs-for-secrets:v20230802-a960e47d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20230802-a960e47d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20230810-671e968d
