@@ -2,16 +2,6 @@
 ###################################
 # Artifact Registry related values
 ###################################
-variable "gcp_region" {
-  type        = string
-  description = "Default Google Cloud region to create resources."
-}
-
-variable "gcp_project_id" {
-  type        = string
-  description = "Google Cloud project to create resources."
-}
-
 variable "artifact_registry_collection" {
   description = "Artifact Registry related data set"
   type = map(object({
