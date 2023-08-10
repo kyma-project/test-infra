@@ -32,7 +32,7 @@ prefixes:
     stagingRefConfigFile: "templates/config.yaml"
     repo: "https://github.com/kyma-project/test-infra"
     summarise: true
-    consistentImages: true
+    consistentImages: false
   - name: "test-infra-prod"
     prefix: "europe-docker.pkg.dev/kyma-project/prod/test-infra/"
     refConfigFile: "templates/config.yaml"
