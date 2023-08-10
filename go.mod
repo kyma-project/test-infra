@@ -7,7 +7,7 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3
 	cloud.google.com/go/firestore v1.12.0
 	cloud.google.com/go/kms v1.15.1
-	cloud.google.com/go/logging v1.7.0
+	cloud.google.com/go/logging v1.8.0
 	cloud.google.com/go/pubsub v1.33.0
 	cloud.google.com/go/storage v1.31.0
 	github.com/Masterminds/semver v1.5.0
