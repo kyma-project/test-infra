@@ -30,7 +30,7 @@ presubmits: # runs on PRs
                 type: Unconfined
               allowPrivilegeEscalation: true
             args:
-              - -c
+              - bash -c
               - |
                 export KUBECONFIG=$(k3d kubeconfig write kcp)
                 TEST_EVENTING_AUTH_TARGET_KUBECONFIG_PATH=${KUBECONFIG} USE_EXISTING_CLUSTER=true make test
