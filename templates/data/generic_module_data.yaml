@@ -416,6 +416,7 @@ templates:
                     description: Job to build serverless module for a release.
                   always_run: true
                   labels:
+                    preset-sa-kyma-push-images: "true"
                     preset-bot-github-token: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
