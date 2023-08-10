@@ -47,22 +47,6 @@ templates:
                     - jobConfig_postsubmit
                     - "disable_testgrid"
               - jobConfig:
-                  name: "pull-nats-manager-unit-test"
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "make test-only"
-                  always_run: true
-                  annotations:
-                    owner: skydivingtunas
-                    description: ran nats manager unit tests
-                inheritedConfigs:
-                  global:
-                    - testing
-                    - "jobConfig_presubmit"
-                    - "unprivileged"
-              - jobConfig:
                   name: pull-nats-module-build
                   annotations:
                     owner: skydivingtunas
