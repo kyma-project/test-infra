@@ -470,11 +470,11 @@ templates:
                     - "shopt -s globstar; hadolint --config .hadolint.yaml --no-color **/Dockerfile"
                   labels:
                     preset-kyma-guard-bot-github-token: "true"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20230809-ddf0733f
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
-                    - image_bootstrap
                   local:
                     - reconciler_main_jobConfig
