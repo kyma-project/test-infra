@@ -25,3 +25,7 @@ data "google_project" "project" {
 data "google_secret_manager_secret" "gh_tools_kyma_bot_token" {
   secret_id = "trusted_default_kyma-bot-github-sap-token"
 }
+
+data "google_secret_manager_secret" "webhook_token" {
+  secret_id = "sap-tools-github-backlog-webhook-secret"
+}
