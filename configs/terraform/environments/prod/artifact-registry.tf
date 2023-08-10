@@ -1,6 +1,5 @@
 module "artifact_registry" {
-  source = "../../../modules/artifact-registry"
-
+  source                                   = "../../modules/artifact-registry"
   for_each                                 = var.artifact_registry_collection
   artifact_registry_name                   = each.value.name
   artifact_registry_type                   = each.value.type

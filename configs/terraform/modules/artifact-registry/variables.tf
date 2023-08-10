@@ -12,14 +12,14 @@ variable "artifact_registry_owner" {
   default     = "neighbors"
 }
 
-variable "artifact_registry_module" {
-  type        = string
-  description = "Module name"
-}
-
-variable "artifact_registry_serviceaccount" {
+variable "artifact_registry_writer_serviceaccount" {
   type        = string
   description = "Service Account"
+}
+
+variable "artifact_registry_reader_serviceaccounts" {
+  type        = list(string)
+  description = "Service Accounts with read access (lifecycle-maneger)"
 }
 
 variable "artifact_registry_type" {
@@ -43,5 +43,11 @@ variable "artifact_registry_primary_area" {
 variable "immutable_artifact_registry" {
   type        = bool
   description = "Is Artifact registry immutable"
+  default     = false
+}
+
+variable "artifact_registry_public" {
+  type        = bool
+  description = "Is Artifact registry public"
   default     = false
 }
