@@ -50,36 +50,6 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-nats-manager-unit-test
-      annotations:
-        description: "ran nats manager unit tests"
-        owner: "skydivingtunas"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-nats-manager-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230809-ddf0733f"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "make test-only"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
     - name: pull-nats-module-build
       annotations:
         description: "NATS module build pre-main job"
