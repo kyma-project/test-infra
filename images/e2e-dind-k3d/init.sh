@@ -1,4 +1,4 @@
-#!/usr/local/bin/dumb-init /bin/bash
+#!/usr/bin/dumb-init /bin/bash
 
 set -e
 
