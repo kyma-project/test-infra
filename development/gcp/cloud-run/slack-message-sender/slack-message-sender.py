@@ -287,70 +287,71 @@ def issue_labeled() -> Response:
             payload = json.loads(base64.b64decode(pubsub_message["data"]).decode("utf-8").strip())
 
             label = payload["label"]["name"]
-            title = payload["issue"]["title"]
-            number = payload["issue"]["number"]
-            repo = payload["repository"]["name"]
-            org = payload["repository"]["owner"]["login"]
-            issue_url = payload["issue"]["html_url"]
+            if label in ("internal-incident", "customer-incident"):
+                title = payload["issue"]["title"]
+                number = payload["issue"]["number"]
+                repo = payload["repository"]["name"]
+                org = payload["repository"]["owner"]["login"]
+                issue_url = payload["issue"]["html_url"]
 
-            assignee = f"Issue #{number} in repository {org}/{repo} is not assigned."
-            if payload["assigneeSlackUsername"]:
-                assignee = f"Issue #{number} in repository {org}/{repo} is assigned to <@{payload['slackUsername']}>"
+                assignee = f"Issue #{number} in repository {org}/{repo} is not assigned."
+                if payload["assigneeSlackUsername"]:
+                    assignee = f"Issue #{number} in repository {org}/{repo} is assigned to <@{payload['slackUsername']}>"
 
-            sender = payload["senderSlackUsername"]
-            if payload["senderSlackUsername"]:
-                sender = f"<@{payload['senderSlackUsername']}>"
+                sender = payload["senderSlackUsername"]
+                if payload["senderSlackUsername"]:
+                    sender = f"<@{payload['senderSlackUsername']}>"
 
-            print(LogEntry(
-                severity="INFO",
-                message=f"Sending notification to {slack_team_channel_id}.",
-                **log_fields,
-            ))
+                print(LogEntry(
+                    severity="INFO",
+                    message=f"Sending notification to {slack_team_channel_id}.",
+                    **log_fields,
+                ))
 
-            result = slack_app.client.chat_postMessage(
-                channel=slack_team_channel_id,
-                text=f"issue {title} #{number} labeld as {label} in {repo}",
-                username="GithubBot",
-                unfurl_links=True,
-                unfurl_media=True,
-                blocks=[
-                    {
-                        "type": "context",
-                        "elements":
-                            [
-                                {
-                                    "type": "image",
-                                    "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
-                                    "alt_text": "label"
-                                },
+                result = slack_app.client.chat_postMessage(
+                    channel=slack_team_channel_id,
+                    text=f"issue {title} #{number} labeld as {label} in {repo}",
+                    username="GithubBot",
+                    unfurl_links=True,
+                    unfurl_media=True,
+                    blocks=[
+                        {
+                            "type": "context",
+                            "elements":
+                                [
+                                    {
+                                        "type": "image",
+                                        "image_url": "https://mpng.subpng.com/20180802/bfy/kisspng-portable-network-graphics-computer-icons-clip-art-caribbean-blue-tag-icon-free-caribbean-blue-pric-5b63afe8224040.3966331515332597521403.jpg",
+                                        "alt_text": "label"
+                                    },
+                                    {
+                                        "type": "mrkdwn",
+                                        "text": "SAP Github issue labeled"
+                                    }
+                                ]
+                        },
+                        {
+                            "type": "header",
+                            "text": {
+                                "type": "plain_text",
+                                "text": f"SAP Github {label}"
+                            }
+                        },
+                        {
+                            "type": "section",
+                            "text":
                                 {
                                     "type": "mrkdwn",
-                                    "text": "SAP Github issue labeled"
+                                    "text": f"@here {sender} labeled issue `{title}` as `{label}`.\n{assignee} <{issue_url}|See the issue here.>"
                                 }
-                            ]
-                    },
-                    {
-                        "type": "header",
-                        "text": {
-                            "type": "plain_text",
-                            "text": f"SAP Github {label}"
-                        }
-                    },
-                    {
-                        "type": "section",
-                        "text":
-                            {
-                                "type": "mrkdwn",
-                                "text": f"@here {sender} labeled issue `{title}` as `{label}`.\n{assignee} <{issue_url}|See the issue here.>"
-                            }
-                    },
-                ],
-            )
-            print(LogEntry(
-                severity="INFO",
-                message=f'Slack message send, message id: {result["ts"]}',
-                **log_fields,
-            ))
+                        },
+                    ],
+                )
+                print(LogEntry(
+                    severity="INFO",
+                    message=f'Slack message send, message id: {result["ts"]}',
+                    **log_fields,
+                ))
 
             return prepare_success_response()
 
