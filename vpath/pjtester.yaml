@@ -1,0 +1,5 @@
+pjConfigs:
+  prowJobs:
+    kyma-incubator:
+      reconciler:
+      - pjName: "nightly-main-reconciler-e2e"
