@@ -12,7 +12,7 @@ set -e
 
 pwd
 # shellcheck source=prow/scripts/reconciler/common.sh
-source "../../kyma-project/test-infra/prow/scripts/reconciler/reconciler.sh"
+source "../../kyma-project/test-infra/prow/scripts/reconciler/common.sh"
 
 # All provides require these values, each of them may check for additional variables
 requiredVars=(
