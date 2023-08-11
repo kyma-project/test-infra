@@ -18,7 +18,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230809-d28bb961"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230811-76e8e73a"
             command:
               - "/bin/sh"
             args:
