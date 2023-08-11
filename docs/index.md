@@ -24,7 +24,7 @@
 
 [PubSub Gateway](/development/kyma-pubsub-connector/pubSubGateway/README.md) - The PubSub Gateway is written in Golang. It pulls messages from PubSub, converts them into a CloudEvents, and forwards them to the Kyma Event Publisher Proxy.
 
-[Overview](/development/kyma-slack-connector/issueLabeledFunction/README.md) - The `issueLabeled` Function is executed by Kyma [Serverless](https://kyma-project.io/docs/components/serverless/) when the registered **issuesevent.labeled** event occurs. All **issuesevent.labeled** events for the `internal-incident` or `customer-incident` labels will be processed by this Function.
+[Overview](/development/kyma-slack-connector/issueLabeledFunction/README.md) - The `issueLabeled` Function is executed by Kyma [Serverless](https://kyma-project.io/#/01-overview/serverless/README) when the registered **issuesevent.labeled** event occurs. All **issuesevent.labeled** events for the `internal-incident` or `customer-incident` labels will be processed by this Function.
 
 [prowjobparser](/development/prowjobparser/README.md) - The prowjobparser is a helper tool which parses all Prow Jobs under the provided path, matches them against the provided label filters, and prints matching Prow Job names to the standard output.
 
