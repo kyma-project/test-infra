@@ -164,15 +164,20 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		}
 		// CloudEvents sourceID.
 		logger.LogInfo("received event of type: %s", eventType)
-		is := event.(*github.IssuesEvent).GetIssue()
+		issue := event.(*github.IssuesEvent).GetIssue()
 		sender := event.(*github.IssuesEvent).GetSender()
 
 		// add Slack user name, or empty string
 		var payloadInterface map[string]any
 		json.Unmarshal(payload, &payloadInterface)
 
-		assigneeSlackUsername := getSlackUsername(usersMap, *is.Assignee.Login, r.URL.Host)
-		payloadInterface["assigneeSlackUsername"] = assigneeSlackUsername
+		if issue.Assignee != nil {
+			// assigneee can be null
+			assigneeSlackUsername := getSlackUsername(usersMap, *issue.Assignee.Login, r.URL.Host)
+			payloadInterface["assigneeSlackUsername"] = assigneeSlackUsername
+		} else {
+			payloadInterface["assigneeSlackUsername"] = ""
+		}
 
 		senderSlackUsername := getSlackUsername(usersMap, *sender.Login, r.URL.Host)
 		payloadInterface["senderSlackUsername"] = senderSlackUsername
