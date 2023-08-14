@@ -310,7 +310,7 @@ updates:
     commit-message:
       prefix: "image-detector"
       include: "scope"
-  - package-ecosystem: 
+  - package-ecosystem: "github-actions"
     directory: "/"
     labels:
       - "skip-review"

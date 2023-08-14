@@ -43,7 +43,7 @@ templates:
               - "area/dependency"
               - "kind/chore"
           dailyGithubActionsEcosystem:
-            package-ecosystem: "github-actions"
+            packageEcosystem: "github-actions"
             scheduleInterval: "daily"
             commitIncludeScope: "true"
             commitMsgPrefix: "actions"
