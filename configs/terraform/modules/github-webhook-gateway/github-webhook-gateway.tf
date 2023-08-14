@@ -77,7 +77,7 @@ resource "google_cloud_run_service" "github_webhook_gateway" {
         }
         env {
           name  = "PUBSUB_TOPIC"
-          value = google_pubsub_topic.issue_labeled.id
+          value = google_pubsub_topic.issue_labeled.name
         }
         env {
           name  = "TOOLS_GITHUB_TOKEN_PATH"
