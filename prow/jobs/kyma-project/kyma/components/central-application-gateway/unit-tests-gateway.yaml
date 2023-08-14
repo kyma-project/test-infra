@@ -30,4 +30,4 @@ presubmits:
             resources:
               requests:
                 memory: 1Gi
-                cpu: 1Gi
+                cpu: 1
