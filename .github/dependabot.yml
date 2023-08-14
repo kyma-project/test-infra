@@ -310,4 +310,15 @@ updates:
     commit-message:
       prefix: "image-detector"
       include: "scope"
+  - package-ecosystem: 
+    directory: "/"
+    labels:
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "actions"
+      include: "scope"
 
