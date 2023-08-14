@@ -61,6 +61,8 @@ jobs:
       - name: setup tfcmt
         id: setup-tfcmt
         uses: shmokmt/actions-setup-tfcmt@v2
+        with:
+          version: v4.4.3
 
       - name: Terraform Init
         id: terraform_init
