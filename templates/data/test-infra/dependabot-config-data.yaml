@@ -42,6 +42,15 @@ templates:
               - "skip-review"
               - "area/dependency"
               - "kind/chore"
+          dailyGithubActionsEcosystem:
+            package-ecosystem: "github-actions"
+            scheduleInterval: "daily"
+            commitIncludeScope: "true"
+            commitMsgPrefix: "actions"
+            labels:
+              - "skip-review"
+              - "area/dependency"
+              - "kind/chore"
           dailyTerraform:
             packageEcosystem: "terraform"
             scheduleInterval: "daily"
@@ -211,3 +220,8 @@ templates:
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/"
+                inheritedConfigs:
+                  local:
+                    - "dailyGithubActionsEcosystem"
