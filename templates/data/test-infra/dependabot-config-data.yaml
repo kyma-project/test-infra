@@ -48,7 +48,6 @@ templates:
             commitIncludeScope: "true"
             commitMsgPrefix: "actions"
             labels:
-              - "skip-review"
               - "area/dependency"
               - "kind/chore"
           dailyTerraform:

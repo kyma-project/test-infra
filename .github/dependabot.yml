@@ -313,7 +313,6 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     labels:
-      - "skip-review"
       - "area/dependency"
       - "kind/chore"
     schedule:
