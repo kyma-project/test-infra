@@ -19,6 +19,7 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
+        - ^ui5$
       spec:
         containers:
           - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230811-76e8e73a
