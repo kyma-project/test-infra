@@ -270,7 +270,7 @@ branch-protection:
           protect: false
         busola:
           branches:
-            luigiless-busola:
+            ui5:
               protect: false
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
