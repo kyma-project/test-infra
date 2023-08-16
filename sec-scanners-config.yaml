@@ -19,7 +19,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230814-d45a8194
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20230814-d45a8194
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20230814-d45a8194
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20230814-d45a8194
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20230816-1f308fb9
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:v20230814-d45a8194
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230814-d45a8194
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230814-d45a8194
