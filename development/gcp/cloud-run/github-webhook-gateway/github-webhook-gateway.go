@@ -138,6 +138,7 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		supported = false
 	}
 	if supported {
+		logger.LogInfo("Got supported event from %s", eventType)
 		var usersMap []types.User
 		ctx := context.Background()
 		sapToolsClient.WrapperClientMu.RLock()
@@ -173,13 +174,13 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 
 		if issue.Assignee != nil {
 			// assigneee can be null
-			assigneeSlackUsername := getSlackUsername(usersMap, *issue.Assignee.Login, r.URL.Host)
+			assigneeSlackUsername := getSlackUsername(usersMap, *issue.Assignee.Login)
 			payloadInterface["assigneeSlackUsername"] = assigneeSlackUsername
 		} else {
 			payloadInterface["assigneeSlackUsername"] = ""
 		}
 
-		senderSlackUsername := getSlackUsername(usersMap, *sender.Login, r.URL.Host)
+		senderSlackUsername := getSlackUsername(usersMap, *sender.Login)
 		payloadInterface["senderSlackUsername"] = senderSlackUsername
 
 		// send message to a pubsub topic
@@ -205,23 +206,15 @@ func checkIfEventSupported(allowed map[string]map[string]struct{}, eventGroup, e
 	return "", false
 }
 
-// getSlackusername loks through usersmap and returns GH username from a selected domain
-func getSlackUsername(usersMap []types.User, githubUsername string, domain string) string {
+// getSlackusername loks through usersmap and returns GH username
+func getSlackUsername(usersMap []types.User, githubUsername string) string {
 	// ghclient = Github(base_url=f"https://{TOOLS_GITHUB_HOST}/api/v3", login_or_token=tools_github_bot_token)
 	// repo = ghclient.get_repo(TOOLS_GITHUB_TEST_INFRA_REPO)
 	// content = repo.get_contents(USERS_MAP_FILE_PATH, ref=USERS_MAP_FILE_REF)
 	// users_map = yaml.load(content.decoded_content.decode(), Loader=yaml.FullLoader)
-	if domain == "github.tools.sap" {
-		for _, user := range usersMap {
-			if githubUsername == user.SapToolsGithubUsername {
-				return user.ComEnterpriseSlackUsername
-			}
-		}
-	} else if domain == "github.com" {
-		for _, user := range usersMap {
-			if githubUsername == user.ComGithubUsername {
-				return user.ComEnterpriseSlackUsername
-			}
+	for _, user := range usersMap {
+		if githubUsername == user.SapToolsGithubUsername {
+			return user.ComEnterpriseSlackUsername
 		}
 	}
 
