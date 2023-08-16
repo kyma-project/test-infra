@@ -138,7 +138,6 @@ func GithubWebhookGateway(w http.ResponseWriter, r *http.Request) {
 		supported = false
 	}
 	if supported {
-		logger.LogInfo("Got supported event from %s", eventType)
 		var usersMap []types.User
 		ctx := context.Background()
 		sapToolsClient.WrapperClientMu.RLock()
