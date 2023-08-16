@@ -91,19 +91,6 @@ templates:
                   local:
                     - "dailyDockerEcosystem"
               - jobConfig:
-                  directory: "/development/kyma-github-connector/githubWebhookGateway"
-                  # commit message can be 15 characters max
-                  commitMsgPrefix: "ghWebhookGate"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/development/kyma-pubsub-connector/pubSubGateway"
-                  commitMsgPrefix: "pubSubGateway"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
                   directory: "/development/test-log-collector"
                   # commit message can be 15 characters max
                   commitMsgPrefix: "test-log-coll"
