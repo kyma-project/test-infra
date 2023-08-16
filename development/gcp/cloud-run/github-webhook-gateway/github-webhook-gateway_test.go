@@ -11,9 +11,6 @@ const (
 	githubUsername     = "github"
 	enterpriseUsername = "enterprise"
 	slackUsername      = "slack"
-
-	githubDomain     = "github.com"
-	enterpriseDomain = "github.tools.sap"
 )
 
 func TestGetSlackUsername(t *testing.T) {
@@ -27,38 +24,23 @@ func TestGetSlackUsername(t *testing.T) {
 	tests := []struct {
 		name                  string
 		expectedSlackUsername string
-		domain                string
 		githubUsername        string
 	}{
 		{
-			name:                  "Existing user in github domain",
+			name:                  "Existing user",
 			expectedSlackUsername: slackUsername,
-			domain:                githubDomain,
-			githubUsername:        githubUsername,
-		},
-		{
-			name:                  "Existing user in enterprise domain",
-			expectedSlackUsername: slackUsername,
-			domain:                enterpriseDomain,
 			githubUsername:        enterpriseUsername,
 		},
 		{
-			name:                  "nonexisting user in github domain",
+			name:                  "nonexisting user",
 			expectedSlackUsername: "",
-			domain:                githubDomain,
-			githubUsername:        invalidUsername,
-		},
-		{
-			name:                  "nonexisting user in nonexisting domain",
-			expectedSlackUsername: "",
-			domain:                invalidUsername,
 			githubUsername:        invalidUsername,
 		},
 	}
 
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			slackUsername := getSlackUsername(usersMap, test.githubUsername, test.domain)
+			slackUsername := getSlackUsername(usersMap, test.githubUsername)
 			if slackUsername != test.expectedSlackUsername {
 
 			}
