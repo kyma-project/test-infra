@@ -207,10 +207,6 @@ func checkIfEventSupported(allowed map[string]map[string]struct{}, eventGroup, e
 
 // getSlackusername loks through usersmap and returns GH username
 func getSlackUsername(usersMap []types.User, githubUsername string) string {
-	// ghclient = Github(base_url=f"https://{TOOLS_GITHUB_HOST}/api/v3", login_or_token=tools_github_bot_token)
-	// repo = ghclient.get_repo(TOOLS_GITHUB_TEST_INFRA_REPO)
-	// content = repo.get_contents(USERS_MAP_FILE_PATH, ref=USERS_MAP_FILE_REF)
-	// users_map = yaml.load(content.decoded_content.decode(), Loader=yaml.FullLoader)
 	for _, user := range usersMap {
 		if githubUsername == user.SapToolsGithubUsername {
 			return user.ComEnterpriseSlackUsername
