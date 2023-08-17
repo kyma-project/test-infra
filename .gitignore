@@ -15,9 +15,6 @@ __debug_bin
 
 /prow/images/probot-stale/package-lock.json
 /prow/images/probot-stale/node_modules
-/development/kyma-slack-connector/issueLabeledFunction/venv/
-/development/kyma-slack-connector/oomFoundFunction/venv/
-/development/kyma-slack-connector/notifyCommiterFunction/venv/
 
 .terraform
 .terraform.lock.hcl

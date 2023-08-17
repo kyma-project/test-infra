@@ -20,15 +20,9 @@
 
 [JobGuard ](/development/jobguard/README.md) - JobGuard is a simple tool that fetches all statuses for GitHub pull requests and waits for some of them to finish.
 
-[GitHub Webhook Gateway](/development/kyma-github-connector/githubWebhookGateway/README.md) - The GitHub Webhook Gateway is written in Golang. It listens for incoming GitHub Webhook events. It validates a Webhook HMAC secret, converts it to a CloudEvents compliant event and forwards it to the Kyma Event Service. It is meant to run within Kyma as a docker container.
-
-[PubSub Gateway](/development/kyma-pubsub-connector/pubSubGateway/README.md) - The PubSub Gateway is written in Golang. It pulls messages from PubSub, converts them into a CloudEvents, and forwards them to the Kyma Event Publisher Proxy.
-
-[Overview](/development/kyma-slack-connector/issueLabeledFunction/README.md) - The `issueLabeled` Function is executed by Kyma [Serverless](https://kyma-project.io/docs/components/serverless/) when the registered **issuesevent.labeled** event occurs. All **issuesevent.labeled** events for the `internal-incident` or `customer-incident` labels will be processed by this Function.
-
 [prowjobparser](/development/prowjobparser/README.md) - The prowjobparser is a helper tool which parses all Prow Jobs under the provided path, matches them against the provided label filters, and prints matching Prow Job names to the standard output.
 
-[Rotate service account secrets](/development/secrets-rotator/cloud-run/rotate-service-account/README.md) - RotateServiceAccount creates a new key for a GCP service account and updates the required secret data. It's triggered by a  Pub/Sub message sent by a secret stored in Secret Manager. It runs as a cloud run container.
+[Rotate service account secrets](/development/secrets-rotator/cloud-run/rotate-service-account/README.md) - RotateServiceAccount creates a new key for a GCP service account and updates the required secret data. It's triggered by a Pub/Sub message sent by a secret stored in Secret Manager. It runs as a cloud run container.
 
 [Cleanup of service account secrets](/development/secrets-rotator/cloud-run/service-account-keys-cleaner/README.md) - The Cloud Run service deletes old keys for a GCP service account and updates the required secret data for all service account secrets stored in the Secret Manager. The service is triggered by a Cloud Scheduler job.
 
@@ -66,7 +60,7 @@
 
 [Virtual Machines Garbage Collector](/development/tools/cmd/vmscollector/README.md) - This command finds and removes orphaned virtual machines (VMs) created by Prow jobs in a Google Cloud Platform (GCP) project.
 
-[YAML merge](/development/tools/cmd/yamlmerge/README.md) - This command line tool enables merging yaml files into one single file. For the operation to work, the yaml files must follow the same source path. 
+[YAML merge](/development/tools/cmd/yamlmerge/README.md) - This command line tool enables merging yaml files into one single file. For the operation to work, the yaml files must follow the same source path.
 
 [PR Tag Builder](/development/tools/pkg/prtagbuilder/README.md) - PR Tag Builder is a tool that finds a pull request number for a commit.
 
@@ -78,7 +72,7 @@
 
 [Add custom secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add a custom secret and use it in the Prow pipeline.
 
-[Standard Terraform configuration](/docs/how-to/how-to-create-standard-terraform-config.md) - This document describes the standard Terraform configuration that is used in `test-infra` repository. 
+[Standard Terraform configuration](/docs/how-to/how-to-create-standard-terraform-config.md) - This document describes the standard Terraform configuration that is used in `test-infra` repository.
 
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
 
@@ -102,17 +96,17 @@
 
 [HTML lens](/docs/prow/prow-html-lens.md) - Spyglass HTML lens allows to render HTML files in the job results.
 
-[Image autobump ](/docs/prow/prow-jobs-autobump.md) - This document provides an overview of autobump Prow Jobs. 
+[Image autobump ](/docs/prow/prow-jobs-autobump.md) - This document provides an overview of autobump Prow Jobs.
 
 [Prow Jobs QuickStart](/docs/prow/prow-jobs-quick-start.md) - This document provides an overview of how to quickly start working with Prow jobs.
 
 [TestGrid](/docs/prow/prow-k8s-testgrid.md) - [TestGrid](https://testgrid.k8s.io) is an interactive dashboard for viewing tests results in a grid. It parses JUnit reports for generating a grid view from the tests.
 
-[Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`. 
+[Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`.
 
 [Quality metrics](/docs/prow/quality-metrics.md) - This document describes reports that provide an overview of the basic quality measures for the Kyma project.
 
-[Security Leaks Scanner](/docs/prow/security_commit_scanner.md) - Security Leaks Scanner is a tool that scans a repository for potential security leaks, thus providing protection against any potential security threats and vulnerabilities. It operates using [Gitleaks](https://github.com/zricethezav/gitleaks), which ensures a thorough and efficient examination of your repository. 
+[Security Leaks Scanner](/docs/prow/security_commit_scanner.md) - Security Leaks Scanner is a tool that scans a repository for potential security leaks, thus providing protection against any potential security threats and vulnerabilities. It operates using [Gitleaks](https://github.com/zricethezav/gitleaks), which ensures a thorough and efficient examination of your repository.
 
 [Prow Test Clusters](/docs/prow/test-clusters.md) - This document gathers information about test clusters that Prow jobs build. All test clusters are built in the `sap-kyma-prow-workloads` project.
 
@@ -167,4 +161,3 @@
 [Cluster](/prow/workload-cluster/README.md) - This folder contains configuration files for the Prow workload. This configuration is used during cluster provisioning.
 
 [Templates](/templates/README.md) - Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.
-
