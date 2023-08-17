@@ -5,5 +5,5 @@ pjConfigs:
         - pjName: "nightly-istio-performance-test-gcp"
 prConfigs:
   kyma-project:
-    api-gateway:
+    istio:
       prNumber: 322
