@@ -4,7 +4,7 @@ templates:
       - to: ../../prow/jobs/third-party-images/third-party-images.yaml
         localSets:
           increased_resources:
-            request_memory: 3Gi
+            request_memory: 6Gi
             limits_memory: 6Gi
         jobConfigs:
           - repoName: "kyma-project/third-party-images"

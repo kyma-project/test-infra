@@ -418,7 +418,7 @@ presubmits: # runs on PRs
               - "--env-file=envs"
             resources:
               requests:
-                memory: 3Gi
+                memory: 6Gi
                 cpu: 1
               limits:
                 memory: 6Gi
@@ -1039,7 +1039,7 @@ postsubmits: # runs on main
               - "--tag={{ .Env \"GRAFANA_VERSION\" }}-{{ .ShortSHA }}"
             resources:
               requests:
-                memory: 3Gi
+                memory: 6Gi
                 cpu: 1
               limits:
                 memory: 6Gi
