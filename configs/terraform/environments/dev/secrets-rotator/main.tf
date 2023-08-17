@@ -32,7 +32,7 @@ output "secret-manager-notifications-topic" {
 }
 
 module "service_account_keys_rotator" {
-  source = "../../modules/rotate-service-account"
+  source = "../../../modules/rotate-service-account"
 
   application_name = var.application_name
   service_name     = var.service_account_keys_rotator_service_name
@@ -51,7 +51,7 @@ output "service_account_keys_rotator" {
 }
 
 module "service_account_keys_cleaner" {
-  source = "../../modules/service-account-keys-cleaner"
+  source = "../../../modules/service-account-keys-cleaner"
 
   application_name = var.application_name
   service_name     = var.service_account_keys_cleaner_service_name
