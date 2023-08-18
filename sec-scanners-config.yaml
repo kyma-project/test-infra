@@ -14,6 +14,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automerge-notification:v20230817-239cb09f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cla-assistant:v20230817-239cb09f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20230817-239cb09f
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cors-proxy:v20230818-828f7c97
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/create-github-issue:v20230802-a960e47d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20230817-239cb09f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20230817-239cb09f
