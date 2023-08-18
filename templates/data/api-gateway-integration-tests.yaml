@@ -37,7 +37,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs api-gateway integration tests on Gardener AWS cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230817-5a8ea22d
                   always_run: true
                   command: bash
@@ -67,7 +67,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs api-gateway integration tests on Gardener AWS cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   always_run: true
                   securityContext:
                     privileged: false
@@ -101,7 +101,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs api-gateway integration tests with custom domain handling on Gardener GCP cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   always_run: true
                   securityContext:
                     privileged: false
@@ -134,7 +134,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs api-gateway integration tests with custom domain handling on Gardener AWS cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   always_run: true
                   image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230817-5a8ea22d
                   securityContext:

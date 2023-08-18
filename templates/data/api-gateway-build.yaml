@@ -15,7 +15,7 @@ templates:
                   annotations:
                     owner: goat
                     description: builds api-gateway image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   args:
                     - "--name=api-gateway-controller"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -32,7 +32,7 @@ templates:
                   annotations:
                     owner: goat
                     description: builds api-gateway image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   labels:
                     preset-signify-prod-secret: "true"
                   branches:
@@ -55,7 +55,7 @@ templates:
                   annotations:
                     owner: goat
                     description: builds webhook certificates image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   args:
                     - "--name=api-gateway-webhook-certificates"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -72,7 +72,7 @@ templates:
                   annotations:
                     owner: goat
                     description: builds webhook certificates image
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   labels:
                     preset-signify-prod-secret: "true"
                   branches:
