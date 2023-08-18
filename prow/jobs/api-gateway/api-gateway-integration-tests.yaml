@@ -16,7 +16,7 @@ presubmits: # runs on PRs
         preset-debug-commando-oom: "true"
         preset-gardener-aws-kyma-integration: "true"
         preset-kyma-guard-bot-github-token: "true"
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
       optional: false
       skip_report: false
       decorate: true
@@ -70,7 +70,7 @@ postsubmits: # runs on main
         preset-debug-commando-oom: "true"
         preset-gardener-aws-kyma-integration: "true"
         preset-kyma-guard-bot-github-token: "true"
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
       optional: false
       skip_report: false
       decorate: true
@@ -125,7 +125,7 @@ postsubmits: # runs on main
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-kyma-dns-serviceuser: "true"
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
       optional: false
       skip_report: false
       decorate: true
@@ -175,7 +175,7 @@ postsubmits: # runs on main
         preset-gardener-aws-kyma-integration: "true"
         preset-kyma-guard-bot-github-token: "true"
         preset-sa-kyma-dns-serviceuser: "true"
-      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+      skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
       optional: false
       skip_report: false
       decorate: true
