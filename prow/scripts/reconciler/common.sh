@@ -256,16 +256,18 @@ function reconciler::initialize_test_pod() {
   fi
 
   echo "Calling reconciler by using JSON template '$tplFile' as payload"
-
+  echo "******** sed ********"
   sed -i "s/example.com/$domain/" "$tplFile"
+  echo "******** $tplFile =  ${tplFile} ********"
+
+
   # shellcheck disable=SC2016
   jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' "$tplFile" > body.json
+  echo "******** body.json ********"
+  cat ./body.json
 
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
-  kubectl cp body.json -c test-pod reconciler/test-pod:/tmp
-  kubectl cp ./e2e-test/reconcile-kyma.sh -c test-pod reconciler/test-pod:/tmp
-  kubectl cp ./e2e-test/get-reconcile-status.sh -c test-pod reconciler/test-pod:/tmp
-  kubectl cp ./e2e-test/request-reconcile.sh -c test-pod reconciler/test-pod:/tmp
+  tar cvf /tmp/reconcile-payload.tar body.json ./e2e-test/reconcile-kyma.sh ./e2e-test/get-reconcile-status.sh ./e2e-test/request-reconcile.sh | kubectl exec -i test-pod -- tar xf - -C /tmp
   popd
 }
 
