@@ -262,7 +262,9 @@ function reconciler::initialize_test_pod() {
   jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' "$tplFile" > body.json
 
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
-  tar -zcvf - body.json ./e2e-test/reconcile-kyma.sh ./e2e-test/get-reconcile-status.sh ./e2e-test/request-reconcile.sh | kubectl exec -i -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- tar -zxvf - -C /tmp
+  tar -cvf reconcile_files.tar body.json ./e2e-test/reconcile-kyma.sh ./e2e-test/get-reconcile-status.sh ./e2e-test/request-reconcile.sh
+  kubectl cp reconcile_files.tar -c test-pod reconciler/test-pod:/tmp
+  kubectl exec -c test-pod reconciler/test-pod -- tar -xvf /tmp/reconcile_files.tar
   popd
 }
 
@@ -281,6 +283,8 @@ function reconciler::trigger_kyma_reconcile() {
 # Waits until Kyma reconciliation is in ready state
 function reconciler::wait_until_kyma_reconciled() {
   echo ">>> Wait until reconciliation is complete"
+   echo "######## tmp content #########"
+    kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c "ls -a /tmp/"
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
     status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs || true)
