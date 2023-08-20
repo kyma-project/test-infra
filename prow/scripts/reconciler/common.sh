@@ -266,6 +266,7 @@ function reconciler::initialize_test_pod() {
   base64 reconcile_files.tar > reconcile_files.tar.base64
   kubectl exec -i -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod  -- sh -c 'cat > /tmp/reconcile_files.tar.base64' < reconcile_files.tar.base64
   kubectl exec -i -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod  -- sh -c 'base64 -d /tmp/reconcile_files.tar.base64 | tar -xvf - -C /tmp'
+  ls -a /tmp/
   popd
 }
 
