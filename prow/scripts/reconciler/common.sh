@@ -264,8 +264,8 @@ function reconciler::initialize_test_pod() {
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
   tar -cvf reconcile_files.tar body.json ./e2e-test/reconcile-kyma.sh ./e2e-test/get-reconcile-status.sh ./e2e-test/request-reconcile.sh
   base64 reconcile_files.tar > reconcile_files.tar.base64
-  kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod  -- sh -c 'cat > /tmp/reconcile_files.tar.base64' < reconcile_files.tar.base64
-  kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod  -- sh -c 'base64 -d /tmp/reconcile_files.tar.base64 | tar -xvf - -C /tmp'
+  kubectl exec -i -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod  -- sh -c 'cat > /tmp/reconcile_files.tar.base64' < reconcile_files.tar.base64
+  kubectl exec -i -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod  -- sh -c 'base64 -d /tmp/reconcile_files.tar.base64 | tar -xvf - -C /tmp'
   popd
 }
 
