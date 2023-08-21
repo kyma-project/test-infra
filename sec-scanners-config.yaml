@@ -10,7 +10,7 @@ protecode:
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.11.1
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20230809-ddf0733f
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230811-76e8e73a
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automerge-notification:v20230818-828f7c97
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cla-assistant:v20230818-828f7c97
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20230818-828f7c97
