@@ -3,6 +3,11 @@ variable "region" {
   description = "Google Cloud region to deploy the service account keys cleaner to."
 }
 
+variable "scheduler_region" {
+  type        = string
+  description = "Google Cloud region to deploy the service account keys cleaner scheduler to."
+}
+
 variable "service_name" {
   type        = string
   description = "Name of the service account keys cleaner service instance."

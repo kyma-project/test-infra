@@ -65,7 +65,7 @@ resource "google_cloud_run_service" "service_account_keys_cleaner" {
 
 resource "google_cloud_scheduler_job" "service_account_keys_cleaner" {
   name             = var.scheduler_name
-  region           = var.region
+  region           = var.scheduler_region
   description      = "Call service account keys cleaner service, to remove old versions of secrets"
   schedule         = var.scheduler_cron_schedule
   time_zone        = "Etc/UTC"
