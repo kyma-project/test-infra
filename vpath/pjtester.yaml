@@ -1,0 +1,15 @@
+pjConfigs:
+  prConfigs:
+    kyma-project:
+      test-infra:
+        prNumber:
+  prowJobs:
+    kyma-incubator:
+      compass:
+        - pjName: "pull-instance-creator-unit-test"
+        - pjName: "pull-instance-creator-lint"
+        - pjName: "pull-instance-creator-build"
+prConfigs:
+  kyma-incubator:
+    compass:
+      prNumber: 3241
