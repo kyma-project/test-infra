@@ -262,8 +262,9 @@ function reconciler::initialize_test_pod() {
   jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' "$tplFile" > body.json
 
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
-  tar -zcvf - body.json ./e2e-test/reconcile-kyma.sh ./e2e-test/get-reconcile-status.sh ./e2e-test/request-reconcile.sh | kubectl exec -i -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- tar -zxvf - -C /tmp
-  ls -a /tmp/
+  tar -zcvf - ./body.json e2e-test/*.sh | kubectl exec -i -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- tar -zxvf - -C /tmp --strip-components=1
+  echo "######## reconciler::initialize_test_pod - tmp content #########"
+  kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- ls -a /tmp/
   popd
 }
 
@@ -271,6 +272,8 @@ function reconciler::initialize_test_pod() {
 function reconciler::trigger_kyma_reconcile() {
   # Trigger Kyma reconciliation using reconciler
   echo ">>> Trigger the reconciliation through test pod"
+  echo "######## reconciler::trigger_kyma_reconcile - tmp content #########"
+  kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- ls -a /tmp/
   echo "Reconcile Kyma in the same cluster"
   kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/request-reconcile.sh"
   if [[ $? -ne 0 ]]; then
@@ -282,8 +285,6 @@ function reconciler::trigger_kyma_reconcile() {
 # Waits until Kyma reconciliation is in ready state
 function reconciler::wait_until_kyma_reconciled() {
   echo ">>> Wait until reconciliation is complete"
-   echo "######## tmp content #########"
-    kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c "ls -a /tmp/"
   iterationsLeft=$(( RECONCILER_TIMEOUT/RECONCILER_DELAY ))
   while : ; do
     status=$(kubectl exec -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- sh -c ". /tmp/get-reconcile-status.sh" | xargs || true)
