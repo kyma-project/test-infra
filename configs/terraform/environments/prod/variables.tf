@@ -4,6 +4,12 @@ variable "gcp_region" {
   description = "Default Google Cloud region to create resources."
 }
 
+variable "gcp_scheduler_region" {
+  type        = string
+  default     = "europe-west3"
+  description = "Additional Google Cloud Region to create resources."
+}
+
 variable "gcp_project_id" {
   type        = string
   default     = "sap-kyma-prow"
