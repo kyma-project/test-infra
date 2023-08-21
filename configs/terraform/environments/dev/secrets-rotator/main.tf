@@ -21,21 +21,23 @@ output "secrets-rotator" {
   value = google_service_account.secrets-rotator
 }
 
-data "google_pubsub_topic" "secret-manager-notifications-topic" {
+resource "google_pubsub_topic" "secret-manager-notifications-topic" {
   name = var.secret_manager_notifications_topic
+
+  message_retention_duration = "86600s"
 }
 
 output "secret-manager-notifications-topic" {
-  value = data.google_pubsub_topic.secret-manager-notifications-topic
+  value = google_pubsub_topic.secret-manager-notifications-topic
 }
 
 module "service_account_keys_rotator" {
-  source = "../../modules/rotate-service-account"
+  source = "../../../modules/rotate-service-account"
 
   application_name = var.application_name
   service_name     = var.service_account_keys_rotator_service_name
+  region           = var.region
 
-  region                                             = var.region
   service_account_keys_rotator_account_id            = var.service_account_keys_rotator_account_id
   service_account_keys_rotator_dead_letter_topic_uri = google_pubsub_topic.secrets_rotator_dead_letter.id
   service_account_keys_rotator_image                 = var.service_account_keys_rotator_image
@@ -48,15 +50,8 @@ output "service_account_keys_rotator" {
   value = module.service_account_keys_rotator
 }
 
-resource "google_project_iam_member" "service_account_keys_rotator_workloads_project" {
-  provider = google.workloads
-  project = var.workloads_project_id
-  role    = "roles/iam.serviceAccountKeyAdmin"
-  member  = "serviceAccount:${module.service_account_keys_rotator.service_account_keys_rotator_service_account.email}"
-}
-
 module "service_account_keys_cleaner" {
-  source = "../../modules/service-account-keys-cleaner"
+  source = "../../../modules/service-account-keys-cleaner"
 
   application_name = var.application_name
   service_name     = var.service_account_keys_cleaner_service_name
@@ -73,11 +68,4 @@ module "service_account_keys_cleaner" {
 
 output "service_account_keys_cleaner" {
   value = module.service_account_keys_cleaner
-}
-
-resource "google_project_iam_member" "service_account_keys_cleaner_workloads_project" {
-  provider = google.workloads
-  project = var.workloads_project_id
-  role    = "roles/iam.serviceAccountKeyAdmin"
-  member  = "serviceAccount:${module.service_account_keys_cleaner.service_account_keys_cleaner_service_account.email}"
 }
