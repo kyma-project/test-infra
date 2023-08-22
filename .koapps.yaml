@@ -22,6 +22,7 @@ apps:
   - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/scan-logs-for-secrets
   - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/search-github-issue
   - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/github-webhook-gateway
+  - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/cors-proxy
   - ko://github.com/kyma-project/test-infra/development/external-plugins/needs-tws
   - ko://github.com/kyma-project/test-infra/development/external-plugins/cla-assistant
   - ko://github.com/kyma-project/test-infra/development/external-plugins/automerge-notification

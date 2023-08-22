@@ -47,8 +47,7 @@ presubmits:
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-
-postsubmits: # runs on main
+postsubmits:
   kyma-project/runtime-watcher:
     - name: main-build-skr
       annotations:
@@ -97,4 +96,3 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-  

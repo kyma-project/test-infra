@@ -262,10 +262,7 @@ function reconciler::initialize_test_pod() {
   jq --arg kubeconfig "${kc}" --arg version "${KYMA_UPGRADE_SOURCE}" '.kubeconfig = $kubeconfig | .kymaConfig.version = $version' "$tplFile" > body.json
 
   # Copy the reconcile request payload and kyma reconciliation scripts to the test-pod
-  kubectl cp body.json -c test-pod reconciler/test-pod:/tmp
-  kubectl cp ./e2e-test/reconcile-kyma.sh -c test-pod reconciler/test-pod:/tmp
-  kubectl cp ./e2e-test/get-reconcile-status.sh -c test-pod reconciler/test-pod:/tmp
-  kubectl cp ./e2e-test/request-reconcile.sh -c test-pod reconciler/test-pod:/tmp
+  tar -zcvf - ./body.json e2e-test/*.sh | kubectl exec -i -n "${RECONCILER_NAMESPACE}" test-pod -c test-pod -- tar -zxvf - -C /tmp --strip-components=1
   popd
 }
 

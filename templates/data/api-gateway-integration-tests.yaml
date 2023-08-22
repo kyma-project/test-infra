@@ -37,8 +37,8 @@ templates:
                   annotations:
                     owner: goat
                     description: runs api-gateway integration tests on Gardener AWS cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230810-f1a4d7ad
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230821-fdb47ca7
                   always_run: true
                   command: bash
                   args:
@@ -67,7 +67,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs api-gateway integration tests on Gardener AWS cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   always_run: true
                   securityContext:
                     privileged: false
@@ -75,7 +75,7 @@ templates:
                   branches:
                     - ^main$
                     - ^release-\d+\.\d+$
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230810-f1a4d7ad
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230821-fdb47ca7
                   command: bash
                   args:
                     - -c
@@ -101,7 +101,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs api-gateway integration tests with custom domain handling on Gardener GCP cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   always_run: true
                   securityContext:
                     privileged: false
@@ -111,7 +111,7 @@ templates:
                     - ^release-\d+\.\d+$
                   labels:
                     preset-sa-kyma-dns-serviceuser: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230810-f1a4d7ad
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230821-fdb47ca7
                   command: bash
                   args:
                     - -c
@@ -134,9 +134,9 @@ templates:
                   annotations:
                     owner: goat
                     description: runs api-gateway integration tests with custom domain handling on Gardener AWS cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   always_run: true
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230810-f1a4d7ad
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230821-fdb47ca7
                   securityContext:
                     privileged: false
                   cluster: untrusted-workload

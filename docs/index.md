@@ -20,12 +20,6 @@
 
 [JobGuard ](/development/jobguard/README.md) - JobGuard is a simple tool that fetches all statuses for GitHub pull requests and waits for some of them to finish.
 
-[GitHub Webhook Gateway](/development/kyma-github-connector/githubWebhookGateway/README.md) - The GitHub Webhook Gateway is written in Golang. It listens for incoming GitHub Webhook events. It validates a Webhook HMAC secret, converts it to a CloudEvents compliant event and forwards it to the Kyma Event Service. It is meant to run within Kyma as a docker container.
-
-[PubSub Gateway](/development/kyma-pubsub-connector/pubSubGateway/README.md) - The PubSub Gateway is written in Golang. It pulls messages from PubSub, converts them into a CloudEvents, and forwards them to the Kyma Event Publisher Proxy.
-
-[Overview](/development/kyma-slack-connector/issueLabeledFunction/README.md) - The `issueLabeled` Function is executed by Kyma [Serverless](https://kyma-project.io/docs/components/serverless/) when the registered **issuesevent.labeled** event occurs. All **issuesevent.labeled** events for the `internal-incident` or `customer-incident` labels will be processed by this Function.
-
 [prowjobparser](/development/prowjobparser/README.md) - The prowjobparser is a helper tool which parses all Prow Jobs under the provided path, matches them against the provided label filters, and prints matching Prow Job names to the standard output.
 
 [Rotate service account secrets](/development/secrets-rotator/cloud-run/rotate-service-account/README.md) - RotateServiceAccount creates a new key for a GCP service account and updates the required secret data. It's triggered by a  Pub/Sub message sent by a secret stored in Secret Manager. It runs as a cloud run container.

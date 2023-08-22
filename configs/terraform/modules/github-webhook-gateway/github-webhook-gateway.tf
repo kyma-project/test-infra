@@ -40,6 +40,15 @@ resource "google_pubsub_topic" "issue_labeled" {
   name = var.pubsub_topic_name
 }
 
+resource "google_pubsub_topic_iam_binding" "issue_labeled" {
+  project = google_pubsub_topic.issue_labeled.project
+  topic   = google_pubsub_topic.issue_labeled.name
+  role    = "roles/pubsub.publisher"
+  members = [
+    "serviceAccount:${google_service_account.github_webhook_gateway.email}",
+  ]
+}
+
 resource "google_cloud_run_service" "github_webhook_gateway" {
   depends_on = [
     google_secret_manager_secret_iam_member.gh_tools_kyma_bot_token_accessor,
@@ -58,7 +67,7 @@ resource "google_cloud_run_service" "github_webhook_gateway" {
     spec {
       service_account_name = google_service_account.github_webhook_gateway.email
       containers {
-        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20230810-671e968d"
+        image = "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20230816-1f308fb9"
         env {
           name  = "PROJECT_ID"
           value = var.gcp_project_id
@@ -77,7 +86,7 @@ resource "google_cloud_run_service" "github_webhook_gateway" {
         }
         env {
           name  = "PUBSUB_TOPIC"
-          value = google_pubsub_topic.issue_labeled.id
+          value = google_pubsub_topic.issue_labeled.name
         }
         env {
           name  = "TOOLS_GITHUB_TOKEN_PATH"
