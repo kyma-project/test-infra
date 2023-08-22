@@ -23,7 +23,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230821-fdb47ca7
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230822-4fd914f6
             env:
               - name: EXPORT_RESULT
                 value: "true"
@@ -77,7 +77,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230821-fdb47ca7
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230822-4fd914f6
             env:
               - name: EXPORT_RESULT
                 value: "true"
@@ -131,7 +131,7 @@ presubmits:
           base_ref: main
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230821-fdb47ca7
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230822-4fd914f6
             env:
               - name: EXPORT_RESULT
                 value: "true"
