@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20230821-fdb47ca7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20230822-4fd914f6"
             securityContext:
               privileged: false
               seccompProfile:
@@ -49,7 +49,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230821-fdb47ca7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230822-4fd914f6"
             securityContext:
               privileged: false
               seccompProfile:
@@ -84,7 +84,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230821-fdb47ca7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230822-4fd914f6"
             securityContext:
               privileged: false
               seccompProfile:
@@ -119,7 +119,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230821-fdb47ca7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230822-4fd914f6"
             securityContext:
               privileged: false
               seccompProfile:
@@ -153,7 +153,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230821-fdb47ca7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230822-4fd914f6"
             securityContext:
               privileged: false
               seccompProfile:
@@ -180,7 +180,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20230821-fdb47ca7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20230822-4fd914f6"
             securityContext:
               privileged: false
               seccompProfile:
