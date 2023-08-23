@@ -1,4 +1,4 @@
-# gcp-artifact-registry-terraform
+# Artifact Registry creator tool (GCP, Terraform)
 
 This is the GCP image registry creator tool. Use the registry to publish modules that should be accessible to internal SAP teams.
 
@@ -11,13 +11,16 @@ Configure Artifact Registry related values in the `terraform.tfvars` file.
 You can configure multiple artifact registries as a list of objects in `artifact_registry_collection`.
 
 ```terraform
+artifact_registry_gcp_project_id = "kyma-project"
+artifact_registry_gcp_region     = "europe-west4"
+
 artifact_registry_collection = {
   modules-internal={
     name                   = "modules-internal"
     owner                  = "neighbors"
     type                   = "production"
     reader_serviceaccounts = ["klm-controller-manager@sap-ti-dx-kyma-mps-dev.iam.gserviceaccount.com", "klm-controller-manager@sap-ti-dx-kyma-mps-stage.iam.gserviceaccount.com", "klm-controller-manager@sap-ti-dx-kyma-mps-prod.iam.gserviceaccount.com"]
-    writer_serviceaccount  = "kyma-submission-pipeline@kyma-project.iam.gserviceaccount.com"
+    writer_serviceaccounts  = ["kyma-submission-pipeline@kyma-project.iam.gserviceaccount.com"]
   },
 }
 ```
@@ -43,7 +46,7 @@ Additionally, you can define optional parameters. Here are all the parameters yo
 | **owner**                  | Registry Owner Team                                                     | string       | x        |               |
 | **type**                   | Environment type (development, production)                              | string       | x        |               |
 | **reader_serviceaccounts** | List of Service Accounts that have `Reader` access to registry          | list(string) | x        |               |
-| **writer_serviceaccount**  | List of Service Accounts that have  `Writer`  access to registry        | string       |          | ""            |
+| **writer_serviceaccounts**  | List of Service Accounts that have  `Writer`  access to registry        | list(string)       |          | ""            |
 | **primary_area**           | Primary area (if multi-region registry)                                 | string       |          | europe        |
 | **multi_region**           | Multi-region or single-region registry                                  | bool         |          | true          |
 | **public**                 | Is it available for every internet user with `Reader` access? | bool    |          | false         |

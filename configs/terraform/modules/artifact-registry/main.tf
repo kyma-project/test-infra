@@ -12,17 +12,17 @@ resource "google_artifact_registry_repository" "artifact_registry" {
     type  = var.artifact_registry_type
   }
   docker_config {
-    immutable_tags = var.immutable_artifact_registry
+    immutable_tags = var.artifact_registry_immutable_tags
   }
 }
 
-resource "google_artifact_registry_repository_iam_member" "member_service_account" {
-  count      = var.artifact_registry_writer_serviceaccount == "" ? 0 : 1
+resource "google_artifact_registry_repository_iam_member" "writer_service_account" {
+  for_each   = toset(var.artifact_registry_writer_serviceaccounts)
   project    = data.google_client_config.this.project
   location   = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : data.google_client_config.this.region
   repository = google_artifact_registry_repository.artifact_registry.name
   role       = "roles/artifactregistry.writer"
-  member     = "serviceAccount:${var.artifact_registry_writer_serviceaccount}"
+  member     = "serviceAccount:${each.value}"
 }
 
 resource "google_artifact_registry_repository_iam_member" "reader_service_accounts" {

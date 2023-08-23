@@ -12,8 +12,8 @@ variable "artifact_registry_owner" {
   default     = "neighbors"
 }
 
-variable "artifact_registry_writer_serviceaccount" {
-  type        = string
+variable "artifact_registry_writer_serviceaccounts" {
+  type        = list(string)
   description = "Service Account"
 }
 
@@ -40,7 +40,7 @@ variable "artifact_registry_primary_area" {
   default     = "europe"
 }
 
-variable "immutable_artifact_registry" {
+variable "artifact_registry_immutable_tags" {
   type        = bool
   description = "Is Artifact registry immutable"
   default     = false
