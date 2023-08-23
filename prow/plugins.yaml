@@ -30,6 +30,10 @@ plugins:
     plugins:
       - approve
       - blunderbuss
+  kyma-project/k8s-prow:
+    plugins:
+      - approve
+      - blunderbuss
   kyma-incubator:
     plugins:
       - trigger
@@ -138,6 +142,10 @@ approve:
   - repos:
       - kyma-incubator/compass
     require_self_approval: true # ignore authors of the PRs to be able to auto-approve their PR if they are owners
+    ignore_review_state: false
+  - repos:
+      - kyma-project/k8s-prow
+    require_self_approval: false
     ignore_review_state: false
 
 require_matching_label:

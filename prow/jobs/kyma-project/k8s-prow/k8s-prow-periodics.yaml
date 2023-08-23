@@ -1,0 +1,104 @@
+periodics:
+  - name: ci-k8s-prow-sync-upstream
+    annotations:
+      owner: neighbors
+      description: Automatically sync changes of the upstream with fork
+    reporter_config:
+      slack:
+        channel: kyma-prow-alerts
+        job_states_to_report:
+          - success
+          - failure
+          - error
+        report_template: 'Update task for k8s-prow ended with *{{.Status.State}}*. *<{{.Status.URL}}|View logs>*.'
+    labels:
+      kyma-bot-github-public-repo-token: "true"
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-k8s-prow-sync-upstream"
+      prow.k8s.io/pubsub.topic: "prowjobs"
+    decorate: true
+    cron: "1 7 * * 1-5"
+    cluster: trusted-workload
+    spec:
+      containers:
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20230817-5a8ea22d
+          env:
+            - name: UPSTREAM_REPO
+              value: github.com/kubernetes/test-infra
+            - name: UPSTREAM_REF
+              value: master
+          securityContext:
+            privileged: false
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+          command:
+            - bash
+            - -c
+          args:
+            - |-
+              set -e
+              echo "🔁  Syncing kyma-project/k8s-prow"
+              git clone --depth=1 https://github.com/kyma-project/k8s-prow.git && cd k8s-prow
+              git remote add upstream https://$UPSTREAM_REPO.git
+              git fetch upstream
+              git checkout main
+              git merge --no-edit -m "chore: sync code with latest upstream" upstream/$UPSTREAM_REF
+              git remote set-url --push origin https://kyma-bot:$GITHUB_TOKEN@github.com/kyma-project/k8s-prow.git
+              git push -u origin
+              echo "✅  Done"
+  - name: ci-k8s-prow-publish-tag
+    annotations:
+      owner: neighbors
+      description: Release new version once a week
+    reporter_config:
+      slack:
+        channel: kyma-prow-alerts
+        job_states_to_report:
+          - success
+          - failure
+          - error
+        report_template: 'Release task for k8s-prow:{{.Spec.Refs.BaseRef}} ended with *{{.Status.State}}*. *<{{.Status.URL}}|View logs>*.'
+    labels:
+      kyma-bot-github-public-repo-token: "true"
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-k8s-prow-publish-tag"
+      prow.k8s.io/pubsub.topic: "prowjobs"
+    decorate: true
+    cron: "31 7 * * 1"
+    cluster: trusted-workload
+    spec:
+      containers:
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20230817-5a8ea22d
+          securityContext:
+            privileged: false
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 500m
+              memory: 1Gi
+          command:
+            - bash
+            - -c
+          args:
+            - |-
+              set -e
+              echo "📚  Publishing new version of kyma-project/k8s-prow"
+              git clone --depth=1 https://github.com/kyma-project/k8s-prow.git && cd k8s-prow
+              git remote set-url --push origin https://kyma-bot:$GITHUB_TOKEN@github.com/kyma-project/k8s-prow.git
+              tag=$(date +%Y.%-m.%d)
+              git tag "$tag"
+              git push origin "$tag"
+              echo "✅  Done"

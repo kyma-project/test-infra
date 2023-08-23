@@ -272,6 +272,18 @@ branch-protection:
           branches:
             ui5:
               protect: false
+        k8s-prow:
+          protect: true
+          required_status_checks:
+            contexts:
+              - license/cla
+          enforce_admins: true
+          required_pull_request_reviews: {}
+          restrictions:
+            users:
+              - kyma-bot
+          exclude:
+            - "^dependabot/"
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
@@ -397,7 +409,21 @@ tide:
         - do-not-merge/invalid-commit-message
       repos:
         - kyma-incubator/compass
+        - kyma-project/k8s-prow
       reviewApprovedRequired: true
+# special query for automations
+    - labels:
+        - skip-review
+      author: kyma-bot
+      missingLabels:
+        - needs-kind
+        - needs-area
+        - do-not-merge/hold
+        - do-not-merge/work-in-progress
+        - do-not-merge/invalid-owners-file
+        - do-not-merge/invalid-commit-message
+      repos:
+        - kyma-project/k8s-prow
   context_options:
     from-branch-protection: true
 
@@ -736,6 +762,22 @@ presets:
       - name: kyma-bot-token-path
         secret:
           secretName: kyma-bot-github-token
+  - labels:
+      kyma-bot-github-public-repo-token: "true"
+    env:
+      - name: GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-bot-github-public-repo-token
+            key: token
+    volumeMounts:
+      - name: kyma-bot-github-public-repo-token-path
+        mountPath: /etc/github
+        readOnly: true
+    volumes:
+      - name: kyma-bot-github-public-repo-token-path
+        secret:
+          secretName: kyma-bot-github-public-repo-token
   - labels:
       preset-autobump-bot-github-token: "true"
     volumes:
