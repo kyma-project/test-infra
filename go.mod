@@ -36,7 +36,7 @@ require (
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
 	github.com/tidwall/gjson v1.16.0
-	github.com/zricethezav/gitleaks/v8 v8.17.0
+	github.com/zricethezav/gitleaks/v8 v8.18.0
 	go.uber.org/zap v1.25.0
 	golang.org/x/net v0.14.0
 	golang.org/x/oauth2 v0.11.0
@@ -103,7 +103,7 @@ require (
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/fvbommel/sortorder v1.0.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
-	github.com/gitleaks/go-gitdiff v0.8.0 // indirect
+	github.com/gitleaks/go-gitdiff v0.9.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
