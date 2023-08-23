@@ -33,7 +33,9 @@ presubmits: # runs on PRs
               - /bin/sh
               - -c
               - |
-                export KUBECONFIG=$(k3d kubeconfig write kcp)
+                tempcfg=/eam-test-k3d.yaml
+                k3d kubeconfig get k3d > $tempcfg
+                export KUBECONFIG=$tempcfg
                 TEST_EVENTING_AUTH_TARGET_KUBECONFIG_PATH=${KUBECONFIG} USE_EXISTING_CLUSTER=true make test
             resources:
               requests:

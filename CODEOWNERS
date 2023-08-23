@@ -32,6 +32,7 @@
 /prow/jobs/kyma/components/compass-runtime-agent @kyma-project/prow @kyma-project/Framefrog @neighbors-dev-bot
 /prow/jobs/kyma/components/event-publisher-proxy @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma/components/eventing-controller @kyma-project/eventing @neighbors-dev-bot
+/prow/jobs/eventing-auth-manager @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma/components/function-controller @pk85 @dbadura @kwiatekus @m00g3n @pprecel @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma/components/function-runtimes @dbadura @kwiatekus @m00g3n @pprecel @pk85 @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
