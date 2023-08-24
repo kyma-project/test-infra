@@ -106,3 +106,36 @@ periodics:
               git tag "$tag"
               git push origin "$tag"
               echo "✅  Done"
+  - name: ci-k8s-prow-autobump-testimages
+    annotations:
+      description: "Autobump prow components testimages"
+      owner: "neighbors"
+    labels:
+      prow.k8s.io/pubsub.project: "sap-kyma-prow"
+      prow.k8s.io/pubsub.runID: "ci-k8s-prow-autobump-base-images"
+      prow.k8s.io/pubsub.topic: "prowjobs"
+      preset-autobump-bot-github-token: "true"
+    cron: "45 * * * 1-5"
+    skip_report: false
+    decorate: true
+    cluster: trusted-workload
+    extra_refs:
+      - org: kyma-project
+        repo: k8s-prow
+        base_ref: main
+    reporter_config:
+      slack:
+        channel: kyma-prow-alerts
+    spec:
+      containers:
+        - image: "gcr.io/k8s-prow/generic-autobumper:v20230823-28504216ad"
+          securityContext:
+            privileged: false
+            seccompProfile:
+              type: RuntimeDefault
+            allowPrivilegeEscalation: false
+          command:
+            - "generic-autobumper"
+          args:
+            - "--config=prow/autobump-config/prow-cluster-autobump-config.yaml"
+            - "--labels-override=kind/chore,area/prow,skip-review"
