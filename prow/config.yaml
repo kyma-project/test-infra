@@ -277,7 +277,7 @@ branch-protection:
           required_status_checks:
             contexts:
               - license/cla
-          enforce_admins: true
+          enforce_admins: false
           required_pull_request_reviews: {}
           restrictions:
             users:

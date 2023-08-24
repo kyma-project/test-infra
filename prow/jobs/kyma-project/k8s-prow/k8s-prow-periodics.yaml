@@ -46,7 +46,9 @@ periodics:
             - |-
               set -e
               echo "🔁  Syncing kyma-project/k8s-prow"
-              git clone --depth=1 https://github.com/kyma-project/k8s-prow.git && cd k8s-prow
+              git config --global user.email "kyma.bot@sap.com"
+              git config --global user.name "Kyma Bot"
+              git clone https://github.com/kyma-project/k8s-prow.git && cd k8s-prow
               git remote add upstream https://$UPSTREAM_REPO.git
               git fetch upstream
               git checkout main
@@ -96,6 +98,8 @@ periodics:
             - |-
               set -e
               echo "📚  Publishing new version of kyma-project/k8s-prow"
+              git config --global user.email "kyma.bot@sap.com"
+              git config --global user.name "Kyma Bot"
               git clone --depth=1 https://github.com/kyma-project/k8s-prow.git && cd k8s-prow
               git remote set-url --push origin https://kyma-bot:$GITHUB_TOKEN@github.com/kyma-project/k8s-prow.git
               tag=$(date +%Y.%-m.%d)
