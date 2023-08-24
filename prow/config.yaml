@@ -285,7 +285,10 @@ branch-protection:
             contexts:
               - license/cla
           enforce_admins: false
-          required_pull_request_reviews: {}
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
           restrictions:
             users:
               - kyma-bot
