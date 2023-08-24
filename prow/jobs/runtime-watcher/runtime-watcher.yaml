@@ -79,7 +79,7 @@ postsubmits:
             args:
               - "--name=runtime-watcher-skr"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=skr"
+              - "--context=runtime-watcher"
               - "--dockerfile=Dockerfile"
               - "--tag=latest"
             volumeMounts:
