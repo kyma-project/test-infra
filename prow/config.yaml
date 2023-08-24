@@ -250,10 +250,12 @@ branch-protection:
         - "^dependabot/"
       repos:
         kyma:
+          protect: false
           branches:
-            kyma-2.0-docu:
-              required_pull_request_reviews:
-                require_code_owner_reviews: false
+            main:
+              protect: true
+            release-.*:
+              protect: true
         website:
           branches:
             main:
@@ -264,6 +266,11 @@ branch-protection:
               required_status_checks:
                 contexts:
                   - "netlify/kyma-project-old/deploy-preview"
+        community:
+          protect: false
+          branches:
+            main:
+              protect: true
         private-fn-for-e2e-serverless-tests:
           protect: false
         organization-and-operations:
