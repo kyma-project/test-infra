@@ -56,7 +56,6 @@ protecode:
     - gcr.io/k8s-prow/deck:v20230824-74e8146673
     - gcr.io/k8s-prow/gencred:v20230824-74e8146673
     - gcr.io/k8s-prow/generic-autobumper:v20230824-74e8146673
-    - gcr.io/k8s-prow/generic-autobumper:v20230824-74e8146673
     - gcr.io/k8s-prow/ghproxy:v20230824-74e8146673
     - gcr.io/k8s-prow/hook:v20230824-74e8146673
     - gcr.io/k8s-prow/horologium:v20230824-74e8146673
