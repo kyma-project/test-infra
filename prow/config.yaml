@@ -291,6 +291,10 @@ branch-protection:
               - kyma-bot
           exclude:
             - "^dependabot/"
+        kyma-environment-broker:
+          required_status_checks:
+            contexts:
+              - run-eslint
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
