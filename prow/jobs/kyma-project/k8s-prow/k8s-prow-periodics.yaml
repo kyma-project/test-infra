@@ -137,5 +137,5 @@ periodics:
           command:
             - "generic-autobumper"
           args:
-            - "--config=config/autobump-config/kyma-testimages-autobump-config.yaml"
+            - "--config=config/prow/autobump-config/kyma-testimages-autobump-config.yaml"
             - "--labels-override=kind/chore,area/prow,skip-review"

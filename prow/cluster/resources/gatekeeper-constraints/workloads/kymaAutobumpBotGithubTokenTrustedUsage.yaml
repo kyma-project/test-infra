@@ -60,7 +60,7 @@ spec:
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["generic-autobumper","--config=config\/autobump-config\/kyma-testimages-autobump-config\.yaml","--labels-override=kind\/chore,area\/prow,skip-review"\],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":\["generic-autobumper","--config=config\/prow\/autobump-config\/kyma-testimages-autobump-config\.yaml","--labels-override=kind\/chore,area\/prow,skip-review"\],"container_name":"test",.*}$'
       # sidecar
       - image: "gcr.io/k8s-prow/sidecar:*"
         command: []
