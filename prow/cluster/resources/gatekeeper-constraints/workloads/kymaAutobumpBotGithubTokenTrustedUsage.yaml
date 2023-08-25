@@ -44,7 +44,7 @@ spec:
         args: []
         entrypoint_options: '^{.*"args":\["generic-autobumper","--config=prow\/autobump-config\/test-infra-autobump-config\.yaml","--labels-override=skip-review,area\/ci,kind\/chore"\],"container_name":"test",.*}$'
       # Prowjob name: ci-prow-label-sync
-      - image: "gcr.io/k8s-prow/label_sync:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:*"
         command:
           - /tools/entrypoint
         args: []
@@ -62,6 +62,6 @@ spec:
         args: []
         entrypoint_options: '^{.*"args":\["generic-autobumper","--config=config\/prow\/autobump-config\/kyma-testimages-autobump-config\.yaml","--labels-override=kind\/chore,area\/prow,skip-review"\],"container_name":"test",.*}$'
       # sidecar
-      - image: "gcr.io/k8s-prow/sidecar:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:*"
         command: []
         args: []
