@@ -298,6 +298,13 @@ branch-protection:
           required_status_checks:
             contexts:
               - run-eslint
+        btp-manager:
+          required_status_checks:
+            contexts:
+              - "run-unit-tests / build"
+              - "run-e2e-tests / run-e2e-tests"
+              - "markdown-link-check"
+              - "validate-labels"
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
