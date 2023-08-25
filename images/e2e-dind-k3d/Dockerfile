@@ -1,4 +1,4 @@
-FROM golang:1.20.7-alpine as base
+FROM golang:1.21.0-alpine as base
 
 
 RUN set -eux; \
@@ -39,7 +39,7 @@ WORKDIR /workspace
 
 FROM base AS go-deps
 ENV CGO_ENABLED=0
-ARG K3D_VERSION=v5.5.2
+ARG K3D_VERSION=v5.6.0
 
 RUN curl -Lso install.sh https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh && \
     chmod +x ./install.sh &&\
@@ -49,7 +49,7 @@ RUN curl -Lso install.sh https://raw.githubusercontent.com/k3d-io/k3d/main/insta
 ARG KIND_VERSION=v0.20.0
 RUN go install sigs.k8s.io/kind@${KIND_VERSION}
 
-ARG HELM_VERSION=v3.12.2
+ARG HELM_VERSION=v3.12.3
 RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go env GOARCH).tar.gz" && \
     tar -xzOf helm.tar.gz "linux-$(go env GOARCH)/helm" > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm
