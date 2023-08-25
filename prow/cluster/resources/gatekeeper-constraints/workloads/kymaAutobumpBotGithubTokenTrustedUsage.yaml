@@ -26,19 +26,19 @@ spec:
         args: []
         entrypoint_options: '^{.*"args":\["\/ko-app\/image-detector","--prow-config=prow\/config\.yaml","--prow-jobs-dir=prow\/jobs","--terraform-dir=configs\/terraform","--sec-scanner-config=sec-scanners-config\.yaml","--kubernetes-dir=prow\/cluster\/components","--autobump-config=prow\/image-detector\/test-infra-sec-config-autobump-config\.yaml","--inrepo-config=prow\/image-detector\/inrepo-config\.yaml"\],"container_name":"test",.*}$'
       # Prowjob name: eventing-tools-autobump
-      - image: "gcr.io/k8s-prow/generic-autobumper:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
         command:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["generic-autobumper","--config=ci\/eventing-tools-autobump-config\.yaml"\],"container_name":"test",.*}$'
       # Prowjob name: ci-prow-autobump
-      - image: "gcr.io/k8s-prow/generic-autobumper:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
         command:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["generic-autobumper","--config=prow\/autobump-config\/prow-cluster-autobump-config\.yaml","--labels-override=kind\/chore,area\/prow"\],"container_name":"test",.*}$'
       # Prowjob name: ci-prow-autobump-jobs
-      - image: "gcr.io/k8s-prow/generic-autobumper:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
         command:
           - /tools/entrypoint
         args: []
@@ -50,13 +50,13 @@ spec:
         args: []
         entrypoint_options: '^{.*"args":\["label_sync","--config=\/etc\/config\/labels\.yaml","--confirm=true","--orgs=kyma-project,kyma-incubator","--token=\/etc\/github\/token","--endpoint=http:\/\/ghproxy","--endpoint=https:\/\/api\.github\.com","--debug"\],"container_name":"test",.*}$'
       # ci-dockerhub-autobump
-      - image: "gcr.io/k8s-prow/generic-autobumper:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
         command:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["generic-autobumper","--config=prow\/autobump-config\/dockerhub-autobump\.yaml","--labels-override=skip-review,area\/ci,kind\/chore"\],"container_name":"test",.*}$'
       # ci-k8s-prow-autobump-testimages
-      - image: "gcr.io/k8s-prow/generic-autobumper:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
         command:
           - /tools/entrypoint
         args: []
