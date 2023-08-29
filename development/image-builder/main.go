@@ -36,12 +36,26 @@ type options struct {
 	buildArgs  sets.Tags
 	platforms  sets.Strings
 	exportTags bool
+	// SignOnly determines if only signing should be performed
+	signOnly     bool
+	imagesToSign imagesToSign
 }
 
 const (
 	PlatformLinuxAmd64 = "linux/amd64"
 	PlatformLinuxArm64 = "linux/arm64"
 )
+
+type imagesToSign []string
+
+func (i *imagesToSign) String() string {
+	return fmt.Sprintf("%v", *i)
+}
+
+func (i *imagesToSign) Set(value string) error {
+	*i = append(*i, value)
+	return nil
+}
 
 // parseVariable returns a build-arg.
 // Keys are set to upper-case.
@@ -459,6 +473,8 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.Var(&o.buildArgs, "build-arg", "Flag to pass additional arguments to build Dockerfile. It can be used in the name=value format.")
 	flagSet.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
 	flagSet.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
+	flagSet.BoolVar(&o.signOnly, "sign-only", false, "Only sign the image, do not build it")
+	flagSet.Var(&o.imagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
 	return flagSet
 }
 
@@ -470,6 +486,18 @@ func main() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	// Check if imagesToSign value is provided when sign-only flag is set
+	if o.signOnly && len(o.imagesToSign) == 0 {
+		fmt.Println("Flag '--images-to-sign' is missing or has empty value, please provide at least one image to sign")
+		os.Exit(1)
+	}
+	// Check if sign-only flag is set when imagesToSign value is provided
+	if !o.signOnly && len(o.imagesToSign) > 0 {
+		fmt.Println("Flag '--sign-only' is missing or has empty value, please set it to true when using '--images-to-sign' flag")
+		os.Exit(1)
+	}
+
 	if o.configPath == "" {
 		fmt.Println("'--config' flag is missing or has empty value, please provide the path to valid 'config.yaml' file")
 		os.Exit(1)
@@ -485,6 +513,19 @@ func main() {
 		os.Exit(1)
 	}
 
+	switch o.signOnly {
+	case true:
+		err = signImages(&o, o.imagesToSign)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	case false:
+		buildImage(o)
+	}
+}
+
+func buildImage(o options) {
 	// validate if options provided by flags and config file are fine
 	if err := validateOptions(o); err != nil {
 		fmt.Println(err)
