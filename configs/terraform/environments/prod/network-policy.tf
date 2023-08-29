@@ -39,7 +39,7 @@ resource "kubernetes_network_policy" "untrusted_cluster_default" {
   }
 }
 
-resource "kubernetes_network_policy" "trusted_cluster_to_others" {
+resource "kubernetes_network_policy" "trusted_cluster_from_prow" {
   provider = kubernetes.trusted_workload_k8s_cluster
 
   metadata {
@@ -63,7 +63,7 @@ resource "kubernetes_network_policy" "trusted_cluster_to_others" {
   }
 }
 
-resource "kubernetes_network_policy" "untrusted_cluster_to_others" {
+resource "kubernetes_network_policy" "untrusted_cluster_from_prow" {
   provider = kubernetes.trusted_workload_k8s_cluster
 
   metadata {
