@@ -1,4 +1,4 @@
-artifact_registry_gcp_project_id = "finall-cloud-main"
+artifact_registry_gcp_project_id = "smart-tractor-389208"
 artifact_registry_gcp_region     = "europe-west4"
 artifact_registry_collection = {
   modules-internal = {

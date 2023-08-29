@@ -13,7 +13,7 @@ RotateServiceAccount creates a new key for a GCP service account and updates the
 
 ## Cloud Run deployment
 
-RotateServiceAccount is deployed to Cloud Run applying Terraform config stored in [./terraform directory](../../../../configs/terraform). `terraform apply` is executed automatically on every PR changing Terraform .tf files belonging to the application. 
+RotateServiceAccount is deployed to Cloud Run applying Terraform config stored in [`./terraform` directory](../../../../configs/terraform). `terraform apply` is executed automatically on every PR changing Terraform `.tf` files belonging to the application. 
 
 ## RotateServiceAccount usage
 

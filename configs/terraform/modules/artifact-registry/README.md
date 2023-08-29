@@ -46,7 +46,7 @@ Additionally, you can define optional parameters. Here are all the parameters yo
 | **owner**                  | Registry Owner Team                                                     | string       | x        |               |
 | **type**                   | Environment type (development, production)                              | string       | x        |               |
 | **reader_serviceaccounts** | List of Service Accounts that have `Reader` access to registry          | list(string) | x        |               |
-| **writer_serviceaccounts**  | List of Service Accounts that have  `Writer`  access to registry        | list(string)       |          | ""            |
+| **writer_serviceaccounts**  | List of Service Accounts that have  `RepoAdmin`  access to registry        | list(string)       |          | ""            |
 | **primary_area**           | Primary area (if multi-region registry)                                 | string       |          | europe        |
 | **multi_region**           | Multi-region or single-region registry                                  | bool         |          | true          |
 | **public**                 | Is it available for every internet user with `Reader` access? | bool    |          | false         |
@@ -55,7 +55,7 @@ Additionally, you can define optional parameters. Here are all the parameters yo
 When you use the GCP private image registry, consider the following:
 
 - The solution is prepared for the GCP Service Account related execution.
-- The `roles/artifactregistry.writer` role binding is part of the solution. To learn more, read [Artifact Registry Repository Access Control](https://cloud.google.com/artifact-registry/docs/access-control). If this variable is empty, the solution doesn't add any service account with the `writer` permission.
+- The `roles/artifactregistry.repoAdmin` role binding is part of the solution. To learn more, read [Artifact Registry Repository Access Control](https://cloud.google.com/artifact-registry/docs/access-control). If this variable is empty, the solution doesn't add any service account with the `writer` permission.
 - The `roles/artifactregistry.reader` role binding is required for lifecycle-manager service accounts. To learn more, read [Artifact Registry Repository Access Control](https://cloud.google.com/artifact-registry/docs/access-control).
 - You can make your repository public if you use the `public = true` in the `terraform.tfvars`.
 - Vulnerability scanning is enabled by default.

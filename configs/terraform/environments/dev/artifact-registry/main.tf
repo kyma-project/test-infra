@@ -3,7 +3,7 @@ module "artifact_registry" {
   source = "../../../modules/artifact-registry"
 
   providers = {
-    google = google.artifact_registry_gcp
+    google = google.artifact_registry_smart_tractor
   }
 
   for_each                                 = var.artifact_registry_collection

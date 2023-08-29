@@ -21,7 +21,7 @@ resource "google_artifact_registry_repository_iam_member" "writer_service_accoun
   project    = data.google_client_config.this.project
   location   = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : data.google_client_config.this.region
   repository = google_artifact_registry_repository.artifact_registry.name
-  role       = "roles/artifactregistry.writer"
+  role       = "roles/artifactregistry.repoAdmin"
   member     = "serviceAccount:${each.value}"
 }
 

@@ -1,5 +1,5 @@
 provider "google" {
-  alias   = "artifact_registry_gcp"
+  alias   = "artifact_registry_kyma_project"
   project = var.artifact_registry_gcp_project_id
   region  = var.artifact_registry_gcp_region
 }
@@ -8,7 +8,7 @@ module "artifact_registry" {
   source = "../../modules/artifact-registry"
 
   providers = {
-    google = google.artifact_registry_gcp
+    google = google.artifact_registry_kyma_project
   }
 
 
