@@ -71,3 +71,5 @@ protecode:
     - quay.io/prometheus-operator/prometheus-operator:v0.61.1
 whitesource:
     language: golang-mod
+    exclude:
+      - "**/*_test.go"
