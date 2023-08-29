@@ -4,17 +4,19 @@ This is the GCP image registry creator tool. Use the registry to publish modules
 
 ## Usage
 
-Configure Artifact Registry related values in the `terraform.tfvars` file. 
+Configure Artifact Registry related values in the `terraform.tfvars` file.
+
 > **CAUTION:** Do not delete or update the existing registry-related data set unless you have the knowledge necessary to perform the operations.
 
+Default project settings:
+
+- Project: `kyma-project`
+- Region: `europe-west4`
 
 You can configure multiple artifact registries as a list of objects in `artifact_registry_collection`.
 
 ```terraform
-artifact_registry_gcp_project_id = "kyma-project"
-artifact_registry_gcp_region     = "europe-west4"
-
-artifact_registry_collection = {
+artifact_registry_collection_kyma_project = {
   modules-internal={
     name                   = "modules-internal"
     owner                  = "neighbors"
@@ -24,11 +26,13 @@ artifact_registry_collection = {
   },
 }
 ```
-If you want to create a new Artifact registry, copy an existing registry data and then modify the **required** parameters according to your needs. 
+
+If you want to create a new Artifact registry, copy an existing registry data and then modify the **required** parameters according to your needs.
+
 > **CAUTION:** Do not delete or update the existing registry-related data set unless you have the knowledge necessary to perform the operations.
 
 ```terraform
-artifact_registry_collection = {
+artifact_registry_collection_<project_id> = {
     ...
   <your registry's name>={
     name                   = "<your registry's name>"
@@ -39,18 +43,19 @@ artifact_registry_collection = {
   ...
 }
 ```
+
 Additionally, you can define optional parameters. Here are all the parameters you can use:
-| Parameter              | Description                                                             | Type         | Required | Default value |
+| Parameter | Description | Type | Required | Default value |
 |------------------------|-------------------------------------------------------------------------|--------------|----------|---------------|
-| **name**                   | Artifact Registry name                                                  | string       | x        |               |
-| **owner**                  | Registry Owner Team                                                     | string       | x        |               |
-| **type**                   | Environment type (development, production)                              | string       | x        |               |
-| **reader_serviceaccounts** | List of Service Accounts that have `Reader` access to registry          | list(string) | x        |               |
-| **writer_serviceaccounts**  | List of Service Accounts that have  `RepoAdmin`  access to registry        | list(string)       |          | ""            |
-| **primary_area**           | Primary area (if multi-region registry)                                 | string       |          | europe        |
-| **multi_region**           | Multi-region or single-region registry                                  | bool         |          | true          |
-| **public**                 | Is it available for every internet user with `Reader` access? | bool    |          | false         |
-| **immutable**              | Enable Immutable tags                                                         | bool         |          | false         |
+| **name** | Artifact Registry name | string | x | |
+| **owner** | Registry Owner Team | string | x | |
+| **type** | Environment type (development, production) | string | x | |
+| **reader_serviceaccounts** | List of Service Accounts that have `Reader` access to registry | list(string) | x | |
+| **writer_serviceaccounts** | List of Service Accounts that have `RepoAdmin` access to registry | list(string) | | "" |
+| **primary_area** | Primary area (if multi-region registry) | string | | europe |
+| **multi_region** | Multi-region or single-region registry | bool | | true |
+| **public** | Is it available for every internet user with `Reader` access? | bool | | false |
+| **immutable** | Enable Immutable tags | bool | | false |
 
 When you use the GCP private image registry, consider the following:
 

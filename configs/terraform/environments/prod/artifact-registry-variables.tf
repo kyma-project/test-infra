@@ -2,16 +2,18 @@
 ###################################
 # Artifact Registry related values
 ###################################
-variable "artifact_registry_gcp_region" {
+variable "artifact_registry_gcp_region_kyma_project" {
   type        = string
   description = "Default Google Cloud region to create resources."
+  default     = "europe-west4"
 }
 
-variable "artifact_registry_gcp_project_id" {
+variable "artifact_registry_gcp_project_id_kyma_project" {
   type        = string
   description = "Google Cloud project to create resources."
+  default     = "kyma-project"
 }
-variable "artifact_registry_collection" {
+variable "artifact_registry_collection_kyma_project" {
   description = "Artifact Registry related data set"
   type = map(object({
     name                   = string

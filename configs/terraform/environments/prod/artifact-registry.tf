@@ -1,7 +1,7 @@
 provider "google" {
   alias   = "artifact_registry_kyma_project"
-  project = var.artifact_registry_gcp_project_id
-  region  = var.artifact_registry_gcp_region
+  project = var.artifact_registry_gcp_project_id_kyma_project
+  region  = var.artifact_registry_gcp_region_kyma_project
 }
 
 module "artifact_registry" {
@@ -12,7 +12,7 @@ module "artifact_registry" {
   }
 
 
-  for_each                                 = var.artifact_registry_collection
+  for_each                                 = var.artifact_registry_collection_kyma_project
   artifact_registry_name                   = each.value.name
   artifact_registry_type                   = each.value.type
   artifact_registry_immutable_tags         = each.value.immutable

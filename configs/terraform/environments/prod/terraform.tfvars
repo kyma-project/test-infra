@@ -1,6 +1,4 @@
-artifact_registry_gcp_project_id = "kyma-project"
-artifact_registry_gcp_region     = "europe-west4"
-artifact_registry_collection = {
+artifact_registry_collection_kyma_project = {
   modules-internal = {
     name                   = "modules-internal"
     owner                  = "neighbors"
