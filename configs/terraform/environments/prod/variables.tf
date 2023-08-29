@@ -170,3 +170,9 @@ variable "service_account_keys_cleaner_scheduler_cron_schedule" {
   type        = string
   description = "Cron schedule for the service account keys cleaner scheduler."
 }
+
+variable "prow_cluster_ip_range" {
+  type        = string
+  default     = "10.8.0.0/14"
+  description = "Internal IP address range for pods."
+}
