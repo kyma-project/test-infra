@@ -40,6 +40,7 @@ postsubmits:
                   --base-import-paths \
                   -t="$PULL_BASE_REF" \
                   -t="$PULL_BASE_SHA" \
+                  -t="$(date +v%Y%m%d)-${PULL_BASE_SHA::8}" \
                   -t=latest
             # docker-in-docker needs privileged mode
             securityContext:
