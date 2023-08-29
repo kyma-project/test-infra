@@ -72,4 +72,4 @@ protecode:
 whitesource:
     language: golang-mod
     exclude:
-      - "**/*_test.go"
+        - '**/*_test.go'
