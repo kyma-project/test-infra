@@ -63,7 +63,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1.5Gi
                 cpu: 200m
-
+  
   kyma-project/kyma:
     - name: pull-function-controller-lint
       annotations:
@@ -81,7 +81,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230821-fdb47ca7"
             securityContext:
               privileged: false
               seccompProfile:
@@ -127,7 +127,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
-
+  
   kyma-project/directory-size-exporter:
     - name: pull-directory-size-exporter-lint
       annotations:
@@ -144,7 +144,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230821-fdb47ca7"
             securityContext:
               privileged: false
               seccompProfile:
@@ -189,3 +189,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
+  
