@@ -114,7 +114,7 @@ provider "kubectl" {
 }
 
 provider "google" {
-  alias   = "kyma_project_provider"
+  alias   = "kyma_project"
   project = var.kyma_project_gcp_project_id
   region  = var.kyma_project_gcp_region
 }

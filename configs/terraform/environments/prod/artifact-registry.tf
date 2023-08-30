@@ -2,7 +2,7 @@ module "artifact_registry" {
   source = "../../modules/artifact-registry"
 
   providers = {
-    google = google.kyma_project_provider
+    google = google.kyma_project
   }
 
 
