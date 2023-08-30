@@ -1,10 +1,9 @@
 module-name: test-infra
 protecode:
-    - aquasec/trivy:0.39.0
-    - docker.io/library/nginx:1.23.2-alpine
-    - docker.io/zricethezav/gitleaks:v8.15.3
+    - aquasec/trivy:0.44.1
+    - docker.io/library/nginx:1.25.2-alpine
+    - docker.io/zricethezav/gitleaks:v8.18.0
     - eu.gcr.io/kyma-project/incubator/milv:8649c2fb
-    - eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7
     - eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
@@ -66,9 +65,9 @@ protecode:
     - gcr.io/k8s-prow/analyze:v20230824-74e8146673
     - gcr.io/k8s-prow/gencred:v20230824-74e8146673
     - grafana/grafana:7.5.17
-    - maven:3.9.3-eclipse-temurin-17
-    - prom/pushgateway:v1.5.1
-    - quay.io/prometheus-operator/prometheus-operator:v0.61.1
+    - maven:3.9.4-eclipse-temurin-17
+    - prom/pushgateway:v1.6.0
+    - quay.io/prometheus-operator/prometheus-operator:v0.67.1
 whitesource:
     language: golang-mod
     exclude:
