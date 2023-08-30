@@ -38,11 +38,12 @@ RUN curl -fLSs -o gc-sdk.tar.gz "https://dl.google.com/dl/cloudsdk/channels/rapi
     gcloud config set component_manager/disable_update_check true && \
     gcloud config set metrics/environment github_docker_image && \
     gcloud --version; \
-    kubectl version --client
+    kubectl version --client; \
+    rm -rf /google-cloud-sdk/.install
 
 ARG HELM_VERSION=v3.12.3
 RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go env GOARCH).tar.gz" && \
-    tar -xzOf helm.tar.gz linux-amd64/helm > /usr/local/bin/helm && \
+    tar -xzOf helm.tar.gz "linux-$(go env GOARCH)/helm" > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm
 
 FROM base AS tools
