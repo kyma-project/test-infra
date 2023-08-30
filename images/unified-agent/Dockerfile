@@ -8,6 +8,7 @@ RUN apk upgrade --no-cache; \
     openjdk17-jre \
     ca-certificates  \
     curl \
+    bash \
     && \
     update-ca-certificates
 
