@@ -585,7 +585,7 @@ templates:
                     - bash
                     - -c
                     - |
-                      make -C hack/ci k3d-integration-test
+                      make -C hack/ci k3d-lm-integration-test
                   always_run: "true"
                   optional: "true"
                 inheritedConfigs:
