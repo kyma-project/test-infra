@@ -616,3 +616,219 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
+      - to: ../../prow/jobs/modules/internal/application-connector-manager.yaml
+        localSets:
+          job_build:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^master$"
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+            command: /image-builder
+            request_memory: "1.5Gi"
+            request_cpu: "1"
+            labels:
+              preset-sa-kyma-push-images: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+              - name: signify-secret
+                secretName: signify-dev-secret
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+          limits:
+            limits_memory: 3Gi
+            limits_cpu: 2
+          dind_job_k3d:
+            annotations:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230825-c4034b7e
+            command: "/init.sh"
+            request_memory: "4Gi"
+            request_cpu: "3"
+            limits_memory: "4Gi"
+            limits_cpu: "3"
+        jobConfigs:
+          - repoName: github.com/kyma-project/application-connector-manager
+            jobs:
+              - jobConfig:
+                  name: post-application-connector-manager-module-build
+                  annotations:
+                    owner: framefrog
+                    description: Job to build application-connector module for a release.
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:${PULL_BASE_SHA}"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: pre-application-connector-module-build
+                  annotations:
+                    owner: framefrog
+                    description: application-connector module build job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/dev/application-connector-manager:PR-${PULL_NUMBER}"
+                    MODULE_SHA: "PR-${PULL_NUMBER}"
+                  run_if_changed: "^application-connector.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-application-connector-module-build
+                  annotations:
+                    owner: framefrog
+                    description: application-connector module build job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:${PULL_BASE_SHA}"
+                  run_if_changed: "^application-connector.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: pre-application-connector-manager-tests
+                  annotations:
+                    owner: framefrogs
+                    description: application-connector operator tests
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "make test"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - build_labels # default labels
+                    - unprivileged
+              - jobConfig:
+                  annotations:
+                    owner: framefrog
+                    description: application-connector operator build job
+                  name: pre-application-connector-manager-build
+                  always_run: true
+                  args:
+                    - "--name=application-connector-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                  local:
+                    - job_build
+              - jobConfig:
+                  name: pre-main-application-connector-manager-verify
+                  annotations:
+                    owner: framefrog
+                    description: runs application-connector manager verity job on k3d VM
+                  always_run: "true"
+                  optional: "false"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-integration-test
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_presubmit # TODO: Prepare a Keda-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
+              - jobConfig:
+                  name: post-main-application-connector-manager-verify
+                  annotations:
+                    owner: framefrog
+                    description: runs application-connector manager verity job on k3d VM
+                  always_run: "true"
+                  optional: "false"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-integration-test
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
+              - jobConfig:
+                  name: post-main-application-connector-manager-upgrade-latest-to-main
+                  annotations:
+                    owner: framefrog
+                    description: upgrade application-connector manager test
+                  always_run: "true"
+                  optional: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-upgrade-test
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
