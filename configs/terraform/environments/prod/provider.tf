@@ -28,9 +28,9 @@ provider "google" {
 }
 
 provider "google" {
-  alias = "workloads"
+  alias   = "workloads"
   project = var.workloads_project_id
-  region = var.gcp_region
+  region  = var.gcp_region
 }
 
 provider "google-beta" {
@@ -111,4 +111,10 @@ provider "kubectl" {
     data.google_container_cluster.untrusted_workload_k8s_cluster.master_auth[0].cluster_ca_certificate,
   )
   load_config_file = false
+}
+
+provider "google" {
+  alias   = "kyma_project_provider"
+  project = var.kyma_project_gcp_project_id
+  region  = var.kyma_project_gcp_region
 }

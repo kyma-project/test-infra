@@ -1,4 +1,4 @@
-artifact_registry_collection_kyma_project = {
+kyma_project_artifact_registry_collection = {
   modules-internal = {
     name                   = "modules-internal"
     owner                  = "neighbors"
