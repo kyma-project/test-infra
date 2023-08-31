@@ -4,7 +4,6 @@ protecode:
     - docker.io/library/nginx:1.25.2-alpine
     - docker.io/zricethezav/gitleaks:v8.18.0
     - eu.gcr.io/kyma-project/incubator/milv:8649c2fb
-    - eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.11.1
@@ -62,6 +61,8 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230831-708fd982
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230831-708fd982
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230831-708fd982
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-708fd982
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20230831-708fd982
     - gcr.io/k8s-prow/analyze:v20230824-74e8146673
     - gcr.io/k8s-prow/gencred:v20230824-74e8146673
     - grafana/grafana:7.5.17
