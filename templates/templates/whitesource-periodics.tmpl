@@ -56,7 +56,6 @@
           {{- end}}
         {{- end}}
       {{- end}}
-      {{- if .JobConfig.extra_refs}}
       extra_refs:
         {{- range $key, $value := .JobConfig.extra_refs}}
           {{- range $value}}
@@ -72,7 +71,6 @@
           {{- else}}
           base_ref: {{ default (default "master" .JobConfig.base_ref)  .JobConfig.whitesource_release}}
           {{- end}}
-      {{- end}}
       spec:
         containers:
           - image: {{ if .JobConfig.image }}{{quote .JobConfig.image}}{{else}}{{ fail ".JobConfig.image is not defined" }}{{end}}
@@ -113,7 +111,7 @@
                 value: "{{$value}}"
               {{- end}}
               {{- end}}
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: {{ .JobConfig.repository }}
               - name: CREATE_SUBPROJECTS
                 value: "{{ default "false" .JobConfig.subprojects }}"
