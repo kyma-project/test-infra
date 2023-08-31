@@ -4,8 +4,7 @@ ARG UNIFIED_AGENT_VERSION=v23.1.2.1
 
 RUN apk upgrade --no-cache; \
     apk add --no-cache \
-    maven \
-    openjdk17-jre \
+    openjdk8-jre \
     ca-certificates  \
     curl \
     bash \
