@@ -2,12 +2,12 @@
 ###################################
 # Artifact Registry related values
 ###################################
-variable "gcp_region" {
+variable "artifact_registry_gcp_region" {
   type        = string
   description = "Default Google Cloud region to create resources."
 }
 
-variable "gcp_project_id" {
+variable "artifact_registry_gcp_project_id" {
   type        = string
   description = "Google Cloud project to create resources."
 }
@@ -18,7 +18,7 @@ variable "artifact_registry_collection" {
     name                   = string
     owner                  = string
     type                   = string
-    writer_serviceaccount  = optional(string, "")
+    writer_serviceaccounts = optional(list(string), [])
     reader_serviceaccounts = list(string)
     primary_area           = optional(string, "europe")
     multi_region           = optional(bool, true)
