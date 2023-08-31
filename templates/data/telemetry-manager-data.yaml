@@ -79,7 +79,7 @@ templates:
                     - "release"
                   branches:
                     - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$" # Regex for release tag
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230830-63e0b1b4"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230831-708fd982"
                 inheritedConfigs:
                   global:
                     - jobConfig_default

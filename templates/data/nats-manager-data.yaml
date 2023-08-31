@@ -48,7 +48,7 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-nats-module-build
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230830-63e0b1b4
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230831-708fd982
                   annotations:
                     owner: skydivingtunas
                     description: NATS module build pre-main job
@@ -75,7 +75,7 @@ templates:
                     - job_default
               - jobConfig:
                   name: post-nats-module-build
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230830-63e0b1b4
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230831-708fd982
                   annotations:
                     owner: skydivingtunas
                     description: NATS module build post-main job
