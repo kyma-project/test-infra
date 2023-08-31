@@ -15,7 +15,7 @@ postsubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230825-c4034b7e
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230830-63e0b1b4
             env:
               - name: PUSH_REPO
                 value: europe-docker.pkg.dev/kyma-project/prod/k8s-prow
@@ -40,6 +40,7 @@ postsubmits:
                   --base-import-paths \
                   -t="$PULL_BASE_REF" \
                   -t="$PULL_BASE_SHA" \
+                  -t="$(date +v%Y%m%d)-${PULL_BASE_SHA::8}" \
                   -t=latest
             # docker-in-docker needs privileged mode
             securityContext:

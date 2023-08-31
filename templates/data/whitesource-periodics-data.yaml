@@ -238,6 +238,21 @@ templates:
                     - "jobConfig_default"
                     - "product_kyma"
               - jobConfig:
+                  repository: "application-connector-manager"
+                  exclude: "**/test/**"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  base_ref: "main"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent"
+                    - "extra_refs_test-infra"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_kyma"
+              - jobConfig:
                   repository: "btp-manager"
                   language: "golang-mod"
                   project: "kyma-project"
