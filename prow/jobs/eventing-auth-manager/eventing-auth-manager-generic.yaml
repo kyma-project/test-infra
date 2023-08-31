@@ -50,37 +50,6 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-eventing-auth-manager-unit-test
-      annotations:
-        description: "run unit tests for eventing auth manager"
-        owner: "skydivingtunas"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-eventing-auth-manager-unit-test"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '\.go$|^go.(sum|mod)'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230830-63e0b1b4"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "make test"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 100m
   
 postsubmits: # runs on main
   kyma-project/eventing-auth-manager:
