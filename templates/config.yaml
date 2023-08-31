@@ -171,8 +171,10 @@ globalSets:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230831-708fd982"
   image_buildpack-golang:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230831-708fd982"
-  image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+  image_wssagent_go:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-708fd982"
+  image_wssagent_nodejs:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20230831-708fd982"
   image_gardener-rotate:
     image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20230831-99176c01
   image_markdown_index:
