@@ -92,6 +92,8 @@ resource "kubernetes_network_policy" "untrusted_cluster_from_prow" {
 }
 
 resource "kubernetes_network_policy" "prow_allow_http_events" {
+  provider = kubernetes.prow_k8s_cluster
+
   metadata {
     name = "prow-allow-http-events"
   }
@@ -108,6 +110,34 @@ resource "kubernetes_network_policy" "prow_allow_http_events" {
       from {
         ip_block {
           cidr = "0.0.0.0/0"
+        }
+      }
+    }
+  }
+}
+
+resource "kubernetes_network_policy" "hook_to_plugins" {
+  provider = kubernetes.prow_k8s_cluster
+
+  metadata {
+    name = "hook-to-plugins-network-policy"
+  }
+
+  spec {
+    pod_selector {
+      match_labels = {
+        "app" = "automated-approver",
+        "app" = "cla-assistant",
+        "app" = "needs-tws",
+      }
+    }
+
+    ingress {
+      from {
+        pod_selector {
+          match_labels = {
+            "app" = "hook"
+          }
         }
       }
     }
