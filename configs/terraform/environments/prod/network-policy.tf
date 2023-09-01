@@ -9,6 +9,8 @@ resource "kubernetes_network_policy" "prow_cluster_default" {
 
     // allow outbund connection from any pod
     egress {}
+
+    policy_types = ["Ingress", "Egress"]
   }
 }
 
@@ -24,6 +26,8 @@ resource "kubernetes_network_policy" "trusted_cluster_default" {
 
     // allow outbund connection from any pod
     egress {}
+
+    policy_types = ["Ingress", "Egress"]
   }
 }
 
@@ -39,6 +43,7 @@ resource "kubernetes_network_policy" "untrusted_cluster_default" {
 
     // allow outbund connection from any pod
     egress {}
+    policy_types = ["Ingress", "Egress"]
   }
 }
 
@@ -62,7 +67,7 @@ resource "kubernetes_network_policy" "trusted_cluster_from_prow" {
       }
     }
 
-    policy_types = ["Ingress", "Egress"]
+    policy_types = ["Ingress"]
   }
 }
 
@@ -87,7 +92,7 @@ resource "kubernetes_network_policy" "untrusted_cluster_from_prow" {
       }
     }
 
-    policy_types = ["Ingress", "Egress"]
+    policy_types = ["Ingress"]
   }
 }
 
@@ -113,6 +118,8 @@ resource "kubernetes_network_policy" "prow_allow_http_events" {
         }
       }
     }
+
+    policy_types = ["Ingress"]
   }
 }
 
@@ -141,5 +148,7 @@ resource "kubernetes_network_policy" "hook_to_plugins" {
         }
       }
     }
+
+    policy_types = ["Ingress"]
   }
 }
