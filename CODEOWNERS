@@ -25,7 +25,7 @@
 /prow/jobs/incubator/compass-console @gvachkov @petartodorovv @desislavaa @dimitarpetrov @krasish @nickymateev @dzahariev @kirilkabakchiev @stefancholakov @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/incubator/milv @m00g3n @pprecel @dbadura @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/incubator/ord-service @gvachkov @kirilkabakchiev @nickymateev @dzahariev @svetlinzarev-sap @dragobt @kaloyanspiridonov @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/incubator/reconciler @varbanv @jeremyharisch @tobiscr @kyma-project/prow @neighbors-dev-bot
+/prow/jobs/incubator/reconciler @varbanv @jeremyharisch @tobiscr @kyma-project/jellyfish @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma/kyma-integration-gardener.yaml @kyma-project/jellyfish @neighbors-dev-bot
 /prow/jobs/kyma/components/central-application-connectivity-validator @kyma-project/Framefrog @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma/components/central-application-gateway @kyma-project/prow @kyma-project/Framefrog @neighbors-dev-bot
