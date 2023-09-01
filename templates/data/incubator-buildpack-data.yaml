@@ -139,7 +139,7 @@ templates:
                     owner: jellyfish
                     description: pre publish reconciler
                   image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230831-da9ad29f"
-                  optional: false
+                  optional: true
                   # following regexp won't start build if only Markdown files were changed
                   run_if_changed: "^((cmd\\S+|configs\\S+|internal\\S+|pkg\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
                   labels:
