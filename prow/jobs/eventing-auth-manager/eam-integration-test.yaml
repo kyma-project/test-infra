@@ -22,7 +22,7 @@ presubmits: # runs on PRs
             hostnames:
               - "k3d-registry.localhost"
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230817-5a8ea22d
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230831-da9ad29f
             command: ["/init.sh"]
             securityContext:
               privileged: true
@@ -30,9 +30,12 @@ presubmits: # runs on PRs
                 type: Unconfined
               allowPrivilegeEscalation: true
             args:
+              - /bin/sh
               - -c
               - |
-                export KUBECONFIG=$(k3d kubeconfig write kcp)
+                tempcfg=/eam-test-k3d.yaml
+                k3d kubeconfig get k3d > $tempcfg
+                export KUBECONFIG=$tempcfg
                 TEST_EVENTING_AUTH_TARGET_KUBECONFIG_PATH=${KUBECONFIG} USE_EXISTING_CLUSTER=true make test
             resources:
               requests:

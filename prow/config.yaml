@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: gcr.io/k8s-prow/clonerefs:v20230819-9f6571ad1e
-          initupload: gcr.io/k8s-prow/initupload:v20230819-9f6571ad1e
-          entrypoint: gcr.io/k8s-prow/entrypoint:v20230819-9f6571ad1e
-          sidecar: gcr.io/k8s-prow/sidecar:v20230819-9f6571ad1e
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:2023.8.23
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:2023.8.23
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:2023.8.23
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:2023.8.23
         resources:
           clonerefs:
             requests:
@@ -198,7 +198,7 @@ deck:
         - 3108790 # cluster-access GH team in Kyma organization
 
 sinker:
-  max_prowjob_age: 24h
+  max_prowjob_age: 168h
   max_pod_age: 5h
   resync_period: 1m
   terminated_pod_ttl: 30m
@@ -250,10 +250,12 @@ branch-protection:
         - "^dependabot/"
       repos:
         kyma:
+          protect: false
           branches:
-            kyma-2.0-docu:
-              required_pull_request_reviews:
-                require_code_owner_reviews: false
+            main:
+              protect: true
+            release-.*:
+              protect: true
         website:
           branches:
             main:
@@ -264,6 +266,11 @@ branch-protection:
               required_status_checks:
                 contexts:
                   - "netlify/kyma-project-old/deploy-preview"
+        community:
+          protect: false
+          branches:
+            main:
+              protect: true
         private-fn-for-e2e-serverless-tests:
           protect: false
         organization-and-operations:
@@ -272,6 +279,32 @@ branch-protection:
           branches:
             ui5:
               protect: false
+        k8s-prow:
+          protect: true
+          required_status_checks:
+            contexts:
+              - license/cla
+          enforce_admins: false
+          required_pull_request_reviews:
+            dismiss_stale_reviews: false
+            require_code_owner_reviews: false
+            required_approving_review_count: 0
+          restrictions:
+            users:
+              - kyma-bot
+          exclude:
+            - "^dependabot/"
+        kyma-environment-broker:
+          required_status_checks:
+            contexts:
+              - run-eslint
+        btp-manager:
+          required_status_checks:
+            contexts:
+              - "run-unit-tests / build"
+              - "run-e2e-tests / run-e2e-tests"
+              - "markdown-link-check"
+              - "validate-labels"
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
@@ -397,7 +430,21 @@ tide:
         - do-not-merge/invalid-commit-message
       repos:
         - kyma-incubator/compass
+        - kyma-project/k8s-prow
       reviewApprovedRequired: true
+# special query for automations
+    - labels:
+        - skip-review
+      author: kyma-bot
+      missingLabels:
+        - needs-kind
+        - needs-area
+        - do-not-merge/hold
+        - do-not-merge/work-in-progress
+        - do-not-merge/invalid-owners-file
+        - do-not-merge/invalid-commit-message
+      repos:
+        - kyma-project/k8s-prow
   context_options:
     from-branch-protection: true
 
@@ -736,6 +783,22 @@ presets:
       - name: kyma-bot-token-path
         secret:
           secretName: kyma-bot-github-token
+  - labels:
+      kyma-bot-github-public-repo-token: "true"
+    env:
+      - name: GITHUB_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: kyma-bot-github-public-repo-token
+            key: token
+    volumeMounts:
+      - name: kyma-bot-github-public-repo-token-path
+        mountPath: /etc/github
+        readOnly: true
+    volumes:
+      - name: kyma-bot-github-public-repo-token-path
+        secret:
+          secretName: kyma-bot-github-public-repo-token
   - labels:
       preset-autobump-bot-github-token: "true"
     volumes:

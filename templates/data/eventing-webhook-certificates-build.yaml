@@ -11,6 +11,9 @@ templates:
                     owner: skydivingtunas
                     description: Image to generate certificates for eventing webhooks.
                   always_run: true
+                  branches:
+                    - ^main$
+                    - "^release-\\d+\\.\\d+$"
                   args:
                     - "--name=eventing-webhook-certificates"
                     - "--config=/config/kaniko-build-config.yaml"

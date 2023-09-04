@@ -38,9 +38,9 @@ output "service_account_keys_rotator" {
 
 resource "google_project_iam_member" "service_account_keys_rotator_workloads_project" {
   provider = google.workloads
-  project = var.workloads_project_id
-  role    = "roles/iam.serviceAccountKeyAdmin"
-  member  = "serviceAccount:${module.service_account_keys_rotator.service_account_keys_rotator_service_account.email}"
+  project  = var.workloads_project_id
+  role     = "roles/iam.serviceAccountKeyAdmin"
+  member   = "serviceAccount:${module.service_account_keys_rotator.service_account_keys_rotator_service_account.email}"
 }
 
 module "service_account_keys_cleaner" {
@@ -50,6 +50,7 @@ module "service_account_keys_cleaner" {
   service_name     = var.service_account_keys_cleaner_service_name
 
   region                                     = var.gcp_region
+  scheduler_region                           = var.gcp_scheduler_region
   service_account_keys_cleaner_account_id    = var.service_account_keys_cleaner_account_id
   service_account_keys_cleaner_image         = var.service_account_keys_cleaner_image
   cloud_run_service_listen_port              = var.secrets_rotator_cloud_run_listen_port
@@ -65,7 +66,7 @@ output "service_account_keys_cleaner" {
 
 resource "google_project_iam_member" "service_account_keys_cleaner_workloads_project" {
   provider = google.workloads
-  project = var.workloads_project_id
-  role    = "roles/iam.serviceAccountKeyAdmin"
-  member  = "serviceAccount:${module.service_account_keys_cleaner.service_account_keys_cleaner_service_account.email}"
+  project  = var.workloads_project_id
+  role     = "roles/iam.serviceAccountKeyAdmin"
+  member   = "serviceAccount:${module.service_account_keys_cleaner.service_account_keys_cleaner_service_account.email}"
 }

@@ -14,18 +14,6 @@ spec:
       - "default"
   parameters:
     images:
-      - "gcr.io/k8s-prow/analyze"
-      - "gcr.io/k8s-prow/crier"
-      - "gcr.io/k8s-prow/deck"
-      - "gcr.io/k8s-prow/ghproxy"
-      - "gcr.io/k8s-prow/hook"
-      - "gcr.io/k8s-prow/horologium"
-      - "gcr.io/k8s-prow/pipeline"
-      - "gcr.io/k8s-prow/prow-controller-manager"
-      - "gcr.io/k8s-prow/sinker"
-      - "gcr.io/k8s-prow/status-reconciler"
-      - "gcr.io/k8s-prow/tide"
-      - "k8s.gcr.io/gcsweb"
       - "nginx"
       - "prom/pushgateway"
       - "eu.gcr.io/kyma-project"

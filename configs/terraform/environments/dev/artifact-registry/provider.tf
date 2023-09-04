@@ -8,6 +8,8 @@ terraform {
 }
 
 provider "google" {
-  project = var.gcp_project_id
-  region  = var.gcp_region
+  alias   = "artifact_registry_smart_tractor"
+  project = var.artifact_registry_gcp_project_id
+  region  = var.artifact_registry_gcp_region
 }
+
