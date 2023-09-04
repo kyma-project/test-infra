@@ -56,6 +56,9 @@ templates:
                     owner: goat
                     description: builds webhook certificates image
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
+                  branches:
+                    - ^main$
+                    - "^release-\\d+\\.\\d+$"
                   args:
                     - "--name=api-gateway-webhook-certificates"
                     - "--config=/config/kaniko-build-config.yaml"
