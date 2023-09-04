@@ -1,7 +1,7 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      kyma-environment-broker:
+      control-plane:
       - pjName: "pull-new-keb-build"
 prConfigs:
   kyma-project:
