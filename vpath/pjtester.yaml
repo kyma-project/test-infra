@@ -5,5 +5,5 @@ pjConfigs:
       - pjName: "pull-new-keb-build"
   prConfig:
     kyma-project:
-      kyma-environment-broker:
+      test-infra:
         prNumber: 8843
