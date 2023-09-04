@@ -1,7 +1,7 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      test-infra:
+      kyma-environment-broker:
       - pjName: "pull-new-keb-build"
 prConfigs:
   kyma-project:
