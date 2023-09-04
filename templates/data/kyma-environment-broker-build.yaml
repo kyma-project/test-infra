@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/control-plane/components/kyma-environment-broker/kyma-environment-broker-build.yaml
+      - to: ../../prow/jobs/kyma-environment-broker/kyma-environment-broker-build.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma-environment-broker"
             jobs:
@@ -231,41 +231,4 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-      - to: ../../prow/jobs/control-plane/tests/e2e/provisioning/e2e-provisioning-test-build.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/control-plane"
-            jobs:
-              - jobConfig:
-                  name: pull-e2e-provisioning-test-build
-                  annotations:
-                    owner: "gopher"
-                    description: "E2E provisioning test build on PR"
-                  run_if_changed: "^tests/e2e/provisioning/|^scripts/"
-                  args:
-                    - --name=control-plane/e2e-provisioning-test
-                    - --context=tests/e2e/provisioning
-                    - --dockerfile=Dockerfile
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-e2e-provisioning-test-build
-                  annotations:
-                    owner: "gopher"
-                    description: "E2E provisioning test build on main"
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^tests/e2e/provisioning/|^scripts/"
-                  branches:
-                    - ^main$
-                  args:
-                    - --name=control-plane/e2e-provisioning-test
-                    - --context=tests/e2e/provisioning
-                    - --dockerfile=Dockerfile
-                    - --config=/config/kaniko-build-config.yaml
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
+                    
