@@ -1,16 +1,9 @@
 pjConfigs:
-  prConfig:
-    kyma-project:
-      kyma:
-        prNumber: 17436
   prowJobs:
     kyma-project:
       kyma:
-      - pjName: "skr-aws-upgrade-integration-dev"
-        report: false
-prConfigs: #
+      - pjName: "pull-new-keb-build"
+prConfigs:
   kyma-project:
-    kyma:
-      prNumber: 17436
     test-infra: 
-      prNumber: 6501
+      prNumber: 8843
