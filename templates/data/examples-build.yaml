@@ -19,8 +19,8 @@ templates:
                   args:
                     - "--name=examples/monitoring-custom-metrics"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=/prometheus/monitoring-custom-metrics/Dockerfile"
+                    - "--context=prometheus/monitoring-custom-metrics"
+                    - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
                     - "kaniko_buildpack"
