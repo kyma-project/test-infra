@@ -9,14 +9,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-//go:generate mockery --name=RepoAPI --output=automock --outpkg=automock --case=underscore
+//go:generate mockery --name=RepoAPI ---output=automock ---outpkg=automock ---case=underscore
 
 // RepoAPI abstracts access to Docker repos
 type RepoAPI interface {
 	ListSubrepositories(repoName string) ([]string, error)
 }
 
-//go:generate mockery --name=ImageAPI --output=automock --outpkg=automock --case=underscore
+//go:generate mockery --name=ImageAPI ---output=automock ---outpkg=automock ---case=underscore
 
 // ImageAPI abstracts access to Docker images
 type ImageAPI interface {
