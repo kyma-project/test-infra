@@ -19,14 +19,14 @@ templates:
                   args:
                     - "--name=examples/monitoring-custom-metrics"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=prometheus/monitoring-custom-metrics"
+                    - "--context=./prometheus/monitoring-custom-metrics"
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
+                    - "kaniko_buildpack"
+                    - "jobConfig_presubmit"
                   local:
-                    - job_default
+                    - "job_default"
               - jobConfig:
                   name: post-monitoring-custom-metrics-example-build
                   annotations:
@@ -36,17 +36,17 @@ templates:
                   labels:
                     preset-signify-prod-secret: "true"
                   branches:
-                    - ^main$
+                    - "^main$"
                     - "^release-\\d+\\.\\d+$"
                   args:
                     - "--name=examples/monitoring-custom-metrics"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=prometheus/monitoring-custom-metrics"
+                    - "--context=./prometheus/monitoring-custom-metrics"
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
                   global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
+                    - "kaniko_buildpack"
+                    - "jobConfig_postsubmit"
                   local:
-                    - job_default
-                    - job_post
+                    - "job_default"
+                    - "job_post"
