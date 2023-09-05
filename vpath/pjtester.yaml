@@ -4,9 +4,9 @@ pjConfigs:
       kyma-environment-broker:
       # - pjName: "pull-new-keb-build"
       # - pjName: "post-new-keb-build"
-      - pjName: "pull-new-keb-cleanup-job-build"
+      # - pjName: "pull-new-keb-cleanup-job-build"
       # - pjName: "post-new-keb-cleanup-job-build"
-      # - pjName: "pull-new-keb-subaccount-cleanup-job-build"
+      - pjName: "pull-new-keb-subaccount-cleanup-job-build"
       # - pjName: "post-new-keb-subaccount-cleanup-job-build"
       # - pjName: "pull-new-keb-trial-cleanup-job-build"
       # - pjName: "post-new-keb-trial-cleanup-job-build"
