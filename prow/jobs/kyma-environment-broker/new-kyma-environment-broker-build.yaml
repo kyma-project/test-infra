@@ -28,7 +28,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=new-kyma-environment-broker"
+              - "--name=kyma-environment-broker"
               - "--context=./"
               - "--dockerfile=Dockerfile.keb"
               - "--config=/config/kaniko-build-config.yaml"
@@ -75,7 +75,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=new-kyma-environments-cleanup-job"
+              - "--name=kyma-environments-cleanup-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=environmentscleanup"
@@ -123,7 +123,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=new-kyma-environment-subaccount-cleanup-job"
+              - "--name=kyma-environment-subaccount-cleanup-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=accountcleanup"
@@ -171,7 +171,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=new-kyma-environment-trial-cleanup-job"
+              - "--name=kyma-environment-trial-cleanup-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=trialcleanup"
@@ -242,13 +242,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: new-pull-keb-runtime-reconciler-job-build
+    - name: pull-new-keb-runtime-reconciler-job-build
       annotations:
         description: "Job to build runtime-reconciler image on PR submit"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "new-pull-keb-runtime-reconciler-job-build"
+        prow.k8s.io/pubsub.runID: "pull-new-keb-runtime-reconciler-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '.+'
@@ -269,7 +269,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=new-kyma-environment-runtime-reconciler"
+              - "--name=kyma-environment-runtime-reconciler"
               - "--context=./"
               - "--dockerfile=Dockerfile.runtimereconciler"
               - "--build-arg=BIN=runtime-reconciler"
@@ -323,7 +323,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=new-kyma-environment-broker"
+              - "--name=kyma-environment-broker"
               - "--context=./"
               - "--dockerfile=Dockerfile.keb"
               - "--config=/config/kaniko-build-config.yaml"
@@ -424,7 +424,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=new_kyma-environment-subaccount-cleanup-job"
+              - "--name=kyma-environment-subaccount-cleanup-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=accountcleanup"
@@ -475,7 +475,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=new-kyma-environment-trial-cleanup-job"
+              - "--name=kyma-environment-trial-cleanup-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=trialcleanup"
@@ -526,7 +526,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=new-kyma-environment-deprovision-retrigger-job"
+              - "--name=kyma-environment-deprovision-retrigger-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=deprovisionretrigger"
@@ -577,7 +577,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=new-kyma-environment-runtime-reconciler"
+              - "--name=kyma-environment-runtime-reconciler"
               - "--context=./"
               - "--dockerfile=Dockerfile.runtimereconciler"
               - "--build-arg=BIN=runtime-reconciler"

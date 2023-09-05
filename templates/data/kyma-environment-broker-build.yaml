@@ -12,7 +12,7 @@ templates:
                     description: "KEB image build on PR"
                   run_if_changed: ".+"
                   args:
-                    - --name=new-kyma-environment-broker
+                    - --name=kyma-environment-broker
                     - --context=./
                     - --dockerfile=Dockerfile.keb
                     - --config=/config/kaniko-build-config.yaml
@@ -31,7 +31,7 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=new-kyma-environment-broker
+                    - --name=kyma-environment-broker
                     - --context=./
                     - --dockerfile=Dockerfile.keb
                     - --config=/config/kaniko-build-config.yaml
@@ -47,7 +47,7 @@ templates:
                   run_if_changed: ".+"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
-                    - --name=new-kyma-environments-cleanup-job
+                    - --name=kyma-environments-cleanup-job
                     - --context=./
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=environmentscleanup
@@ -85,7 +85,7 @@ templates:
                   run_if_changed: ".+"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
-                    - --name=new-kyma-environment-subaccount-cleanup-job
+                    - --name=kyma-environment-subaccount-cleanup-job
                     - --context=./
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=accountcleanup
@@ -106,7 +106,7 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=new_kyma-environment-subaccount-cleanup-job
+                    - --name=kyma-environment-subaccount-cleanup-job
                     - --context=./
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=accountcleanup
@@ -123,7 +123,7 @@ templates:
                   run_if_changed: "./"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
-                    - --name=new-kyma-environment-trial-cleanup-job
+                    - --name=kyma-environment-trial-cleanup-job
                     - --context=./
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=trialcleanup
@@ -144,7 +144,7 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=new-kyma-environment-trial-cleanup-job
+                    - --name=kyma-environment-trial-cleanup-job
                     - --context=./
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=trialcleanup
@@ -182,7 +182,7 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=new-kyma-environment-deprovision-retrigger-job
+                    - --name=kyma-environment-deprovision-retrigger-job
                     - --context=./
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=deprovisionretrigger
@@ -192,7 +192,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
               - jobConfig:
-                  name: new-pull-keb-runtime-reconciler-job-build
+                  name: pull-new-keb-runtime-reconciler-job-build
                   annotations:
                     owner: "gopher"
                     description: "Job to build runtime-reconciler image on PR submit"
@@ -201,7 +201,7 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - "--name=new-kyma-environment-runtime-reconciler"
+                    - "--name=kyma-environment-runtime-reconciler"
                     - "--context=./"
                     - "--dockerfile=Dockerfile.runtimereconciler"
                     - "--build-arg=BIN=runtime-reconciler"
@@ -222,7 +222,7 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - "--name=new-kyma-environment-runtime-reconciler"
+                    - "--name=kyma-environment-runtime-reconciler"
                     - "--context=./"
                     - "--dockerfile=Dockerfile.runtimereconciler"
                     - "--build-arg=BIN=runtime-reconciler"
