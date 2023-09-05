@@ -1,15 +1,15 @@
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pull-system-broker-build
+    - name: pull-instance-creator-build
       annotations:
-        description: "Building System Broker Compass component"
+        description: "Building Instance Creator Compass component"
         owner: "compass"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-system-broker-build"
+        prow.k8s.io/pubsub.runID: "pull-instance-creator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/system-broker/'
+      run_if_changed: '^components/instance-creator/'
       skip_report: false
       decorate: true
       decoration_config:
@@ -32,9 +32,9 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=incubator/compass-system-broker"
+              - "--name=incubator/compass-instance-creator"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/system-broker"
+              - "--context=components/instance-creator"
               - "--dockerfile=Dockerfile"
               - "--platform=linux/amd64"
               - "--platform=linux/arm64"
@@ -65,15 +65,49 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-system-broker-unit-test
+    - name: pull-instance-creator-lint
       annotations:
-        description: "Run unit tests for the System Broker Compass component"
+        description: "Linter for the Instance Creator Compass component"
         owner: "compass"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-system-broker-unit-test"
+        prow.k8s.io/pubsub.runID: "pull-instance-creator-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/system-broker/.*\.go$'
+      run_if_changed: '^components/instance-creator/(.*\.go$|.golangcilint.yaml)'
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "cd components/instance-creator && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=15m"
+            resources:
+              requests:
+                memory: 6Gi
+                cpu: 3
+              limits:
+                memory: 6Gi
+                cpu: 3
+    - name: pull-instance-creator-unit-test
+      annotations:
+        description: "Run unit tests for the Instance Creator Compass component"
+        owner: "compass"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-instance-creator-unit-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^components/instance-creator/.*\.go$'
       optional: true
       skip_report: false
       decorate: true
@@ -91,7 +125,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/system-broker && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "cd components/instance-creator && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
                 memory: 6Gi
@@ -99,20 +133,20 @@ presubmits: # runs on PRs
               limits:
                 memory: 6Gi
                 cpu: 3
-  
+
 postsubmits: # runs on main
   kyma-incubator/compass:
-    - name: post-system-broker-build
+    - name: post-instance-creator-build
       annotations:
-        description: "Building System Broker Compass component after merge"
+        description: "Building Instance Creator Compass component after merge"
         owner: "compass"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-system-broker-build"
+        prow.k8s.io/pubsub.runID: "post-instance-creator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/system-broker/'
+      run_if_changed: '^components/instance-creator/'
       skip_report: false
       decorate: true
       decoration_config:
@@ -135,9 +169,9 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=incubator/compass-system-broker"
+              - "--name=incubator/compass-instance-creator"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/system-broker"
+              - "--context=components/instance-creator"
               - "--dockerfile=Dockerfile"
               - "--platform=linux/amd64"
               - "--platform=linux/arm64"
@@ -168,4 +202,3 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-  

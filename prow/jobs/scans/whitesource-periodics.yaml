@@ -24,14 +24,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: api-gateway
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -41,11 +38,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: api-gateway
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -77,14 +74,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: control-plane
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -94,11 +88,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: control-plane
               - name: CREATE_SUBPROJECTS
                 value: "true"
@@ -130,14 +124,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: kyma
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -147,11 +138,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: kyma
               - name: CREATE_SUBPROJECTS
                 value: "true"
@@ -183,14 +174,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: lifecycle-manager
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -200,11 +188,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: lifecycle-manager
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -236,14 +224,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: runtime-watcher
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -253,11 +238,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: runtime-watcher
               - name: CREATE_SUBPROJECTS
                 value: "true"
@@ -289,14 +274,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: busola
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -306,11 +288,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: busola
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -342,14 +324,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: cli
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -359,11 +338,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: cli
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -395,14 +374,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: hydroform
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -412,11 +388,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: hydroform
               - name: CREATE_SUBPROJECTS
                 value: "true"
@@ -449,15 +425,12 @@ periodics: # runs on schedule
       decorate: true
       cluster: trusted-workload
       extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
         - org: kyma-incubator
           repo: reconciler
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -467,11 +440,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: reconciler
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -503,14 +476,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: warden
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -520,11 +490,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: warden
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -556,14 +526,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: keda-manager
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -573,11 +540,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: keda-manager
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -611,14 +578,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: application-connector-manager
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -628,11 +592,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: application-connector-manager
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -666,14 +630,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: btp-manager
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -683,11 +644,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: btp-manager
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -719,14 +680,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: telemetry-manager
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -736,11 +694,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: telemetry-manager
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -772,14 +730,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: directory-size-exporter
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -789,11 +744,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: directory-size-exporter
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -821,14 +776,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: compass-manager
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -838,11 +790,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: compass-manager
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -876,14 +828,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: kyma
           base_ref: release-2.17
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -893,11 +842,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: kyma
               - name: CREATE_SUBPROJECTS
                 value: "true"
@@ -929,14 +878,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: cli
           base_ref: release-2.17
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -946,11 +892,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: cli
               - name: CREATE_SUBPROJECTS
                 value: "false"
@@ -985,14 +931,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: kyma
           base_ref: release-2.16
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1002,11 +945,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: kyma
               - name: CREATE_SUBPROJECTS
                 value: "true"
@@ -1038,14 +981,11 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: test-infra
-          base_ref: main
-        - org: kyma-project
           repo: cli
           base_ref: release-2.16
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230831-da9ad29f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1055,11 +995,11 @@ periodics: # runs on schedule
               - "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             env:
               - name: DRYRUN
                 value: "false"
-              - name : REPOSITORY
+              - name : REPO_NAME
                 value: cli
               - name: CREATE_SUBPROJECTS
                 value: "false"
