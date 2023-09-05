@@ -20,7 +20,7 @@ templates:
                     - "--name=examples/monitoring-custom-metrics"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=prometheus/monitoring-custom-metrics"
-                    - "--dockerfile=Dockerfile.custom"
+                    - "--dockerfile=custom.Dockerfile"
                 inheritedConfigs:
                   global:
                     - "kaniko_buildpack"
@@ -42,7 +42,7 @@ templates:
                     - "--name=examples/monitoring-custom-metrics"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=prometheus/monitoring-custom-metrics"
-                    - "--dockerfile=Dockerfile.custom"
+                    - "--dockerfile=custom.Dockerfile"
                 inheritedConfigs:
                   global:
                     - "kaniko_buildpack"
