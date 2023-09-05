@@ -2,10 +2,13 @@
 package main
 
 import (
+	"fmt"
 	"io"
+	"net"
 	"net/http"
 	"net/url"
 	"os"
+	"strings"
 
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/development/gcp/pkg/http"
@@ -62,6 +65,16 @@ func CORSProxy(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	allowedDomain, err := domainInSAP(requestedURL)
+	if err != nil {
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "couldn't check if domain is allowed%s", err)
+		return
+	}
+	if !allowedDomain {
+		crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "blocked domain requested: %s", requestedURL)
+		return
+	}
+
 	w.Header().Add("Access-Control-Allow-Origin", "*")
 	w.Header().Add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization")
 	w.Header().Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
@@ -87,4 +100,22 @@ func CORSProxy(w http.ResponseWriter, r *http.Request) {
 			crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "couldn't copy response, error: %s", err)
 		}
 	}
+}
+
+// domainInSAP checks if the host ends with sap.com and block all other requests
+func domainInSAP(requestedURL string) (bool, error) {
+	targetURL, err := url.Parse(requestedURL)
+	if err != nil {
+		return false, fmt.Errorf("couldn't parse URL, error: %s", err)
+	}
+	targetHost := targetURL.Host
+	if splitHost, _, err := net.SplitHostPort(targetHost); err == nil {
+		// there's a port in address, remove it
+		targetHost = splitHost
+	}
+
+	if !strings.HasSuffix(targetHost, "sap.com") {
+		return false, fmt.Errorf("blocked domain requested: %s", targetHost)
+	}
+	return true, nil
 }
