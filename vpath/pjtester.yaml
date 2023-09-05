@@ -12,8 +12,8 @@ pjConfigs:
       # - pjName: "post-new-keb-trial-cleanup-job-build"
       # - pjName: "pull-new-keb-deprovision-retrigger-job-build"
       # - pjName: "post-new-keb-deprovision-retrigger-job-build"
-      - pjName: "pull-new-keb-runtime-reconciler-job-build"
-      # - pjName: "post-new-keb-runtime-reconciler-job-build"
+      # - pjName: "pull-new-keb-runtime-reconciler-job-build"
+      - pjName: "post-new-keb-runtime-reconciler-job-build"
   prConfig:
     kyma-project:
       test-infra:
