@@ -1,13 +1,9 @@
 pjConfigs:
   prConfig:
     kyma-project:
-      test-infra:
-        prNumber: 8819
+      examples:
+        prNumber: 265
   prowJobs:
     kyma-project:
       examples:
       - pjName: "pull-monitoring-custom-metrics-example-build"
-prConfigs: #
-  kyma-project:
-    examples:
-      prNumber: 265
