@@ -66,7 +66,7 @@ function deploy_kyma() {
 
   echo "Kubernetes client and server version:"
 
-  kubectl version ---output=yaml
+  kubectl version --output=yaml
 
   local deploy_command
 

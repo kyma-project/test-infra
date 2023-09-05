@@ -10,14 +10,14 @@ import (
 	compute "google.golang.org/api/compute/v1"
 )
 
-//go:generate mockery --name=RegionAPI ---output=automock ---outpkg=automock ---case=underscore
+//go:generate mockery --name=RegionAPI --output=automock --outpkg=automock --case=underscore
 
 // RegionAPI abstracts access to Regions Compute API in GCP
 type RegionAPI interface {
 	ListRegions(project string) ([]string, error)
 }
 
-//go:generate mockery --name=AddressAPI ---output=automock ---outpkg=automock ---case=underscore
+//go:generate mockery --name=AddressAPI --output=automock --outpkg=automock --case=underscore
 
 // AddressAPI abstracts access to Address Compute API in GCP
 type AddressAPI interface {

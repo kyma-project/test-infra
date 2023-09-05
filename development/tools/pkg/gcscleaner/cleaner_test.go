@@ -137,7 +137,7 @@ func TestCleaner_DeleteOldBuckets_ErrBucketIteration(t *testing.T) {
 
 	client := automock.Client{}
 	client.
-		On("Buckets", mock.AnythingOfType("*context.emptyCtx"), "test-project").
+		On("Buckets", context.Background(), "test-project").
 		Return(&bucketIterator).
 		Once()
 	cleaner := newTestCleaner(&client, nil)
@@ -245,7 +245,7 @@ func getTestBucketHandle(objectIterator *automock.ObjectIterator, testObjectName
 func getStorageClient(bucketIterator storage.BucketIterator) *automock.Client {
 	client := automock.Client{}
 	client.
-		On("Buckets", mock.AnythingOfType("*context.emptyCtx"), "test-project").
+		On("Buckets", context.Background(), "test-project").
 		Return(bucketIterator).
 		Once()
 	return &client
