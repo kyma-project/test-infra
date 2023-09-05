@@ -114,7 +114,7 @@ func domainInSAP(requestedURL string) (bool, error) {
 		targetHost = splitHost
 	}
 
-	if !strings.HasSuffix(targetHost, "sap.com") {
+	if !strings.HasSuffix(targetHost, ".sap.com") {
 		return false, fmt.Errorf("blocked domain requested: %s", targetHost)
 	}
 	return true, nil
