@@ -2,7 +2,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma-environment-broker:
-      # - pjName: "pull-new-keb-build"
+      - pjName: "pull-new-keb-build"
       # - pjName: "post-new-keb-build"
       # - pjName: "pull-new-keb-cleanup-job-build"
       # - pjName: "post-new-keb-cleanup-job-build"
@@ -13,7 +13,7 @@ pjConfigs:
       # - pjName: "pull-new-keb-deprovision-retrigger-job-build"
       # - pjName: "post-new-keb-deprovision-retrigger-job-build"
       # - pjName: "pull-new-keb-runtime-reconciler-job-build"
-      - pjName: "post-new-keb-runtime-reconciler-job-build"
+      # - pjName: "post-new-keb-runtime-reconciler-job-build"
   prConfig:
     kyma-project:
       test-infra:
