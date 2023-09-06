@@ -18,3 +18,7 @@ pjConfigs:
     kyma-project:
       test-infra:
         prNumber: 8843
+prConfigs: #
+  kyma-project:
+    kyma-environment-broker:
+      prNumber: 29
