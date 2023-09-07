@@ -56,7 +56,6 @@ global:
         - name: "vstudio-extension"
         - name: "wordpress-connector"
         - name: "connector-tools"
-        - name: "artwork"
         - name: "opensap"
         - name: "testdrape"
         - name: "sc-removal"
