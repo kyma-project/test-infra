@@ -375,7 +375,6 @@ tide:
     kyma-incubator/reconciler: squash
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
-    kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
     kyma-incubator/kymart: squash
     kyma-incubator/varkes: squash

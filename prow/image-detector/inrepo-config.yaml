@@ -63,8 +63,6 @@
   owner: kyma-incubator
 - name: reconciler
   owner: kyma-incubator
-- name: bullseye-showcase
-  owner: kyma-incubator
 - name: compass-console
   owner: kyma-incubator
 - name: sap-btp-service-operator

@@ -40,7 +40,6 @@ global:
         - name: "compass"
         - name: "ord-service"
         - name: "reconciler"
-        - name: "bullseye-showcase"
         - name: "compass-console"
         - name: "sap-btp-service-operator"
         - name: "varkes"
