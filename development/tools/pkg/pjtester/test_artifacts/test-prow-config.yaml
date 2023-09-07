@@ -287,11 +287,9 @@ tide:
     kyma-incubator/api-gateway: squash
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
-    kyma-incubator/terraform-provider-gardener: squash
     kyma-incubator/milv: squash
     kyma-incubator/kymart: squash
     kyma-incubator/dex: squash
-    kyma-incubator/varkes: squash
     kyma-incubator/github-dashboard: squash
     kyma-incubator/opensap: squash
     kyma-incubator/website-vuepress: squash

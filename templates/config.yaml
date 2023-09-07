@@ -42,7 +42,6 @@ global:
         - name: "reconciler"
         - name: "compass-console"
         - name: "sap-btp-service-operator"
-        - name: "varkes"
         - name: "slack-bot"
         - name: "migrate"
         - name: "github-dashboard"

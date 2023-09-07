@@ -67,8 +67,6 @@
   owner: kyma-incubator
 - name: sap-btp-service-operator
   owner: kyma-incubator
-- name: varkes
-  owner: kyma-incubator
 - name: slack-bot
   owner: kyma-incubator
 - name: migrate
