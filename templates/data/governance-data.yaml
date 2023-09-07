@@ -139,17 +139,10 @@ templates:
                     - "disable_testgrid"
                   local:
                     - "jobConfig_default"
-<<<<<<< HEAD
           - repoName: "github.com/kyma-project/telemetry-manager"
             jobs:
               - jobConfig:
                   name: "pull-telemetry-manager-governance"
-=======
-          - repoName: "github.com/kyma-project/website"
-            jobs:
-              - jobConfig:
-                  name: "pull-website-governance"
->>>>>>> upstream/main
                   annotations:
                     owner: technical-writers
                     description: dead links governance job
@@ -160,48 +153,6 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "jobConfig_presubmit"
-<<<<<<< HEAD
-=======
-              - jobConfig:
-                  name: "website-governance-nightly"
-                  annotations:
-                    owner: technical-writers
-                    description: dead links governance job
-                  cron: "0 6 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
-                  extra_refs:
-                    website:
-                      - org: kyma-project
-                        repo: website
-                        base_ref: main
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-          - repoName: "github.com/kyma-incubator/documentation-component"
-            jobs:
-              - jobConfig:
-                  name: "documentation-component-governance-nightly"
-                  annotations:
-                    owner: technical-writers
-                    description: dead links governance job
-                  cron: "0 2 * * 1-5" # “At 01:00 on every day-of-week from Monday through Friday.”
-                  extra_refs:
-                    documentation-component:
-                      - org: kyma-incubator
-                        repo: documentation-component
-                        base_ref: main
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "jobConfig_periodic"
-                    - "disable_testgrid"
-                  local:
-                    - "jobConfig_default"
-
->>>>>>> upstream/main
           - repoName: "github.com/kyma-project/directory-size-exporter"
             jobs:
               - jobConfig:
