@@ -24,7 +24,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                   branches:
-                    - ^mod_dev$
+                    - ^mod-dev$
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -52,7 +52,7 @@ templates:
                     - "hack/ci"
                     - "all" # currently resolves to make module-build
                   branches:
-                    - ^mod_dev$
+                    - ^mod-dev$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
