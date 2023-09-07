@@ -48,7 +48,6 @@ global:
         - name: "migrate"
         - name: "github-dashboard"
         - name: "website-vuepress"
-        - name: "kyma-showcase"
         - name: "kymart"
         - name: "examples"
         - name: "connector-tools"
