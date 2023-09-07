@@ -379,7 +379,6 @@ tide:
     kyma-incubator/milv: squash
     kyma-incubator/kymart: squash
     kyma-incubator/varkes: squash
-    kyma-incubator/examples: squash
     kyma-incubator/github-dashboard: squash
     kyma-incubator/connector-tools: squash
     kyma-incubator/opensap: squash

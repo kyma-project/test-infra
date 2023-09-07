@@ -49,7 +49,6 @@ global:
         - name: "github-dashboard"
         - name: "website-vuepress"
         - name: "kymart"
-        - name: "examples"
         - name: "connector-tools"
         - name: "opensap"
         - name: "service-catalog-tester"
