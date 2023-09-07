@@ -40,9 +40,6 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: test-infra
           base_ref: main
-      reporter_config:
-        slack:
-          channel: huskies-notifications
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230831-da9ad29f"
