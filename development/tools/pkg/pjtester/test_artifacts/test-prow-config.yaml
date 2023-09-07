@@ -292,7 +292,6 @@ tide:
     kyma-incubator/kymart: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
-    kyma-incubator/octopus: squash
     kyma-incubator/github-dashboard: squash
     kyma-incubator/opensap: squash
     kyma-incubator/website-vuepress: squash
