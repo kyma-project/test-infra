@@ -10,7 +10,7 @@ templates:
             command: "bash"
             args:
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+              - "/start-wssagent.sh"
             request_cpu: 400m
             request_memory: 1Gi
             cluster: "trusted-workload"
@@ -55,8 +55,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -70,8 +69,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -85,8 +83,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -101,8 +98,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -116,8 +112,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -131,8 +126,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -145,8 +139,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_nodejs"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -159,8 +152,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -173,8 +165,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -188,8 +179,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -202,8 +192,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -216,8 +205,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -231,8 +219,21 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
+                    - "jobConfig_periodic"
+                  local:
+                    - "jobConfig_default"
+                    - "product_kyma"
+              - jobConfig:
+                  repository: "application-connector-manager"
+                  exclude: "**/test/**"
+                  language: "golang-mod"
+                  project: "kyma-project"
+                  base_ref: "main"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -245,8 +246,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -259,8 +259,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -273,8 +272,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "jobConfig_default"
@@ -290,7 +288,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/start-wssagent.sh"
+                    - "/start-wssagent.sh"
                   request_cpu: 400m
                   request_memory: 1Gi
                   cluster: "trusted-workload"
@@ -305,8 +303,7 @@ templates:
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
-                    - "image_wssagent"
-                    - "extra_refs_test-infra"
+                    - "image_wssagent_go"
                     - "jobConfig_periodic"
                   local:
                     - "product_control_plane"

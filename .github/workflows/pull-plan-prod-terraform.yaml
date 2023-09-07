@@ -25,7 +25,7 @@ jobs:
     steps:
       - name: Checkout
         id: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: "refs/pull/${{ github.event.number }}/merge"
           fetch-depth: 50

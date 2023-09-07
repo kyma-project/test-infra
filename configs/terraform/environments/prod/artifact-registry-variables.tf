@@ -2,13 +2,13 @@
 ###################################
 # Artifact Registry related values
 ###################################
-variable "artifact_registry_collection" {
+variable "kyma_project_artifact_registry_collection" {
   description = "Artifact Registry related data set"
   type = map(object({
     name                   = string
     owner                  = string
     type                   = string
-    writer_serviceaccount  = optional(string, "")
+    writer_serviceaccounts = optional(list(string), [])
     reader_serviceaccounts = list(string)
     primary_area           = optional(string, "europe")
     multi_region           = optional(bool, true)

@@ -38,15 +38,15 @@ spec:
         args: []
         entrypoint_options: '^{.*"args":\["\/bin\/sh","-c","\/bin\/terraform -chdir=\.\/development\/secrets-rotator\/terraform\/environments\/prod init -input=false \\u0026\\u0026 \/tfcmt\/tfcmt -owner \$REPO_OWNER -repo \$REPO_NAME -sha \$PULL_BASE_SHA apply -- terraform -chdir=\.\/development\/secrets-rotator\/terraform\/environments\/prod apply -input=false -auto-approve -var-file=\./terraform\.tfvars; \/ghcomment\/github-comment hide --org \$\(REPO_OWNER\) --repo \$\(REPO_NAME\) -sha1 \$\(PULL_BASE_SHA\)"\],"container_name":"test",.*}$'
       # prow decoration
-      - image: "gcr.io/k8s-prow/sidecar:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:*"
         command: []
         args: []
-      - image: "gcr.io/k8s-prow/clonerefs:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:*"
         command: []
         args: []
-      - image: "gcr.io/k8s-prow/initupload:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:*"
         command: []
         args: []
-      - image: "gcr.io/k8s-prow/entrypoint:*"
+      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:*"
         command: []
         args: []

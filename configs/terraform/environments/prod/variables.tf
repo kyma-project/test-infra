@@ -170,3 +170,21 @@ variable "service_account_keys_cleaner_scheduler_cron_schedule" {
   type        = string
   description = "Cron schedule for the service account keys cleaner scheduler."
 }
+
+variable "prow_cluster_ip_range" {
+  type        = string
+  default     = "10.8.0.0/14"
+  description = "Internal IP address range for pods."
+}
+
+variable "kyma_project_gcp_region" {
+  type        = string
+  description = "Default Google Cloud region to create resources in kyma-project"
+  default     = "europe-west4"
+}
+
+variable "kyma_project_gcp_project_id" {
+  type        = string
+  description = "Google Cloud project to create resources"
+  default     = "kyma-project"
+}
