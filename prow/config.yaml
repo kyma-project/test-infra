@@ -377,7 +377,6 @@ tide:
     kyma-incubator/local-kyma: squash
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
-    kyma-incubator/documentation-component: squash
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
     kyma-incubator/kymart: squash

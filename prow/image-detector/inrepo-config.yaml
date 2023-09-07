@@ -65,8 +65,6 @@
   owner: kyma-incubator
 - name: bullseye-showcase
   owner: kyma-incubator
-- name: documentation-component
-  owner: kyma-incubator
 - name: compass-console
   owner: kyma-incubator
 - name: sap-btp-service-operator

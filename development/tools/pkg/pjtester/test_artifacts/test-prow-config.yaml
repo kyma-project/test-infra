@@ -282,21 +282,18 @@ tide:
     kyma-project/kyma-operator: squash
     kyma-project/kyma-watcher: squash
     kyma-project/manifest-operator: squash
-
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
     kyma-incubator/api-gateway: squash
     kyma-incubator/local-kyma: squash
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
-    kyma-incubator/documentation-component: squash
     kyma-incubator/terraform-provider-gardener: squash
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
     kyma-incubator/kymart: squash
     kyma-incubator/dex: squash
     kyma-incubator/varkes: squash
-    #    kyma-incubator/marketplaces: squash
     kyma-incubator/octopus: squash
     kyma-incubator/knative-kafka: squash
     kyma-incubator/examples: squash
@@ -304,12 +301,8 @@ tide:
     kyma-incubator/vstudio-extension: squash
     kyma-incubator/wordpress-connector: squash
     kyma-incubator/connector-tools: squash
-    #    kyma-incubator/github-slack-connectors: squash
-    #    kyma-incubator/homebrew-kyma-incubator: squash
-    #    kyma-incubator/runtime: squash
     kyma-incubator/artwork: squash
     kyma-incubator/opensap: squash
-    #    kyma-incubator/wormhole: squash
     kyma-incubator/kyma-showcase: squash
     kyma-incubator/sc-removal: squash
     kyma-incubator/hydra-login-consent: squash
