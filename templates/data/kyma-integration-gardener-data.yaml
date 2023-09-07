@@ -256,7 +256,6 @@ templates:
                     timeout: 7200000000000 # 2h
                     grace_period: 600000000000 # 10min
                   cron: "0 2,14 * * *"
-                  slack_channel: huskies-notifications
                   labels:
                     preset-log-collector-slack-token: "true"
                 inheritedConfigs:
