@@ -383,7 +383,6 @@ tide:
     kyma-incubator/github-dashboard: squash
     kyma-incubator/connector-tools: squash
     kyma-incubator/opensap: squash
-    kyma-incubator/sc-removal: squash
     kyma-incubator/website-vuepress: squash
     kyma-incubator/migrate: squash
   target_url: https://status.build.kyma-project.io/tide

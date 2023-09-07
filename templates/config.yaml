@@ -53,7 +53,6 @@ global:
         - name: "connector-tools"
         - name: "opensap"
         - name: "testdrape"
-        - name: "sc-removal"
         - name: "service-catalog-tester"
         - name: "service-catalog"
 
