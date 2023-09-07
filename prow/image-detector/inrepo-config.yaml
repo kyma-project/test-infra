@@ -79,8 +79,6 @@
   owner: kyma-incubator
 - name: website-vuepress
   owner: kyma-incubator
-- name: kitbag
-  owner: kyma-incubator
 - name: kyma-showcase
   owner: kyma-incubator
 - name: kymart
