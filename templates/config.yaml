@@ -54,7 +54,6 @@ global:
         - name: "kymart"
         - name: "examples"
         - name: "vstudio-extension"
-        - name: "wordpress-connector"
         - name: "connector-tools"
         - name: "opensap"
         - name: "testdrape"
