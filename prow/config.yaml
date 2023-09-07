@@ -373,21 +373,18 @@ tide:
     kyma-project/nats-manager: squash
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
-    kyma-incubator/local-kyma: squash
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
     kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
     kyma-incubator/kymart: squash
     kyma-incubator/varkes: squash
-    kyma-incubator/knative-kafka: squash
     kyma-incubator/examples: squash
     kyma-incubator/github-dashboard: squash
     kyma-incubator/connector-tools: squash
     kyma-incubator/opensap: squash
     kyma-incubator/kyma-showcase: squash
     kyma-incubator/sc-removal: squash
-    kyma-incubator/hydra-login-consent: squash
     kyma-incubator/website-vuepress: squash
     kyma-incubator/migrate: squash
   target_url: https://status.build.kyma-project.io/tide

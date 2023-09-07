@@ -83,8 +83,6 @@
   owner: kyma-incubator
 - name: kyma-showcase
   owner: kyma-incubator
-- name: hydra-login-consent
-  owner: kyma-incubator
 - name: kymart
   owner: kyma-incubator
 - name: examples

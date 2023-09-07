@@ -50,7 +50,6 @@ global:
         - name: "website-vuepress"
         - name: "kitbag"
         - name: "kyma-showcase"
-        - name: "hydra-login-consent"
         - name: "kymart"
         - name: "examples"
         - name: "connector-tools"

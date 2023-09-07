@@ -34,9 +34,6 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           base_ref: main
-        - org: kyma-incubator
-          repo: local-kyma
-          base_ref: main
         - org: kyma-project
           repo: test-infra
           base_ref: main
@@ -101,9 +98,6 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: kyma
-          base_ref: main
-        - org: kyma-incubator
-          repo: local-kyma
           base_ref: main
         - org: kyma-project
           repo: test-infra

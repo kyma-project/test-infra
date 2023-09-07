@@ -1191,35 +1191,6 @@ presubmits: # runs on PRs
               - "-c"
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
-  kyma-incubator/hydra-login-consent:
-    - name: pre-hydra-login-consent-presubmit-scanner
-      annotations:
-        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for hydra-login-consent"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-hydra-login-consent-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
   kyma-incubator/kymart:
     - name: pre-kymart-presubmit-scanner
       annotations:
