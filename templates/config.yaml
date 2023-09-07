@@ -52,7 +52,6 @@ global:
         - name: "examples"
         - name: "connector-tools"
         - name: "opensap"
-        - name: "testdrape"
         - name: "service-catalog-tester"
         - name: "service-catalog"
 

@@ -87,8 +87,6 @@
   owner: kyma-incubator
 - name: opensap
   owner: kyma-incubator
-- name: testdrape
-  owner: kyma-incubator
 - name: service-catalog-tester
   owner: kyma-incubator
 - name: service-catalog
