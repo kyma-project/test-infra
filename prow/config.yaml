@@ -254,7 +254,7 @@ branch-protection:
           branches:
             main:
               protect: true
-            release-.*:
+            release-*:
               protect: true
         website:
           branches:
@@ -333,6 +333,8 @@ branch-protection:
             develop:
               protect: true
             load-test-mock:
+              protect: true
+            istio-op:
               protect: true
 
 tide:
@@ -432,7 +434,7 @@ tide:
         - kyma-incubator/compass
         - kyma-project/k8s-prow
       reviewApprovedRequired: true
-# special query for automations
+    # special query for automations
     - labels:
         - skip-review
       author: kyma-bot
