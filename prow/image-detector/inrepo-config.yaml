@@ -73,8 +73,6 @@
   owner: kyma-incubator
 - name: github-dashboard
   owner: kyma-incubator
-- name: website-vuepress
-  owner: kyma-incubator
 - name: kymart
   owner: kyma-incubator
 - name: opensap
