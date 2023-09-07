@@ -30,7 +30,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=api-gateway-controller"
+              - "--name=api-gateway-manager"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
