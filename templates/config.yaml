@@ -53,7 +53,6 @@ global:
         - name: "hydra-login-consent"
         - name: "kymart"
         - name: "examples"
-        - name: "vstudio-extension"
         - name: "connector-tools"
         - name: "opensap"
         - name: "testdrape"

@@ -89,8 +89,6 @@
   owner: kyma-incubator
 - name: examples
   owner: kyma-incubator
-- name: vstudio-extension
-  owner: kyma-incubator
 - name: connector-tools
   owner: kyma-incubator
 - name: opensap

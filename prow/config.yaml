@@ -383,7 +383,6 @@ tide:
     kyma-incubator/knative-kafka: squash
     kyma-incubator/examples: squash
     kyma-incubator/github-dashboard: squash
-    kyma-incubator/vstudio-extension: squash
     kyma-incubator/connector-tools: squash
     kyma-incubator/opensap: squash
     kyma-incubator/kyma-showcase: squash
