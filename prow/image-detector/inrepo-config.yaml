@@ -79,8 +79,6 @@
   owner: kyma-incubator
 - name: kymart
   owner: kyma-incubator
-- name: connector-tools
-  owner: kyma-incubator
 - name: opensap
   owner: kyma-incubator
 - name: service-catalog-tester
