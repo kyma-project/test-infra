@@ -4,12 +4,6 @@ templates:
         to: ../../prow/jobs/kyma/kyma-integration-gardener-eventing.yaml
     render:
       - localSets:
-          extra_refs_kyma-local:
-            extra_refs:
-              kyma-local:
-                - org: "kyma-incubator"
-                  repo: "local-kyma"
-                  base_ref: "main"
           extra_refs_busola:
             extra_refs:
               busola:
@@ -172,12 +166,6 @@ templates:
         to: ../../prow/jobs/kyma/kyma-integration-gardener.yaml
     render:
       - localSets:
-          extra_refs_kyma-local:
-            extra_refs:
-              kyma-local:
-                - org: "kyma-incubator"
-                  repo: "local-kyma"
-                  base_ref: "main"
           extra_refs_busola:
             extra_refs:
               busola:
@@ -200,8 +188,6 @@ templates:
               preset-build-pr: "true"
           command_integration:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
-          command_busola_long_lasting:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
           command_upgrade_gardener_kyma2_to_main:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-to-main.sh"
           command_upgrade_gardener_kyma2_minor_versions:
@@ -268,7 +254,6 @@ templates:
                   local:
                     - jobConfig_default
                     - gardener_azure_job
-                    - extra_refs_kyma-local
                     - command_integration
                     - evaluation_profile
               - jobConfig:
@@ -293,34 +278,8 @@ templates:
                   local:
                     - jobConfig_default
                     - gardener_azure_job
-                    - extra_refs_kyma-local
                     - command_integration
                     - production_profile
-              - jobConfig:
-                  name: kyma-weekly-gardener-gcp-busola-kyma
-                  annotations:
-                    owner: hasselhoff
-                    description: set up nkyma cluster
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 3 * * 1" # "At 03:00 UTC on Monday."
-                  labels:
-                    preset-busola-nightly-provision-type-kyma: "true"
-                    preset-log-collector-slack-token: "true"
-                    preset-recreate-cluster: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - disable_testgrid
-                  local:
-                    - jobConfig_default
-                    - command_busola_long_lasting
-                    - gardener_gcp_job
-                    - extra_refs_busola
               - jobConfig:
                   name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
                   annotations:

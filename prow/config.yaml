@@ -371,34 +371,14 @@ tide:
     kyma-project/eventing-auth-manager: squash
     kyma-project/eventing-tools: squash
     kyma-project/nats-manager: squash
-
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
-    kyma-incubator/local-kyma: squash
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
-    kyma-incubator/documentation-component: squash
-    kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
     kyma-incubator/kymart: squash
-    kyma-incubator/varkes: squash
-    #    kyma-incubator/marketplaces: squash
-    kyma-incubator/knative-kafka: squash
-    kyma-incubator/examples: squash
     kyma-incubator/github-dashboard: squash
-    kyma-incubator/vstudio-extension: squash
-    kyma-incubator/wordpress-connector: squash
-    kyma-incubator/connector-tools: squash
-    #    kyma-incubator/github-slack-connectors: squash
-    #    kyma-incubator/homebrew-kyma-incubator: squash
-    #    kyma-incubator/runtime: squash
-    kyma-incubator/artwork: squash
     kyma-incubator/opensap: squash
-    #    kyma-incubator/wormhole: squash
-    kyma-incubator/kyma-showcase: squash
-    kyma-incubator/sc-removal: squash
-    kyma-incubator/hydra-login-consent: squash
-    kyma-incubator/website-vuepress: squash
     kyma-incubator/migrate: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
