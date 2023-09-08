@@ -273,8 +273,6 @@ branch-protection:
               protect: true
         private-fn-for-e2e-serverless-tests:
           protect: false
-        organization-and-operations:
-          protect: false
         busola:
           branches:
             ui5:
@@ -345,20 +343,16 @@ tide:
     kyma-project/kyma: squash
     kyma-project/website: squash
     kyma-project/test-infra: squash
-    kyma-project/busola: squash
     kyma-project/kyma-dashboard: squash
     kyma-project/control-plane: squash
     kyma-project/third-party-images: squash
     kyma-project/hydroform: squash
     kyma-project/cli: squash
     kyma-project/community: squash
-    kyma-project/console: squash
     kyma-project/examples: squash
-    kyma-project/addons: squash
     kyma-project/lifecycle-manager: squash
     kyma-project/runtime-watcher: squash
     kyma-project/api-gateway: squash
-    kyma-project/organization-and-operations: squash
     kyma-project/btp-manager: squash
     kyma-project/kyma-environment-broker: squash
     kyma-project/istio: squash
