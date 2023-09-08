@@ -2637,7 +2637,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-
+  
   kyma-incubator/compass-console:
     - name: pull-compass-console-pjtester
       annotations:

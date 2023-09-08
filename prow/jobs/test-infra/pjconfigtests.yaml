@@ -1167,7 +1167,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-
+  
   kyma-incubator/compass-console:
     - name: pull-compass-console-pjconfigtest
       annotations:
@@ -1245,7 +1245,7 @@ presubmits: # runs on PRs
               requests:
                 memory: 100M
                 cpu: 200m
-
+  
   kyma-incubator/slack-bot:
     - name: pull-slack-bot-pjconfigtest
       annotations:
