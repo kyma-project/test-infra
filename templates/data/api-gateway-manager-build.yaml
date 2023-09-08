@@ -19,7 +19,7 @@ templates:
                     description: "API Gateway Manager image build on PR for "
                   skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   args:
-                    - "--name=api-gateway-controller"
+                    - "--name=api-gateway-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
