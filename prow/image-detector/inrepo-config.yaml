@@ -23,8 +23,6 @@
   owner: kyma-project
 - name: istio-operator
   owner: kyma-project
-- name: addons
-  owner: kyma-project
 - name: private-fn-for-e2e-serverless-tests
   owner: kyma-project
 - name: charts
@@ -44,8 +42,6 @@
 - name: application-connector-manager
   owner: kyma-project
 - name: template-repository
-  owner: kyma-project
-- name: rafter
   owner: kyma-project
 - name: btp-manager
   owner: kyma-project

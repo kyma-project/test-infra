@@ -275,9 +275,7 @@ tide:
     kyma-project/hydroform: squash
     kyma-project/cli: squash
     kyma-project/community: squash
-    kyma-project/console: squash
     kyma-project/examples: squash
-    kyma-project/addons: squash
     kyma-project/busola-migrator: squash
     kyma-project/kyma-operator: squash
     kyma-project/kyma-watcher: squash
