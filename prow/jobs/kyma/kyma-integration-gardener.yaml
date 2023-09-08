@@ -42,7 +42,7 @@ periodics: # runs on schedule
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230831-da9ad29f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230907-2ec05714"
             securityContext:
               privileged: false
               seccompProfile:
@@ -107,7 +107,7 @@ periodics: # runs on schedule
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230831-da9ad29f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230907-2ec05714"
             securityContext:
               privileged: false
               seccompProfile:
@@ -171,7 +171,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230831-da9ad29f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230907-2ec05714"
             securityContext:
               privileged: false
               seccompProfile:
@@ -230,7 +230,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230831-da9ad29f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230907-2ec05714"
             securityContext:
               privileged: false
               seccompProfile:
