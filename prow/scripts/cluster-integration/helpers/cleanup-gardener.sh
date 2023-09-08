@@ -65,6 +65,8 @@ do
             # clusters older than 4h get deleted
             echo ">>> Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
               remove_cluster "$CLUSTER" "$NS"
+        elif [[ ${HOURS_OLD} -lt 4 && ! "$CLUSTER" =~ np?[0-9].* ]]; then
+            echo ">>> Skipping cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
         fi
     else
         echo "level=warning msg=\"Cluster is excluded, deletion will be skipped. Name: \"${CLUSTER}\""
