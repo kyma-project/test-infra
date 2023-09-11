@@ -61,7 +61,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "main-cluster-inventory-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
+        preset-signify-prod-secret: "false"
       always_run: true
       skip_report: false
       decorate: true
