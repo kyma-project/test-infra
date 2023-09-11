@@ -73,42 +73,6 @@ presubmits: # runs on PRs
                 memory: 10Mi
                 cpu: 100m
   
-  kyma-project/examples:
-    - name: pull-examples-governance
-      annotations:
-        description: "dead links governance job"
-        owner: "technical-writers"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-examples-governance"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: 'milv.config.yaml|.md$'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/app/main"
-            args:
-              - "-config-file=milv.config.yaml"
-              - "-base-path=."
-            resources:
-              requests:
-                memory: 10Mi
-                cpu: 100m
-  
   kyma-project/test-infra:
     - name: pull-test-infra-governance
       annotations:
@@ -117,78 +81,6 @@ presubmits: # runs on PRs
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-test-infra-governance"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: 'milv.config.yaml|.md$'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/app/main"
-            args:
-              - "-config-file=milv.config.yaml"
-              - "-base-path=."
-            resources:
-              requests:
-                memory: 10Mi
-                cpu: 100m
-  
-  kyma-project/telemetry-manager:
-    - name: pull-telemetry-manager-governance
-      annotations:
-        description: "dead links governance job"
-        owner: "technical-writers"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-governance"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: 'milv.config.yaml|.md$'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      spec:
-        containers:
-          - image: "eu.gcr.io/kyma-project/incubator/milv:8649c2fb"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/app/main"
-            args:
-              - "-config-file=milv.config.yaml"
-              - "-base-path=."
-            resources:
-              requests:
-                memory: 10Mi
-                cpu: 100m
-  
-  kyma-project/directory-size-exporter:
-    - name: pull-directory-size-exporter-governance
-      annotations:
-        description: "dead links governance job"
-        owner: "technical-writers"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-governance"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: 'milv.config.yaml|.md$'
       optional: true
