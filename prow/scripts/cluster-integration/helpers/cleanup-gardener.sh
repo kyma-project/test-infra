@@ -12,6 +12,17 @@
 # Arguments:
 # --excluded-clusters -  regexp of clusters that won't get removed
 
+function remove_cluster() {
+  kubectl annotate shoot "${1}" confirmation.gardener.cloud/deletion=true \
+      --overwrite \
+      -n "${2}" \
+      --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}"
+    kubectl delete shoot "${1}" \
+      --wait="true" \
+      --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" \
+      -n "${2}"
+}
+
 readonly SECONDS_PER_HOUR=3600
 
 set -e
@@ -70,14 +81,3 @@ do
         echo "level=warning msg=\"Cluster is excluded, deletion will be skipped. Name: \"${CLUSTER}\""
     fi
 done
-
-function remove_cluster() {
-  kubectl annotate shoot "${1}" confirmation.gardener.cloud/deletion=true \
-      --overwrite \
-      -n "${2}" \
-      --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}"
-    kubectl delete shoot "${1}" \
-      --wait="true" \
-      --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" \
-      -n "${2}"
-}
