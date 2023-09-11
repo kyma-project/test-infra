@@ -1,3 +1,4 @@
+pjConfigs:
   prowJobs:
     kyma-project:
       cluster-inventory:
