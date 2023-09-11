@@ -1,4 +1,8 @@
 pjConfigs:
+  prConfig:
+    kyma-project:
+      cluster-inventory:
+        prNumber: 23
   prowJobs:
     kyma-project:
       cluster-inventory:
