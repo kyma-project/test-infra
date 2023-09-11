@@ -1,5 +1,5 @@
-pjConfigs:
   prowJobs:
     kyma-project:
       cluster-inventory:
-        - pjName: "main-cluster-inventory-build"
+      - pjName: "main-cluster-inventory-build"
+      - pjName: "pull-cluster-inventory-build"
