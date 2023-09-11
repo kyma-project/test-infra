@@ -51,8 +51,8 @@ do
         # shellcheck disable=SC2016
         CREATION_TIME="$(kubectl --kubeconfig "${GARDENER_KYMA_PROW_KUBECONFIG}" -n garden-"${GARDENER_KYMA_PROW_PROJECT_NAME}" get shoots "$CLUSTER" -o go-template='{{.metadata.creationTimestamp}}')"
         # convert to timestamp for age calculation
-        CREATION_TS="$(date -D "${CREATION_TIME}" +%s)" # On macOS use: CREATION_TS=$(date -jf "%Y-%m-%dT%H:%M:%SZ" ${CREATION_TIME} +%s)
-        NOW_TS="$(date +%s)"
+        CREATION_TS="$(date -u -d "${CREATION_TIME}" -D "%Y-%m-%dT%H:%M:%SZ" +%s)" # On macOS use: CREATION_TS=$(date -jf "%Y-%m-%dT%H:%M:%SZ" ${CREATION_TIME} +%s)
+        NOW_TS="$(date -u +%s)"
         HOURS_OLD=$(( (NOW_TS - CREATION_TS) / SECONDS_PER_HOUR ))
 
         NS="garden-$GARDENER_KYMA_PROW_PROJECT_NAME"
@@ -65,8 +65,6 @@ do
             # clusters older than 4h get deleted
             echo ">>> Deprovision cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
               remove_cluster "$CLUSTER" "$NS"
-        elif [[ ${HOURS_OLD} -lt 4 && ! "$CLUSTER" =~ np?[0-9].* ]]; then
-            echo ">>> Skipping cluster: \"${CLUSTER}\" (${HOURS_OLD}h old)"
         fi
     else
         echo "level=warning msg=\"Cluster is excluded, deletion will be skipped. Name: \"${CLUSTER}\""
