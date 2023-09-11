@@ -180,7 +180,6 @@ periodics: # runs on schedule
                 memory: 10Mi
                 cpu: 100m
   
-  
     - name: test-infra-governance-nightly
       annotations:
         description: "dead links governance job"
@@ -211,6 +210,4 @@ periodics: # runs on schedule
               requests:
                 memory: 10Mi
                 cpu: 100m
-  
-  
   
