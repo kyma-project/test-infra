@@ -49,9 +49,6 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-  
-postsubmits: # runs on main
-  kyma-project/cluster-inventory:
     - name: main-cluster-inventory-build
       annotations:
         description: "build cluster-inventory"
@@ -65,7 +62,7 @@ postsubmits: # runs on main
       always_run: true
       skip_report: false
       decorate: true
-      cluster: trusted-workload
+      cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^main$
