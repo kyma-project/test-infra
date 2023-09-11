@@ -28,7 +28,7 @@ templates:
                     owner: framefrog
                     description: build cluster-inventory
                   labels:
-                    preset-signify-prod-secret: "true"
+                    preset-signify-prod-secret: "false"
                   branches:
                     - ^main$ # any pr against main triggers this
                   always_run: true
