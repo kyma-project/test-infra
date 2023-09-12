@@ -1,0 +1,43 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/cluster-inventory/cluster-inventory.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+        jobConfigs:
+          - repoName: kyma-project/cluster-inventory
+            jobs:
+              - jobConfig:
+                  name: pull-cluster-inventory-build
+                  annotations:
+                    owner: framefrog
+                    description: run cluster-inventory build
+                  always_run: true
+                  args:
+                    - "--name=cluster-inventory"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: main-cluster-inventory-build
+                  annotations:
+                    owner: framefrog
+                    description: build cluster-inventory
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                  always_run: true
+                  args:
+                    - "--name=cluster-inventory"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
