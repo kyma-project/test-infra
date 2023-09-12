@@ -1,21 +1,21 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/cluster-inventory/cluster-inventory.yaml
+      - to: ../../prow/jobs/infrastructure-manager/infrastructure-manager.yaml
         localSets:
           jobConfig_default:
             imagePullPolicy: "Always"
         jobConfigs:
-          - repoName: kyma-project/cluster-inventory
+          - repoName: kyma-project/infrastructure-manager
             jobs:
               - jobConfig:
-                  name: pull-cluster-inventory-build
+                  name: pull-infrastructure-manager-build
                   annotations:
                     owner: framefrog
-                    description: run cluster-inventory build
+                    description: run infrastructure-manager build
                   always_run: true
                   args:
-                    - "--name=cluster-inventory"
+                    - "--name=infrastructure-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--dockerfile=Dockerfile"
                 inheritedConfigs:
@@ -23,17 +23,17 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: main-cluster-inventory-build
+                  name: main-infrastructure-manager-build
                   annotations:
                     owner: framefrog
-                    description: build cluster-inventory
+                    description: build infrastructure-manager
                   labels:
                     preset-signify-prod-secret: "true"
                   branches:
                     - ^main$ # any pr against main triggers this
                   always_run: true
                   args:
-                    - "--name=cluster-inventory"
+                    - "--name=infrastructure-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
