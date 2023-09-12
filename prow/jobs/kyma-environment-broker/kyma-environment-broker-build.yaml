@@ -3,13 +3,13 @@
 
 presubmits: # runs on PRs
   kyma-project/kyma-environment-broker:
-    - name: pull-new-keb-build
+    - name: pull-keb-build
       annotations:
         description: "KEB image build on PR"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-new-keb-build"
+        prow.k8s.io/pubsub.runID: "pull-keb-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '.+'
@@ -50,13 +50,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-new-keb-cleanup-job-build
+    - name: pull-keb-cleanup-job-build
       annotations:
         description: "Clean up DEV from Kyma runtimes older than day job build on PR"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-new-keb-cleanup-job-build"
+        prow.k8s.io/pubsub.runID: "pull-keb-cleanup-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '.+'
@@ -98,13 +98,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-new-keb-subaccount-cleanup-job-build
+    - name: pull-keb-subaccount-cleanup-job-build
       annotations:
         description: "Removes SKRs when BTP subaccount is deleted job build on PR"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-new-keb-subaccount-cleanup-job-build"
+        prow.k8s.io/pubsub.runID: "pull-keb-subaccount-cleanup-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '.+'
@@ -146,13 +146,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-new-keb-trial-cleanup-job-build
+    - name: pull-keb-trial-cleanup-job-build
       annotations:
         description: "Removes trials after 14 days job build on PR"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-new-keb-trial-cleanup-job-build"
+        prow.k8s.io/pubsub.runID: "pull-keb-trial-cleanup-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: './'
@@ -194,13 +194,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-new-keb-deprovision-retrigger-job-build
+    - name: pull-keb-deprovision-retrigger-job-build
       annotations:
         description: "Retries deprovisioned SKRs where some steps have failed job build on PR"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-new-keb-deprovision-retrigger-job-build"
+        prow.k8s.io/pubsub.runID: "pull-keb-deprovision-retrigger-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '.+'
@@ -242,13 +242,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-new-keb-runtime-reconciler-job-build
+    - name: pull-keb-runtime-reconciler-job-build
       annotations:
         description: "Job to build runtime-reconciler image on PR submit"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-new-keb-runtime-reconciler-job-build"
+        prow.k8s.io/pubsub.runID: "pull-keb-runtime-reconciler-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '.+'
@@ -295,13 +295,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/kyma-environment-broker:
-    - name: post-new-keb-build
+    - name: post-keb-build
       annotations:
         description: "KEB image build on main"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-new-keb-build"
+        prow.k8s.io/pubsub.runID: "post-keb-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -345,13 +345,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-new-keb-cleanup-job-build
+    - name: post-keb-cleanup-job-build
       annotations:
         description: "Clean up DEV from Kyma runtimes older than day job build on main"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-new-keb-cleanup-job-build"
+        prow.k8s.io/pubsub.runID: "post-keb-cleanup-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -396,13 +396,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-new-keb-subaccount-cleanup-job-build
+    - name: post-keb-subaccount-cleanup-job-build
       annotations:
         description: "Removes SKRs when BTP subaccount is deleted job build on main"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-new-keb-subaccount-cleanup-job-build"
+        prow.k8s.io/pubsub.runID: "post-keb-subaccount-cleanup-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -447,13 +447,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-new-keb-trial-cleanup-job-build
+    - name: post-keb-trial-cleanup-job-build
       annotations:
         description: "Removes trials after 14 days job build on main"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-new-keb-trial-cleanup-job-build"
+        prow.k8s.io/pubsub.runID: "post-keb-trial-cleanup-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -498,13 +498,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-new-keb-deprovision-retrigger-job-build
+    - name: post-keb-deprovision-retrigger-job-build
       annotations:
         description: "Retries deprovisioned SKRs where some steps have failed job build on main"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-new-keb-deprovision-retrigger-job-build"
+        prow.k8s.io/pubsub.runID: "post-keb-deprovision-retrigger-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -549,13 +549,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-new-keb-runtime-reconciler-job-build
+    - name: post-keb-runtime-reconciler-job-build
       annotations:
         description: "Job to build runtime-reconciler image after PR merge"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-new-keb-runtime-reconciler-job-build"
+        prow.k8s.io/pubsub.runID: "post-keb-runtime-reconciler-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
