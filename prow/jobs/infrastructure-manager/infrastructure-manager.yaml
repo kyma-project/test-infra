@@ -2,14 +2,14 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/cluster-inventory:
-    - name: pull-cluster-inventory-build
+  kyma-project/infrastructure-manager:
+    - name: pull-infrastructure-manager-build
       annotations:
-        description: "run cluster-inventory build"
+        description: "run infrastructure-manager build"
         owner: "framefrog"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-cluster-inventory-build"
+        prow.k8s.io/pubsub.runID: "pull-infrastructure-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       always_run: true
@@ -28,7 +28,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=cluster-inventory"
+              - "--name=infrastructure-manager"
               - "--config=/config/kaniko-build-config.yaml"
               - "--dockerfile=Dockerfile"
             resources:
@@ -51,14 +51,14 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
   
 postsubmits: # runs on main
-  kyma-project/cluster-inventory:
-    - name: main-cluster-inventory-build
+  kyma-project/infrastructure-manager:
+    - name: main-infrastructure-manager-build
       annotations:
-        description: "build cluster-inventory"
+        description: "build infrastructure-manager"
         owner: "framefrog"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "main-cluster-inventory-build"
+        prow.k8s.io/pubsub.runID: "main-infrastructure-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -80,7 +80,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=cluster-inventory"
+              - "--name=infrastructure-manager"
               - "--config=/config/kaniko-build-config.yaml"
               - "--dockerfile=Dockerfile"
               - "--tag=latest"
