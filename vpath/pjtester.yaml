@@ -1,0 +1,15 @@
+pjConfigs:
+  prConfigs:
+    kyma-project:
+      test-infra:
+        prNumber:
+  prowJobs:
+    kyma-incubator:
+      compass:
+        - pjName: "pull-default-tenant-mapping-handler-unit-test"
+        - pjName: "pull-default-tenant-mapping-handler-lint"
+        - pjName: "pull-default-tenant-mapping-handler-build"
+prConfigs:
+  kyma-incubator:
+    compass:
+      prNumber: 3304
