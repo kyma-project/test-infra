@@ -97,7 +97,7 @@ presubmits: # runs on PRs
                 memory: 3Gi
                 cpu: 2
   
-postsubmits: # runs on main
+postsubmits: # runs on mod-dev branch
   kyma-project/api-gateway:
     - name: post-api-gateway-manager-build
       annotations:
