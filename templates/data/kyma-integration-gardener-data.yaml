@@ -94,7 +94,7 @@ templates:
                     - command_upgrade_eventing
 
               - jobConfig:
-                  name: pre-main-kyma-gardener-gcp-eventing-with-auth-manager
+                  name: pre-main-kyma-gardener-gcp-eventing
                   labels:
                     preset-kyma-eventing-auth-ias-creds: "true"
                   annotations:

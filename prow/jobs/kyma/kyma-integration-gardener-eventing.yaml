@@ -73,13 +73,13 @@ presubmits: # runs on PRs
             secret:
               secretName: kyma-tunas-prow-event-mesh
 
-    - name: pre-main-kyma-gardener-gcp-eventing-with-auth-manager
+    - name: pre-main-kyma-gardener-gcp-eventing
       annotations:
         description: "Execute fast integration job with focus on eventing on a gardener cluster"
         owner: "skydivingtunas"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-gcp-eventing-with-auth-manager"
+        prow.k8s.io/pubsub.runID: "pre-main-kyma-gardener-gcp-eventing"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-build-pr: "true"
         preset-cluster-version: "true"
