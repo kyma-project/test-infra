@@ -94,40 +94,6 @@ templates:
                     - command_upgrade_eventing
 
               - jobConfig:
-                  name: pre-main-kyma-gardener-gcp-eventing
-                  labels:
-                    preset-kyma-eventing-auth-ias-creds: "true"
-                  annotations:
-                    owner: skydivingtunas
-                    description: Execute fast integration job with focus on eventing on a gardener cluster
-                  optional: false
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                    # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    EXECUTION_PROFILE: "evaluation"
-                    EVENTING_WEBHOOK_AUTH_ENABLED: "false"
-                  volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
-                  volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
-                      readOnly: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_buildpack_node
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                  local:
-                    - jobConfig_buildpack_node
-                    - jobConfig_presubmit
-                    - gardener_gcp_job_eventing
-                    - command_integration_eventing
-
-              - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing-with-auth-manager
                   labels:
                     preset-kyma-eventing-auth-ias-creds: "true"
