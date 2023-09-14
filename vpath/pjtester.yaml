@@ -1,9 +1,9 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      serverless-manager:
-      - pjName: "post-main-serverless-operator-verify"
+      keda-manager:
+      - pjName: "post-main-keda-operator-verify"
 prConfigs:
   kyma-project:
-    serverless-manager:
-      prNumber: 244
+    keda-manager:
+      prNumber: 285
