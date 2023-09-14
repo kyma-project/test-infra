@@ -2,7 +2,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       keda-manager:
-      - pjName: "post-main-keda-operator-verify"
+      - pjName: "post-main-keda-manager-verify"
 prConfigs:
   kyma-project:
     keda-manager:
