@@ -108,6 +108,7 @@ postsubmits: # runs on mod-dev branch
         prow.k8s.io/pubsub.runID: "post-api-gateway-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
       skip_report: false
       decorate: true

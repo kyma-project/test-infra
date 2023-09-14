@@ -67,6 +67,8 @@ templates:
                   annotations:
                     owner: "goats"
                     description: "API Gateway Manager image build"
+                  labels:
+                    preset-signify-prod-secret: "true"
                   skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   args:
                     - "--name=api-gateway-manager"
