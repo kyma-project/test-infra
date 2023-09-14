@@ -72,7 +72,6 @@ presubmits: # runs on PRs
           - name: kyma-tunas-prow-event-mesh
             secret:
               secretName: kyma-tunas-prow-event-mesh
-
     - name: pre-main-kyma-gardener-gcp-eventing
       annotations:
         description: "Execute fast integration job with focus on eventing on a gardener cluster"
