@@ -23,7 +23,7 @@ templates:
                     description: Image to generate certificates for eventing webhooks.
                   optional: "false"
                   branches:
-                    - '^\d+\.\d+\.\d+(?:-.*)?$'
+                    - "^release-1.8$"
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
