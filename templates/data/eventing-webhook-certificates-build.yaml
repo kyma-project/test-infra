@@ -10,7 +10,6 @@ templates:
                   annotations:
                     owner: skydivingtunas
                     description: Image to generate certificates for eventing webhooks.
-                  always_run: true
                   branches:
                     - "^release-1.8$"
                   args:
@@ -29,7 +28,6 @@ templates:
                     description: Image to generate certificates for eventing webhooks.
                   labels:
                     preset-signify-prod-secret: "true"
-                  always_run: true
                   branches:
                     - "^release-1.8$"
                   args:
