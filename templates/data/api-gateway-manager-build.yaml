@@ -9,6 +9,8 @@ templates:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
+          job_post:
+            slack_channel: goat-int
         jobConfigs:
           - repoName: "github.com/kyma-project/api-gateway"
             jobs:
@@ -60,3 +62,25 @@ templates:
                     - "image_buildpack-golang" # takes latest golang image
                   local:
                     - job_default
+              - jobConfig: # builds a docker image of the api-gateway-manager
+                  name: post-api-gateway-manager-build
+                  annotations:
+                    owner: "goats"
+                    description: "API Gateway Manager image build"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
+                  args:
+                    - "--name=api-gateway-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                  branches:
+                    - ^mod-dev$
+                  optional: false
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - job_post
