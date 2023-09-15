@@ -103,7 +103,7 @@ templates:
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_SHA}"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_REF}"
                   securityContext:
                     privileged: false
                   command: "make"
@@ -112,7 +112,7 @@ templates:
                     - "hack/ci"
                     - "all" # currently resolves to make module-build
                   branches:
-                    - ^mod-dev$
+                    - '^\d+\.\d+\.\d+-dev(?:-.*)?$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
