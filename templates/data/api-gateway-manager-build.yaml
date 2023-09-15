@@ -62,6 +62,64 @@ templates:
                     - "image_buildpack-golang" # takes latest golang image
                   local:
                     - job_default
+              - jobConfig: # builds an OCI image with btp-operator module from mod-dev branch
+                  name: post-api-gateway-module-build
+                  annotations:
+                    owner: "goat"
+                    description: "API Gateway Manager template image build on mod-dev branch"
+                  always_run: true
+                  optional: true
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_SHA}"
+                  securityContext:
+                    privileged: false
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "all" # currently resolves to make module-build
+                  branches:
+                    - ^mod-dev$
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_buildpack-golang" # takes latest golang image
+                  local:
+                    - job_default
+              - jobConfig: # builds an OCI image with btp-operator module from release branch
+                  name: rel-api-gateway-module-build
+                  annotations:
+                    owner: "goat"
+                    description: "API Gateway Manager template image build for release"
+                  always_run: true
+                  optional: true
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_SHA}"
+                  securityContext:
+                    privileged: false
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "all" # currently resolves to make module-build
+                  branches:
+                    - ^mod-dev$
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_buildpack-golang" # takes latest golang image
+                  local:
+                    - job_default
               - jobConfig: # builds a docker image of the api-gateway-manager
                   name: post-api-gateway-manager-build
                   annotations:
