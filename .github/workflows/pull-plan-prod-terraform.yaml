@@ -60,7 +60,7 @@ jobs:
 
       - name: setup tfcmt
         id: setup-tfcmt
-        uses: shmokmt/actions-setup-tfcmt@v2.0.0
+        uses: shmokmt/actions-setup-tfcmt@v2.1.0
         with:
           version: v4.4.3
 
