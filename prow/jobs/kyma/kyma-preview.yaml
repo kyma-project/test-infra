@@ -34,7 +34,7 @@ periodics:
             - -c
             - |
               set -e
-              curl -sSLo /usr/local/bin/kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-linux?alt=media"
+              curl -sSLo /usr/local/bin/kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-linux?alt=media"
               chmod +x /usr/local/bin/kyma
               kyma provision k3d --ci -k "$K8S_VERSION"
               kubectl get nodes
