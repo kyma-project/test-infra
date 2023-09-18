@@ -68,7 +68,6 @@ templates:
                     owner: "goat"
                     description: "API Gateway Manager template image build on mod-dev branch"
                   always_run: true
-                  optional: true
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -90,14 +89,14 @@ templates:
                     - "jobConfig_postsubmit"
                     - "image_buildpack-golang" # takes latest golang image
                   local:
-                    - job_default
+                    - "job_default"
+                    - "job_post"
               - jobConfig: # builds an OCI image with api-gateway module from release branch
                   name: rel-api-gateway-module-build
                   annotations:
                     owner: "goat"
                     description: "API Gateway Manager template image build for release"
                   always_run: true
-                  optional: true
                   labels:
                     preset-sa-kyma-push-images: "true"
                   env:
@@ -119,7 +118,8 @@ templates:
                     - "jobConfig_postsubmit"
                     - "image_buildpack-golang" # takes latest golang image
                   local:
-                    - job_default
+                    - "job_default"
+                    - "job_post"
               - jobConfig: # builds a docker image of the api-gateway-manager
                   name: post-api-gateway-manager-build
                   annotations:
@@ -141,7 +141,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
-                    - job_post
+                    - "job_post"
               - jobConfig: # builds a docker image of the api-gateway-manager
                   name: rel-api-gateway-manager-build
                   annotations:
@@ -163,4 +163,4 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
-                    - job_post
+                    - "job_post"
