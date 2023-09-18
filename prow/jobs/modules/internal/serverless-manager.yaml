@@ -19,9 +19,10 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
+        - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230907-2ec05714"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
             securityContext:
               privileged: false
               seccompProfile:
@@ -64,9 +65,10 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
+        - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230907-2ec05714"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
             securityContext:
               privileged: false
               seccompProfile:
@@ -96,8 +98,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-*
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
@@ -156,15 +158,15 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-*
       extra_refs:
         - org: kyma-project
           repo: test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230907-2ec05714"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28"
             securityContext:
               privileged: true
               seccompProfile:
@@ -263,7 +265,7 @@ postsubmits: # runs on main
         - ^\w+\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230907-2ec05714"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
             securityContext:
               privileged: false
               seccompProfile:
@@ -300,9 +302,10 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
+        - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230907-2ec05714"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
             securityContext:
               privileged: false
               seccompProfile:
@@ -341,8 +344,8 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-*
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
@@ -401,15 +404,15 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-*
       extra_refs:
         - org: kyma-project
           repo: test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230907-2ec05714"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28"
             securityContext:
               privileged: true
               seccompProfile:
@@ -447,15 +450,15 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
+        - ^release-*
       extra_refs:
         - org: kyma-project
           repo: test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230907-2ec05714"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28"
             securityContext:
               privileged: true
               seccompProfile:
@@ -503,7 +506,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230907-2ec05714"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28"
             securityContext:
               privileged: true
               seccompProfile:

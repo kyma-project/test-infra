@@ -3,6 +3,48 @@ templates:
     render:
       - to: ../../prow/jobs/nats-manager/nats-manager-generic.yaml
         localSets:
+          job_build:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^master$"
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+            command: /image-builder
+            request_memory: "1.5Gi"
+            request_cpu: "1"
+            labels:
+              preset-sa-kyma-push-images: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+              - name: signify-secret
+                secretName: signify-dev-secret
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+          limits:
+            limits_memory: 3Gi
+            limits_cpu: 2
+          dind_job_k3d:
+            annotations:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28
+            command: "/init.sh"
+            request_memory: "4Gi"
+            request_cpu: "3"
+            limits_memory: "4Gi"
+            limits_cpu: "3"
           job_default:
             securityContext:
               privileged: false
@@ -11,6 +53,54 @@ templates:
         jobConfigs:
           - repoName: "github.com/kyma-project/nats-manager"
             jobs:
+              - jobConfig:
+                  name: release-nats-manager-build
+                  annotations:
+                    owner: skydivingtunas
+                    description: Job to build nats module for a release.
+                  always_run: true
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=nats-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
+                  branches:
+                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_build
+                    - limits
+              - jobConfig:
+                  name: release-nats-manager-module-build
+                  annotations:
+                    owner: skydivingtunas
+                    description: Job to build nats module for a release.
+                  always_run: true
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                    preset-bot-github-token: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/nats-manager:${PULL_BASE_SHA}"
+                  command: "./scripts/release.sh"
+                  args:
+                    - "ci"
+                  branches:
+                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - limits
               - jobConfig:
                   name: pull-nats-manager-build
                   args:
@@ -48,7 +138,7 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-nats-module-build
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230907-2ec05714
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230913-3d41bb28
                   annotations:
                     owner: skydivingtunas
                     description: NATS module build pre-main job
@@ -75,7 +165,7 @@ templates:
                     - job_default
               - jobConfig:
                   name: post-nats-module-build
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230907-2ec05714
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230913-3d41bb28
                   annotations:
                     owner: skydivingtunas
                     description: NATS module build post-main job

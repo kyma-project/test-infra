@@ -178,12 +178,15 @@ func createGithubIssue(w http.ResponseWriter, r *http.Request) {
 			}
 			_, err = sapGhClient.Reauthenticate(ctx, logger, githubToken)
 			if err != nil {
-				logger.LogCritical("failed reauthenticate github client, error %s", err)
+				logger.LogCritical("failed to reauthenticate github client, error %s", err)
 			}
 			// Retry GitHub API call with eventually new credentials. This may fail again because of no new credentials provided.
 			sapGhClient.WrapperClientMu.RLock()
 			issue, result, err = sapGhClient.Issues.Create(ctx, githubOrg, githubRepo, &issueRequest)
 			sapGhClient.WrapperClientMu.RUnlock()
+			if err != nil {
+				logger.LogCritical("failed to create github issue, error %s", err)
+			}
 			if result != nil && (result.StatusCode < 200 || result.StatusCode >= 300) {
 				crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed create github issues, received non 2xx response code, error: %s", err)
 				return

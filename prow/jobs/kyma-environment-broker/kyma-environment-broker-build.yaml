@@ -219,7 +219,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=new-kyma-environment-deprovision-retrigger-job"
+              - "--name=kyma-environment-deprovision-retrigger-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=deprovisionretrigger"
@@ -373,7 +373,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=new-kyma-environments-cleanup-job"
+              - "--name=kyma-environments-cleanup-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=environmentscleanup"

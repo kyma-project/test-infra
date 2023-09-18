@@ -39,7 +39,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230907-2ec05714
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -308,10 +308,10 @@ templates:
                     - dind_job_k3d
       - to: ../../prow/jobs/modules/internal/serverless-manager.yaml
         localSets:
-          main_branches:
+          job_branches:
             branches:
-              - "^master$"
               - "^main$"
+              - "^release-*"
           job_build_volumes:
             volumes:
               # we create this volume because we don't have permissions for directory
@@ -343,7 +343,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230907-2ec05714
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -408,7 +408,7 @@ templates:
                     - jobConfig_postsubmit
                     - image-builder-buildkit
                   local:
-                    - main_branches
+                    - job_branches
                     - job_build_volumes
               - jobConfig:
                   name: release-serverless-module-build
@@ -450,13 +450,13 @@ templates:
                     - "-C"
                     - "hack/ci"
                     - "module-build"
-                  branches:
-                    - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
+                  local:
+                    - job_branches
               - jobConfig:
                   name: pull-serverless-module-build
                   annotations:
@@ -475,13 +475,13 @@ templates:
                     - "-C"
                     - "hack/ci"
                     - "module-build"
-                  branches:
-                    - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_presubmit
+                  local:
+                    - job_branches
               - jobConfig:
                   name: pre-serverless-operator-tests
                   annotations:
@@ -492,8 +492,6 @@ templates:
                   args:
                     - "-c"
                     - "make test"
-                  branches:
-                    - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
@@ -501,6 +499,8 @@ templates:
                     - jobConfig_presubmit
                     - build_labels # default labels
                     - unprivileged
+                  local:
+                    - job_branches
               - jobConfig:
                   name: pre-serverless-operator-build
                   annotations:
@@ -525,7 +525,7 @@ templates:
                     - jobConfig_presubmit
                     - image-builder-buildkit
                   local:
-                    - main_branches
+                    - job_branches
                     - job_build_volumes
               - jobConfig:
                   name: post-serverless-operator-build
@@ -554,7 +554,7 @@ templates:
                     - jobConfig_postsubmit
                     - image-builder-buildkit
                   local:
-                    - main_branches
+                    - job_branches
                     - job_build_volumes
               - jobConfig:
                   name: pre-main-serverless-operator-verify
@@ -576,6 +576,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
+                    - job_branches
               - jobConfig:
                   name: post-main-serverless-operator-verify
                   annotations:
@@ -596,6 +597,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
+                    - job_branches
               - jobConfig:
                   name: post-main-serverless-operator-upgrade-latest-to-main
                   annotations:
@@ -616,6 +618,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
+                    - job_branches
       - to: ../../prow/jobs/modules/internal/application-connector-manager.yaml
         localSets:
           job_build:
@@ -654,7 +657,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230907-2ec05714
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"

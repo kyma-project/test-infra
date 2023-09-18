@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       run_if_changed: '^((tests/fast-integration\S+|resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230907-2ec05714
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28
             securityContext:
               privileged: true
               seccompProfile:
@@ -31,8 +31,10 @@ presubmits: # runs on PRs
               - -c
               - |
                 set -e
-                curl -sSLo /usr/local/bin/kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-linux?alt=media"
-                chmod +x /usr/local/bin/kyma
+                curl -sSLo kyma.tar.gz "https://github.com/kyma-project/cli/releases/latest/download/kyma_linux_x86_64.tar.gz" \
+                && tar -zxvf kyma.tar.gz \
+                && mv kyma /usr/local/bin/kyma \
+                && chmod +x /usr/local/bin/kyma
                 kyma provision k3d --ci -k 1.26.6
                 kubectl get nodes
                 kyma deploy --ci --source=local --workspace "$(pwd)" \
@@ -69,7 +71,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230907-2ec05714
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28
             securityContext:
               privileged: true
               seccompProfile:
@@ -81,7 +83,7 @@ presubmits: # runs on PRs
               - -c
               - |
                 set -e
-                curl -sSLo /usr/local/bin/kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-linux?alt=media"
+                curl -sSLo /usr/local/bin/kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-linux?alt=media"
                 chmod +x /usr/local/bin/kyma
                 kyma provision k3d --ci -k 1.26.6
                 kubectl get nodes
@@ -125,7 +127,7 @@ periodics:
         channel: jellyfish-notifications
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230907-2ec05714
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28
           command: [ "/init.sh" ]
           securityContext:
             privileged: true
@@ -163,7 +165,7 @@ periodics:
         base_ref: main
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230907-2ec05714
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28
           securityContext:
             privileged: true
             seccompProfile:
@@ -175,7 +177,7 @@ periodics:
             - -c
             - |
               set -e
-              curl -sSLo /usr/local/bin/kyma "https://storage.googleapis.com/kyma-cli-stable/kyma-linux?alt=media"
+              curl -sSLo /usr/local/bin/kyma "https://storage.googleapis.com/kyma-cli-unstable/kyma-linux?alt=media"
               chmod +x /usr/local/bin/kyma
               kyma provision k3d --ci -k 1.26.6
               kubectl get nodes

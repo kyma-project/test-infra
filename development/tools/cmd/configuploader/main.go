@@ -129,7 +129,10 @@ func configMapFromYamlsInDirectory(name, rootPath string) (*v1.ConfigMap, error)
 
 	configData := make(map[string]string, len(paths))
 	for _, path := range paths {
-		data, _ := os.ReadFile(path)
+		data, err := os.ReadFile(path)
+		if err != nil {
+			return nil, err
+		}
 		filename := filepath.Base(path)
 
 		configData[filename] = string(data)

@@ -177,6 +177,9 @@ func searchGithubIssues(w http.ResponseWriter, r *http.Request) {
 			sapGhClient.WrapperClientMu.RLock()
 			searchResult, result, err = sapGhClient.Search.Issues(ctx, query, opts)
 			sapGhClient.WrapperClientMu.RUnlock()
+			if err != nil {
+				logger.LogCritical("failed to search for github issues, error %s", err)
+			}
 			if result != nil && (result.StatusCode < 200 || result.StatusCode >= 300) {
 				crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed search github issues, received non 2xx response code, error: %s", err)
 				return
