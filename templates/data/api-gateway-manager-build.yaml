@@ -31,7 +31,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
-              - jobConfig: # builds an OCI image with btp-operator module from the PR branch
+              - jobConfig: # builds an OCI image with api-gateway module from the PR branch
                   name: pull-api-gateway-module-build
                   annotations:
                     owner: "goat"
@@ -62,6 +62,64 @@ templates:
                     - "image_buildpack-golang" # takes latest golang image
                   local:
                     - job_default
+              - jobConfig: # builds an OCI image with api-gateway module from mod-dev branch
+                  name: post-api-gateway-module-build
+                  annotations:
+                    owner: "goat"
+                    description: "API Gateway Manager template image build on mod-dev branch"
+                  always_run: true
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_SHA}"
+                  securityContext:
+                    privileged: false
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "all" # currently resolves to make module-build
+                  branches:
+                    - ^mod-dev$
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_buildpack-golang" # takes latest golang image
+                  local:
+                    - "job_default"
+                    - "job_post"
+              - jobConfig: # builds an OCI image with api-gateway module from release branch
+                  name: rel-api-gateway-module-build
+                  annotations:
+                    owner: "goat"
+                    description: "API Gateway Manager template image build for release"
+                  always_run: true
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_REF}"
+                  securityContext:
+                    privileged: false
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "all" # currently resolves to make module-build
+                  branches:
+                    - '^\d+\.\d+\.\d+-dev(?:-.*)?$'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_postsubmit"
+                    - "image_buildpack-golang" # takes latest golang image
+                  local:
+                    - "job_default"
+                    - "job_post"
               - jobConfig: # builds a docker image of the api-gateway-manager
                   name: post-api-gateway-manager-build
                   annotations:
@@ -69,12 +127,12 @@ templates:
                     description: "API Gateway Manager image build"
                   labels:
                     preset-signify-prod-secret: "true"
-                  skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   args:
                     - "--name=api-gateway-manager"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                    - '--tag={{`{{.Env \"PULL_BASE_SHA\" }}`}}'
                   branches:
                     - ^mod-dev$
                   optional: false
@@ -83,4 +141,26 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
-                    - job_post
+                    - "job_post"
+              - jobConfig: # builds a docker image of the api-gateway-manager
+                  name: rel-api-gateway-manager-build
+                  annotations:
+                    owner: "goats"
+                    description: "API Gateway Manager image build"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=api-gateway-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
+                  branches:
+                    - '^\d+\.\d+\.\d+-dev(?:-.*)?$'
+                  optional: false
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - "job_post"
