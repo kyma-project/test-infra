@@ -31,7 +31,7 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
-              - jobConfig: # builds an OCI image with btp-operator module from the PR branch
+              - jobConfig: # builds an OCI image with api-gateway module from the PR branch
                   name: pull-api-gateway-module-build
                   annotations:
                     owner: "goat"
@@ -62,7 +62,7 @@ templates:
                     - "image_buildpack-golang" # takes latest golang image
                   local:
                     - job_default
-              - jobConfig: # builds an OCI image with btp-operator module from mod-dev branch
+              - jobConfig: # builds an OCI image with api-gateway module from mod-dev branch
                   name: post-api-gateway-module-build
                   annotations:
                     owner: "goat"
@@ -91,7 +91,7 @@ templates:
                     - "image_buildpack-golang" # takes latest golang image
                   local:
                     - job_default
-              - jobConfig: # builds an OCI image with btp-operator module from release branch
+              - jobConfig: # builds an OCI image with api-gateway module from release branch
                   name: rel-api-gateway-module-build
                   annotations:
                     owner: "goat"
