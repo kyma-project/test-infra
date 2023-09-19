@@ -122,7 +122,7 @@ kyma::install_cli
 
 export KYMA_SOURCE="main"
 log::info "### Installing Kyma $KYMA_SOURCE"
-
+export DEBUG="true"
 kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$KYMA_SOURCES_DIR" -u "true"
 
 log::info "### Running post-upgrade Kyma Fast Integration tests"
