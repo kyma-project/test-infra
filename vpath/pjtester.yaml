@@ -1,0 +1,10 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      test-infra:
+        - pjName: "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"
+          report: false
+prConfigs:
+  kyma-project:
+    test-infra:
+      prNumber: 8942
