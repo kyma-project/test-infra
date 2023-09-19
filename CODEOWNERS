@@ -51,11 +51,58 @@
 
 /templates @kyma-project/prow @neighbors-dev-bot
 /templates/templates @kyma-project/prow @neighbors-dev-bot
-templates/data/eventing-tools-data.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
-templates/data/eventing-webhook-certificates-build.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
-templates/data/eventing-webhook-certificates-release.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
-templates/data/nats-manager-data.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
-templates/data/eventing-manager-data.yaml @kyma-project/prow @kyma-project/eventing @neighbors-dev-bot
+
+templates/data/api-gateway-build.yaml @kyma-project/goat @neighbors-dev-bot
+templates/data/api-gateway-integration-tests.yaml @kyma-project/goat @neighbors-dev-bot
+templates/data/api-gateway-manager-build.yaml @kyma-project/goat @neighbors-dev-bot
+templates/data/api-gateway-release.yaml @kyma-project/goat @neighbors-dev-bot
+templates/data/api-gateway-validation.yaml @kyma-project/goat @neighbors-dev-bot
+
+templates/data/btp-manager-build.yaml @kyma-project/gopher @neighbors-dev-bot
+
+templates/data/cli-data.yaml @kyma-project/jellyfish @neighbors-dev-bot
+templates/data/control-plane-build.yaml @kyma-project/gopher @kyma-project/framefrog @kyma-project/eventing @kyma-project/operations @neighbors-dev-bot
+templates/data/control-plane-integration-data.yaml @kyma-project/jellyfish @neighbors-dev-bot
+templates/data/control-plane-kcp-data.yaml @kyma-project/operations @neighbors-dev-bot
+
+templates/data/directory-size-exporter-data.yaml @kyma-project/observability @neighbors-dev-bot
+
+templates/data/eventing-auth-manager-data.yaml @kyma-project/eventing @neighbors-dev-bot
+templates/data/eventing-manager-data.yaml @kyma-project/eventing @neighbors-dev-bot
+templates/data/eventing-webhook-certificates-build.yaml @kyma-project/eventing @neighbors-dev-bot
+templates/data/eventing-webhook-certificates-release.yaml @kyma-project/eventing @neighbors-dev-bot
+
+templates/data/examples-build.yaml @kyma-project/observability @neighbors-dev-bot
+templates/data/generic_component_control_plane_data.yaml @kyma-project/eventing @kyma-project/operations @neighbors-dev-bot
+templates/data/generic_component_data.yaml @kyma-project/otters @kyma-project/eventing @neighbors-dev-bot
+templates/data/generic_module_data.yaml @kyma-project/otters @kyma-project/framefrog @neighbors-dev-bot
+templates/data/go-toolkit-validation.yaml @kyma-project/eventing @kyma-project/observability @kyma-project/otters @neighbors-dev-bot
+templates/data/governance-data.yaml @kyma-project/technical-writers @neighbors-dev-bot
+
+templates/data/incubator-buildpack-data.yaml @janmedrek @kyma-project/jellyfish @kyma-project/goat @kyma-project/prow @neighbors-dev-bot
+templates/data/infrastructure-manager-data.yaml @kyma-project/framefrog @neighbors-dev-bot
+templates/data/istio-module-data.yaml @kyma-project/goat @neighbors-dev-bot
+templates/data/keb-endpoints-test.yaml @kyma-project/gopher @neighbors-dev-bot
+
+templates/data/kyma-environment-broker-build.yaml @kyma-project/gopher @neighbors-dev-bot
+
+templates/data/kyma-integration-gardener-data.yaml @kyma-project/eventing @kyma-project/observability @kyma-project/jellyfish @neighbors-dev-bot
+templates/data/kyma-tools-data.yaml @kyma-project/framefrog @neighbors-dev-bot
+
+templates/data/lifecycle-manager-data.yaml @kyma-project/jellyfish @neighbors-dev-bot
+templates/data/nats-manager-data.yaml @kyma-project/eventing @neighbors-dev-bot
+
+templates/data/prow-periodics-data.yaml @kyma-project/eventing @kyma-project/prow @neighbors-dev-bot
+templates/data/secret-rotation-data.yaml @kyma-project/prow @kyma-project/developers @neighbors-dev-bot
+templates/data/skr-aws-upgrade-integration-dev-data.yaml @kyma-project/gopher @neighbors-dev-bot
+templates/data/skr-integration-data.yaml @kyma-project/gopher @neighbors-dev-bot
+templates/data/slack-bot @kyma-project/gopher @neighbors-dev-bot
+templates/data/telemetry-manager-data.yaml @kyma-project/observability @neighbors-dev-bot
+templates/data/template-operator-data.yaml @kyma-project/jellyfish @neighbors-dev-bot
+templates/data/third-party-images-data.yaml @kyma-project/observability @kyma-project/goat @kyma-project/otters @kyma-project/prow @neighbors-dev-bot
+
+templates/data/warden.yaml @kyma-project/otters @neighbors-dev-bot
+
 
 # All .md files
 *.md @mmitoraj @NHingerl @grego952 @IwonaLanger @nataliasitko @neighbors-dev-bot
