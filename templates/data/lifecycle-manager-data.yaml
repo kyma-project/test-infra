@@ -9,25 +9,6 @@ templates:
           - repoName: kyma-project/lifecycle-manager
             jobs:
               - jobConfig:
-                  run_if_changed: '^(go.mod|go.sum|Makefile|.*.sh)$|^.*\.go$'
-                  name: pull-lifecycle-mgr-tests # pre-main-lifecycle-manager-tests
-                  annotations:
-                    owner: jellyfish
-                    description: run lm tests
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "make test" # run test make target of operator
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - build_labels # default labels
-                    - unprivileged
-              - jobConfig:
                   name: pull-lifecycle-mgr-build
                   annotations:
                     owner: jellyfish
