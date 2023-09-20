@@ -25,7 +25,7 @@ require (
 	github.com/imdario/mergo v0.3.16
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.4.0
-	github.com/onsi/ginkgo/v2 v2.12.0
+	github.com/onsi/ginkgo/v2 v2.12.1
 	github.com/onsi/gomega v1.27.10
 	github.com/pkg/errors v0.9.1
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
