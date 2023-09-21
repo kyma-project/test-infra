@@ -430,6 +430,8 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - "kaniko_buildpack"
+                  local:
+                    - "increased_resources"
               - jobConfig:
                   name: "post-main-tpi-otel-collector"
                   annotations:
@@ -450,3 +452,5 @@ templates:
                   global:
                     - "jobConfig_postsubmit"
                     - "kaniko_buildpack"
+                  local:
+                    - "increased_resources"
