@@ -102,6 +102,7 @@ templates:
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    MODULE_VERSION: "${PULL_BASE_REF}"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_REF}"
                   securityContext:
                     privileged: false
