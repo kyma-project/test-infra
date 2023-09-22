@@ -3,7 +3,6 @@ protecode:
     - aquasec/trivy:0.44.1
     - docker.io/library/nginx:1.25.2-alpine
     - docker.io/zricethezav/gitleaks:v8.18.0
-    - eu.gcr.io/kyma-project/incubator/milv:8649c2fb
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.11.1
