@@ -185,6 +185,8 @@ postsubmits: # runs on main
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
                 value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+              - name: MODULE_VERSION
+                value: "${PULL_BASE_REF}"
             resources:
               requests:
                 memory: 3Gi
