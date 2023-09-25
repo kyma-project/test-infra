@@ -23,4 +23,4 @@ pjConfigs:
 prConfigs: #
   kyma-project:
     serverless-manager:
-      prNumber: 300
+      prNumber: 302

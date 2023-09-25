@@ -627,7 +627,7 @@ templates:
                     - "--name=gitserver"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=tests/gitserver"
-                    - "--dockerfile=Dockerfile"
+                    - "--dockerfile=tests/gitserver/Dockerfile"
                   run_if_changed: "^tests/gitserver"
                   optional: "true"
                 inheritedConfigs:
@@ -646,7 +646,7 @@ templates:
                     - "--name=gitserver"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=tests/gitserver"
-                    - "--dockerfile=tests/Dockerfile"
+                    - "--dockerfile=tests/gitserver/Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
