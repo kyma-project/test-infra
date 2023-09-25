@@ -35,7 +35,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: horologium
-        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/horologium:v20230918-27dff7fe
+        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/horologium:v20230925-22f1fe8b
         args:
         - --config-path=/etc/config/config.yaml
         - --job-config-path=/etc/job-config
