@@ -101,7 +101,7 @@ function collect_benchmark_results() {
 
 function clean_serverless_integration_tests() {
     log::info "Removing test namespace"
-    kubectl delete ns -l created-by=Fserverless-benchmarks
+    kubectl delete ns -l created-by=serverless-benchmarks
 }
 
 connect_to_cluster
