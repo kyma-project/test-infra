@@ -595,7 +595,7 @@ templates:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python39"
-                    - "--dockerfile=Dockerfile"
+                    - "--dockerfile=components/runtimes/python39/Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -646,7 +646,7 @@ templates:
                     - "--name=gitserver"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=tests/gitserver"
-                    - "--dockerfile=Dockerfile"
+                    - "--dockerfile=tests/Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
