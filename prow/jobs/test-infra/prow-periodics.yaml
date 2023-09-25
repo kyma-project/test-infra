@@ -127,7 +127,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230918-27dff7fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -154,7 +154,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:v20230918-27dff7fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -201,7 +201,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230918-27dff7fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -274,7 +274,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230918-27dff7fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -308,7 +308,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230918-27dff7fe"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:

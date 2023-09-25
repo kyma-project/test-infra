@@ -34,7 +34,7 @@ spec:
       serviceAccountName: prow-controller-manager
       containers:
       - name: prow-controller-manager
-        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/prow-controller-manager:v20230918-27dff7fe
+        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/prow-controller-manager:v20230925-22f1fe8b
         args:
         - --config-path=/etc/config/config.yaml
         - --dry-run=false
