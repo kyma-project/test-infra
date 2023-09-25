@@ -2,24 +2,10 @@ pjConfigs:
   prowJobs:
     kyma-project:
       serverless-manager:
-        - pjName: "pull-function-controller-build"
-        - pjName: "post-function-controller-build"
-        - pjName: "pull-function-webhook-build"
-        - pjName: "post-function-webhook-build"
-        - pjName: "pull-function-jobinit-build"
-        - pjName: "post-function-jobinit-build"
-        - pjName: "pull-function-registry-gc-build"
-        - pjName: "post-function-registry-gc-build"
-        - pjName: "pull-function-java17-jvm-alpha-build"
-        - pjName: "post-function-java17-jvm-alpha-build"
-        - pjName: "pull-function-runtimes-nodejs-v16-build"
-        - pjName: "post-function-runtimes-nodejs-v16-build"
-        - pjName: "pull-function-runtimes-nodejs-v18-build"
-        - pjName: "post-function-runtimes-nodejs-v18-build"
-        - pjName: "pull-function-runtimes-python39-build"
-        - pjName: "post-function-controller-python39-build"
-        - pjName: "pull-gitserver-build"
-        - pjName: "post-gitserver-build"
+        - pjName: "pre-main-serverless-integration-k3s"
+        - pjName: "pre-main-serverless-git-auth-integration-k3s"
+        - pjName: "pull-function-controller-lint"
+        - pjName: "pull-function-controller-unit-test"
 prConfigs: #
   kyma-project:
     serverless-manager:
