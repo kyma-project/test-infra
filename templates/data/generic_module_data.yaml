@@ -653,6 +653,38 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
               - jobConfig:
+                  name: "pull-function-controller-unit-test"
+                  annotations:
+                    owner: otters
+                    description: "run unit tests for function controller"
+                  command: "make"
+                  optional: false
+                  args:
+                    - "-C"
+                    - "components/serverless"
+                    - "test"
+                  run_if_changed: '^components/serverless/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - unprivileged
+              - jobConfig:
+                  name: "pull-function-controller-lint"
+                  annotations:
+                    owner: otters
+                    description: function controller linting job
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "cd components/serverless && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                  run_if_changed: '^components/serverless/(.*\.go$|.golangcilint.yaml)'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - linting
+                    - unprivileged
+              - jobConfig:
                   name: "serverless-operator-nightly-periodic"
                   cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
                   annotations:

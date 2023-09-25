@@ -428,6 +428,68 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: pull-function-controller-unit-test
+      annotations:
+        description: "run unit tests for function controller"
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-function-controller-unit-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^components/serverless/.*\.go$'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "components/serverless"
+              - "test"
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 100m
+    - name: pull-function-controller-lint
+      annotations:
+        description: "function controller linting job"
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-function-controller-lint"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^components/serverless/(.*\.go$|.golangcilint.yaml)'
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "cd components/serverless && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+            resources:
+              requests:
+                memory: 200Mi
+                cpu: 80m
     - name: pull-serverless-module-build
       annotations:
         description: "build serverless module"
