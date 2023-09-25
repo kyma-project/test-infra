@@ -612,7 +612,7 @@ templates:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python39"
-                    - "--dockerfile=components/runtimes/Dockerfile"
+                    - "--dockerfile=components/runtimes/python39/Dockerfile"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
