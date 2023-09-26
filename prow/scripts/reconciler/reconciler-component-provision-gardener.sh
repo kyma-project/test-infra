@@ -110,7 +110,7 @@ export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
 # shellcheck source=prow/scripts/lib/kyma.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/reconciler-component-integration.sh"
+source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/cluster-integration/reconciler-istio-integration.sh"
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
