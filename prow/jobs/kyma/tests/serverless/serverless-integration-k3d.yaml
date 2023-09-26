@@ -38,7 +38,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh serverless-integration serverless-contract-tests"
             env:
               - name: KYMA_SOURCES_DIR
-                value: "/home/prow/go/src/github.com/kyma-project/serverless-manager"
+                value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/config/serverless"
     - name: pre-main-serverless-git-auth-integration-k3s
       annotations:
         description: "Serverless git-function authentication nightly integration tests"
