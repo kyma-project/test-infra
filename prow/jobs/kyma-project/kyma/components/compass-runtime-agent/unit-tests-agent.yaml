@@ -26,7 +26,7 @@ presubmits:
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/compass-runtime-agent && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "cd components/compass-runtime-agent && make test"
             resources:
               requests:
                 memory: 1Gi
