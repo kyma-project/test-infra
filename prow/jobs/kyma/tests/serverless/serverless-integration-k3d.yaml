@@ -35,10 +35,11 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh serverless-integration serverless-contract-tests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d-operator.sh serverless-integration serverless-contract-tests"
             env:
+              #TODO: Change it to SERVERLESS_OPERATOR_SORUCES_DIR when the serverless won't be in the Kyma repo
               - name: KYMA_SOURCES_DIR
-                value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/config/serverless"
+                value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/"
     - name: pre-main-serverless-git-auth-integration-k3s
       annotations:
         description: "Serverless git-function authentication nightly integration tests"
