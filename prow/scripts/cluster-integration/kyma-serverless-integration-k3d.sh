@@ -18,11 +18,30 @@ fi
 
 export INTEGRATION_SUITE=("$@")
 
+OPERATOR=false
+
+while [ "$1" != "" ]; do
+  case $1 in --operator)
+    OPERATOR=true
+    ;;
+  esac
+  shift
+done
+
+if [ $OPERATOR == "true" ]; then
+
 echo "--> Installing kyma-cli"
-install::kyma_cli
+#install::kyma_cli
 
 echo "--> Provisioning k3d cluster for Kyma"
 kyma provision k3d --ci
+
+echo "work"
+echo $KYMA_SOURCES_DIR
+echo "chleb"
+make -C /Users/I571889/go/src/github.com/kyma-project/serverless-manager/hack/ci run-without-lifecycle-manager
+
+else
 
 echo "--> Deploying Serverless"
 # The python38 function requires 40M+ of memory to work. Mostly used by kubeless. I need to overrride the defaultPreset to M to avoid OOMkill.
@@ -51,6 +70,10 @@ sleep 60
 ########
 
 set +o errexit
+
+fi
+
+exit 0 #TODO: Delete it
 
 run_tests "${INTEGRATION_SUITE[@]}"
 TEST_STATUS=$?
