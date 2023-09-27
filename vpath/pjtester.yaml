@@ -1,5 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-project:
-      kyma:
-        - pjName: "pull-compass-runtime-agent-unit-test"
