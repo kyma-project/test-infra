@@ -245,7 +245,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
-              - "--tag={{ .Env \"PULL_BASE_SHA\" }}"
+              - "--tag={{ .Env \"PULL_BASE_REF\" }}"
             resources:
               requests:
                 memory: 1.5Gi
@@ -298,7 +298,7 @@ postsubmits: # runs on main
               - "ci"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
+                value: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_REF}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
