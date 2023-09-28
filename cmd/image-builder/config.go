@@ -29,6 +29,14 @@ type Config struct {
 	// SignConfig contains custom configuration of signers
 	// as well as org/repo mapping of enabled signers in specific repository
 	SignConfig SignConfig `yaml:"sign-config" json:"sign-config"`
+	// ADO organization URL to call for triggering ADO pipeline
+	ADOOrganizationURL string `yaml:"ado-organization-url" json:"ado-organization-url"`
+	// ADO project name to call for triggering ADO pipeline
+	ADOProjectName string `yaml:"ado-project-name" json:"ado-project-name"`
+	// ADO pipeline ID to call for triggering ADO pipeline
+	ADOPipelineID int `yaml:"ado-pipeline-id" json:"ado-pipeline-id"`
+	// ADO pipeline version to call for triggering ADO pipeline
+	ADOPipelineVersion int `yaml:"ado-pipeline-version,omitempty" json:"ado-pipeline-version,omitempty"`
 }
 
 type SignConfig struct {
@@ -58,7 +66,7 @@ func (c *Config) ParseConfig(f []byte) error {
 type Variants map[string]map[string]string
 
 // GetVariants fetches variants from provided file.
-// If variant flag is used, it fetches the requested variant.
+// If Variant flag is used, it fetches the requested Variant.
 func GetVariants(variant string, f string, fileGetter func(string) ([]byte, error)) (Variants, error) {
 	var v Variants
 	b, err := fileGetter(f)
@@ -66,7 +74,7 @@ func GetVariants(variant string, f string, fileGetter func(string) ([]byte, erro
 		if !os.IsNotExist(err) {
 			return nil, err
 		}
-		// variant file not found, skipping
+		// Variant file not found, skipping
 		return nil, nil
 	}
 	if err := yaml.Unmarshal(b, &v); err != nil {
@@ -75,7 +83,7 @@ func GetVariants(variant string, f string, fileGetter func(string) ([]byte, erro
 	if variant != "" {
 		va, ok := v[variant]
 		if !ok {
-			return nil, fmt.Errorf("requested variant '%s', but it's not present in variants.yaml file", variant)
+			return nil, fmt.Errorf("requested Variant '%s', but it's not present in variants.yaml file", variant)
 		}
 		return Variants{variant: va}, nil
 	}
