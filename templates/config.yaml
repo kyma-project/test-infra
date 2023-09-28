@@ -18,7 +18,6 @@ global:
         - name: "community"
         - name: "hydroform"
         - name: "istio-operator"
-        - name: "addons"
         - name: "private-fn-for-e2e-serverless-tests"
         - name: "charts"
         - name: "examples"
@@ -29,7 +28,6 @@ global:
         - name: "kyma-dashboard"
         - name: "application-connector-manager"
         - name: "template-repository"
-        - name: "rafter"
         - name: "btp-manager"
         - name: "kyma-environment-broker"
         - name: "telemetry-manager"
@@ -40,27 +38,13 @@ global:
         - name: "compass"
         - name: "ord-service"
         - name: "reconciler"
-        - name: "bullseye-showcase"
-        - name: "documentation-component"
         - name: "compass-console"
         - name: "sap-btp-service-operator"
-        - name: "varkes"
         - name: "slack-bot"
         - name: "migrate"
         - name: "github-dashboard"
-        - name: "website-vuepress"
-        - name: "kitbag"
-        - name: "kyma-showcase"
-        - name: "hydra-login-consent"
         - name: "kymart"
-        - name: "examples"
-        - name: "vstudio-extension"
-        - name: "wordpress-connector"
-        - name: "connector-tools"
-        - name: "artwork"
         - name: "opensap"
-        - name: "testdrape"
-        - name: "sc-removal"
         - name: "service-catalog-tester"
         - name: "service-catalog"
 
@@ -140,7 +124,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 200Mi
@@ -150,7 +134,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230728-90a0fc69"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -167,24 +151,40 @@ globalSets:
     env:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
-  image_bootstrap:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/governance-toolkit:v20230728-90a0fc69"
   image_buildpack-node:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230728-90a0fc69"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28"
   image_buildpack-golang:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230728-90a0fc69"
-  image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
+  image_wssagent_go:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230913-3d41bb28"
+  image_wssagent_nodejs:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20230913-3d41bb28"
   image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20230731-ca8ffad9
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20230914-c7902318
   image_markdown_index:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20230731-ca8ffad9
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20230914-c7902318
   image_image_detector:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230731-ca8ffad9
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230914-c7902318
   image_e2e-dind-k3d:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-90a0fc69"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28"
   # JobConfig sets
   jobConfig_default:
+    skip_report: "false"
+    max_concurrency: "10"
+    decorate: "true"
+    branches:
+      - "^master$"
+      - "^main$"
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: "RuntimeDefault"
+    request_memory: "3Gi"
+    request_cpu: "2"
+    cluster_presubmit: "untrusted-workload"
+    cluster_postsubmit: "trusted-workload"
+    <<: *pubsub_config
+  jobConfig_buildpack_node:
     skip_report: "false"
     max_concurrency: "10"
     decorate: "true"

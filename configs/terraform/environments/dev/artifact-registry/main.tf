@@ -1,14 +1,18 @@
+
 module "artifact_registry" {
-  source                           = "../../../modules/artifact-registry"
-  for_each                         = toset(var.artifact_registry_names)
-  artifact_registry_name           = each.value
-  artifact_registry_type           = var.artifact_registry_type
-  artifact_registry_module         = var.artifact_registry_module
-  immutable_artifact_registry      = var.immutable_artifact_registry
-  artifact_registry_multi_region   = var.artifact_registry_multi_region
-  artifact_registry_owner          = var.artifact_registry_owner
-  artifact_registry_serviceaccount = var.artifact_registry_serviceaccount
+  source = "../../../modules/artifact-registry"
 
+  providers = {
+    google = google.artifact_registry_smart_tractor
+  }
 
-
+  for_each               = var.artifact_registry_collection
+  registry_name          = each.value.name
+  type                   = each.value.type
+  immutable_tags         = each.value.immutable
+  multi_region           = each.value.multi_region
+  owner                  = each.value.owner
+  writer_serviceaccounts = each.value.writer_serviceaccounts
+  reader_serviceaccounts = each.value.reader_serviceaccounts
+  public                 = each.value.public
 }

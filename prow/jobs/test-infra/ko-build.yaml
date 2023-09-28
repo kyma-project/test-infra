@@ -3,7 +3,7 @@ presubmits:
     - name: pull-test-infra-ko-build
       decorate: true
       cluster: untrusted-workload
-      run_if_changed: ^development/.*.go|^.koapps.yaml|^.ko.yaml
+      run_if_changed: ^development/.*.go|^.koapps.yaml|^.ko.yaml|^go.mod
       annotations:
         owner: neighbors
         description: Builds go-based toolkit in one go
@@ -13,11 +13,11 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230728-90a0fc69
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28
             env:
               - name: KO_DOCKER_REPO
                 value: europe-docker.pkg.dev/kyma-project/prod/test-infra
-            command: [ "ko" ]
+            command: ["ko"]
             args:
               - resolve
               - -f
@@ -42,7 +42,7 @@ postsubmits:
     - name: post-test-infra-ko-build
       decorate: true
       cluster: trusted-workload
-      run_if_changed: ^development/.*.go|^.koapps.yaml|^.ko.yaml
+      run_if_changed: ^development/.*.go|^.koapps.yaml|^.ko.yaml|^go.mod
       annotations:
         owner: neighbors
         description: Builds go-based toolkit in one go
@@ -55,11 +55,11 @@ postsubmits:
         - ^main$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230728-90a0fc69
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28
             env:
               - name: KO_DOCKER_REPO
                 value: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko
-            command: [ "bash", "-c" ]
+            command: ["bash", "-c"]
             args:
               - |-
                 TAG="$(date +v%Y%m%d)-${PULL_BASE_SHA::8}"

@@ -42,6 +42,14 @@ templates:
               - "skip-review"
               - "area/dependency"
               - "kind/chore"
+          dailyGithubActionsEcosystem:
+            packageEcosystem: "github-actions"
+            scheduleInterval: "daily"
+            commitIncludeScope: "true"
+            commitMsgPrefix: "actions"
+            labels:
+              - "area/dependency"
+              - "kind/chore"
           dailyTerraform:
             packageEcosystem: "terraform"
             scheduleInterval: "daily"
@@ -79,19 +87,6 @@ templates:
                   directory: "/development/tools/cmd/githubrelease"
                   # commit message can be 15 characters max
                   commitMsgPrefix: "githubrelease"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/development/kyma-github-connector/githubWebhookGateway"
-                  # commit message can be 15 characters max
-                  commitMsgPrefix: "ghWebhookGate"
-                inheritedConfigs:
-                  local:
-                    - "dailyDockerEcosystem"
-              - jobConfig:
-                  directory: "/development/kyma-pubsub-connector/pubSubGateway"
-                  commitMsgPrefix: "pubSubGateway"
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
@@ -211,3 +206,8 @@ templates:
                 inheritedConfigs:
                   local:
                     - "dailyDockerEcosystem"
+              - jobConfig:
+                  directory: "/"
+                inheritedConfigs:
+                  local:
+                    - "dailyGithubActionsEcosystem"

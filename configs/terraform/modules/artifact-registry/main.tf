@@ -1,26 +1,44 @@
 data "google_client_config" "this" {}
 
 resource "google_artifact_registry_repository" "artifact_registry" {
-  location      = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : data.google_client_config.this.region
-  repository_id = "modules-${lower(var.artifact_registry_name)}"
-  description   = "modules-${lower(var.artifact_registry_name)} repository"
+  location      = var.multi_region == true ? var.primary_area : data.google_client_config.this.region
+  repository_id = lower(var.registry_name)
+  description   = "${lower(var.registry_name)} registry"
   format        = "DOCKER"
 
   labels = {
-    name   = "modules-${lower(var.artifact_registry_name)}"
-    owner  = var.artifact_registry_owner
-    module = var.artifact_registry_module
-    type   = var.artifact_registry_type
+    name  = "${lower(var.registry_name)}"
+    owner = var.owner
+    type  = var.type
   }
   docker_config {
-    immutable_tags = var.immutable_artifact_registry
+    immutable_tags = var.immutable_tags
   }
 }
 
-resource "google_artifact_registry_repository_iam_member" "member_service_account" {
+resource "google_artifact_registry_repository_iam_member" "writer_service_account" {
+  for_each   = toset(var.writer_serviceaccounts)
   project    = data.google_client_config.this.project
-  location   = var.artifact_registry_multi_region == true ? var.artifact_registry_primary_area : data.google_client_config.this.region
+  location   = var.multi_region == true ? var.primary_area : data.google_client_config.this.region
   repository = google_artifact_registry_repository.artifact_registry.name
-  role       = "roles/artifactregistry.writer"
-  member     = "serviceAccount:${var.artifact_registry_serviceaccount}"
+  role       = "roles/artifactregistry.repoAdmin"
+  member     = "serviceAccount:${each.value}"
+}
+
+resource "google_artifact_registry_repository_iam_member" "reader_service_accounts" {
+  for_each   = toset(var.reader_serviceaccounts)
+  project    = data.google_client_config.this.project
+  location   = var.multi_region == true ? var.primary_area : data.google_client_config.this.region
+  repository = google_artifact_registry_repository.artifact_registry.name
+  role       = "roles/artifactregistry.reader"
+  member     = "serviceAccount:${each.value}"
+}
+
+resource "google_artifact_registry_repository_iam_member" "public_access" {
+  count      = var.public == true ? 1 : 0
+  project    = data.google_client_config.this.project
+  location   = var.multi_region == true ? var.primary_area : data.google_client_config.this.region
+  repository = google_artifact_registry_repository.artifact_registry.name
+  role       = "roles/artifactregistry.reader"
+  member     = "allUsers"
 }

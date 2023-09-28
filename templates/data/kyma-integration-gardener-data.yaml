@@ -4,12 +4,6 @@ templates:
         to: ../../prow/jobs/kyma/kyma-integration-gardener-eventing.yaml
     render:
       - localSets:
-          extra_refs_kyma-local:
-            extra_refs:
-              kyma-local:
-                - org: "kyma-incubator"
-                  repo: "local-kyma"
-                  base_ref: "main"
           extra_refs_busola:
             extra_refs:
               busola:
@@ -21,7 +15,11 @@ templates:
             request_cpu: 400m
             labels:
               preset-debug-commando-oom: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230913-3d41bb28
+          jobConfig_buildpack_node:
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28"
+            request_memory: 1Gi
+            request_cpu: 400m
           jobConfig_presubmit:
             optional: true
             labels:
@@ -86,51 +84,17 @@ templates:
                       readOnly: true
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                   local:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_upgrade_eventing
 
               - jobConfig:
                   name: pre-main-kyma-gardener-gcp-eventing
-                  labels:
-                    preset-kyma-eventing-auth-ias-creds: "true"
-                  annotations:
-                    owner: skydivingtunas
-                    description: Execute fast integration job with focus on eventing on a gardener cluster
-                  optional: false
-                  decoration_config:
-                    timeout: 14400000000000 # 4h
-                    grace_period: 600000000000 # 10min
-                    # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((tests/fast-integration\\S+|resources/eventing\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  env:
-                    EXECUTION_PROFILE: "evaluation"
-                    EVENTING_WEBHOOK_AUTH_ENABLED: "false"
-                  volumes:
-                    - name: kyma-tunas-prow-event-mesh
-                      secretName: kyma-tunas-prow-event-mesh
-                  volumeMounts:
-                    - name: kyma-tunas-prow-event-mesh
-                      mountPath: /etc/credentials/kyma-tunas-prow-event-mesh
-                      readOnly: true
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-                  local:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - gardener_gcp_job_eventing
-                    - command_integration_eventing
-
-              - jobConfig:
-                  name: pre-main-kyma-gardener-gcp-eventing-with-auth-manager
                   labels:
                     preset-kyma-eventing-auth-ias-creds: "true"
                   annotations:
@@ -154,11 +118,11 @@ templates:
                       readOnly: true
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_presubmit
                     - extra_refs_test-infra
                   local:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_presubmit
                     - gardener_gcp_job_eventing
                     - command_integration_eventing
@@ -168,12 +132,6 @@ templates:
         to: ../../prow/jobs/kyma/kyma-integration-gardener.yaml
     render:
       - localSets:
-          extra_refs_kyma-local:
-            extra_refs:
-              kyma-local:
-                - org: "kyma-incubator"
-                  repo: "local-kyma"
-                  base_ref: "main"
           extra_refs_busola:
             extra_refs:
               busola:
@@ -181,19 +139,21 @@ templates:
                   repo: "busola"
                   base_ref: "main"
           jobConfig_default:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230913-3d41bb28
             request_memory: 1Gi
             request_cpu: 400m
             labels:
               preset-debug-commando-oom: "true"
+          jobConfig_buildpack_node:
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28"
+            request_memory: 1Gi
+            request_cpu: 400m
           jobConfig_presubmit:
             optional: true
             labels:
               preset-build-pr: "true"
           command_integration:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
-          command_busola_long_lasting:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
           command_upgrade_gardener_kyma2_to_main:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-to-main.sh"
           command_upgrade_gardener_kyma2_minor_versions:
@@ -248,7 +208,6 @@ templates:
                     timeout: 7200000000000 # 2h
                     grace_period: 600000000000 # 10min
                   cron: "0 2,14 * * *"
-                  slack_channel: huskies-notifications
                   labels:
                     preset-log-collector-slack-token: "true"
                 inheritedConfigs:
@@ -260,7 +219,6 @@ templates:
                   local:
                     - jobConfig_default
                     - gardener_azure_job
-                    - extra_refs_kyma-local
                     - command_integration
                     - evaluation_profile
               - jobConfig:
@@ -285,34 +243,8 @@ templates:
                   local:
                     - jobConfig_default
                     - gardener_azure_job
-                    - extra_refs_kyma-local
                     - command_integration
                     - production_profile
-              - jobConfig:
-                  name: kyma-weekly-gardener-gcp-busola-kyma
-                  annotations:
-                    owner: hasselhoff
-                    description: set up nkyma cluster
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 3 * * 1" # "At 03:00 UTC on Monday."
-                  labels:
-                    preset-busola-nightly-provision-type-kyma: "true"
-                    preset-log-collector-slack-token: "true"
-                    preset-recreate-cluster: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - disable_testgrid
-                  local:
-                    - jobConfig_default
-                    - command_busola_long_lasting
-                    - gardener_gcp_job
-                    - extra_refs_busola
               - jobConfig:
                   name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
                   annotations:
@@ -327,13 +259,13 @@ templates:
                     preset-bot-github-token: "true"
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - jobConfig_slack_jellyfish
                   local:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma2_to_main
               - jobConfig:
@@ -350,12 +282,12 @@ templates:
                     preset-bot-github-token: "true"
                 inheritedConfigs:
                   global:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - jobConfig_periodic
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - kyma_minor_upgrade
                   local:
-                    - jobConfig_default
+                    - jobConfig_buildpack_node
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma2_minor_versions

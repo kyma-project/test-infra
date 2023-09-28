@@ -9,7 +9,7 @@ resource "google_eventarc_trigger" "release_cluster_created" {
     cloud_run_service {
       service = google_cloud_run_service.slack_message_sender.name
       region  = google_cloud_run_service.slack_message_sender.location
-      path    = var.release_cluster_created_could_run_path
+      path    = var.release_cluster_created_cloud_run_path
     }
   }
   service_account = google_service_account.slack_message_sender.id

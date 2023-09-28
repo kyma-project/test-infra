@@ -39,7 +39,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-90a0fc69
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -88,7 +88,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
+                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
                   branches:
                     - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
@@ -105,11 +105,12 @@ templates:
                     description: Job to build keda module for a release.
                   always_run: true
                   labels:
+                    preset-sa-kyma-push-images: "true"
                     preset-bot-github-token: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_REF}"
                   command: "./scripts/release.sh"
                   args:
                     - "ci"
@@ -124,7 +125,7 @@ templates:
                     - limits
               - jobConfig:
                   name: pre-keda-manager-operator-lint
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
                   run_if_changed: "^(go.mod|go.sum|main.go)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
                     owner: otters
@@ -307,10 +308,10 @@ templates:
                     - dind_job_k3d
       - to: ../../prow/jobs/modules/internal/serverless-manager.yaml
         localSets:
-          main_branches:
+          job_branches:
             branches:
-              - "^master$"
               - "^main$"
+              - "^release-*"
           job_build_volumes:
             volumes:
               # we create this volume because we don't have permissions for directory
@@ -342,7 +343,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230728-90a0fc69
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -379,7 +380,7 @@ templates:
                   local:
                     - dind_job_k3d
               - jobConfig:
-                  name: release-serverless-manager-build
+                  name: release-serverless-operator-build
                   annotations:
                     owner: otters
                     description: Job to build serverless operator for a release.
@@ -395,32 +396,33 @@ templates:
                       ./hack/generate_module-chart.sh
                       &&
                       /image-builder
-                      --name=serverless-manager
+                      --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
                       --dockerfile=Dockerfile
                       --tag=$PULL_BASE_SHA
-                branches:
-                  - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                  branches:
+                     - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
                     - image-builder-buildkit
                   local:
-                    - main_branches
+                    - job_branches
                     - job_build_volumes
               - jobConfig:
-                  name: release-serverless-manager-module-build
+                  name: release-serverless-module-build
                   annotations:
                     owner: otters
                     description: Job to build serverless module for a release.
                   always_run: true
                   labels:
+                    preset-sa-kyma-push-images: "true"
                     preset-bot-github-token: "true"
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
                   command: "./scripts/release.sh"
                   args:
                     - "ci"
@@ -441,20 +443,20 @@ templates:
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-manager:${PULL_BASE_SHA}"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
                   run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   command: "make"
                   args:
                     - "-C"
                     - "hack/ci"
                     - "module-build"
-                  branches:
-                    - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
+                  local:
+                    - job_branches
               - jobConfig:
                   name: pull-serverless-module-build
                   annotations:
@@ -465,7 +467,7 @@ templates:
                   env:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/dev/serverless-manager:PR-${PULL_NUMBER}"
+                    IMG: "europe-docker.pkg.dev/kyma-project/dev/serverless-operator:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
                   run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
                   command: "make"
@@ -473,25 +475,23 @@ templates:
                     - "-C"
                     - "hack/ci"
                     - "module-build"
-                  branches:
-                    - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_presubmit
+                  local:
+                    - job_branches
               - jobConfig:
-                  name: pre-serverless-manager-operator-tests
+                  name: pre-serverless-operator-tests
                   annotations:
                     owner: otters
-                    description: serverless manager tests
+                    description: serverless operator tests
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
                   command: "bash"
                   args:
                     - "-c"
                     - "make test"
-                  branches:
-                    - ^main$ # any pr against main triggers this
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
@@ -499,11 +499,13 @@ templates:
                     - jobConfig_presubmit
                     - build_labels # default labels
                     - unprivileged
+                  local:
+                    - job_branches
               - jobConfig:
-                  name: pre-serverless-manager-operator-build
+                  name: pre-serverless-operator-build
                   annotations:
                     owner: otters
-                    description: serverless manager operator build
+                    description: serverless operator image build
                   always_run: true
                   command: sh
                   args:
@@ -514,7 +516,7 @@ templates:
                       ./hack/generate_module-chart.sh
                       &&
                       /image-builder
-                      --name=serverless-manager
+                      --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
                       --dockerfile=Dockerfile
@@ -523,13 +525,13 @@ templates:
                     - jobConfig_presubmit
                     - image-builder-buildkit
                   local:
-                    - main_branches
+                    - job_branches
                     - job_build_volumes
               - jobConfig:
-                  name: post-serverless-manager-operator-build
+                  name: post-serverless-operator-build
                   annotations:
                     owner: otters
-                    description: build serverless manager
+                    description: build serverless operator
                   always_run: true
                   labels:
                     preset-signify-prod-secret: "true"
@@ -542,7 +544,7 @@ templates:
                       ./hack/generate_module-chart.sh
                       &&
                       /image-builder
-                      --name=serverless-manager
+                      --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
                       --dockerfile=Dockerfile
@@ -552,10 +554,10 @@ templates:
                     - jobConfig_postsubmit
                     - image-builder-buildkit
                   local:
-                    - main_branches
+                    - job_branches
                     - job_build_volumes
               - jobConfig:
-                  name: pre-main-serverless-manager-verify
+                  name: pre-main-serverless-operator-verify
                   annotations:
                     owner: otters
                     description: serverless manager verify on k3d vm
@@ -574,8 +576,9 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
+                    - job_branches
               - jobConfig:
-                  name: post-main-serverless-manager-verify
+                  name: post-main-serverless-operator-verify
                   annotations:
                     owner: otters
                     description: serverless manager verify on k3d vm
@@ -594,11 +597,12 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
+                    - job_branches
               - jobConfig:
-                  name: post-main-serverless-manager-upgrade-latest-to-main
+                  name: post-main-serverless-operator-upgrade-latest-to-main
                   annotations:
                     owner: otters
-                    description: upgrade serverless manager test
+                    description: upgrade serverless operator test
                   always_run: "true"
                   optional: "true"
                   args:
@@ -611,6 +615,223 @@ templates:
                     - jobConfig_default
                     - privileged
                     - jobConfig_postsubmit
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
+                    - job_branches
+      - to: ../../prow/jobs/modules/internal/application-connector-manager.yaml
+        localSets:
+          job_build:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^master$"
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+            command: /image-builder
+            request_memory: "1.5Gi"
+            request_cpu: "1"
+            labels:
+              preset-sa-kyma-push-images: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+              - name: signify-secret
+                secretName: signify-dev-secret
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+          limits:
+            limits_memory: 3Gi
+            limits_cpu: 2
+          dind_job_k3d:
+            annotations:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28
+            command: "/init.sh"
+            request_memory: "4Gi"
+            request_cpu: "3"
+            limits_memory: "4Gi"
+            limits_cpu: "3"
+        jobConfigs:
+          - repoName: github.com/kyma-project/application-connector-manager
+            jobs:
+              - jobConfig:
+                  name: post-application-connector-manager-module-build
+                  annotations:
+                    owner: framefrog
+                    description: Job to build application-connector module for a release.
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:${PULL_BASE_SHA}"
+                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: pre-application-connector-module-build
+                  annotations:
+                    owner: framefrog
+                    description: application-connector module build job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/dev/application-connector-manager:PR-${PULL_NUMBER}"
+                    MODULE_SHA: "PR-${PULL_NUMBER}"
+                  run_if_changed: "^application-connector.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-application-connector-module-build
+                  annotations:
+                    owner: framefrog
+                    description: application-connector module build job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:${PULL_BASE_SHA}"
+                  run_if_changed: "^application-connector.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: pre-application-connector-manager-tests
+                  annotations:
+                    owner: framefrogs
+                    description: application-connector operator tests
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "make test"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - build_labels # default labels
+                    - unprivileged
+              - jobConfig:
+                  annotations:
+                    owner: framefrog
+                    description: application-connector operator build job
+                  name: pre-application-connector-manager-build
+                  always_run: true
+                  args:
+                    - "--name=application-connector-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                  local:
+                    - job_build
+              - jobConfig:
+                  name: pre-main-application-connector-manager-verify
+                  annotations:
+                    owner: framefrog
+                    description: runs application-connector manager verity job on k3d VM
+                  always_run: "true"
+                  optional: "false"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-integration-test
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_presubmit # TODO: Prepare a Keda-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
+              - jobConfig:
+                  name: post-main-application-connector-manager-verify
+                  annotations:
+                    owner: framefrog
+                    description: runs application-connector manager verity job on k3d VM
+                  always_run: "true"
+                  optional: "false"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-integration-test
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
+              - jobConfig:
+                  name: post-main-application-connector-manager-upgrade-latest-to-main
+                  annotations:
+                    owner: framefrog
+                    description: upgrade application-connector manager test
+                  always_run: "true"
+                  optional: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci k3d-upgrade-test
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d

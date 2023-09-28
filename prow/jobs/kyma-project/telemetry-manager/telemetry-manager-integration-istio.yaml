@@ -1,0 +1,32 @@
+presubmits:
+  kyma-project/telemetry-manager:
+    - name: pull-telemetry-manager-integration-test-istio
+      annotations:
+        description: "Pre-submit job to execute integration test with istio."
+        owner: "huskies"
+      optional: false
+      labels:
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-telemetry-manager-integration-test-istio"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      cluster: untrusted-workload
+      decorate: true
+      run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/'
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28
+            command: ["/init.sh"]
+            args: ["bash", "-c", "make integration-test-istio"]
+            requests:
+              memory: 4Gi
+              cpu: 2
+            limits:
+              memory: 4Gi
+              cpu: 2
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true

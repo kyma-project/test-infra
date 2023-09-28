@@ -82,7 +82,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230327-2887f8b7"
+            image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 200Mi
@@ -92,7 +92,7 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230728-90a0fc69"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -112,7 +112,7 @@ templates:
                   args:
                     - "-c"
                     - "make lint"
-                  run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
+                  run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.*\.md$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
@@ -159,11 +159,12 @@ templates:
                   annotations:
                     owner: otters
                     description: "run unit tests for function controller"
-                  command: "/bin/sh"
+                  command: "make"
                   optional: false
                   args:
-                    - "-c"
-                    - "cd components/function-controller && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "-C"
+                    - "components/function-controller"
+                    - "test"
                   run_if_changed: '^components/function-controller/.*\.go$'
                 inheritedConfigs:
                   global:

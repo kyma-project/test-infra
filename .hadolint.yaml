@@ -1,8 +1,11 @@
 ignored:
   - DL3059 # Multiple consecutive RUN instructions. Disabled for readability
   - DL3022 # COPY --from should reference previous image. Disabled for external image
-  - DL3008 # apt pin version. Disabled bcause hard dependencies management
-  - DL3013 # pip pin version. Disabled bcause hard dependencies management
-  - DL3018 # apk pin version. Disabled bcause hard dependencies management
-  - DL3033 # yum pin version. Disabled bcause hard dependencies management
+  - DL3008 # apt pin version. Disabled because hard dependencies management
+  - DL3013 # pip pin version. Disabled because hard dependencies management
+  - DL3018 # apk pin version. Disabled because hard dependencies management
+  - DL3033 # yum pin version. Disabled because hard dependencies management
   - DL3007 # We use tagging of local images in build chain as latest.
+  - DL3003 # This is not needed in most of the cases in our images. WORKDIR is usually set at the end of the image
+  - SC2155 # not relevant. complains about go installation taken from official go image
+failure-threshold: error

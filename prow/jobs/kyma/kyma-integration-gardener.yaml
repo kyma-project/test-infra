@@ -34,18 +34,12 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           base_ref: main
-        - org: kyma-incubator
-          repo: local-kyma
-          base_ref: main
         - org: kyma-project
           repo: test-infra
           base_ref: main
-      reporter_config:
-        slack:
-          channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230913-3d41bb28"
             securityContext:
               privileged: false
               seccompProfile:
@@ -102,9 +96,6 @@ periodics: # runs on schedule
         - org: kyma-project
           repo: kyma
           base_ref: main
-        - org: kyma-incubator
-          repo: local-kyma
-          base_ref: main
         - org: kyma-project
           repo: test-infra
           base_ref: main
@@ -113,7 +104,7 @@ periodics: # runs on schedule
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230913-3d41bb28"
             securityContext:
               privileged: false
               seccompProfile:
@@ -138,60 +129,6 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: kyma-weekly-gardener-gcp-busola-kyma
-      annotations:
-        description: "set up nkyma cluster"
-        owner: "hasselhoff"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-weekly-gardener-gcp-busola-kyma"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-busola-nightly-provision-type-kyma: "true"
-        preset-cluster-version: "true"
-        preset-debug-commando-oom: "true"
-        preset-gardener-gcp-kyma-integration: "true"
-        preset-kyma-cli-stable: "true"
-        preset-log-collector-slack-token: "true"
-        preset-recreate-cluster: "true"
-      cron: "0 3 * * 1"
-      skip_report: false
-      decorate: true
-      decoration_config:
-        grace_period: 600000000000
-        timeout: 7200000000000
-      cluster: untrusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: busola
-          base_ref: main
-        - org: kyma-project
-          repo: kyma
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-busola-long-lasting.sh"
-            env:
-              - name: GARDENER_REGION
-                value: "europe-west4"
-              - name: GARDENER_ZONES
-                value: "europe-west4-b"
-              - name: KYMA_PROJECT_DIR
-                value: "/home/prow/go/src/github.com/kyma-project"
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
     - name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
       annotations:
         description: "Azure Kyma 2.0 to main branch."
@@ -204,7 +141,6 @@ periodics: # runs on schedule
         preset-az-kyma-prow-credentials: "true"
         preset-bot-github-token: "true"
         preset-cluster-version: "true"
-        preset-debug-commando-oom: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
@@ -232,7 +168,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28"
             securityContext:
               privileged: false
               seccompProfile:
@@ -267,7 +203,6 @@ periodics: # runs on schedule
         preset-az-kyma-prow-credentials: "true"
         preset-bot-github-token: "true"
         preset-cluster-version: "true"
-        preset-debug-commando-oom: "true"
         preset-dind-enabled: "true"
         preset-docker-push-repository-gke-integration: "true"
         preset-gardener-azure-kyma-integration: "true"
@@ -292,7 +227,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230728-90a0fc69"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28"
             securityContext:
               privileged: false
               seccompProfile:

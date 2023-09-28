@@ -14,17 +14,16 @@ images:
 - source: "gcr.io/google-containers/pause:3.2"
 - source: "goreleaser/goreleaser:v1.11.5"
 # Golang image is pinned because it is force updated in the upstream
-- source: "golang@sha256:6f592e0689192b7e477313264bb190024d654ef0a08fb1732af4f4b498a2e8ad"
-  tag: "1.20.6-alpine3.18"
+- source: "golang@sha256:dd8888bb7f1b0b05e1e625aa29483f50f38a9b64073a4db00b04076cec52b71c"
+  tag: "1.21.0-alpine3.18"
   amd64Only: true
 - source: "grafana/grafana-image-renderer:3.2.1"
   amd64Only: true
 - source: "hudymi/mockice:0.1.3"
   amd64Only: true
-- source: "istio/pilot:1.18.2-distroless"
-- source: "istio/proxyv2:1.18.2-distroless"
-- source: "istio/install-cni:1.18.2-distroless"
-- source: "istio/istioctl:1.18.2"
+- source: "istio/pilot:1.19.0-distroless"
+- source: "istio/proxyv2:1.19.0-distroless"
+- source: "istio/install-cni:1.19.0-distroless"
 - source: "jettech/kube-webhook-certgen:v1.5.0"
 - source: "kennethreitz/httpbin:latest"
   amd64Only: true
@@ -34,8 +33,8 @@ images:
 - source: "oryd/oathkeeper-maester:v0.1.5"
   amd64Only: true
 - source: "oryd/oathkeeper:v0.38.25-beta.1"
-- source: "postgres@sha256:45800340cfea631af4c8c3870e8d7f1ae888907e39def41a3b7608ff8f16b28c"
-  tag: "11.20-alpine3.18"
+- source: "postgres@sha256:86c55091a74b9efe95396f65ddd83f0067ff47c3f09993621d6f94c835856445"
+  tag: "11.21-alpine3.18"
 - source: "prom/pushgateway:v1.4.3"
 - source: "k8s.gcr.io/kube-state-metrics/kube-state-metrics:v2.5.0"
 - source: "quay.io/jetstack/cert-manager-controller:v1.1.0"
@@ -44,19 +43,19 @@ images:
 - source: "quay.io/prometheus-operator/prometheus-config-reloader:v0.66.0"
 - source: "quay.io/prometheus-operator/prometheus-operator:v0.66.0"
 - source: "quay.io/prometheus/alertmanager:v0.24.0"
-- source: "nats@sha256:d6c6ae7df4a0c5f7aa5ec8035501b7a594d065216aa227265c89909a3c31df96"
-  tag: "v20230714-2.9.20-alpine3.18"
-- source: "natsio/nats-server-config-reloader:0.11.0"
+- source: "nats@sha256:7b65462a6f9a3e9e6577413e4249a2cf989020325ec46960e6adcb3b2afca9a5"
+  tag: "v20230808-2.9.21-alpine3.18"
+- source: "natsio/nats-server-config-reloader:0.12.0"
 - source: "quay.io/prometheus/prometheus:v2.45.0"
-- source: "natsio/nats-box:0.13.8"
+- source: "natsio/nats-box:0.13.9"
 - source: "natsio/prometheus-nats-exporter:0.12.0"
 - source: "mockserver/mockserver:mockserver-5.11.2"
   amd64Only: true
 - source: "i331641/kyma-perf:v1"
   amd64Only: true
-- source: "ghcr.io/kedacore/keda:2.11.1"
-- source: "ghcr.io/kedacore/keda-admission-webhooks:2.11.1"
-- source: "ghcr.io/kedacore/keda-metrics-apiserver:2.11.1"
+- source: "ghcr.io/kedacore/keda:2.11.2"
+- source: "ghcr.io/kedacore/keda-admission-webhooks:2.11.2"
+- source: "ghcr.io/kedacore/keda-metrics-apiserver:2.11.2"
 - source: "nginx:1.23.3"
   amd64Only: true
 - source: "fluent/fluentd@sha256:c8026af1f87f60db08e23ec0e62f779096abc93b2fc62aa4b57fc23a617451f6"

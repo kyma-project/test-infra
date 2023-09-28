@@ -23,10 +23,10 @@ plank:
         censoring_concurrency: 2 # 2 concurrent censoring
         censoring_buffer_size: 3092 # 3kB
       utility_images:
-        clonerefs: gcr.io/k8s-prow/clonerefs:v20230801-955da602be
-        initupload: gcr.io/k8s-prow/initupload:v20230801-955da602be
-        entrypoint: gcr.io/k8s-prow/entrypoint:v20230801-955da602be
-        sidecar: gcr.io/k8s-prow/sidecar:v20230801-955da602be
+        clonerefs: gcr.io/k8s-prow/clonerefs:v20230824-74e8146673
+        initupload: gcr.io/k8s-prow/initupload:v20230824-74e8146673
+        entrypoint: gcr.io/k8s-prow/entrypoint:v20230824-74e8146673
+        sidecar: gcr.io/k8s-prow/sidecar:v20230824-74e8146673
       gcs_configuration:
         bucket: kyma-prow-logs
         path_strategy: "explicit"
@@ -275,45 +275,21 @@ tide:
     kyma-project/hydroform: squash
     kyma-project/cli: squash
     kyma-project/community: squash
-    kyma-project/console: squash
     kyma-project/examples: squash
-    kyma-project/addons: squash
     kyma-project/busola-migrator: squash
     kyma-project/kyma-operator: squash
     kyma-project/kyma-watcher: squash
     kyma-project/manifest-operator: squash
-
     kyma-incubator/compass: squash
     kyma-incubator/reconciler: squash
     kyma-incubator/api-gateway: squash
-    kyma-incubator/local-kyma: squash
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
-    kyma-incubator/documentation-component: squash
-    kyma-incubator/terraform-provider-gardener: squash
-    kyma-incubator/bullseye-showcase: squash
     kyma-incubator/milv: squash
     kyma-incubator/kymart: squash
     kyma-incubator/dex: squash
-    kyma-incubator/varkes: squash
-    #    kyma-incubator/marketplaces: squash
-    kyma-incubator/octopus: squash
-    kyma-incubator/knative-kafka: squash
-    kyma-incubator/examples: squash
     kyma-incubator/github-dashboard: squash
-    kyma-incubator/vstudio-extension: squash
-    kyma-incubator/wordpress-connector: squash
-    kyma-incubator/connector-tools: squash
-    #    kyma-incubator/github-slack-connectors: squash
-    #    kyma-incubator/homebrew-kyma-incubator: squash
-    #    kyma-incubator/runtime: squash
-    kyma-incubator/artwork: squash
     kyma-incubator/opensap: squash
-    #    kyma-incubator/wormhole: squash
-    kyma-incubator/kyma-showcase: squash
-    kyma-incubator/sc-removal: squash
-    kyma-incubator/hydra-login-consent: squash
-    kyma-incubator/website-vuepress: squash
   target_url: https://status.build.kyma-project.io/tide
   pr_status_base_urls:
     "*": https://status.build.kyma-project.io/pr

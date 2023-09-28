@@ -83,30 +83,6 @@ updates:
       prefix: "githubrelease"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/development/kyma-github-connector/githubWebhookGateway"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "ghWebhookGate"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/development/kyma-pubsub-connector/pubSubGateway"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "pubSubGateway"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/development/test-log-collector"
     labels:
       - "docker"
@@ -309,5 +285,15 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "image-detector"
+      include: "scope"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    labels:
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "actions"
       include: "scope"
 

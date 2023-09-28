@@ -544,6 +544,16 @@
         "mode": "NULLABLE",
         "name": "visibility",
         "type": "STRING"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "allow_forking",
+        "type": "BOOLEAN"
+      },
+      {
+        "mode": "NULLABLE",
+        "name": "has_discussions",
+        "type": "BOOLEAN"
       }
     ],
     "mode": "NULLABLE",
@@ -1184,6 +1194,11 @@
   {
     "mode": "NULLABLE",
     "name": "repository_url",
+    "type": "STRING"
+  },
+  {
+    "mode": "NULLABLE",
+    "name": "state_reason",
     "type": "STRING"
   }
 ]

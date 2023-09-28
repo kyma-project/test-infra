@@ -23,8 +23,6 @@
   owner: kyma-project
 - name: istio-operator
   owner: kyma-project
-- name: addons
-  owner: kyma-project
 - name: private-fn-for-e2e-serverless-tests
   owner: kyma-project
 - name: charts
@@ -45,8 +43,6 @@
   owner: kyma-project
 - name: template-repository
   owner: kyma-project
-- name: rafter
-  owner: kyma-project
 - name: btp-manager
   owner: kyma-project
 - name: kyma-environment-broker
@@ -63,15 +59,9 @@
   owner: kyma-incubator
 - name: reconciler
   owner: kyma-incubator
-- name: bullseye-showcase
-  owner: kyma-incubator
-- name: documentation-component
-  owner: kyma-incubator
 - name: compass-console
   owner: kyma-incubator
 - name: sap-btp-service-operator
-  owner: kyma-incubator
-- name: varkes
   owner: kyma-incubator
 - name: slack-bot
   owner: kyma-incubator
@@ -79,31 +69,9 @@
   owner: kyma-incubator
 - name: github-dashboard
   owner: kyma-incubator
-- name: website-vuepress
-  owner: kyma-incubator
-- name: kitbag
-  owner: kyma-incubator
-- name: kyma-showcase
-  owner: kyma-incubator
-- name: hydra-login-consent
-  owner: kyma-incubator
 - name: kymart
   owner: kyma-incubator
-- name: examples
-  owner: kyma-incubator
-- name: vstudio-extension
-  owner: kyma-incubator
-- name: wordpress-connector
-  owner: kyma-incubator
-- name: connector-tools
-  owner: kyma-incubator
-- name: artwork
-  owner: kyma-incubator
 - name: opensap
-  owner: kyma-incubator
-- name: testdrape
-  owner: kyma-incubator
-- name: sc-removal
   owner: kyma-incubator
 - name: service-catalog-tester
   owner: kyma-incubator

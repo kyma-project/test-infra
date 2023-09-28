@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -52,7 +52,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -88,7 +88,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -124,7 +124,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -160,7 +160,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -196,7 +196,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -232,7 +232,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -268,7 +268,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -304,7 +304,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -340,7 +340,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -376,43 +376,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-project/addons:
-    - name: pull-addons-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for addons"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-addons-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -448,7 +412,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -484,7 +448,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -520,7 +484,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -556,7 +520,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -592,7 +556,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -628,7 +592,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -664,7 +628,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -700,7 +664,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -736,43 +700,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-project/rafter:
-    - name: pull-rafter-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for rafter"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-rafter-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -808,7 +736,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -844,7 +772,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -880,7 +808,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -916,7 +844,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -952,7 +880,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -988,7 +916,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1024,7 +952,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1060,79 +988,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/bullseye-showcase:
-    - name: pull-bullseye-showcase-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for bullseye-showcase"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-bullseye-showcase-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/documentation-component:
-    - name: pull-documentation-component-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for documentation-component"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-documentation-component-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1168,7 +1024,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1204,43 +1060,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/varkes:
-    - name: pull-varkes-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for varkes"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-varkes-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1276,7 +1096,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1312,7 +1132,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1348,151 +1168,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/website-vuepress:
-    - name: pull-website-vuepress-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for website-vuepress"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-website-vuepress-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/kitbag:
-    - name: pull-kitbag-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for kitbag"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-kitbag-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/kyma-showcase:
-    - name: pull-kyma-showcase-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for kyma-showcase"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-kyma-showcase-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/hydra-login-consent:
-    - name: pull-hydra-login-consent-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for hydra-login-consent"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-hydra-login-consent-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1528,187 +1204,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/examples:
-    - name: pull-examples-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for examples"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-examples-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/vstudio-extension:
-    - name: pull-vstudio-extension-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for vstudio-extension"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-vstudio-extension-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/wordpress-connector:
-    - name: pull-wordpress-connector-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for wordpress-connector"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-wordpress-connector-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/connector-tools:
-    - name: pull-connector-tools-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for connector-tools"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-connector-tools-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/artwork:
-    - name: pull-artwork-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for artwork"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-artwork-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1744,79 +1240,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/testdrape:
-    - name: pull-testdrape-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for testdrape"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-testdrape-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "checkconfig"
-            args:
-              - "--plugin-config=../../kyma-project/test-infra/prow/plugins.yaml"
-              - "--config-path=../../kyma-project/test-infra/prow/config.yaml"
-              - "--prow-yaml-repo-name=$(REPO_OWNER)/$(REPO_NAME)"
-              - "--strict"
-              - "--required-job-annotations=owner"
-              - "--required-job-annotations=description"
-  
-  kyma-incubator/sc-removal:
-    - name: pull-sc-removal-checkconfig
-      annotations:
-        description: "Validate inrepo prow configs for sc-removal"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-sc-removal-checkconfig"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '(^.prow/.*.yaml|^.prow.yaml)'
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1852,7 +1276,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1888,7 +1312,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/checkconfig:v20230801-955da602be"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:

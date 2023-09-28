@@ -22,6 +22,7 @@ for v in $(find . -type d -exec test -e '{}'/Dockerfile \; -print | cut -c3-) ; 
   echo "building $name..."
   docker buildx build \
     --load \
+    -t "local/$v" \
     -t "$REGISTRY/$name:latest" \
     -t "$REGISTRY/$name:$TAG" \
     "./$v"

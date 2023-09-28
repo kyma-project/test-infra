@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: pushgateway
-        image: prom/pushgateway:v1.5.1
+        image: prom/pushgateway:v1.6.0
         ports:
           - name: http
             containerPort: 9091
@@ -87,7 +87,7 @@ spec:
         ports:
           - name: http
             containerPort: 8081
-        image: nginx:1
+        image: docker.io/library/nginx:1.25.2-alpine
         volumeMounts:
         - name: config-volume
           mountPath: /etc/nginx/

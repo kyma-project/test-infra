@@ -1,47 +1,53 @@
 ###################################
 # Artifact Registry related values
 ###################################
-variable "artifact_registry_name" {
+variable "registry_name" {
   type        = string
   description = "Artifact Registry name"
 }
 
-variable "artifact_registry_owner" {
+variable "owner" {
   type        = string
   description = "Owner inside SAP"
   default     = "neighbors"
 }
 
-variable "artifact_registry_module" {
-  type        = string
-  description = "Module name"
+variable "writer_serviceaccounts" {
+  type        = list(string)
+  description = "Service Accounts with reapoAdmin access"
 }
 
-variable "artifact_registry_serviceaccount" {
-  type        = string
-  description = "Service Account"
+variable "reader_serviceaccounts" {
+  type        = list(string)
+  description = "Service Accounts with read access (lifecycle-maneger)"
 }
 
-variable "artifact_registry_type" {
+variable "type" {
   type        = string
   description = "Environment for the resources"
   default     = "development"
 }
 
-variable "artifact_registry_multi_region" {
+variable "multi_region" {
   type        = bool
   description = "Is Location type Multi-region"
   default     = true
 }
 
-variable "artifact_registry_primary_area" {
+variable "primary_area" {
   type        = string
   description = "Location type Multi-region"
   default     = "europe"
 }
 
-variable "immutable_artifact_registry" {
+variable "immutable_tags" {
   type        = bool
   description = "Is Artifact registry immutable"
+  default     = false
+}
+
+variable "public" {
+  type        = bool
+  description = "Is Artifact registry public"
   default     = false
 }

@@ -26,7 +26,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs api-gateway linting
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   request_cpu: 500m
                   command: "/bin/sh"
                   args:
@@ -42,7 +42,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs api-gateway unit tests
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
+                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   request_cpu: 500m
                   command: "./tests/integration/scripts/code-coverage-guard.sh"
                 inheritedConfigs:

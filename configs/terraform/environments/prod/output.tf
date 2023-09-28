@@ -31,3 +31,20 @@ output "trusted_workload_terraform_executor_k8s_service_account" {
 output "untrusted_workload_terraform_executor_k8s_service_account" {
   value = kubernetes_service_account.untrusted_workload_terraform_executor
 }
+
+output "artifact_registry" {
+  value     = module.artifact_registry
+  sensitive = false
+}
+
+output "secrets_rotator_dead_letter_topic" {
+  value = google_pubsub_topic.secrets_rotator_dead_letter
+}
+
+output "secrets-rotator" {
+  value = google_service_account.secrets-rotator
+}
+
+output "secret-manager-notifications-topic" {
+  value = data.google_pubsub_topic.secret-manager-notifications-topic
+}

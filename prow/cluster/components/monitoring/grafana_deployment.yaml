@@ -21,7 +21,7 @@ spec:
         app: grafana
     spec:
       containers:
-      - image: docker.io/nginx:1.23.2-alpine
+      - image: docker.io/library/nginx:1.25.2-alpine
         name: nginx
         readinessProbe:
           httpGet:

@@ -5,7 +5,7 @@ kind: K8sAllowedImages
 metadata:
   name: prow-tools-namespaces
 spec:
-  enforcementAction: warn
+  enforcementAction: deny
   match:
     kinds:
       - apiGroups: [""]

@@ -131,9 +131,6 @@ function main() {
   log::info "- ClusterTestSuite details"
   ${kc} get cts "${SUITE_NAME}" -oyaml
 
-  # TODO (mhudy): cts shouldn't be deleted because all test pods are deleted too and kind export will not store them
-  # cts::delete
-
   log::info "Images with tag latest are not allowed. Checking..."
   printImagesWithLatestTag
   latestTagExitCode=$?

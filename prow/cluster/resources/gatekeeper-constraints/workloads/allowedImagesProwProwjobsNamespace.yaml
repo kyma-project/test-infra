@@ -5,7 +5,7 @@ kind: K8sAllowedImages
 metadata:
   name: prow-prowjobs-namespace
 spec:
-  enforcementAction: warn
+  enforcementAction: deny
   match:
     kinds:
       - apiGroups: [""]
@@ -17,17 +17,7 @@ spec:
       - "docker.io/aquasec/trivy"
       - "docker.io/zricethezav/gitleaks"
       - "docker.io/maven"
-      - "gcr.io/k8s-prow/checkconfig"
-      - "gcr.io/k8s-prow/generic-autobumper"
-      - "gcr.io/k8s-prow/label_sync"
-      - "gcr.io/k8s-prow/branchprotector"
-      - "gcr.io/k8s-prow/commenter"
       - "gcr.io/k8s-prow/gencred"
-      - "gcr.io/k8s-prow/ghproxy"
-      - "gcr.io/k8s-prow/sidecar" # prowjob decoration
-      - "gcr.io/k8s-prow/clonerefs" # prowjob decoration
-      - "gcr.io/k8s-prow/initupload" # prowjob decoration
-      - "gcr.io/k8s-prow/entrypoint" # prowjob decoration
       - "eu.gcr.io/kyma-project"
       - "eu.gcr.io/sap-kyma-neighbors-dev"
       - "europe-docker.pkg.dev/kyma-project"

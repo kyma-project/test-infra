@@ -19,15 +19,15 @@ templates:
                     description: "Validate Dockerfiles"
                   run_if_changed: ".*Dockerfile$"
                   command: "/bin/bash"
-                  args: 
+                  args:
                     - "-c"
                     - "shopt -s globstar;
                       hadolint --config .hadolint.yaml --no-color **/Dockerfile"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20230913-3d41bb28
                 inheritedConfigs:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
                     - extra_refs_test-infra
-                    - image_bootstrap
                   local:
                     - jobConfig_default

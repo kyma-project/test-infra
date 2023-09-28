@@ -11,7 +11,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: ".+"
+      always_run: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -24,6 +24,7 @@ postsubmits: # runs on main
             args:
               - "--name=compass-manager"
               - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
               - "--dockerfile=Dockerfile"
             resources:
               requests:
