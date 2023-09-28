@@ -17,7 +17,7 @@ templates:
               - jobConfig: # builds a docker image of the api-gateway-manager tagged with the PR name
                   name: pull-api-gateway-manager-build
                   annotations:
-                    owner: "goats"
+                    owner: "goat"
                     description: "API Gateway Manager image build on PR for "
                   skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   args:
@@ -124,7 +124,7 @@ templates:
               - jobConfig: # builds a docker image of the api-gateway-manager
                   name: post-api-gateway-manager-build
                   annotations:
-                    owner: "goats"
+                    owner: "goat"
                     description: "API Gateway Manager image build"
                   labels:
                     preset-signify-prod-secret: "true"
@@ -146,7 +146,7 @@ templates:
               - jobConfig: # builds a docker image of the api-gateway-manager
                   name: rel-api-gateway-manager-build
                   annotations:
-                    owner: "goats"
+                    owner: "goat"
                     description: "API Gateway Manager image build"
                   labels:
                     preset-signify-prod-secret: "true"

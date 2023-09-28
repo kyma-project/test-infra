@@ -6,7 +6,7 @@ presubmits: # runs on PRs
     - name: pull-api-gateway-manager-build
       annotations:
         description: "API Gateway Manager image build on PR for "
-        owner: "goats"
+        owner: "goat"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-api-gateway-manager-build"
@@ -194,7 +194,7 @@ postsubmits: # runs on main
     - name: post-api-gateway-manager-build
       annotations:
         description: "API Gateway Manager image build"
-        owner: "goats"
+        owner: "goat"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-api-gateway-manager-build"
@@ -247,7 +247,7 @@ postsubmits: # runs on main
     - name: rel-api-gateway-manager-build
       annotations:
         description: "API Gateway Manager image build"
-        owner: "goats"
+        owner: "goat"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-api-gateway-manager-build"
