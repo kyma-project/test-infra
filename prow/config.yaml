@@ -250,12 +250,10 @@ branch-protection:
         - "^dependabot/"
       repos:
         kyma:
-          protect: false
           branches:
-            main:
-              protect: true
-            release-*:
-              protect: true
+            kyma-2.0-docu:
+              required_pull_request_reviews:
+                require_code_owner_reviews: false
         website:
           branches:
             main:
