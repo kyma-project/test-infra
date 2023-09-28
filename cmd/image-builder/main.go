@@ -24,6 +24,7 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
 	"golang.org/x/net/context"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
+	"k8s.io/utils/ptr"
 )
 
 type options struct {
