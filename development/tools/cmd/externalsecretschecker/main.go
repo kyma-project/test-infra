@@ -25,6 +25,7 @@ type ExternalSecretData struct {
 	IsBinary bool   `json:"isBinary,omitempty"`
 }
 
+// ExternalSecretStatusCondition stores status condition field
 type ExternalSecretStatusCondition struct {
 	Type    string `json:"type"`
 	Status  string `json:"status"`
