@@ -23,12 +23,11 @@ require (
 	github.com/google/uuid v1.4.0
 	github.com/imdario/mergo v0.3.16
 	github.com/jamiealquiza/envy v1.1.0
-	github.com/jinzhu/copier v0.3.5
+	github.com/jinzhu/copier v0.4.0
 	github.com/microsoft/azure-devops-go-api/azuredevops v1.0.0-b5
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
-	github.com/jinzhu/copier v0.4.0
-	github.com/onsi/ginkgo/v2 v2.13.1
-	github.com/onsi/gomega v1.30.0
+	github.com/onsi/ginkgo/v2 v2.11.0
+	github.com/onsi/gomega v1.27.10
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/smartystreets/goconvey v1.8.1
