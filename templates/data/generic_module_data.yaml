@@ -88,7 +88,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
+                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
                   branches:
                     - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
