@@ -100,33 +100,33 @@ func Test_validateOptions(t *testing.T) {
 			name:      "parsed config",
 			expectErr: false,
 			opts: options{
-				context:    "directory/",
-				name:       "test-image",
-				dockerfile: "Dockerfile",
+				Context:    "directory/",
+				Name:       "test-image",
+				Dockerfile: "Dockerfile",
 			},
 		},
 		{
-			name:      "context missing",
+			name:      "Context missing",
 			expectErr: true,
 			opts: options{
-				name:       "test-image",
-				dockerfile: "Dockerfile",
+				Name:       "test-image",
+				Dockerfile: "Dockerfile",
 			},
 		},
 		{
-			name:      "name missing",
+			name:      "Name missing",
 			expectErr: true,
 			opts: options{
-				context:    "directory/",
-				dockerfile: "Dockerfile",
+				Context:    "directory/",
+				Dockerfile: "Dockerfile",
 			},
 		},
 		{
-			name:      "dockerfile missing",
+			name:      "Dockerfile missing",
 			expectErr: true,
 			opts: options{
-				context: "directory/",
-				name:    "test-image",
+				Context: "directory/",
+				Name:    "test-image",
 			},
 		},
 	}
@@ -153,10 +153,10 @@ func TestFlags(t *testing.T) {
 		{
 			name: "unknown flag, fail",
 			expectedOpts: options{
-				context:    ".",
-				configPath: "/config/image-builder-config.yaml",
-				dockerfile: "Dockerfile",
-				logDir:     "/logs/artifacts",
+				Context:    ".",
+				ConfigPath: "/config/image-builder-config.yaml",
+				Dockerfile: "Dockerfile",
+				LogDir:     "/logs/artifacts",
 			},
 			expectedErr: true,
 			args: []string{
@@ -167,51 +167,51 @@ func TestFlags(t *testing.T) {
 			name:        "parsed config, pass",
 			expectedErr: false,
 			expectedOpts: options{
-				name: "test-image",
-				tags: []tags.Tag{
+				Name: "test-image",
+				Tags: []tags.Tag{
 					{Name: "latest", Value: "latest"},
 					{Name: "cookie", Value: "cookie"},
 				},
-				context:    "prow/build",
-				configPath: "config.yaml",
-				dockerfile: "Dockerfile",
-				logDir:     "prow/logs",
-				orgRepo:    "kyma-project/test-infra",
-				silent:     true,
+				Context:    "prow/build",
+				ConfigPath: "config.yaml",
+				Dockerfile: "Dockerfile",
+				LogDir:     "prow/logs",
+				OrgRepo:    "kyma-project/test-infra",
+				Silent:     true,
 			},
 			args: []string{
 				"--config=config.yaml",
-				"--dockerfile=Dockerfile",
+				"--Dockerfile=Dockerfile",
 				"--repo=kyma-project/test-infra",
-				"--name=test-image",
+				"--Name=test-image",
 				"--tag=latest",
 				"--tag=cookie=cookie",
-				"--context=prow/build",
+				"--Context=prow/build",
 				"--log-dir=prow/logs",
-				"--silent",
+				"--Silent",
 			},
 		},
 		{
 			name: "export tag, pass",
 			expectedOpts: options{
-				context:    ".",
-				configPath: "/config/image-builder-config.yaml",
-				dockerfile: "Dockerfile",
-				logDir:     "/logs/artifacts",
-				exportTags: true,
+				Context:    ".",
+				ConfigPath: "/config/image-builder-config.yaml",
+				Dockerfile: "Dockerfile",
+				LogDir:     "/logs/artifacts",
+				ExportTags: true,
 			},
 			args: []string{
-				"--export-tags",
+				"--export-Tags",
 			},
 		},
 		{
 			name: "build args, pass",
 			expectedOpts: options{
-				context:    ".",
-				configPath: "/config/image-builder-config.yaml",
-				dockerfile: "Dockerfile",
-				logDir:     "/logs/artifacts",
-				buildArgs: sets.Tags{
+				Context:    ".",
+				ConfigPath: "/config/image-builder-config.yaml",
+				Dockerfile: "Dockerfile",
+				LogDir:     "/logs/artifacts",
+				BuildArgs: sets.Tags{
 					tags.Tag{Name: "BIN", Value: "test"},
 					tags.Tag{Name: "BIN2", Value: "test2"},
 				},
@@ -382,7 +382,7 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
 			t.Setenv("JOB_TYPE", c.jobType)
-			o := &options{isCI: c.ci, Config: Config{SignConfig: SignConfig{
+			o := &options{IsCI: c.ci, Config: Config{SignConfig: SignConfig{
 				EnabledSigners: map[string][]string{
 					"*":              {"test-notary"},
 					"org/repo":       {"test-notary"},
@@ -427,7 +427,7 @@ func Test_addTagsToEnv(t *testing.T) {
 		expectedEnvs map[string]string
 	}{
 		{
-			name: "multiple envs and tags",
+			name: "multiple envs and Tags",
 			envs: map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2"},
 			tags: []tags.Tag{
 				{Name: "latest", Value: "latest"},
@@ -437,7 +437,7 @@ func Test_addTagsToEnv(t *testing.T) {
 			expectedEnvs: map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2", "TAG_latest": "latest", "TAG_ShortSHA": "dca515151", "TAG_test": "test-tag"},
 		},
 		{
-			name:         "no tags",
+			name:         "no Tags",
 			envs:         map[string]string{"KEY": "VAL"},
 			tags:         []tags.Tag{},
 			expectedEnvs: map[string]string{"KEY": "VAL"},

@@ -2,6 +2,14 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
+	"net/http"
+	"time"
+
+	// "time"
+
+	// "encoding/base64"
+	// "encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -17,28 +25,37 @@ import (
 	"github.com/kyma-project/test-infra/development/image-builder/sign"
 	"github.com/kyma-project/test-infra/development/pkg/sets"
 	"github.com/kyma-project/test-infra/development/pkg/tags"
+	ado "github.com/microsoft/azure-devops-go-api/azuredevops"
+	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
+	adov7 "github.com/microsoft/azure-devops-go-api/azuredevops/v7"
+	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
+	"golang.org/x/net/context"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
+	"k8s.io/utils/ptr"
 )
 
 type options struct {
-	Config
-	configPath string
-	context    string
-	dockerfile string
-	envFile    string
-	name       string
-	variant    string
-	logDir     string
-	orgRepo    string
-	silent     bool
-	isCI       bool
-	tags       sets.Tags
-	buildArgs  sets.Tags
-	platforms  sets.Strings
-	exportTags bool
-	// SignOnly determines if only signing should be performed
-	signOnly     bool
-	imagesToSign imagesToSign
+	Config     `json:"config"`
+	ConfigPath string       `json:"config_path"`
+	Context    string       `json:"context"`
+	Dockerfile string       `json:"dockerfile"`
+	EnvFile    string       `json:"env_file"`
+	Name       string       `json:"name"`
+	Variant    string       `json:"variant"`
+	LogDir     string       `json:"log_dir"`
+	OrgRepo    string       `json:"org_repo"`
+	Silent     bool         `json:"Silent"`
+	IsCI       bool         `json:"is_ci"`
+	Tags       sets.Tags    `json:"tags"`
+	BuildArgs  sets.Tags    `json:"build_args"`
+	Platforms  sets.Strings `json:"platforms"`
+	ExportTags bool         `json:"export_tags"`
+	// SignOnly enables only signing of images. No build will be performed.
+	SignOnly      bool         `json:"sign_only"`
+	ImagesToSign  imagesToSign `json:"images_to_sign"`
+	BuildInADO    bool         `json:"build_in_ado"`
+	ParseTagsOnly bool         `json:"parse_tags_only"`
+	Debug         bool         `json:"debug"`
 }
 
 const (
@@ -67,12 +84,12 @@ func parseVariable(key, value string) string {
 // runInBuildKit prepares command execution and handles gathering logs from BuildKit-enabled run
 // This function is used only in customized environment
 func runInBuildKit(o options, name string, destinations, platforms []string, buildArgs map[string]string) error {
-	dockerfile := filepath.Base(o.dockerfile)
-	dockerfileDir := filepath.Dir(o.dockerfile)
+	dockerfile := filepath.Base(o.Dockerfile)
+	dockerfileDir := filepath.Dir(o.Dockerfile)
 	args := []string{
 		"build", "--frontend=dockerfile.v0",
-		"--local", "context=" + o.context,
-		"--local", "dockerfile=" + filepath.Join(o.context, dockerfileDir),
+		"--local", "context=" + o.Context,
+		"--local", "dockerfile=" + filepath.Join(o.Context, dockerfileDir),
 		"--opt", "filename=" + dockerfile,
 	}
 
@@ -100,12 +117,12 @@ func runInBuildKit(o options, name string, destinations, platforms []string, bui
 	var outw []io.Writer
 	var errw []io.Writer
 
-	if !o.silent {
+	if !o.Silent {
 		outw = append(outw, os.Stdout)
 		errw = append(errw, os.Stderr)
 	}
 
-	f, err := os.Create(filepath.Join(o.logDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
+	f, err := os.Create(filepath.Join(o.LogDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
 	if err != nil {
 		return fmt.Errorf("could not create log file: %w", err)
 	}
@@ -122,8 +139,8 @@ func runInBuildKit(o options, name string, destinations, platforms []string, bui
 // runInKaniko prepares command execution and handles gathering logs to file
 func runInKaniko(o options, name string, destinations, platforms []string, buildArgs map[string]string) error {
 	args := []string{
-		"--context=" + o.context,
-		"--dockerfile=" + o.dockerfile,
+		"--context=" + o.Context,
+		"--dockerfile=" + o.Dockerfile,
 	}
 	for _, dst := range destinations {
 		args = append(args, "--destination="+dst)
@@ -157,12 +174,12 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 	var outw []io.Writer
 	var errw []io.Writer
 
-	if !o.silent {
+	if !o.Silent {
 		outw = append(outw, os.Stdout)
 		errw = append(errw, os.Stderr)
 	}
 
-	f, err := os.Create(filepath.Join(o.logDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
+	f, err := os.Create(filepath.Join(o.LogDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
 	if err != nil {
 		return fmt.Errorf("could not create log file: %w", err)
 	}
@@ -184,7 +201,7 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 	var sha, pr string
 	var err error
 	repo := o.Config.Registry
-	if o.isCI {
+	if o.IsCI {
 		presubmit := os.Getenv("JOB_TYPE") == "presubmit"
 		if presubmit {
 			if len(o.DevRegistry) > 0 {
@@ -205,14 +222,14 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 		return fmt.Errorf("'sha' could not be determined")
 	}
 
-	parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
+	parsedTags, err := getTags(pr, sha, append(o.Tags, o.TagTemplate))
 	if err != nil {
 		return err
 	}
 
 	// Provide parsedTags as buildArgs for developers
 	var buildArgs map[string]string
-	if o.exportTags {
+	if o.ExportTags {
 		buildArgs = addTagsToEnv(parsedTags, envs)
 	} else {
 		buildArgs = envs
@@ -222,13 +239,13 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 		buildArgs = make(map[string]string)
 	}
 
-	appendMissing(&buildArgs, o.buildArgs)
+	appendMissing(&buildArgs, o.BuildArgs)
 
 	if len(vs) == 0 {
 		// variants.yaml file not present or either empty. Run single build.
-		destinations := gatherDestinations(repo, o.name, parsedTags)
+		destinations := gatherDestinations(repo, o.Name, parsedTags)
 		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		err = runFunc(o, "build", destinations, o.platforms, buildArgs)
+		err = runFunc(o, "build", destinations, o.Platforms, buildArgs)
 		if err != nil {
 			return fmt.Errorf("build encountered error: %w", err)
 		}
@@ -255,10 +272,10 @@ func appendMissing(target *map[string]string, source []tags.Tag) {
 }
 
 func signImages(o *options, images []string) error {
-	// use o.orgRepo as default value since someone might have loaded is as a flag
-	orgRepo := o.orgRepo
-	if o.isCI {
-		// try to extract orgRepo from Prow-based env variables
+	// use o.OrgRepo as default value since someone might have loaded is as a flag
+	orgRepo := o.OrgRepo
+	if o.IsCI {
+		// try to extract OrgRepo from Prow-based env variables
 		org := os.Getenv("REPO_OWNER")
 		repo := os.Getenv("REPO_NAME")
 		if len(org) > 0 && len(repo) > 0 {
@@ -267,7 +284,7 @@ func signImages(o *options, images []string) error {
 		}
 	}
 	if len(orgRepo) == 0 {
-		return fmt.Errorf("'orgRepo' cannot be empty")
+		return fmt.Errorf("'OrgRepo' cannot be empty")
 	}
 	sig, err := getSignersForOrgRepo(o, orgRepo)
 	if err != nil {
@@ -304,11 +321,11 @@ func getSignersForOrgRepo(o *options, orgRepo string) ([]sign.Signer, error) {
 	for _, sc := range c.Signers {
 		if enabled.Has(sc.Name) {
 			// if signerConfig doesn't contain any jobTypes, it should be considered enabled by default
-			if len(sc.JobType) > 0 && !o.isCI {
+			if len(sc.JobType) > 0 && !o.IsCI {
 				fmt.Println("signer", sc.Name, "ignored, because image-builder is not running in CI mode and contains 'job-type' field defined")
 				continue
 			}
-			if len(jobType) > 0 && len(sc.JobType) > 0 && o.isCI {
+			if len(jobType) > 0 && len(sc.JobType) > 0 && o.IsCI {
 				var has bool
 				for _, t := range sc.JobType {
 					if t == jobType {
@@ -397,13 +414,13 @@ func gatherDestinations(repo []string, name string, tags []tags.Tag) []string {
 // validateOptions handles options validation. All checks should be provided here
 func validateOptions(o options) error {
 	var errs []error
-	if o.context == "" {
+	if o.Context == "" {
 		errs = append(errs, fmt.Errorf("flag '--context' is missing"))
 	}
-	if o.name == "" {
+	if o.Name == "" {
 		errs = append(errs, fmt.Errorf("flag '--name' is missing"))
 	}
-	if o.dockerfile == "" {
+	if o.Dockerfile == "" {
 		errs = append(errs, fmt.Errorf("flag '--dockerfile' is missing"))
 	}
 	return errutil.NewAggregate(errs)
@@ -443,7 +460,7 @@ func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
 	return vars, nil
 }
 
-// Add parsed tags to environments which will be passed to dockerfile
+// Add parsed Tags to environments which will be passed to Dockerfile
 func addTagsToEnv(tags []tags.Tag, envs map[string]string) map[string]string {
 	m := make(map[string]string)
 
@@ -459,72 +476,6 @@ func addTagsToEnv(tags []tags.Tag, envs map[string]string) map[string]string {
 	return m
 }
 
-func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
-	flagSet.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
-	flagSet.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
-	flagSet.StringVar(&o.context, "context", ".", "Path to build directory context")
-	flagSet.StringVar(&o.envFile, "env-file", "", "Path to file with environment variables to be loaded in build")
-	flagSet.StringVar(&o.name, "name", "", "Name of the image to be built")
-	flagSet.StringVar(&o.dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to context")
-	flagSet.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
-	flagSet.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
-	flagSet.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
-	flagSet.Var(&o.tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
-	flagSet.Var(&o.buildArgs, "build-arg", "Flag to pass additional arguments to build Dockerfile. It can be used in the name=value format.")
-	flagSet.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
-	flagSet.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
-	flagSet.BoolVar(&o.signOnly, "sign-only", false, "Only sign the image, do not build it")
-	flagSet.Var(&o.imagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
-	return flagSet
-}
-
-func main() {
-	flagSet := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	o := options{isCI: os.Getenv("CI") == "true"}
-	o.gatherOptions(flagSet)
-	if err := flagSet.Parse(os.Args[1:]); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	// Check if imagesToSign value is provided when sign-only flag is set
-	if o.signOnly && len(o.imagesToSign) == 0 {
-		fmt.Println("Flag '--images-to-sign' is missing or has empty value, please provide at least one image to sign")
-		os.Exit(1)
-	}
-	// Check if sign-only flag is set when imagesToSign value is provided
-	if !o.signOnly && len(o.imagesToSign) > 0 {
-		fmt.Println("Flag '--sign-only' is missing or has empty value, please set it to true when using '--images-to-sign' flag")
-		os.Exit(1)
-	}
-
-	if o.configPath == "" {
-		fmt.Println("'--config' flag is missing or has empty value, please provide the path to valid 'config.yaml' file")
-		os.Exit(1)
-	}
-	c, err := os.ReadFile(o.configPath)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	if err := o.ParseConfig(c); err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-
-	switch o.signOnly {
-	case true:
-		err = signImages(&o, o.imagesToSign)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-	case false:
-		buildImage(o)
-	}
-}
-
 func buildImage(o options) {
 	// validate if options provided by flags and config file are fine
 	if err := validateOptions(o); err != nil {
@@ -532,17 +483,17 @@ func buildImage(o options) {
 		os.Exit(1)
 	}
 
-	context, err := filepath.Abs(o.context)
+	context, err := filepath.Abs(o.Context)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	dockerfilePath := filepath.Join(context, filepath.Dir(o.dockerfile))
+	dockerfilePath := filepath.Join(context, filepath.Dir(o.Dockerfile))
 
 	var variant Variants
 	var envs map[string]string
-	if len(o.envFile) > 0 {
-		envs, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
+	if len(o.EnvFile) > 0 {
+		envs, err = loadEnv(os.DirFS(dockerfilePath), o.EnvFile)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -550,7 +501,7 @@ func buildImage(o options) {
 
 	} else {
 		variantsFile := filepath.Join(dockerfilePath, "variants.yaml")
-		variant, err = GetVariants(o.variant, variantsFile, os.ReadFile)
+		variant, err = GetVariants(o.Variant, variantsFile, os.ReadFile)
 		if err != nil {
 			if !os.IsNotExist(err) {
 				fmt.Println(err)
@@ -565,4 +516,263 @@ func buildImage(o options) {
 		os.Exit(1)
 	}
 	fmt.Println("Job's done.")
+}
+
+func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
+	flagSet.BoolVar(&o.Silent, "silent", false, "Do not push build logs to stdout")
+	flagSet.StringVar(&o.ConfigPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
+	flagSet.StringVar(&o.Context, "context", ".", "Path to build directory Context")
+	flagSet.StringVar(&o.EnvFile, "env-file", "", "Path to file with environment variables to be loaded in build")
+	flagSet.StringVar(&o.Name, "name", "", "Name of the image to be built")
+	flagSet.StringVar(&o.Dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to Context")
+	flagSet.StringVar(&o.Variant, "variant", "", "If variants.yaml file is present, define which Variant should be built. If variants.yaml is not present, this flag will be ignored")
+	flagSet.StringVar(&o.LogDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
+	// TODO: What is expected value repo only or org/repo? How this flag influence an image builder behaviour?
+	flagSet.StringVar(&o.OrgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
+	flagSet.Var(&o.Tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the Name in the format Name=value which will be used by export-Tags")
+	flagSet.Var(&o.BuildArgs, "build-arg", "Flag to pass additional arguments to build Dockerfile. It can be used in the Name=value format.")
+	flagSet.Var(&o.Platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
+	flagSet.BoolVar(&o.ExportTags, "export-Tags", false, "Export parsed Tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag Name passed along with the tag")
+	flagSet.BoolVar(&o.SignOnly, "sign-only", false, "Only sign the image, do not build it")
+	flagSet.Var(&o.ImagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
+	flagSet.BoolVar(&o.BuildInADO, "build-in-ado", false, "Build in Azure DevOps pipeline environment")
+	flagSet.BoolVar(&o.ParseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
+
+	return flagSet
+}
+
+func main() {
+	flagSet := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
+	o := options{IsCI: os.Getenv("CI") == "true"}
+	o.gatherOptions(flagSet)
+	if err := flagSet.Parse(os.Args[1:]); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	// Check if ImagesToSign value is provided when sign-only flag is set
+	if o.SignOnly && len(o.ImagesToSign) == 0 {
+		fmt.Println("Flag '--images-to-sign' is missing or has empty value, please provide at least one image to sign")
+		os.Exit(1)
+	}
+	// Check if sign-only flag is set when ImagesToSign value is provided
+	if !o.SignOnly && len(o.ImagesToSign) > 0 {
+		fmt.Println("Flag '--sign-only' is missing or has false value, please set it to true when using '--images-to-sign' flag")
+		os.Exit(1)
+	}
+
+	if o.ConfigPath == "" {
+		fmt.Println("'--config' flag is missing or has empty value, please provide the path to valid 'config.yaml' file")
+		os.Exit(1)
+	}
+	c, err := os.ReadFile(o.ConfigPath)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	if err := o.ParseConfig(c); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+
+	// If build-in-ado flag is set and inADO env variable is not true, call ADO API to trigger ADO pipeline.
+	// Pass options and environment variables structs to the pipeline as parameters values.
+	// Options and environment variables are passed as base64 encoded string.
+	if o.BuildInADO && os.Getenv("inADO") != "true" {
+		fmt.Println("Triggering ADO build pipeline")
+		if o.EnvFile != "" {
+			fmt.Println("EnvFile flag is not supported when running in ADO")
+			os.Exit(1)
+		}
+		adoPAT, present := os.LookupEnv("ADO_PAT")
+		if !present {
+			fmt.Println("ADO_PAT environment variable is not set, please set it to valid ADO PAT")
+			os.Exit(1)
+		}
+		repoName, present := os.LookupEnv("REPO_NAME")
+		if !present {
+			fmt.Println("REPO_NAME environment variable is not set, please set it to valid repository name")
+			os.Exit(1)
+		}
+		repoOwner, present := os.LookupEnv("REPO_OWNER")
+		if !present {
+			fmt.Println("REPO_OWNER environment variable is not set, please set it to valid repository owner")
+			os.Exit(1)
+		}
+		jobType, present := os.LookupEnv("JOB_TYPE")
+		if !present {
+			fmt.Println("JOB_TYPE environment variable is not set, please set it to valid job type")
+			os.Exit(1)
+		}
+		pullNumber, present := os.LookupEnv("PULL_NUMBER")
+		if !present {
+			fmt.Println("PULL_NUMBER environment variable is not set, please set it to valid pull request number")
+			os.Exit(1)
+		}
+		pullBaseSHA, present := os.LookupEnv("PULL_BASE_SHA")
+		if !present {
+			fmt.Println("PULL_BASE_SHA environment variable is not set, please set it to valid pull base SHA")
+			os.Exit(1)
+		}
+		ci, present := os.LookupEnv("CI")
+		if !present {
+			ci = "false"
+		}
+		if o.Name == "" {
+			fmt.Println("Name is not set, please set it to valid image name")
+		}
+		templateParameters := map[string]string{
+			"RepoName":    repoName,
+			"RepoOwner":   repoOwner,
+			"JobType":     jobType,
+			"PullNumber":  pullNumber,
+			"PullBaseSHA": pullBaseSHA,
+			"CI":          ci,
+			"Context":     o.Context,
+			"Dockerfile":  o.Dockerfile,
+			"Name":        o.Name,
+			"ExportTags":  strconv.FormatBool(o.ExportTags),
+		}
+		if len(o.Platforms) > 0 {
+			templateParameters["Platforms"] = o.Platforms.String()
+		}
+		if len(o.BuildArgs) > 0 {
+			templateParameters["BuildArgs"] = o.BuildArgs.String()
+		}
+		if len(o.Tags) > 0 {
+			templateParameters["Tags"] = o.Tags.String()
+		}
+		adoConnection := adov7.NewPatConnection(o.ADOOrganizationURL, adoPAT)
+		ctx := context.Background()
+		adoClient := pipelines.NewClient(ctx, adoConnection)
+		adoRunPipelineArgs := pipelines.RunPipelineArgs{
+			Project:    &o.ADOProjectName,
+			PipelineId: &o.ADOPipelineID,
+			RunParameters: &pipelines.RunPipelineParameters{
+				PreviewRun:         ptr.To(false),
+				TemplateParameters: &templateParameters,
+			},
+		}
+		if o.ADOPipelineVersion != 0 {
+			adoRunPipelineArgs.PipelineVersion = &o.ADOPipelineVersion
+		}
+		fmt.Printf("Using TemplateParameters: %+v\n", adoRunPipelineArgs.RunParameters.TemplateParameters)
+		pipelineRun, err := adoClient.RunPipeline(ctx, adoRunPipelineArgs)
+		// _, err := adoClient.RunPipeline(ctx, adoRunPipelineArgs)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		for {
+			time.Sleep(60 * time.Second)
+			pipelineRun, err = adoClient.GetRun(ctx, pipelines.GetRunArgs{
+				Project:    &o.ADOProjectName,
+				PipelineId: &o.ADOPipelineID,
+				RunId:      pipelineRun.Id,
+			})
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			if *pipelineRun.State == pipelines.RunStateValues.Completed {
+				if *pipelineRun.Result == pipelines.RunResultValues.Succeeded {
+					fmt.Println("Pipeline run succeeded")
+					buildConnection := ado.NewPatConnection(o.ADOOrganizationURL, adoPAT)
+					buildClient, err := build.NewClient(ctx, buildConnection)
+					if err != nil {
+						fmt.Println("Failed creating build client")
+						fmt.Println(err)
+						os.Exit(1)
+					}
+					buildLogs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
+						Project: &o.ADOProjectName,
+						BuildId: pipelineRun.Id,
+					})
+					if err != nil {
+						fmt.Println("Failed getting build logs")
+						fmt.Println(err)
+						os.Exit(1)
+					}
+					lastLog := (*buildLogs)[len(*buildLogs)-1]
+					httpClient := http.Client{}
+					req, err := http.NewRequest("GET", *lastLog.Url, nil)
+					if err != nil {
+						fmt.Println("Failed creating get build log request")
+						fmt.Println(err)
+						os.Exit(1)
+					}
+					req.SetBasicAuth("", adoPAT)
+					resp, err := httpClient.Do(req)
+					if err != nil {
+						fmt.Println("Failed getting build log")
+						fmt.Println(err)
+						os.Exit(1)
+					}
+					body, err := io.ReadAll(resp.Body)
+					if err != nil {
+						fmt.Println("Failed reading build log")
+						fmt.Println(err)
+						os.Exit(1)
+					}
+					fmt.Printf("%s", body)
+					err = resp.Body.Close()
+					if err != nil {
+						fmt.Println("Failed closing build log response body")
+						fmt.Println(err)
+					}
+					os.Exit(0)
+				} else {
+					fmt.Printf("Pipeline run failed with status %s", *pipelineRun.Result)
+					os.Exit(1)
+				}
+			} else {
+				fmt.Println("Pipeline run is still in progress. Waiting for 60 seconds")
+			}
+		}
+	}
+	if o.SignOnly {
+		err = signImages(&o, o.ImagesToSign)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		os.Exit(0)
+	}
+	if o.ParseTagsOnly {
+		// TODO: extract getting env vars values and parsing tags to separate function to remove duplication
+		var sha, pr string
+		if o.IsCI {
+			presubmit := os.Getenv("JOB_TYPE") == "presubmit"
+			if presubmit {
+				if n := os.Getenv("PULL_NUMBER"); n != "" {
+					pr = n
+				}
+			}
+
+			if c := os.Getenv("PULL_BASE_SHA"); c != "" {
+				sha = c
+			}
+		}
+
+		// if sha is still not set, fail the pipeline
+		if sha == "" {
+			fmt.Println("'sha' could not be determined")
+			os.Exit(1)
+		}
+		parsedTags, err := getTags(pr, sha, append(o.Tags, o.TagTemplate))
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		// Print parsed tags to stdout as json
+		jsonTags, err := json.Marshal(parsedTags)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		fmt.Printf("%s", jsonTags)
+		os.Exit(0)
+	}
+	buildImage(o)
 }

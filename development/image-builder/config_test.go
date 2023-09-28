@@ -80,7 +80,7 @@ func Test_getVariants(t *testing.T) {
 			},
 		},
 		{
-			name:           "variant file does not exist, pass",
+			name:           "Variant file does not exist, pass",
 			expectErr:      false,
 			variantsFile:   "",
 			expectVariants: nil,
@@ -92,7 +92,7 @@ func Test_getVariants(t *testing.T) {
 			expectVariants: nil,
 		},
 		{
-			name:         "get only single variant, pass",
+			name:         "get only single Variant, pass",
 			expectErr:    false,
 			variantsFile: "variants.yaml",
 			variant:      "main",
@@ -101,10 +101,10 @@ func Test_getVariants(t *testing.T) {
 			},
 		},
 		{
-			name:           "variant is not present in variants file, fail",
+			name:           "Variant is not present in variants file, fail",
 			expectErr:      true,
 			variantsFile:   "variants.yaml",
-			variant:        "missing-variant",
+			variant:        "missing-Variant",
 			expectVariants: nil,
 		},
 		{
@@ -118,7 +118,7 @@ func Test_getVariants(t *testing.T) {
 		t.Run(c.name, func(t *testing.T) {
 			fakeFileGetter := func(f string) ([]byte, error) {
 				if f == "malformed-variants.yaml" {
-					return []byte("'asd':\n- malformed variant as list`"), nil
+					return []byte("'asd':\n- malformed Variant as list`"), nil
 				}
 				if f == "err-deadline-exceeded" {
 					return nil, os.ErrDeadlineExceeded
