@@ -18,7 +18,7 @@ fi
 
 export INTEGRATION_SUITE=("$@")
 
-make -C $KYMA_SOURCES_DIR/hack/ci run-without-lifecycle-manager-operator
+make -C "$KYMA_SOURCES_DIR"/hack/ci run-without-lifecycle-manager-operator
 
 run_tests "${INTEGRATION_SUITE[@]}"
 TEST_STATUS=$?
