@@ -347,7 +347,3 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
       GARDENER_REGION: "europe-west4"
       GARDENER_ZONES: "europe-west4-b"
-templates:
-  - from: test-infra-autobump-config.yaml
-    render:
-      - to: ../../prow/autobump-config/test-infra-autobump-config.yaml
