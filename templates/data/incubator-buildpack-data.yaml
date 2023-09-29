@@ -437,7 +437,7 @@ templates:
                   decoration_config:
                     timeout: 14400000000000 # 4h
                     grace_period: 600000000000 # 10min
-                  cron: "0 3-23/2 * * 1-5" # "At minute 0 past every 2nd hour from 3 through 23 on every day-of-week from Monday through Friday."
+                  cron: "0 5 * * 1-5" # At 05:00 AM, Monday through Friday
                   labels:
                     preset-log-collector-slack-token: "true"
                     preset-bot-github-token: "true"
