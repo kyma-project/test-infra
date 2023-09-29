@@ -15,6 +15,7 @@ spec:
   parameters:
     images:
       - "nginx"
+      - "docker.io/library/nginx"
       - "prom/pushgateway"
       - "eu.gcr.io/kyma-project"
       - "eu.gcr.io/sap-kyma-neighbors-dev"

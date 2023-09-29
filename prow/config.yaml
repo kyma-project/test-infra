@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:2023.8.23
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:2023.8.23
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:2023.8.23
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:2023.8.23
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20230925-22f1fe8b
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20230925-22f1fe8b
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20230925-22f1fe8b
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20230925-22f1fe8b
         resources:
           clonerefs:
             requests:
@@ -250,12 +250,10 @@ branch-protection:
         - "^dependabot/"
       repos:
         kyma:
-          protect: false
           branches:
-            main:
-              protect: true
-            release-*:
-              protect: true
+            kyma-2.0-docu:
+              required_pull_request_reviews:
+                require_code_owner_reviews: false
         website:
           branches:
             main:
@@ -370,7 +368,6 @@ tide:
     kyma-incubator/reconciler: squash
     kyma-incubator/compass-console: squash
     kyma-incubator/ord-service: squash
-    kyma-incubator/milv: squash
     kyma-incubator/kymart: squash
     kyma-incubator/github-dashboard: squash
     kyma-incubator/opensap: squash

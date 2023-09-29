@@ -68,7 +68,7 @@ templates:
                   branches:
                     - ^main$
                   args:
-                    - --name=new-kyma-environments-cleanup-job
+                    - --name=kyma-environments-cleanup-job
                     - --context=./
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=environmentscleanup
@@ -161,7 +161,7 @@ templates:
                   run_if_changed: ".+"
                   image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
                   args:
-                    - --name=new-kyma-environment-deprovision-retrigger-job
+                    - --name=kyma-environment-deprovision-retrigger-job
                     - --context=./
                     - --dockerfile=Dockerfile.job
                     - --build-arg=BIN=deprovisionretrigger

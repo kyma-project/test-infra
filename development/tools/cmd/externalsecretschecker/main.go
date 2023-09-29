@@ -25,11 +25,12 @@ type ExternalSecretData struct {
 	IsBinary bool   `json:"isBinary,omitempty"`
 }
 
-// ExternalSecretSpec stores data of externalsecret keys and used backend information
-type ExternalSecretSpec struct {
-	BackendType string
-	Data        []ExternalSecretData
-	ProjectID   string `json:"projectId"`
+// ExternalSecretStatusCondition stores status condition field
+type ExternalSecretStatusCondition struct {
+	Type    string `json:"type"`
+	Status  string `json:"status"`
+	Reason  string `json:"reason,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 // ExternalSecret stores one ExternalSecret data
@@ -37,8 +38,10 @@ type ExternalSecret struct {
 	APIVersion string `json:"apiVersion"`
 	Kind       string
 	Metadata   v1.ObjectMeta
-	Spec       ExternalSecretSpec
-	Status     v1.Status
+	// Spec       externalsecrets.ExternalSecretSpec
+	Status struct {
+		Conditions []ExternalSecretStatusCondition `json:"conditions,omitempty"`
+	} `json:"status"`
 }
 
 // ExternalSecretsList stores list of external secrets returned by the REST API
@@ -98,14 +101,15 @@ func main() {
 	for _, namespace := range namespaces.Items {
 		// check if we have defined list of namespaces to check, otherwise check all
 		if len(checkedNamespaces) == 0 || nameInSlice(namespace.Name, checkedNamespaces) {
+			externalSecretsList := getExternalSecretsList(client, namespace.Name)
 			// check status for all external secrets
-			externalSecretsInNamespaceSuccessful := checkExternalSecretsStatus(client, namespace.Name)
+			externalSecretsInNamespaceSuccessful := checkExternalSecretsStatus(namespace.Name, externalSecretsList)
 			if !externalSecretsInNamespaceSuccessful {
 				externalSecretsSuccessful = false
 			}
 
 			// check if all Opaque secrets are also declared as externalSecrets
-			secretsInnamespaceDeclaredAsExternal := checkSecrets(client, namespace.Name, ignoredSecrets)
+			secretsInnamespaceDeclaredAsExternal := checkSecrets(client, namespace.Name, externalSecretsList, ignoredSecrets)
 			if !secretsInnamespaceDeclaredAsExternal {
 				secretsDeclaredAsExternal = false
 			}
@@ -167,7 +171,7 @@ func parseIgnoredSecrets(ignoredSecretsString string) map[string][]string {
 }
 
 func getExternalSecretsList(client *kubernetes.Clientset, namespace string) ExternalSecretsList {
-	externalSecretsJSON, err := client.RESTClient().Get().AbsPath("/apis/kubernetes-client.io/v1").Namespace(namespace).Resource("externalsecrets").DoRaw(context.Background())
+	externalSecretsJSON, err := client.RESTClient().Get().AbsPath("/apis/external-secrets.io/v1beta1").Namespace(namespace).Resource("externalsecrets").DoRaw(context.Background())
 	exitOnError(err, "while reading ExternalSecrets list")
 
 	var externalSecretsList ExternalSecretsList
@@ -176,15 +180,13 @@ func getExternalSecretsList(client *kubernetes.Clientset, namespace string) Exte
 	return externalSecretsList
 }
 
-func checkExternalSecretsStatus(client *kubernetes.Clientset, namespace string) bool {
+func checkExternalSecretsStatus(namespace string, externalSecretsList ExternalSecretsList) bool {
 	success := true
-
-	externalSecretsList := getExternalSecretsList(client, namespace)
 
 	// check if ExternalSecrets synced successfully
 	for _, externalSecret := range externalSecretsList.Items {
-		if externalSecret.Status.Status != "SUCCESS" {
-			logrus.Warnf("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status \"%s\"\n", externalSecret.Metadata.Name, namespace, externalSecret.Status.Status)
+		if externalSecret.Status.Conditions[0].Status != "True" || externalSecret.Status.Conditions[0].Reason != "SecretSynced" {
+			logrus.Warnf("ExternalSecret \"%s\" in namespace \"%s\" failed to synchronize with status reason \"%s\"\n", externalSecret.Metadata.Name, namespace, externalSecret.Status.Conditions[0].Reason)
 			success = false
 		}
 	}
@@ -201,9 +203,8 @@ func nameInExternals(secret string, externelSecrets ExternalSecretsList) bool {
 	return false
 }
 
-func checkSecrets(client *kubernetes.Clientset, namespace string, ignoredSecrets map[string][]string) bool {
+func checkSecrets(client *kubernetes.Clientset, namespace string, externalSecretsList ExternalSecretsList, ignoredSecrets map[string][]string) bool {
 	allSecretsVerified := true
-	externalSecretsList := getExternalSecretsList(client, namespace)
 
 	secrets, err := client.CoreV1().Secrets(namespace).List(context.Background(), v1.ListOptions{})
 	exitOnError(err, "while reading namespaces list")
@@ -214,7 +215,7 @@ func checkSecrets(client *kubernetes.Clientset, namespace string, ignoredSecrets
 			// omit ignored ones
 			if !nameInSlice(sec.Name, ignoredSecrets[namespace]) {
 				if !nameInExternals(sec.Name, externalSecretsList) {
-					logrus.Warnf("Secret \"%s\" in namespace \"%s\" was not declared as ExternalSecret\n", sec.Name, namespace)
+					logrus.Warnf("Secret \"%s/%s\" was not declared as ExternalSecret\n", namespace, sec.Name)
 					allSecretsVerified = false
 				}
 			}

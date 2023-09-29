@@ -688,7 +688,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:2023.8.23"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230925-22f1fe8b"
             securityContext:
               privileged: false
               seccompProfile:
@@ -765,7 +765,7 @@ periodics: # runs on schedule
         preset-gardener-gcp-kyma-integration: "true"
         preset-kyma-cli-stable: "true"
         preset-log-collector-slack-token: "true"
-      cron: "0 3-23/2 * * 1-5"
+      cron: "0 5 * * 1-5"
       skip_report: false
       decorate: true
       decoration_config:

@@ -2,7 +2,7 @@ presubmits: # runs on PRs
   kyma-project/eventing-auth-manager:
     - name: pull-eventing-auth-manager-integration-test
       annotations:
-        owner: tunas
+        owner: "skydivingtunas"
         description: Runs integration suite for Eventing Auth Manager
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"

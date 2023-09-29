@@ -570,8 +570,10 @@ presubmits: # runs on PRs
               - "--env-file=envs"
             resources:
               requests:
-                memory: 1.5Gi
+                memory: 6Gi
                 cpu: 1
+              limits:
+                memory: 6Gi
             volumeMounts:
               - name: config
                 mountPath: /config
@@ -1203,8 +1205,10 @@ postsubmits: # runs on main
               - "--tag={{ .Env \"OTEL_VERSION\" }}-{{ .ShortSHA }}"
             resources:
               requests:
-                memory: 1.5Gi
+                memory: 6Gi
                 cpu: 1
+              limits:
+                memory: 6Gi
             volumeMounts:
               - name: config
                 mountPath: /config

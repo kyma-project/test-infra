@@ -3,41 +3,6 @@
 
 presubmits: # runs on PRs
   kyma-project/lifecycle-manager:
-    - name: pull-lifecycle-mgr-tests
-      annotations:
-        description: "run lm tests"
-        owner: "jellyfish"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-lifecycle-mgr-tests"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-docker-push-repository-kyma: "true"
-        preset-sa-kyma-push-images: "true"
-      run_if_changed: '^(go.mod|go.sum|Makefile|.*.sh)$|^.*\.go$'
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "make test"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: pull-lifecycle-mgr-build
       annotations:
         description: "run lm build"
