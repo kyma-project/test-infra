@@ -218,7 +218,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "git config --global --add safe.directory $(pwd)/module-chart && ./hack/generate_module-chart.sh && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_SHA"
+              - "git config --global --add safe.directory $(pwd)/module-chart && ./hack/generate_module-chart.sh && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_REF"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -277,7 +277,7 @@ postsubmits: # runs on main
               - "ci"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
+                value: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_REF}"
               - name: KUSTOMIZE_VERSION
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
