@@ -15,9 +15,14 @@ includedConfigPaths:
 excludedConfigPaths:
   - "prow/staging"
   - "sec-scanners-config.yaml"
-  - "prow/jobs/kyma/releases/kyma-release-217.yaml"
-  - "prow/jobs/kyma/releases/kyma-release-216.yaml"
-  - "prow/jobs/kyma/releases/kyma-release-215.yaml"
+extraFiles:
+  - "configs/terraform/modules/cors-proxy/cors-proxy.tf"
+  - "configs/terraform/modules/secrets-leaks-log-scanner/github-issue-finder.tf"
+  - "configs/terraform/modules/github-webhook-gateway/github-webhook-gateway.tf"
+  - "configs/terraform/modules/secrets-leaks-log-scanner/gcs-bucket-mover.tf"
+  - "configs/terraform/modules/secrets-leaks-log-scanner/github-issue-finder.tf"
+  - "configs/terraform/modules/secrets-leaks-log-scanner/secrets-leak-log-scanner.tf"
+  - "configs/terraform/modules/slack-message-sender/slack-message-sender.tf"
 targetVersion: "latest"
 prefixes:
   - name: "test-infra"
