@@ -41,8 +41,10 @@ postsubmits: # runs on main
               - "bash"
             args:
               - "-c"
-              - "IMG=europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:v$(git show -s --date=format:'%Y%m%d' --format=%cd ${PULL_BASE_SHA})-$(printf %.8s ${PULL_BASE_SHA}) mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/custom-domain-gardener-gcp.sh"
+              - "mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/custom-domain-gardener-gcp.sh"
             env:
+              - name: IMG
+                value: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_SHA}"
               - name: JOB_NAME_PATTERN
                 value: "post-api-gateway-manager-custom-domain-integration-gcp"
               - name: KYMA_PROJECT_DIR
@@ -91,8 +93,10 @@ postsubmits: # runs on main
               - "bash"
             args:
               - "-c"
-              - "IMG=europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:v$(git show -s --date=format:'%Y%m%d' --format=%cd ${PULL_BASE_SHA})-$(printf %.8s ${PULL_BASE_SHA}) mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/custom-domain-gardener-aws.sh"
+              - "mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/custom-domain-gardener-aws.sh"
             env:
+              - name: IMG
+                value: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_SHA}"
               - name: JOB_NAME_PATTERN
                 value: "post-api-gateway-manager-custom-domain-integration-aws"
               - name: KYMA_PROJECT_DIR
