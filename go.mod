@@ -12,10 +12,12 @@ require (
 	cloud.google.com/go/storage v1.33.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
+	github.com/cenkalti/backoff/v4 v4.2.0
 	github.com/cloudevents/sdk-go/v2 v2.14.0
 	github.com/containerd/containerd v1.7.6
 	github.com/containerd/typeurl/v2 v2.1.1
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
+	github.com/fsnotify/fsnotify v1.6.0
 	github.com/fsouza/go-dockerclient v1.9.8
 	github.com/go-playground/validator/v10 v10.15.4
 	github.com/google/go-containerregistry v0.16.1
@@ -38,6 +40,7 @@ require (
 	github.com/tidwall/gjson v1.17.0
 	github.com/zricethezav/gitleaks/v8 v8.18.0
 	go.uber.org/zap v1.26.0
+	golang.org/x/exp v0.0.0-20220827204233-334a2380cb91
 	golang.org/x/net v0.15.0
 	golang.org/x/oauth2 v0.12.0
 	google.golang.org/api v0.143.0
