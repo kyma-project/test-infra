@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
         - name: branchprotector
-          image: gcr.io/k8s-prow/branchprotector:v20230329-c93d79fb7d
+          image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20230925-22f1fe8b
           imagePullPolicy: IfNotPresent
           args:
             - --config-path=/etc/config/branchprotector-config.yaml

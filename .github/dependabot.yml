@@ -10,6 +10,7 @@ updates:
       - "go"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -40,6 +41,7 @@ updates:
     labels:
       - "terraform"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -50,6 +52,7 @@ updates:
     labels:
       - "terraform"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -61,21 +64,11 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "ginkgo"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/prow-tools"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "prow-tools"
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/development/tools/cmd/githubrelease"
@@ -83,32 +76,11 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "githubrelease"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/development/kyma-github-connector/githubWebhookGateway"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "ghWebhookGate"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/development/kyma-pubsub-connector/pubSubGateway"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "pubSubGateway"
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/development/test-log-collector"
@@ -116,54 +88,11 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "test-log-coll"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/bootstrap"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "bootstrap"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/buildpack-golang"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "bp-golang"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/buildpack-node"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "bp-node"
-      include: "scope"
-  - package-ecosystem: "docker"
-    directory: "/prow/images/cleaner"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "cleaner"
       include: "scope"
   - package-ecosystem: "docker"
     directory: "/prow/images/clonerefs"
@@ -171,6 +100,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -182,6 +112,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -193,6 +124,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -204,6 +136,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -215,6 +148,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -226,6 +160,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -237,6 +172,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -248,6 +184,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -259,6 +196,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -270,6 +208,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -281,6 +220,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -292,6 +232,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -303,6 +244,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -314,6 +256,7 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
@@ -325,9 +268,32 @@ updates:
       - "docker"
       - "skip-review"
       - "area/dependency"
+      - "kind/chore"
     schedule:
       interval: "daily"
     commit-message:
       prefix: "docker-rotate-sa"
+      include: "scope"
+  - package-ecosystem: "docker"
+    directory: "/development/image-detector"
+    labels:
+      - "docker"
+      - "skip-review"
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "image-detector"
+      include: "scope"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    labels:
+      - "area/dependency"
+      - "kind/chore"
+    schedule:
+      interval: "daily"
+    commit-message:
+      prefix: "actions"
       include: "scope"
 

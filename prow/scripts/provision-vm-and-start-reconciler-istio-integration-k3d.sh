@@ -3,7 +3,7 @@
 # This script is designed to provision a new vm and start kyma.It takes an optional positional parameter using --image flag
 # Use this flag to specify the custom image for provisining vms. If no flag is provided, the latest custom image is used.
 
-set -o errexit
+set -xo errexit
 
 readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
@@ -49,7 +49,7 @@ function testCustomImage() {
 gcp::authenticate \
   -c "${GOOGLE_APPLICATION_CREDENTIALS}"
 
-RANDOM_ID=$(openssl rand -hex 4)
+RANDOM_ID=$(LC_ALL=C tr -dc '[:lower:]' < /dev/urandom | head -c4)
 
 LABELS=""
 if [[ -z "${PULL_NUMBER}" ]]; then
@@ -119,6 +119,9 @@ if [[ ! $KYMA_VERSION ]]; then
     export KYMA_VERSION="${kyma_get_last_release_version_return_version:?}"
     log::info "Reading latest Kyma release version, got: ${KYMA_VERSION}"
 fi
+
+git config --global --add safe.directory "${KYMA_SOURCES_DIR}"
+
 # Determine Istio version based on Kyma version
 istio::get_version
 export ISTIO_VERSION="${istio_version:?}"

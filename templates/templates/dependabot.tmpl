@@ -4,7 +4,7 @@ version: 2
 updates:
 {{- range .Values.JobConfigs }}
 {{- range .Jobs }}
-  - package-ecosystem: {{ .JobConfig.packageEcosystem | quote }}
+  - package-ecosystem: {{if .JobConfig.packageEcosystem}}{{ .JobConfig.packageEcosystem | quote }}{{else}}{{fail ".JobConfig.packageEcosystem is not defined"}}{{end}}
     directory: {{ .JobConfig.directory | quote }}
     {{- if .JobConfig.labels }}
     labels:

@@ -16,8 +16,7 @@ if [[ -z $REGISTRY_VALUES ]]; then
   export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000"
 fi
 
-export KYMA_SOURCES_DIR="./kyma"
-export INTEGRATION_SUITE=${1:-serverless-integration}
+export INTEGRATION_SUITE=("$@")
 
 echo "--> Installing kyma-cli"
 install::kyma_cli
@@ -28,27 +27,15 @@ kyma provision k3d --ci
 echo "--> Deploying Serverless"
 # The python38 function requires 40M+ of memory to work. Mostly used by kubeless. I need to overrride the defaultPreset to M to avoid OOMkill.
 
-if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
-  echo "--> Deploying Serverless from Kyma main"
-  kyma deploy -p evaluation --ci \
-    --component cluster-essentials \
-    --component serverless \
-    --value "$REGISTRY_VALUES" \
-    --value global.ingress.domainName="$DOMAIN" \
-    --value "serverless.webhook.values.function.resources.defaultPreset=M" \
-    --value "serverless.webhook.values.featureFlags.java17AlphaEnabled=true" \
-    -s main
-else
-  echo "--> Deploying Serverless from $KYMA_SOURCES_DIR"
-  kyma deploy -p evaluation --ci \
-    --component cluster-essentials \
-    --component serverless \
-    --value "$REGISTRY_VALUES" \
-    --value global.ingress.domainName="$DOMAIN" \
-    --value "serverless.webhook.values.function.resources.defaultPreset=M" \
-    --value "serverless.webhook.values.featureFlags.java17AlphaEnabled=true" \
-    -s local -w $KYMA_SOURCES_DIR
-fi
+echo "--> Deploying Serverless from $KYMA_SOURCES_DIR"
+kyma deploy --ci \
+  --component cluster-essentials \
+  --component serverless \
+  --value "$REGISTRY_VALUES" \
+  --value global.ingress.domainName="$DOMAIN" \
+  --value "serverless.webhook.values.function.resources.defaultPreset=M" \
+  --value "serverless.webhook.values.featureFlags.java17AlphaEnabled=true" \
+  -s local -w "$KYMA_SOURCES_DIR"
 
 echo "##############################################################################"
 # shellcheck disable=SC2004
@@ -63,14 +50,9 @@ echo "##########################################################################
 sleep 60
 ########
 
-
-if [[ ${INTEGRATION_SUITE} == "git-auth-integration" ]]; then
-  echo "--> Cloning Serverless integration tests from kyma:main"
-  git clone https://github.com/kyma-project/kyma "${KYMA_SOURCES_DIR}"
-fi
-
 set +o errexit
-run_tests "${INTEGRATION_SUITE}" "${KYMA_SOURCES_DIR}"
+
+run_tests "${INTEGRATION_SUITE[@]}"
 TEST_STATUS=$?
 set -o errexit
 

@@ -5,7 +5,8 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pre-test-infra-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for test-infra"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-presubmit-scanner"
@@ -18,7 +19,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -28,7 +34,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-kyma-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for kyma"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-presubmit-scanner"
@@ -41,7 +48,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -51,7 +63,8 @@ presubmits: # runs on PRs
   kyma-project/busola:
     - name: pre-busola-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for busola"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-busola-presubmit-scanner"
@@ -64,7 +77,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -74,7 +92,8 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for control-plane"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-control-plane-presubmit-scanner"
@@ -87,7 +106,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -97,7 +121,8 @@ presubmits: # runs on PRs
   kyma-project/cli:
     - name: pre-cli-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for cli"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-cli-presubmit-scanner"
@@ -110,7 +135,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -120,7 +150,8 @@ presubmits: # runs on PRs
   kyma-project/website:
     - name: pre-website-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for website"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-website-presubmit-scanner"
@@ -133,7 +164,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -143,7 +179,8 @@ presubmits: # runs on PRs
   kyma-project/lifecycle-manager:
     - name: pre-lifecycle-manager-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for lifecycle-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-lifecycle-manager-presubmit-scanner"
@@ -156,7 +193,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -166,7 +208,8 @@ presubmits: # runs on PRs
   kyma-project/third-party-images:
     - name: pre-third-party-images-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for third-party-images"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-third-party-images-presubmit-scanner"
@@ -179,7 +222,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -189,7 +237,8 @@ presubmits: # runs on PRs
   kyma-project/community:
     - name: pre-community-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for community"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-community-presubmit-scanner"
@@ -202,30 +251,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-project/module-manager:
-    - name: pre-module-manager-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-module-manager-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -235,7 +266,8 @@ presubmits: # runs on PRs
   kyma-project/hydroform:
     - name: pre-hydroform-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for hydroform"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-hydroform-presubmit-scanner"
@@ -248,7 +280,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -258,7 +295,8 @@ presubmits: # runs on PRs
   kyma-project/istio-operator:
     - name: pre-istio-operator-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for istio-operator"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-istio-operator-presubmit-scanner"
@@ -271,30 +309,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-project/addons:
-    - name: pre-addons-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-addons-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -304,7 +324,8 @@ presubmits: # runs on PRs
   kyma-project/private-fn-for-e2e-serverless-tests:
     - name: pre-private-fn-for-e2e-serverless-tests-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for private-fn-for-e2e-serverless-tests"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-private-fn-for-e2e-serverless-tests-presubmit-scanner"
@@ -317,7 +338,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -327,7 +353,8 @@ presubmits: # runs on PRs
   kyma-project/charts:
     - name: pre-charts-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for charts"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-charts-presubmit-scanner"
@@ -340,7 +367,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -350,7 +382,8 @@ presubmits: # runs on PRs
   kyma-project/examples:
     - name: pre-examples-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for examples"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-examples-presubmit-scanner"
@@ -363,7 +396,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -373,7 +411,8 @@ presubmits: # runs on PRs
   kyma-project/api-gateway:
     - name: pre-api-gateway-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for api-gateway"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-api-gateway-presubmit-scanner"
@@ -386,7 +425,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -396,7 +440,8 @@ presubmits: # runs on PRs
   kyma-project/istio:
     - name: pre-istio-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for istio"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-istio-presubmit-scanner"
@@ -409,7 +454,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -419,7 +469,8 @@ presubmits: # runs on PRs
   kyma-project/runtime-watcher:
     - name: pre-runtime-watcher-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for runtime-watcher"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-runtime-watcher-presubmit-scanner"
@@ -432,7 +483,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -442,7 +498,8 @@ presubmits: # runs on PRs
   kyma-project/keda-manager:
     - name: pre-keda-manager-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for keda-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-keda-manager-presubmit-scanner"
@@ -455,7 +512,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -465,7 +527,8 @@ presubmits: # runs on PRs
   kyma-project/kyma-dashboard:
     - name: pre-kyma-dashboard-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for kyma-dashboard"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kyma-dashboard-presubmit-scanner"
@@ -478,7 +541,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -488,7 +556,8 @@ presubmits: # runs on PRs
   kyma-project/application-connector-manager:
     - name: pre-application-connector-manager-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for application-connector-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-application-connector-manager-presubmit-scanner"
@@ -501,7 +570,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -511,7 +585,8 @@ presubmits: # runs on PRs
   kyma-project/template-repository:
     - name: pre-template-repository-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for template-repository"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-template-repository-presubmit-scanner"
@@ -524,30 +599,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-project/rafter:
-    - name: pre-rafter-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-rafter-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -557,7 +614,8 @@ presubmits: # runs on PRs
   kyma-project/btp-manager:
     - name: pre-btp-manager-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for btp-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-btp-manager-presubmit-scanner"
@@ -570,7 +628,41 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
+  
+  kyma-project/kyma-environment-broker:
+    - name: pre-kyma-environment-broker-presubmit-scanner
+      annotations:
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for kyma-environment-broker"
+        owner: "neighbors"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-kyma-environment-broker-presubmit-scanner"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -580,7 +672,8 @@ presubmits: # runs on PRs
   kyma-project/telemetry-manager:
     - name: pre-telemetry-manager-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for telemetry-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-telemetry-manager-presubmit-scanner"
@@ -593,7 +686,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -603,7 +701,8 @@ presubmits: # runs on PRs
   kyma-project/director-size-exporter:
     - name: pre-director-size-exporter-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for director-size-exporter"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-director-size-exporter-presubmit-scanner"
@@ -616,7 +715,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -626,7 +730,8 @@ presubmits: # runs on PRs
   kyma-project/compass-manager:
     - name: pre-compass-manager-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for compass-manager"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-compass-manager-presubmit-scanner"
@@ -639,7 +744,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -649,7 +759,8 @@ presubmits: # runs on PRs
   kyma-incubator/compass:
     - name: pre-compass-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for compass"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-compass-presubmit-scanner"
@@ -662,7 +773,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -672,7 +788,8 @@ presubmits: # runs on PRs
   kyma-incubator/ord-service:
     - name: pre-ord-service-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for ord-service"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-ord-service-presubmit-scanner"
@@ -685,7 +802,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -695,7 +817,8 @@ presubmits: # runs on PRs
   kyma-incubator/reconciler:
     - name: pre-reconciler-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for reconciler"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-reconciler-presubmit-scanner"
@@ -708,53 +831,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/bullseye-showcase:
-    - name: pre-bullseye-showcase-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-bullseye-showcase-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/documentation-component:
-    - name: pre-documentation-component-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-documentation-component-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -764,7 +846,8 @@ presubmits: # runs on PRs
   kyma-incubator/compass-console:
     - name: pre-compass-console-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for compass-console"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-compass-console-presubmit-scanner"
@@ -777,7 +860,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -787,7 +875,8 @@ presubmits: # runs on PRs
   kyma-incubator/sap-btp-service-operator:
     - name: pre-sap-btp-service-operator-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for sap-btp-service-operator"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-sap-btp-service-operator-presubmit-scanner"
@@ -800,53 +889,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/milv:
-    - name: pre-milv-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-milv-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/varkes:
-    - name: pre-varkes-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-varkes-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -856,7 +904,8 @@ presubmits: # runs on PRs
   kyma-incubator/slack-bot:
     - name: pre-slack-bot-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for slack-bot"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-slack-bot-presubmit-scanner"
@@ -869,7 +918,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -879,7 +933,8 @@ presubmits: # runs on PRs
   kyma-incubator/migrate:
     - name: pre-migrate-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for migrate"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-migrate-presubmit-scanner"
@@ -892,7 +947,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -902,7 +962,8 @@ presubmits: # runs on PRs
   kyma-incubator/github-dashboard:
     - name: pre-github-dashboard-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for github-dashboard"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-github-dashboard-presubmit-scanner"
@@ -915,99 +976,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/website-vuepress:
-    - name: pre-website-vuepress-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-website-vuepress-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/kitbag:
-    - name: pre-kitbag-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kitbag-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/kyma-showcase:
-    - name: pre-kyma-showcase-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-kyma-showcase-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/hydra-login-consent:
-    - name: pre-hydra-login-consent-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-hydra-login-consent-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -1017,7 +991,8 @@ presubmits: # runs on PRs
   kyma-incubator/kymart:
     - name: pre-kymart-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for kymart"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-kymart-presubmit-scanner"
@@ -1030,122 +1005,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/examples:
-    - name: pre-examples-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-examples-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/vstudio-extension:
-    - name: pre-vstudio-extension-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-vstudio-extension-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/wordpress-connector:
-    - name: pre-wordpress-connector-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-wordpress-connector-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/connector-tools:
-    - name: pre-connector-tools-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-connector-tools-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/artwork:
-    - name: pre-artwork-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-artwork-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -1155,7 +1020,8 @@ presubmits: # runs on PRs
   kyma-incubator/opensap:
     - name: pre-opensap-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for opensap"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-opensap-presubmit-scanner"
@@ -1168,53 +1034,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/testdrape:
-    - name: pre-testdrape-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-testdrape-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-incubator/sc-removal:
-    - name: pre-sc-removal-presubmit-scanner
-      annotations:
-        pipeline.trigger: "pr-submit"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-sc-removal-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -1224,7 +1049,8 @@ presubmits: # runs on PRs
   kyma-incubator/service-catalog-tester:
     - name: pre-service-catalog-tester-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for service-catalog-tester"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-service-catalog-tester-presubmit-scanner"
@@ -1237,7 +1063,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -1247,7 +1078,8 @@ presubmits: # runs on PRs
   kyma-incubator/service-catalog:
     - name: pre-service-catalog-presubmit-scanner
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for service-catalog"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-service-catalog-presubmit-scanner"
@@ -1260,7 +1092,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.15.3"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:

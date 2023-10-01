@@ -5,15 +5,11 @@ templates:
     render:
       - localSets:
           jobConfig_default:
-            annotations:
-              pipeline.clusterprovisioning: keb
-              pipeline.installer: keb
-              pipeline.test: fast-integration
-            path_alias: github.com/kyma-project/kyma
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/skr-aws-upgrade-integration-dev.sh"
             cluster: "trusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28
             labels:
               preset-build-main: "true"
               preset-bot-github-token: "true"
@@ -24,28 +20,28 @@ templates:
               preset-kyma-integration-subaccounnt: "true"
               preset-kyma-integration-kcp-client-credentials: "true"
               preset-kcp-client-dev-envs: "true"
-              preset-btp-operator-stage-credentials: "true"
           keb_plan_aws:
-            annotations:
-              pipeline.platform: gardener_aws
             env:
               KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15" # AWS
               SKIP_CLEANUP: "FALSE" # set to true if Cluster & Compass cleanup should be skipped
         jobConfigs:
-          - repoName: "kyma-project/kyma"
+          - repoName: "kyma-project/kyma-environment-broker"
             jobs:
               - jobConfig:
                   name: "skr-aws-upgrade-integration-dev"
-                  cron: "0 */4 * * *" # "Every four hours"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr upgrade test on aws
+                  cron: "5 1 * * *" # "At 01:05"
                   # labels:
                   #   preset-skr-al-service-key: "true"
                 inheritedConfigs:
                   global:
-                    - "image_kyma-integration"
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "extra_refs_kyma"
+                    - "extra_refs_kyma-environment-broker"
                     - "disable_testgrid"
                     - "kyma_project_dir"
                   local:

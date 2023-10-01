@@ -1,9 +1,9 @@
 global:
-  nextRelease: "2.13"
+  nextRelease: "2.18"
   releases:
-    - "2.12"
-    - "2.11"
-    - "2.10"
+    - "2.17"
+    - "2.16"
+    - "2.15"
   orgs:
     - name: "kyma-project"
       repos:
@@ -16,10 +16,8 @@ global:
         - name: "lifecycle-manager"
         - name: "third-party-images"
         - name: "community"
-        - name: "module-manager"
         - name: "hydroform"
         - name: "istio-operator"
-        - name: "addons"
         - name: "private-fn-for-e2e-serverless-tests"
         - name: "charts"
         - name: "examples"
@@ -30,8 +28,8 @@ global:
         - name: "kyma-dashboard"
         - name: "application-connector-manager"
         - name: "template-repository"
-        - name: "rafter"
         - name: "btp-manager"
+        - name: "kyma-environment-broker"
         - name: "telemetry-manager"
         - name: "director-size-exporter"
         - name: "compass-manager"
@@ -40,38 +38,21 @@ global:
         - name: "compass"
         - name: "ord-service"
         - name: "reconciler"
-        - name: "bullseye-showcase"
-        - name: "documentation-component"
         - name: "compass-console"
         - name: "sap-btp-service-operator"
-        - name: "milv"
-        - name: "varkes"
         - name: "slack-bot"
         - name: "migrate"
         - name: "github-dashboard"
-        - name: "website-vuepress"
-        - name: "kitbag"
-        - name: "kyma-showcase"
-        - name: "hydra-login-consent"
         - name: "kymart"
-        - name: "examples"
-        - name: "vstudio-extension"
-        - name: "wordpress-connector"
-        - name: "connector-tools"
-        - name: "artwork"
         - name: "opensap"
-        - name: "testdrape"
-        - name: "sc-removal"
         - name: "service-catalog-tester"
         - name: "service-catalog"
-        
-
 
 # global configSet variables
 pubsub_config: &pubsub_config
   pubsub_project: "sap-kyma-prow"
   pubsub_topic: "prowjobs"
-  
+
 globalSets:
   kaniko_buildpack:
     skip_report: "false"
@@ -83,6 +64,10 @@ globalSets:
     command: /image-builder
     request_memory: "1.5Gi"
     request_cpu: "1"
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: RuntimeDefault
     labels:
       preset-sa-kyma-push-images: "true"
     volumes:
@@ -103,22 +88,19 @@ globalSets:
     decorate: "true"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
-    nodeSelector:
-      dedicated: high-cpu
-    tolerations:
-      - key: dedicated
-        value: high-cpu
-        operator: Equal
-        effect: NoSchedule
     image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     command: "/image-builder"
     request_memory: "1.5Gi"
     request_cpu: "1"
     labels:
       preset-sa-kyma-push-images: "true"
-    annotations:
-      container.apparmor.security.beta.kubernetes.io/test: unconfined
-      container.seccomp.security.alpha.kubernetes.io/test: unconfined
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        # fork/exec is required
+        type: Unconfined
+    # annotations:
+    #   container.apparmor.security.beta.kubernetes.io/test: unconfined
     env:
       BUILDKITD_FLAGS: "--oci-worker-no-process-sandbox"
     volumes:
@@ -142,7 +124,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
+    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 200Mi
@@ -152,7 +134,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -169,26 +151,22 @@ globalSets:
     env:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
-  image_bootstrap:
-    image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
-  image_prow-tools:
-    image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
-  image_kyma-integration:
-    image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
   image_buildpack-node:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-node:v20221121-3622f3a5"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28"
   image_buildpack-golang:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-  image_buildpack-golang-kubebuilder2:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-  image_buildpack-golang-toolbox:
-    image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
-  image_wssagent:
-    image: "eu.gcr.io/kyma-project/test-infra/whitesource-scanner:v20230224-5c582f17"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
+  image_wssagent_go:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20230913-3d41bb28"
+  image_wssagent_nodejs:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20230913-3d41bb28"
   image_gardener-rotate:
-    image: "eu.gcr.io/kyma-project/test-infra/gardener-rotate:v20230202-40569193"
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20230914-c7902318
   image_markdown_index:
-    image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230324-34be098e"
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20230914-c7902318
+  image_image_detector:
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230914-c7902318
+  image_e2e-dind-k3d:
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -197,18 +175,30 @@ globalSets:
     branches:
       - "^master$"
       - "^main$"
-    privileged: "true"
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: "RuntimeDefault"
     request_memory: "3Gi"
     request_cpu: "2"
     cluster_presubmit: "untrusted-workload"
     cluster_postsubmit: "trusted-workload"
-    nodeSelector:
-      dedicated: high-cpu
-    tolerations:
-    - key: dedicated
-      value: high-cpu
-      operator: Equal
-      effect: NoSchedule
+    <<: *pubsub_config
+  jobConfig_buildpack_node:
+    skip_report: "false"
+    max_concurrency: "10"
+    decorate: "true"
+    branches:
+      - "^master$"
+      - "^main$"
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: "RuntimeDefault"
+    request_memory: "3Gi"
+    request_cpu: "2"
+    cluster_presubmit: "untrusted-workload"
+    cluster_postsubmit: "trusted-workload"
     <<: *pubsub_config
   jobConfig_kyma20_docu:
     skip_report: "false"
@@ -217,34 +207,34 @@ globalSets:
     optional: "true"
     branches:
       - "^kyma-2.0-docu$"
-    privileged: "true"
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: "RuntimeDefault"
     request_memory: "1.5Gi"
     request_cpu: "0.8"
     cluster_presubmit: "untrusted-workload"
     cluster_postsubmit: "trusted-workload"
-    nodeSelector:
-      dedicated: high-cpu
-    tolerations:
-      - key: dedicated
-        value: high-cpu
-        operator: Equal
-        effect: NoSchedule
     <<: *pubsub_config
   jobConfig_presubmit:
-    annotations:
-      pipeline.trigger: pr-submit
     type_presubmit: "true"
     cluster: "untrusted-workload"
   jobConfig_postsubmit:
-    annotations:
-      pipeline.trigger: pr-merge
     type_postsubmit: "true"
     cluster: "trusted-workload"
   jobConfig_periodic:
-    annotations:
-      pipeline.trigger: periodic
     type_periodic: "true"
     cluster: "untrusted-workload"
+  unprivileged:
+    securityContext:
+      privileged: "false"
+      seccompProfile:
+        type: "RuntimeDefault"
+  privileged:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: "Unconfined"
   disable_testgrid:
     annotations:
       testgrid-create-test-group: "false"
@@ -252,46 +242,40 @@ globalSets:
     slack_channel: "kyma-prow-dev-null"
   jobConfig_slack_jellyfish:
     slack_channel: "jellyfish-notifications"
+  jobConfig_slack_goat:
+    slack_channel: "goat-int"
   jobConfig_buildpack_incubator:
     labels:
       preset-docker-push-repository-incubator: "true"
-  jobConfig_reconciler_publish_unstable_cli:
-    command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler-publish-unstable-cli.sh"
-    annotations:
-      pipeline.installer: reconciler
-      pipeline.test: "fast-integration"
-      pipeline.clusterprovisioning: reconciler
   # generic component jobConfigs
   jobConfig_generic_component:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: Unconfined
     labels:
       preset-dind-enabled: "true"
-      preset-sa-gcr-push: "true"
+      preset-sa-kyma-push-images: "true"
       preset-kyma-kms-sign-key: "true"
     command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
   jobConfig_generic_component_kyma:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/kyma"
   jobConfig_generic_component_control-plane:
     labels:
       preset-docker-push-repository-control-plane: "true"
-    path_alias: "github.com/kyma-project/control-plane"
   jobConfig_generic_component_api-gateway:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/api-gateway"
   jobConfig_generic_component_busola:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/busola"
   jobConfig_generic_component_kyma-dashboard:
     labels:
       preset-docker-push-repository-kyma: "true"
-    path_alias: "github.com/kyma-project/kyma-dashboard"
   jobConfig_generic_component_compass:
     labels:
       preset-docker-push-repository-incubator: "true"
-    path_alias: "github.com/kyma-incubator/compass"
   disable_report:
     skip_report: "true"
   # globalSet for prowjobs which doesn't inherit jobConfig_default globalSet
@@ -301,47 +285,57 @@ globalSets:
     cluster: "trusted-workload"
   untrusted_cluster:
     cluster: "untrusted-workload"
+  privileged_job:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: Unconfined
   # extra_refs sets
   extra_refs_test-infra:
     extra_refs:
       test-infra:
         - org: "kyma-project"
           repo: "test-infra"
-          path_alias: "github.com/kyma-project/test-infra"
           base_ref: "main"
   extra_refs_kyma:
     extra_refs:
       kyma:
         - org: "kyma-project"
           repo: "kyma"
-          path_alias: "github.com/kyma-project/kyma"
           base_ref: "main"
   extra_refs_reconciler:
     extra_refs:
       reconciler:
         - org: "kyma-incubator"
           repo: "reconciler"
-          path_alias: "github.com/kyma-incubator/reconciler"
           base_ref: "main"
   extra_refs_control-plane:
     extra_refs:
       control-plane:
         - org: "kyma-project"
           repo: "control-plane"
-          path_alias: "github.com/kyma-project/control-plane"
           base_ref: "main"
   extra_refs_btp-manager:
     extra_refs:
       btp-manager:
         - org: "kyma-project"
           repo: "btp-manager"
-          path_alias: "github.com/kyma-project/btp-manager"
+          base_ref: "main"
+  extra_refs_kyma-environment-broker:
+    extra_refs:
+      kyma-environment-broker:
+        - org: "kyma-project"
+          repo: "kyma-environment-broker"
           base_ref: "main"
   # labels sets
   build_labels:
+    securityContext:
+      privileged: "true"
+      seccompProfile:
+        type: "Unconfined"
     labels:
       preset-dind-enabled: "true"
-      preset-sa-gcr-push: "true"
+      preset-sa-kyma-push-images: "true"
       preset-docker-push-repository-kyma: "true"
   # gardener configs
   gardener_gcp_job:
@@ -353,23 +347,3 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
       GARDENER_REGION: "europe-west4"
       GARDENER_ZONES: "europe-west4-b"
-    annotations:
-      pipeline.platform: gardener_gcp
-
-templates:
-  - from: prow-config.yaml
-    render:
-      - to: ../../prow/config.yaml
-        values:
-          cluster:
-            presubmit: untrusted-workload
-            postsubmit: trusted-workload
-            periodic: trusted-workload
-          contexts:
-            - name: kyma-integration
-            - name: kyma-gke-integration
-            - name: kyma-gke-upgrade
-            - name: kyma-artifacts
-  - from : test-infra-autobump-config.yaml
-    render:
-      - to: ../../prow/autobump-config/test-infra-autobump-config.yaml

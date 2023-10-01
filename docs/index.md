@@ -1,12 +1,10 @@
 [Changelog Generator](/changelog-generator/README.md) - This project is a Docker image that is used to generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests with specified labels.
 
-[Development](/development/README.md) - The purpose of the folder is to store tools developed and used in the `test-infra` repository.
+[Artifact Registry creator tool (GCP, Terraform)](/configs/terraform/modules/artifact-registry/README.md) - This is the GCP image registry creator tool. Use the registry to publish modules that should be accessible to internal SAP teams.
 
 [Create Custom Image](/development/custom-image/README.md) - The purpose of this document is to define how to create a new Google Compute Engine [custom image](https://cloud.google.com/compute/docs/images) with required dependencies. You can use the new image to provision virtual machine (VM) instances with all dependencies already installed.
 
 [gardener-rotate](/development/gardener-rotate/README.md) - The gardener-rotate tool allows you to generate a new access token for the Gardener service accounts and update kubeconfig stored in the Secret Manager.
-
-[gcbuild](/development/gcbuild/README.md) - This tool serves as an intelligent wrapper for `gcloud builds submit`. It runs remote build jobs on Google infrastructure with setting automated substitutions, that developers can use. It's built to reduce the complexity of building the Docker images.
 
 [Rotate Gardener service account secrets using Cloud Run](/development/gcp/cloud-run/gardener-sa-rotate/README.md) - The Cloud Run application creates a new key for a GCP service account, updates the required secret data, and deletes old versions of a key. The function is triggered by a Pub/Sub message sent by a secret stored in Secret Manager.
 
@@ -14,27 +12,19 @@
 
 [image-builder](/development/image-builder/README.md) - This tool serves as an intelligent wrapper for `kaniko-project/executor`. It reduces the complexity of building Docker images and removes the need of using Docker in Docker when building images in K8s infrastructure.
 
+[Image Detector](/development/image-detector/README.md) - Image Detector is a tool for updating the security scanner config with the list of images in the Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its components.
+
 [image-syncer](/development/image-syncer/README.md) - image-syncer is used to copy container images from one registry to another.
 
 [Image URL Helper](/development/image-url-helper/README.md) - Image URL Helper is a tool that provides the following subcommands:
 
 [JobGuard ](/development/jobguard/README.md) - JobGuard is a simple tool that fetches all statuses for GitHub pull requests and waits for some of them to finish.
 
-[GitHub Webhook Gateway](/development/kyma-github-connector/githubWebhookGateway/README.md) - The GitHub Webhook Gateway is written in Golang. It listens for incoming GitHub Webhook events. It validates a Webhook HMAC secret, converts it to a CloudEvents compliant event and forwards it to the Kyma Event Service. It is meant to run within Kyma as a docker container.
-
-[PubSub Gateway](/development/kyma-pubsub-connector/pubSubGateway/README.md) - The PubSub Gateway is written in Golang. It pulls messages from PubSub, converts them into a CloudEvents, and forwards them to the Kyma Event Publisher Proxy.
-
-[Overview](/development/kyma-slack-connector/issueLabeledFunction/README.md) - The `issueLabeled` Function is executed by Kyma [Serverless](https://kyma-project.io/docs/components/serverless/) when the registered **issuesevent.labeled** event occurs. All **issuesevent.labeled** events for the `internal-incident` or `customer-incident` labels will be processed by this Function.
-
 [prowjobparser](/development/prowjobparser/README.md) - The prowjobparser is a helper tool which parses all Prow Jobs under the provided path, matches them against the provided label filters, and prints matching Prow Job names to the standard output.
 
 [Rotate service account secrets](/development/secrets-rotator/cloud-run/rotate-service-account/README.md) - RotateServiceAccount creates a new key for a GCP service account and updates the required secret data. It's triggered by a  Pub/Sub message sent by a secret stored in Secret Manager. It runs as a cloud run container.
 
 [Cleanup of service account secrets](/development/secrets-rotator/cloud-run/service-account-keys-cleaner/README.md) - The Cloud Run service deletes old keys for a GCP service account and updates the required secret data for all service account secrets stored in the Secret Manager. The service is triggered by a Cloud Scheduler job.
-
-[Test Log Collector](/development/test-log-collector/README.md) - The purpose of the Test Log Collector is to gather logs from the testing Pods and to send them to the appropriate Slack channels.
-
-[Octopus Types](/development/test-log-collector/pkg/resources/clustertestsuite/types/README.md) - Types in that package has been copied from https://github.com/kyma-incubator/octopus/tree/master/pkg/apis/testing/v1alpha1 in order to solve problems with older dependencies in `octopus` project.
 
 [Tools](/development/tools/README.md) - This project contains Go applications for the `test-infra` repository.
 
@@ -46,8 +36,6 @@
 
 [Disks Garbage Collector](/development/tools/cmd/diskscollector/README.md) - This command finds and removes orphaned disks created by the `kyma-gke-integration` job in a Google Cloud Platform (GCP) project.
 
-[DNS Cleaner](/development/tools/cmd/dnscleaner/README.md) - This command finds and removes DNS entries created by the `kyma-gke-long-lasting` job in a Google Cloud Platform (GCP) project.
-
 [IP Address and DNS Record Garbage Collector](/development/tools/cmd/dnscollector/README.md) - This command finds and removes orphaned IP Addresses and related DNS records created by GKE integration jobs in a Google Cloud Platform (GCP) project.
 
 [External Secrets Checker](/development/tools/cmd/externalsecretschecker/README.md) - This command checks external Secrets synchronization status, and if every Secret has a corresponding external Secret.
@@ -56,7 +44,7 @@
 
 [Github issues](/development/tools/cmd/githubissues/README.md) - This command queries all open Github issues in an organization or repository, and loads that data to a BigQuery table.
 
-[Github Release](/development/tools/cmd/githubrelease/README.md) - This command creates GitHub releases based on artifacts stored in a Google bucket. Each release requires the following set of artifacts:
+[GitHub release](/development/tools/cmd/githubrelease/README.md) - This command creates GitHub releases.
 
 [GitHub Statistics](/development/tools/cmd/githubstats/README.md) - `githubstats` fetches statistics for GitHub issues and prints the following JSON object:
 
@@ -76,7 +64,7 @@
 
 [PR Tag Builder](/development/tools/pkg/prtagbuilder/README.md) - PR Tag Builder is a tool that finds a pull request number for a commit.
 
-[Documentation guidelines](/docs/documentation_guidelines.md) - 1. Each repository must contain an automatically updated index page in `docs` directory.
+/development/tools/pkg/release/change-record.md[Documentation guidelines](/docs/documentation_guidelines.md) - 1. Each repository must contain an automatically updated index page in `docs` directory.
 
 [Documentation](/docs/how-to/ado/README.md) - The folder contains documents that provide an insight into Azure DevOps (ADO) configuration, development, and testing.
 
@@ -84,7 +72,7 @@
 
 [Add custom secret to Prow](/docs/how-to/how-to-add-custom-secret.md) - This tutorial shows how to add a custom secret and use it in the Prow pipeline.
 
-[Use Tekton Pipelines with Prow](/docs/how-to/how-to_use_tekton-pipelines-in-prow.md) - Kyma Prow instance supports defining and using Tekton Pipelines as a workload. This gives the developer the ability to use
+[Standard Terraform configuration](/docs/how-to/how-to-create-standard-terraform-config.md) - This document describes the standard Terraform configuration that is used in `test-infra` repository. 
 
 [Docs](/docs/prow/README.md) - The folder contains documents that provide an insight into Prow configuration, development, and testing.
 
@@ -102,8 +90,6 @@
 
 [Presets](/docs/prow/presets.md) - This document contains the list of all Presets available in the [`config.yaml`](/prow/config.yaml) file. Use them to define Prow Jobs for your components.
 
-[Production Cluster Configuration](/docs/prow/production-cluster-configuration.md) - This instruction provides the steps required to deploy a production cluster for Prow.
-
 [Prow Architecture](/docs/prow/prow-architecture.md) - The document outlines Prow architecture and interconnections between different systems and components that are involved in it.
 
 [Prow cluster update](/docs/prow/prow-cluster-update.md) - Updating a Prow cluster requires an improved Prow version. The Kubernetes Prow instance gets updated via a shell script. The shell script offers only a short list of the last pushed container tags and as a result, limits the versions to choose from. To cherry-pick updates, monitor [Prow announcements](https://github.com/kubernetes/test-infra/blob/master/prow/ANNOUNCEMENTS.md) to see when fixes or important changes are merged into the Kubernetes repository. This document describes how to update a Prow cluster using a cherry-picked Prow version.
@@ -114,17 +100,9 @@
 
 [Prow Jobs QuickStart](/docs/prow/prow-jobs-quick-start.md) - This document provides an overview of how to quickly start working with Prow jobs.
 
-[Prow jobs](/docs/prow/prow-jobs.md) - This document provides an overview of Prow jobs.  
-
 [TestGrid](/docs/prow/prow-k8s-testgrid.md) - [TestGrid](https://testgrid.k8s.io) is an interactive dashboard for viewing tests results in a grid. It parses JUnit reports for generating a grid view from the tests.
 
 [Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`. 
-
-[Naming conventions](/docs/prow/prow-naming-convention.md) - This document describes the naming conventions for the Prow test instance and its resources hosted in Google Cloud Platform.
-
-[KMS Secrets Management](/docs/prow/prow-secrets-management.md) - Some jobs require using sensitive data. Encrypt the data using Key Management Service (KMS) and store it in Google Cloud Storage (GCS).
-
-[Prow Secrets](/docs/prow/prow-secrets.md) - This document lists all types of Secrets used in the `kyma-prow` and `workload-kyma-prow` clusters, where all Prow Jobs are executed.
 
 [Quality metrics](/docs/prow/quality-metrics.md) - This document describes reports that provide an overview of the basic quality measures for the Kyma project.
 
@@ -135,6 +113,10 @@
 [Tide introduction](/docs/prow/tide-introduction-notes.md) - Along with the Prow upgrade, we want to introduce Tide for merging the PRs automatically.
 
 [Prow Workload Clusters](/docs/prow/workload-clusters.md) - This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` GCP project. We use two workload clusters for trusted and untrusted Prow jobs.
+
+[Prow runtime images](/images/README.md) - This directory contains images that can be used as runtime images for all ProwJobs in Kyma's Prow Instance.
+
+[E2E DinD K3d](/images/e2e-dind-k3d/README.md) - This image contains common tools for all jobs/tasks that test Kyma modules in K3d.
 
 [Prow](/prow/README.md) - Prow is a Kubernetes-developed system that you can use as a Continuous Integration (CI) tool for validating your GitHub repositories and components, managing automatic validation of pull requests (PRs), applying and removing labels, or opening and closing issues.
 
@@ -148,7 +130,7 @@
 
 [Probot Stale](/prow/cluster/resources/probot-stale/README.md) - This chart contains the `probot-stale` configuration.
 
-[Images](/prow/images/README.md) - This folder contains a list of images used in Prow jobs.
+[Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](../../images) directory instead.
 
 [Bootstrap Docker Image](/prow/images/bootstrap/README.md) - This folder contains the Bootstrap image for Prow infrastructure. Use it for a root image for other Prow images and for generic builds.
 
@@ -168,11 +150,7 @@
 
 [Prow Tools](/prow/images/prow-tools/README.md) - The directory contains the Dockerfile for the prow tools image with prebuilt tools used in the prow pipelines.
 
-[Prow Tools](/prow/images/test-untrusted-plugin/README.md) - The directory contains the Dockerfile for the prow tools image with prebuilt tools used in the prow pipelines.
-
 [Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
-
-[Cluster](/prow/scripts/README.md) - The folder contains scripts involved in integration tests.
 
 [Cluster Integration Job](/prow/scripts/cluster-integration/README.md) - The folder contains the source code for the integration job that installs and tests Kyma on a temporary cluster provisioned on Google Kubernetes Engine (GKE).
 
@@ -181,8 +159,6 @@
 [#Overview](/prow/scripts/resources/README.md) - The folder contains files that are directly used by Prow pipeline scripts.
 
 [Cluster](/prow/workload-cluster/README.md) - This folder contains configuration files for the Prow workload. This configuration is used during cluster provisioning.
-
-[Unit Tests for Go Code](/task/go-unit-tests/0.1/README.md) - A go-unit-tests Task is used to run unit tests for Go code.
 
 [Templates](/templates/README.md) - Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.
 

@@ -51,6 +51,9 @@ periodics:
             - ci/test.sh
           securityContext:
             privileged: true
+            seccompProfile:
+              type: Unconfined
+            allowPrivilegeEscalation: true
           resources: # adjust it to your needs
             requests:
               cpu: 500m
@@ -98,6 +101,9 @@ periodics:
               k3d cluster delete
           securityContext:
             privileged: true
+            seccompProfile:
+              type: Unconfined
+            allowPrivilegeEscalation: true
           resources: # adjust it to your needs
             requests:
               cpu: 500m

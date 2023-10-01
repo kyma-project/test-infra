@@ -1,5 +1,7 @@
 # Images
 
+> DEPRECATED: Use the [`images`](../../images) directory instead.
+
 ## Overview
 
 This folder contains a list of images used in Prow jobs.

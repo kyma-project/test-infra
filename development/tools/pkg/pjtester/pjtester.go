@@ -21,11 +21,11 @@ import (
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/go-yaml/yaml"
 	"github.com/kyma-project/test-infra/development/github/pkg/git"
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	"github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
+	"gopkg.in/yaml.v3"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/tools/clientcmd"
 	prowapi "k8s.io/test-infra/prow/apis/prowjobs/v1"
@@ -558,11 +558,8 @@ func (pjopts *testProwJobOptions) newTestPJ(pjCfg pjConfig, opt options) (prowap
 	// Building ProwJob k8s resource based on generated job specifications.
 	log.Debug("Generating ProwJob k8s resource.")
 	pj := pjutil.NewProwJob(pjSpecification, job.Labels, job.Annotations)
-	// Allow pjtester to run prowjob to test on tekton cluster.
-	if pj.Spec.Cluster != "tekton" {
-		// Make sure prowjob to test will run on untrusted-workload cluster.
-		pj.Spec.Cluster = "untrusted-workload"
-	}
+	// Make sure prowjob to test will run on untrusted-workload cluster.
+	pj.Spec.Cluster = "untrusted-workload"
 	// Enable all reporting, otherwise send slack messages to null channel.
 	if pjCfg.Report {
 		pj.Spec.Report = true

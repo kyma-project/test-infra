@@ -5,7 +5,8 @@ postsubmits: # runs on main
   kyma-incubator/slack-bot:
     - name: merge-slack-bot-build
       annotations:
-        pipeline.trigger: "pr-merge"
+        description: "gopher Bot build pipeline"
+        owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "merge-slack-bot-build"
@@ -18,6 +19,11 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:

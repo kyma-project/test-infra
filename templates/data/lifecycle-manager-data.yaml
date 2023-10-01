@@ -5,43 +5,14 @@ templates:
         localSets:
           jobConfig_default:
             imagePullPolicy: "Always"
-            privileged: "false"
         jobConfigs:
           - repoName: kyma-project/lifecycle-manager
             jobs:
               - jobConfig:
-                  image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
-                  name: pull-lifecycle-mgr-lint # "pre-main-lifecycle-manager-lint"
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
-                  annotations:
-                    description: executes the 'golangci-lint lint' command before any pull request.
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "golangci-lint run"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-              - jobConfig:
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
-                  name: pull-lifecycle-mgr-tests # pre-main-lifecycle-manager-tests
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "make test" # run test make target of operator
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - build_labels # default labels
-              - jobConfig:
                   name: pull-lifecycle-mgr-build
+                  annotations:
+                    owner: jellyfish
+                    description: run lm build
                   always_run: true
                   args:
                     - "--name=lifecycle-manager"
@@ -53,6 +24,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: main-lifecycle-mgr-build
+                  annotations:
+                    owner: jellyfish
+                    description: build lifecycle manager
                   labels:
                     preset-signify-prod-secret: "true"
                   branches:

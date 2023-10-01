@@ -5,8 +5,8 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-main-control-plane-reconciler-e2e
       annotations:
-        pipeline.platform: "gardener_gcp"
-        pipeline.trigger: "pr-submit"
+        description: "control-plane reconciler e2e test"
+        owner: "jellyfish"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-control-plane-reconciler-e2e"
@@ -26,25 +26,23 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-incubator
           repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler/reconciler-e2e-gardener.sh"
             env:
               - name: GARDENER_REGION
                 value: "europe-west4"
@@ -56,17 +54,10 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
     - name: pre-main-control-plane-reconciler-e2e-latest-release
       annotations:
-        pipeline.platform: "gardener_gcp"
-        pipeline.trigger: "pr-submit"
+        description: "control-plane reconciler e2e test"
+        owner: "jellyfish"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-control-plane-reconciler-e2e-latest-release"
@@ -87,25 +78,23 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: kyma
-          path_alias: github.com/kyma-project/kyma
           base_ref: main
         - org: kyma-incubator
           repo: reconciler
-          path_alias: github.com/kyma-incubator/reconciler
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/reconciler-e2e-gardener.sh"
-            args:
-              - "/home/prow/go/src/github.com/kyma-incubator/reconciler"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler/reconciler-e2e-gardener.sh"
             env:
               - name: GARDENER_REGION
                 value: "europe-west4"
@@ -119,11 +108,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

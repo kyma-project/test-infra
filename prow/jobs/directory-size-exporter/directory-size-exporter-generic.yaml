@@ -5,7 +5,8 @@ presubmits: # runs on PRs
   kyma-project/directory-size-exporter:
     - name: pull-directory-size-exporter-build
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Pre-submit job to build directory-size-exporter image."
+        owner: "huskies"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-directory-size-exporter-build"
@@ -19,6 +20,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -49,7 +55,8 @@ postsubmits: # runs on main
   kyma-project/directory-size-exporter:
     - name: post-directory-size-exporter-build
       annotations:
-        pipeline.trigger: "pr-merge"
+        description: "Post-submit job to build directory-size-exporter image."
+        owner: "huskies"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -64,9 +71,17 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
+      reporter_config:
+        slack:
+          channel: huskies-notifications
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:

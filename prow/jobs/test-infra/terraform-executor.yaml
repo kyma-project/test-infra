@@ -5,7 +5,8 @@ presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pull-build-image-terraform-executor
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Build image for terraform-executor"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-build-image-terraform-executor"
@@ -21,6 +22,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -51,7 +57,8 @@ postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-build-image-terraform-executor
       annotations:
-        pipeline.trigger: "pr-merge"
+        description: "Build image for terraform-executor"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-build-image-terraform-executor"
@@ -68,6 +75,11 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:

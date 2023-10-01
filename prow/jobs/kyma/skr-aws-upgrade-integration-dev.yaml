@@ -4,18 +4,14 @@
 periodics: # runs on schedule
     - name: skr-aws-upgrade-integration-dev
       annotations:
-        pipeline.clusterprovisioning: "keb"
-        pipeline.installer: "keb"
-        pipeline.platform: "gardener_aws"
-        pipeline.test: "fast-integration"
-        pipeline.trigger: "periodic"
+        description: "skr upgrade test on aws"
+        owner: "gopher"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "skr-aws-upgrade-integration-dev"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
-        preset-btp-operator-stage-credentials: "true"
         preset-build-main: "true"
         preset-kcp-client-dev-envs: "true"
         preset-keb-dev-credentials: "true"
@@ -24,25 +20,28 @@ periodics: # runs on schedule
         preset-kyma-integration-compass-enabled: "true"
         preset-kyma-integration-kcp-client-credentials: "true"
         preset-kyma-integration-subaccounnt: "true"
-      cron: "0 */4 * * *"
+      cron: "5 1 * * *"
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/kyma
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: kyma
-          path_alias: github.com/kyma-project/kyma
+          repo: kyma-environment-broker
           base_ref: main
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/skr-aws-upgrade-integration-dev.sh"
             env:
@@ -56,11 +55,4 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

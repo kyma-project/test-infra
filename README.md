@@ -1,10 +1,11 @@
 # Test Infra
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra?ref=badge_shield)
-
+[![REUSE status](https://api.reuse.software/badge/github.com/kyma-project/test-infra)](https://api.reuse.software/info/github.com/kyma-project/test-infra)
 
 ## Overview
 
 The purpose of the `test-infra` repository is to store configuration and scripts for the test infrastructure used in the `kyma-project` organization.
+See also the internally available [test-infra onboarding](https://github.tools.sap/kyma/test-infra/blob/main/onboarding.md).
 
 ### Project documentation
 

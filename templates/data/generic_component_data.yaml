@@ -1,37 +1,6 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma/components/compass-runtime-agent/compass-runtime-agent-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  name: pull-compass-runtime-agent-build
-                  args:
-                    - "--name=compass-runtime-agent"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/compass-runtime-agent"
-                    - "--dockerfile=Dockerfile"
-                  run_if_changed: "^components/compass-runtime-agent/"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-compass-runtime-agent-build
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  args:
-                    - "--name=compass-runtime-agent"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/compass-runtime-agent"
-                    - "--dockerfile=Dockerfile"
-                  run_if_changed: "^components/compass-runtime-agent/"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
       - to: ../../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
@@ -44,6 +13,9 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/event-publisher-proxy"
                     - "--dockerfile=Dockerfile"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the EPP image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -58,6 +30,9 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/event-publisher-proxy"
                     - "--dockerfile=Dockerfile"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the EPP image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -75,6 +50,9 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/eventing-controller"
                     - "--dockerfile=Dockerfile"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the EC image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -89,6 +67,9 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/eventing-controller"
                     - "--dockerfile=Dockerfile"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the EC image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -100,6 +81,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-function-controller-build
+                  annotations:
+                    owner: otters
+                    description: function controller build job
                   run_if_changed: "^components/function-controller/"
                   args:
                     - "--name=function-controller"
@@ -112,6 +96,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-controller-build
+                  annotations:
+                    owner: otters
+                    description: function controller build job
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/function-controller/"
@@ -131,6 +118,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-function-webhook-build
+                  annotations:
+                    owner: otters
+                    description: function webhook build job
                   run_if_changed: "^components/function-controller/"
                   args:
                     - "--name=function-webhook"
@@ -143,6 +133,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-webhook-build
+                  annotations:
+                    owner: otters
+                    description: function webhook build job
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/function-controller/"
@@ -162,6 +155,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-function-jobinit-build
+                  annotations:
+                    owner: otters
+                    description: function jobinit build job
                   run_if_changed: "^components/function-controller/"
                   args:
                     - "--name=function-build-init"
@@ -174,6 +170,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-jobinit-build
+                  annotations:
+                    owner: otters
+                    description: function jobinit build job
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/function-controller/"
@@ -194,6 +193,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-function-registry-gc-build
+                  annotations:
+                    owner: otters
+                    description: function registry build job
                   run_if_changed: "^components/function-controller/"
                   optional: "true"
                   args:
@@ -207,6 +209,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-registry-gc-build
+                  annotations:
+                    owner: otters
+                    description: function registry build job
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/function-controller/"
@@ -228,6 +233,9 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-function-java17-jvm-alpha-build
+                  annotations:
+                    owner: otters
+                    description: function java 17 build job
                   run_if_changed: "^components/function-runtimes/java17"
                   args:
                     - "--name=function-runtime-java17-jvm-alpha"
@@ -240,6 +248,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-java17-jvm-alpha-build
+                  annotations:
+                    owner: otters
+                    description: function java 17 build job
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/function-runtimes/java17"
@@ -254,34 +265,10 @@ templates:
                     - jobConfig_postsubmit
                     - "disable_testgrid"
               - jobConfig:
-                  name: pull-function-runtimes-nodejs14-build
-                  run_if_changed: "^components/function-runtimes/nodejs14"
-                  args:
-                    - "--name=function-runtime-nodejs14"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes/nodejs14"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-function-controller-nodejs14-build
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/function-runtimes/nodejs14"
-                  args:
-                    - "--name=function-runtime-nodejs14"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/function-runtimes/nodejs14"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
-              - jobConfig:
                   name: pull-function-runtimes-nodejs-v16-build
+                  annotations:
+                    owner: otters
+                    description: function nodejs16 build job
                   run_if_changed: "^components/function-runtimes/nodejs"
                   args:
                     - "--name=function-runtime-nodejs16"
@@ -294,6 +281,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-runtimes-nodejs-v16-build
+                  annotations:
+                    owner: otters
+                    description: function nodejs16 build job
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/function-runtimes/nodejs"
@@ -309,6 +299,9 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-function-runtimes-nodejs-v18-build
+                  annotations:
+                    owner: otters
+                    description: function nodejs18 build job
                   run_if_changed: "^components/function-runtimes/nodejs"
                   args:
                     - "--name=function-runtime-nodejs18"
@@ -321,6 +314,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-runtimes-nodejs-v18-build
+                  annotations:
+                    owner: otters
+                    description: function nodejs18 build job
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/function-runtimes/nodejs"
@@ -336,6 +332,9 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-function-runtimes-python39-build
+                  annotations:
+                    owner: otters
+                    description: function python3.9 build job
                   run_if_changed: "^components/function-runtimes/python39"
                   args:
                     - "--name=function-runtime-python39"
@@ -348,6 +347,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-function-controller-python39-build
+                  annotations:
+                    owner: otters
+                    description: function pytho3.9 build job
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^components/function-runtimes/python39"
@@ -361,259 +363,15 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/central-application-gateway/central-application-gateway-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  name: pull-central-application-gateway-build
-                  run_if_changed: "^components/central-application-gateway/"
-                  args:
-                    - "--name=central-application-gateway"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/central-application-gateway"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-central-application-gateway-build
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/central-application-gateway/"
-                  args:
-                    - "--name=central-application-gateway"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/central-application-gateway"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/central-application-connectivity-validator/central-application-connectivity-validator-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  name: pull-central-application-connectivity-validator-build
-                  run_if_changed: "^components/central-application-connectivity-validator/"
-                  args:
-                    - "--name=central-application-connectivity-validator"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/central-application-connectivity-validator"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-central-application-connectivity-validator-build
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/central-application-connectivity-validator/"
-                  args:
-                    - "--name=central-application-connectivity-validator"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/central-application-connectivity-validator"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
-      - to: ../../prow/jobs/telemetry-manager/telemetry-manager-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/telemetry-manager"
-            jobs:
-              - jobConfig:
-                  name: pull-telemetry-manager-build
-                  always_run: true
-                  args:
-                    - "--name=telemetry-manager"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-telemetry-manager-build
-                  branches:
-                    - "^main$"
-                    - "^release-\\d+\\.\\d+$"
-                  always_run: true
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  args:
-                    - "--name=telemetry-manager"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
-      - to: ../../prow/jobs/directory-size-exporter/directory-size-exporter-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/directory-size-exporter"
-            jobs:
-              - jobConfig:
-                  name: pull-directory-size-exporter-build
-                  always_run: true
-                  args:
-                    - "--name=directory-size-exporter"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-directory-size-exporter-build
-                  branches:
-                    - "^main$"
-                  always_run: true
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  args:
-                    - "--name=directory-size-exporter"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
-
-      - to: ../../prow/jobs/kyma/tests/application-connector-component-tests/application-connector-component-tests-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  name: pull-application-connector-gateway-test-build
-                  args:
-                    - "--name=gateway-test"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tests/components/application-connector"
-                    - "--dockerfile=Dockerfile.gateway"
-                  run_if_changed: "^tests/components/application-connector/"
-                  optional: "true"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-application-connector-gateway-test-build
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^tests/components/application-connector/"
-                  args:
-                    - "--name=gateway-test"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tests/components/application-connector"
-                    - "--dockerfile=Dockerfile.gateway"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
-              - jobConfig:
-                  name: pull-application-connector-connectivity-validator-test-build
-                  args:
-                    - "--name=connectivity-validator-test"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tests/components/application-connector"
-                    - "--dockerfile=Dockerfile.connectivity-validator"
-                  run_if_changed: "^tests/components/application-connector/"
-                  optional: "true"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-application-connector-connectivity-validator-test-build
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^tests/components/application-connector/"
-                  args:
-                    - "--name=connectivity-validator-test"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tests/components/application-connector"
-                    - "--dockerfile=Dockerfile.connectivity-validator"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
-              - jobConfig:
-                  name: pull-application-connector-compass-runtime-agent-test-build
-                  args:
-                    - "--name=compass-runtime-agent-test"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tests/components/application-connector"
-                    - "--dockerfile=Dockerfile.compass-runtime-agent"
-                  run_if_changed: "^tests/components/application-connector/"
-                  optional: "true"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-application-connector-compass-runtime-agent-test-build
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^tests/components/application-connector/"
-                  args:
-                    - "--name=compass-runtime-agent-test"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tests/components/application-connector"
-                    - "--dockerfile=Dockerfile.compass-runtime-agent"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
-              - jobConfig:
-                  name: pull-application-connector-mock-app-build
-                  args:
-                    - "--name=mock-app"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tests/components/application-connector"
-                    - "--dockerfile=Dockerfile.mockapp"
-                  run_if_changed: "^tests/components/application-connector/"
-                  optional: "true"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-application-connector-mock-app-build
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^tests/components/application-connector/"
-                  args:
-                    - "--name=mock-app"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tests/components/application-connector"
-                    - "--dockerfile=Dockerfile.mockapp"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
-
       - to: ../../prow/jobs/kyma/tests/serverless-bench/serverless-bench-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
                   name: pull-tests-serverless-bench-build
+                  annotations:
+                    owner: otters
+                    description: gitserver build job
                   args:
                     - "--name=serverless-bench"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -626,6 +384,9 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-test-serverless-bench-build
+                  annotations:
+                    owner: otters
+                    description: serverless bench build
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^tests/serverless-bench/"
@@ -640,45 +401,15 @@ templates:
                     - jobConfig_postsubmit
                     - "disable_testgrid"
 
-      - to: ../../prow/jobs/kyma/tools/event-subscriber/event-subscriber-generic.yaml
-        jobConfigs:
-          - repoName: "github.com/kyma-project/kyma"
-            jobs:
-              - jobConfig:
-                  name: pull-event-subscriber-tools-build
-                  args:
-                    - "--name=event-subscriber-tools"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tools/event-subscriber-tools"
-                    - "--dockerfile=Dockerfile"
-                  run_if_changed: "^tools/event-subscriber-tools"
-                  optional: "true"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-event-subscriber-tools-build
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^tools/event-subscriber-tools/"
-                  args:
-                    - "--name=event-subscriber-tools"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tools/event-subscriber-tools"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - "disable_testgrid"
-
       - to: ../../prow/jobs/kyma/tools/gitserver/gitserver-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
               - jobConfig:
                   name: pull-gitserver-build
+                  annotations:
+                    owner: otters
+                    description: gitserver build job
                   args:
                     - "--name=gitserver"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -692,11 +423,14 @@ templates:
                     - jobConfig_presubmit
               - jobConfig:
                   name: post-gitserver-build
+                  annotations:
+                    owner: otters
+                    description: gitserver build job
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^tools/gitserver/"
                   args:
-                    - "--name=event-subscriber-tools"
+                    - "--name=gitserver"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=tools/gitserver"
                     - "--dockerfile=Dockerfile"
@@ -705,4 +439,3 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - "disable_testgrid"
-

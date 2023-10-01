@@ -7,7 +7,8 @@ postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-test-infra-markdown-index-autobump
       annotations:
-        pipeline.trigger: "pr-merge"
+        description: "autobump markdown index.md"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -25,14 +26,58 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/markdown-index:v20230324-34be098e"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20230914-c7902318"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "/markdown-index"
+              - "/ko-app/markdown-index"
             args:
               - "--config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml"
+              - "--labels-override=kind/chore,area/documentation"
+    - name: post-test-infra-image-detector-autobump
+      annotations:
+        description: "autobump prow images for scan"
+        owner: "neighbors"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-test-infra-image-detector-autobump"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
+      run_if_changed: '.(md|yml|yaml|tf|tfvars)$'
+      skip_report: false
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+      reporter_config:
+        slack:
+          channel: kyma-prow-alerts
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230914-c7902318"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/ko-app/image-detector"
+            args:
+              - "--prow-config=prow/config.yaml"
+              - "--prow-jobs-dir=prow/jobs"
+              - "--terraform-dir=configs/terraform"
+              - "--sec-scanner-config=sec-scanners-config.yaml"
+              - "--kubernetes-dir=prow/cluster/components"
+              - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
+              - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: post-test-infra-deploy-prow
       annotations:
-        pipeline.trigger: "pr-merge"
+        description: "Deploy prow components"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -49,24 +94,22 @@ postsubmits: # runs on main
         slack:
           channel: kyma-prow-alerts
       spec:
+        serviceAccountName: sa-prow-deploy
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230913-3d41bb28"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "prow/cluster/deploy.sh"
-            env:
-              - name: GOOGLE_APPLICATION_CREDENTIALS
-                value: "/etc/credentials/service-account.json"
-            volumeMounts:
-              - name: sa-prow-deploy
-                mountPath: /etc/credentials
-        volumes:
-          - name: sa-prow-deploy
-            secret:
-              secretName: sa-prow-deploy
   
 periodics: # runs on schedule
     - name: eventing-tools-autobump
       annotations:
+        description: "autobump eventing images"
+        owner: "skydivingtunas"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -81,11 +124,15 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: eventing-tools
-          path_alias: github.com/kyma-project/eventing-tools
           base_ref: main
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230329-c93d79fb7d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230925-22f1fe8b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "generic-autobumper"
             args:
@@ -93,6 +140,8 @@ periodics: # runs on schedule
   
     - name: ci-prow-label-sync
       annotations:
+        description: "Periodic sync of labels in GitHub"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -105,7 +154,12 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/label_sync:v20230329-c93d79fb7d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:v20230925-22f1fe8b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "label_sync"
             args:
@@ -126,6 +180,8 @@ periodics: # runs on schedule
               name: label-config
     - name: ci-prow-autobump
       annotations:
+        description: "Autobump prow components image versions"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -139,20 +195,66 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230329-c93d79fb7d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230925-22f1fe8b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "generic-autobumper"
             args:
               - "--config=prow/autobump-config/prow-cluster-autobump-config.yaml"
+              - "--labels-override=kind/chore,area/prow"
+    - name: test-infra-image-detector-autobump
+      annotations:
+        description: "daily detect prow images for scan"
+        owner: "neighbors"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "test-infra-image-detector-autobump"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
+      cron: "0 8 * * *"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-alerts
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20230914-c7902318"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/ko-app/image-detector"
+            args:
+              - "--prow-config=prow/config.yaml"
+              - "--prow-jobs-dir=prow/jobs"
+              - "--terraform-dir=configs/terraform"
+              - "--sec-scanner-config=sec-scanners-config.yaml"
+              - "--kubernetes-dir=prow/cluster/components"
+              - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
+              - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: ci-prow-autobump-jobs
       annotations:
+        description: "Autobump image versions in prow jobs"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -166,17 +268,55 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       reporter_config:
         slack:
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "gcr.io/k8s-prow/generic-autobumper:v20230329-c93d79fb7d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230925-22f1fe8b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "generic-autobumper"
             args:
               - "--config=prow/autobump-config/test-infra-autobump-config.yaml"
-              - "--labels-override=skip-review"
+              - "--labels-override=skip-review,area/ci,kind/chore"
+    - name: ci-dockerhub-autobump
+      annotations:
+        description: "Autobump images from docker.io"
+        owner: "neighbors"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "ci-dockerhub-autobump"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-autobump-bot-github-token: "true"
+      cron: "55 * * * 1-5"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: test-infra
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-prow-alerts
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230925-22f1fe8b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "generic-autobumper"
+            args:
+              - "--config=prow/autobump-config/dockerhub-autobump.yaml"
+              - "--labels-override=skip-review,area/ci,kind/chore"
   

@@ -1,0 +1,40 @@
+templates:
+  - fromTo:
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma/keb-endpoints-test.yaml
+    render:
+      - localSets:
+          jobConfig_default:
+            command: make
+            args:
+              - -C
+              - testing/e2e/skr
+              - keb-endpoints
+            cluster: "trusted-workload"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28
+            request_memory: 100Mi
+            request_cpu: 50m
+            labels:
+              preset-keb-dev-credentials: "true"
+              preset-keb-plan-azure: "true"
+          kyma_integration_subaccount:
+            env:
+              KEB_SUBACCOUNT_ID: "prow-keb-integration"
+        jobConfigs:
+          - repoName: "kyma-project/kyma-environment-broker"
+            jobs:
+              - jobConfig:
+                  name: "keb-endpoints-test"
+                  cron: "5 1 * * *" # "At 01:05"
+                  annotations:
+                    owner: "gopher"
+                    description: "Periodic job to check if KEB endpoints require authorization"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_kyma-environment-broker"
+                    - "disable_testgrid"
+                  local:
+                    - "jobConfig_default"
+                    - "kyma_integration_subaccount"

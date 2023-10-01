@@ -582,9 +582,6 @@ function utils::post_hook() {
     #Turn off exit-on-error so that next step is executed even if previous one fails.
     set +e
 
-    # collect logs from failed tests before deprovisioning
-    kyma::run_test_log_collector "$jobname"
-
     log::info "Cleanup"
 
     utils::oom_get_output
@@ -878,7 +875,7 @@ function utils::get_kyma_fast_integration_dir {
   do
     case "$arg" in
         -d)
-          if [ ! -z "$2" ]; then
+          if [ -n "$2" ]; then
             kymaDirectory="$2"
           fi
           shift 2

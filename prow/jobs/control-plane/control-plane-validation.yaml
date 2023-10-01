@@ -5,7 +5,8 @@ presubmits: # runs on PRs
   kyma-project/control-plane:
     - name: pre-control-plane-validate-dockerfiles
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Validate Dockerfiles"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-control-plane-validate-dockerfiles"
@@ -13,7 +14,6 @@ presubmits: # runs on PRs
       run_if_changed: '.*Dockerfile$'
       skip_report: false
       decorate: true
-      path_alias: github.com/kyma-project/control-plane
       cluster: untrusted-workload
       max_concurrency: 1
       branches:
@@ -22,13 +22,15 @@ presubmits: # runs on PRs
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/bootstrap:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20230913-3d41bb28"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/bash"
             args:
@@ -45,11 +47,4 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

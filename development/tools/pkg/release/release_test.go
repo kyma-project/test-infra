@@ -9,10 +9,9 @@ import (
 )
 
 const (
-	mockLocalConfigArtifactName    = "kyma-config-local.yaml"
-	mockLocalInstallerArtifactName = "kyma-installer-local.yaml"
-	mockChangelogFileName          = "change-record.md"
-	mockCommitish                  = "a1b2c3d4"
+	mockChangelogFileName = "change-record.md"
+	mockCommitiSHA        = "a1b2c3d4"
+	mockComponentsPath    = "kyma-components.yaml"
 )
 
 func TestCreateRelease(t *testing.T) {
@@ -26,31 +25,25 @@ func TestCreateRelease(t *testing.T) {
 
 			//given
 			fakeGithub := &FakeGithubAPIWrapper{}
-			fakeStorage := &FakeStorageAPIWrapper{}
-			releaseWizard := NewCreator(fakeGithub, fakeStorage)
+			releaseWizard := NewCreator(fakeGithub)
 
 			mockRelVer := "0.0.1"
-			expectedBody := "test artifact data for 0.0.1/change-record.md"
 
-			relOpts, _ := NewOptions(ctx, fakeStorage, mockRelVer, mockChangelogFileName, mockCommitish, vReader)
+			relOpts, _ := NewOptions(mockRelVer, mockChangelogFileName, mockCommitiSHA, mockComponentsPath, mockComponentsPath, vReader)
 
-			Convey("should download three files from Google Storage, create a release and upload two assets", func() {
+			Convey("should create a release and upload two assets", func() {
 
 				//when
-				err := releaseWizard.CreateNewRelease(ctx, relOpts, mockLocalConfigArtifactName, mockLocalInstallerArtifactName)
+				err := releaseWizard.CreateNewRelease(ctx, relOpts)
 
 				//then
-				So(fakeStorage.TimesReadBucketObjectCalled, ShouldEqual, 3)
-
 				So(err, ShouldBeNil)
-				So(fakeGithub.Release.GetBody(), ShouldEqual, expectedBody)
+				So(len(fakeGithub.Release.GetBody()), ShouldEqual, 95)
 				So(fakeGithub.Release.GetPrerelease(), ShouldBeFalse)
 
-				So(fakeGithub.TimesUploadFileCalled, ShouldEqual, 2)
-				So(fakeGithub.AssetCount, ShouldEqual, 2)
-				So(fakeGithub.Assets[0].GetName(), ShouldEqual, mockLocalConfigArtifactName)
-				So(fakeGithub.Assets[1].GetName(), ShouldEqual, mockLocalInstallerArtifactName)
-
+				So(fakeGithub.TimesUploadFileCalled, ShouldEqual, 1)
+				So(fakeGithub.AssetCount, ShouldEqual, 1)
+				So(fakeGithub.Assets[0].GetName(), ShouldEqual, mockComponentsPath)
 			})
 		})
 
@@ -58,30 +51,25 @@ func TestCreateRelease(t *testing.T) {
 
 			//given
 			fakeGithub := &FakeGithubAPIWrapper{}
-			fakeStorage := &FakeStorageAPIWrapper{}
-			releaseWizard := NewCreator(fakeGithub, fakeStorage)
+			releaseWizard := NewCreator(fakeGithub)
 
 			mockRelVer := "0.0.2-rc"
-			expectedBody := "test artifact data for 0.0.2-rc/change-record.md"
 
-			relOpts, _ := NewOptions(ctx, fakeStorage, mockRelVer, mockChangelogFileName, mockCommitish, vReader)
+			relOpts, _ := NewOptions(mockRelVer, mockChangelogFileName, mockCommitiSHA, mockComponentsPath, mockComponentsPath, vReader)
 
-			Convey("should download three files from Google Storage, create a pre-release and upload two assets", func() {
+			Convey("should create a pre-release and upload two assets", func() {
 
 				//when
-				err := releaseWizard.CreateNewRelease(ctx, relOpts, mockLocalConfigArtifactName, mockLocalInstallerArtifactName)
+				err := releaseWizard.CreateNewRelease(ctx, relOpts)
 
 				//then
-				So(fakeStorage.TimesReadBucketObjectCalled, ShouldEqual, 3)
-
 				So(err, ShouldBeNil)
-				So(fakeGithub.Release.GetBody(), ShouldEqual, expectedBody)
+				So(len(fakeGithub.Release.GetBody()), ShouldEqual, 95)
 				So(fakeGithub.Release.GetPrerelease(), ShouldBeTrue)
 
-				So(fakeGithub.TimesUploadFileCalled, ShouldEqual, 2)
-				So(fakeGithub.AssetCount, ShouldEqual, 2)
-				So(fakeGithub.Assets[0].GetName(), ShouldEqual, mockLocalConfigArtifactName)
-				So(fakeGithub.Assets[1].GetName(), ShouldEqual, mockLocalInstallerArtifactName)
+				So(fakeGithub.TimesUploadFileCalled, ShouldEqual, 1)
+				So(fakeGithub.AssetCount, ShouldEqual, 1)
+				So(fakeGithub.Assets[0].GetName(), ShouldEqual, mockComponentsPath)
 
 			})
 		})

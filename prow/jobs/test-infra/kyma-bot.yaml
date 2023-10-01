@@ -5,14 +5,14 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pre-main-check-users-map
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "Check pull request authors are present in users map file"
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-check-users-map"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-sap-token: "true"
         preset-bot-github-token: "true"
-        preset-prowjob-gcp-logging: "true"
       always_run: true
       optional: true
       skip_report: false
@@ -22,28 +22,20 @@ presubmits: # runs on PRs
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
-          base_ref: main
       spec:
+        serviceAccountName: sa-prowjob-gcp-logging-client
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/prow-tools:v20230328-ea7e207a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20230914-c7902318"
             imagePullPolicy: Always
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
-              - "usersmapchecker"
+              - "/ko-app/usersmapchecker"
             resources:
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

@@ -12,7 +12,7 @@ import (
 
 	"cloud.google.com/go/storage"
 	cloudevents "github.com/cloudevents/sdk-go/v2"
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v48/github"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/cloudfunctions"
 	crhttp "github.com/kyma-project/test-infra/development/gcp/pkg/http"
 	"github.com/kyma-project/test-infra/development/gcp/pkg/pubsub"
@@ -177,6 +177,9 @@ func searchGithubIssues(w http.ResponseWriter, r *http.Request) {
 			sapGhClient.WrapperClientMu.RLock()
 			searchResult, result, err = sapGhClient.Search.Issues(ctx, query, opts)
 			sapGhClient.WrapperClientMu.RUnlock()
+			if err != nil {
+				logger.LogCritical("failed to search for github issues, error %s", err)
+			}
 			if result != nil && (result.StatusCode < 200 || result.StatusCode >= 300) {
 				crhttp.WriteHTTPErrorResponse(w, http.StatusInternalServerError, logger, "failed search github issues, received non 2xx response code, error: %s", err)
 				return

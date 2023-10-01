@@ -2,11 +2,56 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/third-party-images/third-party-images.yaml
+        localSets:
+          increased_resources:
+            request_memory: 6Gi
+            limits_memory: 6Gi
         jobConfigs:
           - repoName: "kyma-project/third-party-images"
             jobs:
               - jobConfig:
+                  name: "pre-main-tpi-alertmanager"
+                  annotations:
+                    owner: huskies
+                    description: Pre-submit job to build alertmanager image.
+                  run_if_changed: "^alertmanager/"
+                  args:
+                    - "--name=tpi/alertmanager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=alertmanager"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "kaniko_buildpack"
+
+              - jobConfig:
+                  name: "post-main-tpi-alertmanager"
+                  annotations:
+                    owner: huskies
+                    description: Post-submit job to build alertmanager image.
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  slack_channel: huskies-notifications
+                  run_if_changed: "^alertmanager/"
+                  args:
+                    - "--name=tpi/alertmanager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=alertmanager"
+                    - "--dockerfile=Dockerfile"
+                    - "--env-file=envs"
+                    - '--tag=v{{`{{ .Env \"ALERTMANAGER_VERSION\" }}-{{ .ShortSHA }}`}}'
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_postsubmit"
+                    - "kaniko_buildpack"
+
+              - jobConfig:
                   name: "pre-main-tpi-cloudsql-proxy"
+                  annotations:
+                    owner: goat
+                    description: builds cloudsql-proxy image
                   run_if_changed: "^cloudsql-proxy/"
                   args:
                     - "--name=tpi/cloudsql-docker/gce-proxy"
@@ -20,6 +65,9 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-cloudsql-proxy"
+                  annotations:
+                    owner: goat
+                    description: builds cloudsql-proxy image
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^cloudsql-proxy/"
@@ -36,6 +84,9 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "pre-main-tpi-docker-registry"
+                  annotations:
+                    owner: otters
+                    description: docker-registry tpi build job
                   run_if_changed: "^docker-registry/"
                   args:
                     - "--name=tpi/registry"
@@ -49,6 +100,9 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-docker-registry"
+                  annotations:
+                    owner: otters
+                    description: docker-registry tpi build job
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^docker-registry/"
@@ -66,6 +120,9 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-fluent-bit"
+                  annotations:
+                    owner: huskies
+                    description: Pre-submit job to build Fluent Bit image.
                   run_if_changed: "^fluent-bit/"
                   args:
                     - "--name=tpi/fluent-bit"
@@ -80,8 +137,12 @@ templates:
 
               - jobConfig:
                   name: "post-main-tpi-fluent-bit"
+                  annotations:
+                    owner: huskies
+                    description: Post-submit job to build Fluent Bit image.
                   labels:
                     preset-signify-prod-secret: "true"
+                  slack_channel: huskies-notifications
                   run_if_changed: "^fluent-bit/"
                   args:
                     - "--name=tpi/fluent-bit"
@@ -96,37 +157,10 @@ templates:
                     - "kaniko_buildpack"
 
               - jobConfig:
-                  name: "pre-main-tpi-jaeger-operator"
-                  run_if_changed: "^jaeger-operator/"
-                  args:
-                    - "--name=tpi/jaeger-operator"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=jaeger-operator"
-                    - "--dockerfile=Dockerfile"
-                    - "--env-file=envs"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - "kaniko_buildpack"
-              - jobConfig:
-                  name: "post-main-tpi-jaeger-operator"
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^jaeger-operator/"
-                  args:
-                    - "--name=tpi/jaeger-operator"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=jaeger-operator"
-                    - "--dockerfile=Dockerfile"
-                    - "--env-file=envs"
-                    - '--tag={{`{{ .Env \"JAEGER_OPERATOR_VERSION\" }}-{{ .ShortSHA }}`}}'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_postsubmit"
-                    - "kaniko_buildpack"
-
-              - jobConfig:
                   name: "pre-main-tpi-k8s-tools"
+                  annotations:
+                    owner: neighbors
+                    description: "Build tpi/k8s-tools image."
                   run_if_changed: "^k8s-tools/"
                   args:
                     - "--name=tpi/k8s-tools"
@@ -139,6 +173,9 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-k8s-tools"
+                  annotations:
+                    owner: neighbors
+                    description: "Build tpi/k8s-tools image."
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^k8s-tools/"
@@ -153,37 +190,10 @@ templates:
                     - "kaniko_buildpack"
 
               - jobConfig:
-                  name: "pre-main-tpi-loki"
-                  run_if_changed: "^loki/"
-                  args:
-                    - "--name=tpi/loki"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=loki"
-                    - "--dockerfile=Dockerfile"
-                    - "--env-file=envs"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - "kaniko_buildpack"
-              - jobConfig:
-                  name: "post-main-tpi-loki"
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^loki/"
-                  args:
-                    - "--name=tpi/loki"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=loki"
-                    - "--dockerfile=Dockerfile"
-                    - "--env-file=envs"
-                    - '--tag={{`{{ .Env \"LOKI_VERSION\" }}-{{ .ShortSHA }}`}}'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_postsubmit"
-                    - "kaniko_buildpack"
-
-              - jobConfig:
                   name: "pre-main-tpi-oauth2-proxy"
+                  annotations:
+                    owner: huskies
+                    description: Pre-submit job to build OAuth2 Proxy image.
                   run_if_changed: "^oauth2-proxy/"
                   args:
                     - "--name=tpi/oauth2-proxy"
@@ -197,6 +207,10 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-oauth2-proxy"
+                  annotations:
+                    owner: huskies
+                    description: Post-submit job to build OAuth2 Proxy image.
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^oauth2-proxy/"
@@ -214,6 +228,9 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-kiwigrid-sidecar"
+                  annotations:
+                    owner: huskies
+                    description: Pre-submit job to build Kiwigrid-sidecar image.
                   run_if_changed: "^kiwigrid-sidecar/"
                   args:
                     - "--name=tpi/k8s-sidecar"
@@ -227,6 +244,10 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-kiwigrid-sidecar"
+                  annotations:
+                    owner: huskies
+                    description: Post-submit job to build Kiwigrid-sidecar image.
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^kiwigrid-sidecar/"
@@ -244,6 +265,9 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-node-exporter"
+                  annotations:
+                    owner: huskies
+                    description: Pre-submit job to build node_exporter image.
                   run_if_changed: "^prometheus-node-exporter/"
                   args:
                     - "--name=tpi/node-exporter"
@@ -257,6 +281,10 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-node-exporter"
+                  annotations:
+                    owner: huskies
+                    description: Post-submit job to build node_exporter image.
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^prometheus-node-exporter/"
@@ -274,6 +302,9 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-grafana"
+                  annotations:
+                    owner: huskies
+                    description: Pre-submit job to build Grafana image.
                   run_if_changed: "^grafana/"
                   args:
                     - "--name=tpi/grafana"
@@ -281,12 +312,19 @@ templates:
                     - "--context=grafana"
                     - "--dockerfile=Dockerfile"
                     - "--env-file=envs"
+                  
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
                     - "kaniko_buildpack"
+                  local:
+                    - "increased_resources"
               - jobConfig:
                   name: "post-main-tpi-grafana"
+                  annotations:
+                    owner: huskies
+                    description: Post-submit job to build Grafana image.
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^grafana/"
@@ -301,9 +339,13 @@ templates:
                   global:
                     - "jobConfig_postsubmit"
                     - "kaniko_buildpack"
-
+                  local:
+                    - "increased_resources"
               - jobConfig:
                   name: "pre-main-tpi-kaniko-executer"
+                  annotations:
+                    owner: otters
+                    description: kaniko-executer tpi build job
                   run_if_changed: "^kaniko-executer/"
                   args:
                     - "--name=tpi/kaniko-executor"
@@ -317,6 +359,9 @@ templates:
                     - image-builder-buildkit
               - jobConfig:
                   name: "post-main-tpi-kaniko-executer"
+                  annotations:
+                    owner: otters
+                    description: kaniko-executer tpi build job
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^kaniko-executer/"
@@ -334,6 +379,9 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-kube-state-metrics"
+                  annotations:
+                    owner: huskies
+                    description: Pre-submit job to build kube-state-metrics image.
                   run_if_changed: "^kube-state-metrics/"
                   args:
                     - "--name=tpi/kube-state-metrics"
@@ -347,6 +395,10 @@ templates:
                     - "kaniko_buildpack"
               - jobConfig:
                   name: "post-main-tpi-kube-state-metrics"
+                  annotations:
+                    owner: huskies
+                    description: Post-submit job to build kube-state-metrics image.
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^kube-state-metrics/"
@@ -364,6 +416,9 @@ templates:
 
               - jobConfig:
                   name: "pre-main-tpi-otel-collector"
+                  annotations:
+                    owner: huskies
+                    description: Pre-submit job to build OpenTelemetry Collector image.
                   run_if_changed: "^otel-collector/"
                   args:
                     - "--name=tpi/otel-collector"
@@ -375,8 +430,14 @@ templates:
                   global:
                     - "jobConfig_presubmit"
                     - "kaniko_buildpack"
+                  local:
+                    - "increased_resources"
               - jobConfig:
                   name: "post-main-tpi-otel-collector"
+                  annotations:
+                    owner: huskies
+                    description: Post-submit job to build OpenTelemetry Collector image.
+                  slack_channel: huskies-notifications
                   labels:
                     preset-signify-prod-secret: "true"
                   run_if_changed: "^otel-collector/"
@@ -391,4 +452,5 @@ templates:
                   global:
                     - "jobConfig_postsubmit"
                     - "kaniko_buildpack"
-
+                  local:
+                    - "increased_resources"

@@ -5,7 +5,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-tests-serverless-bench-build
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "gitserver build job"
+        owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-tests-serverless-bench-build"
@@ -19,6 +20,11 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -49,7 +55,8 @@ postsubmits: # runs on main
   kyma-project/kyma:
     - name: post-test-serverless-bench-build
       annotations:
-        pipeline.trigger: "pr-merge"
+        description: "serverless bench build"
+        owner: "otters"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -65,6 +72,11 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:

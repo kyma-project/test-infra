@@ -14,13 +14,33 @@ includedConfigPaths:
   - "." # test-infra root directory
 excludedConfigPaths:
   - "prow/staging"
-  - "prow/jobs/kyma/releases/kyma-release-212.yaml"
-  - "prow/jobs/kyma/releases/kyma-release-211.yaml"
-  - "prow/jobs/kyma/releases/kyma-release-210.yaml"
+  - "sec-scanners-config.yaml"
+extraFiles:
+  - "configs/terraform/modules/cors-proxy/cors-proxy.tf"
+  - "configs/terraform/modules/secrets-leaks-log-scanner/github-issue-finder.tf"
+  - "configs/terraform/modules/github-webhook-gateway/github-webhook-gateway.tf"
+  - "configs/terraform/modules/secrets-leaks-log-scanner/gcs-bucket-mover.tf"
+  - "configs/terraform/modules/secrets-leaks-log-scanner/github-issue-finder.tf"
+  - "configs/terraform/modules/secrets-leaks-log-scanner/secrets-leak-log-scanner.tf"
+  - "configs/terraform/modules/slack-message-sender/slack-message-sender.tf"
 targetVersion: "latest"
 prefixes:
   - name: "test-infra"
     prefix: "eu.gcr.io/kyma-project/test-infra/"
+    refConfigFile: "templates/config.yaml"
+    stagingRefConfigFile: "templates/config.yaml"
+    repo: "https://github.com/kyma-project/test-infra"
+    summarise: true
+    consistentImages: false
+  - name: "testimages"
+    prefix: "europe-docker.pkg.dev/kyma-project/prod/testimages/"
+    refConfigFile: "templates/config.yaml"
+    stagingRefConfigFile: "templates/config.yaml"
+    repo: "https://github.com/kyma-project/test-infra"
+    summarise: true
+    consistentImages: true
+  - name: "test-infra-prod"
+    prefix: "europe-docker.pkg.dev/kyma-project/prod/test-infra/"
     refConfigFile: "templates/config.yaml"
     stagingRefConfigFile: "templates/config.yaml"
     repo: "https://github.com/kyma-project/test-infra"

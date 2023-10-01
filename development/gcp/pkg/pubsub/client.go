@@ -9,7 +9,7 @@ import (
 	"path"
 
 	"cloud.google.com/go/pubsub"
-	"github.com/google/go-github/v42/github"
+	"github.com/google/go-github/v48/github"
 	"github.com/kyma-project/test-infra/development/logging"
 	"google.golang.org/api/option"
 )
@@ -91,24 +91,6 @@ func GetJobID(jobURL *string) (*string, error) {
 	}
 	jobID := path.Base(parsedJobURL.Path)
 	return github.String(jobID), nil
-}
-
-// PublishPubSubMessage is deprecated. Use Client.PublishMessage
-func PublishPubSubMessage(ctx context.Context, client *pubsub.Client, message interface{}, topicName string) (*string, error) {
-	bmessage, err := json.Marshal(message)
-	if err != nil {
-		return nil, fmt.Errorf("failed marshaling message to json, error: %w", err)
-	}
-	topic := client.Topic(topicName)
-	result := topic.Publish(ctx, &pubsub.Message{
-		// Set json marshaled message as a data payload of pubsub message.
-		Data: bmessage,
-	})
-	publishedID, err := result.Get(ctx)
-	if err != nil {
-		return nil, fmt.Errorf("failed publishing to topic %s, error: %w", topicName, err)
-	}
-	return github.String(publishedID), nil
 }
 
 // publishPubSubMessage construct pubsub message and publish to pubsub topic.

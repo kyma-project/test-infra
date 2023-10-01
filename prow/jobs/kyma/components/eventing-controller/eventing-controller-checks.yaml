@@ -5,7 +5,8 @@ presubmits: # runs on PRs
   kyma-project/kyma:
     - name: pull-eventing-controller-lint
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "lint the EC"
+        owner: "skydivingtunas"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-eventing-controller-lint"
@@ -17,7 +18,12 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/golangci-lint:v20230323-e30b34d9"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
@@ -29,7 +35,8 @@ presubmits: # runs on PRs
                 cpu: 80m
     - name: pull-eventing-controller-unit-test
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "run unit tests for EC"
+        owner: "skydivingtunas"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-eventing-controller-unit-test"
@@ -41,12 +48,17 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/eventing-controller && KUBEBUILDER_CONTROLPLANE_START_TIMEOUT=50s go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "cd components/eventing-controller && make test-local"
             resources:
               requests:
                 memory: 1Gi

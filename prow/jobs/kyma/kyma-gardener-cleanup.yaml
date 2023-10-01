@@ -4,7 +4,8 @@
 periodics: # runs on schedule
     - name: kyma-gardener-cleanup
       annotations:
-        pipeline.trigger: "periodic"
+        description: "Periodic cleanup of Gardener clusters"
+        owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -21,18 +22,20 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: test-infra
-          path_alias: github.com/kyma-project/test-infra
           base_ref: main
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/kyma-integration:v20230323-3ca21e41"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230913-3d41bb28"
             securityContext:
-              privileged: true
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/helpers/cleanup-gardener.sh"
             args:
               - "--excluded-clusters"
-              - "(nbusola|nkyma|rec-night|rec-wkly-lt|rec-main-.*)"
+              - "(nbusola|nkyma|rec-night|rec-wkly-lt|rec-main-.*|persist)"
             env:
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
@@ -40,11 +43,4 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   

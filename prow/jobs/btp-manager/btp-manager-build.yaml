@@ -5,7 +5,8 @@ presubmits: # runs on PRs
   kyma-project/btp-manager:
     - name: pull-btp-manager-build
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "BTP Manager image build on PR"
+        owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-btp-manager-build"
@@ -19,13 +20,18 @@ presubmits: # runs on PRs
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
               - "--name=btp-manager"
+              - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
-              - "--config=/config/kaniko-build-config.yaml"
             resources:
               requests:
                 memory: 1.5Gi
@@ -46,7 +52,8 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
     - name: pull-btp-manager-module-build
       annotations:
-        pipeline.trigger: "pr-submit"
+        description: "BTP Manager template image build on PR"
+        owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-btp-manager-module-build"
@@ -64,7 +71,12 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "./scripts/create_module_image.sh"
             args:
@@ -80,19 +92,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
 postsubmits: # runs on main
   kyma-project/btp-manager:
     - name: post-btp-manager-build
       annotations:
-        pipeline.trigger: "pr-merge"
+        description: "BTP Manager image build on main"
+        owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-btp-manager-build"
@@ -109,6 +115,11 @@ postsubmits: # runs on main
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "/image-builder"
             args:
@@ -137,7 +148,8 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-btp-manager-module-build
       annotations:
-        pipeline.trigger: "pr-merge"
+        description: "BTP Manager template image build on main"
+        owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-btp-manager-module-build"
@@ -153,7 +165,12 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "eu.gcr.io/kyma-project/test-infra/buildpack-golang:v20230323-a1ac96db"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
             command:
               - "./scripts/release.sh"
             args:
@@ -169,11 +186,4 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-        tolerations:
-          - key: dedicated
-            operator: Equal
-            value: high-cpu
-            effect: NoSchedule
-        nodeSelector:
-            dedicated: "high-cpu"
   
