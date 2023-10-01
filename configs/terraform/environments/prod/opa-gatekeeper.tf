@@ -7,7 +7,7 @@ module "prow_gatekeeper" {
     kubectl    = kubectl.prow_k8s_cluster
   }
 
-  source = "../../../../opa/terraform/modules/gatekeeper"
+  source = "../../modules/opa-gatekeeper"
 
   manifests_path = var.gatekeeper_manifest_path
 
@@ -21,7 +21,7 @@ module "trusted_workload_gatekeeper" {
     google     = google
     kubectl    = kubectl.trusted_workload_k8s_cluster
   }
-  source = "../../../../opa/terraform/modules/gatekeeper"
+  source = "../../modules/opa-gatekeeper"
 
   manifests_path            = var.gatekeeper_manifest_path
   constraint_templates_path = [var.constraint_templates_path]
@@ -37,7 +37,7 @@ module "untrusted_workload_gatekeeper" {
     google     = google
     kubectl    = kubectl.untrusted_workload_k8s_cluster
   }
-  source = "../../../../opa/terraform/modules/gatekeeper"
+  source = "../../modules/opa-gatekeeper"
 
   manifests_path = var.gatekeeper_manifest_path
 

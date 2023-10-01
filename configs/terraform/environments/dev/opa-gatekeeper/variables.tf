@@ -1,6 +1,6 @@
 variable "gatekeeper_manifest_path" {
   type    = string
-  default = "../../../gatekeeper/deployments/gatekeeper.yaml"
+  default = "../../../../../opa/gatekeeper/deployments/gatekeeper.yaml"
 }
 
 variable "managed_k8s_cluster" {
@@ -26,5 +26,9 @@ variable "gcp_project_id" {
 
 variable "constraint_templates_path" {
   type    = string
-  default = "../../../gatekeeper/constraint-templates/**.yaml"
+  default = "../../../../../opa/gatekeeper/constraint-templates/**.yaml"
+}
+
+variable "constraints_path" {
+  type = string
 }
