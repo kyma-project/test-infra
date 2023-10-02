@@ -13,6 +13,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"github.com/kyma-project/test-infra/pkg/github/git"
 	"os"
 	"path"
 	"strconv"
@@ -21,7 +22,6 @@ import (
 	"k8s.io/test-infra/prow/pod-utils/downwardapi"
 
 	"github.com/go-playground/validator/v10"
-	"github.com/kyma-project/test-infra/development/github/pkg/git"
 	"github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder"
 	"github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"

@@ -8,7 +8,7 @@ FROM alpine:3.18.4
 ARG commit
 ENV IMAGE_COMMIT=$commit
 LABEL io.kyma-project.test-infra.commit=$commit
-COPY ../../../development/external-plugins/needs-tws/needs-tws /
+COPY ../../../cmd/external-plugins/needs-tws/needs-tws /
 RUN apk add --no-cache ca-certificates git && \
 	chmod a+x /needs-tws
 ENTRYPOINT ["/needs-tws"]
