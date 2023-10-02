@@ -1,0 +1,12 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      serverless-manager:
+        - pjName: "pre-main-serverless-integration-k3s"
+        - pjName: "pre-main-serverless-git-auth-integration-k3s"
+        - pjName: "pull-function-controller-lint"
+        - pjName: "pull-function-controller-unit-test"
+prConfigs: #
+  kyma-project:
+    serverless-manager:
+      prNumber: 310
