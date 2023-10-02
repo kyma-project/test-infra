@@ -32,9 +32,6 @@ another.
 [Image URL Helper](/cmd/image-url-helper/README.md) - Image URL Helper is a tool that provides the following
 subcommands:
 
-[JobGuard ](/development/jobguard/README.md) - JobGuard is a simple tool that fetches all statuses for GitHub pull
-requests and waits for some of them to finish.
-
 [prowjobparser](/cmd/prowjobparser/README.md) - The prowjobparser is a helper tool which parses all Prow Jobs under the
 provided path, matches them against the provided label filters, and prints matching Prow Job names to the standard
 output.
@@ -70,8 +67,6 @@ in the Secret Manager. The service is triggered by a Cloud Scheduler job.
 [GitHub Statistics](/development/tools/cmd/githubstats/README.md) - `githubstats` fetches statistics for GitHub issues and prints the following JSON object:
 
 [IP cleaner](/development/tools/cmd/ipcleaner/README.md) - This command finds and removes orphaned IP addresses created by jobs in the Google Cloud Platform (GCP) project.
-
-[Job Guard](/development/tools/cmd/jobguard/README.md) - Job Guard was moved [here](/development/jobguard).
 
 [oomfinder](/development/tools/cmd/oomfinder/README.md) - oomfinder is a small tool designed to run in a Pod on each k8s worker node as a privileged container. It will check if Docker or Containerd is used and attach to its socket to listen for oom events. If an oom event occurs, oomfinder will print a message to `os stdout` with the following details:
 
@@ -150,8 +145,6 @@ in the Secret Manager. The service is triggered by a Cloud Scheduler job.
 [Monitoring](/prow/cluster/resources/monitoring/README.md) - This chart contains the monitoring stack for a Prow cluster. It also includes custom-defined Grafana dashboards.
 
 [Probot Stale](/prow/cluster/resources/probot-stale/README.md) - This chart contains the `probot-stale` configuration.
-
-[Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](../../images) directory instead.
 
 [Bootstrap Docker Image](/prow/images/bootstrap/README.md) - This folder contains the Bootstrap image for Prow infrastructure. Use it for a root image for other Prow images and for generic builds.
 
