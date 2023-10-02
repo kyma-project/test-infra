@@ -55,7 +55,7 @@ templates:
                       mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/custom-domain-gardener-gcp.sh
                   env:
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_SHA}"
-                    JOB_NAME_PATTERN: "post-api-gateway-manager-custom-domain-integration-gcp"
+                    JOB_NAME_PATTERN: "post-api-gateway-manager-build"
                     TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
                 inheritedConfigs:
                   global:
@@ -89,7 +89,7 @@ templates:
                       mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/custom-domain-gardener-aws.sh
                   env:
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_SHA}"
-                    JOB_NAME_PATTERN: "post-api-gateway-manager-custom-domain-integration-aws"
+                    JOB_NAME_PATTERN: "post-api-gateway-manager-build"
                     TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
                 inheritedConfigs:
                   global:
