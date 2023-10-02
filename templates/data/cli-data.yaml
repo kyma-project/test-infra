@@ -76,7 +76,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "go test `go list ./... | grep -v /tests/e2e` -coverprofile=$ARTIFACTS/filtered.cov"
                   always_run: true
                 inheritedConfigs:
                   global:

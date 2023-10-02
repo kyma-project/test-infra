@@ -60,7 +60,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "go test `go list ./... | grep -v /tests/e2e` -coverprofile=$ARTIFACTS/filtered.cov"
             resources:
               requests:
                 memory: 1Gi
