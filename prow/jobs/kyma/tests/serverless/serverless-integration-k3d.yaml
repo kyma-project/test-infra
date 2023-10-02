@@ -37,8 +37,7 @@ presubmits: # runs on PRs
               - "-c"
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d-operator.sh serverless-integration serverless-contract-tests"
             env:
-              #TODO: Change it to SERVERLESS_OPERATOR_SORUCES_DIR when the serverless won't be in the Kyma repo
-              - name: KYMA_SOURCES_DIR
+              - name: SERVERLESS_SOURCES
                 value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/"
     - name: pre-main-serverless-git-auth-integration-k3s
       annotations:
@@ -83,8 +82,7 @@ export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
 /home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d-operator.sh git-auth-integration
 "
             env:
-              #TODO: Change it to SERVERLESS_OPERATOR_SORUCES_DIR when the serverless won't be in the Kyma repo
-              - name: KYMA_SOURCES_DIR
+              - name: SERVERLESS_SOURCES
                 value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/"
   kyma-project/kyma:
     - name: pre-main-serverless-integration-k3s

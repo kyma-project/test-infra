@@ -11,16 +11,10 @@ source "${SCRIPT_DIR}/../lib/serverless-shared-k3s.sh"
 
 date
 
-export DOMAIN=${KYMA_DOMAIN:-local.kyma.dev}
-if [[ -z $REGISTRY_VALUES ]]; then
-  export REGISTRY_VALUES="dockerRegistry.enableInternal=false,dockerRegistry.serverAddress=registry.localhost:5000,dockerRegistry.registryAddress=registry.localhost:5000"
-fi
+make -C "$SERVERLESS_SOURCES"/hack/ci run-without-lifecycle-manager-operator
 
 export INTEGRATION_SUITE=("$@")
-
-make -C "$KYMA_SOURCES_DIR"/hack/ci run-without-lifecycle-manager-operator
-
-run_tests "${INTEGRATION_SUITE[@]}"
+KYMA_SOURCES_DIR="${SERVERLESS_SOURCES}" run_tests "${INTEGRATION_SUITE[@]}"
 TEST_STATUS=$?
 set -o errexit
 
