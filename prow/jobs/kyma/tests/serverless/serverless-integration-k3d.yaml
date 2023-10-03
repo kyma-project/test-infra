@@ -24,7 +24,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231002-1e20507d"
             securityContext:
               privileged: true
               seccompProfile:
@@ -65,7 +65,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231002-1e20507d"
             securityContext:
               privileged: true
               seccompProfile:
@@ -111,7 +111,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230913-3d41bb28
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231002-1e20507d
             securityContext:
               privileged: false
               seccompProfile:
