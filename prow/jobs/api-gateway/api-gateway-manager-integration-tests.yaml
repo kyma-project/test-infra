@@ -46,7 +46,7 @@ postsubmits: # runs on main
               - name: IMG
                 value: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_SHA}"
               - name: JOB_NAME_PATTERN
-                value: "post-api-gateway-manager-custom-domain-integration-gcp"
+                value: "post-api-gateway-manager-build"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: TEST_SA_ACCESS_KEY_PATH
@@ -98,7 +98,7 @@ postsubmits: # runs on main
               - name: IMG
                 value: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_SHA}"
               - name: JOB_NAME_PATTERN
-                value: "post-api-gateway-manager-custom-domain-integration-aws"
+                value: "post-api-gateway-manager-build"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: TEST_SA_ACCESS_KEY_PATH
