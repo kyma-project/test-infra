@@ -60,7 +60,7 @@ RUN curl -Lo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-r
 
 FROM base AS tools
 
-RUN CGO_ENABLED=0 go install github.com/kyma-project/test-infra/development/jobguard/cmd/jobguard@main
+RUN CGO_ENABLED=0 go install github.com/kyma-project/test-infra/cmd/jobguard@main
 
 FROM base
 

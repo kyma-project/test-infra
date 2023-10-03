@@ -48,7 +48,7 @@ RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go en
 
 FROM base AS tools
 
-RUN CGO_ENABLED=0 go install github.com/kyma-project/test-infra/development/jobguard/cmd/jobguard@main
+RUN CGO_ENABLED=0 go install github.com/kyma-project/test-infra/cmd/jobguard@main
 
 FROM base
 

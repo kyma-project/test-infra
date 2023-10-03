@@ -111,7 +111,7 @@ RUN set -eux; \
     chmod +x kubebuilder && mv kubebuilder /go/bin/ && \
     CGO_ENABLED=0 go install "github.com/google/ko@${KO_VERSION}" && \
     CGO_ENABLED=0 go install "sigs.k8s.io/kustomize/kustomize/v5@${KUSTOMIZE_VERSION}" && \
-    CGO_ENABLED=0 go install github.com/kyma-project/test-infra/development/jobguard/cmd/jobguard@main; \
+    CGO_ENABLED=0 go install github.com/kyma-project/test-infra/cmd/jobguard@main; \
     go clean -cache; \
     go clean -modcache
 
