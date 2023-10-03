@@ -13,7 +13,7 @@ templates:
                   labels:
                     preset-sa-kyma-push-images: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230914-c7902318
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20231003-5a37509c
                   command: "/ko-app/image-syncer"
                   args:
                     - --dry-run
@@ -34,7 +34,7 @@ templates:
                   labels:
                     preset-sa-kyma-push-images: "true"
                   run_if_changed: "^(development/image-syncer/external-images.yaml)"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20230914-c7902318
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20231003-5a37509c
                   command: "/ko-app/image-syncer"
                   args:
                     - --images-file=development/image-syncer/external-images.yaml

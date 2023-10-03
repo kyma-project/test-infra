@@ -53,13 +53,13 @@ templates:
           vm_job_k3d:
             annotations:
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230913-3d41bb28"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231002-1e20507d"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
           job_module_build:
             labels:
               preset-sa-kyma-push-images: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231002-1e20507d"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
@@ -257,7 +257,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20230913-3d41bb28"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231002-1e20507d"
                   securityContext: #temporary we need permissions to create folders for tooling, see `make install`
                     runAsRoot: true
                   command: "make"

@@ -7,7 +7,7 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231002-1e20507d"
             securityContext:
               privileged: false
               seccompProfile:
