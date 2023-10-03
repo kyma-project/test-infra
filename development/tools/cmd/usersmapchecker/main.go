@@ -3,13 +3,12 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/kyma-project/test-infra/pkg/github/client"
+	"github.com/kyma-project/test-infra/pkg/prow"
+	"github.com/kyma-project/test-infra/pkg/types"
 	"os"
 
 	log "github.com/sirupsen/logrus"
-
-	"github.com/kyma-project/test-infra/development/github/pkg/client"
-	"github.com/kyma-project/test-infra/development/prow"
-	"github.com/kyma-project/test-infra/development/types"
 )
 
 // Example fields in gcp logging.

@@ -3,13 +3,13 @@ package pjtester
 import (
 	"context"
 	"fmt"
+	"github.com/kyma-project/test-infra/pkg/github/git"
 	"net/http"
 	"os"
 	"strconv"
 
 	gogithub "github.com/google/go-github/v48/github"
 
-	"github.com/kyma-project/test-infra/development/github/pkg/git"
 	prtagbuildermock "github.com/kyma-project/test-infra/development/tools/pkg/prtagbuilder/mocks"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"

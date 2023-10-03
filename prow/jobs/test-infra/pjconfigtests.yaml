@@ -31,7 +31,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -70,7 +70,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -109,7 +109,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -148,7 +148,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -187,7 +187,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -226,7 +226,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -265,7 +265,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -304,7 +304,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -343,7 +343,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -382,7 +382,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -421,7 +421,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -460,7 +460,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -499,7 +499,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -538,7 +538,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -577,7 +577,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -616,7 +616,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -655,7 +655,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -694,7 +694,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -733,7 +733,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -772,7 +772,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -811,7 +811,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -850,7 +850,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -889,7 +889,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -928,7 +928,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -967,7 +967,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1006,7 +1006,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1045,7 +1045,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1084,7 +1084,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1123,7 +1123,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1162,7 +1162,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1201,7 +1201,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1240,7 +1240,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1279,7 +1279,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1318,7 +1318,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1357,7 +1357,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1396,7 +1396,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M
@@ -1435,7 +1435,7 @@ presubmits: # runs on PRs
               - "/ginkgo"
             args:
               - "-r"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/prow/pjconfigtests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/pkg/prow/pjconfigtests"
             resources:
               requests:
                 memory: 100M

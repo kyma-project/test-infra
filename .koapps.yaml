@@ -1,9 +1,9 @@
 apps:
   - ko://github.com/kyma-project/test-infra/development/tools/cmd/pjtester
-  - ko://github.com/kyma-project/test-infra/development/image-syncer
-  - ko://github.com/kyma-project/test-infra/development/image-detector
-  - ko://github.com/kyma-project/test-infra/development/image-url-helper
-  - ko://github.com/kyma-project/test-infra/development/markdown-index
+  - ko://github.com/kyma-project/test-infra/cmd/image-syncer
+  - ko://github.com/kyma-project/test-infra/cmd/image-detector
+  - ko://github.com/kyma-project/test-infra/cmd/image-url-helper
+  - ko://github.com/kyma-project/test-infra/cmd/markdown-index
   - ko://github.com/kyma-project/test-infra/development/tools/cmd/usersmapchecker
   - ko://github.com/kyma-project/test-infra/development/tools/cmd/gcscleaner
   - ko://github.com/kyma-project/test-infra/development/tools/cmd/diskscollector
@@ -15,15 +15,15 @@ apps:
   - ko://github.com/kyma-project/test-infra/development/tools/cmd/gcrcleaner
   - ko://github.com/kyma-project/test-infra/development/tools/cmd/githubissues
   - ko://github.com/kyma-project/test-infra/development/tools/cmd/externalsecretschecker
-  - ko://github.com/kyma-project/test-infra/development/gardener-rotate
-  - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/gardener-sa-rotate
-  - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/kms-rotate
-  - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/create-github-issue
-  - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/move-gcs-bucket
-  - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/scan-logs-for-secrets
-  - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/search-github-issue
-  - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/github-webhook-gateway
-  - ko://github.com/kyma-project/test-infra/development/gcp/cloud-run/cors-proxy
-  - ko://github.com/kyma-project/test-infra/development/external-plugins/needs-tws
-  - ko://github.com/kyma-project/test-infra/development/external-plugins/cla-assistant
-  - ko://github.com/kyma-project/test-infra/development/external-plugins/automerge-notification
+  - ko://github.com/kyma-project/test-infra/cmd/gardener-rotate
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/gardener-sa-rotate
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/kms-rotate
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/create-github-issue
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/move-gcs-bucket
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/scan-logs-for-secrets
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/search-github-issue
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/github-webhook-gateway
+  - ko://github.com/kyma-project/test-infra/cmd/cloud-run/cors-proxy
+  - ko://github.com/kyma-project/test-infra/cmd/external-plugins/needs-tws
+  - ko://github.com/kyma-project/test-infra/cmd/external-plugins/cla-assistant
+  - ko://github.com/kyma-project/test-infra/cmd/external-plugins/automerge-notification
