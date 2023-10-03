@@ -1,48 +1,26 @@
 [Changelog Generator](/changelog-generator/README.md) - This project is a Docker image that is used to generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests with specified labels.
 
-[Artifact Registry creator tool (GCP, Terraform)](/configs/terraform/modules/artifact-registry/README.md) - This is the
-GCP image registry creator tool. Use the registry to publish modules that should be accessible to internal SAP teams.
+[Rotate Gardener service account secrets using Cloud Run](/cmd/cloud-run/gardener-sa-rotate/README.md) - The Cloud Run application creates a new key for a GCP service account, updates the required secret data, and deletes old versions of a key. The function is triggered by a Pub/Sub message sent by a secret stored in Secret Manager.
 
-[Create Custom Image](/experimental/custom-image/README.md) - The purpose of this document is to define how to create a
-new Google Compute Engine [custom image](https://cloud.google.com/compute/docs/images) with required dependencies. You
-can use the new image to provision virtual machine (VM) instances with all dependencies already installed.
+[Rotate KMS secrets using Cloud Run](/cmd/cloud-run/kms-rotate/README.md) - The Cloud Run application decrypts and encrypts files in a bucket with the latest version of a KMS key, and deletes old versions of a key. The function is triggered by a HTTP POST request sent by a Cloud Scheduler.
 
-[gardener-rotate](/cmd/gardener-rotate/README.md) - The gardener-rotate tool allows you to generate a new access token
-for the Gardener service accounts and update kubeconfig stored in the Secret Manager.
+[Rotate service account secrets](/cmd/cloud-run/rotate-service-account/README.md) - RotateServiceAccount creates a new key for a GCP service account and updates the required secret data. It's triggered by a  Pub/Sub message sent by a secret stored in Secret Manager. It runs as a cloud run container.
 
-[Rotate Gardener service account secrets using Cloud Run](/cmd/cloud-run/gardener-sa-rotate/README.md) - The Cloud Run
-application creates a new key for a GCP service account, updates the required secret data, and deletes old versions of a
-key. The function is triggered by a Pub/Sub message sent by a secret stored in Secret Manager.
+[Cleanup of service account secrets](/cmd/cloud-run/service-account-keys-cleaner/README.md) - The Cloud Run service deletes old keys for a GCP service account and updates the required secret data for all service account secrets stored in the Secret Manager. The service is triggered by a Cloud Scheduler job.
 
-[Rotate KMS secrets using Cloud Run](/cmd/cloud-run/kms-rotate/README.md) - The Cloud Run application decrypts and
-encrypts files in a bucket with the latest version of a KMS key, and deletes old versions of a key. The function is
-triggered by a HTTP POST request sent by a Cloud Scheduler.
+[gardener-rotate](/cmd/gardener-rotate/README.md) - The gardener-rotate tool allows you to generate a new access token for the Gardener service accounts and update kubeconfig stored in the Secret Manager.
 
-[image-builder](/cmd/image-builder/README.md) - This tool serves as an intelligent wrapper
-for `kaniko-project/executor`. It reduces the complexity of building Docker images and removes the need of using Docker
-in Docker when building images in K8s infrastructure.
+[image-builder](/cmd/image-builder/README.md) - This tool serves as an intelligent wrapper for `kaniko-project/executor`. It reduces the complexity of building Docker images and removes the need of using Docker in Docker when building images in K8s infrastructure.
 
-[Image Detector](/cmd/image-detector/README.md) - Image Detector is a tool for updating the security scanner config with
-the list of images in the Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its
-components.
+[Image Detector](/cmd/image-detector/README.md) - Image Detector is a tool for updating the security scanner config with the list of images in the Prow cluster. To achieve that, it receives paths to files used to deploy Prow or its components.
 
-[image-syncer](/cmd/image-syncer/README.md) - image-syncer is used to copy container images from one registry to
-another.
+[image-syncer](/cmd/image-syncer/README.md) - image-syncer is used to copy container images from one registry to another.
 
-[Image URL Helper](/cmd/image-url-helper/README.md) - Image URL Helper is a tool that provides the following
-subcommands:
+[Image URL Helper](/cmd/image-url-helper/README.md) - Image URL Helper is a tool that provides the following subcommands:
 
-[prowjobparser](/cmd/prowjobparser/README.md) - The prowjobparser is a helper tool which parses all Prow Jobs under the
-provided path, matches them against the provided label filters, and prints matching Prow Job names to the standard
-output.
+[prowjobparser](/cmd/prowjobparser/README.md) - The prowjobparser is a helper tool which parses all Prow Jobs under the provided path, matches them against the provided label filters, and prints matching Prow Job names to the standard output.
 
-[Rotate service account secrets](/cmd/cloud-run/rotate-service-account/README.md) - RotateServiceAccount creates a new
-key for a GCP service account and updates the required secret data. It's triggered by a Pub/Sub message sent by a secret
-stored in Secret Manager. It runs as a cloud run container.
-
-[Cleanup of service account secrets](/cmd/cloud-run/service-account-keys-cleaner/README.md) - The Cloud Run service
-deletes old keys for a GCP service account and updates the required secret data for all service account secrets stored
-in the Secret Manager. The service is triggered by a Cloud Scheduler job.
+[Artifact Registry creator tool (GCP, Terraform)](/configs/terraform/modules/artifact-registry/README.md) - This is the GCP image registry creator tool. Use the registry to publish modules that should be accessible to internal SAP teams.
 
 [Tools](/development/tools/README.md) - This project contains Go applications for the `test-infra` repository.
 
@@ -67,6 +45,8 @@ in the Secret Manager. The service is triggered by a Cloud Scheduler job.
 [GitHub Statistics](/development/tools/cmd/githubstats/README.md) - `githubstats` fetches statistics for GitHub issues and prints the following JSON object:
 
 [IP cleaner](/development/tools/cmd/ipcleaner/README.md) - This command finds and removes orphaned IP addresses created by jobs in the Google Cloud Platform (GCP) project.
+
+[Job Guard](/development/tools/cmd/jobguard/README.md) - Job Guard was moved [here](/cmd/jobguard).
 
 [oomfinder](/development/tools/cmd/oomfinder/README.md) - oomfinder is a small tool designed to run in a Pod on each k8s worker node as a privileged container. It will check if Docker or Containerd is used and attach to its socket to listen for oom events. If an oom event occurs, oomfinder will print a message to `os stdout` with the following details:
 
@@ -130,6 +110,8 @@ in the Secret Manager. The service is triggered by a Cloud Scheduler job.
 
 [Prow Workload Clusters](/docs/prow/workload-clusters.md) - This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` GCP project. We use two workload clusters for trusted and untrusted Prow jobs.
 
+[Create Custom Image](/experimental/custom-image/README.md) - The purpose of this document is to define how to create a new Google Compute Engine [custom image](https://cloud.google.com/compute/docs/images) with required dependencies. You can use the new image to provision virtual machine (VM) instances with all dependencies already installed.
+
 [Prow runtime images](/images/README.md) - This directory contains images that can be used as runtime images for all ProwJobs in Kyma's Prow Instance.
 
 [E2E DinD K3d](/images/e2e-dind-k3d/README.md) - This image contains common tools for all jobs/tasks that test Kyma modules in K3d.
@@ -145,6 +127,8 @@ in the Secret Manager. The service is triggered by a Cloud Scheduler job.
 [Monitoring](/prow/cluster/resources/monitoring/README.md) - This chart contains the monitoring stack for a Prow cluster. It also includes custom-defined Grafana dashboards.
 
 [Probot Stale](/prow/cluster/resources/probot-stale/README.md) - This chart contains the `probot-stale` configuration.
+
+[Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](/images) directory instead.
 
 [Bootstrap Docker Image](/prow/images/bootstrap/README.md) - This folder contains the Bootstrap image for Prow infrastructure. Use it for a root image for other Prow images and for generic builds.
 
