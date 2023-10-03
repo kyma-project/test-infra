@@ -13,7 +13,7 @@ templates:
                     testgrid-create-test-group: "false"
                   type_periodic: "true"
                   cluster: "trusted-workload"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231002-1e20507d
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231003-4f0ff1b3
                   decorate: "true"
                   skip_report: "false"
                   cron: "0 5 1 * *" # At 05:00 on day-of-month 1.
