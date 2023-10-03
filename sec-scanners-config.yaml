@@ -51,18 +51,17 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20230301-6267d66d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20231002-7c46d020
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231002-1e20507d
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231002-1e20507d
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20231002-1e20507d
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20231002-1e20507d
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231002-1e20507d
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20230913-3d41bb28
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231002-1e20507d
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231002-1e20507d
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231002-1e20507d
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231002-1e20507d
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231002-1e20507d
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231002-1e20507d
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231003-4f0ff1b3
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231003-4f0ff1b3
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20231003-4f0ff1b3
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20231003-4f0ff1b3
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231003-4f0ff1b3
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231003-4f0ff1b3
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231003-4f0ff1b3
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231003-4f0ff1b3
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231003-4f0ff1b3
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231003-4f0ff1b3
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231003-4f0ff1b3
     - gcr.io/k8s-prow/analyze:v20230824-74e8146673
     - gcr.io/k8s-prow/gencred:v20230824-74e8146673
     - grafana/grafana:7.5.17
