@@ -49,7 +49,7 @@ presubmits:
             - name: config
               value: /config/kaniko-build-config.yaml
             - name: dockerfile
-              value: development/secrets-rotator/cloud-run/rotate-service-account/Dockerfile
+              value: cmd/cloud-run/rotate-service-account/Dockerfile
           # The following resources are not used by the pipeline, but are required by the ProwJob syntax validator.
           # They are not used by the pipeline because the pipeline uses environment variables to get extra_refs to clone the repo in a task.
           # This is a workaround for a deprecated resource object in Tekton Pipeline API version v1beta1.

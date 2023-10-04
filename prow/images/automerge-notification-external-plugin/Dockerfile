@@ -9,7 +9,7 @@ LABEL io.kyma-project.test-infra.commit=$commit
 WORKDIR /usr/local/go/src/github.com/kyma-project/test-infra
 COPY . .
 RUN apk add --no-cache bash dep git && \
-    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /automerge-notification -ldflags="-s -w" ./development/external-plugins/automerge-notification/main.go \
+    CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /automerge-notification -ldflags="-s -w" ./cmd/external-plugins/automerge-notification/main.go \
 
     FROM alpine:3.17.1
 

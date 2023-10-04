@@ -7,7 +7,7 @@ job_labels_template: &job_labels_template
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: test-infra-presubmit-test-job
-      run_if_changed: "^(development/image-syncer)"
+      run_if_changed: "^(cmd/image-syncer)"
       branches:
         - ^main$
       max_concurrency: 10
@@ -22,7 +22,7 @@ presubmits: # runs on PRs
               - "make"
             args:
               - "-C"
-              - "development/image-syncer"
+              - "cmd/image-syncer"
               - "validate"
             resources:
               requests:
@@ -34,7 +34,7 @@ presubmits: # runs on PRs
           base_ref: main
   kyma-project/fake-repo:
     - name: fake-repo-presubmit-test-job
-      run_if_changed: "^(development/image-syncer)"
+      run_if_changed: "^(cmd/image-syncer)"
       branches:
         - ^main$
       max_concurrency: 10
@@ -49,7 +49,7 @@ presubmits: # runs on PRs
               - "make"
             args:
               - "-C"
-              - "development/image-syncer"
+              - "cmd/image-syncer"
               - "validate"
             resources:
               requests:

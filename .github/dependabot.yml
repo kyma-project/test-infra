@@ -203,7 +203,7 @@ updates:
       prefix: "markdown-index"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/development/gcp/cloud-run/create-github-issue"
+    directory: "/cmd/cloud-run/create-github-issue"
     labels:
       - "docker"
       - "skip-review"
@@ -215,7 +215,7 @@ updates:
       prefix: "create-gh-issue"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/development/gcp/cloud-run/search-github-issue"
+    directory: "/cmd/cloud-run/search-github-issue"
     labels:
       - "docker"
       - "skip-review"
@@ -227,7 +227,7 @@ updates:
       prefix: "search-gh-issue"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/development/gcp/cloud-run/scan-logs-for-secrets"
+    directory: "/cmd/cloud-run/scan-logs-for-secrets"
     labels:
       - "docker"
       - "skip-review"
@@ -239,7 +239,7 @@ updates:
       prefix: "scan-logs-for-secrets"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/development/gcp/cloud-run/move-gcs-bucket"
+    directory: "/cmd/cloud-run/move-gcs-bucket"
     labels:
       - "docker"
       - "skip-review"
@@ -251,7 +251,7 @@ updates:
       prefix: "move-gcs-bucket"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/development/gcp/cloud-run/slack-message-sender"
+    directory: "/cmd/cloud-run/slack-message-sender"
     labels:
       - "docker"
       - "skip-review"
@@ -275,7 +275,7 @@ updates:
       prefix: "docker-rotate-sa"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/development/image-detector"
+    directory: "/cmd/image-detector"
     labels:
       - "docker"
       - "skip-review"
@@ -296,4 +296,3 @@ updates:
     commit-message:
       prefix: "actions"
       include: "scope"
-

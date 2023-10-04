@@ -39,7 +39,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/kyma/resources/"
               - "check"
               - "--excludes-list"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-url-helper/excludes.yaml"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/cmd/image-url-helper/excludes.yaml"
             resources:
               requests:
                 memory: 1.5Gi
