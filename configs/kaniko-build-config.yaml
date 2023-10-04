@@ -1,4 +1,4 @@
-tag-template: 'v{{ .Date }}-{{ .ShortSHA }}'
+tag-template: "v{{ .Date }}-{{ .ShortSHA }}"
 registry:
   - europe-docker.pkg.dev/kyma-project/prod
 dev-registry:
@@ -11,22 +11,22 @@ cache:
   cache-run-layers: true
 sign-config:
   enabled-signers:
-    '*':
-      - signify-dev
+    "*":
+      # - signify-dev
       - signify-prod
   signers:
-    - name: signify-dev
-      type: notary
-      job-type:
-        - presubmit
-        - postsubmit
-      config:
-        endpoint: https://signing-dev.repositories.cloud.sap/signingsvc/sign
-        timeout: 5m
-        retry-timeout: 10s
-        secret:
-          path: /secret/secret.yaml
-          type: signify
+    # - name: signify-dev
+    #   type: notary
+    #   job-type:
+    #     - presubmit
+    #     - postsubmit
+    #   config:
+    #     endpoint: https://signing-dev.repositories.cloud.sap/signingsvc/sign
+    #     timeout: 5m
+    #     retry-timeout: 10s
+    #     secret:
+    #       path: /secret/secret.yaml
+    #       type: signify
     - name: signify-prod
       type: notary
       job-type:
