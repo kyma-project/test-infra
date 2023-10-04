@@ -999,29 +999,10 @@ templates:
           - repoName: github.com/kyma-project/application-connector-manager
             jobs:
               - jobConfig:
-                  name: post-application-connector-manager-module-build
-                  annotations:
-                    owner: framefrog
-                    description: Job to build application-connector module for a release.
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:${PULL_BASE_SHA}"
-                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "hack/ci"
-                    - "module-build"
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
-                    - jobConfig_postsubmit
+                    - jobConfig_presubmit
               - jobConfig:
                   name: pre-application-connector-module-build
                   annotations:
@@ -1048,49 +1029,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-application-connector-module-build
-                  annotations:
-                    owner: framefrog
-                    description: application-connector module build job
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:${PULL_BASE_SHA}"
-                  run_if_changed: "^application-connector.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "hack/ci"
-                    - "module-build"
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-              - jobConfig:
-                  name: pre-application-connector-manager-tests
-                  annotations:
-                    owner: framefrogs
-                    description: application-connector operator tests
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "make test"
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - build_labels # default labels
-                    - unprivileged
-              - jobConfig:
                   annotations:
                     owner: framefrog
                     description: application-connector operator build job
@@ -1105,6 +1043,26 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
+                  local:
+                    - job_build
+              - jobConfig:
+                  name: post-application-connector-manager-build
+                  annotations:
+                    owner: framefrog
+                    description: Job to build application-connector operator for a release
+                  always_run: true
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=application-connector-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
                   local:
                     - job_build
               - jobConfig:
@@ -1123,7 +1081,7 @@ templates:
                   global:
                     - jobConfig_default
                     - privileged
-                    - jobConfig_presubmit # TODO: Prepare a Keda-Manager Image
+                    - jobConfig_presubmit # TODO: Prepare application-connector Image
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
@@ -1143,7 +1101,7 @@ templates:
                   global:
                     - jobConfig_default
                     - privileged
-                    - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
+                    - jobConfig_postsubmit # TODO: Prepare a application-connector Image
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
