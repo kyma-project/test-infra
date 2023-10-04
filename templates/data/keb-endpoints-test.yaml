@@ -11,7 +11,7 @@ templates:
               - testing/e2e/skr
               - keb-endpoints
             cluster: "trusted-workload"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231003-4f0ff1b3
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231004-3defcf03
             request_memory: 100Mi
             request_cpu: 50m
             labels:

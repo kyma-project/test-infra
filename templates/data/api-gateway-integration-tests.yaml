@@ -38,7 +38,7 @@ templates:
                     owner: goat
                     description: runs api-gateway integration tests on Gardener AWS cluster
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231003-4f0ff1b3
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231004-3defcf03
                   always_run: true
                   command: bash
                   args:
@@ -75,7 +75,7 @@ templates:
                   branches:
                     - ^main$
                     - ^release-\d+\.\d+$
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231003-4f0ff1b3
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231004-3defcf03
                   command: bash
                   args:
                     - -c
@@ -111,7 +111,7 @@ templates:
                     - ^release-\d+\.\d+$
                   labels:
                     preset-sa-kyma-dns-serviceuser: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231003-4f0ff1b3
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231004-3defcf03
                   command: bash
                   args:
                     - -c
@@ -136,7 +136,7 @@ templates:
                     description: runs api-gateway integration tests with custom domain handling on Gardener AWS cluster
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   always_run: true
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231003-4f0ff1b3
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231004-3defcf03
                   securityContext:
                     privileged: false
                   cluster: untrusted-workload
