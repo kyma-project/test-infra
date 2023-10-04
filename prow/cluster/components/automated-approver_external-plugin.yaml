@@ -52,7 +52,7 @@ spec:
           configMap:
             name: automated-approver-rules
             items:
-              - key: automated-approver-rules.yaml
+              - key: rules
                 path: rules.yaml
 ---
 apiVersion: v1
