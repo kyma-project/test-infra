@@ -33,7 +33,7 @@ presubmits: # runs on PRs
               - "/image-builder"
             args:
               - "--name=incubator/compass-director"
-              - "--config=/config/kaniko-build-config.yaml"
+              - "--config=./installation/scripts/prow/config.yaml"
               - "--context=components/director"
               - "--dockerfile=Dockerfile"
               - "--platform=linux/amd64"
@@ -51,20 +51,8 @@ presubmits: # runs on PRs
             volumeMounts:
               - name: share
                 mountPath: /home/user/.local/share/buildkit
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: share
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: pull-director-lint
       annotations:
         description: "Linter for the Compass Director component"
