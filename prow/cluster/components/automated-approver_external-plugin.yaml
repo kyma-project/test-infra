@@ -22,11 +22,11 @@ spec:
         - --dry-run=false
         - --port=8080
         - --hmac-secret-file=/etc/webhook/hmac
-        - --log-level=debug
+        - --log-level=info
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
         - --github-token-path=/etc/github/oauth
-        - --config-path=/etc/config/config.yaml
+        - --rules-path=/etc/config/rules.yaml
         - --wait-for-statuses-timeout=1800
         ports:
           - name: http
@@ -38,7 +38,7 @@ spec:
           - name: oauth
             mountPath: /etc/github
             readOnly: true
-          - name: config
+          - name: rules
             mountPath: /etc/config
             readOnly: true
       volumes:
@@ -48,12 +48,12 @@ spec:
         - name: oauth
           secret:
             secretName: neighbors-dev-bot-github-token
-        - name: config
+        - name: rules
           configMap:
-            name: automated-approver-config
+            name: automated-approver-rules
             items:
-              - key: config.yaml
-                path: config.yaml
+              - key: automated-approver-rules.yaml
+                path: rules.yaml
 ---
 apiVersion: v1
 kind: Service

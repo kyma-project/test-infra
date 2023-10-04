@@ -37,7 +37,7 @@ func main() {
 
 	// Add client and plugin cli flags.
 	fs := pluginOptions.NewFlags()
-	fs.StringVar(&hb.configPath, "config-path", "", "Path to the configuration file.")
+	fs.StringVar(&hb.rulesPath, "rules-path", "", "Path to the configuration file.")
 	fs.IntVar(&hb.waitForStatusesTimeout, "wait-for-statuses-timeout", 30, "Timeout in seconds for waiting for statuses.")
 	pluginOptions.ParseFlags(fs)
 
@@ -68,7 +68,7 @@ func main() {
 	logger.Debugf("config: %+v", hb.conditions)
 	logger.Info("config ready")
 
-	// Watch hb.configPath for changes and reload config.
+	// Watch hb.rulesPath for changes and reload config.
 	go hb.watchConfig(logger)
 
 	// Create and start plugin instance.

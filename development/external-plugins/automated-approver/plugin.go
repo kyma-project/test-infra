@@ -36,7 +36,7 @@ type handlerBackend struct {
 	ghc                    githubClient
 	logLevel               zapcore.Level
 	waitForStatusesTimeout int                                                         // in seconds
-	configPath             string                                                      // Path to yaml config file
+	rulesPath              string                                                      // Path to yaml config file
 	conditions             map[string]map[string]map[string][]ApproveCondition         `yaml:"conditions"`
 	prLocks                map[string]map[string]map[int]map[string]context.CancelFunc // Holds head sha and cancel function of PRs that are being processed. org -> repo -> pr number -> head sha -> cancel function
 	prMutex                sync.Mutex
@@ -80,7 +80,7 @@ func (hb *handlerBackend) watchConfig(logger *zap.SugaredLogger) {
 
 	}()
 
-	err = watcher.Add(hb.configPath)
+	err = watcher.Add(hb.rulesPath)
 	if err != nil {
 		logger.Fatalf("Add failed: %s", err)
 	}
@@ -200,7 +200,7 @@ func (ac *ApproveCondition) checkChangedFiles(logger *zap.SugaredLogger, changes
 // readConfig reads config from config file.
 func (hb *handlerBackend) readConfig() error {
 	c := make(map[string]map[string]map[string]map[string][]ApproveCondition)
-	configFile, err := os.ReadFile(hb.configPath)
+	configFile, err := os.ReadFile(hb.rulesPath)
 	if err == nil {
 		yaml.Unmarshal(configFile, &c)
 		hb.conditions = c["conditions"]
