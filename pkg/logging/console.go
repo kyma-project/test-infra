@@ -11,7 +11,7 @@ import (
 // All logs with severity Error or higher will be sent to stderr.
 // All logs with severity lower than Error will be sed to stdout.
 // This allows gcp logging correctly recognize log message severity.
-// It implements test-infra/development/logging/LoggerInterface
+// It implements test-infra/pkg/logging/LoggerInterface
 // Logger has set Debug logging level.
 func NewLogger() *zap.SugaredLogger {
 	logger, _ := newLogger(zapcore.DebugLevel)
@@ -22,7 +22,7 @@ func NewLogger() *zap.SugaredLogger {
 // All logs with severity Error or higher will be sent to stderr.
 // All logs with severity lower than Error will be sed to stdout.
 // This allows gcp logging correctly recognize log message severity.
-// It implements test-infra/development/logging/LoggerInterface
+// It implements test-infra/pkg/logging/LoggerInterface
 // A zap.AtomicLevel object set logging level for logger and all downstream loggers.
 // Default logging level is Info.
 func NewLoggerWithLevel() (*zap.SugaredLogger, zap.AtomicLevel) {
