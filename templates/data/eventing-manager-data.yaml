@@ -2,9 +2,105 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/eventing-manager/eventing-manager-generic.yaml
+        localSets:
+          job_build:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^master$"
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+            command: /image-builder
+            request_memory: "1.5Gi"
+            request_cpu: "1"
+            labels:
+              preset-sa-kyma-push-images: "true"
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+              - name: signify-secret
+                secretName: signify-dev-secret
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+          limits:
+            limits_memory: 3Gi
+            limits_cpu: 2
+          dind_job_k3d:
+            annotations:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231004-3defcf03
+            command: "/init.sh"
+            request_memory: "4Gi"
+            request_cpu: "3"
+            limits_memory: "4Gi"
+            limits_cpu: "3"
+          job_default:
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
         jobConfigs:
           - repoName: "github.com/kyma-project/eventing-manager"
             jobs:
+              - jobConfig:
+                  name: release-eventing-manager-build
+                  annotations:
+                    owner: skydivingtunas
+                    description: Job to build eventing module for a release.
+                  always_run: true
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=eventing-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
+                  branches:
+                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_build
+                    - limits
+              - jobConfig:
+                  name: release-eventing-manager-module-build
+                  annotations:
+                    owner: skydivingtunas
+                    description: Job to build eventing module for a release.
+                  always_run: true
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                    preset-bot-github-token: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/eventing-manager:${PULL_BASE_SHA}"
+                  command: "./scripts/release.sh"
+                  args:
+                    - "ci"
+                  branches:
+                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - limits
               - jobConfig:
                   name: pull-eventing-manager-build
                   args:
@@ -12,10 +108,11 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                  run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
+                  always_run: true
+                  skip_if_only_changed: "^docs/|\\.(md|adoc)$|^(README|LICENSE)$"
                   annotations:
                     owner: skydivingtunas
-                    description: build the eventing manager image
+                    description: build eventing manager image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -30,12 +127,66 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - "--tag=latest"
-                  run_if_changed: "^Dockerfile|\\.go$|^go.(sum|mod)"
+                  always_run: true
                   annotations:
                     owner: skydivingtunas
-                    description: build the eventing manager image
+                    description: build eventing manager image
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - "disable_testgrid"
+              - jobConfig:
+                  name: pull-eventing-module-build
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231004-3defcf03
+                  annotations:
+                    owner: skydivingtunas
+                    description: Eventing module build pre-main job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.7"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/dev/eventing-manager:PR-${PULL_NUMBER}"
+                    MODULE_SHA: "PR-${PULL_NUMBER}"
+                  always_run: true
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                  local:
+                    - job_default
+              - jobConfig:
+                  name: post-eventing-module-build
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231004-3defcf03
+                  annotations:
+                    owner: skydivingtunas
+                    description: Eventing module build post-main job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.7"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/eventing-manager:$(shell date +v%Y%m%d)-$(shell echo ${PULL_BASE_SHA} | head -c 8)" # The tag script is evaluated in makefile.
+                    MODULE_SHA: "$(shell echo ${PULL_BASE_SHA} | head -c 8)" # The script is evaluated in makefile.
+                  always_run: true
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "hack/ci"
+                    - "module-build"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_default
