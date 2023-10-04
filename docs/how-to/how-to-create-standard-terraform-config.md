@@ -95,7 +95,7 @@ Both ProwJobs use the same remote state to make sure `terraform plan` is execute
 
 ProwJobs applying the Terraform config use a Terraform executor image that contains a Terraform cli and the helper tool [tfcmt](https://suzuki-shunsuke.github.io/tfcmt/), which adds comments to the GitHub pull request with the Terraform plan output. This makes easier to review the results of Terraform actions. 
 
-Usually, Terraform executor ProwJobs are executed on every change in the Terraform config. The ProwJobs are executed only for the Terraform config that was changed. It may be needed to run Terraform executor on changes in other files. For example, changes in [workflow definition file](https://github.com/kyma-project/test-infra/blob/main/development/gcp/workflows/secrets-leak-detector.yaml) require running Terraform executor to reflect changes in respective environments.
+Usually, Terraform executor ProwJobs are executed on every change in the Terraform config. The ProwJobs are executed only for the Terraform config that was changed. It may be needed to run Terraform executor on changes in other files. For example, changes in [workflow definition file](https://github.com/kyma-project/test-infra/blob/main/pkg/gcp/workflows/secrets-leak-detector.yaml) require running Terraform executor to reflect changes in respective environments.
 
 ### Terraform presubmit ProwJob
 

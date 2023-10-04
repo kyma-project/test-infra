@@ -3,7 +3,7 @@ FROM golang:1.20.0-alpine3.17 AS builder
 WORKDIR /go/src/github.com/kyma-project/test-infra
 COPY . .
 
-RUN  CGO_ENABLED=0 go build -o /gardener-rotate -ldflags="-s -w" ./development/gardener-rotate
+RUN  CGO_ENABLED=0 go build -o /gardener-rotate -ldflags="-s -w" ./cmd/gardener-rotate
 
 
 FROM alpine:3.17.1

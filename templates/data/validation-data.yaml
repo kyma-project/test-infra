@@ -19,7 +19,7 @@ templates:
                     description: "Validate scripts."
                   run_if_changed: "^(development/.*.sh$|prow/.*.sh$)"
                   command: "prow/scripts/validate-scripts.sh"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20230913-3d41bb28
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20231004-3defcf03
                 inheritedConfigs:
                   local:
                     - "jobConfig_allBranches"
@@ -27,69 +27,6 @@ templates:
                     - "jobConfig_presubmit"
                     - "pubsub_labels"
                     - "unprivileged"
-              - jobConfig:
-                  name: "pre-main-test-infra-validate-prow-tools"
-                  annotations:
-                    owner: neighbors
-                    description: "Validate prow tools"
-                  securityContext:
-                    privileged: "false"
-                  run_if_changed: "^(go.mod|go.sum)$|^development/tools/(cmd/.*|pkg/.*|Makefile|.*.sh)"
-                  labels:
-                    preset-build-pr: "true"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "development/tools"
-                    - "validate"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_presubmit"
-                    - "pubsub_labels"
-              - jobConfig:
-                  name: "pre-main-test-infra-validate-image-url-helper"
-                  annotations:
-                    owner: neighbors
-                    description: "Validate image url helper tool"
-                  securityContext:
-                    privileged: "false"
-                  run_if_changed: "^(go.mod|go.sum)$|^development/image-url-helper/(cmd/.*|pkg/.*|Makefile|.*.sh)"
-                  labels:
-                    preset-build-pr: "true"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "development/image-url-helper"
-                    - "ci-pr"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_presubmit"
-                    - "pubsub_labels"
-              - jobConfig:
-                  name: "pre-main-test-infra-validate-prowjobparser"
-                  annotations:
-                    owner: neighbors
-                    description: "Validate prowjobparser tool"
-                  securityContext:
-                    privileged: "false"
-                  run_if_changed: "^(go.mod|go.sum)$|^development/prowjobparser/(.*.go|Makefile|.*.sh)"
-                  labels:
-                    preset-build-pr: "true"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "development/prowjobparser"
-                    - "validate"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_buildpack-golang"
-                    - "jobConfig_presubmit"
-                    - "pubsub_labels"
               - jobConfig:
                   name: "pre-main-test-infra-validate-generated-files"
                   annotations:
@@ -115,7 +52,7 @@ templates:
                     - "-c"
                     - "shopt -s globstar;
                       hadolint --config .hadolint.yaml --no-color **/Dockerfile"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20230913-3d41bb28
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231004-3defcf03
                 inheritedConfigs:
                   local:
                     - "jobConfig_allBranches"

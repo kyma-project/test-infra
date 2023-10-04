@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"github.com/kyma-project/test-infra/pkg/gcp/dnsclient"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/kyma-project/test-infra/development/gcp/pkg/dnsclient"
 	"github.com/sirupsen/logrus"
 	flag "github.com/spf13/pflag"
 )

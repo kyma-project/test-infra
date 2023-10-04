@@ -26,7 +26,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20230914-c7902318"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231003-2a640ade"
             securityContext:
               privileged: false
               seccompProfile:
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/kyma/resources/"
               - "check"
               - "--excludes-list"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/development/image-url-helper/excludes.yaml"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/cmd/image-url-helper/excludes.yaml"
             resources:
               requests:
                 memory: 1.5Gi
@@ -67,7 +67,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20230914-c7902318"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231003-2a640ade"
             securityContext:
               privileged: false
               seccompProfile:
@@ -101,7 +101,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20230913-3d41bb28"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231004-3defcf03"
             securityContext:
               privileged: false
               seccompProfile:
