@@ -168,8 +168,7 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "make -C hack/ci k3d-integration-test
-"
+              - "make -C hack/ci k3d-integration-test"
             resources:
               requests:
                 memory: 4Gi
@@ -180,16 +179,16 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/application-connector-manager:
-    - name: post-application-connector-manager-module-build
+    - name: post-application-connector-manager-build
       annotations:
-        description: "Job to build application-connector module for a release."
+        description: "Job to build application-connector operator for a release."
         owner: "framefrog"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-application-connector-manager-module-build"
+        prow.k8s.io/pubsub.runID: "post-application-connector-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
+      always_run: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -198,29 +197,37 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231003-4f0ff1b3"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "make"
+              - "/image-builder"
             args:
-              - "-C"
-              - "hack/ci"
-              - "module-build"
-            env:
-              - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/application-connector-manager:${PULL_BASE_SHA}"
-              - name: KUSTOMIZE_VERSION
-                value: "v4.5.6"
-              - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+              - "--name=application-connector-manager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=Dockerfile"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-application-connector-module-build
       annotations:
         description: "application-connector module build job"
