@@ -3,7 +3,7 @@ presubmits:
     - name: pull-test-infra-ko-build
       decorate: true
       cluster: untrusted-workload
-      run_if_changed: ^development/.*.go|^.koapps.yaml|^.ko.yaml|^go.mod
+      run_if_changed: ^development/.*.go|cmd/.*.go|^.koapps.yaml|^.ko.yaml|^go.mod
       annotations:
         owner: neighbors
         description: Builds go-based toolkit in one go
@@ -42,7 +42,7 @@ postsubmits:
     - name: post-test-infra-ko-build
       decorate: true
       cluster: trusted-workload
-      run_if_changed: ^development/.*.go|^.koapps.yaml|^.ko.yaml|^go.mod
+      run_if_changed: ^development/.*.go|cmd/.*.go|^.koapps.yaml|^.ko.yaml|^go.mod
       annotations:
         owner: neighbors
         description: Builds go-based toolkit in one go
