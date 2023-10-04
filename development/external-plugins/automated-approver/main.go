@@ -3,6 +3,7 @@ package main
 import (
 	consolelog "github.com/kyma-project/test-infra/development/logging"
 	"github.com/kyma-project/test-infra/development/prow/externalplugin"
+	"go.uber.org/zap/zapcore"
 	"golang.org/x/net/context"
 	"k8s.io/test-infra/prow/config"
 	"k8s.io/test-infra/prow/pluginhelp"
@@ -29,9 +30,7 @@ func main() {
 	// Initialize configuration options for clients.
 	pluginOptions := externalplugin.Opts{}
 
-	hb := handlerBackend{
-		logLevel: pluginOptions.LogLevel,
-	}
+	hb := handlerBackend{}
 
 	// Initialize PR locks.
 	hb.prLocks = make(map[string]map[string]map[int]map[string]context.CancelFunc)
@@ -42,7 +41,15 @@ func main() {
 	fs.IntVar(&hb.waitForStatusesTimeout, "wait-for-statuses-timeout", 30, "Timeout in seconds for waiting for statuses.")
 	pluginOptions.ParseFlags(fs)
 
-	atom.SetLevel(pluginOptions.LogLevel)
+	atom.UnmarshalText([]byte(pluginOptions.LogLevel))
+
+	level, err := zapcore.ParseLevel(pluginOptions.LogLevel)
+	if err != nil {
+		logger.Fatalw("Failed parsing log level", "error", err)
+		panic(err)
+	}
+
+	hb.logLevel = level
 
 	// Create GitHub.com client.
 	ghClient, err := pluginOptions.Github.NewGithubClient()

@@ -8,4 +8,5 @@ conditions:
         - changedFiles:
             - '^docs/index.md$'
             - '.*\.yaml$'
+            - '.*\.tf$'
             - 'development/tools/jobs/tester/tester.go'

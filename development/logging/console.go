@@ -33,12 +33,12 @@ func NewLoggerWithLevel() (*zap.SugaredLogger, zap.AtomicLevel) {
 func newLogger(l zapcore.Level) (*zap.SugaredLogger, zap.AtomicLevel) {
 	atom := zap.NewAtomicLevel()
 	atom.SetLevel(l)
-	errorMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl >= zapcore.ErrorLevel
+	errorLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl >= zapcore.ErrorLevel && lvl >= atom.Level()
 	})
 
-	infoMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
-		return lvl < zapcore.ErrorLevel
+	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+		return lvl < zapcore.ErrorLevel && lvl >= atom.Level()
 	})
 
 	consoleInfo := zapcore.Lock(os.Stdout)
@@ -49,8 +49,8 @@ func newLogger(l zapcore.Level) (*zap.SugaredLogger, zap.AtomicLevel) {
 	consoleEncoder := zapcore.NewConsoleEncoder(encoderConfig)
 
 	core := zapcore.NewTee(
-		zapcore.NewCore(consoleEncoder, consoleErrors, errorMessage),
-		zapcore.NewCore(consoleEncoder, consoleInfo, infoMessage),
+		zapcore.NewCore(consoleEncoder, consoleErrors, errorLevel),
+		zapcore.NewCore(consoleEncoder, consoleInfo, infoLevel),
 	)
 
 	logger := zap.New(core)
