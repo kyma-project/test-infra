@@ -11,11 +11,11 @@ templates:
                   annotations:
                     owner: neighbors
                     description: "Build Google Cloud VM template image for test-vm-image"
-                  run_if_changed: 'development/custom-image/'
+                  run_if_changed: "experimental/custom-image/"
                   command: "bash"
                   args:
                     - "-c"
-                    - "development/custom-image/create-custom-image.sh"
+                    - "experimental/custom-image/create-custom-image.sh"
                   labels:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
@@ -32,11 +32,11 @@ templates:
                   annotations:
                     owner: neighbors
                     description: "Test k3d installation on Google Cloud VM template image for test-vm-image"
-                  run_if_changed: 'development/custom-image/'
+                  run_if_changed: "experimental/custom-image/"
                   command: "bash"
                   args:
                     - "-c"
-                    - "development/custom-image/create-custom-image.sh --test-k3d"
+                    - "experimental/custom-image/create-custom-image.sh --test-k3d"
                   labels:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
@@ -52,12 +52,12 @@ templates:
                   annotations:
                     owner: neighbors
                     description: "Build Google Cloud VM template image for test-vm-image"
-                  run_if_changed: 'development/custom-image/'
+                  run_if_changed: "experimental/custom-image/"
                   image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231003-4f0ff1b3
                   command: "bash"
                   args:
                     - "-c"
-                    - "development/custom-image/create-custom-image.sh --default"
+                    - "experimental/custom-image/create-custom-image.sh --default"
                   labels:
                     preset-sa-vm-kyma-integration: "true"
                     preset-gc-project-env: "true"
