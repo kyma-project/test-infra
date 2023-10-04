@@ -29,7 +29,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231003-4f0ff1b3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231004-3defcf03"
             securityContext:
               privileged: false
               seccompProfile:
@@ -77,7 +77,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231003-4f0ff1b3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231004-3defcf03"
             securityContext:
               privileged: false
               seccompProfile:
@@ -126,7 +126,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231003-4f0ff1b3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231004-3defcf03"
             securityContext:
               privileged: false
               seccompProfile:
@@ -174,7 +174,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231003-4f0ff1b3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231004-3defcf03"
             securityContext:
               privileged: false
               seccompProfile:
@@ -222,7 +222,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231003-4f0ff1b3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231004-3defcf03"
             securityContext:
               privileged: false
               seccompProfile:
@@ -272,7 +272,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231003-4f0ff1b3"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231004-3defcf03"
             securityContext:
               privileged: false
               seccompProfile:
