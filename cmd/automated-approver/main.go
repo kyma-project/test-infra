@@ -1,8 +1,8 @@
 package main
 
 import (
-	consolelog "github.com/kyma-project/test-infra/development/logging"
-	"github.com/kyma-project/test-infra/development/prow/externalplugin"
+	consolelog "github.com/kyma-project/test-infra/pkg/logging"
+	"github.com/kyma-project/test-infra/pkg/prow/externalplugin"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/net/context"
 	"k8s.io/test-infra/prow/config"
