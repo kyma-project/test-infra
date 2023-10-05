@@ -4,6 +4,9 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
     - name: pull-build-image-automated-approver
+      annotations:
+        description: "Builds the image for the automated-approver plugin."
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-build-image-automated-approver"
@@ -51,6 +54,9 @@ presubmits: # runs on PRs
 postsubmits: # runs on main
   kyma-project/test-infra:
     - name: post-build-image-automated-approver
+      annotations:
+        description: "Builds the image for the automated-approver plugin."
+        owner: "neighbors"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-build-image-automated-approver"

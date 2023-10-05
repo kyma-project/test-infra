@@ -7,6 +7,9 @@ templates:
             jobs:
               - jobConfig:
                   name: "pull-build-image-automated-approver"
+                  annotations:
+                    description: "Builds the image for the automated-approver plugin."
+                    owner: "neighbors"
                   run_if_changed: '^development/external-plugins/automated-approver'
                   args:
                     - "--name=test-infra/automated-approver"
@@ -19,6 +22,9 @@ templates:
                     - "jobConfig_presubmit"
               - jobConfig:
                   name: "post-build-image-automated-approver"
+                  annotations:
+                    description: "Builds the image for the automated-approver plugin."
+                    owner: "neighbors"
                   run_if_changed: '^development/external-plugins/automated-approver'
                   args:
                     - "--name=test-infra/automated-approver"
