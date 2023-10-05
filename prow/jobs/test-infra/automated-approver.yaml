@@ -28,7 +28,7 @@ presubmits: # runs on PRs
               - "--name=test-infra/automated-approver"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=images/automated-approver/Dockerfile"
+              - "--dockerfile=development/external-plugins/automated-approver/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -94,3 +94,4 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+  
