@@ -23,7 +23,7 @@ source "$SCRIPT_DIR/lib/gcp.sh"
 
 if [[ "${BUILD_TYPE}" == "pr" ]]; then
     log::info "Execute Job Guard"
-    "${TEST_INFRA_SOURCES_DIR}/development/jobguard/scripts/run.sh"
+    "${TEST_INFRA_SOURCES_DIR}/cmd/jobguard/run.sh"
 fi
 
 cleanup() {
