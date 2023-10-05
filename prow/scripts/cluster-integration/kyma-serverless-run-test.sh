@@ -18,6 +18,6 @@ run_tests() {
   export PATH=${PATH}:/usr/local/go/bin
 
   export APP_TEST_CLEANUP="onSuccessOnly"
-  (cd "${KYMA_SOURCES_DIR}/tests/function-controller" && make "${INTEGRATION_SUITE[@]}")
+  (cd "${SERVERLESS_SOURCES}/tests/function-controller" && make "${INTEGRATION_SUITE[@]}")
   return $?
 }

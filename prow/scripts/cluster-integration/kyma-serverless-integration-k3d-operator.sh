@@ -14,7 +14,7 @@ date
 make -C "$SERVERLESS_SOURCES"/hack/ci run-without-lifecycle-manager-operator
 
 export INTEGRATION_SUITE=("$@")
-KYMA_SOURCES_DIR="${SERVERLESS_SOURCES}" run_tests "${INTEGRATION_SUITE[@]}"
+run_tests "${INTEGRATION_SUITE[@]}"
 TEST_STATUS=$?
 set -o errexit
 
