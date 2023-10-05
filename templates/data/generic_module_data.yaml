@@ -723,9 +723,7 @@ templates:
                   args:
                     - -c
                     - >-
-                      git config --global --add safe.directory $(pwd)/module-chart
-                      &&
-                      ./hack/generate_module-chart.sh
+                      cp -r config/serverless/ module-chart
                       &&
                       /image-builder
                       --name=serverless-operator
@@ -843,9 +841,7 @@ templates:
                   args:
                     - -c
                     - >-
-                      git config --global --add safe.directory $(pwd)/module-chart
-                      &&
-                      ./hack/generate_module-chart.sh
+                      cp -r config/serverless/ module-chart
                       &&
                       /image-builder
                       --name=serverless-operator
@@ -871,9 +867,7 @@ templates:
                   args:
                     - -c
                     - >-
-                      git config --global --add safe.directory $(pwd)/module-chart
-                      &&
-                      ./hack/generate_module-chart.sh
+                      cp -r config/serverless/ module-chart
                       &&
                       /image-builder
                       --name=serverless-operator
