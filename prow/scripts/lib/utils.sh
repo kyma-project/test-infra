@@ -652,8 +652,8 @@ function utils::run_jobguard() {
     buildType=$( echo "$buildType" | tr "[:upper:]" "[:lower:]")
     if [[ "$buildType" == "pr" ]]; then
         log::info "Execute Job Guard"
-        # shellcheck source=development/jobguard/scripts/run.sh
-        "$testInfraSourcesDir"/development/jobguard/scripts/run.sh
+        # shellcheck source=cmd/jobguard/run.sh
+        "$testInfraSourcesDir"/cmd/jobguard/run.sh
     fi
 }
 
