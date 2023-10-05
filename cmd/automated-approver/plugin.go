@@ -14,8 +14,8 @@ import (
 	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v3"
 
-	consolelog "github.com/kyma-project/test-infra/development/logging"
-	"github.com/kyma-project/test-infra/development/prow/externalplugin"
+	consolelog "github.com/kyma-project/test-infra/pkg/logging"
+	"github.com/kyma-project/test-infra/pkg/prow/externalplugin"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"k8s.io/test-infra/prow/github"
