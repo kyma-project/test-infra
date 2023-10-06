@@ -1,17 +1,14 @@
 ---
 defaultNamespace: kyma-system
 prerequisites:
-  - name: "cluster-essentials"
   - name: "istio"
     namespace: "istio-system"
   - name: "certificates"
     namespace: "istio-system"
 components:
-  - name: "istio-resources"
   - name: "eventing"
   - name: "ory"
   - name: "api-gateway"
-  - name: "cluster-users"
   - name: "serverless"
   - name: "application-connector"
     namespace: "kyma-integration"

@@ -65,12 +65,10 @@ function ory::prepare_components_file() {
 cat << EOF > "$PWD/ory.yaml"
 defaultNamespace: kyma-system
 prerequisites:
-  - name: "cluster-essentials"
   - name: "istio"
     namespace: "istio-system"
 components:
   - name: "ory"
-  - name: "istio-resources"
 EOF
 }
 
@@ -80,7 +78,6 @@ function istio::prepare_components_file() {
 cat << EOF > "$PWD/istio.yaml"
 defaultNamespace: kyma-system
 prerequisites:
-  - name: "cluster-essentials"
   - name: "istio"
     namespace: "istio-system"
 EOF
