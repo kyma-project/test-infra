@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      warden:
+      - pjName: "pull-warden-unit-test"
+prConfigs: #
+  kyma-project:
+    warden:
+      prNumber: 117
