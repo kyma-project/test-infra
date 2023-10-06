@@ -41,7 +41,7 @@ presubmits: # runs on PRs
                 value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/"
     - name: pre-main-serverless-git-auth-integration-k3s
       annotations:
-        description: "Serverless git-function authentication nightly integration tests"
+        description: "Serverless git-function authentication integration tests"
         owner: "otters"
         testgrid-create-test-group: "false"
       labels:
@@ -50,7 +50,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
-        preset-serverless-git-auth: "true"
       run_if_changed: '^((config/serverless|tests/function-controller)\S+(\.[^.][^.][^.]+|\.[^.][^dD]|\.[^mM][^.]|\.[^.]$|/[^.]+))$'
       skip_report: false
       decorate: true
@@ -76,11 +75,22 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "export APP_TEST_GITHUB_SSH_AUTH_KEY=\"${GH_AUTH_PRIVATE_KEY}\" &&
-export APP_TEST_AZURE_BASIC_AUTH_USERNAME=\"${AZURE_DEVOPS_AUTH_USERNAME}\" &&
-export APP_TEST_AZURE_BASIC_AUTH_PASSWORD=\"${AZURE_DEVOPS_AUTH_PASSWORD}\" &&
-/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d-operator.sh git-auth-integration
-"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d-operator.sh git-auth-integration"
             env:
               - name: SERVERLESS_SOURCES
                 value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/"
+              - name: APP_TEST_GITHUB_SSH_AUTH_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: "serverless-git-auth"
+                    key: "GH_AUTH_PRIVATE_KEY"
+              - name: APP_TEST_AZURE_BASIC_AUTH_USERNAME
+                valueFrom:
+                  secretKeyRef:
+                    name: "serverless-git-auth"
+                    key: "AZURE_DEVOPS_AUTH_USERNAME"
+              - name: APP_TEST_AZURE_BASIC_AUTH_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: "serverless-git-auth"
+                    key: "AZURE_DEVOPS_AUTH_PASSWORD"
