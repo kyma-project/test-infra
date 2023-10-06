@@ -133,8 +133,7 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "make -C hack/ci k3d-integration-test
-"
+              - "make -C hack/ci k3d-integration-test"
             resources:
               requests:
                 memory: 4Gi
