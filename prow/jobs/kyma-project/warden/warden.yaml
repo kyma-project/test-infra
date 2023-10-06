@@ -152,10 +152,9 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/bin/sh"
+              - "make"
             args:
-              - "-c"
-              - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "test"
             resources:
               requests:
                 memory: 1Gi
