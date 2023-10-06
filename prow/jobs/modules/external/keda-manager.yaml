@@ -36,13 +36,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: pull-keda-module-build
+    - name: pre-keda-module-build
       annotations:
         description: "keda module build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-keda-module-build"
+        prow.k8s.io/pubsub.runID: "pre-keda-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^keda.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$'
@@ -164,13 +164,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pre-main-keda-manager-verify
+    - name: pre-keda-manager-verify
       annotations:
         description: "runs keda manager verity job on k3d VM"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-keda-manager-verify"
+        prow.k8s.io/pubsub.runID: "pre-keda-manager-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -403,13 +403,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-main-keda-manager-verify
+    - name: post-keda-manager-verify
       annotations:
         description: "runs keda manager verity job on k3d VM"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-keda-manager-verify"
+        prow.k8s.io/pubsub.runID: "post-keda-manager-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -449,13 +449,13 @@ postsubmits: # runs on main
               limits:
                 memory: 4Gi
                 cpu: 3
-    - name: post-main-keda-manager-upgrade-latest-to-main
+    - name: post-keda-manager-upgrade-latest-to-main
       annotations:
         description: "upgrade keda manager test"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-keda-manager-upgrade-latest-to-main"
+        prow.k8s.io/pubsub.runID: "post-keda-manager-upgrade-latest-to-main"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"

@@ -1,6 +1,6 @@
 presubmits: # runs on PRs
   kyma-project/serverless-manager:
-    - name: pre-main-serverless-integration-k3s
+    - name: pre-serverless-integration-k3s
       annotations:
         description: "serverless integration k3s job"
         owner: "otters"
@@ -39,7 +39,7 @@ presubmits: # runs on PRs
             env:
               - name: SERVERLESS_SOURCES
                 value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/"
-    - name: pre-main-serverless-git-auth-integration-k3s
+    - name: pre-serverless-git-auth-integration-k3s
       annotations:
         description: "Serverless git-function authentication integration tests"
         owner: "otters"

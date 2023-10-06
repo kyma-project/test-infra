@@ -3,13 +3,13 @@
 
 presubmits: # runs on PRs
   kyma-project/serverless-manager:
-    - name: pull-function-controller-build
+    - name: pre-serverless-controller-build
       annotations:
         description: "function controller build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-controller-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-controller-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/serverless/'
@@ -50,13 +50,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-function-webhook-build
+    - name: pre-serverless-webhook-build
       annotations:
         description: "function webhook build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-webhook-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-webhook-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/serverless/'
@@ -97,13 +97,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-function-jobinit-build
+    - name: pre-serverless-jobinit-build
       annotations:
         description: "function jobinit build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-jobinit-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-jobinit-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/serverless/'
@@ -144,13 +144,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-function-registry-gc-build
+    - name: pre-serverless-registry-gc-build
       annotations:
         description: "function registry build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-registry-gc-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-registry-gc-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/serverless/'
@@ -192,13 +192,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-function-java17-jvm-alpha-build
+    - name: pre-serverless-runtimes-java17-jvm-alpha-build
       annotations:
         description: "function java 17 build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-java17-jvm-alpha-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-java17-jvm-alpha-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/runtimes/java17'
@@ -239,13 +239,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-function-runtimes-nodejs-v16-build
+    - name: pre-serverless-runtimes-nodejs-v16-build
       annotations:
         description: "function nodejs16 build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-runtimes-nodejs-v16-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-nodejs-v16-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/runtimes/nodejs'
@@ -286,13 +286,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-function-runtimes-nodejs-v18-build
+    - name: pre-serverless-runtimes-nodejs-v18-build
       annotations:
         description: "function nodejs18 build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-runtimes-nodejs-v18-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-nodejs-v18-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/runtimes/nodejs'
@@ -333,13 +333,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-function-runtimes-python39-build
+    - name: pre-serverless-runtimes-python39-build
       annotations:
         description: "function python3.9 build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-runtimes-python39-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-python39-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^components/runtimes/python39'
@@ -380,13 +380,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-gitserver-build
+    - name: pre-gitserver-build
       annotations:
         description: "gitserver build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-gitserver-build"
+        prow.k8s.io/pubsub.runID: "pre-gitserver-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^tests/gitserver'
@@ -428,13 +428,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-function-controller-unit-test
+    - name: pre-serverless-controller-unit-test
       annotations:
         description: "run unit tests for function controller"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-controller-unit-test"
+        prow.k8s.io/pubsub.runID: "pre-serverless-controller-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/serverless/.*\.go$'
       skip_report: false
@@ -459,13 +459,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
-    - name: pull-function-controller-lint
+    - name: pre-serverless-controller-lint
       annotations:
         description: "function controller linting job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-function-controller-lint"
+        prow.k8s.io/pubsub.runID: "pre-serverless-controller-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^components/serverless/(.*\.go$|.golangcilint.yaml)'
       optional: true
@@ -490,13 +490,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 200Mi
                 cpu: 80m
-    - name: pull-serverless-module-build
+    - name: pre-serverless-module-build
       annotations:
         description: "build serverless module"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-serverless-module-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
@@ -627,13 +627,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pre-main-serverless-operator-verify
+    - name: pre-serverless-operator-verify
       annotations:
         description: "serverless manager verify on k3d vm"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-main-serverless-operator-verify"
+        prow.k8s.io/pubsub.runID: "pre-serverless-operator-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -676,14 +676,14 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/serverless-manager:
-    - name: post-function-controller-build
+    - name: post-serverless-controller-build
       annotations:
         description: "function controller build job"
         owner: "otters"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-controller-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-controller-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -725,14 +725,14 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-function-webhook-build
+    - name: post-serverless-webhook-build
       annotations:
         description: "function webhook build job"
         owner: "otters"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-webhook-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-webhook-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -774,14 +774,14 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-function-jobinit-build
+    - name: post-serverless-jobinit-build
       annotations:
         description: "function jobinit build job"
         owner: "otters"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-jobinit-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-jobinit-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -823,14 +823,14 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-function-registry-gc-build
+    - name: post-serverless-registry-gc-build
       annotations:
         description: "function registry build job"
         owner: "otters"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-registry-gc-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-registry-gc-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -873,14 +873,14 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-function-java17-jvm-alpha-build
+    - name: post-serverless-runtimes-java17-jvm-alpha-build
       annotations:
         description: "function java 17 build job"
         owner: "otters"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-java17-jvm-alpha-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-runtimes-java17-jvm-alpha-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -922,14 +922,14 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-function-runtimes-nodejs-v16-build
+    - name: post-serverless-runtimes-nodejs-v16-build
       annotations:
         description: "function nodejs16 build job"
         owner: "otters"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-runtimes-nodejs-v16-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-runtimes-nodejs-v16-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -971,14 +971,14 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-function-runtimes-nodejs-v18-build
+    - name: post-serverless-runtimes-nodejs-v18-build
       annotations:
         description: "function nodejs18 build job"
         owner: "otters"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-runtimes-nodejs-v18-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-runtimes-nodejs-v18-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -1020,14 +1020,14 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-function-controller-python39-build
+    - name: post-serverless-controller-python39-build
       annotations:
         description: "function pytho3.9 build job"
         owner: "otters"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-function-controller-python39-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-controller-python39-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -1315,13 +1315,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-main-serverless-operator-verify
+    - name: post-serverless-operator-verify
       annotations:
         description: "serverless manager verify on k3d vm"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-serverless-operator-verify"
+        prow.k8s.io/pubsub.runID: "post-serverless-operator-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
@@ -1361,13 +1361,13 @@ postsubmits: # runs on main
               limits:
                 memory: 4Gi
                 cpu: 3
-    - name: post-main-serverless-operator-upgrade-latest-to-main
+    - name: post-serverless-operator-upgrade-latest-to-main
       annotations:
         description: "upgrade serverless operator test"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-main-serverless-operator-upgrade-latest-to-main"
+        prow.k8s.io/pubsub.runID: "post-serverless-operator-upgrade-latest-to-main"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
