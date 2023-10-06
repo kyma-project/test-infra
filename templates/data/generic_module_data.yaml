@@ -49,7 +49,7 @@ templates:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
               - jobConfig:
-                  name: "keda-operator-nightly-periodic"
+                  name: keda-operator-nightly-periodic
                   cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
                   annotations:
                     owner: otters
@@ -142,7 +142,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
-                  name: pull-keda-module-build
+                  name: pre-keda-module-build
                   annotations:
                     owner: otters
                     description: keda module build job
@@ -247,7 +247,7 @@ templates:
                   local:
                     - job_build
               - jobConfig:
-                  name: pre-main-keda-manager-verify
+                  name: pre-keda-manager-verify
                   annotations:
                     owner: otters
                     description: runs keda manager verity job on k3d VM
@@ -267,7 +267,7 @@ templates:
                   local:
                     - dind_job_k3d
               - jobConfig:
-                  name: post-main-keda-manager-verify
+                  name: post-keda-manager-verify
                   annotations:
                     owner: otters
                     description: runs keda manager verity job on k3d VM
@@ -287,7 +287,7 @@ templates:
                   local:
                     - dind_job_k3d
               - jobConfig:
-                  name: post-main-keda-manager-upgrade-latest-to-main
+                  name: post-keda-manager-upgrade-latest-to-main
                   annotations:
                     owner: otters
                     description: upgrade keda manager test
@@ -353,7 +353,7 @@ templates:
           - repoName: kyma-project/serverless-manager
             jobs:
               - jobConfig:
-                  name: pull-function-controller-build
+                  name: pre-serverless-controller-build
                   annotations:
                     owner: otters
                     description: function controller build job
@@ -368,7 +368,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-function-controller-build
+                  name: post-serverless-controller-build
                   annotations:
                     owner: otters
                     description: function controller build job
@@ -386,7 +386,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
               - jobConfig:
-                  name: pull-function-webhook-build
+                  name: pre-serverless-webhook-build
                   annotations:
                     owner: otters
                     description: function webhook build job
@@ -401,7 +401,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-function-webhook-build
+                  name: post-serverless-webhook-build
                   annotations:
                     owner: otters
                     description: function webhook build job
@@ -419,7 +419,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
               - jobConfig:
-                  name: pull-function-jobinit-build
+                  name: pre-serverless-jobinit-build
                   annotations:
                     owner: otters
                     description: function jobinit build job
@@ -434,7 +434,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-function-jobinit-build
+                  name: post-serverless-jobinit-build
                   annotations:
                     owner: otters
                     description: function jobinit build job
@@ -452,7 +452,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
               - jobConfig:
-                  name: pull-function-registry-gc-build
+                  name: pre-serverless-registry-gc-build
                   annotations:
                     owner: otters
                     description: function registry build job
@@ -468,7 +468,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-function-registry-gc-build
+                  name: post-serverless-registry-gc-build
                   annotations:
                     owner: otters
                     description: function registry build job
@@ -487,7 +487,7 @@ templates:
                     - jobConfig_postsubmit
                     - "disable_testgrid"
               - jobConfig:
-                  name: pull-function-java17-jvm-alpha-build
+                  name: pre-serverless-runtimes-java17-jvm-alpha-build
                   annotations:
                     owner: otters
                     description: function java 17 build job
@@ -502,7 +502,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-function-java17-jvm-alpha-build
+                  name: post-serverless-runtimes-java17-jvm-alpha-build
                   annotations:
                     owner: otters
                     description: function java 17 build job
@@ -520,7 +520,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
               - jobConfig:
-                  name: pull-function-runtimes-nodejs-v16-build
+                  name: pre-serverless-runtimes-nodejs-v16-build
                   annotations:
                     owner: otters
                     description: function nodejs16 build job
@@ -535,7 +535,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-function-runtimes-nodejs-v16-build
+                  name: post-serverless-runtimes-nodejs-v16-build
                   annotations:
                     owner: otters
                     description: function nodejs16 build job
@@ -553,7 +553,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
               - jobConfig:
-                  name: pull-function-runtimes-nodejs-v18-build
+                  name: pre-serverless-runtimes-nodejs-v18-build
                   annotations:
                     owner: otters
                     description: function nodejs18 build job
@@ -568,7 +568,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-function-runtimes-nodejs-v18-build
+                  name: post-serverless-runtimes-nodejs-v18-build
                   annotations:
                     owner: otters
                     description: function nodejs18 build job
@@ -586,7 +586,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
               - jobConfig:
-                  name: pull-function-runtimes-python39-build
+                  name: pre-serverless-runtimes-python39-build
                   annotations:
                     owner: otters
                     description: function python3.9 build job
@@ -601,7 +601,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-function-controller-python39-build
+                  name: post-serverless-controller-python39-build
                   annotations:
                     owner: otters
                     description: function pytho3.9 build job
@@ -619,7 +619,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
               - jobConfig:
-                  name: pull-gitserver-build
+                  name: pre-gitserver-build
                   annotations:
                     owner: otters
                     description: gitserver build job
@@ -653,7 +653,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
               - jobConfig:
-                  name: "pull-function-controller-unit-test"
+                  name: pre-serverless-controller-unit-test
                   annotations:
                     owner: otters
                     description: "run unit tests for function controller"
@@ -670,7 +670,7 @@ templates:
                     - testing
                     - unprivileged
               - jobConfig:
-                  name: "pull-function-controller-lint"
+                  name: pre-serverless-controller-lint
                   annotations:
                     owner: otters
                     description: function controller linting job
@@ -685,7 +685,7 @@ templates:
                     - linting
                     - unprivileged
               - jobConfig:
-                  name: "serverless-operator-nightly-periodic"
+                  name: serverless-operator-nightly-periodic
                   cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
                   annotations:
                     owner: otters
@@ -788,7 +788,7 @@ templates:
                   local:
                     - job_branches
               - jobConfig:
-                  name: pull-serverless-module-build
+                  name: pre-serverless-module-build
                   annotations:
                     owner: otters
                     description: build serverless module
@@ -883,7 +883,7 @@ templates:
                     - job_branches
                     - job_build_volumes
               - jobConfig:
-                  name: pre-main-serverless-operator-verify
+                  name: pre-serverless-operator-verify
                   annotations:
                     owner: otters
                     description: serverless manager verify on k3d vm
@@ -904,7 +904,7 @@ templates:
                     - dind_job_k3d
                     - job_branches
               - jobConfig:
-                  name: post-main-serverless-operator-verify
+                  name: post-serverless-operator-verify
                   annotations:
                     owner: otters
                     description: serverless manager verify on k3d vm
@@ -925,7 +925,7 @@ templates:
                     - dind_job_k3d
                     - job_branches
               - jobConfig:
-                  name: post-main-serverless-operator-upgrade-latest-to-main
+                  name: post-serverless-operator-upgrade-latest-to-main
                   annotations:
                     owner: otters
                     description: upgrade serverless operator test
