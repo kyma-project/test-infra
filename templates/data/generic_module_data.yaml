@@ -1020,7 +1020,7 @@ templates:
                   global:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
-                    - jobConfig_presubmit
+                    - jobConfig_postsubmit
               - jobConfig:
                   name: pre-application-connector-module-build
                   annotations:
