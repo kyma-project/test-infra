@@ -188,3 +188,9 @@ variable "kyma_project_gcp_project_id" {
   description = "Google Cloud project to create resources"
   default     = "kyma-project"
 }
+
+variable "automated_approver_deployment_path" {
+  type        = string
+  description = "Path to the automated-approver deployment file"
+  default     = "../../../../prow/cluster/components/automated-approver_external-plugin.yaml"
+}
