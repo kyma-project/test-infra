@@ -106,8 +106,7 @@ templates:
                   args:
                     - "test"
                   env:
-                    - name: TEST_COVER_OUT
-                      value: ${ARTIFACTS}/filtered.cov
+                    TEST_COVER_OUT: ${ARTIFACTS}/filtered.cov
                   run_if_changed: '.*\.go$'
                 inheritedConfigs:
                   global:

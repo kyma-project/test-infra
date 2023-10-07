@@ -156,8 +156,8 @@ presubmits: # runs on PRs
             args:
               - "test"
             env:
-              - name: 0
-                value: "map[name:TEST_COVER_OUT value:${ARTIFACTS}/filtered.cov]"
+              - name: TEST_COVER_OUT
+                value: "${ARTIFACTS}/filtered.cov"
             resources:
               requests:
                 memory: 1Gi
