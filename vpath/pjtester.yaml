@@ -6,4 +6,4 @@ pjConfigs:
 prConfigs: #
   kyma-project:
     warden:
-      prNumber: 117
+      prNumber: 118
