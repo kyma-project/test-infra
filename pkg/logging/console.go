@@ -33,11 +33,11 @@ func NewLoggerWithLevel() (*zap.SugaredLogger, zap.AtomicLevel) {
 func newLogger(l zapcore.Level) (*zap.SugaredLogger, zap.AtomicLevel) {
 	atom := zap.NewAtomicLevel()
 	atom.SetLevel(l)
-	errorMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+	errorLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl >= zapcore.ErrorLevel && lvl >= atom.Level()
 	})
 
-	infoMessage := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
+	infoLevel := zap.LevelEnablerFunc(func(lvl zapcore.Level) bool {
 		return lvl < zapcore.ErrorLevel && lvl >= atom.Level()
 	})
 
@@ -49,11 +49,15 @@ func newLogger(l zapcore.Level) (*zap.SugaredLogger, zap.AtomicLevel) {
 	consoleEncoder := zapcore.NewConsoleEncoder(encoderConfig)
 
 	core := zapcore.NewTee(
-		zapcore.NewCore(consoleEncoder, consoleErrors, errorMessage),
-		zapcore.NewCore(consoleEncoder, consoleInfo, infoMessage),
+		zapcore.NewCore(consoleEncoder, consoleErrors, errorLevel),
+		zapcore.NewCore(consoleEncoder, consoleInfo, infoLevel),
 	)
 
 	logger := zap.New(core)
-	zap.RedirectStdLog(logger)
+	_, err := zap.RedirectStdLogAt(logger, zapcore.InfoLevel)
+	if err != nil {
+		logger.Fatal("Failed to redirect stdlib log messages to zap", zap.Field{Key: "error", String: err.Error(), Type: zapcore.StringType})
+		panic(err)
+	}
 	return logger.Sugar(), atom
 }
