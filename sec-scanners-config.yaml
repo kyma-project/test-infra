@@ -6,6 +6,7 @@ protecode:
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.11.1
+    - europe-docker.pkg.dev/kyma-project/dev/test-infra/automated-approver-8e0bdb7db8f4ec1c45299442f29dde11@sha256:2a7caeb95bdd866e5fd8ba3947b3f3314eacff529ee69f0c54b6d5ae7fcefd43
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20230925-22f1fe8b
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20230925-22f1fe8b
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20230925-22f1fe8b
