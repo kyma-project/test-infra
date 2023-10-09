@@ -194,3 +194,9 @@ variable "automated_approver_deployment_path" {
   description = "Path to the automated-approver deployment file"
   default     = "../../../../prow/cluster/components/automated-approver_external-plugin.yaml"
 }
+
+variable "automated_approver_rules_path" {
+  type        = string
+  description = "Path to the automated-approver rules file"
+  default     = "../../../../configs/automated-approver-rules.yaml"
+}
