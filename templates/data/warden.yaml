@@ -102,10 +102,11 @@ templates:
                   annotations:
                     owner: otters
                     description: Warden unit test job
-                  command: "/bin/sh"
+                  command: "make"
                   args:
-                    - "-c"
-                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "test"
+                  env:
+                    TEST_COVER_OUT: ${ARTIFACTS}/filtered.cov
                   run_if_changed: '.*\.go$'
                 inheritedConfigs:
                   global:
