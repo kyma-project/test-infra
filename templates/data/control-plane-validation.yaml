@@ -23,7 +23,7 @@ templates:
                     - "-c"
                     - "shopt -s globstar;
                       hadolint --config .hadolint.yaml --no-color **/Dockerfile"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231004-3defcf03
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231009-9dab7281
                 inheritedConfigs:
                   global:
                     - jobConfig_default

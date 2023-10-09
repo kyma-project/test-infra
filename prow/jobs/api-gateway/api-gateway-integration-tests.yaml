@@ -34,7 +34,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231004-3defcf03"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231009-9dab7281"
             securityContext:
               privileged: false
               seccompProfile:
@@ -91,7 +91,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231004-3defcf03"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231009-9dab7281"
             securityContext:
               privileged: false
               seccompProfile:
@@ -139,7 +139,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231004-3defcf03"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231009-9dab7281"
             securityContext:
               privileged: false
               seccompProfile:
@@ -189,7 +189,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231004-3defcf03"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231009-9dab7281"
             securityContext:
               privileged: false
               seccompProfile:
