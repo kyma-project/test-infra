@@ -12,7 +12,7 @@ require (
 	cloud.google.com/go/storage v1.33.0
 	github.com/Masterminds/semver v1.5.0
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/cenkalti/backoff/v4 v4.2.0
+	github.com/cenkalti/backoff/v4 v4.2.1
 	github.com/cloudevents/sdk-go/v2 v2.14.0
 	github.com/containerd/containerd v1.7.6
 	github.com/containerd/typeurl/v2 v2.1.1
