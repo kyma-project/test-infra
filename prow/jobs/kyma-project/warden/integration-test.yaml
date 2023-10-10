@@ -16,9 +16,10 @@ presubmits:
       run_if_changed: '.*\.go$|charts/'
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231004-3defcf03
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231010-2d92168d
             command: ["/init.sh"]
             args:
+              - bash
               - -c
               - |
                 kubectl cluster-info

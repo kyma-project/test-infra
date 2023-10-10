@@ -145,17 +145,19 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231004-3defcf03"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231010-2d92168d"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/bin/sh"
+              - "make"
             args:
-              - "-c"
-              - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "test"
+            env:
+              - name: TEST_COVER_OUT
+                value: "${ARTIFACTS}/filtered.cov"
             resources:
               requests:
                 memory: 1Gi

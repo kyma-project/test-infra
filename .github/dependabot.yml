@@ -83,18 +83,6 @@ updates:
       prefix: "githubrelease"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/development/test-log-collector"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "test-log-coll"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/prow/images/clonerefs"
     labels:
       - "docker"
@@ -191,18 +179,6 @@ updates:
       prefix: "cla-plugin"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/development/markdown-index"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "markdown-index"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/cmd/cloud-run/create-github-issue"
     labels:
       - "docker"
@@ -263,7 +239,7 @@ updates:
       prefix: "slack-msg-sender"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/development/secrets-rotator/cloud-run/rotate-service-account"
+    directory: "/cmd/cloud-run/rotate-service-account"
     labels:
       - "docker"
       - "skip-review"
