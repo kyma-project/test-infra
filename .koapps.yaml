@@ -26,4 +26,4 @@ apps:
   - ko://github.com/kyma-project/test-infra/cmd/cloud-run/cors-proxy
   - ko://github.com/kyma-project/test-infra/cmd/external-plugins/needs-tws
   - ko://github.com/kyma-project/test-infra/cmd/external-plugins/cla-assistant
-  - ko://github.com/kyma-project/test-infra/cmd/external-plugins/automerge-notification
+  - ko://github.com/kyma-project/test-infra/cmd/external-plugins/automated-approver

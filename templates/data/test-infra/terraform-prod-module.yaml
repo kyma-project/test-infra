@@ -16,7 +16,7 @@ templates:
                   branches:
                     - "^main$"
                   privileged: "false"
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20230215-6bf03a31"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20231010-1814beac"
                   serviceAccountName: "terraform-executor"
                   automountServiceAccountToken: "false"
                   labels:

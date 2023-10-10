@@ -32,7 +32,7 @@ type Opts struct {
 	Port              int
 	Github            client.GithubClientConfig
 	WebhookSecretPath string
-	LogLevel          zapcore.Level
+	LogLevel          string
 	DryRun            bool
 }
 
@@ -70,7 +70,7 @@ func (o *Opts) NewFlags() *flag.FlagSet {
 	fs.IntVar(&o.Port, "port", 8080, "Plugin port to listen on.")
 	fs.BoolVar(&o.DryRun, "dry-run", false, "Run in dry-run mode - no actual changes will be made.")
 	fs.StringVar(&o.WebhookSecretPath, "hmac-secret-file", "/etc/webhook/hmac", "Path to the file containing GitHub HMAC secret")
-	fs.Var(&o.LogLevel, "log-level", "Set log level.")
+	fs.StringVar(&o.LogLevel, "log-level", "info", "Set log level.")
 	o.Github.AddFlags(fs)
 	return fs
 }
@@ -84,11 +84,6 @@ func (o *Opts) ParseFlags(fs *flag.FlagSet) {
 func (o *Opts) GetPort() int {
 	return o.Port
 }
-
-// TODO: Implement support for setting log level.
-// func (o *Opts) GetLogLevel() string {
-//	return o.LogLevel
-// }
 
 // GetName return Plugin name.
 func (p *Plugin) GetName() string {
