@@ -20,6 +20,8 @@ const (
 	prNumber                                       = 9046
 	prHeadSha                                      = "0ebd2807221fbbc428dba4f09524bec0a8c4cec9"
 	pullRequestReviewRequestedEventPayloadFilePath = "test_files/pullRequestReviewRequestedEventPayload"
+	pullRequestSynchronizeEventPayloadFilePath     = "test_files/pullRequestSynchronizeEventPayload"
+	pullRequestReviewDismissedEventPayloadFilePath = "test_files/pullRequestReviewDismissedEventPayload"
 )
 
 func setupEventHelper(eventPayloadFilePath string) (externalplugin.Event, error) {
@@ -41,10 +43,13 @@ var _ = Describe("automated-approver", func() {
 		eventHandler         func(*externalplugin.Plugin, externalplugin.Event)
 	)
 	BeforeEach(func() {
-		logger := consolelog.NewLogger()
+		// logger := consolelog.NewLogger()
+		logger, level := consolelog.NewLoggerWithLevel()
+		level.SetLevel(zapcore.InfoLevel)
 		ghc = fakegithub.NewFakeClient()
 		handler = main.HandlerBackend{
-			LogLevel:               zapcore.DebugLevel,
+			// LogLevel:               zapcore.DebugLevel,
+			LogLevel:               zapcore.InfoLevel,
 			WaitForStatusesTimeout: 1,
 		}
 		handler.PrLocks = make(map[string]map[string]map[int]map[string]context.CancelFunc)
@@ -80,16 +85,19 @@ var _ = Describe("automated-approver", func() {
 			})
 		}
 
+		BeforeEach(func() {
+			ghc.PullRequestChanges = map[int][]github.PullRequestChange{
+				prNumber: {
+					{Filename: "test1.yaml"},
+				},
+			}
+		})
+
 		When("matching rule is found,", func() {
 			BeforeEach(func() {
 				handler.RulesPath = "test_files/automated-approver-rules.yaml"
 				err := handler.ReadConfig()
 				Expect(err).ShouldNot(HaveOccurred())
-				ghc.PullRequestChanges = map[int][]github.PullRequestChange{
-					prNumber: {
-						{Filename: "test1.yaml"},
-					},
-				}
 			})
 
 			When("pull request tests are successful,", func() {
@@ -122,11 +130,21 @@ var _ = Describe("automated-approver", func() {
 				})
 
 				When("processing pull request synchronize action,", func() {
-					// TODO: Implement
+					BeforeEach(func() {
+						eventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
+						eventHandler = handler.PullRequestEventHandler
+					})
+
+					AssertApprovePullRequest()
 				})
 
 				When("processing review dismissed action,", func() {
-					// TODO: Implement
+					BeforeEach(func() {
+						eventPayloadFilePath = pullRequestReviewDismissedEventPayloadFilePath
+						eventHandler = handler.PullRequestReviewEventHandler
+					})
+
+					AssertApprovePullRequest()
 				})
 			})
 
@@ -160,11 +178,21 @@ var _ = Describe("automated-approver", func() {
 				})
 
 				When("processing pull request synchronize action,", func() {
-					// TODO: Implement
+					BeforeEach(func() {
+						eventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
+						eventHandler = handler.PullRequestEventHandler
+					})
+
+					AssertNotApprovePullRequest()
 				})
 
 				When("processing review dismissed action,", func() {
-					// TODO: Implement
+					BeforeEach(func() {
+						eventPayloadFilePath = pullRequestReviewDismissedEventPayloadFilePath
+						eventHandler = handler.PullRequestReviewEventHandler
+					})
+
+					AssertNotApprovePullRequest()
 				})
 			})
 		})
@@ -176,6 +204,7 @@ var _ = Describe("automated-approver", func() {
 					handler.RulesPath = "test_files/automated-approver-rules-no-user.yaml"
 					err := handler.ReadConfig()
 					Expect(err).ShouldNot(HaveOccurred())
+					handler.Ghc = ghc
 				})
 
 				When("processing review requested action,", func() {
@@ -188,11 +217,21 @@ var _ = Describe("automated-approver", func() {
 				})
 
 				When("processing pull request synchronize action,", func() {
-					// TODO: Implement
+					BeforeEach(func() {
+						eventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
+						eventHandler = handler.PullRequestEventHandler
+					})
+
+					AssertNotApprovePullRequest()
 				})
 
 				When("processing review dismissed action,", func() {
-					// TODO: Implement
+					BeforeEach(func() {
+						eventPayloadFilePath = pullRequestReviewDismissedEventPayloadFilePath
+						eventHandler = handler.PullRequestReviewEventHandler
+					})
+
+					AssertNotApprovePullRequest()
 				})
 			})
 
@@ -201,6 +240,7 @@ var _ = Describe("automated-approver", func() {
 					handler.RulesPath = "test_files/automated-approver-rules-no-file.yaml"
 					err := handler.ReadConfig()
 					Expect(err).ShouldNot(HaveOccurred())
+					handler.Ghc = ghc
 				})
 
 				When("processing review requested action,", func() {
@@ -213,11 +253,21 @@ var _ = Describe("automated-approver", func() {
 				})
 
 				When("processing pull request synchronize action,", func() {
-					// TODO: Implement
+					BeforeEach(func() {
+						eventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
+						eventHandler = handler.PullRequestEventHandler
+					})
+
+					AssertNotApprovePullRequest()
 				})
 
 				When("processing review dismissed action,", func() {
-					// TODO: Implement
+					BeforeEach(func() {
+						eventPayloadFilePath = pullRequestReviewDismissedEventPayloadFilePath
+						eventHandler = handler.PullRequestReviewEventHandler
+					})
+
+					AssertNotApprovePullRequest()
 				})
 			})
 
@@ -226,6 +276,7 @@ var _ = Describe("automated-approver", func() {
 					handler.RulesPath = "test_files/automated-approver-rules-no-label.yaml"
 					err := handler.ReadConfig()
 					Expect(err).ShouldNot(HaveOccurred())
+					handler.Ghc = ghc
 				})
 
 				When("processing review requested action,", func() {
@@ -238,11 +289,21 @@ var _ = Describe("automated-approver", func() {
 				})
 
 				When("processing pull request synchronize action,", func() {
-					// TODO: Implement
+					BeforeEach(func() {
+						eventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
+						eventHandler = handler.PullRequestEventHandler
+					})
+
+					AssertNotApprovePullRequest()
 				})
 
 				When("processing review dismissed action,", func() {
-					// TODO: Implement
+					BeforeEach(func() {
+						eventPayloadFilePath = pullRequestReviewDismissedEventPayloadFilePath
+						eventHandler = handler.PullRequestReviewEventHandler
+					})
+
+					AssertNotApprovePullRequest()
 				})
 			})
 		})
