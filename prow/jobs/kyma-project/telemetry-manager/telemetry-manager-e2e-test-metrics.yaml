@@ -16,7 +16,7 @@ presubmits:
       run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/'
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231010-2d92168d
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231010-1814beac
             command: ["/init.sh"]
             args: ["bash", "-c", "make e2e-test-metrics"]
             requests:
