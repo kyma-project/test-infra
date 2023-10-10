@@ -6,14 +6,14 @@ metadata:
 data:
   rules: |
     conditions:
-    kyma-project:
-      test-infra:
-        dependabot[bot]:
-          - changedFiles:
-              - '.*'
-        kyma-bot:
-          - changedFiles:
-              - '^docs/index.md$'
-              - '.*\.yaml$'
-              - '.*\.tf$'
-              - 'development/tools/jobs/tester/tester.go'
+      kyma-project:
+        test-infra:
+          dependabot[bot]:
+            - changedFiles:
+                - '.*'
+          kyma-bot:
+            - changedFiles:
+                - '^docs/index.md$'
+                - '.*\.yaml$'
+                - '.*\.tf$'
+                - 'development/tools/jobs/tester/tester.go'
