@@ -6,7 +6,7 @@ conditions:
             - '.*'
       pPrecel:
         - changedFiles:
-            - 'test1.yaml'
+            - 'missing-file.yaml'
           requiredLabels:
             - 'test-label'
       kyma-bot:

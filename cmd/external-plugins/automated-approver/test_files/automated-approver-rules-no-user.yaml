@@ -4,11 +4,6 @@ conditions:
       dependabot[bot]:
         - changedFiles:
             - '.*'
-      pPrecel:
-        - changedFiles:
-            - 'test1.yaml'
-          requiredLabels:
-            - 'test-label'
       kyma-bot:
         - changedFiles:
             - '^docs/index.md$'

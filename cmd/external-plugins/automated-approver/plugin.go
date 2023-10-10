@@ -385,6 +385,10 @@ func (hb *HandlerBackend) handleReviewDismissedAction(ctx context.Context, cance
 	hb.reviewPullRequest(ctx, logger, reviewEvent.Repo.Owner.Login, reviewEvent.Repo.Name, reviewEvent.PullRequest.User.Login, reviewEvent.PullRequest.Head.SHA, reviewEvent.PullRequest.Number, reviewEvent.PullRequest.Labels)
 }
 
+// TODO: All actions should be handled in one handler function. The event type is passed in payload.
+//
+//	Based on event type, the handler function should use appropriate event struct.
+//	That way we can avoid code duplication.
 func (hb *HandlerBackend) PullRequestEventHandler(_ *externalplugin.Plugin, payload externalplugin.Event) {
 	logger, atom := consolelog.NewLoggerWithLevel()
 	defer logger.Sync()

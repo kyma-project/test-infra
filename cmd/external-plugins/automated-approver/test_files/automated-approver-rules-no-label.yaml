@@ -8,7 +8,7 @@ conditions:
         - changedFiles:
             - 'test1.yaml'
           requiredLabels:
-            - 'test-label'
+            - 'missing-label'
       kyma-bot:
         - changedFiles:
             - '^docs/index.md$'
