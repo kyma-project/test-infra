@@ -11,7 +11,7 @@ source "${SCRIPT_DIR}/../lib/serverless-shared-k3s.sh"
 
 date
 
-make -C "$SERVERLESS_SOURCES"/hack/ci run-without-lifecycle-manager-operator
+make -C "$SERVERLESS_SOURCES"/hack/ci run-without-lifecycle-manager
 
 export INTEGRATION_SUITE=("$@")
 run_tests "${INTEGRATION_SUITE[@]}"
