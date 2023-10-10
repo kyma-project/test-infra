@@ -355,7 +355,7 @@ func (hb *HandlerBackend) reviewPullRequest(ctx context.Context, logger *zap.Sug
 
 func (hb *HandlerBackend) handleReviewRequestedAction(ctx context.Context, cancel context.CancelFunc, logger *zap.SugaredLogger, prEvent github.PullRequestEvent) {
 	if locked := hb.lockPR(cancel, logger, prEvent.Repo.Owner.Login, prEvent.Repo.Name, prEvent.PullRequest.Head.SHA, prEvent.PullRequest.Number); !locked {
-		logger.Infof("Reeview request for pull request head sha %s already in process.", prEvent.PullRequest.Head.SHA)
+		logger.Infof("Review request for pull request head sha %s already in process.", prEvent.PullRequest.Head.SHA)
 		return
 	}
 	logger.Debug("Got pull request review requested action")
