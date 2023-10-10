@@ -35,7 +35,7 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d-operator.sh serverless-integration serverless-contract-tests"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh serverless-integration serverless-contract-tests"
             env:
               - name: SERVERLESS_SOURCES
                 value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/"
@@ -75,7 +75,7 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d-operator.sh git-auth-integration"
+              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh git-auth-integration"
             env:
               - name: SERVERLESS_SOURCES
                 value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/"
