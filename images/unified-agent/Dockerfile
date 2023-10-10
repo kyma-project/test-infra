@@ -1,10 +1,10 @@
-FROM alpine:3.18.3
+FROM alpine:3.18.4
 
-ARG UNIFIED_AGENT_VERSION=v23.1.2.1
+ARG UNIFIED_AGENT_VERSION=v23.8.2
 
 RUN apk upgrade --no-cache; \
     apk add --no-cache \
-    openjdk8-jre \
+    openjdk17-jre \
     ca-certificates  \
     curl \
     bash \
