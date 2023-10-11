@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      control-plane:
+        prNumber: 3111
+  prowJobs:
+    kyma-project:
+      control-plane:
+      - pjName: "pull-control-plane-rec-upgrade-kyma2-stable-to-main-grdnr"
+prConfigs: #
+  kyma-project:
+    control-plane:
+      prNumber: 3111
