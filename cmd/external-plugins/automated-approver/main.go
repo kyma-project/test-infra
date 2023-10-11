@@ -39,6 +39,7 @@ func main() {
 	fs := pluginOptions.NewFlags()
 	fs.StringVar(&hb.RulesPath, "rules-path", "", "Path to the configuration file.")
 	fs.IntVar(&hb.WaitForStatusesTimeout, "wait-for-statuses-timeout", 30, "Timeout in seconds for waiting for statuses.")
+	fs.IntVar(&hb.WaitForContextsCreationTimeout, "wait-for-contexts-creation-timeout", 30, "Timeout in seconds for waiting for contexts creation.")
 	pluginOptions.ParseFlags(fs)
 
 	atom.UnmarshalText([]byte(pluginOptions.LogLevel))

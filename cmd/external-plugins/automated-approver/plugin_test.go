@@ -48,15 +48,15 @@ var _ = Describe("automated-approver", func() {
 		wg                      sync.WaitGroup
 	)
 	BeforeEach(func() {
-		// logger := consolelog.NewLogger()
 		logger, level := consolelog.NewLoggerWithLevel()
-		level.SetLevel(zapcore.DebugLevel)
-		// level.SetLevel(zapcore.InfoLevel)
+		// level.SetLevel(zapcore.DebugLevel)
+		level.SetLevel(zapcore.InfoLevel)
 		ghc = fakegithub.NewFakeClient()
 		handler = main.HandlerBackend{
-			LogLevel: zapcore.DebugLevel,
-			// LogLevel:               zapcore.InfoLevel,
-			WaitForStatusesTimeout: 1,
+			// LogLevel: zapcore.DebugLevel,
+			LogLevel:                       zapcore.InfoLevel,
+			WaitForStatusesTimeout:         1,
+			WaitForContextsCreationTimeout: 1,
 		}
 		handler.PrLocks = make(map[string]map[string]map[int]map[string]context.CancelFunc)
 		server = externalplugin.Plugin{}

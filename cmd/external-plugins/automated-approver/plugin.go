@@ -33,13 +33,14 @@ type githubClient interface {
 // HandlerBackend is a backend for the plugin.
 // It contains all the configuration and clients needed to handle events.
 type HandlerBackend struct {
-	Ghc                    githubClient
-	LogLevel               zapcore.Level                                               // Log level is read in backend handlers to keep the same log level for all logs.
-	WaitForStatusesTimeout int                                                         // in seconds
-	RulesPath              string                                                      // Path to yaml config file
-	Conditions             map[string]map[string]map[string][]ApproveCondition         `yaml:"conditions"`
-	PrLocks                map[string]map[string]map[int]map[string]context.CancelFunc // Holds head sha and cancel function of PRs that are being processed. org -> repo -> pr number -> head sha -> cancel function
-	PrMutex                sync.Mutex
+	Ghc                            githubClient
+	LogLevel                       zapcore.Level                                               // Log level is read in backend handlers to keep the same log level for all logs.
+	WaitForStatusesTimeout         int                                                         // in seconds
+	WaitForContextsCreationTimeout int                                                         // in seconds
+	RulesPath                      string                                                      // Path to yaml config file
+	Conditions                     map[string]map[string]map[string][]ApproveCondition         `yaml:"conditions"`
+	PrLocks                        map[string]map[string]map[int]map[string]context.CancelFunc // Holds head sha and cancel function of PRs that are being processed. org -> repo -> pr number -> head sha -> cancel function
+	PrMutex                        sync.Mutex
 }
 
 // WatchConfig watches for changes in config file and reloads it.
@@ -217,10 +218,8 @@ func (hb *HandlerBackend) ReadConfig() error {
 func (hb *HandlerBackend) checkPrStatuses(ctx context.Context, logger *zap.SugaredLogger, prOrg, prRepo, prHeadSha string, prNumber int) error {
 	defer logger.Sync()
 	// Sleep for 30 seconds to make sure all statuses are registered.
-	logger.Debug("Sleeping for 30 seconds to make sure all statuses are registered")
-	// TODO: Add flag to set sleep time. It should be configurable.
-	// 	Using shorter sleep time for testing purposes.
-	time.Sleep(30 * time.Second)
+	logger.Debugf("Sleeping for %d seconds to make sure all statuses are registered", hb.WaitForContextsCreationTimeout)
+	time.Sleep(time.Duration(hb.WaitForContextsCreationTimeout) * time.Second)
 
 	backOff := backoff.NewExponentialBackOff()
 	backOff.MaxElapsedTime = time.Duration(hb.WaitForStatusesTimeout) * time.Second
