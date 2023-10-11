@@ -58,6 +58,10 @@ updates:
     commit-message:
       prefix: "tf"
       include: "scope"
+    ignore:
+      - dependency-name: "hashicorp/google"
+        versions:
+          - "5.1.0"
   - package-ecosystem: "docker"
     directory: "/prow/images/ginkgo"
     labels:
