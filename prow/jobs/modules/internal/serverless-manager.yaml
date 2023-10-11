@@ -599,7 +599,7 @@ presubmits: # runs on PRs
               - "sh"
             args:
               - "-c"
-              - "cp -r config/serverless/ module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile"
+              - "mkdir -p module-chart && cp -r config/serverless/* module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -1147,7 +1147,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "cp -r config/serverless/ module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_REF"
+              - "mkdir -p module-chart && cp -r config/serverless/* module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_REF"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -1287,7 +1287,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "cp -r config/serverless/ module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_SHA"
+              - "mkdir -p module-chart && cp -r config/serverless/* module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_SHA"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
