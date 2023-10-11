@@ -218,6 +218,8 @@ func (hb *HandlerBackend) checkPrStatuses(ctx context.Context, logger *zap.Sugar
 	defer logger.Sync()
 	// Sleep for 30 seconds to make sure all statuses are registered.
 	logger.Debug("Sleeping for 30 seconds to make sure all statuses are registered")
+	// TODO: Add flag to set sleep time. It should be configurable.
+	// 	Using shorter sleep time for testing purposes.
 	time.Sleep(30 * time.Second)
 
 	backOff := backoff.NewExponentialBackOff()
@@ -304,6 +306,8 @@ func (hb *HandlerBackend) reviewPullRequest(ctx context.Context, logger *zap.Sug
 		}
 		err = hb.checkPrStatuses(ctx, logger, prOrg, prRepo, prHeadSha, prNumber)
 		if err != nil {
+			// TODO: Non success pr statuses are not error conditions for automated approver. We should log it as info.
+			// 	Need to check if other type of errors
 			logger.Errorf("pull request %s/%s#%d has non success statuses, got error: %s",
 				prOrg,
 				prRepo,

@@ -39,21 +39,23 @@ func setupEventHelper(eventPayloadFilePath string) (externalplugin.Event, error)
 
 var _ = Describe("automated-approver", func() {
 	var (
-		server               externalplugin.Plugin
-		handler              main.HandlerBackend
-		ghc                  *fakegithub.FakeClient
-		eventPayloadFilePath string
-		eventHandler         func(*externalplugin.Plugin, externalplugin.Event)
-		wg                   sync.WaitGroup
+		server                  externalplugin.Plugin
+		handler                 main.HandlerBackend
+		ghc                     *fakegithub.FakeClient
+		eventPayloadFilePath    string
+		oldEventPayloadFilePath string
+		eventHandler            func(*externalplugin.Plugin, externalplugin.Event)
+		wg                      sync.WaitGroup
 	)
 	BeforeEach(func() {
 		// logger := consolelog.NewLogger()
 		logger, level := consolelog.NewLoggerWithLevel()
-		level.SetLevel(zapcore.InfoLevel)
+		level.SetLevel(zapcore.DebugLevel)
+		// level.SetLevel(zapcore.InfoLevel)
 		ghc = fakegithub.NewFakeClient()
 		handler = main.HandlerBackend{
-			// LogLevel:               zapcore.DebugLevel,
-			LogLevel:               zapcore.InfoLevel,
+			LogLevel: zapcore.DebugLevel,
+			// LogLevel:               zapcore.InfoLevel,
 			WaitForStatusesTimeout: 1,
 		}
 		handler.PrLocks = make(map[string]map[string]map[int]map[string]context.CancelFunc)
@@ -74,6 +76,32 @@ var _ = Describe("automated-approver", func() {
 				Expect(prReviews[0].User.Login).Should(Equal("k8s-ci-robot"))
 				Expect(ghc.IssueLabelsAdded).Should(HaveLen(1))
 				Expect(ghc.IssueLabelsAdded).Should(ContainElement("kyma-project/test-infra#9046:auto-approved"))
+			})
+		}
+
+		AssertApprovePullRequestOnlyOnceForManyEvents := func() {
+			It("should approve pull request only once", func() {
+				prEvents := make(map[int]externalplugin.Event)
+				oldPullRequestEvent, err := setupEventHelper(oldEventPayloadFilePath)
+				Expect(err).ShouldNot(HaveOccurred())
+				prEvents[1] = oldPullRequestEvent
+				pullRequestEvent, err := setupEventHelper(eventPayloadFilePath)
+				Expect(err).ShouldNot(HaveOccurred())
+				prEvents[2] = pullRequestEvent
+				wg.Add(2)
+				for i := 1; i <= 2; i++ {
+					i := i
+					go func() {
+						eventHandler(&server, prEvents[i])
+						wg.Done()
+					}()
+				}
+				wg.Wait()
+				prReviews, err := ghc.ListReviews(repoOwner, repoName, prNumber)
+				Expect(err).ShouldNot(HaveOccurred())
+				Expect(prReviews).Should(HaveLen(1))
+				Expect(prReviews[0].User.Login).Should(Equal("k8s-ci-robot"))
+				Expect(prReviews[0].ID).Should(Equal(1))
 			})
 		}
 
@@ -133,23 +161,11 @@ var _ = Describe("automated-approver", func() {
 					AssertApprovePullRequest()
 
 					When("processing multiple events for the same commit,", func() {
-						It("should approve pull request only once", func() {
-							pullRequestEvent, err := setupEventHelper(eventPayloadFilePath)
-							Expect(err).ShouldNot(HaveOccurred())
-							wg.Add(2)
-							for i := 1; i <= 2; i++ {
-								go func() {
-									eventHandler(&server, pullRequestEvent)
-									wg.Done()
-								}()
-							}
-							wg.Wait()
-							prReviews, err := ghc.ListReviews(repoOwner, repoName, prNumber)
-							Expect(err).ShouldNot(HaveOccurred())
-							Expect(prReviews).Should(HaveLen(1))
-							Expect(prReviews[0].User.Login).Should(Equal("k8s-ci-robot"))
-							Expect(prReviews[0].ID).Should(Equal(1))
+						BeforeEach(func() {
+							oldEventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
 						})
+
+						AssertApprovePullRequestOnlyOnceForManyEvents()
 					})
 				})
 
@@ -162,64 +178,33 @@ var _ = Describe("automated-approver", func() {
 					AssertApprovePullRequest()
 
 					When("processing multiple events for the same commit,", func() {
-						It("should approve pull request only once", func() {
-							pullRequestEvent, err := setupEventHelper(eventPayloadFilePath)
-							Expect(err).ShouldNot(HaveOccurred())
-							wg.Add(2)
-							for i := 1; i <= 2; i++ {
-								go func() {
-									eventHandler(&server, pullRequestEvent)
-									wg.Done()
-								}()
-							}
-							wg.Wait()
-							prReviews, err := ghc.ListReviews(repoOwner, repoName, prNumber)
-							Expect(err).ShouldNot(HaveOccurred())
-							Expect(prReviews).Should(HaveLen(1))
-							Expect(prReviews[0].User.Login).Should(Equal("k8s-ci-robot"))
-							Expect(prReviews[0].ID).Should(Equal(1))
+						BeforeEach(func() {
+							oldEventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
 						})
 
-						When("processing events for old and current commits,", func() {
-							BeforeEach(func() {
-								ghc.CombinedStatuses[oldPrHeadSha] = &github.CombinedStatus{
-									State: github.StatePending,
-									Statuses: []github.Status{
-										{
-											State:   github.StatusPending,
-											Context: "tide",
-										},
-										{
-											State:   github.StatusSuccess,
-											Context: "test1",
-										},
+						AssertApprovePullRequestOnlyOnceForManyEvents()
+					})
+
+					When("processing multiple events for old and current commits,", func() {
+						BeforeEach(func() {
+							ghc.CombinedStatuses[oldPrHeadSha] = &github.CombinedStatus{
+								State: github.StatePending,
+								Statuses: []github.Status{
+									{
+										State:   github.StatusPending,
+										Context: "tide",
 									},
-								}
-								handler.Ghc = ghc
-							})
-							// TODO: Implement this test
-							It("should approve pull request only once", func() {
-								oldPullRequestEvent, err := setupEventHelper(oldPullRequestSynchronizeEventPayloadFilePath)
-								Expect(err).ShouldNot(HaveOccurred())
-								pullRequestEvent, err := setupEventHelper(eventPayloadFilePath)
-								Expect(err).ShouldNot(HaveOccurred())
-								wg.Add(2)
-								go func() {
-									eventHandler(&server, oldPullRequestEvent)
-									wg.Done()
-								}()
-								go func() {
-									eventHandler(&server, pullRequestEvent)
-									wg.Done()
-								}()
-								wg.Wait()
-								prReviews, err := ghc.ListReviews(repoOwner, repoName, prNumber)
-								Expect(err).ShouldNot(HaveOccurred())
-								Expect(prReviews).Should(HaveLen(1))
-								Expect(prReviews[0].User.Login).Should(Equal("k8s-ci-robot"))
-								Expect(prReviews[0].ID).Should(Equal(1))
-							})
+									{
+										State:   github.StatusSuccess,
+										Context: "test1",
+									},
+								},
+							}
+							handler.Ghc = ghc
+							oldEventPayloadFilePath = oldPullRequestSynchronizeEventPayloadFilePath
 						})
+
+						AssertApprovePullRequestOnlyOnceForManyEvents()
 					})
 				})
 
@@ -232,23 +217,11 @@ var _ = Describe("automated-approver", func() {
 					AssertApprovePullRequest()
 
 					When("processing multiple events for the same commit,", func() {
-						It("should approve pull request only once", func() {
-							pullRequestEvent, err := setupEventHelper(eventPayloadFilePath)
-							Expect(err).ShouldNot(HaveOccurred())
-							wg.Add(2)
-							for i := 1; i <= 2; i++ {
-								go func() {
-									eventHandler(&server, pullRequestEvent)
-									wg.Done()
-								}()
-							}
-							wg.Wait()
-							prReviews, err := ghc.ListReviews(repoOwner, repoName, prNumber)
-							Expect(err).ShouldNot(HaveOccurred())
-							Expect(prReviews).Should(HaveLen(1))
-							Expect(prReviews[0].User.Login).Should(Equal("k8s-ci-robot"))
-							Expect(prReviews[0].ID).Should(Equal(1))
+						BeforeEach(func() {
+							oldEventPayloadFilePath = pullRequestSynchronizeEventPayloadFilePath
 						})
+
+						AssertApprovePullRequestOnlyOnceForManyEvents()
 					})
 				})
 			})
