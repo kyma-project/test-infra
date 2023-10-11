@@ -7,7 +7,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pull-build-test-vm-image
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231011-0b77f85e
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231011-ae6be62f
                   annotations:
                     owner: neighbors
                     description: "Build Google Cloud VM template image for test-vm-image"
@@ -28,7 +28,7 @@ templates:
                     - pubsub_labels
               - jobConfig:
                   name: pull-test-k3d-on-vm-image
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231011-0b77f85e
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231011-ae6be62f
                   annotations:
                     owner: neighbors
                     description: "Test k3d installation on Google Cloud VM template image for test-vm-image"
@@ -53,7 +53,7 @@ templates:
                     owner: neighbors
                     description: "Build Google Cloud VM template image for test-vm-image"
                   run_if_changed: "experimental/custom-image/"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231011-0b77f85e
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231011-ae6be62f
                   command: "bash"
                   args:
                     - "-c"
