@@ -162,7 +162,7 @@ globalSets:
   image_gardener-rotate:
     image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20231011-c4736107
   image_markdown_index:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231011-c4736107
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231011-6c91144f
   image_image_detector:
     image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231011-c4736107
   image_e2e-dind-k3d:
