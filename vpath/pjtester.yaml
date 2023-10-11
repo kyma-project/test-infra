@@ -7,6 +7,7 @@ pjConfigs:
     kyma-project:
       control-plane:
       - pjName: "pre-main-control-plane-reconciler-e2e-latest-release"
+      - pjName: "pull-control-plane-rec-upgrade-kyma2-stable-to-main-grdnr"
 prConfigs: #
   kyma-project:
     control-plane:
