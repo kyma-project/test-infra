@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       run_if_changed: '^((tests/fast-integration\S+|resources\S+|installation\S+|tools/kyma-installer\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231010-1814beac
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231011-0b77f85e
             securityContext:
               privileged: true
               seccompProfile:
@@ -72,7 +72,7 @@ periodics:
         channel: jellyfish-notifications
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231010-1814beac
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-0b77f85e
           command: [ "/init.sh" ]
           securityContext:
             privileged: true
@@ -110,7 +110,7 @@ periodics:
         base_ref: main
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231010-1814beac
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231011-0b77f85e
           securityContext:
             privileged: true
             seccompProfile:

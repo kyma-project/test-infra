@@ -47,7 +47,7 @@ templates:
                     - ^release-\d+\.\d+$
                   labels:
                     preset-sa-kyma-dns-serviceuser: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231010-1814beac
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231011-0b77f85e
                   command: bash
                   args:
                     - -c
@@ -73,7 +73,7 @@ templates:
                     description: runs api-gateway manager integration tests with custom domain handling on Gardener AWS cluster
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   always_run: true
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231010-1814beac
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231011-0b77f85e
                   securityContext:
                     privileged: false
                   cluster: untrusted-workload

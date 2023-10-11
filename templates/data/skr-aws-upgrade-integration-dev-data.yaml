@@ -9,7 +9,7 @@ templates:
             cluster: "trusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231010-1814beac
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231011-0b77f85e
             labels:
               preset-build-main: "true"
               preset-bot-github-token: "true"
