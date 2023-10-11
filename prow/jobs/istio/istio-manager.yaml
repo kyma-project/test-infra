@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-0b77f85e"
             securityContext:
               privileged: false
               seccompProfile:
@@ -125,7 +125,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231011-0b77f85e"
             securityContext:
               privileged: false
               seccompProfile:
@@ -182,7 +182,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-0b77f85e"
             securityContext:
               privileged: false
               seccompProfile:
@@ -282,7 +282,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-0b77f85e"
             securityContext:
               privileged: false
               seccompProfile:
@@ -391,7 +391,7 @@ periodics: # runs on schedule
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231011-0b77f85e"
             securityContext:
               privileged: false
               seccompProfile:
