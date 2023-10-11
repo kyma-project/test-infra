@@ -59,7 +59,7 @@ templates:
                     owner: gopher
                     description: skr networking integration test AWS
                   cron: "55 1 * * *" # "At 01:55"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231011-0b77f85e
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231011-ae6be62f
                   command: make
                   args:
                     - -C

@@ -16,7 +16,7 @@ presubmits:
       run_if_changed: '^(go.mod|go.sum)$|.*\.go$|Dockerfile|Makefile|^config/'
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-0b77f85e
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-ae6be62f
             command: ["/init.sh"]
             args: ["bash", "-c", "make integration-test-istio"]
             requests:
