@@ -45,6 +45,4 @@ reconciler::trigger_kyma_reconcile
 
 reconciler::wait_until_kyma_reconciled
 
-make -C ../../kyma-project/kyma/tests/fast-integration ci
-
 reconciler::break_kyma
