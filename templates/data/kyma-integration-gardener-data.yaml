@@ -199,53 +199,6 @@ templates:
             jobs:
               # periodics
               - jobConfig:
-                  name: kyma-integration-evaluation-gardener-azure
-                  annotations:
-                    owner: huskies
-                    testgrid-dashboards: kyma_integration
-                    description: Evaluation profile for Kyma Azure Gardener integration job.
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 2,14 * * *"
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                  local:
-                    - jobConfig_default
-                    - gardener_azure_job
-                    - command_integration
-                    - evaluation_profile
-              - jobConfig:
-                  name: kyma-integration-production-gardener-azure
-                  annotations:
-                    owner: huskies
-                    testgrid-dashboards: kyma_integration
-                    description: Production profile for Kyma Azure Gardener integration job.
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 1,13 * * *"
-                  slack_channel: huskies-notifications
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                  local:
-                    - jobConfig_default
-                    - gardener_azure_job
-                    - command_integration
-                    - production_profile
-              - jobConfig:
                   name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
                   annotations:
                     owner: jellyfish
