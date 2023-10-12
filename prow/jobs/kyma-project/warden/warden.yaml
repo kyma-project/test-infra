@@ -3,13 +3,13 @@
 
 presubmits: # runs on PRs
   kyma-project/warden:
-    - name: pull-admission-build
+    - name: pre-warden-admission-build
       annotations:
         description: "Warden admission build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-admission-build"
+        prow.k8s.io/pubsub.runID: "pre-warden-admission-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '.*\.go|docker/admission/'
@@ -50,13 +50,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-operator-build
+    - name: pre-warden-operator-build
       annotations:
         description: "Warden operator build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-operator-build"
+        prow.k8s.io/pubsub.runID: "pre-warden-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '.*\.go|docker/operator/'
@@ -97,13 +97,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-warden-lint
+    - name: pre-warden-lint
       annotations:
         description: "executes the 'golangci-lint lint' command before any pull request."
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-warden-lint"
+        prow.k8s.io/pubsub.runID: "pre-warden-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
       optional: true
@@ -130,13 +130,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: pull-warden-unit-test
+    - name: pre-warden-unit-test
       annotations:
         description: "Warden unit test job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-warden-unit-test"
+        prow.k8s.io/pubsub.runID: "pre-warden-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '.*\.go$'
       skip_report: false
@@ -165,13 +165,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/warden:
-    - name: post-admission-build
+    - name: post-warden-admission-build
       annotations:
         description: "Warden admission build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-admission-build"
+        prow.k8s.io/pubsub.runID: "post-warden-admission-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -213,13 +213,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-operator-build
+    - name: post-warden-operator-build
       annotations:
         description: "Warden operator build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-operator-build"
+        prow.k8s.io/pubsub.runID: "post-warden-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"

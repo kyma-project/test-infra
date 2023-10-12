@@ -16,7 +16,7 @@ templates:
           - repoName: "github.com/kyma-project/warden"
             jobs:
               - jobConfig:
-                  name: pull-admission-build
+                  name: pre-warden-admission-build
                   annotations:
                     owner: otters
                     description: Warden admission build job
@@ -31,7 +31,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-admission-build
+                  name: post-warden-admission-build
                   annotations:
                     owner: otters
                     description: Warden admission build job
@@ -48,7 +48,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
               - jobConfig:
-                  name: pull-operator-build
+                  name: pre-warden-operator-build
                   annotations:
                     owner: otters
                     description: Warden operator build job
@@ -63,7 +63,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-operator-build
+                  name: post-warden-operator-build
                   annotations:
                     owner: otters
                     description: Warden operator build job
@@ -81,7 +81,7 @@ templates:
                     - jobConfig_postsubmit
               - jobConfig:
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
-                  name: pull-warden-lint
+                  name: pre-warden-lint
                   optional: true
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
@@ -98,7 +98,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
-                  name: pull-warden-unit-test
+                  name: pre-warden-unit-test
                   annotations:
                     owner: otters
                     description: Warden unit test job
