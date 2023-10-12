@@ -160,7 +160,7 @@ globalSets:
   image_wssagent_nodejs:
     image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231011-ae6be62f"
   image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20231012-7448448f
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20231012-efdd279c
   image_markdown_index:
     image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231012-efdd279c
   image_image_detector:
