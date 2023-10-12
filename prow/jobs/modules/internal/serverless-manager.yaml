@@ -443,7 +443,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-ae6be62f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -509,7 +509,7 @@ presubmits: # runs on PRs
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-ae6be62f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -555,7 +555,7 @@ presubmits: # runs on PRs
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-ae6be62f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -599,7 +599,7 @@ presubmits: # runs on PRs
               - "sh"
             args:
               - "-c"
-              - "cp -r config/serverless/ module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile"
+              - "mkdir -p module-chart && cp -r config/serverless/* module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -653,7 +653,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-ae6be62f"
             securityContext:
               privileged: true
               seccompProfile:
@@ -1147,7 +1147,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "cp -r config/serverless/ module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_REF"
+              - "mkdir -p module-chart && cp -r config/serverless/* module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_REF"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -1194,7 +1194,7 @@ postsubmits: # runs on main
         - ^\w+\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-ae6be62f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1234,7 +1234,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-ae6be62f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1287,7 +1287,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "cp -r config/serverless/ module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_SHA"
+              - "mkdir -p module-chart && cp -r config/serverless/* module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_SHA"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -1341,7 +1341,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-ae6be62f"
             securityContext:
               privileged: true
               seccompProfile:
@@ -1387,7 +1387,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-ae6be62f"
             securityContext:
               privileged: true
               seccompProfile:
@@ -1435,7 +1435,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-ae6be62f"
             securityContext:
               privileged: true
               seccompProfile:

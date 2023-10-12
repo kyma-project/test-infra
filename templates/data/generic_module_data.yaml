@@ -39,7 +39,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231010-1814beac
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-ae6be62f
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -343,7 +343,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231010-1814beac
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-ae6be62f
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -723,7 +723,9 @@ templates:
                   args:
                     - -c
                     - >-
-                      cp -r config/serverless/ module-chart
+                      mkdir -p module-chart
+                      &&
+                      cp -r config/serverless/* module-chart
                       &&
                       /image-builder
                       --name=serverless-operator
@@ -841,7 +843,9 @@ templates:
                   args:
                     - -c
                     - >-
-                      cp -r config/serverless/ module-chart
+                      mkdir -p module-chart
+                      &&
+                      cp -r config/serverless/* module-chart
                       &&
                       /image-builder
                       --name=serverless-operator
@@ -867,7 +871,9 @@ templates:
                   args:
                     - -c
                     - >-
-                      cp -r config/serverless/ module-chart
+                      mkdir -p module-chart
+                      &&
+                      cp -r config/serverless/* module-chart
                       &&
                       /image-builder
                       --name=serverless-operator
@@ -983,7 +989,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231010-1814beac
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-ae6be62f
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -1076,7 +1082,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
                 inheritedConfigs:
                   global:
                     - jobConfig_default

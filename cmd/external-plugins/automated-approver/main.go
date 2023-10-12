@@ -30,15 +30,16 @@ func main() {
 	// Initialize configuration options for clients.
 	pluginOptions := externalplugin.Opts{}
 
-	hb := handlerBackend{}
+	hb := HandlerBackend{}
 
 	// Initialize PR locks.
-	hb.prLocks = make(map[string]map[string]map[int]map[string]context.CancelFunc)
+	hb.PrLocks = make(map[string]map[string]map[int]map[string]context.CancelFunc)
 
 	// Add client and plugin cli flags.
 	fs := pluginOptions.NewFlags()
-	fs.StringVar(&hb.rulesPath, "rules-path", "", "Path to the configuration file.")
-	fs.IntVar(&hb.waitForStatusesTimeout, "wait-for-statuses-timeout", 30, "Timeout in seconds for waiting for statuses.")
+	fs.StringVar(&hb.RulesPath, "rules-path", "", "Path to the configuration file.")
+	fs.IntVar(&hb.WaitForStatusesTimeout, "wait-for-statuses-timeout", 30, "Timeout in seconds for waiting for statuses.")
+	fs.IntVar(&hb.WaitForContextsCreationTimeout, "wait-for-contexts-creation-timeout", 30, "Timeout in seconds for waiting for contexts creation.")
 	pluginOptions.ParseFlags(fs)
 
 	atom.UnmarshalText([]byte(pluginOptions.LogLevel))
@@ -49,7 +50,7 @@ func main() {
 		panic(err)
 	}
 
-	hb.logLevel = level
+	hb.LogLevel = level
 
 	// Create GitHub.com client.
 	ghClient, err := pluginOptions.Github.NewGithubClient()
@@ -58,25 +59,25 @@ func main() {
 		panic(err)
 	}
 	logger.Info("github client ready")
-	hb.ghc = ghClient
+	hb.Ghc = ghClient
 
-	err = hb.readConfig()
+	err = hb.ReadConfig()
 	if err != nil {
 		logger.Fatalw("Failed reading config", "error", err)
 		panic(err)
 	}
-	logger.Debugf("config: %+v", hb.conditions)
+	logger.Debugf("config: %+v", hb.Conditions)
 	logger.Info("config ready")
 
 	// Watch hb.rulesPath for changes and reload config.
-	go hb.watchConfig(logger)
+	go hb.WatchConfig(logger)
 
 	// Create and start plugin instance.
 	server := externalplugin.Plugin{}
 	server.WithLogger(logger)
 	server.Name = PluginName
 	server.WithWebhookSecret(pluginOptions.WebhookSecretPath)
-	server.RegisterWebhookHandler("pull_request", hb.pullRequestEventHandler)
-	server.RegisterWebhookHandler("pull_request_review", hb.pullRequestReviewEventHandler)
+	server.RegisterWebhookHandler("pull_request", hb.PullRequestEventHandler)
+	server.RegisterWebhookHandler("pull_request_review", hb.PullRequestReviewEventHandler)
 	externalplugin.Start(&server, helpProvider, &pluginOptions)
 }

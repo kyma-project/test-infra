@@ -3,6 +3,7 @@ data "kubectl_file_documents" "automated_approver" {
 }
 
 resource "kubectl_manifest" "automated_approver" {
+  provider  = kubectl.prow_k8s_cluster
   for_each  = data.kubectl_file_documents.automated_approver.manifests
   yaml_body = each.value
 }
@@ -12,6 +13,7 @@ data "kubectl_file_documents" "automated_approver_rules" {
 }
 
 resource "kubectl_manifest" "automated_approver_rules" {
+  provider  = kubectl.prow_k8s_cluster
   for_each  = data.kubectl_file_documents.automated_approver_rules.manifests
   yaml_body = each.value
 }

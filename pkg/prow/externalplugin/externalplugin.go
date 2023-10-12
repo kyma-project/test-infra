@@ -197,11 +197,6 @@ func (p *Plugin) defaultHandler(eventType, eventGUID string, payload []byte) {
 // Start will set defaultHandler as a requests handler function if it's nil in provided plugin.
 func Start(p *Plugin, helpProvider externalplugins.ExternalPluginHelpProvider, o CliOptions) {
 	p.logger.With("plugin", p.GetName())
-	// lvl, err := logrus.ParseLevel(o.GetLogLevel())
-	// if err != nil {
-	//	logrus.WithError(err).Fatal("Could not parse log level.")
-	// }
-	// logrus.SetLevel(lvl)
 	if p.handler == nil {
 		p.handler = p.defaultHandler
 	}

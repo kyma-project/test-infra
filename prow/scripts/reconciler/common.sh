@@ -247,14 +247,9 @@ function reconciler::initialize_test_pod() {
 
   pushd "tools/reconciler" || { echo "Failed to change dir to: tools/reconciler"; exit 1; }
   local tplFile="./e2e-test/template-kyma-main.json"
-  if [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.0\.[0-9]+$ ]] ; then
-    tplFile="./e2e-test/template-kyma-2-0-x.json"
-  elif [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.[1-3]\.[0-9]+$ ]] ; then
-    tplFile="./e2e-test/template-kyma-2-1-x.json"
-  elif [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.[4-5]\.[0-9]+$ ]] ; then
-    tplFile="./e2e-test/template-kyma-2-4-x.json"
+  if [[ "$KYMA_UPGRADE_SOURCE" =~ ^2\.19\.[0-9]+$ ]] ; then
+    tplFile="./e2e-test/template-kyma-2-19.json"
   fi
-
   echo "Calling reconciler by using JSON template '$tplFile' as payload"
 
   sed -i "s/example.com/$domain/" "$tplFile"
