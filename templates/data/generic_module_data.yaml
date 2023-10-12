@@ -90,7 +90,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
                   branches:
-                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -115,7 +115,7 @@ templates:
                   args:
                     - "ci"
                   branches:
-                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
@@ -734,7 +734,7 @@ templates:
                       --dockerfile=Dockerfile
                       --tag=$PULL_BASE_REF
                   branches:
-                     - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                     - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
@@ -759,7 +759,7 @@ templates:
                   args:
                     - "ci"
                   branches:
-                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
