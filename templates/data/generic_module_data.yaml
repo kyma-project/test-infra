@@ -723,7 +723,9 @@ templates:
                   args:
                     - -c
                     - >-
-                      cp -r config/serverless/ module-chart
+                      mkdir -p module-chart
+                      &&
+                      cp -r config/serverless/* module-chart
                       &&
                       /image-builder
                       --name=serverless-operator
@@ -841,7 +843,9 @@ templates:
                   args:
                     - -c
                     - >-
-                      cp -r config/serverless/ module-chart
+                      mkdir -p module-chart
+                      &&
+                      cp -r config/serverless/* module-chart
                       &&
                       /image-builder
                       --name=serverless-operator
@@ -867,7 +871,9 @@ templates:
                   args:
                     - -c
                     - >-
-                      cp -r config/serverless/ module-chart
+                      mkdir -p module-chart
+                      &&
+                      cp -r config/serverless/* module-chart
                       &&
                       /image-builder
                       --name=serverless-operator
