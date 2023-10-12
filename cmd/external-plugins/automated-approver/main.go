@@ -43,13 +43,11 @@ func main() {
 	pluginOptions.ParseFlags(fs)
 
 	atom.UnmarshalText([]byte(pluginOptions.LogLevel))
-
 	level, err := zapcore.ParseLevel(pluginOptions.LogLevel)
 	if err != nil {
 		logger.Fatalw("Failed parsing log level", "error", err)
 		panic(err)
 	}
-
 	hb.LogLevel = level
 
 	// Create GitHub.com client.
@@ -69,7 +67,7 @@ func main() {
 	logger.Debugf("config: %+v", hb.Conditions)
 	logger.Info("config ready")
 
-	// Watch hb.rulesPath for changes and reload config.
+	// Watch hb.rulesPath for changes and reload configured rules.
 	go hb.WatchConfig(logger)
 
 	// Create and start plugin instance.
