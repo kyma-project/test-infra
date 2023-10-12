@@ -35,22 +35,22 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20231012-7448448f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/github-webhook-gateway:v20231012-7448448f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:v20231012-7448448f
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231012-7448448f
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231012-efdd279c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20231012-7448448f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231012-7448448f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20231012-7448448f
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231012-7448448f
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231012-efdd279c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/move-gcs-bucket:v20231012-7448448f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/needs-tws:v20231012-7448448f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20231012-7448448f
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20231012-7448448f
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20231012-efdd279c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/scan-logs-for-secrets:v20231012-7448448f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/search-github-issue:v20231012-7448448f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20231012-7448448f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20231012-7448448f
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20230307-cf164cd1
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20230301-6267d66d
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20231012-7448448f
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20231012-efdd279c
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20231010-1814beac
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231011-ae6be62f
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231011-ae6be62f
