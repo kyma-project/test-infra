@@ -102,7 +102,7 @@ periodics:
               git config --global user.name "Kyma Bot"
               git clone --depth=1 https://github.com/kyma-project/k8s-prow.git && cd k8s-prow
               git remote set-url --push origin https://kyma-bot:$GITHUB_TOKEN@github.com/kyma-project/k8s-prow.git
-              tag=$(date +%Y.%-m.%d)
+              tag=$(date +%Y.%-m.%-d)
               git tag "$tag"
               git push origin "$tag"
               echo "✅  Done"
