@@ -13,6 +13,7 @@ date
 
 make -C "$SERVERLESS_SOURCES"/hack/ci run-without-lifecycle-manager
 
+set +o errexit
 export INTEGRATION_SUITE=("$@")
 run_tests "${INTEGRATION_SUITE[@]}"
 TEST_STATUS=$?
