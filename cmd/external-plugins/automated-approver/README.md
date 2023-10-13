@@ -2,7 +2,7 @@
 
 ##Overview
 
-Automated Approver is a tool that allows you to automatically approve pull requests based on the rules you define. It is written in Go. It runs in k8s cluster as a Prow plugin. It reacts on GitHub events. The tool allows automation of the approval process for pull requests in repositories which require reviews before merge. The tool automate PR review process without limiting user write permission on repository. It can provide automated review process for all pull request authors.
+Automated Approver is a tool that allows you to automatically approve pull requests based on the rules you define. The tool allows automation of the approval process for pull requests in repositories which require reviews before merge. The tool automate PR review process without limiting user write permission on repository. It can provide automated review process for all pull request authors.
 
 ##How it works
 
@@ -27,7 +27,7 @@ flowchart TB
     H-->|Yes|I[Approve PR]
 ```
 
-Automated approver is a Prow plugin. GitHub events are dispatched by Prow to the Automated approver plugin. Automated approver runs in a prow k8s cluster along with Prow components.
+Automated approver is a Prow plugin written in Golang. GitHub events are dispatched by Prow to the Automated approver plugin. Automated approver runs in a prow k8s cluster along with Prow components.
 
 Automated approver reacts on following events.
  - pull request review requested
