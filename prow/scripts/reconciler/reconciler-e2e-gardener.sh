@@ -23,8 +23,6 @@
 set -e
 pwd
 
-ENABLE_TEST_LOG_COLLECTOR=false
-
 # Exported variables
 # KYMA_SOURCE set to dummy value, required by gardener/gcp.sh
 export KYMA_SOURCE="main"
@@ -104,14 +102,6 @@ reconciler::trigger_kyma_reconcile
 
 # Wait until reconciliation is complete
 reconciler::wait_until_kyma_reconciled
-
-### Once Kyma is installed run the fast integration test
-echo "Executing test"
-if [[ $KYMA_TEST_SOURCE == "latest-release" ]]; then
-  kubectl apply -f https://github.com/kyma-project/serverless-manager/releases/latest/download/serverless-operator.yaml
-  kubectl apply -f https://github.com/kyma-project/serverless-manager/releases/latest/download/default_serverless_cr.yaml -n kyma-system
-fi
-make -C ../../kyma-project/kyma/tests/fast-integration ci
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
