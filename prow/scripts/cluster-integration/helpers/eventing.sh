@@ -165,9 +165,18 @@ function eventing::wait_for_backend_ready() {
   return 1
 }
 
+function eventing::ensure_serverless_installed(){
+  kubectl apply -f https://github.com/kyma-project/serverless-manager/releases/latest/download/serverless-operator.yaml
+	kubectl apply -f https://github.com/kyma-project/serverless-manager/releases/latest/download/default_serverless_cr.yaml -n kyma-system
+	kubectl wait --for condition=Installed -n kyma-system serverless default --timeout=120s
+}
+
 # Runs eventing specific fast-integration tests preparation
 function eventing::test_fast_integration_eventing_prep() {
     log::info "Running Eventing script to prepare test assets"
+
+    # TODO: get rid of serverless dependency in eventing tests
+    eventing::ensure_serverless_installed
 
     pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
     npm install
