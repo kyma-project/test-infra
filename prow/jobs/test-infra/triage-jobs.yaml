@@ -13,7 +13,7 @@ periodics:
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20230925-22f1fe8b
+        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20231016-8c65fa17
           command:
             - commenter
           args:
@@ -71,7 +71,7 @@ periodics:
       testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20230925-22f1fe8b
+        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20231016-8c65fa17
           command:
             - commenter
           args:
