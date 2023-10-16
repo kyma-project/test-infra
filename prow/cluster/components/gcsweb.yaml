@@ -22,7 +22,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: gcsweb
-          image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/gcsweb:v20230925-22f1fe8b
+          image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/gcsweb:v20231016-8c65fa17
           args:
             - -upgrade-proxied-http-to-https
             - -b=kyma-prow-logs
