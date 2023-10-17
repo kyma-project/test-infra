@@ -46,6 +46,8 @@ periodics: # runs on schedule
                 value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
+              - name: KEB_REGION
+                value: "westeurope"
             resources:
               requests:
                 memory: 100Mi
