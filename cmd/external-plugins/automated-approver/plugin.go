@@ -289,8 +289,8 @@ func (hb *HandlerBackend) checkPrApproveConditions(logger *zap.SugaredLogger, co
 	return false
 }
 
-// reviewPullRequest approves pull requests if it meets conditions.
-// It searches conditions for owner/repo/PR author entity, valdiates them, wait for statuses to finish, validates their statuses and approves PR.
+// reviewPullRequest approves a pull request if it meets conditions.
+// It searches conditions for owner/repo/PR author entity, validates them, waits for statuses to finish, validates their statuses, and approves PR.
 func (hb *HandlerBackend) reviewPullRequest(ctx context.Context, logger *zap.SugaredLogger, prOrg, prRepo, prUser, prHeadSha string, prNumber int, prLabels []github.Label) {
 	defer logger.Sync()
 	defer hb.unlockPR(logger, prOrg, prRepo, prHeadSha, prNumber)
@@ -393,7 +393,7 @@ func (hb *HandlerBackend) handleReviewDismissedAction(ctx context.Context, cance
 	hb.reviewPullRequest(ctx, logger, reviewEvent.Repo.Owner.Login, reviewEvent.Repo.Name, reviewEvent.PullRequest.User.Login, reviewEvent.PullRequest.Head.SHA, reviewEvent.PullRequest.Number, reviewEvent.PullRequest.Labels)
 }
 
-// PullRequestEventHandler handles pull_request events. It checks event action and call appropriate handler function.
+// PullRequestEventHandler handles pull_request events. It checks event action and calls the appropriate handler function.
 // TODO: All actions should be handled in one handler function. The event type is passed in payload.
 //
 //	Based on event type, the handler function should use appropriate event struct.
@@ -421,7 +421,7 @@ func (hb *HandlerBackend) PullRequestEventHandler(_ *externalplugin.Plugin, payl
 	}
 }
 
-// PullRequestReviewEventHandler handles pull_request_review events. It checks event action and call appropriate handler function.
+// PullRequestReviewEventHandler handles pull_request_review events. It checks event action and calls the appropriate handler function.
 func (hb *HandlerBackend) PullRequestReviewEventHandler(_ *externalplugin.Plugin, payload externalplugin.Event) {
 	logger, atom := consolelog.NewLoggerWithLevel()
 	defer logger.Sync()
