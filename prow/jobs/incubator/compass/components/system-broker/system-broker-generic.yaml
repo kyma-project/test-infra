@@ -21,7 +21,6 @@ presubmits: # runs on PRs
         - ^main$
         - ^master$
         - ^hotfix-.*$
-        - ^rel-.*$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
@@ -125,7 +124,6 @@ postsubmits: # runs on main
         - ^main$
         - ^master$
         - ^hotfix-.*$
-        - ^rel-.*$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit"
