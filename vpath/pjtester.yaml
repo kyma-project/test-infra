@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      api-gateway:
+        - pjName: "api-gateway modularisation prow adjust"
+prConfigs:
+  kyma-project:
+    api-gateway:
+      prNumber: 629
