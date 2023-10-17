@@ -2,7 +2,8 @@ pjConfigs:
   prowJobs:
     kyma-project:
       api-gateway:
-        - pjName: "api-gateway modularisation prow adjust"
+        - pjName: "pull-api-gateway-manager-build"
+        - pjName: "pull-api-gateway-module-build"
 prConfigs:
   kyma-project:
     api-gateway:
