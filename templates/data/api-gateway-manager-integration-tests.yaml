@@ -43,6 +43,7 @@ templates:
                     privileged: false
                   cluster: untrusted-workload
                   branches:
+                    - ^main$
                     - ^mod-dev$
                     - ^release-\d+\.\d+$
                   labels:
@@ -78,6 +79,7 @@ templates:
                     privileged: false
                   cluster: untrusted-workload
                   branches:
+                    - ^main$
                     - ^mod-dev$
                     - ^release-\d+\.\d+$
                   labels:

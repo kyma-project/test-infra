@@ -26,6 +26,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                   branches:
+                    - ^main$
                     - ^mod-dev$
                 inheritedConfigs:
                   global:
@@ -54,6 +55,7 @@ templates:
                     - "hack/ci"
                     - "all" # currently resolves to make module-build
                   branches:
+                    - ^main$
                     - ^mod-dev$
                 inheritedConfigs:
                   global:
@@ -82,6 +84,7 @@ templates:
                     - "hack/ci"
                     - "all" # currently resolves to make module-build
                   branches:
+                    - ^main$
                     - ^mod-dev$
                 inheritedConfigs:
                   global:
@@ -135,6 +138,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{.Env \"PULL_BASE_SHA\" }}`}}'
                   branches:
+                    - ^main$
                     - ^mod-dev$
                   optional: false
                 inheritedConfigs:
