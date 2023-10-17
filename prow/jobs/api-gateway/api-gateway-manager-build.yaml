@@ -18,6 +18,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
+        - ^main$
         - ^mod-dev$
       spec:
         containers:
@@ -68,6 +69,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
+        - ^main$
         - ^mod-dev$
       spec:
         containers:
@@ -115,6 +117,7 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
+        - ^main$
         - ^mod-dev$
       reporter_config:
         slack:
@@ -206,6 +209,7 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
+        - ^main$
         - ^mod-dev$
       reporter_config:
         slack:
