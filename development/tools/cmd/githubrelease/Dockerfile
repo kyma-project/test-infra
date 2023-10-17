@@ -25,5 +25,5 @@ RUN npm install -g lerna-changelog@2.2.0 && \
 
 ENV APP_PATH=/app
 
-COPY ./changelog-generator/app/ /app/
+COPY ./experimental/changelog-generator/app/ /app/
 COPY --from=build /build/githubrelease /githubrelease
