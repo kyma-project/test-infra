@@ -23,6 +23,7 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
         - ^hotfix-.*$
+        - ^release-.*$
       extra_refs:
         - org: kyma-project
           repo: test-infra
