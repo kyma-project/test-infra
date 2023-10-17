@@ -43,7 +43,7 @@ type HandlerBackend struct {
 	PrMutex                        sync.Mutex
 }
 
-// WatchConfig watches for changes in rules file and reads it again when file change occur.
+// WatchConfig watches for changes in the rules file and reads it again when a file change occurs.
 // TODO: Refactor function to reflect it's working with rules file not configuration file.
 func (hb *HandlerBackend) WatchConfig(logger *zap.SugaredLogger) {
 	defer logger.Sync()
