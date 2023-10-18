@@ -783,6 +783,30 @@
         "approvedImage": false,
         "reason": ""
       }
+    },
+    {
+      "registry": "us-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.11.1",
+      "purpose": "GCR clenaer image",
+      "publisher": "Google",
+      "sourceCode": "https://github.com/GoogleCloudPlatform/gcr-cleaner",
+      "docker": {
+        "verifiedPublisher": false,
+        "officialImage": false,
+        "sponsoredOSS": false
+      },
+      "manualAnalysis": {
+        "contributors": 21,
+        "activity": {
+          "commitFrequency": "monthly",
+          "evidence": "https://github.com/GoogleCloudPlatform/gcr-cleaner/commits/main/"
+        }
+      },
+      "comment": "",
+      "openSSFScore": 0,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      }
     }
   ]
 }
