@@ -2,7 +2,6 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma-environment-broker:
-        - pjName: "skr-free-aws-integration-dev"
         - pjName: "skr-trial-integration-dev"
 
 prConfigs:
