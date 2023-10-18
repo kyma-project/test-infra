@@ -39,7 +39,7 @@ templates:
           keb_plan_trial:
             env:
               KEB_PLAN_ID: "7d55d31d-35ae-4438-bf13-6ffdfa107d9f"
-              KEB_REGION: ""
+              KEB_REGION: " "
           keb_plan_openstack:
             env:
               KEB_PLAN_ID: "03b812ac-c991-4528-b5bd-08b303523a63"

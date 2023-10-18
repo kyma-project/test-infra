@@ -196,7 +196,7 @@ periodics: # runs on schedule
               - name: KEB_PLAN_ID
                 value: "7d55d31d-35ae-4438-bf13-6ffdfa107d9f"
               - name: KEB_REGION
-                value: ""
+                value: " "
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:
