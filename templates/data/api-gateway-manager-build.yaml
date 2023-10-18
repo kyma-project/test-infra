@@ -115,7 +115,7 @@ templates:
                     - "hack/ci"
                     - "all" # currently resolves to make module-build
                   branches:
-                    - '^\d+\.\d+\.\d+-dev(?:-.*)?$'
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -161,7 +161,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
                   branches:
-                    - '^\d+\.\d+\.\d+-dev(?:-.*)?$'
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
                   optional: false
                 inheritedConfigs:
                   global:
