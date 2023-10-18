@@ -56,7 +56,6 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231011-ae6be62f
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20231011-ae6be62f
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20231011-ae6be62f
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28
     - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-ae6be62f
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-ae6be62f
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231011-ae6be62f
