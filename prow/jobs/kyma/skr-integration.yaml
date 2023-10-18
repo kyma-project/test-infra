@@ -44,10 +44,10 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+              - name: KEB_REGION
+                value: "eastus"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
-              - name: KEB_REGION
-                value: "westeurope"
             resources:
               requests:
                 memory: 100Mi
@@ -94,6 +94,8 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "8cb22518-aa26-44c5-91a0-e669ec9bf443"
+              - name: KEB_REGION
+                value: "eastus"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:
@@ -143,10 +145,10 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
-              - name: KEB_SUBACCOUNT_ID
-                value: "prow-keb-integration"
               - name: KEB_REGION
                 value: "eu-central-1"
+              - name: KEB_SUBACCOUNT_ID
+                value: "prow-keb-integration"
             resources:
               requests:
                 memory: 100Mi
@@ -242,7 +244,7 @@ periodics: # runs on schedule
               - name: KEB_PLAN_ID
                 value: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
               - name: KEB_REGION
-                value: "cf-eu10"
+                value: "eu-central-1"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:
@@ -291,6 +293,8 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "5cb3d976-b85c-42ea-a636-79cadda109a9"
+              - name: KEB_REGION
+                value: "eu-central-1"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:
