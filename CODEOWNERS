@@ -104,3 +104,4 @@ templates/data/
 # File index.md must be owned by prow group in case it will get changes in a pull request which is not allowed to be approved by approval bot.
 # In such case a human approver from prow group must approve the pull request.
 /docs/index.md @kyma-project/prow @neighbors-dev-bot
+/docs/security/imagemitigation.json @TorstenD-SAP
