@@ -1,4 +1,5 @@
-[Changelog Generator](/changelog-generator/README.md) - This project is a Docker image that is used to generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests with specified labels.
+[Changelog Generator](/experimental/changelog-generator/README.md) - This project is a Docker image that is used to
+generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests with specified labels.
 
 [Rotate Gardener service account secrets using Cloud Run](/cmd/cloud-run/gardener-sa-rotate/README.md) - The Cloud Run application creates a new key for a GCP service account, updates the required secret data, and deletes old versions of a key. The function is triggered by a Pub/Sub message sent by a secret stored in Secret Manager.
 
@@ -130,23 +131,9 @@
 
 [Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](/images) directory instead.
 
-[Bootstrap Docker Image](/prow/images/bootstrap/README.md) - This folder contains the Bootstrap image for Prow infrastructure. Use it for a root image for other Prow images and for generic builds.
-
-[Buildpack Golang Docker Image](/prow/images/buildpack-golang/README.md) - This folder contains the Buildpack Golang image that is based on the Bootstrap image. Use it to build Golang components.
-
-[Buildpack Node.js Docker Image](/prow/images/buildpack-node/README.md) - This folder contains the Buildpack Node.js image that is based on the Bootstrap image. Use it to build Node.js components.
-
-[Cleaner Docker Image](/prow/images/cleaner/README.md) - This image contains the script which performs a cleanup of the service account profile in the `kyma-project` project.
-
-[Gardener-rotate image](/prow/images/gardener-rotate/README.md) - This folder contains the gardener-rotate image that is used to automatically update Gardener kubeconfig secrets.
-
 [Golangci-lint image](/prow/images/golangci-lint/README.md) - This folder contains the Golangci-lint image that is based on the upstream Golangci-lint image. Use it to lint Go source files.
 
-[Kyma integration images](/prow/images/kyma-integration/README.md) - This folder contains the image with tools that are necessary to provision Kyma integration clusters.
-
 [Probot Stale](/prow/images/probot-stale/README.md) - This folder contains the image for `probot-stale`.
-
-[Prow Tools](/prow/images/prow-tools/README.md) - The directory contains the Dockerfile for the prow tools image with prebuilt tools used in the prow pipelines.
 
 [Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
 
