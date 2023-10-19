@@ -40,7 +40,7 @@ presubmits: # runs on PRs
               - "mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/custom-domain-gardener-aws.sh"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:PR-${PULL_NUMBER}"
+                value: "europe-docker.pkg.dev/kyma-project/dev/api-gateway-manager:PR-${PULL_NUMBER}"
               - name: JOB_NAME_PATTERN
                 value: "pull-api-gateway-manager-build"
               - name: KYMA_PROJECT_DIR
@@ -88,7 +88,7 @@ presubmits: # runs on PRs
               - "mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/custom-domain-gardener-gcp.sh"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:PR-${PULL_NUMBER}"
+                value: "europe-docker.pkg.dev/kyma-project/dev/api-gateway-manager:PR-${PULL_NUMBER}"
               - name: JOB_NAME_PATTERN
                 value: "pull-api-gateway-manager-build"
               - name: KYMA_PROJECT_DIR
