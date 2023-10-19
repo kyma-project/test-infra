@@ -27,7 +27,6 @@ templates:
                     - "--dockerfile=Dockerfile"
                   branches:
                     - ^main$
-                    - ^mod-dev$
                     - ^release-\d+\.\d+$
                 inheritedConfigs:
                   global:
@@ -57,7 +56,6 @@ templates:
                     - "all" # currently resolves to make module-build
                   branches:
                     - ^main$
-                    - ^mod-dev$
                     - ^release-\d+\.\d+$
                 inheritedConfigs:
                   global:
@@ -87,7 +85,6 @@ templates:
                     - "all" # currently resolves to make module-build
                   branches:
                     - ^main$
-                    - ^mod-dev$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -141,7 +138,6 @@ templates:
                     - '--tag={{`{{.Env \"PULL_BASE_SHA\" }}`}}'
                   branches:
                     - ^main$
-                    - ^mod-dev$
                   optional: false
                 inheritedConfigs:
                   global:

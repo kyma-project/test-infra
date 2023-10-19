@@ -19,7 +19,6 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
-        - ^mod-dev$
         - ^release-\d+\.\d+$
       spec:
         containers:
@@ -71,7 +70,6 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
-        - ^mod-dev$
         - ^release-\d+\.\d+$
       spec:
         containers:
@@ -120,7 +118,6 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
-        - ^mod-dev$
       reporter_config:
         slack:
           channel: goat-int
@@ -212,7 +209,6 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
-        - ^mod-dev$
       reporter_config:
         slack:
           channel: goat-int

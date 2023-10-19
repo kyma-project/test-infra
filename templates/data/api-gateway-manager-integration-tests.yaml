@@ -44,7 +44,6 @@ templates:
                   cluster: untrusted-workload
                   branches:
                     - ^main$
-                    - ^mod-dev$
                     - ^release-\d+\.\d+$
                   labels:
                     preset-sa-kyma-dns-serviceuser: "true"
@@ -80,7 +79,6 @@ templates:
                   cluster: untrusted-workload
                   branches:
                     - ^main$
-                    - ^mod-dev$
                     - ^release-\d+\.\d+$
                   labels:
                     preset-sa-kyma-dns-serviceuser: "true"
