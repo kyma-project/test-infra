@@ -64,11 +64,11 @@ templates:
                     - "image_buildpack-golang" # takes latest golang image
                   local:
                     - job_default
-              - jobConfig: # builds an OCI image with api-gateway module from mod-dev branch
+              - jobConfig: # builds an OCI image with api-gateway module from main branch
                   name: post-api-gateway-module-build
                   annotations:
                     owner: "goat"
-                    description: "API Gateway Manager template image build on mod-dev branch"
+                    description: "API Gateway Manager template image build on main branch"
                   always_run: true
                   labels:
                     preset-sa-kyma-push-images: "true"
