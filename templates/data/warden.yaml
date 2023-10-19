@@ -89,7 +89,7 @@ templates:
                   env:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
-                  run_if_changed: "^\\.env$|^(go\\.mod|go\\.sum)$|^.*/(.*\\.go|Makefile|.*\\.sh|.*\\.yaml|Dockerfile)|^PROJECT$"
+                  run_if_changed: "^\\.env$|^(go\\.mod|go\\.sum)$|^(.*/)?(.*\\.go|Makefile|.*\\.sh|.*\\.yaml|Dockerfile)$|^PROJECT$"
                   command: "make"
                   args:
                     - "ci-module-build"
@@ -111,7 +111,7 @@ templates:
                   env:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     MODULE_SHA: "${PULL_BASE_SHA}"
-                  run_if_changed: "^\\.env$|^(go\\.mod|go\\.sum)$|^.*/(.*\\.go|Makefile|.*\\.sh|.*\\.yaml|Dockerfile)|^PROJECT$"
+                  run_if_changed: "^\\.env$|^(go\\.mod|go\\.sum)$|^(.*/)?(.*\\.go|Makefile|.*\\.sh|.*\\.yaml|Dockerfile)$|^PROJECT$"
                   command: "make"
                   args:
                     - "ci-module-build"
