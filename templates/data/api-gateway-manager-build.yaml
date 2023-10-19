@@ -27,7 +27,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                   branches:
                     - ^main$
-                    - ^release-\d+\.\d+$
+                    - ^release-\d+\.\d+(-.*)?$
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -56,7 +56,7 @@ templates:
                     - "all" # currently resolves to make module-build
                   branches:
                     - ^main$
-                    - ^release-\d+\.\d+$
+                    - ^release-\d+\.\d+(-.*)?$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
