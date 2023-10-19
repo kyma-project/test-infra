@@ -25,16 +25,16 @@ JobGuard accepts the following command line parameters:
 
 |Flag|Required|Description|
 |---|---|---|
-|`-github-host`| No | GitHub's default host.|
-|`-github-endpoint`| No | GitHub API endpoint.|
-|`-github-graphql-endpoint`| No | GitHub GraphQL API endpoint.|
-|`-github-token-path`|Yes|Path to the file containing the GitHub OAuth secret.|
-|`-debug`|No|Enable debug logging.|
-|`-dry-run`|No|Run in dry mode.|
-|`-expected-contexts-regexp`|Yes|Regular expression with expected contexts.|
-|`-fail-on-no-contexts`|No|Fail if regexp does not match any of the GitHub contexts.|
-|`-timeout`|No|Time after JobGuard fails.|
-|`-poll-interval`|No|Interval in which JobGuard checks contexts on GitHub.|
-|`-org`|Yes|GitHub organisation to check.|
-|`-repo`|Yes|GitHub repository to check.|
-|`-base-ref`|Yes|GitHub base ref to pull statuses from.|
+|`-github-host`|No| GitHub default host|
+|`-github-endpoint`|No| GitHub API endpoint|
+|`-github-graphql-endpoint`|No| GitHub GraphQL API endpoint|
+|`-github-token-path`|Yes| Path to the file containing the GitHub OAuth secret|
+|`-debug`|No| Enable debug logging|
+|`-dry-run`|No| Run in dry mode|
+|`-expected-contexts-regexp`|Yes| Regular expression with expected contexts|
+|`-fail-on-no-contexts`|No| Fail if regexp does not match any of the GitHub contexts|
+|`-timeout`|No| Time after JobGuard fails|
+|`-poll-interval`|No| Interval in which JobGuard checks contexts on GitHub|
+|`-org`|Yes| GitHub organisation to check|
+|`-repo`|Yes| GitHub repository to check|
+|`-base-ref`|Yes| GitHub base reference to pull statuses from|
