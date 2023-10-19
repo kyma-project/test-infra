@@ -20,6 +20,7 @@ presubmits: # runs on PRs
       branches:
         - ^main$
         - ^mod-dev$
+        - ^release-\d+\.\d+$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -71,6 +72,7 @@ presubmits: # runs on PRs
       branches:
         - ^main$
         - ^mod-dev$
+        - ^release-\d+\.\d+$
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-ae6be62f"
