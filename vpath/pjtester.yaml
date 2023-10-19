@@ -3,7 +3,6 @@ pjConfigs:
     kyma-project:
       api-gateway:
         - pjName: "pull-api-gateway-manager-custom-domain-integration-aws"
-        - pjName: "pull-api-gateway-manager-custom-domain-integration-gcp"
 prConfigs:
   kyma-project:
     api-gateway:
