@@ -25,7 +25,6 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
-        - ^mod-dev$
         - ^release-\d+\.\d+$
       reporter_config:
         slack:
@@ -78,7 +77,6 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
-        - ^mod-dev$
         - ^release-\d+\.\d+$
       reporter_config:
         slack:

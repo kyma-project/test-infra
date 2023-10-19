@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
-        - ^mod-dev$
+        - ^release-\d+\.\d+$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -70,7 +70,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
-        - ^mod-dev$
+        - ^release-\d+\.\d+$
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-ae6be62f"
@@ -103,7 +103,7 @@ postsubmits: # runs on main
   kyma-project/api-gateway:
     - name: post-api-gateway-module-build
       annotations:
-        description: "API Gateway Manager template image build on mod-dev branch"
+        description: "API Gateway Manager template image build on main branch"
         owner: "goat"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -118,7 +118,6 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
-        - ^mod-dev$
       reporter_config:
         slack:
           channel: goat-int
@@ -210,7 +209,6 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
-        - ^mod-dev$
       reporter_config:
         slack:
           channel: goat-int

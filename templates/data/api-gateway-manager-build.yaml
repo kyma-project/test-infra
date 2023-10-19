@@ -27,7 +27,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                   branches:
                     - ^main$
-                    - ^mod-dev$
+                    - ^release-\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -56,7 +56,7 @@ templates:
                     - "all" # currently resolves to make module-build
                   branches:
                     - ^main$
-                    - ^mod-dev$
+                    - ^release-\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -64,11 +64,11 @@ templates:
                     - "image_buildpack-golang" # takes latest golang image
                   local:
                     - job_default
-              - jobConfig: # builds an OCI image with api-gateway module from mod-dev branch
+              - jobConfig: # builds an OCI image with api-gateway module from main branch
                   name: post-api-gateway-module-build
                   annotations:
                     owner: "goat"
-                    description: "API Gateway Manager template image build on mod-dev branch"
+                    description: "API Gateway Manager template image build on main branch"
                   always_run: true
                   labels:
                     preset-sa-kyma-push-images: "true"
@@ -85,7 +85,6 @@ templates:
                     - "all" # currently resolves to make module-build
                   branches:
                     - ^main$
-                    - ^mod-dev$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -139,7 +138,6 @@ templates:
                     - '--tag={{`{{.Env \"PULL_BASE_SHA\" }}`}}'
                   branches:
                     - ^main$
-                    - ^mod-dev$
                   optional: false
                 inheritedConfigs:
                   global:
