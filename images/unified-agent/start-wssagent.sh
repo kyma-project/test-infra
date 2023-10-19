@@ -22,8 +22,13 @@ if [[ -z "$PROJECT" ]]; then
 fi
 
 # pass values to Whitesource binary through WS_* variables
-export WS_USERKEY=$(cat "${WHITESOURCE_USERKEY}")
-export WS_APIKEY=$(cat "${WHITESOURCE_APIKEY}")
+if [[ -z "$WS_USERKEY" ]]; then
+  export WS_USERKEY=$(cat "${WHITESOURCE_USERKEY}")
+fi
+
+if [[ -z "$WS_APIKEY" ]]; then
+  export WS_APIKEY=$(cat "${WHITESOURCE_APIKEY}")
+fi
 
 # don't stop scans on first failure, but fail the whole job after all scans have finished
 export scan_failed
