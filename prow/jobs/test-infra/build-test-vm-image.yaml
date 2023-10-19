@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231019-3e973e52"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231019-fe7ee7d3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -56,7 +56,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231019-3e973e52"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231019-fe7ee7d3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -94,7 +94,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231019-3e973e52"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231019-fe7ee7d3"
             securityContext:
               privileged: false
               seccompProfile:

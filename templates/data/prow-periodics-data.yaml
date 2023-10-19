@@ -186,7 +186,7 @@ templates:
                   branches:
                     - ^main$
                   run_if_changed: "prow/cluster/components/"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231019-3e973e52
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231019-fe7ee7d3
                   command: prow/cluster/deploy.sh
                   serviceAccountName: sa-prow-deploy
                   skip_report: "false"
