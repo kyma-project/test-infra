@@ -28,6 +28,7 @@ templates:
                   branches:
                     - ^main$
                     - ^mod-dev$
+                    - ^release-\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -57,6 +58,7 @@ templates:
                   branches:
                     - ^main$
                     - ^mod-dev$
+                    - ^release-\d+\.\d+$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
