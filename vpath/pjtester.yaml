@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      warden:
+      - pjName: "pre-warden-module-build"
+prConfigs: #
+  kyma-project:
+    warden:
+      prNumber: 125
