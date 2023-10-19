@@ -1,6 +1,3 @@
-[Changelog Generator](/experimental/changelog-generator/README.md) - This project is a Docker image that is used to
-generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests with specified labels.
-
 [Rotate Gardener service account secrets using Cloud Run](/cmd/cloud-run/gardener-sa-rotate/README.md) - The Cloud Run application creates a new key for a GCP service account, updates the required secret data, and deletes old versions of a key. The function is triggered by a Pub/Sub message sent by a secret stored in Secret Manager.
 
 [Rotate KMS secrets using Cloud Run](/cmd/cloud-run/kms-rotate/README.md) - The Cloud Run application decrypts and encrypts files in a bucket with the latest version of a KMS key, and deletes old versions of a key. The function is triggered by a HTTP POST request sent by a Cloud Scheduler.
@@ -110,6 +107,8 @@ generate a changelog in the `kyma` repository. It uses GitHub API to get pull re
 [Tide introduction](/docs/prow/tide-introduction-notes.md) - Along with the Prow upgrade, we want to introduce Tide for merging the PRs automatically.
 
 [Prow Workload Clusters](/docs/prow/workload-clusters.md) - This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` GCP project. We use two workload clusters for trusted and untrusted Prow jobs.
+
+[Changelog Generator](/experimental/changelog-generator/README.md) - This project is a Docker image that is used to generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests with specified labels.
 
 [Create Custom Image](/experimental/custom-image/README.md) - The purpose of this document is to define how to create a new Google Compute Engine [custom image](https://cloud.google.com/compute/docs/images) with required dependencies. You can use the new image to provision virtual machine (VM) instances with all dependencies already installed.
 
