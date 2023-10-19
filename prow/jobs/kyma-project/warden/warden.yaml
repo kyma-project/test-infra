@@ -130,7 +130,7 @@ presubmits: # runs on PRs
               - name: MODULE_REGISTRY
                 value: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
               - name: MODULE_SHA
-                value: "PR-$(PULL_NUMBER)"
+                value: "PR-${PULL_NUMBER}"
             resources:
               requests:
                 memory: 3Gi
