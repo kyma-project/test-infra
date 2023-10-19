@@ -44,7 +44,6 @@ templates:
                   cluster: untrusted-workload
                   branches:
                     - ^main$
-                    - ^release-\d+\.\d+$
                   labels:
                     preset-sa-kyma-dns-serviceuser: "true"
                   image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231011-ae6be62f
@@ -79,7 +78,6 @@ templates:
                   cluster: untrusted-workload
                   branches:
                     - ^main$
-                    - ^release-\d+\.\d+$
                   labels:
                     preset-sa-kyma-dns-serviceuser: "true"
                   command: bash

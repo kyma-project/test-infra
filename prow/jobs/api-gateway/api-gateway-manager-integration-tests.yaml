@@ -124,7 +124,6 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
-        - ^release-\d+\.\d+$
       reporter_config:
         slack:
           channel: goat-int
@@ -176,7 +175,6 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
-        - ^release-\d+\.\d+$
       reporter_config:
         slack:
           channel: goat-int
