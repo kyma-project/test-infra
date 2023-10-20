@@ -1,5 +1,7 @@
 # Test Infra
+<!-- markdown-link-check-disable-next-line -->
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra?ref=badge_shield)
+<!-- markdown-link-check-disable-next-line -->
 [![REUSE status](https://api.reuse.software/badge/github.com/kyma-project/test-infra)](https://api.reuse.software/info/github.com/kyma-project/test-infra)
 
 ## Overview
@@ -21,4 +23,5 @@ For more detailed documentation, such as installation guides, see the [`docs/pro
 
 
 ## License
+<!-- markdown-link-check-disable-next-line -->
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fkyma-project%2Ftest-infra?ref=badge_large)
