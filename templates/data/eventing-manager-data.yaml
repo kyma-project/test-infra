@@ -68,7 +68,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
                   branches:
-                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                    - ^\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -93,7 +93,7 @@ templates:
                   args:
                     - "ci"
                   branches:
-                    - ^\w+\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                    - ^\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image

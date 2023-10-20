@@ -112,7 +112,7 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\w+\d+\.\d+\.\d+(?:-.*)?$
+        - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -166,7 +166,7 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\w+\d+\.\d+\.\d+(?:-.*)?$
+        - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231019-fe7ee7d3"
