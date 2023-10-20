@@ -1,10 +1,10 @@
 # Automated Approver
 
-##Overview
+## Overview
 
 With the Automated Approver tool, you can automatically approve pull requests based on the rules you define. The tool enables automation of the approval process for pull requests in repositories that need reviews before merge. The tool automates the PR review process without limiting user write permission on the repository. It can provide an automated review process for all pull request authors.
 
-##How it works
+## How it works
 
 ```mermaid
 flowchart TB
@@ -29,12 +29,12 @@ flowchart TB
 
 Automated approver is a Prow plugin written in Golang. GitHub events are dispatched by Prow to the Automated approver plugin. Automated approver runs in a Prow Kubernetes cluster along with Prow components.
 
-Automated approver reacts on following events:
+Automated Approver reacts to the following events:
  - pull request review requested
  - pull request synchronized
  - review dismissed
 
-To identify pull requests that must be approved by the tool, Automated Approver evaluates rules defined in a `rules.yaml` file. Rules are defined per org, repo, or user entity. You can define the following conditions in rules:
+To identify pull requests that must be approved by the tool, Automated Approver evaluates rules defined in a `rules.yaml` file. Rules are defined per organization, repository, or user entity. You can define the following conditions in the rules:
  - pull request required labels
  - pull request changed files
 
@@ -42,19 +42,19 @@ If a pull request meets the conditions, the tool checks if the pull request test
 
 Automated Approver uses the identity of a dedicated GitHub user to approve pull requests. Depending on repository configuration, the user must have write permission on the repository, must be added to repository collaborators, and as code owner in the `CODEOWNERS` file.
 
-##How to use it
+## How to use it
 
-You configure Automated Approver with cli flags. Flags are defined in the following files in our repository and their dependencies.
-Automated Approver [configuration flags](https://github.com/kyma-project/test-infra/blob/5242421660dab5979a763bcd596eba48bafe093d/cmd/external-plugins/automated-approver/main.go#L39)
-External plugin [configuration flags](https://github.com/kyma-project/test-infra/blob/5242421660dab5979a763bcd596eba48bafe093d/pkg/prow/externalplugin/externalplugin.go#L68)
-Define the needed flags values in the pod specification and apply it to the Kubernetes cluster.
+You configure Automated Approver with CLI flags. The flags are defined in the following files in our repository and their dependencies:
+- Automated Approver [configuration flags](https://github.com/kyma-project/test-infra/blob/5242421660dab5979a763bcd596eba48bafe093d/cmd/external-plugins/automated-approver/main.go#L39) 
+- External plugin [configuration flags](https://github.com/kyma-project/test-infra/blob/5242421660dab5979a763bcd596eba48bafe093d/pkg/prow/externalplugin/externalplugin.go#L68) 
+Define the needed flags' values in the Pod specification and apply it to the Kubernetes cluster.
 
-Additionally, Automated Approver uses rules to approve pull requests. You define rule as `yaml` file and apply them to the Kubernetes cluster as config map. You must mount this config map to the pod that runs Automated Approver.
+Additionally, Automated Approver uses rules to approve pull requests. You define the rules as a `yaml` file and apply them to the Kubernetes cluster as a config map. You must mount this config map to the Pod that runs Automated Approver.
 
 
-##How to install it
+## How to install it
 
-Automated Approver runs in a Kubernetes cluster. A pod and service specification is defined in the Kubernetes [deployment manifest file](../../../prow/cluster/components/automated-approver_external-plugin.yaml). A service is required for Prow to dispatch GitHub events to registered external plugins.
+Automated Approver runs in a Kubernetes cluster. A Pod and service specification is defined in the Kubernetes [deployment manifest file](../../../prow/cluster/components/automated-approver_external-plugin.yaml). A service is required for Prow to dispatch GitHub events to registered external plugins.
 
 The rules against which Automated Approver validates pull requests are defined in a Kubernetes [config map manifest file](../../../configs/automated-approver-rules.yaml).
 
