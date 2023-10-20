@@ -6,26 +6,7 @@ With the Automated Approver tool, you can automatically approve pull requests ba
 
 ## How it works
 
-```mermaid
-flowchart TB
-    A[Github Event]-->B[Prow]
-    B-->|Dispatch event to plugins|C[Automated Approver]
-    C-->D{"`Does PR
-    meet rules?`"}
-    D-->|NO|Z[End]
-    
-    D-->|Yes|E{"`Does PR tests
-    finished?`"}
-    E-->|No|F{"`Did hit timeout?`"}
-    F-->|No|G[Sleep, waiting for tests]
-    G-->E
-    F-->|Yes|Z
-    
-    E-->|Yes|H{"`Does PR statusses
-    finished with success?`"}
-    H-->|No|Z
-    H-->|Yes|I[Approve PR]
-```
+![Automated Approver workflow](./assets/automated-approver.svg)
 
 Automated approver is a Prow plugin written in Golang. GitHub events are dispatched by Prow to the Automated approver plugin. Automated approver runs in a Prow Kubernetes cluster along with Prow components.
 
