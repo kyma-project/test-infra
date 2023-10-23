@@ -97,6 +97,44 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: pre-warden-module-build
+      annotations:
+        description: "warden module build job"
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-warden-module-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^\.env$|^(go\.mod|go\.sum)$|^(.*/)?(.*\.go|Makefile|.*\.sh|.*\.yaml|Dockerfile)$|^PROJECT$'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-.*$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231020-cd787c4d"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "make"
+            args:
+              - "ci-module-build"
+            env:
+              - name: MODULE_REGISTRY
+                value: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+              - name: MODULE_SHA
+                value: "PR-${PULL_NUMBER}"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
     - name: pre-warden-lint
       annotations:
         description: "executes the 'golangci-lint lint' command before any pull request."
@@ -261,4 +299,42 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: post-warden-module-build
+      annotations:
+        description: "warden module build job"
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-warden-module-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^\.env$|^(go\.mod|go\.sum)$|^(.*/)?(.*\.go|Makefile|.*\.sh|.*\.yaml|Dockerfile)$|^PROJECT$'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-.*$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231020-cd787c4d"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "make"
+            args:
+              - "ci-module-build"
+            env:
+              - name: MODULE_REGISTRY
+                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+              - name: MODULE_SHA
+                value: "${PULL_BASE_SHA}"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
   
