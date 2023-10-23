@@ -5,7 +5,7 @@ periodics:
       description: Automatically sync changes of the upstream with fork
     reporter_config:
       slack:
-        channel: kyma-prow-alerts
+        channel: kyma-neighbors-alerts
         job_states_to_report:
           - success
           - failure
@@ -62,7 +62,7 @@ periodics:
       description: Release new version once a week
     reporter_config:
       slack:
-        channel: kyma-prow-alerts
+        channel: kyma-neighbors-alerts
         job_states_to_report:
           - success
           - failure
@@ -125,7 +125,7 @@ periodics:
         base_ref: main
     reporter_config:
       slack:
-        channel: kyma-prow-alerts
+        channel: kyma-neighbors-alerts
     spec:
       containers:
         - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231016-8c65fa17"

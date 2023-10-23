@@ -81,7 +81,7 @@ templates:
                     owner: neighbors
                     description: "Autobump prow components image versions"
                   cron: "30 * * * 1-5"
-                  slack_channel: kyma-prow-alerts
+                  slack_channel: kyma-neighbors-alerts
                   image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231016-8c65fa17
                   command: generic-autobumper
                   args:
@@ -102,7 +102,7 @@ templates:
                     owner: neighbors
                     description: daily detect prow images for scan
                   cron: "0 8 * * *"
-                  slack_channel: kyma-prow-alerts
+                  slack_channel: kyma-neighbors-alerts
                   command: /ko-app/image-detector
                   args:
                     - --prow-config=prow/config.yaml
@@ -127,7 +127,7 @@ templates:
                   annotations:
                     owner: neighbors
                     description: autobump markdown index.md
-                  slack_channel: kyma-prow-alerts
+                  slack_channel: kyma-neighbors-alerts
                   branches:
                     - ^main$
                   run_if_changed: ".md$"
@@ -152,7 +152,7 @@ templates:
                   annotations:
                     owner: neighbors
                     description: autobump prow images for scan
-                  slack_channel: kyma-prow-alerts
+                  slack_channel: kyma-neighbors-alerts
                   branches:
                     - ^main$
                   run_if_changed: ".(md|yml|yaml|tf|tfvars)$"
@@ -182,7 +182,7 @@ templates:
                   annotations:
                     owner: neighbors
                     description: "Deploy prow components"
-                  slack_channel: kyma-prow-alerts
+                  slack_channel: kyma-neighbors-alerts
                   branches:
                     - ^main$
                   run_if_changed: "prow/cluster/components/"
@@ -206,7 +206,7 @@ templates:
                     owner: neighbors
                     description: "Autobump image versions in prow jobs"
                   cron: "45 * * * 1-5"
-                  slack_channel: kyma-prow-alerts
+                  slack_channel: kyma-neighbors-alerts
                   image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231016-8c65fa17
                   command: generic-autobumper
                   args:
@@ -227,7 +227,7 @@ templates:
                     owner: neighbors
                     description: "Autobump images from docker.io"
                   cron: "55 * * * 1-5"
-                  slack_channel: kyma-prow-alerts
+                  slack_channel: kyma-neighbors-alerts
                   image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231016-8c65fa17
                   command: generic-autobumper
                   args:
