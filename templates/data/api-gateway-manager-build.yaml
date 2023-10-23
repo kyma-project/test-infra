@@ -26,7 +26,8 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                   branches:
-                    - ^mod-dev$
+                    - ^main$
+                    - ^release-\d+\.\d+(-.*)?$
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -54,7 +55,8 @@ templates:
                     - "hack/ci"
                     - "all" # currently resolves to make module-build
                   branches:
-                    - ^mod-dev$
+                    - ^main$
+                    - ^release-\d+\.\d+(-.*)?$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -62,11 +64,11 @@ templates:
                     - "image_buildpack-golang" # takes latest golang image
                   local:
                     - job_default
-              - jobConfig: # builds an OCI image with api-gateway module from mod-dev branch
+              - jobConfig: # builds an OCI image with api-gateway module from main branch
                   name: post-api-gateway-module-build
                   annotations:
                     owner: "goat"
-                    description: "API Gateway Manager template image build on mod-dev branch"
+                    description: "API Gateway Manager template image build on main branch"
                   always_run: true
                   labels:
                     preset-sa-kyma-push-images: "true"
@@ -82,7 +84,7 @@ templates:
                     - "hack/ci"
                     - "all" # currently resolves to make module-build
                   branches:
-                    - ^mod-dev$
+                    - ^main$
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -112,7 +114,7 @@ templates:
                     - "hack/ci"
                     - "all" # currently resolves to make module-build
                   branches:
-                    - '^\d+\.\d+\.\d+-dev(?:-.*)?$'
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_default"
@@ -135,7 +137,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{.Env \"PULL_BASE_SHA\" }}`}}'
                   branches:
-                    - ^mod-dev$
+                    - ^main$
                   optional: false
                 inheritedConfigs:
                   global:
@@ -157,7 +159,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
                   branches:
-                    - '^\d+\.\d+\.\d+-dev(?:-.*)?$'
+                    - '^\d+\.\d+\.\d+(?:-.*)?$'
                   optional: false
                 inheritedConfigs:
                   global:

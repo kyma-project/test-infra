@@ -7,7 +7,7 @@ COPY . .
 RUN CGO_ENABLED=0 go build -o ./githubrelease ./development/tools/cmd/githubrelease && \
     chmod +x ./githubrelease
 
-FROM node:20.8.0-alpine
+FROM node:21.0.0-alpine
 
 LABEL source git@github.com:kyma-project/test-infra.git
 
@@ -25,5 +25,5 @@ RUN npm install -g lerna-changelog@2.2.0 && \
 
 ENV APP_PATH=/app
 
-COPY ./changelog-generator/app/ /app/
+COPY ./experimental/changelog-generator/app/ /app/
 COPY --from=build /build/githubrelease /githubrelease

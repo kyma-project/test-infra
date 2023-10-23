@@ -1,5 +1,3 @@
-[Changelog Generator](/changelog-generator/README.md) - This project is a Docker image that is used to generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests with specified labels.
-
 [Rotate Gardener service account secrets using Cloud Run](/cmd/cloud-run/gardener-sa-rotate/README.md) - The Cloud Run application creates a new key for a GCP service account, updates the required secret data, and deletes old versions of a key. The function is triggered by a Pub/Sub message sent by a secret stored in Secret Manager.
 
 [Rotate KMS secrets using Cloud Run](/cmd/cloud-run/kms-rotate/README.md) - The Cloud Run application decrypts and encrypts files in a bucket with the latest version of a KMS key, and deletes old versions of a key. The function is triggered by a HTTP POST request sent by a Cloud Scheduler.
@@ -17,6 +15,8 @@
 [image-syncer](/cmd/image-syncer/README.md) - image-syncer is used to copy container images from one registry to another.
 
 [Image URL Helper](/cmd/image-url-helper/README.md) - Image URL Helper is a tool that provides the following subcommands:
+
+[JobGuard ](/cmd/jobguard/README.md) - JobGuard is a simple tool that fetches all statuses for GitHub pull requests and waits for some of them to finish.
 
 [prowjobparser](/cmd/prowjobparser/README.md) - The prowjobparser is a helper tool which parses all Prow Jobs under the provided path, matches them against the provided label filters, and prints matching Prow Job names to the standard output.
 
@@ -110,6 +110,8 @@
 
 [Prow Workload Clusters](/docs/prow/workload-clusters.md) - This document describes workload clusters on which Prow schedules Pods to execute the logic of a given Prow job. All workload clusters are aggregated under the `kyma-prow` GCP project. We use two workload clusters for trusted and untrusted Prow jobs.
 
+[Changelog Generator](/experimental/changelog-generator/README.md) - This project is a Docker image that is used to generate a changelog in the `kyma` repository. It uses GitHub API to get pull requests with specified labels.
+
 [Create Custom Image](/experimental/custom-image/README.md) - The purpose of this document is to define how to create a new Google Compute Engine [custom image](https://cloud.google.com/compute/docs/images) with required dependencies. You can use the new image to provision virtual machine (VM) instances with all dependencies already installed.
 
 [Prow runtime images](/images/README.md) - This directory contains images that can be used as runtime images for all ProwJobs in Kyma's Prow Instance.
@@ -130,23 +132,9 @@
 
 [Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](/images) directory instead.
 
-[Bootstrap Docker Image](/prow/images/bootstrap/README.md) - This folder contains the Bootstrap image for Prow infrastructure. Use it for a root image for other Prow images and for generic builds.
-
-[Buildpack Golang Docker Image](/prow/images/buildpack-golang/README.md) - This folder contains the Buildpack Golang image that is based on the Bootstrap image. Use it to build Golang components.
-
-[Buildpack Node.js Docker Image](/prow/images/buildpack-node/README.md) - This folder contains the Buildpack Node.js image that is based on the Bootstrap image. Use it to build Node.js components.
-
-[Cleaner Docker Image](/prow/images/cleaner/README.md) - This image contains the script which performs a cleanup of the service account profile in the `kyma-project` project.
-
-[Gardener-rotate image](/prow/images/gardener-rotate/README.md) - This folder contains the gardener-rotate image that is used to automatically update Gardener kubeconfig secrets.
-
 [Golangci-lint image](/prow/images/golangci-lint/README.md) - This folder contains the Golangci-lint image that is based on the upstream Golangci-lint image. Use it to lint Go source files.
 
-[Kyma integration images](/prow/images/kyma-integration/README.md) - This folder contains the image with tools that are necessary to provision Kyma integration clusters.
-
 [Probot Stale](/prow/images/probot-stale/README.md) - This folder contains the image for `probot-stale`.
-
-[Prow Tools](/prow/images/prow-tools/README.md) - The directory contains the Dockerfile for the prow tools image with prebuilt tools used in the prow pipelines.
 
 [Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
 

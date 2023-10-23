@@ -1,15 +1,15 @@
 presubmits: # runs on PRs
   kyma-incubator/compass:
-    - name: pull-connector-build
+    - name: pull-default-tenant-mapping-handler-build
       annotations:
-        description: "Building Connector Compass component"
+        description: "Building Default Tenant Mapping Handler Compass component"
         owner: "compass"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-connector-build"
+        prow.k8s.io/pubsub.runID: "pull-default-tenant-mapping-handler-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/connector/'
+      run_if_changed: "^components/default-tenant-mapping-handler/"
       skip_report: false
       decorate: true
       decoration_config:
@@ -32,9 +32,9 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=incubator/compass-connector"
+              - "--name=incubator/compass-default-tenant-mapping-handler"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/connector"
+              - "--context=components/default-tenant-mapping-handler"
               - "--dockerfile=Dockerfile"
               - "--platform=linux/amd64"
               - "--platform=linux/arm64"
@@ -65,15 +65,49 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-connector-unit-test
+    - name: pull-default-tenant-mapping-handler-lint
       annotations:
-        description: "Run unit tests for the Connector Compass component"
+        description: "Linter for the Default Tenant Mapping Handler Compass component"
         owner: "compass"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-connector-unit-test"
+        prow.k8s.io/pubsub.runID: "pull-default-tenant-mapping-handler-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/connector/.*\.go$'
+      run_if_changed: '^components/default-tenant-mapping-handler/(.*\.go$|.golangcilint.yaml)'
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/bin/sh"
+            args:
+              - "-c"
+              - "cd components/default-tenant-mapping-handler && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=15m"
+            resources:
+              requests:
+                memory: 6Gi
+                cpu: 3
+              limits:
+                memory: 6Gi
+                cpu: 3
+    - name: pull-default-tenant-mapping-handler-unit-test
+      annotations:
+        description: "Run unit tests for the Default Tenant Mapping Handler Compass component"
+        owner: "compass"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-default-tenant-mapping-handler-unit-test"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^components/default-tenant-mapping-handler/.*\.go$'
       optional: true
       skip_report: false
       decorate: true
@@ -91,7 +125,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/connector && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "cd components/default-tenant-mapping-handler && go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
             resources:
               requests:
                 memory: 6Gi
@@ -99,20 +133,20 @@ presubmits: # runs on PRs
               limits:
                 memory: 6Gi
                 cpu: 3
-  
+
 postsubmits: # runs on main
   kyma-incubator/compass:
-    - name: post-connector-build
+    - name: post-default-tenant-mapping-handler-build
       annotations:
-        description: "Building Connector Compass component after merge"
+        description: "Building Default Tenant Mapping Handler Compass component after merge"
         owner: "compass"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-connector-build"
+        prow.k8s.io/pubsub.runID: "post-default-tenant-mapping-handler-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/connector/'
+      run_if_changed: "^components/default-tenant-mapping-handler/"
       skip_report: false
       decorate: true
       decoration_config:
@@ -135,9 +169,9 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=incubator/compass-connector"
+              - "--name=incubator/compass-default-tenant-mapping-handler"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/connector"
+              - "--context=components/default-tenant-mapping-handler"
               - "--dockerfile=Dockerfile"
               - "--platform=linux/amd64"
               - "--platform=linux/arm64"
@@ -168,4 +202,3 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-  
