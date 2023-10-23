@@ -39,7 +39,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231020-6795e86c
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231020-cd787c4d
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -138,7 +138,7 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-eventing-module-build
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231020-6795e86c
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231020-cd787c4d
                   annotations:
                     owner: skydivingtunas
                     description: Eventing module build pre-main job
@@ -165,7 +165,7 @@ templates:
                     - job_default
               - jobConfig:
                   name: post-eventing-module-build
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231020-6795e86c
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231020-cd787c4d
                   annotations:
                     owner: skydivingtunas
                     description: Eventing module build post-main job
