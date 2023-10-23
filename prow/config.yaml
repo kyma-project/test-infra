@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231016-8c65fa17
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231016-8c65fa17
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231016-8c65fa17
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231016-8c65fa17
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231023-ede1a10a
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231023-ede1a10a
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231023-ede1a10a
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231023-ede1a10a
         resources:
           clonerefs:
             requests:
