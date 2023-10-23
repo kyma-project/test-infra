@@ -18,7 +18,7 @@ presubmits: # runs on PRs
         - ^ui5$
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20231020-6795e86c
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20231020-cd787c4d
             securityContext:
               privileged: false
               seccompProfile:
