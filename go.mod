@@ -17,7 +17,7 @@ require (
 	github.com/containerd/containerd v1.7.7
 	github.com/containerd/typeurl/v2 v2.1.1
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsnotify/fsnotify v1.6.0
+	github.com/fsnotify/fsnotify v1.7.0
 	github.com/fsouza/go-dockerclient v1.10.0
 	github.com/go-playground/validator/v10 v10.15.5
 	github.com/google/go-containerregistry v0.16.1
