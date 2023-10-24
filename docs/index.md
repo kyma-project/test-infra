@@ -6,6 +6,8 @@
 
 [Cleanup of service account secrets](/cmd/cloud-run/service-account-keys-cleaner/README.md) - The Cloud Run service deletes old keys for a GCP service account and updates the required secret data for all service account secrets stored in the Secret Manager. The service is triggered by a Cloud Scheduler job.
 
+[Automated Approver](/cmd/external-plugins/automated-approver/README.md) - With the Automated Approver tool, you can automatically approve pull requests based on the rules you define. The tool enables automation of the approval process for pull requests in repositories that need reviews before merge. The tool automates the PR review process without limiting user write permission on the repository. It can provide an automated review process for all pull request authors.
+
 [gardener-rotate](/cmd/gardener-rotate/README.md) - The gardener-rotate tool allows you to generate a new access token for the Gardener service accounts and update kubeconfig stored in the Secret Manager.
 
 [image-builder](/cmd/image-builder/README.md) - This tool serves as an intelligent wrapper for `kaniko-project/executor`. It reduces the complexity of building Docker images and removes the need of using Docker in Docker when building images in K8s infrastructure.
@@ -60,7 +62,7 @@
 
 [PR Tag Builder](/development/tools/pkg/prtagbuilder/README.md) - PR Tag Builder is a tool that finds a pull request number for a commit.
 
-/development/tools/pkg/release/change-record.md[Documentation guidelines](/docs/documentation_guidelines.md) - 1. Each repository must contain an automatically updated index page in `docs` directory.
+/development/tools/pkg/release/change-record.md[Documentation guidelines](/docs/documentation_guidelines.md) - 1. Each repository must contain an automatically updated index page in the `docs` directory.
 
 [Documentation](/docs/how-to/ado/README.md) - The folder contains documents that provide an insight into Azure DevOps (ADO) configuration, development, and testing.
 
