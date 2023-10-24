@@ -301,6 +301,32 @@ branch-protection:
               - "run-e2e-tests / run-e2e-tests"
               - "markdown-link-check"
               - "validate-labels"
+        lifecycle-manager:
+          required_status_checks:
+            contexts:
+              - "E2E (kyma-deletion)"
+              - "E2E (kyma-metrics)"
+              - "E2E (module-status-propagation)"
+              - "E2E (module-without-default-cr)"
+              - "E2E (non-blocking-deletion)"
+              - "E2E (purge-controller)"
+              - "E2E (purge-metrics)"
+              - "E2E (watcher-enqueue)"
+              - "Run 'make test'"
+              - "kyma (unstable) alpha deploy -k config/control-plane"
+              - "kyma (unstable) alpha deploy -k config/default"
+              - "lint"
+              - "Kustomize (dry-run)"
+              - "Kustomize (dry-run-control-plane)"
+        cli:
+          required_status_checks:
+            contexts:
+              - "Run E2E tests (create_module_kubebuilder_project)"
+              - "Run E2E tests (create_module_module_config)"
+              - "Run E2E tests (test-kubebuilder-module-creation)"
+              - "Run E2E tests (test-moduleconfig-module-creation)"
+              - "Run E2E tests (test-same-version-module-creation)"
+              - "lint"
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
