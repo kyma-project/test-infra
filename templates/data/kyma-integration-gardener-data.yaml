@@ -13,8 +13,6 @@ templates:
           jobConfig_default:
             request_memory: 1Gi
             request_cpu: 400m
-            labels:
-              preset-debug-commando-oom: "true"
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231020-cd787c4d
           jobConfig_buildpack_node:
             image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231020-cd787c4d"
@@ -142,8 +140,6 @@ templates:
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231020-cd787c4d
             request_memory: 1Gi
             request_cpu: 400m
-            labels:
-              preset-debug-commando-oom: "true"
           jobConfig_buildpack_node:
             image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231020-cd787c4d"
             request_memory: 1Gi

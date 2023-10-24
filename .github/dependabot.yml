@@ -95,18 +95,6 @@ updates:
       prefix: "clonerefs"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/prow/images/debug-commando"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "debug-commando"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/prow/images/kyma-integration"
     labels:
       - "docker"

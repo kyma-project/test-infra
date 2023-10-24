@@ -35,7 +35,7 @@ postsubmits: # runs on main
             command:
               - "/ko-app/markdown-index"
             args:
-              - "--config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml"
+              - "--config=configs/autobump-config/test-infra-markdown-index-autobump-config.yaml"
               - "--labels-override=kind/chore,area/documentation"
     - name: post-test-infra-image-detector-autobump
       annotations:
@@ -72,7 +72,7 @@ postsubmits: # runs on main
               - "--terraform-dir=configs/terraform"
               - "--sec-scanner-config=sec-scanners-config.yaml"
               - "--kubernetes-dir=prow/cluster/components"
-              - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
+              - "--autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml"
               - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: post-test-infra-deploy-prow
       annotations:
@@ -210,7 +210,7 @@ periodics: # runs on schedule
             command:
               - "generic-autobumper"
             args:
-              - "--config=prow/autobump-config/prow-cluster-autobump-config.yaml"
+              - "--config=configs/autobump-config/prow-cluster-autobump-config.yaml"
               - "--labels-override=kind/chore,area/prow"
     - name: test-infra-image-detector-autobump
       annotations:
@@ -249,7 +249,7 @@ periodics: # runs on schedule
               - "--terraform-dir=configs/terraform"
               - "--sec-scanner-config=sec-scanners-config.yaml"
               - "--kubernetes-dir=prow/cluster/components"
-              - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
+              - "--autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml"
               - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: ci-prow-autobump-jobs
       annotations:
@@ -283,7 +283,7 @@ periodics: # runs on schedule
             command:
               - "generic-autobumper"
             args:
-              - "--config=prow/autobump-config/test-infra-autobump-config.yaml"
+              - "--config=configs/autobump-config/test-infra-autobump-config.yaml"
               - "--labels-override=skip-review,area/ci,kind/chore"
     - name: ci-dockerhub-autobump
       annotations:
@@ -317,6 +317,6 @@ periodics: # runs on schedule
             command:
               - "generic-autobumper"
             args:
-              - "--config=prow/autobump-config/dockerhub-autobump.yaml"
+              - "--config=configs/autobump-config/dockerhub-autobump.yaml"
               - "--labels-override=skip-review,area/ci,kind/chore"
   

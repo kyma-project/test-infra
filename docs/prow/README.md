@@ -11,8 +11,7 @@ Read the documents to learn how to:
 - [Install and manage monitoring](./prow-monitoring.md) on a Prow cluster.
 - [Create, modify, and remove component jobs using templates](./manage-component-jobs-with-templates.md) for the Prow pipeline.
 - [Update](./prow-cluster-update.md) a Prow cluster.
-- [Test scripts and Prow Jobs](../../development/tools/cmd/pjtester/README.md).
-- [Troubleshoot oom events](../../prow/scripts/resources/README.md)
+- [Test scripts and Prow Jobs](../../cmd/tools/pjtester/README.md).
 - [QuickStart with Prow Jobs](./prow-jobs-quick-start.md)
 
 Find out more about:

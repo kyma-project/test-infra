@@ -85,7 +85,7 @@ templates:
                   image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a
                   command: generic-autobumper
                   args:
-                    - --config=prow/autobump-config/prow-cluster-autobump-config.yaml
+                    - --config=configs/autobump-config/prow-cluster-autobump-config.yaml
                     - --labels-override=kind/chore,area/prow
                 inheritedConfigs:
                   local:
@@ -110,7 +110,7 @@ templates:
                     - --terraform-dir=configs/terraform
                     - --sec-scanner-config=sec-scanners-config.yaml
                     - --kubernetes-dir=prow/cluster/components
-                    - --autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml
+                    - --autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml
                     - --inrepo-config=prow/image-detector/inrepo-config.yaml
                 inheritedConfigs:
                   local:
@@ -136,7 +136,7 @@ templates:
                   type_postsubmit: "true"
                   command: /ko-app/markdown-index
                   args:
-                    - --config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml
+                    - --config=configs/autobump-config/test-infra-markdown-index-autobump-config.yaml
                     - --labels-override=kind/chore,area/documentation
                 inheritedConfigs:
                   local:
@@ -166,7 +166,7 @@ templates:
                     - --terraform-dir=configs/terraform
                     - --sec-scanner-config=sec-scanners-config.yaml
                     - --kubernetes-dir=prow/cluster/components
-                    - --autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml
+                    - --autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml
                     - --inrepo-config=prow/image-detector/inrepo-config.yaml
                 inheritedConfigs:
                   local:
@@ -210,7 +210,7 @@ templates:
                   image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a
                   command: generic-autobumper
                   args:
-                    - --config=prow/autobump-config/test-infra-autobump-config.yaml
+                    - --config=configs/autobump-config/test-infra-autobump-config.yaml
                     - --labels-override=skip-review,area/ci,kind/chore
                 inheritedConfigs:
                   local:
@@ -231,7 +231,7 @@ templates:
                   image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a
                   command: generic-autobumper
                   args:
-                    - --config=prow/autobump-config/dockerhub-autobump.yaml
+                    - --config=configs/autobump-config/dockerhub-autobump.yaml
                     - --labels-override=skip-review,area/ci,kind/chore
                 inheritedConfigs:
                   local:
