@@ -806,14 +806,14 @@ periodics: # runs on schedule
                 cpu: 400m
   
 #-------------Release-----------------------------
-    - name: kyma-2.17-whitesource-scan
+    - name: kyma-2.19-whitesource-scan
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-2.17-whitesource-scan"
+        prow.k8s.io/pubsub.runID: "kyma-2.19-whitesource-scan"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
@@ -829,7 +829,7 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: kyma
-          base_ref: release-2.17
+          base_ref: release-2.19
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231020-cd787c4d"
@@ -856,14 +856,14 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: cli-2.17-whitesource-scan
+    - name: cli-2.19-whitesource-scan
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "cli-2.17-whitesource-scan"
+        prow.k8s.io/pubsub.runID: "cli-2.19-whitesource-scan"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
@@ -879,7 +879,7 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: cli
-          base_ref: release-2.17
+          base_ref: release-2.19
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231020-cd787c4d"
@@ -909,14 +909,14 @@ periodics: # runs on schedule
   
 
 #-------------Previous Release--------------------
-    - name: kyma-2.16-whitesource-scan
+    - name: kyma-2.18-whitesource-scan
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-2.16-whitesource-scan"
+        prow.k8s.io/pubsub.runID: "kyma-2.18-whitesource-scan"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
@@ -932,7 +932,7 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: kyma
-          base_ref: release-2.16
+          base_ref: release-2.18
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231020-cd787c4d"
@@ -959,14 +959,14 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: cli-2.16-whitesource-scan
+    - name: cli-2.18-whitesource-scan
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "cli-2.16-whitesource-scan"
+        prow.k8s.io/pubsub.runID: "cli-2.18-whitesource-scan"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
@@ -982,7 +982,7 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: cli
-          base_ref: release-2.16
+          base_ref: release-2.18
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231020-cd787c4d"
