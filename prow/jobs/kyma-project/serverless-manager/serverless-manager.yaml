@@ -599,7 +599,7 @@ presubmits: # runs on PRs
               - "sh"
             args:
               - "-c"
-              - "mkdir -p module-chart && cp -r config/serverless/* module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile"
+              - "/image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=components/operator/Dockerfile"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -608,8 +608,6 @@ presubmits: # runs on PRs
                 memory: 1.5Gi
                 cpu: 1
             volumeMounts:
-              - name: module-chart
-                mountPath: /home/prow/go/src/github.com/kyma-project/serverless-manager/module-chart
               - name: share
                 mountPath: /home/user/.local/share/buildkit
               - name: config
@@ -619,7 +617,6 @@ presubmits: # runs on PRs
                 mountPath: /secret
                 readOnly: true
         volumes:
-          - name: module-chart
           - name: share
           - name: config
             configMap:
@@ -1147,7 +1144,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "mkdir -p module-chart && cp -r config/serverless/* module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_REF"
+              - "/image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=components/operator/Dockerfile --tag=$PULL_BASE_REF"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -1156,8 +1153,6 @@ postsubmits: # runs on main
                 memory: 1.5Gi
                 cpu: 1
             volumeMounts:
-              - name: module-chart
-                mountPath: /home/prow/go/src/github.com/kyma-project/serverless-manager/module-chart
               - name: share
                 mountPath: /home/user/.local/share/buildkit
               - name: config
@@ -1167,7 +1162,6 @@ postsubmits: # runs on main
                 mountPath: /secret
                 readOnly: true
         volumes:
-          - name: module-chart
           - name: share
           - name: config
             configMap:
@@ -1287,7 +1281,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "mkdir -p module-chart && cp -r config/serverless/* module-chart && /image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=Dockerfile --tag=$PULL_BASE_SHA"
+              - "/image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=components/operator/Dockerfile --tag=$PULL_BASE_SHA"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -1296,8 +1290,6 @@ postsubmits: # runs on main
                 memory: 1.5Gi
                 cpu: 1
             volumeMounts:
-              - name: module-chart
-                mountPath: /home/prow/go/src/github.com/kyma-project/serverless-manager/module-chart
               - name: share
                 mountPath: /home/user/.local/share/buildkit
               - name: config
@@ -1307,7 +1299,6 @@ postsubmits: # runs on main
                 mountPath: /secret
                 readOnly: true
         volumes:
-          - name: module-chart
           - name: share
           - name: config
             configMap:
