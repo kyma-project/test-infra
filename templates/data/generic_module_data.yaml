@@ -134,7 +134,7 @@ templates:
                   optional: "true"
                   args:
                     - "-c"
-                    - "golangci-lint run --timeout=2m && echo 'OK!'"
+                    - "golangci-lint run --timeout=15m && echo 'OK!'"
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -677,7 +677,7 @@ templates:
                   command: "/bin/sh"
                   args:
                     - "-c"
-                    - "cd components/serverless && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+                    - "cd components/serverless && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=15m"
                   run_if_changed: '^components/serverless/(.*\.go$|.golangcilint.yaml)'
                 inheritedConfigs:
                   global:

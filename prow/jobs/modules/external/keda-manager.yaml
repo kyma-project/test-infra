@@ -31,7 +31,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "golangci-lint run --timeout=2m && echo 'OK!'"
+              - "golangci-lint run --timeout=15m && echo 'OK!'"
             resources:
               requests:
                 memory: 3Gi
