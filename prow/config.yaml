@@ -275,6 +275,10 @@ branch-protection:
           branches:
             ui5:
               protect: false
+        price-calculator:
+          branches:
+            gh-pages:
+              protect: false
         k8s-prow:
           protect: true
           required_status_checks:
