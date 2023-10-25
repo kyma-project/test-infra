@@ -485,7 +485,7 @@ presubmits: # runs on PRs
               - "/bin/sh"
             args:
               - "-c"
-              - "cd components/serverless && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=5m"
+              - "cd components/serverless && golangci-lint run --new-from-rev=$PULL_BASE_SHA ./... --timeout=15m"
             resources:
               requests:
                 memory: 200Mi
