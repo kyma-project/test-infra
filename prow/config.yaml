@@ -317,11 +317,9 @@ branch-protection:
               - "E2E (purge-metrics)"
               - "E2E (watcher-enqueue)"
               - "Run 'make test'"
-              - "kyma (unstable) alpha deploy -k config/control-plane"
               - "kyma (unstable) alpha deploy -k config/default"
               - "lint"
               - "Kustomize (dry-run)"
-              - "Kustomize (dry-run-control-plane)"
         cli:
           required_status_checks:
             contexts:
