@@ -3,6 +3,7 @@ pjConfigs:
     kyma-project:
       kyma-environment-broker:
         - pjName: "skr-trial-integration-dev"
+        - pjName: "skr-aws-integration-dev"
 
 prConfigs:
   kyma-project:
