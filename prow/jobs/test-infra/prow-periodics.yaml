@@ -201,7 +201,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231016-8c65fa17"
             securityContext:
               privileged: false
               seccompProfile:
@@ -274,7 +274,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231016-8c65fa17"
             securityContext:
               privileged: false
               seccompProfile:
@@ -308,7 +308,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231016-8c65fa17"
             securityContext:
               privileged: false
               seccompProfile:
