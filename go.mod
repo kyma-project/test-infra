@@ -28,7 +28,7 @@ require (
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.4.0
 	github.com/onsi/ginkgo/v2 v2.13.0
-	github.com/onsi/gomega v1.28.1
+	github.com/onsi/gomega v1.29.0
 	github.com/pkg/errors v0.9.1
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
 	github.com/sirupsen/logrus v1.9.3
@@ -50,7 +50,7 @@ require (
 	k8s.io/apimachinery v0.27.2
 	k8s.io/client-go v0.27.2
 	k8s.io/test-infra v0.0.0-20230719172213-72ce78578482
-	sigs.k8s.io/yaml v1.3.0
+	sigs.k8s.io/yaml v1.4.0
 )
 
 require (

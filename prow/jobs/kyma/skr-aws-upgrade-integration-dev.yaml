@@ -36,7 +36,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231020-cd787c4d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231025-a006e676"
             securityContext:
               privileged: false
               seccompProfile:
@@ -47,6 +47,8 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
+              - name: KEB_REGION
+                value: "eu-central-1"
               - name: KYMA_PROJECT_DIR
                 value: "/home/prow/go/src/github.com/kyma-project"
               - name: SKIP_CLEANUP
