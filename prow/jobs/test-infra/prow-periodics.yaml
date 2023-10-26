@@ -26,7 +26,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231013-90555b09"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231025-1c6a076e"
             securityContext:
               privileged: false
               seccompProfile:
@@ -35,7 +35,7 @@ postsubmits: # runs on main
             command:
               - "/ko-app/markdown-index"
             args:
-              - "--config=prow/markdown-index/test-infra-markdown-index-autobump-config.yaml"
+              - "--config=configs/autobump-config/test-infra-markdown-index-autobump-config.yaml"
               - "--labels-override=kind/chore,area/documentation"
     - name: post-test-infra-image-detector-autobump
       annotations:
@@ -58,7 +58,7 @@ postsubmits: # runs on main
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231013-90555b09"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231025-1c6a076e"
             securityContext:
               privileged: false
               seccompProfile:
@@ -72,7 +72,7 @@ postsubmits: # runs on main
               - "--terraform-dir=configs/terraform"
               - "--sec-scanner-config=sec-scanners-config.yaml"
               - "--kubernetes-dir=prow/cluster/components"
-              - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
+              - "--autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml"
               - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: post-test-infra-deploy-prow
       annotations:
@@ -96,7 +96,7 @@ postsubmits: # runs on main
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231011-ae6be62f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231025-a006e676"
             securityContext:
               privileged: false
               seccompProfile:
@@ -127,7 +127,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231016-8c65fa17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -154,7 +154,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:v20231016-8c65fa17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:v20231023-ede1a10a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -201,7 +201,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231016-8c65fa17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -210,7 +210,7 @@ periodics: # runs on schedule
             command:
               - "generic-autobumper"
             args:
-              - "--config=prow/autobump-config/prow-cluster-autobump-config.yaml"
+              - "--config=configs/autobump-config/prow-cluster-autobump-config.yaml"
               - "--labels-override=kind/chore,area/prow"
     - name: test-infra-image-detector-autobump
       annotations:
@@ -235,7 +235,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231013-90555b09"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231025-1c6a076e"
             securityContext:
               privileged: false
               seccompProfile:
@@ -249,7 +249,7 @@ periodics: # runs on schedule
               - "--terraform-dir=configs/terraform"
               - "--sec-scanner-config=sec-scanners-config.yaml"
               - "--kubernetes-dir=prow/cluster/components"
-              - "--autobump-config=prow/image-detector/test-infra-sec-config-autobump-config.yaml"
+              - "--autobump-config=configs/autobump-config/test-infra-sec-config-autobump-config.yaml"
               - "--inrepo-config=prow/image-detector/inrepo-config.yaml"
     - name: ci-prow-autobump-jobs
       annotations:
@@ -274,7 +274,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231016-8c65fa17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -283,7 +283,7 @@ periodics: # runs on schedule
             command:
               - "generic-autobumper"
             args:
-              - "--config=prow/autobump-config/test-infra-autobump-config.yaml"
+              - "--config=configs/autobump-config/test-infra-autobump-config.yaml"
               - "--labels-override=skip-review,area/ci,kind/chore"
     - name: ci-dockerhub-autobump
       annotations:
@@ -308,7 +308,7 @@ periodics: # runs on schedule
           channel: kyma-prow-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231016-8c65fa17"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -317,6 +317,6 @@ periodics: # runs on schedule
             command:
               - "generic-autobumper"
             args:
-              - "--config=prow/autobump-config/dockerhub-autobump.yaml"
+              - "--config=configs/autobump-config/dockerhub-autobump.yaml"
               - "--labels-override=skip-review,area/ci,kind/chore"
   

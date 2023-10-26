@@ -43,40 +43,6 @@ templates:
             annotations:
               testgrid-create-test-group: "false"
         jobConfigs:
-          - repoName: "github.com/kyma-project/test-infra"
-            jobs:
-              - jobConfig:
-                  name: "pre-test-infra-whitesource-scanner"
-                  annotations:
-                    description: "Build test-infra/whitesource-scanner image"
-                    owner: neighbors
-                  run_if_changed: "^prow/images/whitesource-scanner/"
-                  args:
-                    - "--name=test-infra/whitesource-scanner"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=prow/images/whitesource-scanner"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  local:
-                    - "default"
-                    - "presubmit"
-              - jobConfig:
-                  name: "post-test-infra-whitesource-scanner"
-                  annotations:
-                    description: "Build test-infra/whitesource-scanner image"
-                    owner: neighbors
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^prow/images/whitesource-scanner/"
-                  args:
-                    - "--name=test-infra/whitesource-scanner"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=prow/images/whitesource-scanner"
-                    - "--dockerfile=Dockerfile"
-                inheritedConfigs:
-                  local:
-                    - "default"
-                    - "postsubmit"
               - jobConfig:
                   name: "pre-test-infra-golangci-lint"
                   annotations:

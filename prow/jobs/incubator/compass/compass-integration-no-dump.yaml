@@ -23,13 +23,14 @@ presubmits: # runs on PRs
         - ^master$
         - ^main$
         - ^hotfix-.*$
+        - ^release-.*$
       extra_refs:
         - org: kyma-project
           repo: test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231011-ae6be62f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231025-a006e676"
             securityContext:
               privileged: true
               seccompProfile:

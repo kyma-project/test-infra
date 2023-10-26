@@ -5,7 +5,7 @@ go 1.19
 require (
 	cloud.google.com/go/bigquery v1.56.0
 	cloud.google.com/go/compute/metadata v0.2.3
-	cloud.google.com/go/firestore v1.13.0
+	cloud.google.com/go/firestore v1.14.0
 	cloud.google.com/go/kms v1.15.3
 	cloud.google.com/go/logging v1.8.1
 	cloud.google.com/go/pubsub v1.33.0
@@ -17,7 +17,7 @@ require (
 	github.com/containerd/containerd v1.7.7
 	github.com/containerd/typeurl/v2 v2.1.1
 	github.com/forestgiant/sliceutil v0.0.0-20160425183142-94783f95db6c
-	github.com/fsnotify/fsnotify v1.6.0
+	github.com/fsnotify/fsnotify v1.7.0
 	github.com/fsouza/go-dockerclient v1.10.0
 	github.com/go-playground/validator/v10 v10.15.5
 	github.com/google/go-containerregistry v0.16.1
@@ -28,7 +28,7 @@ require (
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.4.0
 	github.com/onsi/ginkgo/v2 v2.13.0
-	github.com/onsi/gomega v1.28.0
+	github.com/onsi/gomega v1.29.0
 	github.com/pkg/errors v0.9.1
 	github.com/shurcooL/githubv4 v0.0.0-20211117020012-5800b9de5b8b
 	github.com/sirupsen/logrus v1.9.3
@@ -43,14 +43,14 @@ require (
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9
 	golang.org/x/net v0.17.0
 	golang.org/x/oauth2 v0.13.0
-	google.golang.org/api v0.147.0
-	google.golang.org/grpc v1.58.3
+	google.golang.org/api v0.148.0
+	google.golang.org/grpc v1.59.0
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/api v0.27.2
 	k8s.io/apimachinery v0.27.2
 	k8s.io/client-go v0.27.2
 	k8s.io/test-infra v0.0.0-20230719172213-72ce78578482
-	sigs.k8s.io/yaml v1.3.0
+	sigs.k8s.io/yaml v1.4.0
 )
 
 require (
@@ -126,7 +126,7 @@ require (
 	github.com/google/btree v1.0.1 // indirect
 	github.com/google/flatbuffers v2.0.8+incompatible // indirect
 	github.com/google/gnostic v0.6.9 // indirect
-	github.com/google/go-cmp v0.5.9 // indirect
+	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/gofuzz v1.2.1-0.20210504230335-f78f29fc09ea // indirect
 	github.com/google/pprof v0.0.0-20210720184732-4bb14d4b1be1 // indirect
 	github.com/google/s2a-go v0.1.7 // indirect
@@ -231,7 +231,7 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20231002182017-d307bd883b97 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20231002182017-d307bd883b97 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20231009173412-8bfb1ae86b6c // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20231012201019-e917dd12ba7a // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect

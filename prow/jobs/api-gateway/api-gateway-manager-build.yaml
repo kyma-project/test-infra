@@ -18,7 +18,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^mod-dev$
+        - ^main$
+        - ^release-\d+\.\d+(-.*)?$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -68,10 +69,11 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^mod-dev$
+        - ^main$
+        - ^release-\d+\.\d+(-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-ae6be62f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231025-a006e676"
             securityContext:
               privileged: false
               seccompProfile:
@@ -101,7 +103,7 @@ postsubmits: # runs on main
   kyma-project/api-gateway:
     - name: post-api-gateway-module-build
       annotations:
-        description: "API Gateway Manager template image build on mod-dev branch"
+        description: "API Gateway Manager template image build on main branch"
         owner: "goat"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -115,13 +117,13 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^mod-dev$
+        - ^main$
       reporter_config:
         slack:
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-ae6be62f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231025-a006e676"
             securityContext:
               privileged: false
               seccompProfile:
@@ -160,13 +162,13 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\d+\.\d+\.\d+-dev(?:-.*)?$
+        - ^\d+\.\d+\.\d+(?:-.*)?$
       reporter_config:
         slack:
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231011-ae6be62f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231025-a006e676"
             securityContext:
               privileged: false
               seccompProfile:
@@ -206,7 +208,7 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^mod-dev$
+        - ^main$
       reporter_config:
         slack:
           channel: goat-int
@@ -259,7 +261,7 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\d+\.\d+\.\d+-dev(?:-.*)?$
+        - ^\d+\.\d+\.\d+(?:-.*)?$
       reporter_config:
         slack:
           channel: goat-int

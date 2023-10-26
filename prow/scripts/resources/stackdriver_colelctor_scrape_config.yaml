@@ -1,3 +1,0 @@
-- job_name: stackdriver-collector
-  static_configs:
-    - targets: ["localhost:9091"]
