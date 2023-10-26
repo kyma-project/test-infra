@@ -10,7 +10,6 @@ templates:
                 type: RuntimeDefault
             optional: "false"
             labels:
-              preset-debug-commando-oom: "true"
               preset-kyma-guard-bot-github-token: "true"
           job_post:
             slack_channel: goat-int

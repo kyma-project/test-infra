@@ -293,7 +293,7 @@ templates:
                   image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a
                   command: generic-autobumper
                   args:
-                    - --config=/home/prow/go/src/github.com/kyma-project/test-infra/prow/autobump-config/control-plane-autobump-reconciler-config.yaml
+                    - --config=/home/prow/go/src/github.com/kyma-project/test-infra/configs/autobump-config/control-plane-autobump-reconciler-config.yaml
                   cron: "0 1-22/4 * * 1-5" # "At minute 0 past every 2nd hour from 1 through 22 on every day-of-week from Monday through Friday."
                   labels:
                     preset-log-collector-slack-token: "true"
