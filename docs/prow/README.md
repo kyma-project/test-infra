@@ -18,7 +18,6 @@ Read the documents to learn how to:
 Find out more about:
 
 - [Prow architecture](./prow-architecture.md) and its setup in the Kyma project.
-- [Prow Jobs on TestGrid](./prow-k8s-testgrid.md) for details on how to add jobs to the TestGrid dashboard.
 - [Prow test clusters](./test-clusters.md) for details on permissions for tests clusters.
 - [Obligatory security measures](./obligatory-security-measures.md) to take regularly for the Prow production cluster and when someone leaves the Kyma project.
 - [Presets](./presets.md) you can use to define Prow jobs.
