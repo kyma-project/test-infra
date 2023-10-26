@@ -320,6 +320,7 @@ branch-protection:
               - "kyma (unstable) alpha deploy -k config/default"
               - "lint"
               - "Kustomize (dry-run)"
+              - "Kustomize (dry-run-control-plane)"
         cli:
           required_status_checks:
             contexts:
