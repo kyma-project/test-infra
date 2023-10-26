@@ -124,13 +124,13 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\d+\.\d+\.\d+(?:-.*)?$
+        - ^\d+\.\d+\.\d+$
       reporter_config:
         slack:
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231020-6795e86c"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231025-a006e676"
             securityContext:
               privileged: false
               seccompProfile:

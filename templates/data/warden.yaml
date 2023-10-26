@@ -7,7 +7,7 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231020-6795e86c"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231025-a006e676"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -78,6 +78,50 @@ templates:
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: pre-warden-module-build
+                  annotations:
+                    owner: otters
+                    description: warden module build job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+                    MODULE_SHA: "PR-${PULL_NUMBER}"
+                  run_if_changed: "^\\.env$|^(go\\.mod|go\\.sum)$|^(.*/)?(.*\\.go|Makefile|.*\\.sh|.*\\.yaml|Dockerfile)$|^PROJECT$"
+                  command: "make"
+                  args:
+                    - "ci-module-build"
+                  branches:
+                    - ^main$
+                    - ^release-.*$
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-warden-module-build
+                  annotations:
+                    owner: otters
+                    description: warden module build job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    MODULE_SHA: "${PULL_BASE_SHA}"
+                  run_if_changed: "^\\.env$|^(go\\.mod|go\\.sum)$|^(.*/)?(.*\\.go|Makefile|.*\\.sh|.*\\.yaml|Dockerfile)$|^PROJECT$"
+                  command: "make"
+                  args:
+                    - "ci-module-build"
+                  branches:
+                    - ^main$
+                    - ^release-.*$
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
                     - jobConfig_postsubmit
               - jobConfig:
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
