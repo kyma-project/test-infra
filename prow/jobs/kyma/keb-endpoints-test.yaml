@@ -36,6 +36,8 @@ periodics: # runs on schedule
               - "testing/e2e/skr"
               - "keb-endpoints"
             env:
+              - name: KEB_PLATFORM_REGION
+                value: "cf-eu10"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:
