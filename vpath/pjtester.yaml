@@ -2,7 +2,9 @@ pjConfigs:
   prowJobs:
     kyma-project:
       kyma-environment-broker:
+        - pjName: "skr-trial-integration-dev"
         - pjName: "skr-aws-integration-dev"
+        - pjName: "keb-endpoints-test"
 
 prConfigs:
   kyma-project:
