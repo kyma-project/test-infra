@@ -19,3 +19,4 @@ filesToFilter:
   - "/index.md"
   - "/docs/index.md"
   - "/test-inventory-integration.md"
+  - "/pkg/tools/release/change-record.md"
