@@ -326,8 +326,6 @@ branch-protection:
         cli:
           required_status_checks:
             contexts:
-              - "Run E2E tests (create_module_kubebuilder_project)"
-              - "Run E2E tests (create_module_module_config)"
               - "Run E2E tests (test-kubebuilder-module-creation)"
               - "Run E2E tests (test-moduleconfig-module-creation)"
               - "Run E2E tests (test-same-version-module-creation)"
