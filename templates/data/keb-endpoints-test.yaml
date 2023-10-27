@@ -1,7 +1,7 @@
 templates:
   - fromTo:
       - from: generic.tmpl
-        to: ../../prow/jobs/kyma/keb-endpoints-test.yaml
+        to: ../../prow/jobs/kyma-project/kyma-environment-broker/keb-endpoints-test.yaml
     render:
       - localSets:
           jobConfig_default:

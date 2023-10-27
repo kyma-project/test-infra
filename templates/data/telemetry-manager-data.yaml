@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/telemetry-manager/telemetry-manager-generic.yaml
+      - to: ../../prow/jobs/kyma-project/telemetry-manager/telemetry-manager-generic.yaml
         localSets:
           job_default:
             securityContext:

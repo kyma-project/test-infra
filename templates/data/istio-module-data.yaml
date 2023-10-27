@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/istio/istio-manager.yaml
+      - to: ../../prow/jobs/kyma-project/istio/istio-manager.yaml
         localSets:
           job_default:
             optional: "false"
