@@ -11,3 +11,8 @@ pjConfigs:
       - pjName: "skr-preview-dev"
       - pjName: "skr-aws-upgrade-integration-dev"
       - pjName: "skr-azure-integration-dev"
+
+prConfigs:
+  kyma-project:
+    kyma-environment-broker:
+      prNumber: 127
