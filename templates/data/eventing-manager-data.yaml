@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/eventing-manager/eventing-manager-generic.yaml
+      - to: ../../prow/jobs/kyma-project/eventing-manager/eventing-manager-generic.yaml
         localSets:
           job_build:
             skip_report: "false"

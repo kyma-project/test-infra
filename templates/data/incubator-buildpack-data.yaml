@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/incubator/hydroform/hydroform.yaml
+      - to: ../../prow/jobs/kyma-project/hydroform/hydroform.yaml
         jobConfigs:
           - repoName: kyma-project/hydroform
             jobs:
@@ -35,7 +35,7 @@ templates:
                     - jobConfig_postsubmit
                     - image_buildpack-golang
                     - disable_testgrid
-      - to: ../../prow/jobs/incubator/reconciler/reconciler.yaml
+      - to: ../../prow/jobs/kyma-incubator/reconciler/reconciler.yaml
         localSets:
           extra_refs_kyma-1-24:
             extra_refs:

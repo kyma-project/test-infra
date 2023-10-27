@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/infrastructure-manager/infrastructure-manager.yaml
+      - to: ../../prow/jobs/kyma-project/infrastructure-manager/infrastructure-manager.yaml
         localSets:
           jobConfig_default:
             imagePullPolicy: "Always"

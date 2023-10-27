@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/modules/external/keda-manager.yaml
+      - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager.yaml
         localSets:
           job_build:
             skip_report: "false"
@@ -306,7 +306,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
-      - to: ../../prow/jobs/modules/internal/serverless-manager.yaml
+      - to: ../../prow/jobs/kyma-project/serverless-manager/serverless-manager.yaml
         localSets:
           job_branches:
             branches:
@@ -951,7 +951,7 @@ templates:
                   local:
                     - dind_job_k3d
                     - job_branches
-      - to: ../../prow/jobs/modules/internal/application-connector-manager.yaml
+      - to: ../../prow/jobs/kyma-project/application-connector-manager/application-connector-manager.yaml
         localSets:
           job_build:
             skip_report: "false"
