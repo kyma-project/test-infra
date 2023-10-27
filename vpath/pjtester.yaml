@@ -1,0 +1,10 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      api-gateway:
+        prNumber: 683
+  prowJobs:
+    kyma-project:
+      api-gateway:
+        - pjName: "post-api-gateway-manager-custom-domain-integration-aws"
+        - pjName: "post-api-gateway-manager-custom-domain-integration-gcp"
