@@ -20,6 +20,7 @@ templates:
           kyma_integration_subaccount:
             env:
               KEB_SUBACCOUNT_ID: "prow-keb-integration"
+              KEB_PLATFORM_REGION: "cf-eu10"
         jobConfigs:
           - repoName: "kyma-project/kyma-environment-broker"
             jobs:
