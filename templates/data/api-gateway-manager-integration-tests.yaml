@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/api-gateway/api-gateway-manager-integration-tests.yaml
+      - to: ../../prow/jobs/kyma-project/api-gateway/api-gateway-manager-integration-tests.yaml
         localSets:
           job_default:
             securityContext:
