@@ -314,6 +314,9 @@ fi
 log::info "Deploying Kyma ${KYMA_SOURCE} with eventingWebhookAuth.enabled=${EVENTING_WEBHOOK_AUTH_ENABLED}"
 gardener::deploy_kyma -p "$EXECUTION_PROFILE" --source "${KYMA_SOURCE}" --value eventing.controller.eventingWebhookAuth.enabled="${EVENTING_WEBHOOK_AUTH_ENABLED}"
 
+log::info "### Installing required modules for eventing"
+eventing::ensure_required_modules_installed
+
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 

@@ -148,6 +148,9 @@ gardener::provision_cluster
 log::info "### Deploying Kyma $KYMA_SOURCE using $EXECUTION_PROFILE profile"
 gardener::deploy_kyma --source "${KYMA_SOURCE}" -p "${EXECUTION_PROFILE}"
 
+log::info "### Installing required modules for eventing"
+eventing::ensure_required_modules_installed
+
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
