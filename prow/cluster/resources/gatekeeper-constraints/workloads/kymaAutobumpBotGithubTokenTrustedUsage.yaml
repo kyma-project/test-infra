@@ -36,25 +36,19 @@ spec:
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["generic-autobumper","--config=prow\/autobump-config\/prow-cluster-autobump-config\.yaml","--labels-override=kind\/chore,area\/prow"\],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":\["generic-autobumper","--config=configs\/autobump-config\/prow-cluster-autobump-config\.yaml","--labels-override=kind\/chore,area\/prow"\],"container_name":"test",.*}$'
       # Prowjob name: ci-prow-autobump-jobs
       - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["generic-autobumper","--config=prow\/autobump-config\/test-infra-autobump-config\.yaml","--labels-override=skip-review,area\/ci,kind\/chore"\],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":\["generic-autobumper","--config=configs\/autobump-config\/test-infra-autobump-config\.yaml","--labels-override=skip-review,area\/ci,kind\/chore"\],"container_name":"test",.*}$'
       # Prowjob name: ci-prow-label-sync
       - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:*"
         command:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["label_sync","--config=\/etc\/config\/labels\.yaml","--confirm=true","--orgs=kyma-project,kyma-incubator","--token=\/etc\/github\/token","--endpoint=http:\/\/ghproxy","--endpoint=https:\/\/api\.github\.com","--debug"\],"container_name":"test",.*}$'
-      # ci-dockerhub-autobump
-      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
-        command:
-          - /tools/entrypoint
-        args: []
-        entrypoint_options: '^{.*"args":\["generic-autobumper","--config=prow\/autobump-config\/dockerhub-autobump\.yaml","--labels-override=skip-review,area\/ci,kind\/chore"\],"container_name":"test",.*}$'
       # ci-k8s-prow-autobump-testimages
       - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
         command:
