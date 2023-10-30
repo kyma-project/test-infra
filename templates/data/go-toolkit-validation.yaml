@@ -98,45 +98,6 @@ templates:
             request_memory: 1Gi
             request_cpu: 100m
         jobConfigs:
-          - repoName: "kyma-project/telemetry-manager"
-            jobs:
-              - jobConfig:
-                  name: "pull-telemetry-manager-lint"
-                  annotations:
-                    owner: huskies
-                    description: runs linting on telemetry-manager repo
-                  request_cpu: 200m
-                  request_memory: 500Mi
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "make lint"
-                  run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.*\.md$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - linting
-                    - "unprivileged"
-              - jobConfig:
-                  name: "pull-telemetry-manager-unit-test"
-                  annotations:
-                    owner: huskies
-                    description: runs unit tests telemetry-manager repo
-                  request_cpu: 200m
-                  request_memory: 1.5Gi
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "make test"
-                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$|Makefile'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
-                    - "unprivileged"
-
           - repoName: "kyma-project/directory-size-exporter"
             jobs:
               - jobConfig:
