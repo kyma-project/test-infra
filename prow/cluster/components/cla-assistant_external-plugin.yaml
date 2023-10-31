@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: cla-assistant
-        image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cla-assistant:v20231030-63aaf534
+        image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cla-assistant:v20231031-cd11b164
         args:
         - --dry-run=false
         - --hmac-secret-file=/etc/webhook/hmac
