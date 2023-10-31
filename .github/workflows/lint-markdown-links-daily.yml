@@ -18,17 +18,17 @@ jobs:
           max-depth: -1
       - name: Send Notification to Slack
         if: ${{ failure() }}
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117
         with:
             payload: |
               {
-                "text": "GitHub Action build result: FAILED\nDetails: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+                "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
                 "blocks": [
                   {
                     "type": "section",
                     "text": {
                       "type": "mrkdwn",
-                      "text": "GitHub Action build result: FAILED\nDetails: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
+                      "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.event.pull_request.html_url || github.event.head_commit.url }}"
                     }
                   }
                 ]
