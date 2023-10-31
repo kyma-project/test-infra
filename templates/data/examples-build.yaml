@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/examples/examples-build.yaml
+      - to: ../../prow/jobs/kyma-project/examples/examples-build.yaml
         localSets:
           job_default:
             optional: "false"

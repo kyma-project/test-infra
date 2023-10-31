@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/third-party-images/third-party-images.yaml
+      - to: ../../prow/jobs/kyma-project/third-party-images/third-party-images.yaml
         localSets:
           increased_resources:
             request_memory: 6Gi

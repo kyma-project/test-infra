@@ -23,32 +23,48 @@ templates:
           keb_plan_azure:
             env:
               KEB_PLAN_ID: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+              KEB_REGION: "eastus"
+              KEB_PLATFORM_REGION: "cf-eu10"
           keb_plan_gcp:
             env:
               KEB_PLAN_ID: "ca6e5357-707f-4565-bbbd-b3ab732597c6"
+              KEB_REGION: "europe-west3"
+              KEB_PLATFORM_REGION: "cf-eu10"
           keb_plan_aws:
             env:
               KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15"
+              KEB_REGION: "eu-central-1"
+              KEB_PLATFORM_REGION: "cf-eu10"
           keb_plan_azure_lite:
             env:
               KEB_PLAN_ID: "8cb22518-aa26-44c5-91a0-e669ec9bf443"
+              KEB_REGION: "eastus"
+              KEB_PLATFORM_REGION: "cf-eu10"
           keb_plan_trial:
             env:
               KEB_PLAN_ID: "7d55d31d-35ae-4438-bf13-6ffdfa107d9f"
+              KEB_REGION: "empty-for-trial"
+              KEB_PLATFORM_REGION: "cf-eu10"
           keb_plan_openstack:
             env:
               KEB_PLAN_ID: "03b812ac-c991-4528-b5bd-08b303523a63"
+              KEB_REGION: "eu-de-2"
+              KEB_PLATFORM_REGION: "cf-eu10"
           keb_plan_free_aws:
             env:
               KEB_PLAN_ID: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
-              KEB_REGION: "cf-eu10"
+              KEB_REGION: "eu-central-1"
+              KEB_PLATFORM_REGION: "cf-eu10"
           keb_plan_free_azure:
             env:
               KEB_PLAN_ID: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
-              KEB_REGION: "cf-eu20"
+              KEB_REGION: "eu-central-1"
+              KEB_PLATFORM_REGION: "cf-eu20"
           keb_plan_preview:
             env:
               KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9"
+              KEB_REGION: "eu-central-1"
+              KEB_PLATFORM_REGION: "cf-eu10"
         jobConfigs:
           - repoName: "kyma-project/kyma-environment-broker"
             jobs:
@@ -59,7 +75,7 @@ templates:
                     owner: gopher
                     description: skr networking integration test AWS
                   cron: "55 1 * * *" # "At 01:55"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231025-a006e676
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231027-3012c81d
                   command: make
                   args:
                     - -C

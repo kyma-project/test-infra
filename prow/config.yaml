@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231023-ede1a10a
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231023-ede1a10a
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231023-ede1a10a
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231023-ede1a10a
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231030-70c8254b
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231030-70c8254b
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231030-70c8254b
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231030-70c8254b
         resources:
           clonerefs:
             requests:
@@ -316,6 +316,7 @@ branch-protection:
               - "E2E (purge-controller)"
               - "E2E (purge-metrics)"
               - "E2E (watcher-enqueue)"
+              - "E2E (module-upgrade)"
               - "Run 'make test'"
               - "kyma (unstable) alpha deploy -k config/control-plane"
               - "kyma (unstable) alpha deploy -k config/default"
@@ -325,8 +326,6 @@ branch-protection:
         cli:
           required_status_checks:
             contexts:
-              - "Run E2E tests (create_module_kubebuilder_project)"
-              - "Run E2E tests (create_module_module_config)"
               - "Run E2E tests (test-kubebuilder-module-creation)"
               - "Run E2E tests (test-moduleconfig-module-creation)"
               - "Run E2E tests (test-same-version-module-creation)"
@@ -489,12 +488,6 @@ presets:
           secretKeyRef:
             name: log-collector-slack-token
             key: token
-  # debug commando
-  - labels:
-      preset-debug-commando-oom: "true"
-    env:
-      - name: DEBUG_COMMANDO_OOM
-        value: "true"
   - labels:
       preset-certificates-bucket: "true"
     env:

@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/slack-bot/slack-bot-build.yaml
+      - to: ../../prow/jobs/kyma-incubator/slack-bot/slack-bot-build.yaml
         jobConfigs:
           - repoName: "github.com/kyma-incubator/slack-bot"
             jobs:

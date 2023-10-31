@@ -2,13 +2,16 @@
 
 ## Overview
 
-Jobs and Prow configuration are generated from templates by the Render Templates tool. Check the [Render Templates documentation](../development/tools/cmd/rendertemplates/README.md) for details about usage.
+Jobs and Prow configuration are generated from templates by the Render Templates tool. Check
+the [Render Templates documentation](../cmd/tools/rendertemplates/README.md) for details about usage.
 
 The `templates` directory has the following structure:
 
-- `data`, which is the subdirectory with files that describe jobs that the [Render Templates](../development/tools/cmd/rendertemplates) tool should generate using job definitions from templates.
+- `data`, which is the subdirectory with files that describe jobs that
+  the [Render Templates](../cmd/tools/rendertemplates) tool should generate using job definitions from templates.
 - `templates` which is the subdirectory with all template files that supply the definition of [Prow jobs](../prow/jobs) used in Kyma.
-- `config.yaml`, which is the configuration file that describes configuration and jobs that the [Render Templates](../development/tools/cmd/rendertemplates) tool should generate using job definitions from templates.
+- `config.yaml`, which is the configuration file that describes configuration and jobs that
+  the [Render Templates](../cmd/tools/rendertemplates) tool should generate using job definitions from templates.
 
 The template list includes:
 
@@ -16,7 +19,6 @@ The template list includes:
 - `kyma-github-release.yaml` that is used for creating the GitHub release after merging the release branch to the `main` branch.
 - `prow-config.yaml` that serves to create the main Prow configuration without job definitions.
 - `releases.go.tmpl` that contains a set of functions for the release which provide the list of currently supported releases and all supported Kyma release branches.
-- `testgrid-default.yaml`, which defines a set of testgrid dashbords.
 - `whitesource-periodics.tmpl`, which defines a set of periodic jobs that run a Whitesource scan.
 
 ### Configuration file

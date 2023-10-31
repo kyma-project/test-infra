@@ -49,7 +49,7 @@ jobs:
 
       - name: Setup Terraform
         id: setup_terraform
-        uses: hashicorp/setup-terraform@v2.0.3
+        uses: hashicorp/setup-terraform@v3.0.0
 
       - name: Setup GitHub comments
         id: setup-github-comment

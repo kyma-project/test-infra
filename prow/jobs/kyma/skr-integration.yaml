@@ -29,7 +29,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231027-3012c81d"
             securityContext:
               privileged: false
               seccompProfile:
@@ -44,6 +44,10 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+              - name: KEB_PLATFORM_REGION
+                value: "cf-eu10"
+              - name: KEB_REGION
+                value: "eastus"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:
@@ -77,7 +81,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231027-3012c81d"
             securityContext:
               privileged: false
               seccompProfile:
@@ -92,6 +96,10 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "8cb22518-aa26-44c5-91a0-e669ec9bf443"
+              - name: KEB_PLATFORM_REGION
+                value: "cf-eu10"
+              - name: KEB_REGION
+                value: "eastus"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:
@@ -126,7 +134,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231027-3012c81d"
             securityContext:
               privileged: false
               seccompProfile:
@@ -141,6 +149,10 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "361c511f-f939-4621-b228-d0fb79a1fe15"
+              - name: KEB_PLATFORM_REGION
+                value: "cf-eu10"
+              - name: KEB_REGION
+                value: "eu-central-1"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:
@@ -174,7 +186,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231027-3012c81d"
             securityContext:
               privileged: false
               seccompProfile:
@@ -189,6 +201,10 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "7d55d31d-35ae-4438-bf13-6ffdfa107d9f"
+              - name: KEB_PLATFORM_REGION
+                value: "cf-eu10"
+              - name: KEB_REGION
+                value: "empty-for-trial"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:
@@ -222,7 +238,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231027-3012c81d"
             securityContext:
               privileged: false
               seccompProfile:
@@ -237,8 +253,10 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
-              - name: KEB_REGION
+              - name: KEB_PLATFORM_REGION
                 value: "cf-eu10"
+              - name: KEB_REGION
+                value: "eu-central-1"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:
@@ -272,7 +290,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231027-3012c81d"
             securityContext:
               privileged: false
               seccompProfile:
@@ -287,6 +305,10 @@ periodics: # runs on schedule
             env:
               - name: KEB_PLAN_ID
                 value: "5cb3d976-b85c-42ea-a636-79cadda109a9"
+              - name: KEB_PLATFORM_REGION
+                value: "cf-eu10"
+              - name: KEB_REGION
+                value: "eu-central-1"
               - name: KEB_SUBACCOUNT_ID
                 value: "prow-keb-integration"
             resources:
