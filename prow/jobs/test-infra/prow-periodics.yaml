@@ -23,7 +23,7 @@ postsubmits: # runs on main
         - ^main$
       reporter_config:
         slack:
-          channel: kyma-prow-alerts
+          channel: kyma-neighbors-alerts
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231030-63aaf534"
@@ -55,7 +55,7 @@ postsubmits: # runs on main
         - ^main$
       reporter_config:
         slack:
-          channel: kyma-prow-alerts
+          channel: kyma-neighbors-alerts
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231030-63aaf534"
@@ -92,7 +92,7 @@ postsubmits: # runs on main
         - ^main$
       reporter_config:
         slack:
-          channel: kyma-prow-alerts
+          channel: kyma-neighbors-alerts
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
@@ -198,7 +198,7 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-prow-alerts
+          channel: kyma-neighbors-alerts
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231030-70c8254b"
@@ -232,7 +232,7 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-prow-alerts
+          channel: kyma-neighbors-alerts
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231030-63aaf534"
@@ -271,7 +271,7 @@ periodics: # runs on schedule
           base_ref: main
       reporter_config:
         slack:
-          channel: kyma-prow-alerts
+          channel: kyma-neighbors-alerts
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231030-70c8254b"
