@@ -210,7 +210,7 @@ templates:
                   image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231030-70c8254b
                   command: generic-autobumper
                   args:
-                    - --config=prow/autobump-config/test-infra-autobump-config.yaml
+                    - --config=configs/autobump-config/test-infra-autobump-config.yaml
                     - --labels-override=skip-review,area/ci,kind/chore
                 inheritedConfigs:
                   local:
