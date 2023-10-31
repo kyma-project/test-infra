@@ -128,7 +128,7 @@ periodics:
         channel: kyma-prow-alerts
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231023-ede1a10a"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231030-70c8254b"
           securityContext:
             privileged: false
             seccompProfile:
