@@ -13,9 +13,9 @@ templates:
           jobConfig_default:
             request_memory: 1Gi
             request_cpu: 400m
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231020-cd787c4d
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231027-3012c81d
           jobConfig_buildpack_node:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231020-cd787c4d"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231027-3012c81d"
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_presubmit:
@@ -137,11 +137,11 @@ templates:
                   repo: "busola"
                   base_ref: "main"
           jobConfig_default:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231020-cd787c4d
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231027-3012c81d
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_buildpack_node:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231020-cd787c4d"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231027-3012c81d"
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_presubmit:
