@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/eventing-webhook/eventing-webhook-certificates-build.yaml
+      - to: ../../prow/jobs/kyma-project/api-gateway/eventing-webhook/eventing-webhook-certificates-build.yaml
         jobConfigs:
           - repoName: kyma-project/api-gateway
             jobs:
