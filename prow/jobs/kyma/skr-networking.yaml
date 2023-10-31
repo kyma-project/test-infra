@@ -29,7 +29,7 @@ periodics: # runs on schedule
           channel: kyma-gopher-private-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231027-3012c81d"
             securityContext:
               privileged: false
               seccompProfile:
