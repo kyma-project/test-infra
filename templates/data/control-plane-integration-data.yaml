@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/control-plane/control-plane-reconciler-integration.yaml
+      - to: ../../prow/jobs/kyma-project/control-plane/control-plane-reconciler-integration.yaml
         localSets:
           reconciler_e2e_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler/reconciler-e2e-gardener.sh"
@@ -55,7 +55,7 @@ templates:
                   local:
                     - reconciler_e2e_jobConfig
                     - reconciler_e2e_latest_release_jobConfig
-      - to: ../../prow/jobs/control-plane/control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener.yaml
+      - to: ../../prow/jobs/kyma-project/control-plane/control-plane-reconciler-upgrade-kyma2-latest-to-main-gardener.yaml
         localSets:
           reconciler_upgrade_jobConfig:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/reconciler/reconciler-upgrade-kyma2-latest-to-main-gardener.sh"

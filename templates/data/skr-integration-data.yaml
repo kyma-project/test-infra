@@ -1,7 +1,7 @@
 templates:
   - fromTo:
       - from: generic.tmpl
-        to: ../../prow/jobs/kyma/skr-integration.yaml
+        to: ../../prow/jobs/kyma-project/kyma/skr-integration.yaml
     render:
       - localSets:
           jobConfig_default:

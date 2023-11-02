@@ -1,7 +1,7 @@
 templates:
   - fromTo:
       - from: generic.tmpl
-        to: ../../prow/jobs/kyma/kyma-integration-gardener-eventing.yaml
+        to: ../../prow/jobs/kyma-project/kyma/kyma-integration-gardener-eventing.yaml
     render:
       - localSets:
           extra_refs_busola:
@@ -127,7 +127,7 @@ templates:
 
   - fromTo:
       - from: generic.tmpl
-        to: ../../prow/jobs/kyma/kyma-integration-gardener.yaml
+        to: ../../prow/jobs/kyma-project/kyma/kyma-integration-gardener.yaml
     render:
       - localSets:
           extra_refs_busola:
