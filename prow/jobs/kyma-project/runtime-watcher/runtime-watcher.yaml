@@ -49,13 +49,13 @@ presubmits:
               secretName: signify-dev-secret
 postsubmits:
   kyma-project/runtime-watcher:
-    - name: main-build-skr
+    - name: watcher-build-skr
       annotations:
-        description: "build runtime watcher skr"
+        description: "build runtime watcher for skr"
         owner: "jellyfish"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "main-build-skr"
+        prow.k8s.io/pubsub.runID: "watcher-build-skr"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -81,7 +81,7 @@ postsubmits:
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=runtime-watcher"
               - "--dockerfile=Dockerfile"
-              - "--tag=latest"
+              - "--tag={{.Env \"PULL_BASE_REF\" }}"
             volumeMounts:
               - name: config
                 mountPath: /config
