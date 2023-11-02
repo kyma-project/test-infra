@@ -20,7 +20,7 @@ This document provides an overview of how to quickly start working with Prow job
     
     > **NOTE:** Your template file and Prow job must have unique names.
     
-    - To learn more about **localSets**, **jobConfig** and **globalSets**, read [Render Templates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates). 
+    - To learn more about **localSets**, **jobConfig** and **globalSets**, read [Render Templates](../../pkg/tools/rendertemplates). 
     - You can search for more examples of template files in the `templates/data` directory.
 
 
@@ -29,7 +29,7 @@ This document provides an overview of how to quickly start working with Prow job
     make jobs-definitions
     ```
     
-    For more details on how rendering templates works, read [Render Tamplates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
+    For more details on how rendering templates works, read [Render Tamplates](../../pkg/tools/rendertemplates).
     
     > **CAUTION:** Do not change the generated file! Otherwise, the PR won't be merged, because the job checking the generated file will fail.
 
@@ -49,7 +49,7 @@ This document provides an overview of how to quickly start working with Prow job
       - pjName: <PROW JOB NAME>
       - pjName: ...
     ```
-    For more details on how to use `pjtester`, read the [Prow Job tester](https://github.com/kyma-project/test-infra/blob/main/development/tools/cmd/pjtester/README.md) document.
+    For more details on how to use `pjtester`, read the [Prow Job tester](../../cmd/tools/pjtester/README.md) document.
  
      
 6. Create a pull request (PR) to the `test-infra` repository.

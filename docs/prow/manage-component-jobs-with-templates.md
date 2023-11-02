@@ -39,7 +39,7 @@ Follow these steps:
 
    If needed, you can add global Config Sets (**globalSets**) to the `templates/config.yaml` file.
 
-   For more information about creating template files, as well as local config sets (**localSets**), job configs (**jobConfig**) and (**globalSets**), read [Render Templates](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/rendertemplates).
+   For more information about creating template files, as well as local config sets (**localSets**), job configs (**jobConfig**) and (**globalSets**), read [Render Templates](../../pkg/tools/rendertemplates).
    > **CAUTION:** The `.yaml` file and the component folder name should be the same as the name of the Kyma component. Also, all `.yaml` files in the whole `jobs` structure must have unique names.
    
    Use the buildpack for Go or Node.js applications provided in the `test-infra` repository. It is the standard mechanism for defining Prow jobs. If the buildpack you want to use is not there yet, you must add it. When you add a new buildpack, follow the example of the already defined ones.
