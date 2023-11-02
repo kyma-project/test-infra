@@ -312,31 +312,6 @@ templates:
             branches:
               - "^main$"
               - "^release-*"
-          job_build_volumes:
-            volumes:
-              # we create this volume because we don't have permissions for directory
-              - name: module-chart
-                emptyDir: true
-              # copied from globalSet image-builder-buildkit because volumes aren't merged
-              - name: share
-                emptyDir: true
-              - name: config
-                configMapName: kaniko-build-config
-              - name: signify-secret
-                secretName: signify-dev-secret
-            volumeMounts:
-              # we create this volume because we don't have permissions for directory
-              - mountPath: /home/prow/go/src/github.com/kyma-project/serverless-manager/module-chart
-                name: module-chart
-              # copied from globalSet image-builder-buildkit because volumes aren't merged
-              - mountPath: /home/user/.local/share/buildkit
-                name: share
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
           dind_job_k3d:
             annotations:
             labels:
@@ -723,15 +698,11 @@ templates:
                   args:
                     - -c
                     - >-
-                      mkdir -p module-chart
-                      &&
-                      cp -r config/serverless/* module-chart
-                      &&
                       /image-builder
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=Dockerfile
+                      --dockerfile=components/operator/Dockerfile
                       --tag=$PULL_BASE_REF
                   branches:
                      - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
@@ -741,7 +712,6 @@ templates:
                     - image-builder-buildkit
                   local:
                     - job_branches
-                    - job_build_volumes
               - jobConfig:
                   name: release-serverless-module-build
                   annotations:
@@ -843,22 +813,17 @@ templates:
                   args:
                     - -c
                     - >-
-                      mkdir -p module-chart
-                      &&
-                      cp -r config/serverless/* module-chart
-                      &&
                       /image-builder
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=Dockerfile
+                      --dockerfile=components/operator/Dockerfile
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
                     - image-builder-buildkit
                   local:
                     - job_branches
-                    - job_build_volumes
               - jobConfig:
                   name: post-serverless-operator-build
                   annotations:
@@ -871,15 +836,11 @@ templates:
                   args:
                     - -c
                     - >-
-                      mkdir -p module-chart
-                      &&
-                      cp -r config/serverless/* module-chart
-                      &&
                       /image-builder
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=Dockerfile
+                      --dockerfile=components/operator/Dockerfile
                       --tag=$PULL_BASE_SHA
                 inheritedConfigs:
                   global:
@@ -887,7 +848,6 @@ templates:
                     - image-builder-buildkit
                   local:
                     - job_branches
-                    - job_build_volumes
               - jobConfig:
                   name: pre-serverless-operator-verify
                   annotations:
