@@ -22,17 +22,17 @@ jobs:
         with:
             payload: |
               {
-                "text": "Lint Markdown Links Daily build result: FAILED\nDetails: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID",
+                "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
                 "blocks": [
                   {
                     "type": "section",
                     "text": {
                       "type": "mrkdwn",
-                      "text": "Lint Markdown Links Daily build result: FAILED\nDetails: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+                      "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                     }
                   }
                 ]
               }
         env:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-            SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+      

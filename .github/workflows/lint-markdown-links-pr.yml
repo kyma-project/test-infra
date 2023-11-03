@@ -15,3 +15,22 @@ jobs:
           max-depth: -1
           check-modified-files-only: 'yes'
           base-branch: 'main'
+      - name: Send Notification to Slack
+        uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117
+        with:
+            payload: |
+              {
+                "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                "blocks": [
+                  {
+                    "type": "section",
+                    "text": {
+                      "type": "mrkdwn",
+                      "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  }
+                ]
+              }
+        env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      
