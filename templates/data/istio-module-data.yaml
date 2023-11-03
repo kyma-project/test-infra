@@ -153,6 +153,7 @@ templates:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_REF}"
+                    MODULE_VERSION: "${PULL_BASE_REF}"
                   command: "make"
                   args:
                     - "-C"
