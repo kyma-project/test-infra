@@ -1,0 +1,27 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      serverless:
+        prNumber: 394
+  prowJobs:
+    kyma-project:
+      serverless:
+        - pjName: "pre-serverless-controller-build"
+        - pjName: "pre-serverless-webhook-build"
+        - pjName: "pre-serverless-jobinit-build"
+        - pjName: "pre-serverless-registry-gc-build"
+        - pjName: "pre-serverless-runtimes-java17-jvm-alpha-build"
+        - pjName: "pre-serverless-runtimes-nodejs-v16-build"
+        - pjName: "pre-serverless-runtimes-nodejs-v18-build"
+        - pjName: "pre-serverless-runtimes-python39-build"
+        - pjName: "pre-gitserver-build"
+        - pjName: "pre-serverless-controller-unit-test"
+        - pjName: "pre-serverless-controller-lint"
+        - pjName: "pre-serverless-module-build"
+        - pjName: "pre-serverless-operator-tests"
+        - pjName: "pre-serverless-operator-build"
+        - pjName: "pre-serverless-operator-verify"
+prConfigs: #
+  kyma-project:
+    serverless:
+      prNumber: 394
