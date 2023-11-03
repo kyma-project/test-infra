@@ -306,7 +306,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
-      - to: ../../prow/jobs/kyma-project/serverless-manager/serverless-manager.yaml
+      - to: ../../prow/jobs/kyma-project/serverless/serverless.yaml
         localSets:
           job_branches:
             branches:
@@ -674,9 +674,9 @@ templates:
                     - |
                       make -C hack/ci run-with-lifecycle-manager
                   extra_refs:
-                    serverless-manager:
+                    serverless:
                       - org: kyma-project
-                        repo: serverless-manager
+                        repo: serverless
                         base_ref: main
                 inheritedConfigs:
                   global:
