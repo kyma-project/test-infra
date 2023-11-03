@@ -123,8 +123,8 @@ reconciler::trigger_kyma_reconcile
 reconciler::wait_until_kyma_reconciled
 
 if [[ $KYMA_UPGRADE_SOURCE != "main" ]]; then
-  kubectl apply -f https://github.com/kyma-project/serverless-manager/releases/latest/download/serverless-operator.yaml
-  kubectl apply -f https://github.com/kyma-project/serverless-manager/releases/latest/download/default_serverless_cr.yaml -n kyma-system
+  kubectl apply -f https://github.com/kyma-project/serverless/releases/latest/download/serverless-operator.yaml
+  kubectl apply -f https://github.com/kyma-project/serverless/releases/latest/download/default_serverless_cr.yaml -n kyma-system
 fi
 make -C "../../kyma-project/kyma/tests/fast-integration" ci-pre-upgrade
 
