@@ -21,6 +21,7 @@ pjConfigs:
         - pjName: "pre-serverless-operator-tests"
         - pjName: "pre-serverless-operator-build"
         - pjName: "pre-serverless-operator-verify"
+        - pjName: "pre-serverless-integration-k3s"
 prConfigs: #
   kyma-project:
     serverless:
