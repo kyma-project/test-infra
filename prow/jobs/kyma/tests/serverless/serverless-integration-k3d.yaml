@@ -1,5 +1,5 @@
 presubmits: # runs on PRs
-  kyma-project/serverless-manager:
+  kyma-project/serverless:
     - name: pre-serverless-integration-k3s
       annotations:
         description: "serverless integration k3s job"
