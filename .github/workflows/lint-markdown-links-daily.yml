@@ -3,7 +3,9 @@ run-name: ${{github.sha}}
 on:
   schedule:
     # Run everyday at 5:00 AM
-    - cron: "0 5 * * *"
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
 jobs:
   markdown-link-check:
     runs-on: ubuntu-latest
