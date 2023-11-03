@@ -2,7 +2,7 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/serverless-manager:
+  kyma-project/serverless:
     - name: pre-serverless-controller-build
       annotations:
         description: "function controller build job"
@@ -672,7 +672,7 @@ presubmits: # runs on PRs
                 cpu: 3
   
 postsubmits: # runs on main
-  kyma-project/serverless-manager:
+  kyma-project/serverless:
     - name: post-serverless-controller-build
       annotations:
         description: "function controller build job"
