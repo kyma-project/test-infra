@@ -325,7 +325,7 @@ templates:
             limits_memory: "4Gi"
             limits_cpu: "3"
         jobConfigs:
-          - repoName: kyma-project/serverless-manager
+          - repoName: kyma-project/serverless
             jobs:
               - jobConfig:
                   name: pre-serverless-controller-build

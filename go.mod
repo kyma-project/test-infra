@@ -6,7 +6,7 @@ require (
 	cloud.google.com/go/bigquery v1.57.1
 	cloud.google.com/go/compute/metadata v0.2.3
 	cloud.google.com/go/firestore v1.14.0
-	cloud.google.com/go/kms v1.15.4
+	cloud.google.com/go/kms v1.15.5
 	cloud.google.com/go/logging v1.8.1
 	cloud.google.com/go/pubsub v1.33.0
 	cloud.google.com/go/storage v1.34.1
