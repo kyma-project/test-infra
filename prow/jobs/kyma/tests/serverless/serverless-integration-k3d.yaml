@@ -38,7 +38,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh serverless-integration serverless-contract-tests"
             env:
               - name: SERVERLESS_SOURCES
-                value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/"
+                value: "/home/prow/go/src/github.com/kyma-project/serverless/"
     - name: pre-serverless-git-auth-integration-k3s
       annotations:
         description: "Serverless git-function authentication integration tests"
@@ -78,7 +78,7 @@ presubmits: # runs on PRs
               - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-serverless-integration-k3d.sh git-auth-integration"
             env:
               - name: SERVERLESS_SOURCES
-                value: "/home/prow/go/src/github.com/kyma-project/serverless-manager/"
+                value: "/home/prow/go/src/github.com/kyma-project/serverless/"
               - name: APP_TEST_GITHUB_SSH_AUTH_KEY
                 valueFrom:
                   secretKeyRef:
