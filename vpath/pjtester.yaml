@@ -1,0 +1,6 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      runtime-watcher:
+      - pjName: "watcher-build-skr"
+
