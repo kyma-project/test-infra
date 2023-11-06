@@ -3,7 +3,7 @@ run-name: ${{github.sha}}
 on:
   schedule:
     # Run everyday at 5:00 AM
-    - cron: '*/5 * * * *'
+    - cron: "0 5 * * *"
   workflow_dispatch:
 
 jobs:
@@ -38,4 +38,3 @@ jobs:
         env:
             SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
             SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
-      
