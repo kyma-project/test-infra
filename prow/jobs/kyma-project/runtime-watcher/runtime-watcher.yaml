@@ -80,7 +80,7 @@ postsubmits:
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=runtime-watcher"
               - "--dockerfile=Dockerfile"
-              - "--tag=$(PULL_BASE_REF)"
+              - "--tag={{.Env \"PULL_BASE_REF\" }}"
             volumeMounts:
               - name: config
                 mountPath: /config
