@@ -20,7 +20,7 @@ This document provides an overview of how to quickly start working with Prow job
     
     > **NOTE:** Your template file and Prow job must have unique names.
     
-    - To learn more about **localSets**, **jobConfig** and **globalSets**, read [Render Templates](../../pkg/tools/rendertemplates). 
+    - To learn more about **localSets**, **jobConfig**, and **globalSets**, read [Render Templates](../../pkg/tools/rendertemplates). 
     - You can search for more examples of template files in the `templates/data` directory.
 
 
