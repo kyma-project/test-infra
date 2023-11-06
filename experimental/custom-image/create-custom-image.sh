@@ -25,7 +25,7 @@ if [ "$CI" == "true" ]; then
 fi
 
 
-RANDOM_ID=$(head -c4 </dev/urandom|xxd -p -u)
+RANDOM_ID=$(head -c4 </dev/urandom|xxd -p)
 VM_NAME="kyma-deps-image-vm-${RANDOM_ID}"
 DATE=$(date +v%Y%m%d)
 DEFAULT=false
