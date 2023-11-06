@@ -1419,7 +1419,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: serverless-manager
+          repo: serverless
           base_ref: main
         - org: kyma-project
           repo: test-infra

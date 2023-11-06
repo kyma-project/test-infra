@@ -79,7 +79,7 @@
 /prow/jobs/lifecycle-manager @kyma-project/jellyfish @neighbors-dev-bot
 /prow/jobs/modules/external/keda-manager.yaml @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/modules/internal/application-connector-manager.yaml @kyma-project/framefrog @neighbors-dev-bot
-/prow/jobs/modules/internal/serverless-manager.yaml @kyma-project/otters @neighbors-dev-bot
+/prow/jobs/modules/internal/serverless.yaml @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/nats-manager @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/runtime-watcher @kyma-project/jellyfish @neighbors-dev-bot
 /prow/jobs/scans @kyma-project/prow @neighbors-dev-bot
