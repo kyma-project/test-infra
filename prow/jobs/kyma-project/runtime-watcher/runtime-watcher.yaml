@@ -58,6 +58,7 @@ postsubmits:
         prow.k8s.io/pubsub.runID: "watcher-build-skr"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       always_run: true
       skip_report: false
       decorate: true
