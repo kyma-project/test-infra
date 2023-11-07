@@ -54,7 +54,7 @@ templates:
                     - '--context=./'
                     - '--dockerfile=Dockerfile.keb'
                     - '--config=/config/kaniko-build-config.yaml'
-                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack

@@ -377,7 +377,7 @@ postsubmits: # runs on main
               - "--context=./"
               - "--dockerfile=Dockerfile.keb"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--tag={{.Env \"PULL_BASE_REF\" }}"
+              - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
                 memory: 1.5Gi
