@@ -3,7 +3,7 @@
 echo "Running rendertemplates pre-commit hook..."
 (
   cd "$(git rev-parse --show-toplevel)" || exit 1
-    if files=$(go run development/tools/cmd/rendertemplates/main.go -config templates/config.yaml -show-output-dir=true -data templates/data -templates templates/templates); then
+    if files=$(go run cmd/tools/rendertemplates/main.go -config templates/config.yaml -show-output-dir=true -data templates/data -templates templates/templates); then
       # shellcheck disable=SC2086
       modified=$(git diff --exit-code --name-only $files) && echo "No changes made. Continuing..." || echo "Templates have been regenerated and automatically added to your commit.
 

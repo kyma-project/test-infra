@@ -443,7 +443,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231106-cfdd69f7"
             securityContext:
               privileged: false
               seccompProfile:
@@ -509,7 +509,7 @@ presubmits: # runs on PRs
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231106-cfdd69f7"
             securityContext:
               privileged: false
               seccompProfile:
@@ -555,7 +555,7 @@ presubmits: # runs on PRs
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231106-cfdd69f7"
             securityContext:
               privileged: false
               seccompProfile:
@@ -650,7 +650,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231106-cfdd69f7"
             securityContext:
               privileged: true
               seccompProfile:
@@ -1188,7 +1188,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231106-cfdd69f7"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1228,7 +1228,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231106-cfdd69f7"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1332,7 +1332,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231106-cfdd69f7"
             securityContext:
               privileged: true
               seccompProfile:
@@ -1378,7 +1378,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231106-cfdd69f7"
             securityContext:
               privileged: true
               seccompProfile:
@@ -1419,14 +1419,14 @@ periodics: # runs on schedule
       cluster: trusted-workload
       extra_refs:
         - org: kyma-project
-          repo: serverless-manager
+          repo: serverless
           base_ref: main
         - org: kyma-project
           repo: test-infra
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231106-cfdd69f7"
             securityContext:
               privileged: true
               seccompProfile:

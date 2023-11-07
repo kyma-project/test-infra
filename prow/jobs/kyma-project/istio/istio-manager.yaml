@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231106-cfdd69f7"
             securityContext:
               privileged: false
               seccompProfile:
@@ -125,7 +125,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231106-cfdd69f7"
             securityContext:
               privileged: false
               seccompProfile:
@@ -182,7 +182,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231106-cfdd69f7"
             securityContext:
               privileged: false
               seccompProfile:
@@ -282,7 +282,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231106-cfdd69f7"
             securityContext:
               privileged: false
               seccompProfile:
@@ -301,6 +301,8 @@ postsubmits: # runs on main
                 value: "v4.5.6"
               - name: MODULE_REGISTRY
                 value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+              - name: MODULE_VERSION
+                value: "${PULL_BASE_REF}"
             resources:
               requests:
                 memory: 3Gi
@@ -391,7 +393,7 @@ periodics: # runs on schedule
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231027-3012c81d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231106-cfdd69f7"
             securityContext:
               privileged: false
               seccompProfile:

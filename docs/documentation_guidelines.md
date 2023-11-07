@@ -1,5 +1,7 @@
 # Documentation guidelines
 
+Follow the rules listed in this document to provide high-quality documentation.
+
 1. Each repository must contain an automatically updated index page in the `docs` directory.
 2. The main `README.md` file of a repository must contain a link to the index page of the repository, where all documentation content is stored.
 3. The main `docs` directory must have a structure to group `.md` files according to their purpose. For example, there can be `what-is`, `how-to`, `architecture` directories and more.
