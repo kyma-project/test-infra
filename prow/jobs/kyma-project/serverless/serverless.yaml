@@ -201,7 +201,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-java17-jvm-alpha-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/runtimes/java17'
+      run_if_changed: '^components/runtimes/java17/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -248,7 +248,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-nodejs-v16-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/runtimes/nodejs'
+      run_if_changed: '^components/runtimes/nodejs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -295,7 +295,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-nodejs-v18-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/runtimes/nodejs'
+      run_if_changed: '^components/runtimes/nodejs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -342,7 +342,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-python39-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/runtimes/python39'
+      run_if_changed: '^components/runtimes/python39/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -389,7 +389,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-gitserver-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^tests/gitserver'
+      run_if_changed: '^tests/gitserver/'
       optional: true
       skip_report: false
       decorate: true
@@ -499,7 +499,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
+      run_if_changed: '^config/operator/.*$|^sec-scanners-config.yaml$|^.version$|^module-config-template.yaml$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -519,7 +519,7 @@ presubmits: # runs on PRs
               - "make"
             args:
               - "-C"
-              - "hack/ci"
+              - "components/operator/hack/ci"
               - "module-build"
             env:
               - name: IMG
@@ -562,10 +562,11 @@ presubmits: # runs on PRs
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "bash"
+              - "make"
             args:
-              - "-c"
-              - "make test"
+              - "-C"
+              - "components/operator"
+              - "test"
             resources:
               requests:
                 memory: 3Gi
@@ -661,7 +662,7 @@ presubmits: # runs on PRs
             args:
               - "bash"
               - "-c"
-              - "make -C hack/ci k3d-integration-test
+              - "make -C components/operator/hack/ci k3d-integration-test
 "
             resources:
               requests:
@@ -881,7 +882,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/runtimes/java17'
+      run_if_changed: '^components/runtimes/java17/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -930,7 +931,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/runtimes/nodejs'
+      run_if_changed: '^components/runtimes/nodejs/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -979,7 +980,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/runtimes/nodejs'
+      run_if_changed: '^components/runtimes/nodejs/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -1028,7 +1029,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/runtimes/python39'
+      run_if_changed: '^components/runtimes/python39/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -1218,7 +1219,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-serverless-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$'
+      run_if_changed: '^config/operator/.*$|^sec-scanners-config.yaml$|^.version$|^module-config-template.yaml$'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -1238,7 +1239,7 @@ postsubmits: # runs on main
               - "make"
             args:
               - "-C"
-              - "hack/ci"
+              - "components/operator/hack/ci"
               - "module-build"
             env:
               - name: IMG
@@ -1343,7 +1344,7 @@ postsubmits: # runs on main
             args:
               - "bash"
               - "-c"
-              - "make -C hack/ci k3d-integration-test
+              - "make -C components/operator/hack/ci k3d-integration-test
 "
             resources:
               requests:
@@ -1389,7 +1390,7 @@ postsubmits: # runs on main
             args:
               - "bash"
               - "-c"
-              - "make -C hack/ci k3d-upgrade-test
+              - "make -C components/operator/hack/ci k3d-upgrade-test
 "
             resources:
               requests:
@@ -1437,7 +1438,7 @@ periodics: # runs on schedule
             args:
               - "bash"
               - "-c"
-              - "make -C hack/ci run-with-lifecycle-manager
+              - "make -C components/operator/hack/ci run-with-lifecycle-manager
 "
             resources:
               requests:
