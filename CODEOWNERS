@@ -21,7 +21,6 @@
 /prow/jobs/btp-manager @kyma-project/gopher @neighbors-dev-bot
 /prow/jobs/busola @kyma-project/hasselhoff @neighbors-dev-bot
 /prow/jobs/cli @kyma-project/jellyfish @neighbors-dev-bot
-/prow/jobs/kyma-project/control-plane @kyma-project/gopher @kyma-project/Framefrog @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma-project/control-plane/components/kubeconfig-service @kyma-project/operations @neighbors-dev-bot
 /prow/jobs/kyma-project/control-plane/components/kyma-environment-broker @kyma-project/gopher @neighbors-dev-bot
 /prow/jobs/kyma-project/control-plane/components/kyma-metrics-collector @kyma-project/eventing @neighbors-dev-bot
