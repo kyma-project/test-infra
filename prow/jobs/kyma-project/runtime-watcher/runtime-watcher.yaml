@@ -82,6 +82,7 @@ postsubmits:
               - "--context=runtime-watcher"
               - "--dockerfile=Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
+              - "--export-tags"
             volumeMounts:
               - name: config
                 mountPath: /config
