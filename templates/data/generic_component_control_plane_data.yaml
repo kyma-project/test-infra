@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
+      - to: ../../prow/jobs/kyma-project/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
@@ -28,7 +28,7 @@ templates:
                     global:
                       - "jobConfig_presubmit"
 
-      - to: ../../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
+      - to: ../../prow/jobs/kyma-project/control-plane/components/kubeconfig-service/kubeconfig-service-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:

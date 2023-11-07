@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/control-plane/components/schema-migrator/schema-migrator-build.yaml
+      - to: ../../prow/jobs/kyma-project/control-plane/components/schema-migrator/schema-migrator-build.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
@@ -40,7 +40,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
 
-      - to: ../../prow/jobs/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-build.yaml
+      - to: ../../prow/jobs/kyma-project/control-plane/components/kyma-metrics-collector/kyma-metrics-collector-build.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
@@ -79,7 +79,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
 
-      - to: ../../prow/jobs/control-plane/components/kubeconfig-service/kubeconfig-service-build.yaml
+      - to: ../../prow/jobs/kyma-project/control-plane/components/kubeconfig-service/kubeconfig-service-build.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:
@@ -118,7 +118,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
 
-      - to: ../../prow/jobs/control-plane/tests/e2e/provisioning/e2e-provisioning-test-build.yaml
+      - to: ../../prow/jobs/kyma-project/control-plane/tests/e2e/provisioning/e2e-provisioning-test-build.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/control-plane"
             jobs:

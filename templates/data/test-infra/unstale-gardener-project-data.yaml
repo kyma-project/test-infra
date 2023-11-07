@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/test-infra/unstale-gardener-project.yaml
+      - to: ../../prow/jobs/kyma-project/test-infra/unstale-gardener-project.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/test-infra"
             jobs:

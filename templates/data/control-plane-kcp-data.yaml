@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/control-plane/kcp-cli.yaml
+      - to: ../../prow/jobs/kyma-project/control-plane/kcp-cli.yaml
         localSets:
           jobConfig_default:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-kcp-cli.sh"

@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-checks.yaml
+      - to: ../../prow/jobs/kyma-project/kyma/components/event-publisher-proxy/event-publisher-proxy-checks.yaml
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -37,7 +37,7 @@ templates:
                     - testing
                     - "jobConfig_presubmit"
                     - "unprivileged"
-      - to: ../../prow/jobs/kyma/components/eventing-controller/eventing-controller-checks.yaml
+      - to: ../../prow/jobs/kyma-project/kyma/components/eventing-controller/eventing-controller-checks.yaml
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -75,7 +75,7 @@ templates:
                     - "unprivileged"
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma/components/kyma-components-static-checks.yaml
+      - to: ../../prow/jobs/kyma-project/kyma/components/kyma-components-static-checks.yaml
         localSets:
           linting:
             skip_report: "false"

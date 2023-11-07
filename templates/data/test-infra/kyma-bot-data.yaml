@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/test-infra/kyma-bot.yaml
+      - to: ../../prow/jobs/kyma-project/test-infra/kyma-bot.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
