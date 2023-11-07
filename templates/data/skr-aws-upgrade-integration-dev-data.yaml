@@ -1,7 +1,7 @@
 templates:
   - fromTo:
       - from: generic.tmpl
-        to: ../../prow/jobs/kyma/skr-aws-upgrade-integration-dev.yaml
+        to: ../../prow/jobs/kyma-project/kyma/skr-aws-upgrade-integration-dev.yaml
     render:
       - localSets:
           jobConfig_default:
@@ -9,7 +9,7 @@ templates:
             cluster: "trusted-workload"
             request_memory: 100Mi
             request_cpu: 50m
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231027-3012c81d
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231106-cfdd69f7
             labels:
               preset-build-main: "true"
               preset-bot-github-token: "true"

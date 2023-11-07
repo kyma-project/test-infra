@@ -39,7 +39,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231027-3012c81d
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231106-cfdd69f7
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -306,7 +306,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
-      - to: ../../prow/jobs/kyma-project/serverless-manager/serverless-manager.yaml
+      - to: ../../prow/jobs/kyma-project/serverless/serverless.yaml
         localSets:
           job_branches:
             branches:
@@ -318,7 +318,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231027-3012c81d
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231106-cfdd69f7
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -674,9 +674,9 @@ templates:
                     - |
                       make -C hack/ci run-with-lifecycle-manager
                   extra_refs:
-                    serverless-manager:
+                    serverless:
                       - org: kyma-project
-                        repo: serverless-manager
+                        repo: serverless
                         base_ref: main
                 inheritedConfigs:
                   global:
@@ -949,7 +949,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231027-3012c81d
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231106-cfdd69f7
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"

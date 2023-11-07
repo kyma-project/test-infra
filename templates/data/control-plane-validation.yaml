@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/control-plane/control-plane-validation.yaml
+      - to: ../../prow/jobs/kyma-project/control-plane/control-plane-validation.yaml
         localSets:
           jobConfig_default:
             env:
@@ -23,7 +23,7 @@ templates:
                     - "-c"
                     - "shopt -s globstar;
                       hadolint --config .hadolint.yaml --no-color **/Dockerfile"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231027-3012c81d
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231106-cfdd69f7
                 inheritedConfigs:
                   global:
                     - jobConfig_default

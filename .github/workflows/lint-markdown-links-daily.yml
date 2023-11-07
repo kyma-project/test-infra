@@ -4,6 +4,8 @@ on:
   schedule:
     # Run everyday at 5:00 AM
     - cron: "0 5 * * *"
+  workflow_dispatch:
+
 jobs:
   markdown-link-check:
     runs-on: ubuntu-latest
@@ -22,13 +24,13 @@ jobs:
         with:
             payload: |
               {
-                "text": "Lint Markdown Links Daily build result: FAILED\nDetails: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID",
+                "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
                 "blocks": [
                   {
                     "type": "section",
                     "text": {
                       "type": "mrkdwn",
-                      "text": "Lint Markdown Links Daily build result: FAILED\nDetails: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+                      "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                     }
                   }
                 ]

@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/test-infra/go-validation.yaml
+      - to: ../../prow/jobs/kyma-project/test-infra/go-validation.yaml
         localSets:
         jobConfigs:
           - repoName: "kyma-project/test-infra"
