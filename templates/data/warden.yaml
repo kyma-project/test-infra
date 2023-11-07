@@ -124,6 +124,22 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
               - jobConfig:
+                  name: pre-warden-verify
+                  annotations:
+                    owner: otters
+                    description: LM intergration test
+                  optional: true
+                  always_run: true
+                  command: "make"
+                  args:
+                    - "k3d-lm-integration-test"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_presubmit
+                    - extra_refs_test-infra
+              - jobConfig:
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
                   name: pre-warden-lint
                   optional: true
