@@ -466,7 +466,7 @@ templates:
                   annotations:
                     owner: otters
                     description: function java 17 build job
-                  run_if_changed: "^components/runtimes/java17"
+                  run_if_changed: "^components/runtimes/java17/"
                   args:
                     - "--name=function-runtime-java17-jvm-alpha"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -483,7 +483,7 @@ templates:
                     description: function java 17 build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/runtimes/java17"
+                  run_if_changed: "^components/runtimes/java17/"
                   args:
                     - "--name=function-runtime-java17-jvm-alpha"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -499,7 +499,7 @@ templates:
                   annotations:
                     owner: otters
                     description: function nodejs16 build job
-                  run_if_changed: "^components/runtimes/nodejs"
+                  run_if_changed: "^components/runtimes/nodejs/"
                   args:
                     - "--name=function-runtime-nodejs16"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -516,7 +516,7 @@ templates:
                     description: function nodejs16 build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/runtimes/nodejs"
+                  run_if_changed: "^components/runtimes/nodejs/"
                   args:
                     - "--name=function-runtime-nodejs16"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -532,7 +532,7 @@ templates:
                   annotations:
                     owner: otters
                     description: function nodejs18 build job
-                  run_if_changed: "^components/runtimes/nodejs"
+                  run_if_changed: "^components/runtimes/nodejs/"
                   args:
                     - "--name=function-runtime-nodejs18"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -549,7 +549,7 @@ templates:
                     description: function nodejs18 build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/runtimes/nodejs"
+                  run_if_changed: "^components/runtimes/nodejs/"
                   args:
                     - "--name=function-runtime-nodejs18"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -565,7 +565,7 @@ templates:
                   annotations:
                     owner: otters
                     description: function python3.9 build job
-                  run_if_changed: "^components/runtimes/python39"
+                  run_if_changed: "^components/runtimes/python39/"
                   args:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -582,7 +582,7 @@ templates:
                     description: function pytho3.9 build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/runtimes/python39"
+                  run_if_changed: "^components/runtimes/python39/"
                   args:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -603,7 +603,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=tests/gitserver"
                     - "--dockerfile=tests/gitserver/Dockerfile"
-                  run_if_changed: "^tests/gitserver"
+                  run_if_changed: "^tests/gitserver/"
                   optional: "true"
                 inheritedConfigs:
                   global:
@@ -672,7 +672,7 @@ templates:
                     - bash
                     - -c
                     - |
-                      make -C hack/ci run-with-lifecycle-manager
+                      make -C components/operator/hack/ci run-with-lifecycle-manager
                   extra_refs:
                     serverless:
                       - org: kyma-project
@@ -746,11 +746,11 @@ templates:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
-                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  run_if_changed: "^config/operator/.*$|^sec-scanners-config.yaml$|^.version$|^module-config-template.yaml$"
                   command: "make"
                   args:
                     - "-C"
-                    - "hack/ci"
+                    - "components/operator/hack/ci"
                     - "module-build"
                 inheritedConfigs:
                   global:
@@ -771,11 +771,11 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/dev/serverless-operator:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
-                  run_if_changed: "^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$"
+                  run_if_changed: "^config/operator/.*$|^sec-scanners-config.yaml$|^.version$|^module-config-template.yaml$"
                   command: "make"
                   args:
                     - "-C"
-                    - "hack/ci"
+                    - "components/operator/hack/ci"
                     - "module-build"
                 inheritedConfigs:
                   global:
@@ -790,10 +790,11 @@ templates:
                     owner: otters
                     description: serverless operator tests
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
-                  command: "bash"
+                  command: "make"
                   args:
-                    - "-c"
-                    - "make test"
+                    - "-C"
+                    - "components/operator"
+                    - "test"
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
@@ -857,7 +858,7 @@ templates:
                     - bash
                     - -c
                     - |
-                      make -C hack/ci k3d-integration-test
+                      make -C components/operator/hack/ci k3d-integration-test
                   always_run: "true"
                   optional: "false"
                 inheritedConfigs:
@@ -878,7 +879,7 @@ templates:
                     - bash
                     - -c
                     - |
-                      make -C hack/ci k3d-integration-test
+                      make -C components/operator/hack/ci k3d-integration-test
                   always_run: "true"
                   optional: "true"
                 inheritedConfigs:
@@ -901,7 +902,7 @@ templates:
                     - bash
                     - -c
                     - |
-                      make -C hack/ci k3d-upgrade-test
+                      make -C components/operator/hack/ci k3d-upgrade-test
                 inheritedConfigs:
                   global:
                     - jobConfig_default
