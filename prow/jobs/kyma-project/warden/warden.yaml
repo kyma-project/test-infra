@@ -135,43 +135,6 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: pre-warden-verify
-      annotations:
-        description: "LM intergration test"
-        owner: "otters"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-warden-verify"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      branches:
-        - ^master$
-        - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231106-cfdd69f7"
-            securityContext:
-              privileged: true
-              seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
-            command:
-              - "make"
-            args:
-              - "k3d-lm-integration-test"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
     - name: pre-warden-lint
       annotations:
         description: "executes the 'golangci-lint lint' command before any pull request."

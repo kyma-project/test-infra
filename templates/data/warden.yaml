@@ -124,23 +124,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
               - jobConfig:
-                  name: pre-warden-verify
-                  annotations:
-                    owner: otters
-                    description: LM intergration test
-                  optional: true
-                  always_run: true
-                  command: "make"
-                  args:
-                    - "k3d-lm-integration-test"
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - privileged
-                    - jobConfig_presubmit
-                    - extra_refs_test-infra
-              - jobConfig:
                   name: post-warden-verify
                   annotations:
                     owner: otters
