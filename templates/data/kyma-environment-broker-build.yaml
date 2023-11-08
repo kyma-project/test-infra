@@ -39,6 +39,26 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+              - jobConfig: # builds a docker image of the KEB tagged with the branch name
+                  name: post-keb-release-build
+                  annotations:
+                    owner: "gopher"
+                    description: "KEB image build on main"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: ".+"
+                  branches:
+                    - ^\d+\.\d+\.\d+(?:-.*)?$
+                  args:
+                    - '--name=kyma-environment-broker'
+                    - '--context=./'
+                    - '--dockerfile=Dockerfile.keb'
+                    - '--config=/config/kaniko-build-config.yaml'
+                    - '--tag=$(PULL_BASE_REF)'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
               - jobConfig:
                   name: pull-keb-cleanup-job-build
                   annotations:
