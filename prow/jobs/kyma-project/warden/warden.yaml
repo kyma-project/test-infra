@@ -163,7 +163,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "golangci-lint run"
+              - "golangci-lint run --timeout=15m && echo 'OK!'"
             resources:
               requests:
                 memory: 3Gi
@@ -345,6 +345,8 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-warden-verify"
         prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
       always_run: true
       optional: true
       skip_report: false
@@ -354,21 +356,20 @@ postsubmits: # runs on main
       branches:
         - ^master$
         - ^main$
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231106-cfdd69f7"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231106-cfdd69f7"
             securityContext:
               privileged: true
               seccompProfile:
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "make"
+              - "/init.sh"
             args:
+              - "bash"
+              - "-c"
+              - "make"
               - "k3d-lm-integration-test"
             resources:
               requests:
