@@ -705,6 +705,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/manager/Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -754,6 +755,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/webhook/Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -803,6 +805,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/jobinit/Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -853,6 +856,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/registry-gc/Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -902,6 +906,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/java17"
               - "--dockerfile=Dockerfile-jvm-runtime"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -951,6 +956,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/nodejs"
               - "--dockerfile=nodejs16/Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -1000,6 +1006,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/nodejs"
               - "--dockerfile=nodejs18/Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -1049,6 +1056,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python39"
               - "--dockerfile=components/runtimes/python39/Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
