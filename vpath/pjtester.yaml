@@ -5,7 +5,7 @@ pjConfigs:
         prNumber: 9270
   prowJobs:
     kyma-project:
-      test-infra:
+      warden:
         - pjName: "post-warden-verify"
 prConfigs: #
   kyma-project:
