@@ -726,6 +726,7 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"REGISTRY_VERSION\" }}-{{ .ShortSHA }}"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi

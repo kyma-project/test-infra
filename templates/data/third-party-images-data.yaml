@@ -113,6 +113,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--env-file=envs"
                     - '--tag={{`{{ .Env \"REGISTRY_VERSION\" }}-{{ .ShortSHA }}`}}'
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - "jobConfig_postsubmit"
