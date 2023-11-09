@@ -1,0 +1,13 @@
+pjConfigs:
+  prConfig:
+    kyma-project:
+      test-infra:
+        prNumber: 1313
+  prowJobs:
+    kyma-project:
+      test-infra:
+        - pjName: "post-warden-verify"
+prConfigs: #
+  kyma-project:
+    warden:
+      prNumber: 132
