@@ -584,7 +584,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-serverless-controller-python39-build
+                  name: post-serverless-runtimes-python39-build
                   annotations:
                     owner: otters
                     description: function pytho3.9 build job
