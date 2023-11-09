@@ -240,6 +240,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -843,6 +844,7 @@ templates:
                       --context=.
                       --dockerfile=components/operator/Dockerfile
                       --tag=$PULL_BASE_SHA
+                      --tag=latest
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
