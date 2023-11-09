@@ -48,6 +48,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/admission/Dockerfile"
+                    - "--tag=latest"
                   run_if_changed: '.*\.go|docker/admission/'
                 inheritedConfigs:
                   global:
@@ -80,6 +81,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/operator/Dockerfile"
+                    - "--tag=latest"
                   run_if_changed: '.*\.go|docker/operator/'
                 inheritedConfigs:
                   global:

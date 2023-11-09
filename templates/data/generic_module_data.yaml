@@ -240,6 +240,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -355,6 +356,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/manager/Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -388,6 +390,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/webhook/Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -421,6 +424,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/jobinit/Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -456,6 +460,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/registry-gc/Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -489,6 +494,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/java17"
                     - "--dockerfile=Dockerfile-jvm-runtime"
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -522,6 +528,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs16/Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -555,6 +562,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs18/Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -588,6 +596,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python39"
                     - "--dockerfile=components/runtimes/python39/Dockerfile"
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -843,6 +852,7 @@ templates:
                       --context=.
                       --dockerfile=components/operator/Dockerfile
                       --tag=$PULL_BASE_SHA
+                      --tag=latest
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
