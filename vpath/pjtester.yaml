@@ -10,4 +10,4 @@ pjConfigs:
 prConfigs: #
   kyma-project:
     warden:
-      prNumber: 132
+      prNumber: 133
