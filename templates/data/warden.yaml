@@ -12,6 +12,12 @@ templates:
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
             request_cpu: 100m
+          e2e_dind:
+            labels:
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231106-cfdd69f7
+            command: "/init.sh"
         jobConfigs:
           - repoName: "github.com/kyma-project/warden"
             jobs:
@@ -124,6 +130,25 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
               - jobConfig:
+                  name: post-warden-verify
+                  annotations:
+                    owner: otters
+                    description: LM intergration test
+                  optional: true
+                  always_run: true
+                  args:
+                    - "bash"
+                    - "-c"
+                    - "make"
+                    - "k3d-lm-integration-test"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_postsubmit
+                  local:
+                    - e2e_dind
+              - jobConfig:
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
                   name: pre-warden-lint
                   optional: true
@@ -134,7 +159,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "golangci-lint run"
+                    - "golangci-lint run --timeout=15m && echo 'OK!'"
                   branches:
                     - ^main$
                 inheritedConfigs:
