@@ -347,7 +347,7 @@ postsubmits: # runs on main
               secretName: signify-dev-secret
     - name: post-keb-release-build
       annotations:
-        description: "KEB image build on main"
+        description: "KEB image build on tag creation"
         owner: "gopher"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -355,7 +355,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '.+'
       skip_report: false
       decorate: true
       cluster: trusted-workload
