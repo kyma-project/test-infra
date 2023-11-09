@@ -43,10 +43,9 @@ templates:
                   name: post-keb-release-build
                   annotations:
                     owner: "gopher"
-                    description: "KEB image build on main"
+                    description: "KEB image build on tag creation"
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: ".+"
                   branches:
                     - ^\d+\.\d+\.\d+(?:-.*)?$
                   args:
