@@ -139,8 +139,7 @@ templates:
                   args:
                     - "bash"
                     - "-c"
-                    - "make"
-                    - "k3d-lm-integration-test"
+                    - "make k3d-lm-integration-test"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
