@@ -68,7 +68,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231108-ffabd214"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231109-0dd1361f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -169,7 +169,7 @@ postsubmits: # runs on main
         - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231108-ffabd214"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231109-0dd1361f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -261,7 +261,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231108-ffabd214"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231109-0dd1361f"
             securityContext:
               privileged: false
               seccompProfile:

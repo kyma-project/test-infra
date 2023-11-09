@@ -16,7 +16,7 @@ presubmits:
       run_if_changed: '.*\.go$|charts/'
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231108-ffabd214
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231109-0dd1361f
             command: ["/init.sh"]
             args:
               - bash
