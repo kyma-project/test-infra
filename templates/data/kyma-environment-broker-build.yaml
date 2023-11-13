@@ -53,7 +53,7 @@ templates:
                     - '--context=./'
                     - '--dockerfile=Dockerfile.keb'
                     - '--config=/config/kaniko-build-config.yaml'
-                    - '--tag=$(PULL_BASE_REF)'
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -112,7 +112,7 @@ templates:
                     - '--dockerfile=Dockerfile.job'
                     - '--build-arg=BIN=environmentscleanup'
                     - '--config=/config/kaniko-build-config.yaml'
-                    - '--tag=$(PULL_BASE_REF)'
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -171,7 +171,7 @@ templates:
                     - '--dockerfile=Dockerfile.job'
                     - '--build-arg=BIN=accountcleanup'
                     - '--config=/config/kaniko-build-config.yaml'
-                    - '--tag=$(PULL_BASE_REF)'
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -230,7 +230,7 @@ templates:
                     - '--dockerfile=Dockerfile.job'
                     - '--build-arg=BIN=trialcleanup'
                     - '--config=/config/kaniko-build-config.yaml'
-                    - '--tag=$(PULL_BASE_REF)'
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -289,7 +289,7 @@ templates:
                     - '--dockerfile=Dockerfile.job'
                     - '--build-arg=BIN=deprovisionretrigger'
                     - '--config=/config/kaniko-build-config.yaml'
-                    - '--tag=$(PULL_BASE_REF)'
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -350,7 +350,7 @@ templates:
                     - "--dockerfile=Dockerfile.runtimereconciler"
                     - "--build-arg=BIN=runtime-reconciler"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--tag=$(PULL_BASE_REF)"
+                    - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
