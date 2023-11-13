@@ -33,7 +33,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: crier
-        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/crier:v20231030-70c8254b
+        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/crier:v20231113-4c4f7ee0
         args:
         - --blob-storage-workers=1
         - --config-path=/etc/config/config.yaml
