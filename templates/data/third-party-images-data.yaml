@@ -113,6 +113,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--env-file=envs"
                     - '--tag={{`{{ .Env \"REGISTRY_VERSION\" }}-{{ .ShortSHA }}`}}'
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - "jobConfig_postsubmit"
@@ -372,6 +373,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--env-file=envs"
                     - '--tag={{`{{ .Env \"KANIKO_VERSION\" }}-{{ .ShortSHA }}`}}'
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - "jobConfig_postsubmit"
