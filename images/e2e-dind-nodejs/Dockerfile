@@ -52,7 +52,7 @@ RUN curl -Lso install.sh https://raw.githubusercontent.com/k3d-io/k3d/main/insta
 #ARG KIND_VERSION=v0.18.0
 #RUN go install sigs.k8s.io/kind@${KIND_VERSION}
 
-ARG CLUSTER_VERSION=v1.27.7
+ARG CLUSTER_VERSION=v1.27.5
 RUN curl -Lo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${CLUSTER_VERSION}/bin/linux/$(go env GOARCH)/kubectl" && \
     chmod +x /usr/local/bin/kubectl
 
