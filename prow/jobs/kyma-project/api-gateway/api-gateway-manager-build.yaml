@@ -73,7 +73,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+(-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231109-0dd1361f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-fab6a9d3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -123,7 +123,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231109-0dd1361f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-fab6a9d3"
             securityContext:
               privileged: false
               seccompProfile:
@@ -168,7 +168,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231109-0dd1361f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-fab6a9d3"
             securityContext:
               privileged: false
               seccompProfile:
