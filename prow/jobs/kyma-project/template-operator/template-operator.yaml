@@ -217,13 +217,13 @@ postsubmits:
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: release-template-operator-artifacts
+    - name: release-template-operator-assets
       annotations:
-        description: "Job to upload remaining template-operator artifacts for a release."
+        description: "Job to upload remaining template-operator assets to a release."
         owner: "jellyfish"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "release-template-operator-artifacts"
+        prow.k8s.io/pubsub.runID: "release-template-operator-assets"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-bot-github-token: "true"
         preset-sa-kyma-push-images: "true"
@@ -243,7 +243,7 @@ postsubmits:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "./scripts/release/upload_artifacts.sh"
+              - "./scripts/release/upload_assets.sh"
             args:
               - "ci"
             env:
