@@ -21,7 +21,7 @@ periodics:
     spec:
       containers:
         - name: branchprotector
-          image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20231030-70c8254b
+          image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/branchprotector:v20231113-4c4f7ee0
           command: ["branchprotector"]
           args:
             - --config-path=prow/config.yaml
