@@ -1025,14 +1025,14 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-serverless-controller-python39-build
+    - name: post-serverless-runtimes-python39-build
       annotations:
         description: "function pytho3.9 build job"
         owner: "otters"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-serverless-controller-python39-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-runtimes-python39-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
