@@ -2,7 +2,7 @@
   templates:
     - from: generic.tmpl
       render:
-        - to: ../../prow/jobs/test-infra/pjconfigtests.yaml
+        - to: ../../prow/jobs/kyma-project/test-infra/pjconfigtests.yaml
           localSets:
             jobConfig_default:
               imagePullPolicy: "Always"

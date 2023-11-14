@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma/kyma-validation.yaml
+      - to: ../../prow/jobs/kyma-project/kyma/kyma-validation.yaml
         localSets:
           smaller_requests:
             request_memory: "1.5Gi"
@@ -15,7 +15,7 @@ templates:
                     description: "validates if all charts use correct image definition format"
                     owner: neighbors
                   run_if_changed: "^resources/"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231025-1c6a076e
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231113-32628507
                   command: "/ko-app/image-url-helper"
                   args:
                     - --resources-directory
@@ -37,7 +37,7 @@ templates:
                     description: "his tool validates if all images defined in charts exist"
                     owner: neighbors
                   run_if_changed: "^resources/"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231025-1c6a076e
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231113-32628507
                   command: "/ko-app/image-url-helper"
                   args:
                     - --resources-directory
@@ -62,7 +62,7 @@ templates:
                     - "-c"
                     - "shopt -s globstar;
                       hadolint --config .hadolint.yaml --no-color **/Dockerfile"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231025-a006e676
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231113-9154baa8
                 inheritedConfigs:
                   local:
                     - "smaller_requests"

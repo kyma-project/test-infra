@@ -4,6 +4,8 @@ on:
   schedule:
     # Run everyday at 5:00 AM
     - cron: "0 5 * * *"
+  workflow_dispatch:
+
 jobs:
   markdown-link-check:
     runs-on: ubuntu-latest
@@ -16,3 +18,23 @@ jobs:
           config-file: ".mlc.config.json"
           folder-path: "."
           max-depth: -1
+      - name: Send Notification to Slack
+        if: ${{ failure() }}
+        uses: slackapi/slack-github-action@e28cf165c92ffef168d23c5c9000cffc8a25e117
+        with:
+            payload: |
+              {
+                "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                "blocks": [
+                  {
+                    "type": "section",
+                    "text": {
+                      "type": "mrkdwn",
+                      "text": "Lint Markdown Links Daily build result: FAILED\nDetails: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                    }
+                  }
+                ]
+              }
+        env:
+            SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+            SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK

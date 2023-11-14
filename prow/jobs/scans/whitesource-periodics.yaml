@@ -28,7 +28,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -78,7 +78,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -128,7 +128,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -178,7 +178,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -228,7 +228,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -278,7 +278,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -328,7 +328,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -378,7 +378,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -430,7 +430,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -480,7 +480,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -530,7 +530,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -582,7 +582,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -634,7 +634,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -684,7 +684,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -734,7 +734,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -780,7 +780,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -806,14 +806,14 @@ periodics: # runs on schedule
                 cpu: 400m
   
 #-------------Release-----------------------------
-    - name: kyma-2.19-whitesource-scan
+    - name: kyma-2.20-whitesource-scan
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
         testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-2.19-whitesource-scan"
+        prow.k8s.io/pubsub.runID: "kyma-2.20-whitesource-scan"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-gc-project-env: "true"
         preset-kms-gc-project-env: "true"
@@ -829,10 +829,113 @@ periodics: # runs on schedule
       extra_refs:
         - org: kyma-project
           repo: kyma
+          base_ref: release-2.20
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/start-wssagent.sh"
+            env:
+              - name: DRYRUN
+                value: "false"
+              - name : REPO_NAME
+                value: kyma
+              - name: CREATE_SUBPROJECTS
+                value: "true"
+              - name: SCAN_LANGUAGE
+                value: golang-mod
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+    - name: cli-2.20-whitesource-scan
+      annotations:
+        description: "Periodic whitesource scan of Kyma repositories"
+        owner: "neighbors"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "cli-2.20-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kms-gc-project-env: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kyma-keyring: "true"
+        preset-wssagent-keys: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+        preset-whitesource-product-kyma-release: "true"
+      cron: "0 4 * * *"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: cli
+          base_ref: release-2.20
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "bash"
+            args:
+              - "-c"
+              - "/start-wssagent.sh"
+            env:
+              - name: DRYRUN
+                value: "false"
+              - name : REPO_NAME
+                value: cli
+              - name: CREATE_SUBPROJECTS
+                value: "false"
+              - name: SCAN_LANGUAGE
+                value: golang-mod
+            resources:
+              requests:
+                memory: 1Gi
+                cpu: 400m
+  
+
+#-------------Previous Release--------------------
+    - name: kyma-2.19-whitesource-scan
+      annotations:
+        description: "Periodic whitesource scan of Kyma repositories"
+        owner: "neighbors"
+        testgrid-create-test-group: "false"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "kyma-2.19-whitesource-scan"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-gc-project-env: "true"
+        preset-kms-gc-project-env: "true"
+        preset-kyma-encryption-key: "true"
+        preset-kyma-keyring: "true"
+        preset-wssagent-keys: "true"
+        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
+        preset-whitesource-product-kyma-release-previous: "true"
+      cron: "0 4 * * *"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: kyma
           base_ref: release-2.19
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -871,7 +974,7 @@ periodics: # runs on schedule
         preset-kyma-keyring: "true"
         preset-wssagent-keys: "true"
         preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-        preset-whitesource-product-kyma-release: "true"
+        preset-whitesource-product-kyma-release-previous: "true"
       cron: "0 4 * * *"
       skip_report: false
       decorate: true
@@ -882,110 +985,7 @@ periodics: # runs on schedule
           base_ref: release-2.19
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/start-wssagent.sh"
-            env:
-              - name: DRYRUN
-                value: "false"
-              - name : REPO_NAME
-                value: cli
-              - name: CREATE_SUBPROJECTS
-                value: "false"
-              - name: SCAN_LANGUAGE
-                value: golang-mod
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
-  
-
-#-------------Previous Release--------------------
-    - name: kyma-2.18-whitesource-scan
-      annotations:
-        description: "Periodic whitesource scan of Kyma repositories"
-        owner: "neighbors"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "kyma-2.18-whitesource-scan"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-kyma-encryption-key: "true"
-        preset-kyma-keyring: "true"
-        preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-        preset-whitesource-product-kyma-release-previous: "true"
-      cron: "0 4 * * *"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: kyma
-          base_ref: release-2.18
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/start-wssagent.sh"
-            env:
-              - name: DRYRUN
-                value: "false"
-              - name : REPO_NAME
-                value: kyma
-              - name: CREATE_SUBPROJECTS
-                value: "true"
-              - name: SCAN_LANGUAGE
-                value: golang-mod
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
-    - name: cli-2.18-whitesource-scan
-      annotations:
-        description: "Periodic whitesource scan of Kyma repositories"
-        owner: "neighbors"
-        testgrid-create-test-group: "false"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "cli-2.18-whitesource-scan"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-kyma-encryption-key: "true"
-        preset-kyma-keyring: "true"
-        preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-        preset-whitesource-product-kyma-release-previous: "true"
-      cron: "0 4 * * *"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: cli
-          base_ref: release-2.18
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231025-a006e676"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:

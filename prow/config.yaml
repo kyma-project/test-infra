@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231023-ede1a10a
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231023-ede1a10a
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231023-ede1a10a
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231023-ede1a10a
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231113-4c4f7ee0
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231113-4c4f7ee0
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231113-4c4f7ee0
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231113-4c4f7ee0
         resources:
           clonerefs:
             requests:
@@ -302,7 +302,7 @@ branch-protection:
           required_status_checks:
             contexts:
               - "run-unit-tests / build"
-              - "run-e2e-tests / run-e2e-tests"
+              - "run-e2e-tests / finish-e2e-tests"
               - "markdown-link-check"
               - "validate-labels"
         lifecycle-manager:
@@ -385,7 +385,7 @@ tide:
     kyma-project/kyma-environment-broker: squash
     kyma-project/istio: squash
     kyma-project/warden: squash
-    kyma-project/serverless-manager: squash
+    kyma-project/serverless: squash
     kyma-project/keda-manager: squash
     kyma-project/telemetry-manager: squash
     kyma-project/directory-size-exporter: squash
@@ -474,11 +474,11 @@ presets:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.26"
+        value: "1.27"
       - name: GKE_CLUSTER_VERSION
-        value: "1.26"
+        value: "1.27"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.26"
+        value: "1.27"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"

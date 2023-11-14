@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma/common/common.yaml
+      - to: ../../prow/jobs/kyma-project/kyma/common/common.yaml
         localSets:
           job_spec:
             command: make

@@ -2,7 +2,7 @@
   templates:
     - from: generic.tmpl
       render:
-        - to: ../../prow/jobs/test-infra/pjtester.yaml
+        - to: ../../prow/jobs/kyma-project/test-infra/pjtester.yaml
           localSets:
             jobConfig_default:
               imagePullPolicy: "Always"
@@ -23,7 +23,7 @@
                 - 'if [ -d /home/prow/go/src/github.com/kyma-project/test-infra/vpath ]; then (echo  \"Directory vpath is present. Remove it to merge PR\"; exit 1); else (echo \"Directory vpath is not present\"; exit 0); fi'
             jobConfig_pjtester:
               command: "/ko-app/pjtester"
-              image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20231025-1c6a076e
+              image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/pjtester:v20231113-32628507
               env:
                 KUBECONFIG_PATH: /etc/kubeconfig/pjtester/config
               volumeMounts:
@@ -66,7 +66,7 @@
                           {{- end}}
                     - jobConfig:
                         name: "pull-{{$repo.name}}-vpathguard"
-                        image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20231025-a006e676
+                        image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20231113-9154baa8
                         annotations:
                           description: "Run pjtester vpathguard for {{$repo.name}}"
                           owner: "neighbors"

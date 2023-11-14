@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
+      - to: ../../prow/jobs/kyma-project/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
@@ -38,7 +38,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - "disable_testgrid"
-      - to: ../../prow/jobs/kyma/components/eventing-controller/eventing-controller-generic.yaml
+      - to: ../../prow/jobs/kyma-project/kyma/components/eventing-controller/eventing-controller-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:

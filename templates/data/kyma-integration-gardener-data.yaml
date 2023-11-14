@@ -1,7 +1,7 @@
 templates:
   - fromTo:
       - from: generic.tmpl
-        to: ../../prow/jobs/kyma/kyma-integration-gardener-eventing.yaml
+        to: ../../prow/jobs/kyma-project/kyma/kyma-integration-gardener-eventing.yaml
     render:
       - localSets:
           extra_refs_busola:
@@ -13,9 +13,9 @@ templates:
           jobConfig_default:
             request_memory: 1Gi
             request_cpu: 400m
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231020-cd787c4d
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231113-9154baa8
           jobConfig_buildpack_node:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231020-cd787c4d"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231113-9154baa8"
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_presubmit:
@@ -127,7 +127,7 @@ templates:
 
   - fromTo:
       - from: generic.tmpl
-        to: ../../prow/jobs/kyma/kyma-integration-gardener.yaml
+        to: ../../prow/jobs/kyma-project/kyma/kyma-integration-gardener.yaml
     render:
       - localSets:
           extra_refs_busola:
@@ -137,11 +137,11 @@ templates:
                   repo: "busola"
                   base_ref: "main"
           jobConfig_default:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231020-cd787c4d
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231113-9154baa8
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_buildpack_node:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231020-cd787c4d"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231113-9154baa8"
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_presubmit:
