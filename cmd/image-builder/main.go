@@ -22,14 +22,14 @@ import (
 	"strings"
 	"sync"
 
+	"github.com/kyma-project/test-infra/pkg/sets"
+	"github.com/kyma-project/test-infra/pkg/sign"
+	"github.com/kyma-project/test-infra/pkg/tags"
 	ado "github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
 	adov7 "github.com/microsoft/azure-devops-go-api/azuredevops/v7"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
 	"golang.org/x/net/context"
-	"github.com/kyma-project/test-infra/pkg/sets"
-	"github.com/kyma-project/test-infra/pkg/sign"
-	"github.com/kyma-project/test-infra/pkg/tags"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
 	"k8s.io/utils/ptr"
 )
@@ -722,13 +722,11 @@ func main() {
 						fmt.Println(err)
 					}
 					os.Exit(0)
-				} else {
-					fmt.Printf("Pipeline run failed with status %s", *pipelineRun.Result)
-					os.Exit(1)
 				}
-			} else {
-				fmt.Println("Pipeline run is still in progress. Waiting for 60 seconds")
+				fmt.Printf("Pipeline run failed with status %s", *pipelineRun.Result)
+				os.Exit(1)
 			}
+			fmt.Println("Pipeline run is still in progress. Waiting for 60 seconds")
 		}
 	}
 	if o.SignOnly {
