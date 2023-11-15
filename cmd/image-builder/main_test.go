@@ -181,7 +181,7 @@ func TestFlags(t *testing.T) {
 			},
 			args: []string{
 				"--config=config.yaml",
-				"--Dockerfile=Dockerfile",
+				"--dockerfile=Dockerfile",
 				"--repo=kyma-project/test-infra",
 				"--Name=test-image",
 				"--tag=latest",
