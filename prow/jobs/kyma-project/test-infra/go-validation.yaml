@@ -11,11 +11,10 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-unit-test-go"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-bot-github-token: "true"
       run_if_changed: '.*\.go$'
       skip_report: false
       decorate: true
-      cluster: trusted-workload
+      cluster: untrusted-workload
       max_concurrency: 10
       branches:
         - ^main$
