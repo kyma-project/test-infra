@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20230925-22f1fe8b
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20230925-22f1fe8b
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20230925-22f1fe8b
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20230925-22f1fe8b
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231113-4c4f7ee0
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231113-4c4f7ee0
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231113-4c4f7ee0
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231113-4c4f7ee0
         resources:
           clonerefs:
             requests:
@@ -275,6 +275,10 @@ branch-protection:
           branches:
             ui5:
               protect: false
+        price-calculator:
+          branches:
+            gh-pages:
+              protect: false
         k8s-prow:
           protect: true
           required_status_checks:
@@ -298,9 +302,34 @@ branch-protection:
           required_status_checks:
             contexts:
               - "run-unit-tests / build"
-              - "run-e2e-tests / run-e2e-tests"
+              - "run-e2e-tests / finish-e2e-tests"
               - "markdown-link-check"
               - "validate-labels"
+        lifecycle-manager:
+          required_status_checks:
+            contexts:
+              - "E2E (kyma-deletion)"
+              - "E2E (kyma-metrics)"
+              - "E2E (module-status-propagation)"
+              - "E2E (module-without-default-cr)"
+              - "E2E (non-blocking-deletion)"
+              - "E2E (purge-controller)"
+              - "E2E (purge-metrics)"
+              - "E2E (watcher-enqueue)"
+              - "E2E (module-upgrade)"
+              - "Run 'make test'"
+              - "kyma (unstable) alpha deploy -k config/control-plane"
+              - "kyma (unstable) alpha deploy -k config/default"
+              - "lint"
+              - "Kustomize (dry-run)"
+              - "Kustomize (dry-run-control-plane)"
+        cli:
+          required_status_checks:
+            contexts:
+              - "Run E2E tests (test-kubebuilder-module-creation)"
+              - "Run E2E tests (test-moduleconfig-module-creation)"
+              - "Run E2E tests (test-same-version-module-creation)"
+              - "lint"
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
@@ -356,7 +385,7 @@ tide:
     kyma-project/kyma-environment-broker: squash
     kyma-project/istio: squash
     kyma-project/warden: squash
-    kyma-project/serverless-manager: squash
+    kyma-project/serverless: squash
     kyma-project/keda-manager: squash
     kyma-project/telemetry-manager: squash
     kyma-project/directory-size-exporter: squash
@@ -445,11 +474,11 @@ presets:
       preset-cluster-version: "true"
     env:
       - name: AKS_CLUSTER_VERSION
-        value: "1.26"
+        value: "1.27"
       - name: GKE_CLUSTER_VERSION
-        value: "1.26"
+        value: "1.27"
       - name: GARDENER_CLUSTER_VERSION
-        value: "1.26"
+        value: "1.27"
   # test clusters log collector
   - labels:
       preset-log-collector-slack-token: "true"
@@ -459,12 +488,6 @@ presets:
           secretKeyRef:
             name: log-collector-slack-token
             key: token
-  # debug commando
-  - labels:
-      preset-debug-commando-oom: "true"
-    env:
-      - name: DEBUG_COMMANDO_OOM
-        value: "true"
   - labels:
       preset-certificates-bucket: "true"
     env:

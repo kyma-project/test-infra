@@ -32,8 +32,6 @@ export SHELLCHECK_OPTS="-e SC2034 -e SC2181 -e SC2155"
 # export SHELLCHECK_OPTS="${SHELLCHECK_OPTS} -e SC1090 -e SC2154 -e SC2270 -e SC2285"
 
 
-
-find "./development/" -type f -name "*.sh" -exec "shellcheck" -x {} +
 find "./prow" -type f -name "*.sh" -exec "shellcheck" -x {} +
 
 log::info "No issues detected!"

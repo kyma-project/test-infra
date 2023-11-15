@@ -3,13 +3,13 @@
 
 presubmits: # runs on PRs
   kyma-project/warden:
-    - name: pull-admission-build
+    - name: pre-warden-admission-build
       annotations:
         description: "Warden admission build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-admission-build"
+        prow.k8s.io/pubsub.runID: "pre-warden-admission-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '.*\.go|docker/admission/'
@@ -50,13 +50,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-operator-build
+    - name: pre-warden-operator-build
       annotations:
         description: "Warden operator build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-operator-build"
+        prow.k8s.io/pubsub.runID: "pre-warden-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '.*\.go|docker/operator/'
@@ -97,13 +97,51 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pull-warden-lint
+    - name: pre-warden-module-build
+      annotations:
+        description: "warden module build job"
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-warden-module-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^\.env$|^(go\.mod|go\.sum)$|^(.*/)?(.*\.go|Makefile|.*\.sh|.*\.yaml|Dockerfile)$|^PROJECT$'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-.*$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-9154baa8"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "make"
+            args:
+              - "ci-module-build"
+            env:
+              - name: MODULE_REGISTRY
+                value: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+              - name: MODULE_SHA
+                value: "PR-${PULL_NUMBER}"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+    - name: pre-warden-lint
       annotations:
         description: "executes the 'golangci-lint lint' command before any pull request."
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-warden-lint"
+        prow.k8s.io/pubsub.runID: "pre-warden-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
       optional: true
@@ -125,18 +163,18 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "golangci-lint run"
+              - "golangci-lint run --timeout=15m && echo 'OK!'"
             resources:
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: pull-warden-unit-test
+    - name: pre-warden-unit-test
       annotations:
         description: "Warden unit test job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-warden-unit-test"
+        prow.k8s.io/pubsub.runID: "pre-warden-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
       run_if_changed: '.*\.go$'
       skip_report: false
@@ -145,17 +183,19 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-9154baa8"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/bin/sh"
+              - "make"
             args:
-              - "-c"
-              - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+              - "test"
+            env:
+              - name: TEST_COVER_OUT
+                value: "${ARTIFACTS}/filtered.cov"
             resources:
               requests:
                 memory: 1Gi
@@ -163,13 +203,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/warden:
-    - name: post-admission-build
+    - name: post-warden-admission-build
       annotations:
         description: "Warden admission build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-admission-build"
+        prow.k8s.io/pubsub.runID: "post-warden-admission-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -193,6 +233,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=docker/admission/Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -211,13 +252,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-operator-build
+    - name: post-warden-operator-build
       annotations:
         description: "Warden operator build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-operator-build"
+        prow.k8s.io/pubsub.runID: "post-warden-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -241,6 +282,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=docker/operator/Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -259,4 +301,79 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+    - name: post-warden-module-build
+      annotations:
+        description: "warden module build job"
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-warden-module-build"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: '^\.env$|^(go\.mod|go\.sum)$|^(.*/)?(.*\.go|Makefile|.*\.sh|.*\.yaml|Dockerfile)$|^PROJECT$'
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-.*$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-9154baa8"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "make"
+            args:
+              - "ci-module-build"
+            env:
+              - name: MODULE_REGISTRY
+                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+              - name: MODULE_SHA
+                value: "${PULL_BASE_SHA}"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+    - name: post-warden-verify
+      annotations:
+        description: "LM intergration test"
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-warden-verify"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231113-9154baa8"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "make k3d-lm-integration-test"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
   

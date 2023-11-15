@@ -1,7 +1,7 @@
 templates:
   - fromTo:
       - from: generic.tmpl
-        to: ../../prow/jobs/kyma/kyma-integration-gardener-eventing.yaml
+        to: ../../prow/jobs/kyma-project/kyma/kyma-integration-gardener-eventing.yaml
     render:
       - localSets:
           extra_refs_busola:
@@ -13,11 +13,9 @@ templates:
           jobConfig_default:
             request_memory: 1Gi
             request_cpu: 400m
-            labels:
-              preset-debug-commando-oom: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230913-3d41bb28
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231113-9154baa8
           jobConfig_buildpack_node:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231113-9154baa8"
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_presubmit:
@@ -129,7 +127,7 @@ templates:
 
   - fromTo:
       - from: generic.tmpl
-        to: ../../prow/jobs/kyma/kyma-integration-gardener.yaml
+        to: ../../prow/jobs/kyma-project/kyma/kyma-integration-gardener.yaml
     render:
       - localSets:
           extra_refs_busola:
@@ -139,13 +137,11 @@ templates:
                   repo: "busola"
                   base_ref: "main"
           jobConfig_default:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20230913-3d41bb28
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231113-9154baa8
             request_memory: 1Gi
             request_cpu: 400m
-            labels:
-              preset-debug-commando-oom: "true"
           jobConfig_buildpack_node:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20230913-3d41bb28"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231113-9154baa8"
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_presubmit:
@@ -198,53 +194,6 @@ templates:
           - repoName: kyma-project/kyma
             jobs:
               # periodics
-              - jobConfig:
-                  name: kyma-integration-evaluation-gardener-azure
-                  annotations:
-                    owner: huskies
-                    testgrid-dashboards: kyma_integration
-                    description: Evaluation profile for Kyma Azure Gardener integration job.
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 2,14 * * *"
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                  local:
-                    - jobConfig_default
-                    - gardener_azure_job
-                    - command_integration
-                    - evaluation_profile
-              - jobConfig:
-                  name: kyma-integration-production-gardener-azure
-                  annotations:
-                    owner: huskies
-                    testgrid-dashboards: kyma_integration
-                    description: Production profile for Kyma Azure Gardener integration job.
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 1,13 * * *"
-                  slack_channel: huskies-notifications
-                  labels:
-                    preset-log-collector-slack-token: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                  local:
-                    - jobConfig_default
-                    - gardener_azure_job
-                    - command_integration
-                    - production_profile
               - jobConfig:
                   name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
                   annotations:

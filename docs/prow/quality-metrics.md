@@ -49,8 +49,7 @@ You can check this report [here](https://datastudio.google.com/open/1TmjzxgO8yTG
 
 ## Bugs and regression metrics
 
-[GithubStats application](https://github.com/kyma-project/test-infra/tree/main/development/tools/cmd/githubstats) 
-is used to gather data on bugs and regressions. It is executed as a [Prow job](https://status.build.kyma-project.io/?job=github-stats) once a day. The data are grabbed by Stackdriver export and forwarded to BigQuery.
+The GithubStats application is used to gather data on bugs and regressions. It is executed as a [Prow job](https://status.build.kyma-project.io/?job=github-stats) once a day. The data are grabbed by Stackdriver export and forwarded to BigQuery.
 A JSON object is automatically flattened into multiple columns.
 
 The Prow job creates the following output:

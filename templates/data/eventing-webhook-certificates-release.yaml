@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/eventing-webhook/eventing-webhook-certificates-release.yaml
+      - to: ../../prow/jobs/kyma-project/api-gateway/eventing-webhook/eventing-webhook-certificates-release.yaml
         localSets:
           goreleaser:
             skip_report: "false"

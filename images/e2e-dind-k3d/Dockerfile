@@ -1,4 +1,4 @@
-FROM golang:1.21.1-alpine as base
+FROM golang:1.21.2-alpine as base
 
 
 RUN set -eux; \
@@ -54,13 +54,13 @@ RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go en
     tar -xzOf helm.tar.gz "linux-$(go env GOARCH)/helm" > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm
 
-ARG CLUSTER_VERSION=v1.26.7
+ARG CLUSTER_VERSION=v1.27.5
 RUN curl -Lo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${CLUSTER_VERSION}/bin/linux/$(go env GOARCH)/kubectl" && \
     chmod +x /usr/local/bin/kubectl
 
 FROM base AS tools
 
-RUN CGO_ENABLED=0 go install github.com/kyma-project/test-infra/development/jobguard/cmd/jobguard@main
+RUN CGO_ENABLED=0 go install github.com/kyma-project/test-infra/cmd/jobguard@main
 
 FROM base
 

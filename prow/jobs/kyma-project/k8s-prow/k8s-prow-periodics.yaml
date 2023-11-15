@@ -5,7 +5,7 @@ periodics:
       description: Automatically sync changes of the upstream with fork
     reporter_config:
       slack:
-        channel: kyma-prow-alerts
+        channel: kyma-neighbors-alerts
         job_states_to_report:
           - success
           - failure
@@ -21,7 +21,7 @@ periodics:
     cluster: trusted-workload
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20230913-3d41bb28
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231113-9154baa8
           env:
             - name: UPSTREAM_REPO
               value: github.com/kubernetes/test-infra
@@ -62,7 +62,7 @@ periodics:
       description: Release new version once a week
     reporter_config:
       slack:
-        channel: kyma-prow-alerts
+        channel: kyma-neighbors-alerts
         job_states_to_report:
           - success
           - failure
@@ -78,7 +78,7 @@ periodics:
     cluster: trusted-workload
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20230913-3d41bb28
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231113-9154baa8
           securityContext:
             privileged: false
             seccompProfile:
@@ -102,7 +102,7 @@ periodics:
               git config --global user.name "Kyma Bot"
               git clone --depth=1 https://github.com/kyma-project/k8s-prow.git && cd k8s-prow
               git remote set-url --push origin https://kyma-bot:$GITHUB_TOKEN@github.com/kyma-project/k8s-prow.git
-              tag=$(date +%Y.%-m.%d)
+              tag=$(date +%Y.%-m.%-d)
               git tag "$tag"
               git push origin "$tag"
               echo "✅  Done"
@@ -125,10 +125,10 @@ periodics:
         base_ref: main
     reporter_config:
       slack:
-        channel: kyma-prow-alerts
+        channel: kyma-neighbors-alerts
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20230925-22f1fe8b"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231113-4c4f7ee0"
           securityContext:
             privileged: false
             seccompProfile:

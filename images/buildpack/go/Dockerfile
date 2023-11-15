@@ -3,7 +3,7 @@ FROM local/buildpack:latest
 ARG KUSTOMIZE_VERSION=v5.1.1
 ARG KUBEBUILDER_VERSION=v3.11.1
 ARG KO_VERSION=d4a1cc961c9064e9fd616ab39a9ace6cafacf2cd
-ARG GO_VERSION=1.21.1
+ARG GO_VERSION=1.21.2
 
 # install go
 ENV GOPATH /go
@@ -111,7 +111,7 @@ RUN set -eux; \
     chmod +x kubebuilder && mv kubebuilder /go/bin/ && \
     CGO_ENABLED=0 go install "github.com/google/ko@${KO_VERSION}" && \
     CGO_ENABLED=0 go install "sigs.k8s.io/kustomize/kustomize/v5@${KUSTOMIZE_VERSION}" && \
-    CGO_ENABLED=0 go install github.com/kyma-project/test-infra/development/jobguard/cmd/jobguard@main; \
+    CGO_ENABLED=0 go install github.com/kyma-project/test-infra/cmd/jobguard@main; \
     go clean -cache; \
     go clean -modcache
 

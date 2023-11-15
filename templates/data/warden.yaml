@@ -7,16 +7,22 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20230913-3d41bb28"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-9154baa8"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
             request_cpu: 100m
+          e2e_dind:
+            labels:
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231113-9154baa8
+            command: "/init.sh"
         jobConfigs:
           - repoName: "github.com/kyma-project/warden"
             jobs:
               - jobConfig:
-                  name: pull-admission-build
+                  name: pre-warden-admission-build
                   annotations:
                     owner: otters
                     description: Warden admission build job
@@ -31,7 +37,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-admission-build
+                  name: post-warden-admission-build
                   annotations:
                     owner: otters
                     description: Warden admission build job
@@ -42,13 +48,14 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/admission/Dockerfile"
+                    - "--tag=latest"
                   run_if_changed: '.*\.go|docker/admission/'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
               - jobConfig:
-                  name: pull-operator-build
+                  name: pre-warden-operator-build
                   annotations:
                     owner: otters
                     description: Warden operator build job
@@ -63,7 +70,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-operator-build
+                  name: post-warden-operator-build
                   annotations:
                     owner: otters
                     description: Warden operator build job
@@ -74,14 +81,77 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/operator/Dockerfile"
+                    - "--tag=latest"
                   run_if_changed: '.*\.go|docker/operator/'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+              - jobConfig:
+                  name: pre-warden-module-build
+                  annotations:
+                    owner: otters
+                    description: warden module build job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+                    MODULE_SHA: "PR-${PULL_NUMBER}"
+                  run_if_changed: "^\\.env$|^(go\\.mod|go\\.sum)$|^(.*/)?(.*\\.go|Makefile|.*\\.sh|.*\\.yaml|Dockerfile)$|^PROJECT$"
+                  command: "make"
+                  args:
+                    - "ci-module-build"
+                  branches:
+                    - ^main$
+                    - ^release-.*$
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-warden-module-build
+                  annotations:
+                    owner: otters
+                    description: warden module build job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    MODULE_SHA: "${PULL_BASE_SHA}"
+                  run_if_changed: "^\\.env$|^(go\\.mod|go\\.sum)$|^(.*/)?(.*\\.go|Makefile|.*\\.sh|.*\\.yaml|Dockerfile)$|^PROJECT$"
+                  command: "make"
+                  args:
+                    - "ci-module-build"
+                  branches:
+                    - ^main$
+                    - ^release-.*$
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: post-warden-verify
+                  annotations:
+                    owner: otters
+                    description: LM intergration test
+                  optional: true
+                  always_run: true
+                  args:
+                    - "bash"
+                    - "-c"
+                    - "make k3d-lm-integration-test"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_postsubmit
+                  local:
+                    - e2e_dind
               - jobConfig:
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
-                  name: pull-warden-lint
+                  name: pre-warden-lint
                   optional: true
                   run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
                   annotations:
@@ -90,7 +160,7 @@ templates:
                   command: "bash"
                   args:
                     - "-c"
-                    - "golangci-lint run"
+                    - "golangci-lint run --timeout=15m && echo 'OK!'"
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -98,14 +168,15 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
               - jobConfig:
-                  name: pull-warden-unit-test
+                  name: pre-warden-unit-test
                   annotations:
                     owner: otters
                     description: Warden unit test job
-                  command: "/bin/sh"
+                  command: "make"
                   args:
-                    - "-c"
-                    - "go test -coverprofile=$ARTIFACTS/filtered.cov ./..."
+                    - "test"
+                  env:
+                    TEST_COVER_OUT: ${ARTIFACTS}/filtered.cov
                   run_if_changed: '.*\.go$'
                 inheritedConfigs:
                   global:

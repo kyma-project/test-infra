@@ -4,24 +4,16 @@ set -o nounset
 set -o errexit
 set -o pipefail
 
-readonly SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-readonly TEST_INFRA_SOURCES_DIR="$(cd "${SCRIPT_DIR}/../../" && pwd)"
+echo "Running jobs generator tool..."
 
-# shellcheck source=prow/scripts/lib/log.sh
-source "${SCRIPT_DIR}/lib/log.sh"
+go run cmd/tools/rendertemplates/main.go --config templates/config.yaml --templates templates/templates --data templates/data
 
-log::info "Running jobs generator tool..."
-
-cd "${TEST_INFRA_SOURCES_DIR}"
-# TODO use rendertemplates binary instead of building one
-go run development/tools/cmd/rendertemplates/main.go --config "${TEST_INFRA_SOURCES_DIR}"/templates/config.yaml --templates "${TEST_INFRA_SOURCES_DIR}"/templates/templates --data "${TEST_INFRA_SOURCES_DIR}"/templates/data
-
-log::info "Looking for job definition and rendered job files inconsistency..."
+echo "Looking for job definition and rendered job files inconsistency..."
 
 CHANGES=$(git status --porcelain)
 if [[ -n "${CHANGES}" ]]; then
-  log::error "Rendered job files does not match templates and the configuration:"
-  log::info "${CHANGES}"
+  echo "Rendered job files does not match templates and the configuration:"
+  echo "${CHANGES}"
 
   echo "
     Run:
@@ -32,4 +24,4 @@ if [[ -n "${CHANGES}" ]]; then
   exit 1
 fi
 
-log::info "Rendered job files are up to date"
+echo "Rendered job files are up to date"
