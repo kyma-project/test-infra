@@ -5,6 +5,9 @@ dev-registry:
   - europe-docker.pkg.dev/kyma-project/dev
 reproducible: false
 log-format: json
+ado-organization-url: https://dev.azure.com/hyperspace-pipelines
+ado-project-name: kyma
+ado-pipeline-id: 14902
 cache:
   enabled: true
   cache-repo: europe-docker.pkg.dev/kyma-project/cache/cache
