@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      cli:
+      - pjName: "pull-cli-unit-test"
+prConfigs: #
+  kyma-project:
+    cli: 
+      prNumber: 1847
