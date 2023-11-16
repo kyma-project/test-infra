@@ -153,14 +153,14 @@ templates:
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
                   name: pre-warden-lint
                   optional: true
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)"
+                  run_if_changed: "^(go.mod|go.sum|.golangci.yaml)$|^*/(.*.go|Makefile|.*.sh)$"
                   annotations:
                     owner: otters
                     description: executes the 'golangci-lint lint' command before any pull request.
                   command: "bash"
                   args:
                     - "-c"
-                    - "golangci-lint run --timeout=15m && echo 'OK!'"
+                    - "golangci-lint run -v && echo 'OK!'"
                   branches:
                     - ^main$
                 inheritedConfigs:
