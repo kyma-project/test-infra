@@ -49,7 +49,7 @@ jobs:
 
       - name: Setup Terraform
         id: setup_terraform
-        uses: hashicorp/setup-terraform@v2.0.3
+        uses: opentofu/setup-opentofu@b06654f7ba51088e987c0a454d042360df3ebe86
 
       - name: Setup GitHub comments
         id: setup-github-comment
@@ -66,13 +66,13 @@ jobs:
 
       - name: Terraform Init
         id: terraform_init
-        run: terraform -chdir=./configs/terraform/environments/prod init -input=false
+        run: tofu -chdir=./configs/terraform/environments/prod init -input=false
 
       - name: Terraform Plan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: terraform_plan
-        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number }} -sha ${{ github.event.pull_request.head.sha }} plan -- terraform -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
+        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number }} -sha ${{ github.event.pull_request.head.sha }} plan -- tofu -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
 
       - name: Hide GitHub comment
         env:
