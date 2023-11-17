@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/telemetry-manager/telemetry-manager-generic.yaml
+      - to: ../../prow/jobs/kyma-project/telemetry-manager/telemetry-manager-generic.yaml
         localSets:
           job_default:
             securityContext:
@@ -79,7 +79,7 @@ templates:
                     - "release"
                   branches:
                     - "^\\d+\\.\\d+\\.\\d+$" # Regex for release tag
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231020-cd787c4d"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231116-f4a33e90"
                 inheritedConfigs:
                   global:
                     - jobConfig_default

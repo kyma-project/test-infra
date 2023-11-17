@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma/components/event-publisher-proxy/event-publisher-proxy-checks.yaml
+      - to: ../../prow/jobs/kyma-project/kyma/components/event-publisher-proxy/event-publisher-proxy-checks.yaml
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -37,7 +37,7 @@ templates:
                     - testing
                     - "jobConfig_presubmit"
                     - "unprivileged"
-      - to: ../../prow/jobs/kyma/components/eventing-controller/eventing-controller-checks.yaml
+      - to: ../../prow/jobs/kyma-project/kyma/components/eventing-controller/eventing-controller-checks.yaml
         jobConfigs:
           - repoName: "kyma-project/kyma"
             jobs:
@@ -75,7 +75,7 @@ templates:
                     - "unprivileged"
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma/components/kyma-components-static-checks.yaml
+      - to: ../../prow/jobs/kyma-project/kyma/components/kyma-components-static-checks.yaml
         localSets:
           linting:
             skip_report: "false"
@@ -92,51 +92,12 @@ templates:
             max_concurrency: "10"
             optional: "true"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231020-cd787c4d"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231116-f4a33e90"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
             request_cpu: 100m
         jobConfigs:
-          - repoName: "kyma-project/telemetry-manager"
-            jobs:
-              - jobConfig:
-                  name: "pull-telemetry-manager-lint"
-                  annotations:
-                    owner: huskies
-                    description: runs linting on telemetry-manager repo
-                  request_cpu: 200m
-                  request_memory: 500Mi
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "make lint"
-                  run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.*\.md$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - linting
-                    - "unprivileged"
-              - jobConfig:
-                  name: "pull-telemetry-manager-unit-test"
-                  annotations:
-                    owner: huskies
-                    description: runs unit tests telemetry-manager repo
-                  request_cpu: 200m
-                  request_memory: 1.5Gi
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "make test"
-                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$|Makefile'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
-                    - "unprivileged"
-
           - repoName: "kyma-project/directory-size-exporter"
             jobs:
               - jobConfig:

@@ -1,7 +1,7 @@
 templates:
   - fromTo:
       - from: generic.tmpl
-        to: ../../prow/jobs/kyma/keb-endpoints-test.yaml
+        to: ../../prow/jobs/kyma-project/kyma-environment-broker/keb-endpoints-test.yaml
     render:
       - localSets:
           jobConfig_default:
@@ -11,7 +11,7 @@ templates:
               - testing/e2e/skr
               - keb-endpoints
             cluster: "trusted-workload"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231020-cd787c4d
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231116-f4a33e90
             request_memory: 100Mi
             request_cpu: 50m
             labels:
@@ -20,6 +20,7 @@ templates:
           kyma_integration_subaccount:
             env:
               KEB_SUBACCOUNT_ID: "prow-keb-integration"
+              KEB_PLATFORM_REGION: "cf-eu10"
         jobConfigs:
           - repoName: "kyma-project/kyma-environment-broker"
             jobs:

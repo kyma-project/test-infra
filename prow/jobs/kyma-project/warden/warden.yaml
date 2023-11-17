@@ -116,7 +116,7 @@ presubmits: # runs on PRs
         - ^release-.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231020-cd787c4d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231116-f4a33e90"
             securityContext:
               privileged: false
               seccompProfile:
@@ -143,7 +143,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-warden-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum|.golangci.yaml)$|^*/(.*.go|Makefile|.*.sh)$'
       optional: true
       skip_report: false
       decorate: true
@@ -163,7 +163,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "golangci-lint run"
+              - "golangci-lint run -v && echo 'OK!'"
             resources:
               requests:
                 memory: 3Gi
@@ -183,7 +183,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231020-cd787c4d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231116-f4a33e90"
             securityContext:
               privileged: false
               seccompProfile:
@@ -233,6 +233,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=docker/admission/Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -281,6 +282,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=docker/operator/Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -318,7 +320,7 @@ postsubmits: # runs on main
         - ^release-.*$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231020-cd787c4d"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231116-f4a33e90"
             securityContext:
               privileged: false
               seccompProfile:
@@ -333,6 +335,43 @@ postsubmits: # runs on main
                 value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
               - name: MODULE_SHA
                 value: "${PULL_BASE_SHA}"
+            resources:
+              requests:
+                memory: 3Gi
+                cpu: 2
+    - name: post-warden-verify
+      annotations:
+        description: "LM intergration test"
+        owner: "otters"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "post-warden-verify"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-dind-enabled: "true"
+        preset-kind-volume-mounts: "true"
+      always_run: true
+      optional: true
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231116-f4a33e90"
+            securityContext:
+              privileged: true
+              seccompProfile:
+                type: Unconfined
+              allowPrivilegeEscalation: true
+            command:
+              - "/init.sh"
+            args:
+              - "bash"
+              - "-c"
+              - "make k3d-lm-integration-test"
             resources:
               requests:
                 memory: 3Gi

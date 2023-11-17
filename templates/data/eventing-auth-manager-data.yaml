@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/eventing-auth-manager/eventing-auth-manager-generic.yaml
+      - to: ../../prow/jobs/kyma-project/eventing-auth-manager/eventing-auth-manager-generic.yaml
         jobConfigs:
           - repoName: "github.com/kyma-project/eventing-auth-manager"
             jobs:

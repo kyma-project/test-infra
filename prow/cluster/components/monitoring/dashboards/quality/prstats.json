@@ -755,7 +755,7 @@
             "orderBySort": "2",
             "queryParams": "",
             "rawQuery": true,
-            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as serverless_manager\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"serverless-manager\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as serverless_manager\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"serverless\") AND pull_request.url != \"NULL\"\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
             "refId": "L",
             "select": [
               [
@@ -1877,7 +1877,7 @@
             "orderBySort": "2",
             "queryParams": "",
             "rawQuery": true,
-            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as serverless_manager\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"serverless-manager\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
+            "rawSql": "SELECT concat(year,\"-\",month) as Time, repository, count(repository) as serverless_manager\n\nFROM (WITH pulls AS\n(\n  (\n   SELECT DISTINCT \n        repository.name as repository,\n        created_at,\n    FROM `sap-kyma-prow.github_issues.github_com_kyma_project`\n    WHERE repository.name IN (\"serverless\") AND pull_request.url != \"NULL\" and closed_at is null\n  )\n)\nSELECT FORMAT_TIMESTAMP( \"%Y\", created_at, \"UTC\") as year, FORMAT_TIMESTAMP( \"%m\", created_at, \"UTC\") as month, created_at, repository from pulls\n\n)\ngroup by Time, repository\norder by Time desc",
             "refId": "N",
             "select": [
               [

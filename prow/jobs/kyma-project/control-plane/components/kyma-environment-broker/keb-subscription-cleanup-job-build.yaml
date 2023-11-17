@@ -50,7 +50,7 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
   
 postsubmits: # runs on main
-  kyma-project/control-plane:
+  kyma-project/kyma-environment-broker:
     - name: post-keb-subscription-cleanup-job-build
       annotations:
         description: "Cleaning dirty secrets and Azure resources job build on main https://github.com/kyma-project/control-plane/issues/42"
