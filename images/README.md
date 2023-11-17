@@ -10,3 +10,22 @@ To add additional applications into the images, open a PR with changes. Follow t
 * Always build from a source to ensure compiler vulnerabilities do not affect the resulting binary
 * Link the binary to a specific version so that it's easier to update when necessary 
 * Build binaries in a separate stage, then copy the resulting binary into the final image to ensure images are small and contain the least number of layers
+
+## Writing image tests
+
+to write simple smoke tests with your image, add an **executable** file called `test.sh`.
+The scripts should contain all steps that perform basic or advanced test operations against the image. You are allowed to use all binaries available in [E2E DinD K3d image](./e2e-dind-k3d) to test built image.
+Test script **must** exit with non-zero number, if any of the steps failed.
+
+By default, current context of a test script will always be Docker build context. Image name is passed as a variable `IMG`.
+
+### Example
+
+The example below showcases the example definition of test.sh script.
+```shell
+#!/usr/bin/env bash
+set -e
+echo "$IMG"
+docker run --rm $IMG -- some-command
+test $? -eq 0 || exit 1
+```
