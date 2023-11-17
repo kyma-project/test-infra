@@ -143,7 +143,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-warden-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)'
+      run_if_changed: '^(go.mod|go.sum|.golangci.yaml)$|^*/(.*.go|Makefile|.*.sh)$'
       optional: true
       skip_report: false
       decorate: true
@@ -163,7 +163,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "golangci-lint run --timeout=15m && echo 'OK!'"
+              - "golangci-lint run -v && echo 'OK!'"
             resources:
               requests:
                 memory: 3Gi
