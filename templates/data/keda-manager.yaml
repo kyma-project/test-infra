@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager.yaml
+      - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager-build.yaml
         localSets:
           job_build:
             skip_report: "false"
@@ -33,114 +33,9 @@ templates:
           limits:
             limits_memory: 3Gi
             limits_cpu: 2
-          dind_job_k3d:
-            annotations:
-            labels:
-              preset-kyma-guard-bot-github-token: "true"
-              preset-kind-volume-mounts: "true"
-              preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-05130964
-            command: "/init.sh"
-            request_memory: "4Gi"
-            request_cpu: "3"
-            limits_memory: "4Gi"
-            limits_cpu: "3"
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
-              - jobConfig:
-                  name: keda-operator-nightly-periodic
-                  cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
-                  annotations:
-                    owner: otters
-                    description: Keda nightly verify
-                    testgrid-dashboards: keda-nightly
-                    testgrid-days-of-results: "60"
-                  cluster: "trusted-workload"
-                  args:
-                    - bash
-                    - -c
-                    - |
-                      make -C hack/ci run-with-lifecycle-manager
-                  extra_refs:
-                    keda-manager:
-                      - org: kyma-project
-                        repo: keda-manager
-                        base_ref: main
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - privileged
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                  local:
-                    - dind_job_k3d
-              - jobConfig:
-                  name: release-keda-manager-build
-                  annotations:
-                    owner: otters
-                    description: Job to build keda module for a release.
-                  always_run: true
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  args:
-                    - "--name=keda-manager"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=."
-                    - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
-                  branches:
-                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                  local:
-                    - job_build
-                    - limits
-              - jobConfig:
-                  name: release-keda-manager-module-build
-                  annotations:
-                    owner: otters
-                    description: Job to build keda module for a release.
-                  always_run: true
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                    preset-bot-github-token: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_REF}"
-                  command: "./scripts/release.sh"
-                  args:
-                    - "ci"
-                  branches:
-                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                  local:
-                    - limits
-              - jobConfig:
-                  name: pre-keda-manager-operator-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
-                  run_if_changed: "^(go.mod|go.sum|main.go|.golangci.yaml)$|^*/(.*.go|Makefile|.*.sh)$"
-                  annotations:
-                    owner: otters
-                    description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
-                  command: "bash"
-                  optional: "true"
-                  args:
-                    - "-c"
-                    - "golangci-lint run -v && echo 'OK!'"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
               - jobConfig:
                   name: pre-keda-module-build
                   annotations:
@@ -191,25 +86,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
               - jobConfig:
-                  name: pre-keda-manager-operator-tests
-                  annotations:
-                    owner: otters
-                    description: keda operator tests
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "make test"
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - build_labels # default labels
-                    - unprivileged
-              - jobConfig:
                   name: pre-keda-manager-operator-build
                   annotations:
                     owner: otters
@@ -247,6 +123,116 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - job_build
+              - jobConfig:
+                  name: release-keda-manager-build
+                  annotations:
+                    owner: otters
+                    description: Job to build keda module for a release.
+                  always_run: true
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=keda-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                  branches:
+                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - job_build
+                    - limits
+              - jobConfig:
+                  name: release-keda-manager-module-build
+                  annotations:
+                    owner: otters
+                    description: Job to build keda module for a release.
+                  always_run: true
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                    preset-bot-github-token: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_REF}"
+                  command: "./scripts/release.sh"
+                  args:
+                    - "ci"
+                  branches:
+                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - limits
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager-lint.yaml
+        jobConfigs:
+          - repoName: github.com/kyma-project/keda-manager
+            jobs:
+              - jobConfig:
+                  name: pre-keda-manager-operator-lint
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  run_if_changed: "^(go.mod|go.sum|main.go|.golangci.yaml)$|^*/(.*.go|Makefile|.*.sh)$"
+                  annotations:
+                    owner: otters
+                    description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
+                  command: "bash"
+                  optional: "true"
+                  args:
+                    - "-c"
+                    - "golangci-lint run -v && echo 'OK!'"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager-verify.yaml
+        localSets:
+          dind_job_k3d:
+            annotations:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-05130964
+            command: "/init.sh"
+            request_memory: "4Gi"
+            request_cpu: "3"
+            limits_memory: "4Gi"
+            limits_cpu: "3"
+        jobConfigs:
+          - repoName: github.com/kyma-project/keda-manager
+            jobs:
+              - jobConfig:
+                  name: pre-keda-manager-operator-tests
+                  annotations:
+                    owner: otters
+                    description: keda operator tests
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "make test"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - build_labels # default labels
+                    - unprivileged
               - jobConfig:
                   name: pre-keda-manager-verify
                   annotations:
@@ -304,6 +290,33 @@ templates:
                     - jobConfig_default
                     - privileged
                     - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
+              - jobConfig:
+                  name: keda-operator-nightly-periodic
+                  cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
+                  annotations:
+                    owner: otters
+                    description: Keda nightly verify
+                    testgrid-dashboards: keda-nightly
+                    testgrid-days-of-results: "60"
+                  cluster: "trusted-workload"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C hack/ci run-with-lifecycle-manager
+                  extra_refs:
+                    keda-manager:
+                      - org: kyma-project
+                        repo: keda-manager
+                        base_ref: main
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_periodic
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
