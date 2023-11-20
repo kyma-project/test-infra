@@ -200,7 +200,7 @@ func runInAzureDevOps(templateParameters map[string]string, adoOrganizationURL, 
 	adoClient := pipelines.NewClient(ctx, adoConnection)
 
 	fmt.Println("Triggering ADO build pipeline")
-	pipelineRun, err := runADOPipeline(adoClient, templateParameters, adoOrganizationURL, adoProjectName, adoPAT, adoPipelineID, adoPipelineVersion)
+	pipelineRun, err := runADOPipeline(adoClient, templateParameters, adoProjectName, adoPipelineID, adoPipelineVersion)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed running ADO pipeline, err: %w", err)
 	}
@@ -213,7 +213,7 @@ func runInAzureDevOps(templateParameters map[string]string, adoOrganizationURL, 
 	return pipelineRun, result, nil
 }
 
-func runADOPipeline(adoClient pipelines.Client, templateParameters map[string]string, adoOrganizationURL, adoProjectName, adoPAT string, adoPipelineID, adoPipelineVersion int) (*pipelines.Run, error) {
+func runADOPipeline(adoClient pipelines.Client, templateParameters map[string]string, adoProjectName string, adoPipelineID, adoPipelineVersion int) (*pipelines.Run, error) {
 	ctx := context.Background()
 	adoRunPipelineArgs := pipelines.RunPipelineArgs{
 		Project:    &adoProjectName,
@@ -283,14 +283,14 @@ func prepareADOTemplateParameters(imageName, dockerfilePath, buildContext string
 	return templateParameters, nil
 }
 
-func getADOPipelineRunResult(adoProjectName string, adoPipelineID int, pipelineRunId *int, adoClient pipelines.Client) (*pipelines.RunResult, error) {
+func getADOPipelineRunResult(adoProjectName string, adoPipelineID int, pipelineRunID *int, adoClient pipelines.Client) (*pipelines.RunResult, error) {
 	ctx := context.Background()
 	for {
 		time.Sleep(30 * time.Second)
 		pipelineRun, err := adoClient.GetRun(ctx, pipelines.GetRunArgs{
 			Project:    &adoProjectName,
 			PipelineId: &adoPipelineID,
-			RunId:      pipelineRunId,
+			RunId:      pipelineRunID,
 		})
 		if err != nil {
 			return nil, fmt.Errorf("failed getting ADO pipeline run, err: %w", err)
@@ -302,7 +302,7 @@ func getADOPipelineRunResult(adoProjectName string, adoPipelineID int, pipelineR
 	}
 }
 
-func getADOPipelineRunLogs(adoOrganizationURL, adoProjectName string, pipelineRunId *int, adoPAT string) (string, error) {
+func getADOPipelineRunLogs(adoOrganizationURL, adoProjectName string, pipelineRunID *int, adoPAT string) (string, error) {
 	ctx := context.Background()
 	buildConnection := ado.NewPatConnection(adoOrganizationURL, adoPAT)
 	buildClient, err := build.NewClient(ctx, buildConnection)
@@ -311,7 +311,7 @@ func getADOPipelineRunLogs(adoOrganizationURL, adoProjectName string, pipelineRu
 	}
 	buildLogs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
 		Project: &adoProjectName,
-		BuildId: pipelineRunId,
+		BuildId: pipelineRunID,
 	})
 	if err != nil {
 		return "", fmt.Errorf("failed getting build logs metadata, err: %w", err)
