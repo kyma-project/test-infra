@@ -320,7 +320,7 @@ templates:
                     - e2e
                     - job_skip_config
               - jobConfig:
-                  name: pull-istio-operator-aws-specific
+                  name: pull-istio-integration-aws-specific
                   annotations:
                     owner: goat
                     description: runs istio operator integration tests specific to AWS

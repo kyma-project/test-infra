@@ -157,13 +157,13 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
-    - name: pull-istio-operator-aws-specific
+    - name: pull-istio-integration-aws-specific
       annotations:
         description: "runs istio operator integration tests specific to AWS"
         owner: "goat"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-istio-operator-aws-specific"
+        prow.k8s.io/pubsub.runID: "pull-istio-integration-aws-specific"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-cluster-version: "true"
         preset-gardener-aws-kyma-integration: "true"
