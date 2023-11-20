@@ -2,7 +2,7 @@ pjConfigs:
   prowJobs:
     kyma-project:
       istio:
-        - pjName: "post-istio-operator-aws-specific"
+        - pjName: "post-istio-integration-aws-specific"
 prConfigs:
   kyma-project:
     istio:
