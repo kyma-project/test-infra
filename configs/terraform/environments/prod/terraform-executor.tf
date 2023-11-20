@@ -26,13 +26,14 @@ resource "google_project_iam_member" "terraform_executor_prow_project_owner" {
   member  = "serviceAccount:${google_service_account.terraform_executor.email}"
 }
 
-# Grant pull-plan-prod-terraform workflow the workload identity user role in the terraform executor service account.
+# Grant pull-plan-prod-terraform and post-apply-prod-terraform workflows the workload identity user role in the terraform executor service account.
 # This is required to let the workflow impersonate the terraform executor service account.
 # Authentication is done through github oidc provider and google workload identity federation.
 resource "google_service_account_iam_binding" "terraform_workload_identity" {
   members = [
     "serviceAccount:${local.terraform_workload_identity_gcp_service_account}",
-    "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/subject/repository_id:147495537:repository_owner_id:39153523:workflow:Pull Plan Prod Terraform"
+    "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/subject/repository_id:147495537:repository_owner_id:39153523:workflow:Pull Plan Prod Terraform",
+    "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/subject/repository_id:147495537:repository_owner_id:39153523:workflow:Post Apply Prod Terraform"
   ]
   role               = "roles/iam.workloadIdentityUser"
   service_account_id = google_service_account.terraform_executor.name
@@ -48,18 +49,6 @@ resource "google_service_account_iam_binding" "terraform_workload_identity" {
 #    "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/subject/repository_id:147495537:repository_owner_id:39153523:workflow:Pull Plan Prod Terraform	"
 #  ]
 #}
-
-# Grant post-apply-prod-terraform workflow the workload identity user role in the terraform executor service account.
-# This is required to let the workflow impersonate the terraform executor service account.
-# Authentication is done through github oidc provider and google workload identity federation.
-resource "google_service_account_iam_binding" "terraform_workload_identity" {
-  members = [
-    "serviceAccount:${local.terraform_workload_identity_gcp_service_account}",
-    "principal://iam.googleapis.com/projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/subject/repository_id:147495537:repository_owner_id:39153523:workflow:Post Apply Prod Terraform"
-  ]
-  role               = "roles/iam.workloadIdentityUser"
-  service_account_id = google_service_account.terraform_executor.name
-}
 
 
 # Grant owner role to terraform executor service account in the workloads project.
