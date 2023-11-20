@@ -194,7 +194,7 @@ postsubmits:
               - "--name=template-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=components/operator/Dockerfile"
+              - "--dockerfile=Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
             env:
               - name: BUILDKITD_FLAGS
