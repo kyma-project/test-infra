@@ -340,12 +340,10 @@ templates:
                   labels:
                     preset-gardener-aws-kyma-integration: "true"
                     preset-cluster-version: "true"
-                    preset-sa-kyma-dns-serviceuser: "true"
                     preset-kyma-guard-bot-github-token: "true"
                   env:
                     IMG: "europe-docker.pkg.dev/kyma-project/dev/istio-manager:PR-${PULL_NUMBER}"
                     WAIT_FOR_JOB_NAME: "pull-istio-operator-build"
-                    TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit

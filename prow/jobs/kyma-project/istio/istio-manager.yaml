@@ -168,7 +168,6 @@ presubmits: # runs on PRs
         preset-cluster-version: "true"
         preset-gardener-aws-kyma-integration: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-sa-kyma-dns-serviceuser: "true"
       skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
       optional: false
       skip_report: false
@@ -197,8 +196,6 @@ presubmits: # runs on PRs
             env:
               - name: IMG
                 value: "europe-docker.pkg.dev/kyma-project/dev/istio-manager:PR-${PULL_NUMBER}"
-              - name: TEST_SA_ACCESS_KEY_PATH
-                value: "/sa-kyma-dns-serviceuser/service-account.json"
               - name: WAIT_FOR_JOB_NAME
                 value: "pull-istio-operator-build"
             resources:
