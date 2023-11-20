@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      istio:
+        - pjName: "post-istio-operator-aws-specific"
+prConfigs:
+  kyma-project:
+    istio:
+      prNumber: 455

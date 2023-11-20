@@ -289,7 +289,7 @@ templates:
                   local:
                     - job_default
               - jobConfig:
-                  name: post-istio-operator-aws-specific
+                  name: post-istio-integration-aws-specific
                   annotations:
                     owner: goat
                     description: runs istio operator integration tests specific to AWS
@@ -307,12 +307,10 @@ templates:
                   labels:
                     preset-gardener-aws-kyma-integration: "true"
                     preset-cluster-version: "true"
-                    preset-sa-kyma-dns-serviceuser: "true"
                     preset-kyma-guard-bot-github-token: "true"
                   env:
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_SHA}"
                     WAIT_FOR_JOB_NAME: "post-istio-operator-build"
-                    TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
