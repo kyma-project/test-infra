@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20231010-1814beac"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/terraform:v20231120-0b92e245"
             securityContext:
               privileged: false
               seccompProfile:
