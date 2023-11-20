@@ -51,7 +51,7 @@ jobs:
       - name: Prepare the tofu command
         working-directory: opentofu
         run: |
-          go build -ldflags "-w -s -X 'github.com/opentofu/opentofu/version.dev=no'" -o bin/tofu .
+          go build -ldflags "-w -s -X 'github.com/opentofu/opentofu/version.dev=no'" -o bin/ ./cmd/tofu
           echo $(pwd)/bin >> $GITHUB_PATH
       # - name: Setup Terraform
       #   id: setup_terraform
