@@ -9,7 +9,7 @@ templates:
             max_concurrency: "10"
             decorate: "true"
             command: checkconfig
-            image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20231113-4c4f7ee0
+            image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/checkconfig:v20231120-01b262b8
           jobConfig_inrepo:
             run_if_changed: "(^.prow/.*.yaml|^.prow.yaml)"
             args:
