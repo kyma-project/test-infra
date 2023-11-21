@@ -14,7 +14,7 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231120-0b92e245
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-05130964
             command:
               - /init.sh
             args:
@@ -57,7 +57,7 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231120-0b92e245
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-05130964
             command:
               - /init.sh
             args:
@@ -93,7 +93,7 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231120-0b92e245
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-05130964
             command:
               - /init.sh
             args:

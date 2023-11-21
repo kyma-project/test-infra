@@ -28,7 +28,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -78,7 +78,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -128,7 +128,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -178,7 +178,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -228,7 +228,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -278,7 +278,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -328,7 +328,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -378,7 +378,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -430,7 +430,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -480,7 +480,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -530,7 +530,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -582,7 +582,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -634,7 +634,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -684,7 +684,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -734,7 +734,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -780,7 +780,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -832,7 +832,7 @@ periodics: # runs on schedule
           base_ref: release-2.20
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -882,7 +882,7 @@ periodics: # runs on schedule
           base_ref: release-2.20
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -935,7 +935,7 @@ periodics: # runs on schedule
           base_ref: release-2.19
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -985,7 +985,7 @@ periodics: # runs on schedule
           base_ref: release-2.19
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
