@@ -429,6 +429,9 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - ^main$
+      reporter_config:
+        slack:
+          channel: goat-int
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231116-f4a33e90"

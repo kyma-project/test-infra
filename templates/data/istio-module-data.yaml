@@ -315,6 +315,7 @@ templates:
                   global:
                     - jobConfig_postsubmit
                     - jobConfig_default
+                    - jobConfig_slack_goat
                   local:
                     - job_default
                     - e2e
