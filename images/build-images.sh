@@ -30,8 +30,8 @@ for v in $(find . -type d -exec test -e '{}'/Dockerfile \; -print | cut -c3-) ; 
   if [ "$1" != "push" ]; then
     if [ -x "./$v/test.sh" ]; then
       pushd "./$v"
-      echo "Run $v/test.sh"
-      IMG=$IMG ./test.sh &> "$ARTIFACTS/$name-test.log" && echo "OK!" || exit 1
+      echo "running $v/test.sh"
+      if IMG=$IMG ./test.sh &> "$ARTIFACTS/$name-test.log"; then echo "OK!"; else (echo "$ARTIFACTS/$name-test.log"; exit 1); fi
       popd
     fi
   fi
