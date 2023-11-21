@@ -101,7 +101,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231121-05130964"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231121-c318e307"
             securityContext:
               privileged: false
               seccompProfile:
