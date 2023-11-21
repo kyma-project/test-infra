@@ -309,7 +309,7 @@ templates:
                     preset-cluster-version: "true"
                     preset-kyma-guard-bot-github-token: "true"
                   env:
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:6e5af09881e828d052cb6940d98e07cd3d7415b7"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_SHA}"
                     WAIT_FOR_JOB_NAME: "post-istio-operator-build"
                 inheritedConfigs:
                   global:

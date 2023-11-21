@@ -445,7 +445,7 @@ postsubmits: # runs on main
               - "mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/integration-test-aws-specific.sh"
             env:
               - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:6e5af09881e828d052cb6940d98e07cd3d7415b7"
+                value: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_SHA}"
               - name: WAIT_FOR_JOB_NAME
                 value: "post-istio-operator-build"
             resources:
