@@ -37,7 +37,7 @@ RUN mkdir -p /workspace; \
 
 WORKDIR /workspace
 
-FROM golang:1.21.2 AS go-deps
+FROM golang:1.21.4 AS go-deps
 ENV CGO_ENABLED=0
 ARG K3D_VERSION=v5.6.0
 
@@ -56,7 +56,7 @@ ARG CLUSTER_VERSION=v1.27.5
 RUN curl -Lo /usr/local/bin/kubectl "https://storage.googleapis.com/kubernetes-release/release/${CLUSTER_VERSION}/bin/linux/$(go env GOARCH)/kubectl" && \
     chmod +x /usr/local/bin/kubectl
 
-ARG HELM_VERSION=v3.12.3
+ARG HELM_VERSION=v3.13.2
 RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go env GOARCH).tar.gz" && \
     tar -xzOf helm.tar.gz linux-amd64/helm > /usr/local/bin/helm && \
     chmod +x /usr/local/bin/helm
