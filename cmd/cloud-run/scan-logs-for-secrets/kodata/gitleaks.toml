@@ -19,6 +19,10 @@ paths = [
     '''node_modules''',
     '''vendor''',
 ]
+regexTarget = "line"
+regexes = [
+    "#nosec",
+]
 
 [[rules]]
 description = "Bearer Authorization Token"
@@ -501,7 +505,6 @@ keywords = [
 paths = [
     '''Database.refactorlog'''
 ]
-
 stopwords= [
     "client",
     "endpoint",
