@@ -35,16 +35,6 @@ templates:
                 readOnly: true
           job_skip_config:
             skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
-          vm_job_make:
-            command: "bash"
-            env:
-              CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-              JOB_REPO_NAME: "istio"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            request_memory: 200Mi
-            request_cpu: 80m
           vm_job_labels:
             labels:
               preset-kyma-guard-bot-github-token: "true"

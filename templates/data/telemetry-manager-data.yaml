@@ -6,15 +6,6 @@ templates:
           job_default:
             securityContext:
               privileged: false
-          vm_job_make:
-            command: "bash"
-            env:
-              JOB_REPO_NAME: "telemetry-manager"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            request_memory: 200Mi
-            request_cpu: 80m
           vm_job_labels:
             labels:
               preset-kyma-guard-bot-github-token: "true"
