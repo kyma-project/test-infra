@@ -31,14 +31,6 @@ type Config struct {
 	// SignConfig contains custom configuration of signers
 	// as well as org/repo mapping of enabled signers in specific repository
 	SignConfig SignConfig `yaml:"sign-config" json:"sign-config"`
-	// ADO organization URL to call for triggering ADO pipeline
-	ADOOrganizationURL string `yaml:"ado-organization-url" json:"ado-organization-url"`
-	// ADO project name to call for triggering ADO pipeline
-	ADOProjectName string `yaml:"ado-project-name" json:"ado-project-name"`
-	// ADO pipeline ID to call for triggering ADO pipeline
-	ADOPipelineID int `yaml:"ado-pipeline-id" json:"ado-pipeline-id"`
-	// ADO pipeline version to call for triggering ADO pipeline
-	ADOPipelineVersion int `yaml:"ado-pipeline-version,omitempty" json:"ado-pipeline-version,omitempty"`
 }
 
 type SignConfig struct {
