@@ -1,24 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma-project/serverless/serverless.yaml
-        localSets:
-          job_branches:
-            branches:
-              - "^main$"
-              - "^release-*"
-          dind_job_k3d:
-            annotations:
-            labels:
-              preset-kyma-guard-bot-github-token: "true"
-              preset-kind-volume-mounts: "true"
-              preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-05130964
-            command: "/init.sh"
-            request_memory: "4Gi"
-            request_cpu: "3"
-            limits_memory: "4Gi"
-            limits_cpu: "3"
+      - to: ../../prow/jobs/kyma-project/serverless/serverless-build.yaml
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
@@ -160,40 +143,12 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - "disable_testgrid"
-              - jobConfig:
-                  name: pre-serverless-runtimes-java17-jvm-alpha-build
-                  annotations:
-                    owner: otters
-                    description: function java 17 build job
-                  run_if_changed: "^components/runtimes/java17/"
-                  args:
-                    - "--name=function-runtime-java17-jvm-alpha"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/runtimes/java17"
-                    - "--dockerfile=Dockerfile-jvm-runtime"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-              - jobConfig:
-                  name: post-serverless-runtimes-java17-jvm-alpha-build
-                  annotations:
-                    owner: otters
-                    description: function java 17 build job
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/runtimes/java17/"
-                  args:
-                    - "--name=function-runtime-java17-jvm-alpha"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/runtimes/java17"
-                    - "--dockerfile=Dockerfile-jvm-runtime"
-                    - "--tag=latest"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                    - disable_testgrid
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/serverless/serverless-build-runtimes.yaml
+        jobConfigs:
+          - repoName: kyma-project/serverless
+            jobs:
               - jobConfig:
                   name: pre-serverless-runtimes-nodejs-v16-build
                   annotations:
@@ -297,192 +252,50 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
               - jobConfig:
-                  name: pre-gitserver-build
+                  name: pre-serverless-runtimes-java17-jvm-alpha-build
                   annotations:
                     owner: otters
-                    description: gitserver build job
+                    description: function java 17 build job
+                  run_if_changed: "^components/runtimes/java17/"
                   args:
-                    - "--name=gitserver"
+                    - "--name=function-runtime-java17-jvm-alpha"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tests/gitserver"
-                    - "--dockerfile=tests/gitserver/Dockerfile"
-                  run_if_changed: "^tests/gitserver/"
-                  optional: "true"
+                    - "--context=components/runtimes/java17"
+                    - "--dockerfile=Dockerfile-jvm-runtime"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
               - jobConfig:
-                  name: post-gitserver-build
+                  name: post-serverless-runtimes-java17-jvm-alpha-build
                   annotations:
                     owner: otters
-                    description: gitserver build job
+                    description: function java 17 build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^tests/gitserver/"
+                  run_if_changed: "^components/runtimes/java17/"
                   args:
-                    - "--name=gitserver"
+                    - "--name=function-runtime-java17-jvm-alpha"
                     - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=tests/gitserver"
-                    - "--dockerfile=tests/gitserver/Dockerfile"
+                    - "--context=components/runtimes/java17"
+                    - "--dockerfile=Dockerfile-jvm-runtime"
+                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - disable_testgrid
-              - jobConfig:
-                  name: pre-serverless-controller-unit-test
-                  annotations:
-                    owner: otters
-                    description: "run unit tests for function controller"
-                  command: "make"
-                  optional: false
-                  args:
-                    - "-C"
-                    - "components/serverless"
-                    - "test"
-                  run_if_changed: '^components/serverless/.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - jobConfig_presubmit
-                    - testing
-                    - unprivileged
-              - jobConfig:
-                  name: pre-serverless-controller-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
-                  annotations:
-                    owner: otters
-                    description: function controller linting job
-                  optional: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "cd components/serverless && golangci-lint run -v && echo 'OK!'"
-                  run_if_changed: '^components/serverless/(.*\.go|.golangci.yaml)$'
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_presubmit
-                    - jobConfig_default
-              - jobConfig:
-                  name: pre-serverless-operator-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
-                  annotations:
-                    owner: otters
-                    description: serverless operator linting job
-                  optional: "true"
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "cd components/operator && golangci-lint run -v && echo 'OK!'"
-                  run_if_changed: '^components/operator/(.*\.go|.golangci.yaml)$'
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_presubmit
-                    - jobConfig_default
-              - jobConfig:
-                  name: serverless-operator-nightly-periodic
-                  cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
-                  annotations:
-                    owner: otters
-                    description: serverless operator nightly verify
-                    testgrid-dashboards: serverless-operator-nightly
-                    testgrid-days-of-results: "60"
-                  cluster: "trusted-workload"
-                  args:
-                    - bash
-                    - -c
-                    - |
-                      make -C components/operator/hack/ci run-with-lifecycle-manager
-                  extra_refs:
-                    serverless:
-                      - org: kyma-project
-                        repo: serverless
-                        base_ref: main
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - privileged
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                  local:
-                    - dind_job_k3d
-              - jobConfig:
-                  name: release-serverless-operator-build
-                  annotations:
-                    owner: otters
-                    description: Job to build serverless operator for a release.
-                  always_run: true
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  command: sh
-                  args:
-                    - -c
-                    - >-
-                      /image-builder
-                      --name=serverless-operator
-                      --config=/config/kaniko-build-config.yaml
-                      --context=.
-                      --dockerfile=components/operator/Dockerfile
-                      --tag=$PULL_BASE_REF
-                  branches:
-                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
-                inheritedConfigs:
-                  global:
-                    - jobConfig_postsubmit
-                    - image-builder-buildkit
-                  local:
-                    - job_branches
-              - jobConfig:
-                  name: release-serverless-module-build
-                  annotations:
-                    owner: otters
-                    description: Job to build serverless module for a release.
-                  always_run: true
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                    preset-bot-github-token: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_REF}"
-                  command: "./scripts/release.sh"
-                  args:
-                    - "ci"
-                  branches:
-                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-              - jobConfig:
-                  name: post-serverless-module-build
-                  annotations:
-                    owner: otters
-                    description: serverless module build
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
-                  run_if_changed: "^config/operator/.*$|^sec-scanners-config.yaml$|^.version$|^module-config-template.yaml$"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "components/operator/hack/ci"
-                    - "module-build"
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                  local:
-                    - job_branches
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/serverless/serverless-build-operator.yaml
+        localSets:
+          job_branches:
+            branches:
+              - "^main$"
+              - "^release-*"
+        jobConfigs:
+          - repoName: kyma-project/serverless
+            jobs:
               - jobConfig:
                   name: pre-serverless-module-build
                   annotations:
@@ -509,23 +322,27 @@ templates:
                   local:
                     - job_branches
               - jobConfig:
-                  name: pre-serverless-operator-tests
+                  name: post-serverless-module-build
                   annotations:
                     owner: otters
-                    description: serverless operator tests
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
+                    description: serverless module build
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
+                  run_if_changed: "^config/operator/.*$|^sec-scanners-config.yaml$|^.version$|^module-config-template.yaml$"
                   command: "make"
                   args:
                     - "-C"
-                    - "components/operator"
-                    - "test"
+                    - "components/operator/hack/ci"
+                    - "module-build"
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
-                    - jobConfig_presubmit
-                    - build_labels # default labels
-                    - unprivileged
+                    - jobConfig_postsubmit
                   local:
                     - job_branches
               - jobConfig:
@@ -572,6 +389,197 @@ templates:
                   global:
                     - jobConfig_postsubmit
                     - image-builder-buildkit
+                  local:
+                    - job_branches
+              - jobConfig:
+                  name: release-serverless-module-build
+                  annotations:
+                    owner: otters
+                    description: Job to build serverless module for a release.
+                  always_run: true
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                    preset-bot-github-token: "true"
+                  env:
+                    KUSTOMIZE_VERSION: "v4.5.6"
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_REF}"
+                  command: "./scripts/release.sh"
+                  args:
+                    - "ci"
+                  branches:
+                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: release-serverless-operator-build
+                  annotations:
+                    owner: otters
+                    description: Job to build serverless operator for a release.
+                  always_run: true
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  command: sh
+                  args:
+                    - -c
+                    - >-
+                      /image-builder
+                      --name=serverless-operator
+                      --config=/config/kaniko-build-config.yaml
+                      --context=.
+                      --dockerfile=components/operator/Dockerfile
+                      --tag=$PULL_BASE_REF
+                  branches:
+                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+                inheritedConfigs:
+                  global:
+                    - jobConfig_postsubmit
+                    - image-builder-buildkit
+                  local:
+                    - job_branches
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/serverless/serverless-lint.yaml
+        jobConfigs:
+          - repoName: kyma-project/serverless
+            jobs:
+              - jobConfig:
+                  name: pre-serverless-controller-lint
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  annotations:
+                    owner: otters
+                    description: function controller linting job
+                  optional: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd components/serverless && golangci-lint run -v && echo 'OK!'"
+                  run_if_changed: '^components/serverless/(.*\.go|.golangci.yaml)$'
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - jobConfig_default
+              - jobConfig:
+                  name: pre-serverless-operator-lint
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  annotations:
+                    owner: otters
+                    description: serverless operator linting job
+                  optional: "true"
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "cd components/operator && golangci-lint run -v && echo 'OK!'"
+                  run_if_changed: '^components/operator/(.*\.go|.golangci.yaml)$'
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - jobConfig_default
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/serverless/serverless-gitserver.yaml
+        jobConfigs:
+          - repoName: kyma-project/serverless
+            jobs:
+              - jobConfig:
+                  name: pre-gitserver-build
+                  annotations:
+                    owner: otters
+                    description: gitserver build job
+                  args:
+                    - "--name=gitserver"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/gitserver"
+                    - "--dockerfile=tests/gitserver/Dockerfile"
+                  run_if_changed: "^tests/gitserver/"
+                  optional: "true"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-gitserver-build
+                  annotations:
+                    owner: otters
+                    description: gitserver build job
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^tests/gitserver/"
+                  args:
+                    - "--name=gitserver"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=tests/gitserver"
+                    - "--dockerfile=tests/gitserver/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                    - disable_testgrid
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/serverless/serverless-verify.yaml
+        localSets:
+          job_branches:
+            branches:
+              - "^main$"
+              - "^release-*"
+          dind_job_k3d:
+            annotations:
+            labels:
+              preset-kyma-guard-bot-github-token: "true"
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-05130964
+            command: "/init.sh"
+            request_memory: "4Gi"
+            request_cpu: "3"
+            limits_memory: "4Gi"
+            limits_cpu: "3"
+        jobConfigs:
+          - repoName: kyma-project/serverless
+            jobs:
+              - jobConfig:
+                  name: pre-serverless-controller-unit-test
+                  annotations:
+                    owner: otters
+                    description: "run unit tests for function controller"
+                  command: "make"
+                  optional: false
+                  args:
+                    - "-C"
+                    - "components/serverless"
+                    - "test"
+                  run_if_changed: '^components/serverless/.*\.go$'
+                inheritedConfigs:
+                  global:
+                    - jobConfig_presubmit
+                    - testing
+                    - unprivileged
+              - jobConfig:
+                  name: pre-serverless-operator-tests
+                  annotations:
+                    owner: otters
+                    description: serverless operator tests
+                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
+                  command: "make"
+                  args:
+                    - "-C"
+                    - "components/operator"
+                    - "test"
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - build_labels # default labels
+                    - unprivileged
                   local:
                     - job_branches
               - jobConfig:
@@ -637,3 +645,30 @@ templates:
                   local:
                     - dind_job_k3d
                     - job_branches
+              - jobConfig:
+                  name: serverless-operator-nightly-periodic
+                  cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
+                  annotations:
+                    owner: otters
+                    description: serverless operator nightly verify
+                    testgrid-dashboards: serverless-operator-nightly
+                    testgrid-days-of-results: "60"
+                  cluster: "trusted-workload"
+                  args:
+                    - bash
+                    - -c
+                    - |
+                      make -C components/operator/hack/ci run-with-lifecycle-manager
+                  extra_refs:
+                    serverless:
+                      - org: kyma-project
+                        repo: serverless
+                        base_ref: main
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_periodic
+                    - extra_refs_test-infra
+                  local:
+                    - dind_job_k3d
