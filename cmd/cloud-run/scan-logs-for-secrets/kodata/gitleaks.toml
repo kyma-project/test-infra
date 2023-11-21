@@ -501,6 +501,7 @@ keywords = [
 paths = [
     '''Database.refactorlog'''
 ]
+
 stopwords= [
     "client",
     "endpoint",
