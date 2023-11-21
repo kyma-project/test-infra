@@ -13,9 +13,9 @@ templates:
           jobConfig_default:
             request_memory: 1Gi
             request_cpu: 400m
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231116-f4a33e90
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231121-05130964
           jobConfig_buildpack_node:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231116-f4a33e90"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231121-05130964"
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_presubmit:
@@ -137,11 +137,11 @@ templates:
                   repo: "busola"
                   base_ref: "main"
           jobConfig_default:
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231116-f4a33e90
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231121-05130964
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_buildpack_node:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231116-f4a33e90"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231121-05130964"
             request_memory: 1Gi
             request_cpu: 400m
           jobConfig_presubmit:
@@ -152,8 +152,6 @@ templates:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-integration-gardener.sh"
           command_upgrade_gardener_kyma2_to_main:
             command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-to-main.sh"
-          command_upgrade_gardener_kyma2_minor_versions:
-            command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/cluster-integration/kyma-upgrade-gardener-kyma2-minor-versions.sh"
           gardener_gcp_job:
             labels:
               preset-gardener-gcp-kyma-integration: "true"
@@ -217,26 +215,3 @@ templates:
                     - jobConfig_buildpack_node
                     - gardener_azure_job
                     - command_upgrade_gardener_kyma2_to_main
-              - jobConfig:
-                  name: kyma-upgrade-gardener-kyma2-minor-versions
-                  annotations:
-                    owner: jellyfish
-                    testgrid-dashboards: kyma_integration
-                    description: Azure Kyma 2 previous minor versions.
-                  decoration_config:
-                    timeout: 7200000000000 # 2h
-                    grace_period: 600000000000 # 10min
-                  cron: "0 8 * * 1-5"
-                  labels:
-                    preset-bot-github-token: "true"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_buildpack_node
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                    - kyma_minor_upgrade
-                  local:
-                    - jobConfig_buildpack_node
-                    - gardener_azure_job
-                    - command_upgrade_gardener_kyma2_minor_versions

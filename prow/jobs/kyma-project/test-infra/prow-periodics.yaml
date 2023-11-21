@@ -26,7 +26,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231116-269abc53"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231121-8b04850f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -58,7 +58,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231116-269abc53"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231121-8b04850f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -96,7 +96,7 @@ postsubmits: # runs on main
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231116-f4a33e90"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -127,7 +127,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231113-4c4f7ee0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231120-01b262b8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -154,7 +154,7 @@ periodics: # runs on schedule
       cluster: trusted-workload
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:v20231113-4c4f7ee0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:v20231120-01b262b8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -201,7 +201,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231113-4c4f7ee0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231120-01b262b8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -235,7 +235,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231116-269abc53"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231121-8b04850f"
             securityContext:
               privileged: false
               seccompProfile:
@@ -274,7 +274,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231113-4c4f7ee0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231120-01b262b8"
             securityContext:
               privileged: false
               seccompProfile:

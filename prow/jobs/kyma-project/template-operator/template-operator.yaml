@@ -52,7 +52,7 @@ presubmits:
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231116-f4a33e90"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -194,7 +194,7 @@ postsubmits:
               - "--name=template-operator"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=components/operator/Dockerfile"
+              - "--dockerfile=Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
             env:
               - name: BUILDKITD_FLAGS
@@ -239,7 +239,7 @@ postsubmits:
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231116-f4a33e90"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
