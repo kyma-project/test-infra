@@ -11,7 +11,7 @@ templates:
                     owner: neighbors
                     description: "Check pull request authors are present in users map file"
                   command: "/ko-app/usersmapchecker"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20231120-363f0275
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/usersmapchecker:v20231121-8b04850f
                   always_run: "true"
                   cluster: "trusted-workload"
                   optional: "true"
