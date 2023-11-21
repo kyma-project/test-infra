@@ -491,3 +491,11 @@ repos: # repo-specific labels
         target: both
         prowPlugin: label
         addedBy: anyone
+  kyma-project/kyma-environment-broker:
+    labels:
+      - color: c7def8
+        description: Categorizes issue or PR as related to modifying or improving an existing feature
+        name: kind/enhancement
+        target: both
+        prowPlugin: label
+        addedBy: anyone
