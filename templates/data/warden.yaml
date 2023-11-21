@@ -7,7 +7,7 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231120-0b92e245"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231121-05130964"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -16,7 +16,7 @@ templates:
             labels:
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231120-0b92e245
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-05130964
             command: "/init.sh"
         jobConfigs:
           - repoName: "github.com/kyma-project/warden"

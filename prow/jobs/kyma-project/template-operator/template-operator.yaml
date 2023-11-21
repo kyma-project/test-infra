@@ -52,7 +52,7 @@ presubmits:
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:
@@ -239,7 +239,7 @@ postsubmits:
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231120-0b92e245"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231121-05130964"
             securityContext:
               privileged: false
               seccompProfile:

@@ -39,7 +39,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231120-0b92e245
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-05130964
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -138,7 +138,7 @@ templates:
                     - "disable_testgrid"
               - jobConfig:
                   name: pull-nats-module-build
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231120-0b92e245
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231121-05130964
                   annotations:
                     owner: skydivingtunas
                     description: NATS module build pre-main job
@@ -165,7 +165,7 @@ templates:
                     - job_default
               - jobConfig:
                   name: post-nats-module-build
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231120-0b92e245
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231121-05130964
                   annotations:
                     owner: skydivingtunas
                     description: NATS module build post-main job

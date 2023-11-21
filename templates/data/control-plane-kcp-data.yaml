@@ -15,7 +15,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-main-kcp-cli
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231120-0b92e245
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231121-05130964
                   run_if_changed: "^tools/cli|^components"
                   annotations:
                     owner: sre
@@ -29,7 +29,7 @@ templates:
                     - jobConfig_default
               - jobConfig:
                   name: post-main-kcp-cli
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231120-0b92e245
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231121-05130964
                   annotations:
                     owner: sre
                     description: "Builds and validates KCP CLI before merge"
