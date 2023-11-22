@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231121-c318e307"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231122-2a5515a2"
             securityContext:
               privileged: false
               seccompProfile:
@@ -64,7 +64,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-c318e307"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2"
             securityContext:
               privileged: true
               seccompProfile:
@@ -113,7 +113,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-c318e307"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2"
             securityContext:
               privileged: true
               seccompProfile:
@@ -159,7 +159,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-c318e307"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2"
             securityContext:
               privileged: true
               seccompProfile:
@@ -207,7 +207,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-c318e307"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2"
             securityContext:
               privileged: true
               seccompProfile:
