@@ -11,9 +11,9 @@ To add additional applications into the images, open a PR with changes. Follow t
 * Link the binary to a specific version so that it's easier to update when necessary 
 * Build binaries in a separate stage, then copy the resulting binary into the final image to ensure images are small and contain the least number of layers
 
-## Writing image tests
+## Write image tests
 
-to write simple smoke tests with your image, add an **executable** file called `test.sh`.
+To write simple smoke tests with your image, add an executable file called `test.sh`.
 The scripts should contain all steps that perform basic or advanced test operations against the image. You can use all binaries available in [E2E DinD K3d image](./e2e-dind-k3d) to test the built image.
 The test script must exit with a non-zero number if any steps have failed.
 
