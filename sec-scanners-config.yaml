@@ -3,6 +3,7 @@ protecode:
     - aquasec/trivy:0.44.1
     - docker.io/library/nginx:1.25.2-alpine
     - docker.io/zricethezav/gitleaks:v8.18.0
+    - eu.gcr.io/gardener-project/ci-infra/cla-assistant:v20231121-2908159
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
     - europe-docker.pkg.dev/gcr-cleaner/gcr-cleaner/gcr-cleaner-cli:0.11.1
@@ -25,7 +26,6 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver@sha256:cf9515e4477eff4ddd162a8ec4c18d8b192bd0bd58fb7fff7624452068bd56ae
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automerge-notification:v20231009-ffd7e492
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cla-assistant:v20231121-2d98f860
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20231121-2d98f860
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cors-proxy:v20231121-2d98f860
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/create-github-issue:v20230914-c7902318
@@ -68,7 +68,6 @@ protecode:
     - maven:3.9.4-eclipse-temurin-17
     - prom/pushgateway:v1.6.0
     - quay.io/prometheus-operator/prometheus-operator:v0.67.1
-    - eu.gcr.io/gardener-project/ci-infra/cla-assistant:v20231121-2908159
 whitesource:
     language: golang-mod
     exclude:
