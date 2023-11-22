@@ -33,6 +33,8 @@ templates:
           limits:
             limits_memory: 3Gi
             limits_cpu: 2
+          run_if_changed_without_documentation:
+            skip_if_only_changed: '^docs/|^examples/|\.md$'
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
@@ -48,7 +50,6 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/dev/keda-manager:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
-                  run_if_changed: "^keda.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
                   command: "make"
                   args:
                     - "-C"
@@ -61,6 +62,8 @@ templates:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_presubmit
+                  local:
+                    - run_if_changed_without_documentation
               - jobConfig:
                   name: post-keda-module-build
                   annotations:
@@ -72,7 +75,6 @@ templates:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_SHA}"
-                  run_if_changed: "^keda.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$"
                   command: "make"
                   args:
                     - "-C"
@@ -85,12 +87,13 @@ templates:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
+                  local:
+                    - run_if_changed_without_documentation
               - jobConfig:
                   name: pre-keda-manager-operator-build
                   annotations:
                     owner: otters
                     description: keda operator build job
-                  always_run: true
                   args:
                     - "--name=keda-manager"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -102,12 +105,12 @@ templates:
                     - jobConfig_presubmit
                   local:
                     - job_build
+                    - run_if_changed_without_documentation
               - jobConfig:
                   name: post-keda-manager-operator-build
                   annotations:
                     owner: otters
                     description: keda module build job
-                  always_run: true
                   labels:
                     preset-signify-prod-secret: "true"
                   args:
@@ -123,6 +126,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - job_build
+                    - run_if_changed_without_documentation
               - jobConfig:
                   name: release-keda-manager-build
                   annotations:
@@ -180,7 +184,7 @@ templates:
               - jobConfig:
                   name: pre-keda-manager-operator-lint
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
-                  run_if_changed: "^(go.mod|go.sum|main.go|.golangci.yaml)$|^*/(.*.go|Makefile|.*.sh)$"
+                  always_run: true
                   annotations:
                     owner: otters
                     description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
@@ -211,6 +215,8 @@ templates:
             request_cpu: "3"
             limits_memory: "4Gi"
             limits_cpu: "3"
+          run_if_changed_without_documentation:
+            skip_if_only_changed: '^docs/|^examples/|\.md$'
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
@@ -219,7 +225,6 @@ templates:
                   annotations:
                     owner: otters
                     description: keda operator tests
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
                   command: "bash"
                   args:
                     - "-c"
@@ -233,12 +238,13 @@ templates:
                     - jobConfig_presubmit
                     - build_labels # default labels
                     - unprivileged
+                  local:
+                    - run_if_changed_without_documentation
               - jobConfig:
                   name: pre-keda-manager-verify
                   annotations:
                     owner: otters
                     description: runs keda manager verity job on k3d VM
-                  always_run: "true"
                   optional: "false"
                   args:
                     - bash
@@ -253,12 +259,12 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
+                    - run_if_changed_without_documentation
               - jobConfig:
                   name: post-keda-manager-verify
                   annotations:
                     owner: otters
                     description: runs keda manager verity job on k3d VM
-                  always_run: "true"
                   optional: "true"
                   args:
                     - bash
@@ -273,12 +279,12 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
+                    - run_if_changed_without_documentation
               - jobConfig:
                   name: post-keda-manager-upgrade-latest-to-main
                   annotations:
                     owner: otters
                     description: upgrade keda manager test
-                  always_run: "true"
                   optional: "true"
                   args:
                     - bash
@@ -293,6 +299,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
+                    - run_if_changed_without_documentation
               - jobConfig:
                   name: keda-operator-nightly-periodic
                   cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."

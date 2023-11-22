@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)'
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -49,7 +49,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       optional: false
       skip_report: false
       decorate: true
@@ -98,7 +98,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       optional: true
       skip_report: false
       decorate: true
@@ -144,7 +144,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       optional: true
       skip_report: false
       decorate: true

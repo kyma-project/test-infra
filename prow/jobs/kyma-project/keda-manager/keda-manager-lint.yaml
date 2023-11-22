@@ -11,7 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-keda-manager-operator-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^(go.mod|go.sum|main.go|.golangci.yaml)$|^*/(.*.go|Makefile|.*.sh)$'
+      always_run: true
       optional: true
       skip_report: false
       decorate: true
