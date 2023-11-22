@@ -68,6 +68,7 @@ protecode:
     - maven:3.9.4-eclipse-temurin-17
     - prom/pushgateway:v1.6.0
     - quay.io/prometheus-operator/prometheus-operator:v0.67.1
+    - eu.gcr.io/gardener-project/ci-infra/cla-assistant:v20231121-2908159
 whitesource:
     language: golang-mod
     exclude:
