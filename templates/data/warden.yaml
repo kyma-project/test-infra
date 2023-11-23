@@ -18,7 +18,7 @@ templates:
               preset-dind-enabled: "true"
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2
             command: "/init.sh"
-          run_if_changed_without_documentation:
+          skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|\.md$'
         jobConfigs:
           - repoName: "github.com/kyma-project/warden"
@@ -38,7 +38,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
                   local:
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-admission-build
                   annotations:
@@ -57,7 +57,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-warden-operator-build
                   annotations:
@@ -73,7 +73,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
                   local:
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-operator-build
                   annotations:
@@ -92,7 +92,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                   local:
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-warden-module-build
                   annotations:
@@ -115,7 +115,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                   local:
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-module-build
                   annotations:
@@ -138,7 +138,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
                   local:
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-verify
                   annotations:
@@ -156,7 +156,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - e2e_dind
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
                   name: pre-warden-lint
@@ -191,4 +191,4 @@ templates:
                     - "unprivileged"
                   local:
                     - testing
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation

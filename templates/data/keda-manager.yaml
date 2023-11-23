@@ -33,7 +33,7 @@ templates:
           limits:
             limits_memory: 3Gi
             limits_cpu: 2
-          run_if_changed_without_documentation:
+          skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|^examples/|\.md$'
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
@@ -63,7 +63,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_presubmit
                   local:
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-keda-module-build
                   annotations:
@@ -88,7 +88,7 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
                   local:
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-keda-manager-operator-build
                   annotations:
@@ -105,7 +105,7 @@ templates:
                     - jobConfig_presubmit
                   local:
                     - job_build
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-keda-manager-operator-build
                   annotations:
@@ -126,7 +126,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - job_build
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: release-keda-manager-build
                   annotations:
@@ -215,7 +215,7 @@ templates:
             request_cpu: "3"
             limits_memory: "4Gi"
             limits_cpu: "3"
-          run_if_changed_without_documentation:
+          skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|^examples/|\.md$'
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
@@ -239,7 +239,7 @@ templates:
                     - build_labels # default labels
                     - unprivileged
                   local:
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-keda-manager-verify
                   annotations:
@@ -259,7 +259,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-keda-manager-verify
                   annotations:
@@ -279,7 +279,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-keda-manager-upgrade-latest-to-main
                   annotations:
@@ -299,7 +299,7 @@ templates:
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d
-                    - run_if_changed_without_documentation
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: keda-operator-nightly-periodic
                   cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
