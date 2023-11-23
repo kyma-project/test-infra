@@ -3,13 +3,6 @@ package main
 import (
 	"bufio"
 	"encoding/json"
-	"net/http"
-	"time"
-
-	// "time"
-
-	// "encoding/base64"
-	// "encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -22,16 +15,13 @@ import (
 	"strings"
 	"sync"
 
+	adopipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/sets"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
-	ado "github.com/microsoft/azure-devops-go-api/azuredevops"
-	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
-	adov7 "github.com/microsoft/azure-devops-go-api/azuredevops/v7"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
 	"golang.org/x/net/context"
 	errutil "k8s.io/apimachinery/pkg/util/errors"
-	"k8s.io/utils/ptr"
 )
 
 type options struct {
@@ -193,159 +183,141 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 	return cmd.Run()
 }
 
-// TODO: refactor error messages abd function arguments.
-func runInAzureDevOps(templateParameters map[string]string, adoOrganizationURL, adoProjectName, adoPAT string, adoPipelineID, adoPipelineVersion int) (*pipelines.Run, *pipelines.RunResult, error) {
-	adoConnection := adov7.NewPatConnection(adoOrganizationURL, adoPAT)
-	ctx := context.Background()
-	adoClient := pipelines.NewClient(ctx, adoConnection)
+func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilderTemplateParams, error) {
+	templateParameters := make(adopipelines.OCIImageBuilderTemplateParams)
 
-	fmt.Println("Triggering ADO build pipeline")
-	pipelineRun, err := runADOPipeline(adoClient, templateParameters, adoProjectName, adoPipelineID, adoPipelineVersion)
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed running ADO pipeline, err: %w", err)
-	}
-
-	result, err := getADOPipelineRunResult(adoProjectName, adoPipelineID, pipelineRun.Id, adoClient)
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed getting ADO pipeline run result, err: %w", err)
-	}
-
-	return pipelineRun, result, nil
-}
-
-func runADOPipeline(adoClient pipelines.Client, templateParameters map[string]string, adoProjectName string, adoPipelineID, adoPipelineVersion int) (*pipelines.Run, error) {
-	ctx := context.Background()
-	adoRunPipelineArgs := pipelines.RunPipelineArgs{
-		Project:    &adoProjectName,
-		PipelineId: &adoPipelineID,
-		RunParameters: &pipelines.RunPipelineParameters{
-			PreviewRun:         ptr.To(false),
-			TemplateParameters: &templateParameters,
-		},
-	}
-	if adoPipelineVersion != 0 {
-		adoRunPipelineArgs.PipelineVersion = &adoPipelineVersion
-	}
-	fmt.Printf("Using TemplateParameters: %+v\n", adoRunPipelineArgs.RunParameters.TemplateParameters)
-	return adoClient.RunPipeline(ctx, adoRunPipelineArgs)
-}
-
-func prepareADOTemplateParameters(imageName, dockerfilePath, buildContext string, exportTags bool, platforms sets.Strings, buildArgs, imageTags sets.Tags) (map[string]string, error) {
-	var present bool
-	templateParameters := make(map[string]string)
-
-	templateParameters["RepoName"], present = os.LookupEnv("REPO_NAME")
+	repo, present := os.LookupEnv("REPO_NAME")
 	if !present {
 		return nil, fmt.Errorf("REPO_NAME environment variable is not set, please set it to valid repository name")
 	}
+	templateParameters.SetRepoName(repo)
 
-	templateParameters["RepoOwner"], present = os.LookupEnv("REPO_OWNER")
+	owner, present := os.LookupEnv("REPO_OWNER")
 	if !present {
 		return nil, fmt.Errorf("REPO_OWNER environment variable is not set, please set it to valid repository owner")
 	}
+	templateParameters.SetRepoOwner(owner)
 
-	templateParameters["JobType"], present = os.LookupEnv("JOB_TYPE")
+	jobType, present := os.LookupEnv("JOB_TYPE")
 	if !present {
 		return nil, fmt.Errorf("JOB_TYPE environment variable is not set, please set it to valid job type")
 	}
+	templateParameters.SetJobType(jobType)
 
-	templateParameters["PullNumber"], present = os.LookupEnv("PULL_NUMBER")
+	number, present := os.LookupEnv("PULL_NUMBER")
 	if !present {
 		return nil, fmt.Errorf("PULL_NUMBER environment variable is not set, please set it to valid pull request number")
 	}
+	templateParameters.SetPullNumber(number)
 
-	templateParameters["PullBaseSHA"], present = os.LookupEnv("PULL_BASE_SHA")
+	baseSHA, present := os.LookupEnv("PULL_BASE_SHA")
 	if !present {
 		return nil, fmt.Errorf("PULL_BASE_SHA environment variable is not set, please set it to valid pull base SHA")
 	}
+	templateParameters.SetPullBaseSHA(baseSHA)
 
-	templateParameters["Name"] = imageName
+	templateParameters.SetImageName(options.Name)
 
-	templateParameters["Dockerfile"] = dockerfilePath
+	templateParameters.SetDockerfilePath(options.Dockerfile)
 
-	templateParameters["Context"] = buildContext
+	templateParameters.SetBuildContext(options.Context)
 
-	templateParameters["ExportTgs"] = strconv.FormatBool(exportTags)
+	templateParameters.SetExportTags(options.ExportTags)
 
-	// TODO: Validate if platforms are used and needed. Possible feature is not used and can be removed.
-	if len(platforms) > 0 {
-		templateParameters["Platforms"] = platforms.String()
+	if len(options.BuildArgs) > 0 {
+		templateParameters.SetBuildArgs(options.BuildArgs.String())
 	}
 
-	if len(buildArgs) > 0 {
-		templateParameters["BuildArgs"] = buildArgs.String()
-	}
-
-	if len(imageTags) > 0 {
-		templateParameters["Tags"] = imageTags.String()
+	if len(options.Tags) > 0 {
+		templateParameters.SetImageTags(options.Tags.String())
 	}
 
 	return templateParameters, nil
 }
 
-func getADOPipelineRunResult(adoProjectName string, adoPipelineID int, pipelineRunID *int, adoClient pipelines.Client) (*pipelines.RunResult, error) {
-	ctx := context.Background()
-	for {
-		time.Sleep(30 * time.Second)
-		pipelineRun, err := adoClient.GetRun(ctx, pipelines.GetRunArgs{
-			Project:    &adoProjectName,
-			PipelineId: &adoPipelineID,
-			RunId:      pipelineRunID,
-		})
-		if err != nil {
-			return nil, fmt.Errorf("failed getting ADO pipeline run, err: %w", err)
-		}
-		if *pipelineRun.State == pipelines.RunStateValues.Completed {
-			return pipelineRun.Result, nil
-		}
-		fmt.Println("Pipeline run is still in progress. Waiting for 30 seconds")
+func buildInADO(o options) error {
+	fmt.Println("Building image in ADO pipeline.")
+	adoPAT, present := os.LookupEnv("ADO_PAT")
+	if !present {
+		return fmt.Errorf("build in ADO failed, ADO_PAT environment variable is not set, please set it to valid ADO PAT")
 	}
+
+	fmt.Println("Preparing ADO template parameters.")
+	templateParameters, err := prepareADOTemplateParameters(o)
+	if err != nil {
+		return fmt.Errorf("build in ADO failed, failed preparing ADO template parameters, err: %s", err)
+	}
+
+	fmt.Println("Running ADO pipeline.")
+	adoClient := adopipelines.NewClient(o.ADOOrganizationURL, adoPAT)
+
+	fmt.Println("Triggering ADO build pipeline")
+	ctx := context.Background()
+	pipelineRun, err := adopipelines.Run(ctx, adoClient, templateParameters, o.GetADOConfig())
+	if err != nil {
+		return fmt.Errorf("build in ADO failed, failed running ADO pipeline, err: %s", err)
+	}
+
+	pipelineRunResult, err := adopipelines.GetRunResult(ctx, adoClient, o.GetADOConfig(), pipelineRun.Id)
+	if err != nil {
+		return fmt.Errorf("build in ADO failed, failed getting ADO pipeline run result, err: %s", err)
+	}
+	fmt.Printf("ADO pipeline run finished with status: %s", *pipelineRunResult)
+
+	fmt.Println("Getting ADO pipeline run logs.")
+	adoBuildClient, error := adopipelines.NewBuildClient(o.ADOOrganizationURL, adoPAT)
+	if error != nil {
+		fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", error)
+	}
+	logs, err := adopipelines.GetRunLogs(ctx, adoBuildClient, o.GetADOConfig(), pipelineRun.Id, adoPAT)
+	if err != nil {
+		fmt.Printf("Failed read ADO pipeline run logs, err: %s", err)
+	} else {
+		fmt.Printf("ADO pipeline image build logs:\n%s", logs)
+	}
+
+	if *pipelineRunResult == pipelines.RunResultValues.Failed || *pipelineRunResult == pipelines.RunResultValues.Unknown {
+		return fmt.Errorf("build in ADO finished with status: %s", *pipelineRunResult)
+	}
+	return nil
 }
 
-func getADOPipelineRunLogs(adoOrganizationURL, adoProjectName string, pipelineRunID *int, adoPAT string) (string, error) {
-	ctx := context.Background()
-	buildConnection := ado.NewPatConnection(adoOrganizationURL, adoPAT)
-	buildClient, err := build.NewClient(ctx, buildConnection)
-	if err != nil {
-		return "", fmt.Errorf("failed creating build client, err: %w", err)
-	}
-	buildLogs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
-		Project: &adoProjectName,
-		BuildId: pipelineRunID,
-	})
-	if err != nil {
-		return "", fmt.Errorf("failed getting build logs metadata, err: %w", err)
-	}
-	lastLog := (*buildLogs)[len(*buildLogs)-1]
-	httpClient := http.Client{}
-	req, err := http.NewRequest("GET", *lastLog.Url, nil)
-	if err != nil {
-		return "", fmt.Errorf("failed creating http request getting build log, err: %w", err)
-	}
-	req.SetBasicAuth("", adoPAT)
-	resp, err := httpClient.Do(req)
-	if err != nil {
-		return "", fmt.Errorf("failed http request getting build log, err: %w", err)
-	}
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return "", fmt.Errorf("failed reading http body with build log, err: %w", err)
-	}
-	fmt.Printf("%s", body)
-	err = resp.Body.Close()
-	if err != nil {
-		return "", fmt.Errorf("failed closing http body with build log, err: %w", err)
-	}
-	return string(body), nil
-}
-
-func runBuildJob(o options, vs Variants, envs map[string]string) error {
+func buildLocal(o options) error {
 	runFunc := runInKaniko
 	if os.Getenv("USE_BUILDKIT") == "true" {
 		runFunc = runInBuildKit
 	}
 	var sha, pr string
 	var err error
+	var variant Variants
+	var envs map[string]string
+
+	context, err := filepath.Abs(o.Context)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	dockerfilePath := filepath.Join(context, filepath.Dir(o.Dockerfile))
+
+	if len(o.EnvFile) > 0 {
+		envs, err = loadEnv(os.DirFS(dockerfilePath), o.EnvFile)
+		if err != nil {
+			return fmt.Errorf("load env failed, error: %w", err)
+		}
+
+	} else {
+		variantsFile := filepath.Join(dockerfilePath, "variants.yaml")
+		variant, err = GetVariants(o.Variant, variantsFile, os.ReadFile)
+		if err != nil {
+			if !os.IsNotExist(err) {
+				return fmt.Errorf("get variants failed, error: %w", err)
+			}
+		}
+		if len(variant) > 0 {
+			return fmt.Errorf("building variants is not not working and is not supported anymore")
+		}
+	}
+
 	repo := o.Config.Registry
 	if o.IsCI {
 		presubmit := os.Getenv("JOB_TYPE") == "presubmit"
@@ -387,23 +359,20 @@ func runBuildJob(o options, vs Variants, envs map[string]string) error {
 
 	appendMissing(&buildArgs, o.BuildArgs)
 
-	if len(vs) == 0 {
-		// variants.yaml file not present or either empty. Run single build.
-		destinations := gatherDestinations(repo, o.Name, parsedTags)
-		fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-		err = runFunc(o, "build", destinations, o.Platforms, buildArgs)
-		if err != nil {
-			return fmt.Errorf("build encountered error: %w", err)
-		}
-
-		err := signImages(&o, destinations)
-		if err != nil {
-			return fmt.Errorf("sign encountered error: %w", err)
-		}
-		fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
-		return nil
+	// variants.yaml file not present or either empty. Run single build.
+	destinations := gatherDestinations(repo, o.Name, parsedTags)
+	fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
+	err = runFunc(o, "build", destinations, o.Platforms, buildArgs)
+	if err != nil {
+		return fmt.Errorf("build encountered error: %w", err)
 	}
-	return fmt.Errorf("building variants is not supported at this moment")
+
+	err = signImages(&o, destinations)
+	if err != nil {
+		return fmt.Errorf("sign encountered error: %w", err)
+	}
+	fmt.Println("Successfully built image:", strings.Join(destinations, ", "))
+	return nil
 }
 
 // appendMissing appends key, values pairs from source array to target map
@@ -645,47 +614,6 @@ func addTagsToEnv(tags []tags.Tag, envs map[string]string) map[string]string {
 	return m
 }
 
-// TODO: Merge buildImage and runBuildJob functions and rename to buildLocaly.
-func buildImage(o options) {
-
-	context, err := filepath.Abs(o.Context)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	dockerfilePath := filepath.Join(context, filepath.Dir(o.Dockerfile))
-
-	var variant Variants
-	var envs map[string]string
-	if len(o.EnvFile) > 0 {
-		envs, err = loadEnv(os.DirFS(dockerfilePath), o.EnvFile)
-		if err != nil {
-			fmt.Println(err)
-			os.Exit(1)
-		}
-
-	} else {
-		// TODO: checking if variants.yaml file is present should be done in validateOptions function.
-		// 		validateOptions is called at the beginning and will fail quickly as varaints.yaml file is not supported in any scenario.
-		//		Check for presence of variabnts.yaml file should not be executed when running in ADO.
-		variantsFile := filepath.Join(dockerfilePath, "variants.yaml")
-		variant, err = GetVariants(o.Variant, variantsFile, os.ReadFile)
-		if err != nil {
-			if !os.IsNotExist(err) {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-		}
-	}
-
-	err = runBuildJob(o, variant, envs)
-	if err != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
-	fmt.Println("Job's done.")
-}
-
 func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.Silent, "silent", false, "Do not push build logs to stdout")
 	flagSet.StringVar(&o.ConfigPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
@@ -735,44 +663,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	if o.BuildInADO {
-		fmt.Println("Building image in ADO pipeline.")
-		adoPAT, present := os.LookupEnv("ADO_PAT")
-		if !present {
-			fmt.Println("Image build failed, ADO_PAT environment variable is not set, please set it to valid ADO PAT")
-			os.Exit(1)
-		}
-
-		fmt.Println("Preparing ADO template parameters.")
-		templateParameters, err := prepareADOTemplateParameters(o.Name, o.Dockerfile, o.Context, o.ExportTags, o.Platforms, o.BuildArgs, o.Tags)
-		if err != nil {
-			fmt.Printf("Image build failed, failed preparing ADO template parameters, err: %s", err)
-			os.Exit(1)
-		}
-
-		fmt.Println("Running ADO pipeline.")
-		pipelineRun, pipelineRunResult, err := runInAzureDevOps(templateParameters, o.ADOOrganizationURL, o.ADOProjectName, adoPAT, o.ADOPipelineID, o.ADOPipelineVersion)
-		if err != nil {
-			fmt.Printf("Image build failed, failed running ADO pipeline, err: %s", err)
-			os.Exit(1)
-		}
-
-		fmt.Printf("ADO pipeline run finished with status: %s", *pipelineRunResult)
-
-		fmt.Println("Getting ADO pipeline run logs.")
-		logs, err := getADOPipelineRunLogs(o.ADOOrganizationURL, o.ADOProjectName, pipelineRun.Id, adoPAT)
-		if err != nil {
-			fmt.Printf("failed getting ADO pipeline run logs, err: %s", err)
-		} else {
-			fmt.Printf("ADO pipeline image build logs:\n%s", logs)
-		}
-
-		if *pipelineRunResult == pipelines.RunResultValues.Failed || *pipelineRunResult == pipelines.RunResultValues.Unknown {
-			fmt.Println("Image build failed")
-			os.Exit(1)
-		}
-		os.Exit(0)
-	}
 	if o.SignOnly {
 		err = signImages(&o, o.ImagesToSign)
 		if err != nil {
@@ -781,6 +671,7 @@ func main() {
 		}
 		os.Exit(0)
 	}
+
 	if o.ParseTagsOnly {
 		// TODO: extract getting env vars values and parsing tags to separate function to remove duplication
 		var sha, pr string
@@ -816,6 +707,18 @@ func main() {
 		fmt.Printf("%s", jsonTags)
 		os.Exit(0)
 	}
+	if o.BuildInADO {
+		err = buildInADO(o)
+		if err != nil {
+			fmt.Printf("Image build failed with error: %s", err)
+			os.Exit(1)
+		}
+	}
 	// TODO: refactor, based on provided options, run build locally or in ADO
-	buildImage(o)
+	err = buildLocal(o)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fmt.Println("Job's done.")
 }

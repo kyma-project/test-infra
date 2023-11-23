@@ -33,6 +33,10 @@ type Config struct {
 	ADOPipelineVersion int `yaml:"ado-pipeline-version,omitempty" json:"ado-pipeline-version,omitempty"`
 }
 
+func (c Config) GetADOConfig() Config {
+	return c
+}
+
 func NewClient(adoOrganizationURL, adoPAT string) Client {
 	adoConnection := adov7.NewPatConnection(adoOrganizationURL, adoPAT)
 	ctx := context.Background()
@@ -45,12 +49,12 @@ func NewBuildClient(adoOrganizationURL, adoPAT string) (BuildClient, error) {
 	return build.NewClient(ctx, buildConnection)
 }
 
-func getADOPipelineRunResult(ctx context.Context, adoProjectName string, adoPipelineID int, pipelineRunID *int, adoClient Client) (*pipelines.RunResult, error) {
+func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipelineRunID *int) (*pipelines.RunResult, error) {
 	for {
 		time.Sleep(30 * time.Second)
 		pipelineRun, err := adoClient.GetRun(ctx, pipelines.GetRunArgs{
-			Project:    &adoProjectName,
-			PipelineId: &adoPipelineID,
+			Project:    &adoConfig.ADOProjectName,
+			PipelineId: &adoConfig.ADOPipelineID,
 			RunId:      pipelineRunID,
 		})
 		if err != nil {
@@ -59,18 +63,21 @@ func getADOPipelineRunResult(ctx context.Context, adoProjectName string, adoPipe
 		if *pipelineRun.State == pipelines.RunStateValues.Completed {
 			return pipelineRun.Result, nil
 		}
-		fmt.Println("Pipeline run is still in progress. Waiting for 30 seconds")
+		// TODO: use logging with default severity
+		fmt.Println("Pipeline run still in progress. Waiting for 30 seconds")
 	}
 }
 
-func GetRunLogs(ctx context.Context, buildClient BuildClient, adoProjectName string, pipelineRunID *int, adoPAT string) (string, error) {
+func GetRunLogs(ctx context.Context, buildClient BuildClient, adoConfig Config, pipelineRunID *int, adoPAT string) (string, error) {
 	buildLogs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
-		Project: &adoProjectName,
+		Project: &adoConfig.ADOProjectName,
 		BuildId: pipelineRunID,
 	})
 	if err != nil {
 		return "", fmt.Errorf("failed getting build logs metadata, err: %w", err)
 	}
+
+	// Last item in a list represent logs from all pipeline steps visible in ADO GUI
 	lastLog := (*buildLogs)[len(*buildLogs)-1]
 	httpClient := http.Client{}
 	req, err := http.NewRequest("GET", *lastLog.Url, nil)
@@ -86,7 +93,6 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, adoProjectName str
 	if err != nil {
 		return "", fmt.Errorf("failed reading http body with build log, err: %w", err)
 	}
-	fmt.Printf("%s", body)
 	err = resp.Body.Close()
 	if err != nil {
 		return "", fmt.Errorf("failed closing http body with build log, err: %w", err)
@@ -94,24 +100,7 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, adoProjectName str
 	return string(body), nil
 }
 
-// TODO: refactor error messages abd function arguments.
-func runInAzureDevOps(templateParameters map[string]string, adoClient Client, adoProjectName string, adoPipelineID, adoPipelineVersion int) (*pipelines.Run, *pipelines.RunResult, error) {
-
-	fmt.Println("Triggering ADO build pipeline")
-	pipelineRun, err := runADOPipeline(adoClient, templateParameters, adoProjectName, adoPipelineID, adoPipelineVersion)
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed running ADO pipeline, err: %w", err)
-	}
-
-	result, err := getADOPipelineRunResult(adoProjectName, adoPipelineID, pipelineRun.Id, adoClient)
-	if err != nil {
-		return nil, nil, fmt.Errorf("failed getting ADO pipeline run result, err: %w", err)
-	}
-
-	return pipelineRun, result, nil
-}
-
-func Run(ctx context.Context, adoClient pipelines.Client, templateParameters map[string]string, adoConfig Config) (*pipelines.Run, error) {
+func Run(ctx context.Context, adoClient Client, templateParameters map[string]string, adoConfig Config) (*pipelines.Run, error) {
 	adoRunPipelineArgs := pipelines.RunPipelineArgs{
 		Project:    &adoConfig.ADOProjectName,
 		PipelineId: &adoConfig.ADOPipelineID,
@@ -123,6 +112,7 @@ func Run(ctx context.Context, adoClient pipelines.Client, templateParameters map
 	if adoConfig.ADOPipelineVersion != 0 {
 		adoRunPipelineArgs.PipelineVersion = &adoConfig.ADOPipelineVersion
 	}
+	// TODO: use logging with default severity
 	fmt.Printf("Using TemplateParameters: %+v\n", adoRunPipelineArgs.RunParameters.TemplateParameters)
 	return adoClient.RunPipeline(ctx, adoRunPipelineArgs)
 }
