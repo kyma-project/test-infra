@@ -18,6 +18,8 @@ templates:
               preset-dind-enabled: "true"
             image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2
             command: "/init.sh"
+          skip_if_only_changed_documentation:
+            skip_if_only_changed: '^docs/|\.md$'
         jobConfigs:
           - repoName: "github.com/kyma-project/warden"
             jobs:
@@ -31,11 +33,12 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/admission/Dockerfile"
-                  run_if_changed: '.*\.go|docker/admission/'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-admission-build
                   annotations:
@@ -49,11 +52,12 @@ templates:
                     - "--context=."
                     - "--dockerfile=docker/admission/Dockerfile"
                     - "--tag=latest"
-                  run_if_changed: '.*\.go|docker/admission/'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-warden-operator-build
                   annotations:
@@ -64,11 +68,12 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/operator/Dockerfile"
-                  run_if_changed: '.*\.go|docker/operator/'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-operator-build
                   annotations:
@@ -82,11 +87,12 @@ templates:
                     - "--context=."
                     - "--dockerfile=docker/operator/Dockerfile"
                     - "--tag=latest"
-                  run_if_changed: '.*\.go|docker/operator/'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-warden-module-build
                   annotations:
@@ -97,7 +103,6 @@ templates:
                   env:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
-                  run_if_changed: "^\\.env$|^(go\\.mod|go\\.sum)$|^(.*/)?(.*\\.go|Makefile|.*\\.sh|.*\\.yaml|Dockerfile)$|^PROJECT$"
                   command: "make"
                   args:
                     - "ci-module-build"
@@ -109,6 +114,8 @@ templates:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_presubmit
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-module-build
                   annotations:
@@ -119,7 +126,6 @@ templates:
                   env:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     MODULE_SHA: "${PULL_BASE_SHA}"
-                  run_if_changed: "^\\.env$|^(go\\.mod|go\\.sum)$|^(.*/)?(.*\\.go|Makefile|.*\\.sh|.*\\.yaml|Dockerfile)$|^PROJECT$"
                   command: "make"
                   args:
                     - "ci-module-build"
@@ -131,13 +137,14 @@ templates:
                     - image_buildpack-golang # takes latest golang image
                     - jobConfig_default
                     - jobConfig_postsubmit
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-warden-verify
                   annotations:
                     owner: otters
                     description: LM intergration test
                   optional: true
-                  always_run: true
                   args:
                     - "bash"
                     - "-c"
@@ -149,11 +156,12 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - e2e_dind
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
                   name: pre-warden-lint
                   optional: true
-                  run_if_changed: "^(go.mod|go.sum|.golangci.yaml)$|^*/(.*.go|Makefile|.*.sh)$"
+                  always_run: true
                   annotations:
                     owner: otters
                     description: executes the 'golangci-lint lint' command before any pull request.
@@ -177,10 +185,10 @@ templates:
                     - "test"
                   env:
                     TEST_COVER_OUT: ${ARTIFACTS}/filtered.cov
-                  run_if_changed: '.*\.go$'
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"
                     - "unprivileged"
                   local:
                     - testing
+                    - skip_if_only_changed_documentation

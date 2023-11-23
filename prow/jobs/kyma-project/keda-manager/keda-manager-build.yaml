@@ -12,7 +12,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-keda-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^keda.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$'
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -55,7 +55,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-keda-manager-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -108,7 +108,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.runID: "post-keda-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^keda.yaml$|^.env$|^hack/ci/*/.*$|^pkg/*/.*$|^controllers/*/.*$|^charts/*/.*$|^api/*/.*$|^config.yaml$|^Dockerfile$|^(go.mod|go.sum)$|^*/(.*.go|Makefile|.*.sh)|^PROJECT$|^config/*/.*$|^docs/*/.*$'
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -150,7 +150,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       skip_report: false
       decorate: true
       cluster: trusted-workload

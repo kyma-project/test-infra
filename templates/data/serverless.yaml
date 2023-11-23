@@ -2,6 +2,9 @@ templates:
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build.yaml
+        localSets:
+          run_if_changed_serverless:
+            run_if_changed: "^components/serverless/|^config/serverless/"
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
@@ -10,7 +13,6 @@ templates:
                   annotations:
                     owner: otters
                     description: function controller build job
-                  run_if_changed: "^components/serverless/"
                   args:
                     - "--name=function-controller"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -20,6 +22,8 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - run_if_changed_serverless
               - jobConfig:
                   name: post-serverless-controller-build
                   annotations:
@@ -27,7 +31,6 @@ templates:
                     description: function controller build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/serverless/"
                   args:
                     - "--name=function-controller"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -39,12 +42,13 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - disable_testgrid
+                  local:
+                    - run_if_changed_serverless
               - jobConfig:
                   name: pre-serverless-webhook-build
                   annotations:
                     owner: otters
                     description: function webhook build job
-                  run_if_changed: "^components/serverless/"
                   args:
                     - "--name=function-webhook"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -54,6 +58,8 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - run_if_changed_serverless
               - jobConfig:
                   name: post-serverless-webhook-build
                   annotations:
@@ -61,7 +67,6 @@ templates:
                     description: function webhook build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/serverless/"
                   args:
                     - "--name=function-webhook"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -73,12 +78,13 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - disable_testgrid
+                  local:
+                    - run_if_changed_serverless
               - jobConfig:
                   name: pre-serverless-jobinit-build
                   annotations:
                     owner: otters
                     description: function jobinit build job
-                  run_if_changed: "^components/serverless/"
                   args:
                     - "--name=function-build-init"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -88,6 +94,8 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - run_if_changed_serverless
               - jobConfig:
                   name: post-serverless-jobinit-build
                   annotations:
@@ -95,7 +103,6 @@ templates:
                     description: function jobinit build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/serverless/"
                   args:
                     - "--name=function-build-init"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -107,12 +114,13 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - disable_testgrid
+                  local:
+                    - run_if_changed_serverless
               - jobConfig:
                   name: pre-serverless-registry-gc-build
                   annotations:
                     owner: otters
                     description: function registry build job
-                  run_if_changed: "^components/serverless/"
                   optional: "true"
                   args:
                     - "--name=function-registry-gc"
@@ -123,6 +131,8 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - run_if_changed_serverless
               - jobConfig:
                   name: post-serverless-registry-gc-build
                   annotations:
@@ -130,7 +140,6 @@ templates:
                     description: function registry build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/serverless/"
                   optional: "true"
                   args:
                     - "--name=function-registry-gc"
@@ -143,6 +152,8 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - "disable_testgrid"
+                  local:
+                    - run_if_changed_serverless
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-runtimes.yaml
@@ -293,6 +304,8 @@ templates:
             branches:
               - "^main$"
               - "^release-*"
+          run_if_changed_module_data:
+            run_if_changed: "^config/|^components/|^sec-scanners-config.yaml$|^.version$|^module-config-template.yaml$"
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
@@ -308,7 +321,6 @@ templates:
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/dev/serverless-operator:PR-${PULL_NUMBER}"
                     MODULE_SHA: "PR-${PULL_NUMBER}"
-                  run_if_changed: "^config/operator/.*$|^sec-scanners-config.yaml$|^.version$|^module-config-template.yaml$"
                   command: "make"
                   args:
                     - "-C"
@@ -321,6 +333,7 @@ templates:
                     - jobConfig_presubmit
                   local:
                     - job_branches
+                    - run_if_changed_module_data
               - jobConfig:
                   name: post-serverless-module-build
                   annotations:
@@ -332,7 +345,6 @@ templates:
                     KUSTOMIZE_VERSION: "v4.5.6"
                     MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_SHA}"
-                  run_if_changed: "^config/operator/.*$|^sec-scanners-config.yaml$|^.version$|^module-config-template.yaml$"
                   command: "make"
                   args:
                     - "-C"
@@ -345,12 +357,12 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - job_branches
+                    - run_if_changed_module_data
               - jobConfig:
                   name: pre-serverless-operator-build
                   annotations:
                     owner: otters
                     description: serverless operator image build
-                  always_run: true
                   command: sh
                   args:
                     - -c
@@ -366,12 +378,13 @@ templates:
                     - image-builder-buildkit
                   local:
                     - job_branches
+                    # this image is used by module-build job and this run_if_changed must be superset of run_if_changed in that job
+                    - run_if_changed_module_data
               - jobConfig:
                   name: post-serverless-operator-build
                   annotations:
                     owner: otters
                     description: build serverless operator
-                  always_run: true
                   labels:
                     preset-signify-prod-secret: "true"
                   command: sh
@@ -391,6 +404,8 @@ templates:
                     - image-builder-buildkit
                   local:
                     - job_branches
+                    # this image is used by module-build job and this run_if_changed must be superset of run_if_changed in that job
+                    - run_if_changed_module_data
               - jobConfig:
                   name: release-serverless-module-build
                   annotations:
@@ -457,7 +472,7 @@ templates:
                   args:
                     - "-c"
                     - "cd components/serverless && golangci-lint run -v && echo 'OK!'"
-                  run_if_changed: '^components/serverless/(.*\.go|.golangci.yaml)$'
+                  run_if_changed: '^components/serverless/'
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -475,7 +490,7 @@ templates:
                   args:
                     - "-c"
                     - "cd components/operator && golangci-lint run -v && echo 'OK!'"
-                  run_if_changed: '^components/operator/(.*\.go|.golangci.yaml)$'
+                  run_if_changed: '^components/operator/'
                   branches:
                     - ^main$
                 inheritedConfigs:
@@ -556,18 +571,18 @@ templates:
                     - "-C"
                     - "components/serverless"
                     - "test"
-                  run_if_changed: '^components/serverless/.*\.go$'
+                  run_if_changed: '^components/serverless/'
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
                     - testing
                     - unprivileged
               - jobConfig:
-                  name: pre-serverless-operator-tests
+                  name: pre-serverless-operator-unit-tests
                   annotations:
                     owner: otters
                     description: serverless operator tests
-                  run_if_changed: "^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)"
+                  run_if_changed: '^components/operator/'
                   command: "make"
                   args:
                     - "-C"

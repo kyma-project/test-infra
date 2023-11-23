@@ -11,7 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-serverless-controller-unit-test"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/serverless/.*\.go$'
+      run_if_changed: '^components/serverless/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -34,18 +34,18 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
-    - name: pre-serverless-operator-tests
+    - name: pre-serverless-operator-unit-tests
       annotations:
         description: "serverless operator tests"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-serverless-operator-tests"
+        prow.k8s.io/pubsub.runID: "pre-serverless-operator-unit-tests"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)'
+      run_if_changed: '^components/operator/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
