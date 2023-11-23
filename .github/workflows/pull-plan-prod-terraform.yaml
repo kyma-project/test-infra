@@ -30,6 +30,10 @@ jobs:
           ref: "refs/pull/${{ github.event.number }}/merge"
           fetch-depth: 50
 
+      - name: debug
+        id: debug
+        run: |
+          git show-ref
       # Important security check: https://github.com/actions/checkout/issues/518
       - name: Sanity check
         id: sanity-check
@@ -46,7 +50,7 @@ jobs:
         with:
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }} #workload_identity_provider: "projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/providers/github-com-kyma-project"
           service_account: ${{ vars.GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL }} #service_account: "terraform-executor@sap-kyma-prow.iam.gserviceaccount.com"
-      
+
       # Build tofu CLI from source until setup-opentofu action will become stable
 
       - name: Download the tofu source
@@ -55,13 +59,12 @@ jobs:
           repository: opentofu/opentofu
           path: opentofu
           ref: b8e2fad8e24cdd98c5a81d5c08bc8fe417cfdfc5 # v1.6.0-alpha5
-        
+
       - name: Install tofu tooling
         uses: actions/setup-go@v4
         with:
           go-version-file: opentofu/go.mod
           cache-dependency-path: opentofu/go.sum
-
 
       - name: Prepare the tofu command
         working-directory: opentofu
