@@ -1,8 +1,8 @@
 module-name: test-infra
 protecode:
-    - aquasec/trivy:0.44.1
+    - aquasec/trivy:0.47.0
     - docker.io/library/nginx:1.25.2-alpine
-    - docker.io/zricethezav/gitleaks:v8.18.0
+    - docker.io/zricethezav/gitleaks:v8.18.1
     - eu.gcr.io/gardener-project/ci-infra/cla-assistant:v20231121-2908159
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
     - eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b-buildkit
