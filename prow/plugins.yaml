@@ -85,15 +85,8 @@ config_updater:
       gzip: true
     prow/config.yaml:
       name: config
-    prow/branchprotector-config.yaml:
-      name: branchprotector-config
     prow/plugins.yaml:
       name: plugins
-    prow/labels.yaml:
-      name: label-config
-      clusters:
-        trusted-workload:
-          - default
     configs/kaniko-build-config.yaml:
       name: kaniko-build-config
       clusters:
@@ -155,7 +148,7 @@ require_matching_label:
     issues: true
     missing_comment: |
       There is no `kind/` label present. Please add one by using the following command:
-      - `/kind <kind>
+      - `/kind <kind>`
       
       Available kinds:
       `deprecation`, `bug`, `chore`, `feature`, `flake`, `cleanup`, `missing-test`, `failing-test`
