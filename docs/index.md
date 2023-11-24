@@ -20,8 +20,6 @@
 
 [JobGuard ](/cmd/jobguard/README.md) - JobGuard is a simple tool that fetches all statuses for GitHub pull requests and waits for some of them to finish.
 
-[prowjobparser](/cmd/prowjobparser/README.md) - The prowjobparser is a helper tool which parses all Prow Jobs under the provided path, matches them against the provided label filters, and prints matching Prow Job names to the standard output.
-
 [Clusters Garbage Collector](/cmd/tools/clusterscollector/README.md) - This command finds and removes orphaned clusters created by the `kyma-gke-integration` job in a Google Cloud Platform (GCP) project.
 
 [Disks Garbage Collector](/cmd/tools/diskscollector/README.md) - This command finds and removes orphaned disks created by the `kyma-gke-integration` job in a Google Cloud Platform (GCP) project.
