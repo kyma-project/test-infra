@@ -17,9 +17,7 @@ presubmits: # runs on PRs
         preset-kms-gc-project-env: "true"
         preset-kyma-artifacts-bucket: "true"
         preset-kyma-development-artifacts-bucket: "true"
-        preset-kyma-encryption-key: "true"
         preset-kyma-guard-bot-github-token: "true"
-        preset-kyma-keyring: "true"
         preset-sa-gke-kyma-integration: "true"
       run_if_changed: '^((chart\S+|installation\S+)(\.[^.][^.][^.]+$|\.[^.][^dD]$|\.[^mM][^.]$|\.[^.]$|/[^.]+$))'
       optional: true
@@ -63,4 +61,3 @@ presubmits: # runs on PRs
               limits:
                 memory: 6Gi
                 cpu: 3
-  

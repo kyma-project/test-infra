@@ -20,8 +20,6 @@ templates:
               testgrid-create-test-group: "false"
             labels:
               preset-wssagent-keys: "true"
-              preset-kyma-keyring: "true"
-              preset-kyma-encryption-key: "true"
               preset-kms-gc-project-env: "true"
               preset-gc-project-env: "true"
             env:
