@@ -19,7 +19,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -48,7 +48,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -77,7 +77,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -106,7 +106,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -135,7 +135,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -164,7 +164,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -193,7 +193,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -222,7 +222,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -251,7 +251,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -280,7 +280,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -309,7 +309,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -338,7 +338,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -367,7 +367,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -396,7 +396,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -425,7 +425,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -454,7 +454,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -483,7 +483,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -512,7 +512,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -541,7 +541,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -570,7 +570,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -599,7 +599,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -628,7 +628,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -657,7 +657,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -686,7 +686,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -715,7 +715,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -744,7 +744,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -773,7 +773,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -802,7 +802,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -831,7 +831,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -860,7 +860,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -889,7 +889,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -918,7 +918,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -947,7 +947,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -976,7 +976,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1005,7 +1005,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1034,7 +1034,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1063,7 +1063,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
@@ -1092,7 +1092,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.0"
+          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
             securityContext:
               privileged: false
               seccompProfile:
