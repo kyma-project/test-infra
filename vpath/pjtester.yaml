@@ -1,9 +1,0 @@
-pjConfigs:
-  prowJobs:
-    kyma-incubator:
-      compass:
-        - pjName: "pre-main-compass-schema-migrator-validate"
-prConfigs:
-  kyma-incubator:
-    compass:
-      prNumber: 3481
