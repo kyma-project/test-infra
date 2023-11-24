@@ -11,7 +11,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-serverless-controller-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/serverless/(.*\.go|.golangci.yaml)$'
+      run_if_changed: '^components/serverless/'
       optional: true
       skip_report: false
       decorate: true
@@ -44,7 +44,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-serverless-operator-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-      run_if_changed: '^components/operator/(.*\.go|.golangci.yaml)$'
+      run_if_changed: '^components/operator/'
       optional: true
       skip_report: false
       decorate: true

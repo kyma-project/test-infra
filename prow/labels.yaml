@@ -49,6 +49,20 @@ default:
       target: prs
       addedBy: humans
 
+      # CLA
+    - color: e11d21
+      description: Indicates the PR's author has not signed the CLA.
+      name: 'cla: no'
+      target: prs
+      prowPlugin: cla-assistant
+      addedBy: prow
+    - color: bfe5bf
+      description: Indicates the PR's author has signed the CLA.
+      name: 'cla: yes'
+      target: prs
+      prowPlugin: cla-assistant
+      addedBy: prow
+
       # size labels
     - color: ee9900
       description: Denotes a PR that changes 100-499 lines, ignoring generated files.

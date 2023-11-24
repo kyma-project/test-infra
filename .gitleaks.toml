@@ -13,6 +13,7 @@ paths = [
     '''(go.mod|go.sum)$''',
     '''node_modules''',
     '''vendor''',
+    '''notary_test.go''',
 ]
 regexTarget = "line"
 regexes = ["#nosec"]

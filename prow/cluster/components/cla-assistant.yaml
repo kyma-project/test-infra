@@ -2,26 +2,28 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   namespace: default
-  name: needs-tws
+  name: cla-assistant
   labels:
-    app: needs-tws
+    app: cla-assistant
 spec:
   selector:
     matchLabels:
-      app: needs-tws
+      app: cla-assistant
   template:
     metadata:
       labels:
-        app: needs-tws
+        app: cla-assistant
     spec:
       containers:
-      - name: needs-tws
-        image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/needs-tws:v20231122-07e817c8
+      - name: cla-assistant
+        image: eu.gcr.io/gardener-project/ci-infra/cla-assistant:v20231121-2908159
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy
         - --github-endpoint=https://api.github.com
         - --github-token-path=/etc/github/oauth
+        - --update-period=15m
+        - --log-level=info
         - --hmac-secret-file=/etc/webhook/hmac
         ports:
           - name: http
@@ -30,9 +32,24 @@ spec:
           - name: hmac
             mountPath: /etc/webhook
             readOnly: true
+          - name: plugins
+            mountPath: /etc/plugins
+            readOnly: true
           - name: oauth
             mountPath: /etc/github
             readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /healthz/ready
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 3
       volumes:
         - name: hmac
           secret:
@@ -40,15 +57,18 @@ spec:
         - name: oauth
           secret:
             secretName: oauth-token
+        - name: plugins
+          configMap:
+            name: plugins
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: needs-tws
+  name: cla-assistant
   namespace: default
 spec:
   selector:
-    app: needs-tws
+    app: cla-assistant
   ports:
   - port: 80
     targetPort: 8080

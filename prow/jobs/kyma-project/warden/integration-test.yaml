@@ -13,10 +13,10 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
       cluster: untrusted-workload
       decorate: true
-      run_if_changed: '.*\.go$|charts/'
+      skip_if_only_changed: '^docs/|\.md$'
       spec:
         containers:
-          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-c318e307
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2
             command: ["/init.sh"]
             args:
               - bash

@@ -14,7 +14,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-docker-push-repository-kyma: "true"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^(go.mod|go.sum)$|^*/(.*.go|Makefile|Dockerfile|.*.sh)'
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -23,7 +23,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231121-c318e307"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231122-2a5515a2"
             securityContext:
               privileged: false
               seccompProfile:
@@ -49,7 +49,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       optional: false
       skip_report: false
       decorate: true
@@ -64,7 +64,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-c318e307"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2"
             securityContext:
               privileged: true
               seccompProfile:
@@ -98,7 +98,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       optional: true
       skip_report: false
       decorate: true
@@ -113,7 +113,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-c318e307"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2"
             securityContext:
               privileged: true
               seccompProfile:
@@ -144,7 +144,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/|\.md$'
       optional: true
       skip_report: false
       decorate: true
@@ -159,7 +159,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-c318e307"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2"
             securityContext:
               privileged: true
               seccompProfile:
@@ -207,7 +207,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231121-c318e307"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2"
             securityContext:
               privileged: true
               seccompProfile:
