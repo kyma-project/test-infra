@@ -17,7 +17,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "aquasec/trivy:0.44.1"
+          - image: "aquasec/trivy:0.47.0"
             args: ["trivy", "fs", "--config", ".trivy.yaml", "."]
             resources:
               requests:
