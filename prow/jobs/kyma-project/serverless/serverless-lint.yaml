@@ -31,7 +31,7 @@ presubmits: # runs on PRs
               - "bash"
             args:
               - "-c"
-              - "cd components/serverless && golangci-lint run -v && echo 'OK!'"
+              - "cd components/serverless && apt update --yes && apt install --yes libgit2-dev && golangci-lint run -v && echo 'OK!'"
             resources:
               requests:
                 memory: 3Gi
