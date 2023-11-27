@@ -35,10 +35,10 @@
 /prow/jobs/kyma-project/eventing-auth-manager @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma-project/eventing-manager/ @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma-project/examples @kyma-project/observability @neighbors-dev-bot
-/prow/jobs/kyma-incubator/compass @kyma-incubator/team-raptor @kyma-incubator/team-falcon @neighbors-dev-bot
-/prow/jobs/kyma-incubator/compass-console @kyma-incubator/team-raptor @kyma-incubator/team-falcon @neighbors-dev-bot
+/prow/jobs/kyma-incubator/compass @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot
+/prow/jobs/kyma-incubator/compass-console @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot
 /prow/jobs/kyma-incubator/hydroform/hydroform.yaml @janmedrek @neighbors-dev-bot
-/prow/jobs/kyma-incubator/ord-service @kyma-incubator/team-raptor @kyma-incubator/team-falcon @neighbors-dev-bot
+/prow/jobs/kyma-incubator/ord-service @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot
 /prow/jobs/kyma-incubator/reconciler/reconciler-k3d.yaml @kyma-project/jellyfish @neighbors-dev-bot
 /prow/jobs/kyma-incubator/reconciler/reconciler.yaml @kyma-project/jellyfish @kyma-project/goat  @neighbors-dev-bot
 /prow/jobs/kyma-project/infrastructure-manager/ @kyma-project/framefrog @neighbors-dev-bot
