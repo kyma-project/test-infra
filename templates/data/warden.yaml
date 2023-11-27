@@ -192,3 +192,42 @@ templates:
                   local:
                     - testing
                     - skip_if_only_changed_documentation
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/warden/integration-test.yaml
+        localSets:
+          e2e_dind:
+            labels:
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2
+            command: "/init.sh"
+          skip_if_only_changed_documentation:
+            skip_if_only_changed: '^docs/|\.md$'
+        jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
+              - jobConfig:
+                  name: pre-warden-integration-test
+                  annotations:
+                    owner: otters
+                    description: Warden integration test
+                  labels:
+                    preset-k3d-enabled: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |-
+                      kubectl cluster-info;
+                      make install run-integration-tests;
+                      failed=$?;
+                      kubectl logs -l app=warden --prefix=true;
+                      exit $failed
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_presubmit
+                  local:
+                    - e2e_dind
+                    - skip_if_only_changed_documentation
