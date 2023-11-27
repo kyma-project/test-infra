@@ -1,0 +1,9 @@
+pjConfigs:
+  prowJobs:
+    kyma-incubator:
+      reconciler:
+        - pjName: "pre-main-kyma-incubator-component-reconciler"
+prConfigs:
+  kyma-incubator:
+    reconciler:
+      prNumber: 1411
