@@ -19,7 +19,6 @@ spec:
     images:
       - "ghcr.io/external-secrets/external-secrets"
       - "openpolicyagent/gatekeeper"
-      - "grafana/grafana"
       - "docker.io/nginx"
       - "quay.io/prometheus-operator/prometheus-config-reloader"
       - "quay.io/prometheus-operator/prometheus-operator"

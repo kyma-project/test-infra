@@ -28,8 +28,6 @@
 
 [GCR cleaner](/cmd/tools/gcrcleaner/README.md) - This command finds and removes old GCR images created by Jobs in the Google Cloud Platform (GCP) project.
 
-[Github issues](/cmd/tools/githubissues/README.md) - This command queries all open Github issues in an organization or repository, and loads that data to a BigQuery table.
-
 [GitHub release](/cmd/tools/githubrelease/README.md) - This command creates GitHub releases.
 
 [IP cleaner](/cmd/tools/ipcleaner/README.md) - This command finds and removes orphaned IP addresses created by jobs in the Google Cloud Platform (GCP) project.
