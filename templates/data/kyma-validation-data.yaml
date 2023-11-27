@@ -21,8 +21,6 @@ templates:
                     - --resources-directory
                     - /home/prow/go/src/github.com/kyma-project/kyma/resources/
                     - check
-                    - --excludes-list
-                    - /home/prow/go/src/github.com/kyma-project/test-infra/cmd/image-url-helper/excludes.yaml
                   optional: "true"
                 inheritedConfigs:
                   global:
