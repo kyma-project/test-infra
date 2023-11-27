@@ -24,14 +24,7 @@ prow_servicemonitors.yaml
 prow_alertmanager.yaml
 prometheus_expose.yaml
 ```
-## Add recording and alerting rules
 
-1. Add new recording or alerting rules to the [Prometheus Rule specification](../../prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml).
-
-2. Replace the existing Prometheus Rule object with the current file version.
-   ```bash
-   kubctl replace -f prow/cluster/resources/monitoring/templates/prow_prometheusrules.yaml
-   ```
 ## Stackdriver Monitoring
 
 Stackdriver Monitoring service provides additional metrics and data related to Prow and workload clusters.
