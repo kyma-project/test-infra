@@ -109,8 +109,5 @@ gardener::generate_overrides
 export CLEANUP_CLUSTER="true"
 gardener::provision_cluster
 
-# shellcheck source=prow/scripts/lib/kyma.sh
-source "${TEST_INFRA_SOURCES_DIR}/prow/scripts/reconciler/reconciler-ory-production-gardener-integration.sh"
-
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
