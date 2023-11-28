@@ -380,6 +380,7 @@ tide:
     kyma-project/examples: squash
     kyma-project/lifecycle-manager: squash
     kyma-project/runtime-watcher: squash
+    kyma-project/template-operator: squash
     kyma-project/api-gateway: squash
     kyma-project/btp-manager: squash
     kyma-project/kyma-environment-broker: squash
