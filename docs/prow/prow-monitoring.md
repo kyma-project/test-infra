@@ -36,7 +36,7 @@ The [`sap-kyma-prow-workload`](https://app.google.stackdriver.com/?project=sap-k
  - Long-running GKE clusters (`weekly` and `nightly` clusters)
 
 #### Dashboards
-Stackdriver Monitoring provides information about overall [status](https://app.google.stackdriver.com/uptime?project=sap-kyma-prow-workloads) 
+Stackdriver Monitoring provides information about the overall [status](https://app.google.stackdriver.com/uptime?project=sap-kyma-prow-workloads).
 of long-running clusters and test-infra infrastructure:
  
 ![uptime checks](./assets/uptime-checks.png)
