@@ -159,6 +159,11 @@ postsubmits: # runs on main
               - "-c"
               - "make -C components/operator/hack/ci k3d-integration-test
 "
+            env:
+              - name: IMG_DIRECTORY
+                value: "prod"
+              - name: IMG_VERSION
+                value: "map[]"
             resources:
               requests:
                 memory: 4Gi
