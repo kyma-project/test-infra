@@ -623,6 +623,29 @@
       }
     },
     {
+      "registry": "docker.io/grafana/grafana",
+      "purpose": "Grafana Dashboard",
+      "publisher": "Grafana Community",
+      "sourceCode": "https://github.com/grafana/grafana",
+      "docker": {
+        "verifiedPublisher": true,
+        "officialImage": false
+      },
+      "manualAnalysis": {
+        "contributors": 2000,
+        "activity": {
+          "commitFrequency": "daily",
+          "evidence": "https://github.com/grafana/grafana/commits/main"
+        }
+      },
+      "comment": "Will be replaced by Plutono (https://github.com/kyma-project/test-infra/issues/8072)",
+      "openSSFScore": 0,
+      "review": {
+        "approvedImage": false,
+        "reason": ""
+      }
+    },
+    {
       "registry": "quay.io/prometheus-operator/prometheus-operator",
       "purpose": "Prometheus (Monitoring) Operator",
       "publisher": "Prometheus Community",
