@@ -32,7 +32,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/nodejs"
               - "--dockerfile=nodejs16/Dockerfile"
-              - "--tag=$PULL_BASE_SHA"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -80,7 +80,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/nodejs"
               - "--dockerfile=nodejs18/Dockerfile"
-              - "--tag=$PULL_BASE_SHA"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -128,7 +128,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/python39"
               - "--dockerfile=components/runtimes/python39/Dockerfile"
-              - "--tag=$PULL_BASE_SHA"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -176,7 +176,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/runtimes/java17"
               - "--dockerfile=Dockerfile-jvm-runtime"
-              - "--tag=$PULL_BASE_SHA"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -230,7 +230,7 @@ postsubmits: # runs on main
               - "--context=components/runtimes/nodejs"
               - "--dockerfile=nodejs16/Dockerfile"
               - "--tag=latest"
-              - "--tag=$PULL_BASE_SHA"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -281,7 +281,7 @@ postsubmits: # runs on main
               - "--context=components/runtimes/nodejs"
               - "--dockerfile=nodejs18/Dockerfile"
               - "--tag=latest"
-              - "--tag=$PULL_BASE_SHA"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -332,7 +332,7 @@ postsubmits: # runs on main
               - "--context=components/runtimes/python39"
               - "--dockerfile=components/runtimes/python39/Dockerfile"
               - "--tag=latest"
-              - "--tag=$PULL_BASE_SHA"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -383,7 +383,7 @@ postsubmits: # runs on main
               - "--context=components/runtimes/java17"
               - "--dockerfile=Dockerfile-jvm-runtime"
               - "--tag=latest"
-              - "--tag=$PULL_BASE_SHA"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
