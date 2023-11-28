@@ -18,15 +18,3 @@ spec:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["/ko-app/usersmapchecker"\],"container_name":"test",.*}$'
-      # Prowjob name: github-issues
-      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:*"
-        command:
-          - /tools/entrypoint
-        args: []
-        entrypoint_options: '^.*"args":\["\/ko-app\/githubissues","--githubOrgName=kyma-project","--bqProjectID=sap-kyma-prow","--bqDataset=github_issues","--bqTable=github_com_kyma_project","--bqCredentials=\$\(GOOGLE_APPLICATION_CREDENTIALS\)","--githubToken=\$\(BOT_GITHUB_TOKEN\)"\],"container_name":"test",.*$'
-      # github-issues-internal
-      - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:*"
-        command:
-          - /tools/entrypoint
-        args: []
-        entrypoint_options: '^.*"args":\["\/ko-app\/githubissues","--githubOrgName=kyma","--githubBaseURL=https://github\.tools\.sap/api/v3/","--bqProjectID=sap-kyma-prow","--bqDataset=github_issues","--bqTable=github_tools_sap_kyma","--bqCredentials=\$\(GOOGLE_APPLICATION_CREDENTIALS\)","--githubToken=\$\(BOT_GITHUB_SAP_TOKEN\)"\],"container_name":"test",.*$'
