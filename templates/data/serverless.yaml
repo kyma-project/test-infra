@@ -3,8 +3,8 @@ templates:
     render:
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build.yaml
         localSets:
-          run_if_changed_serverless:
-            run_if_changed: "^components/serverless/|^config/serverless/"
+          skip_if_only_changed_documentation:
+            skip_if_only_changed: '^docs/|^examples/'
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
@@ -24,7 +24,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
                   local:
-                    - run_if_changed_serverless
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-controller-build
                   annotations:
@@ -45,7 +45,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
                   local:
-                    - run_if_changed_serverless
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-serverless-webhook-build
                   annotations:
@@ -62,7 +62,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
                   local:
-                    - run_if_changed_serverless
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-webhook-build
                   annotations:
@@ -83,7 +83,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
                   local:
-                    - run_if_changed_serverless
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-serverless-jobinit-build
                   annotations:
@@ -100,7 +100,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
                   local:
-                    - run_if_changed_serverless
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-jobinit-build
                   annotations:
@@ -121,7 +121,7 @@ templates:
                     - jobConfig_postsubmit
                     - disable_testgrid
                   local:
-                    - run_if_changed_serverless
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-serverless-registry-gc-build
                   annotations:
@@ -139,7 +139,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_presubmit
                   local:
-                    - run_if_changed_serverless
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-registry-gc-build
                   annotations:
@@ -161,10 +161,13 @@ templates:
                     - jobConfig_postsubmit
                     - "disable_testgrid"
                   local:
-                    - run_if_changed_serverless
+                    - skip_if_only_changed_documentation
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-runtimes.yaml
+        localSets:
+          skip_if_only_changed_documentation:
+            skip_if_only_changed: '^docs/|^examples/'
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
@@ -173,7 +176,6 @@ templates:
                   annotations:
                     owner: otters
                     description: function nodejs16 build job
-                  run_if_changed: "^components/runtimes/nodejs/"
                   args:
                     - "--name=function-runtime-nodejs16"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -184,6 +186,8 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-runtimes-nodejs-v16-build
                   annotations:
@@ -191,7 +195,6 @@ templates:
                     description: function nodejs16 build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/runtimes/nodejs/"
                   args:
                     - "--name=function-runtime-nodejs16"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -204,12 +207,13 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - disable_testgrid
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-serverless-runtimes-nodejs-v18-build
                   annotations:
                     owner: otters
                     description: function nodejs18 build job
-                  run_if_changed: "^components/runtimes/nodejs/"
                   args:
                     - "--name=function-runtime-nodejs18"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -220,6 +224,8 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-runtimes-nodejs-v18-build
                   annotations:
@@ -227,7 +233,6 @@ templates:
                     description: function nodejs18 build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/runtimes/nodejs/"
                   args:
                     - "--name=function-runtime-nodejs18"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -240,12 +245,13 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - disable_testgrid
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-serverless-runtimes-python39-build
                   annotations:
                     owner: otters
                     description: function python3.9 build job
-                  run_if_changed: "^components/runtimes/python39/"
                   args:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -256,6 +262,8 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-runtimes-python39-build
                   annotations:
@@ -263,7 +271,6 @@ templates:
                     description: function pytho3.9 build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/runtimes/python39/"
                   args:
                     - "--name=function-runtime-python39"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -276,12 +283,13 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - disable_testgrid
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-serverless-runtimes-java17-jvm-alpha-build
                   annotations:
                     owner: otters
                     description: function java 17 build job
-                  run_if_changed: "^components/runtimes/java17/"
                   args:
                     - "--name=function-runtime-java17-jvm-alpha"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -292,6 +300,8 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_presubmit
+                  local:
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-runtimes-java17-jvm-alpha-build
                   annotations:
@@ -299,7 +309,6 @@ templates:
                     description: function java 17 build job
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^components/runtimes/java17/"
                   args:
                     - "--name=function-runtime-java17-jvm-alpha"
                     - "--config=/config/kaniko-build-config.yaml"
@@ -312,6 +321,8 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - disable_testgrid
+                  local:
+                    - skip_if_only_changed_documentation
   - from: generic.tmpl
     render:
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-operator.yaml
@@ -320,8 +331,8 @@ templates:
             branches:
               - "^main$"
               - "^release-*"
-          run_if_changed_module_data:
-            run_if_changed: "^config/|^components/|^sec-scanners-config.yaml$|^.version$|^module-config-template.yaml$"
+          skip_if_only_changed_documentation:
+            skip_if_only_changed: '^docs/|^examples/'
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
@@ -349,7 +360,7 @@ templates:
                     - jobConfig_presubmit
                   local:
                     - job_branches
-                    - run_if_changed_module_data
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-module-build
                   annotations:
@@ -373,7 +384,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - job_branches
-                    - run_if_changed_module_data
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: pre-serverless-operator-build
                   annotations:
@@ -395,8 +406,7 @@ templates:
                     - image-builder-buildkit
                   local:
                     - job_branches
-                    # this image is used by module-build job and this run_if_changed must be superset of run_if_changed in that job
-                    - run_if_changed_module_data
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-operator-build
                   annotations:
@@ -421,8 +431,7 @@ templates:
                     - image-builder-buildkit
                   local:
                     - job_branches
-                    # this image is used by module-build job and this run_if_changed must be superset of run_if_changed in that job
-                    - run_if_changed_module_data
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: release-serverless-module-build
                   annotations:
@@ -562,6 +571,9 @@ templates:
             branches:
               - "^main$"
               - "^release-*"
+          skip_if_only_changed_documentation:
+            # verification jobs that are based on build jobs need to have at least the same restricted
+            skip_if_only_changed: '^docs/|^examples/'
           dind_job_k3d:
             annotations:
             labels:
@@ -624,7 +636,6 @@ templates:
                     - -c
                     - |
                       make -C components/operator/hack/ci k3d-integration-test
-                  always_run: "true"
                   optional: "false"
                 inheritedConfigs:
                   global:
@@ -635,6 +646,7 @@ templates:
                   local:
                     - dind_job_k3d
                     - job_branches
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-operator-verify
                   annotations:
@@ -645,7 +657,6 @@ templates:
                     - -c
                     - |
                       make -C components/operator/hack/ci k3d-integration-test
-                  always_run: "true"
                   optional: "true"
                 inheritedConfigs:
                   global:
@@ -656,12 +667,12 @@ templates:
                   local:
                     - dind_job_k3d
                     - job_branches
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: post-serverless-operator-upgrade-latest-to-main
                   annotations:
                     owner: otters
                     description: upgrade serverless operator test
-                  always_run: "true"
                   optional: "true"
                   args:
                     - bash
@@ -677,6 +688,7 @@ templates:
                   local:
                     - dind_job_k3d
                     - job_branches
+                    - skip_if_only_changed_documentation
               - jobConfig:
                   name: serverless-operator-nightly-periodic
                   cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."

@@ -82,7 +82,7 @@ presubmits: # runs on PRs
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/'
       optional: false
       skip_report: false
       decorate: true
@@ -131,7 +131,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/'
       optional: true
       skip_report: false
       decorate: true
@@ -177,7 +177,7 @@ postsubmits: # runs on main
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
         preset-kyma-guard-bot-github-token: "true"
-      always_run: true
+      skip_if_only_changed: '^docs/|^examples/'
       optional: true
       skip_report: false
       decorate: true
