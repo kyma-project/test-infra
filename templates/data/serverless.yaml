@@ -162,8 +162,6 @@ templates:
                     - "disable_testgrid"
                   local:
                     - skip_if_only_changed_documentation
-  - from: generic.tmpl
-    render:
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-runtimes.yaml
         localSets:
           skip_if_only_changed_documentation:
@@ -323,8 +321,6 @@ templates:
                     - disable_testgrid
                   local:
                     - skip_if_only_changed_documentation
-  - from: generic.tmpl
-    render:
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-operator.yaml
         localSets:
           job_branches:
@@ -481,8 +477,6 @@ templates:
                     - image-builder-buildkit
                   local:
                     - job_branches
-  - from: generic.tmpl
-    render:
       - to: ../../prow/jobs/kyma-project/serverless/serverless-lint.yaml
         jobConfigs:
           - repoName: kyma-project/serverless
@@ -523,8 +517,6 @@ templates:
                   global:
                     - jobConfig_presubmit
                     - jobConfig_default
-  - from: generic.tmpl
-    render:
       - to: ../../prow/jobs/kyma-project/serverless/serverless-gitserver.yaml
         jobConfigs:
           - repoName: kyma-project/serverless
@@ -563,8 +555,6 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
                     - disable_testgrid
-  - from: generic.tmpl
-    render:
       - to: ../../prow/jobs/kyma-project/serverless/serverless-verify.yaml
         localSets:
           job_branches:
