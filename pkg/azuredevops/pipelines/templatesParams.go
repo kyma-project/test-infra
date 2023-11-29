@@ -56,17 +56,20 @@ func (p OCIImageBuilderTemplateParams) SetPullSHA(sha string) {
 
 // SetImageName sets required parameter ImageName.
 func (p OCIImageBuilderTemplateParams) SetImageName(name string) {
-	p["ImageName"] = name
+	// TODO: Rename key to ImageName
+	p["Name"] = name
 }
 
 // SetDockerfilePath sets required parameter DockerfilePath.
 func (p OCIImageBuilderTemplateParams) SetDockerfilePath(path string) {
-	p["DockerfilePath"] = path
+	// TODO: Rename key to DockerfilePath
+	p["Dockerfile"] = path
 }
 
 // SetBuildContext sets required parameter BuildContext.
 func (p OCIImageBuilderTemplateParams) SetBuildContext(context string) {
-	p["BuildContext"] = context
+	// TODO: Rename key to BuildContext
+	p["Context"] = context
 }
 
 // SetExportTags sets optional parameter ExportTags.

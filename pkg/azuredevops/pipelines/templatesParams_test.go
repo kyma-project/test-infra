@@ -51,17 +51,17 @@ var _ = Describe("Test OCIImageBuilderTemplateParams", func() {
 
 	It("sets the correct ImageName", func() {
 		params.SetImageName("my-image")
-		Expect(params["ImageName"]).To(Equal("my-image"))
+		Expect(params["Name"]).To(Equal("my-image"))
 	})
 
 	It("sets the correct DockerfilePath", func() {
 		params.SetDockerfilePath("/path/to/dockerfile")
-		Expect(params["DockerfilePath"]).To(Equal("/path/to/dockerfile"))
+		Expect(params["Dockerfile"]).To(Equal("/path/to/dockerfile"))
 	})
 
 	It("sets the correct BuildContext", func() {
 		params.SetBuildContext("/path/to/context")
-		Expect(params["BuildContext"]).To(Equal("/path/to/context"))
+		Expect(params["Context"]).To(Equal("/path/to/context"))
 	})
 
 	It("sets the correct ExportTags", func() {
