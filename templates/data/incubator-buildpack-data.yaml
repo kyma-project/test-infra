@@ -154,33 +154,6 @@ templates:
                     - extra_refs_kyma_cli
                     - reconciler_publish_pr_cli_jobConfig
               - jobConfig:
-                  name: "pre-main-ory-reconciler-prod-integration-gcp"
-                  annotations:
-                    owner: goat
-                    description: runs ory reconciler integration tests with production profile on Gardener GCP cluster
-                  # following regexp won't start build if only Markdown files were changed
-                  run_if_changed: "^((pkg/reconciler/instances/ory\\S+)(\\.[^.][^.][^.]+$|\\.[^.][^dD]$|\\.[^mM][^.]$|\\.[^.]$|/[^.]+$))"
-                  labels:
-                    preset-build-pr: "true"
-                    preset-kyma-guard-bot-github-token: "true"
-                    preset-gardener-gcp-kyma-integration: "true"
-                    preset-cluster-version: "true"
-                  env:
-                    TEST_NAME: ory
-                    EXECUTION_PROFILE: production
-                    KYMA_VERSION: main
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                    - gardener_gcp_job
-                    - extra_refs_test-infra
-                    - extra_refs_kyma
-                  local:
-                    - reconciler_main_jobConfig
-                    - reconciler_component_gardener_integration_jobConfig
-                    - reconciler_e2e_image
-              - jobConfig:
                   name: pre-main-kyma-incubator-mothership-reconciler
                   annotations:
                     owner: jellyfish
