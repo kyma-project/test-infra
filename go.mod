@@ -22,7 +22,6 @@ require (
 	github.com/imdario/mergo v0.3.16
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.4.0
-	github.com/microsoft/azure-devops-go-api/azuredevops v1.0.0-b5
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
 	github.com/jinzhu/copier v0.4.0
 	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
