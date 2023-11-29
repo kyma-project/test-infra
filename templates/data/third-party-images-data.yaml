@@ -75,7 +75,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--env-file=envs"
                     - '--tag={{`{{ .Env \"REGISTRY_VERSION\" }}-{{ .ShortSHA }}`}}'
-                    - "--tag=latest"
+                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - "jobConfig_postsubmit"
@@ -183,7 +183,7 @@ templates:
                     - "--dockerfile=Dockerfile"
                     - "--env-file=envs"
                     - '--tag={{`{{ .Env \"KANIKO_VERSION\" }}-{{ .ShortSHA }}`}}'
-                    - "--tag=latest"
+                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - "jobConfig_postsubmit"
