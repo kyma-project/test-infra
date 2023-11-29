@@ -1,0 +1,11 @@
+FROM cgr.dev/chainguard/go AS builder
+
+COPY ../.. /app/
+RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -o /app/image-builder -a -ldflags '-extldflags "-static"' .
+
+
+FROM gcr.io/kaniko-project/executor:v1.14.0
+
+COPY --from=builder /app/image-builder /image-builder
+
+ENTRYPOINT ["/image-builder"]
