@@ -6,7 +6,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "control-plane-whitesource-scan"
@@ -54,7 +53,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-whitesource-scan"
@@ -102,7 +100,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "busola-whitesource-scan"
@@ -150,7 +147,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "hydroform-whitesource-scan"
@@ -200,7 +196,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "reconciler-whitesource-scan"
@@ -248,7 +243,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "directory-size-exporter-whitesource-scan"
@@ -298,7 +292,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-2.20-whitesource-scan"
@@ -349,7 +342,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-2.19-whitesource-scan"

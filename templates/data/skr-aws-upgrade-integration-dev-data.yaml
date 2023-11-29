@@ -44,7 +44,6 @@ templates:
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                     - "kyma_project_dir"
                   local:
                     - "jobConfig_default"

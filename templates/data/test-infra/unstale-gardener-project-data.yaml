@@ -10,7 +10,6 @@ templates:
                   annotations:
                     owner: neighbors
                     description: "Unstale Gardener project. This prowjob creates and removes a cluster to unstale the project"
-                    testgrid-create-test-group: "false"
                   type_periodic: "true"
                   cluster: "trusted-workload"
                   image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231128-9bb59ac6

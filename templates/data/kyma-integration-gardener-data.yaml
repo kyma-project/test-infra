@@ -196,7 +196,6 @@ templates:
                   name: kyma-upgrade-gardener-kyma2-to-main-reconciler-main
                   annotations:
                     owner: jellyfish
-                    testgrid-dashboards: kyma_integration
                     description: Azure Kyma 2.0 to main branch.
                   decoration_config:
                     timeout: 7200000000000 # 2h

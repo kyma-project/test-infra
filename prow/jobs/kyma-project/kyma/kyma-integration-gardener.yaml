@@ -6,7 +6,6 @@ periodics: # runs on schedule
       annotations:
         description: "Azure Kyma 2.0 to main branch."
         owner: "jellyfish"
-        testgrid-dashboards: "kyma_integration"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "kyma-upgrade-gardener-kyma2-to-main-reconciler-main"

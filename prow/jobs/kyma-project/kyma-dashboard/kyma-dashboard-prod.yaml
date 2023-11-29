@@ -54,7 +54,6 @@ postsubmits: # runs on main
       annotations:
         description: "Kyma Dashboard Prod Job"
         owner: "hasselhoff"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-kyma-dashboard-prod"

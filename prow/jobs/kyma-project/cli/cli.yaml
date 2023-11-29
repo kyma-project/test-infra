@@ -74,7 +74,6 @@ postsubmits: # runs on main
       annotations:
         description: "Go lint + Go test post-PR + Build CLI post-PR"
         owner: "jellyfish"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-kyma-cli"
@@ -106,7 +105,6 @@ postsubmits: # runs on main
       annotations:
         description: "Go lint + Go test pre-rel + Build CLI pre-rel"
         owner: "jellyfish"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "rel-kyma-cli"

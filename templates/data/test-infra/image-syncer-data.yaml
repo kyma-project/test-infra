@@ -30,7 +30,6 @@ templates:
                   annotations:
                     owner: neighbors
                     description: "Sync images from external sources to Kyma owned registry"
-                    testgrid-dashboards: kyma_experimental
                   labels:
                     preset-sa-kyma-push-images: "true"
                   run_if_changed: "^(cmd/image-syncer/external-images.yaml)"

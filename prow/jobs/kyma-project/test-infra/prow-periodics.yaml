@@ -4,7 +4,6 @@ postsubmits: # runs on main
       annotations:
         description: "autobump markdown index.md"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-markdown-index-autobump"
@@ -36,7 +35,6 @@ postsubmits: # runs on main
       annotations:
         description: "autobump prow images for scan"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-image-detector-autobump"
@@ -73,7 +71,6 @@ postsubmits: # runs on main
       annotations:
         description: "Deploy prow components"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-deploy-prow"
@@ -105,7 +102,6 @@ periodics: # runs on schedule
       annotations:
         description: "autobump eventing images"
         owner: "skydivingtunas"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "eventing-tools-autobump"
@@ -137,7 +133,6 @@ periodics: # runs on schedule
       annotations:
         description: "Periodic sync of labels in GitHub"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "ci-prow-label-sync"
@@ -172,7 +167,6 @@ periodics: # runs on schedule
       annotations:
         description: "Autobump prow components image versions"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "ci-prow-autobump"
@@ -206,7 +200,6 @@ periodics: # runs on schedule
       annotations:
         description: "daily detect prow images for scan"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "test-infra-image-detector-autobump"
@@ -245,7 +238,6 @@ periodics: # runs on schedule
       annotations:
         description: "Autobump image versions in prow jobs"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "ci-prow-autobump-jobs"

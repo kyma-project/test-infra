@@ -3,7 +3,6 @@ periodics: # runs on schedule
     annotations:
       description: "gcloud-ssh-keys-cleaner"
       owner: "neighbors"
-      testgrid-create-test-group: "false"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "utilities-kyma-integration-cleaner"
@@ -40,7 +39,6 @@ periodics: # runs on schedule
     annotations:
       description: "Periodic cleanup of orphaned Google cloud assetstore buckets"
       owner: "neighbors"
-      testgrid-create-test-group: "false"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "orphaned-assetstore-gcp-bucket-cleaner"
@@ -74,7 +72,6 @@ periodics: # runs on schedule
     annotations:
       description: "Periodic cleanup of orphaned Google cloud disks"
       owner: "neighbors"
-      testgrid-create-test-group: "false"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "orphaned-disks-cleaner"
@@ -107,7 +104,6 @@ periodics: # runs on schedule
     annotations:
       description: "Periodic cleanup of orphaned Google cloud IPs"
       owner: "neighbors"
-      testgrid-create-test-group: "false"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "orphaned-ips-cleaner"
@@ -140,7 +136,6 @@ periodics: # runs on schedule
     annotations:
       description: "Periodic cleanup of orphaned Google cloud clusters"
       owner: "neighbors"
-      testgrid-create-test-group: "false"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "orphaned-clusters-cleaner"
@@ -173,7 +168,6 @@ periodics: # runs on schedule
     annotations:
       description: "Periodic cleanup of orphaned Google cloud VMs"
       owner: "neighbors"
-      testgrid-create-test-group: "false"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "orphaned-vms-cleaner"
@@ -207,7 +201,6 @@ periodics: # runs on schedule
     annotations:
       description: "Periodic cleanup of orphaned Google cloud load balancers"
       owner: "neighbors"
-      testgrid-create-test-group: "false"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "orphaned-loadbalancer-cleaner"
@@ -239,7 +232,6 @@ periodics: # runs on schedule
     annotations:
       description: "Periodic cleanup of orphaned Google cloud DNS records"
       owner: "neighbors"
-      testgrid-create-test-group: "false"
     labels:
       prow.k8s.io/pubsub.project: "sap-kyma-prow"
       prow.k8s.io/pubsub.runID: "orphaned-dns-cleaner"

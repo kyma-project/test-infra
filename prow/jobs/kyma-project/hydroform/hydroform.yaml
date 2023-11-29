@@ -42,7 +42,6 @@ postsubmits: # runs on main
       annotations:
         description: "hydroform tests and validation"
         owner: "janmedrek"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-hydroform"

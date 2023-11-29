@@ -36,5 +36,4 @@ The following template data file can be used to generate the autobumper job for 
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - pubsub_labels
-                    - disable_testgrid
 ```

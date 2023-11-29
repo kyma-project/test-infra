@@ -6,7 +6,6 @@ periodics: # runs on schedule
       annotations:
         description: "skr upgrade test on aws"
         owner: "gopher"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "skr-aws-upgrade-integration-dev"

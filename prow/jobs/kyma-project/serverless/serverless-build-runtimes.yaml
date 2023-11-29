@@ -202,7 +202,6 @@ postsubmits: # runs on main
       annotations:
         description: "function nodejs16 build job"
         owner: "otters"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-runtimes-nodejs-v16-build"
@@ -253,7 +252,6 @@ postsubmits: # runs on main
       annotations:
         description: "function nodejs18 build job"
         owner: "otters"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-runtimes-nodejs-v18-build"
@@ -304,7 +302,6 @@ postsubmits: # runs on main
       annotations:
         description: "function pytho3.9 build job"
         owner: "otters"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-runtimes-python39-build"
@@ -355,7 +352,6 @@ postsubmits: # runs on main
       annotations:
         description: "function java 17 build job"
         owner: "otters"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-runtimes-java17-jvm-alpha-build"

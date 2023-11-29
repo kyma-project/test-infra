@@ -185,8 +185,6 @@ periodics: # runs on schedule
       annotations:
         description: "Keda nightly verify"
         owner: "otters"
-        testgrid-dashboards: "keda-nightly"
-        testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "keda-operator-nightly-periodic"
