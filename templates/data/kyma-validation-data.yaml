@@ -15,14 +15,12 @@ templates:
                     description: "validates if all charts use correct image definition format"
                     owner: neighbors
                   run_if_changed: "^resources/"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231113-32628507
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231128-d86798d5
                   command: "/ko-app/image-url-helper"
                   args:
                     - --resources-directory
                     - /home/prow/go/src/github.com/kyma-project/kyma/resources/
                     - check
-                    - --excludes-list
-                    - /home/prow/go/src/github.com/kyma-project/test-infra/cmd/image-url-helper/excludes.yaml
                   optional: "true"
                 inheritedConfigs:
                   global:
@@ -37,7 +35,7 @@ templates:
                     description: "his tool validates if all images defined in charts exist"
                     owner: neighbors
                   run_if_changed: "^resources/"
-                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231113-32628507
+                  image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231128-d86798d5
                   command: "/ko-app/image-url-helper"
                   args:
                     - --resources-directory
@@ -62,7 +60,7 @@ templates:
                     - "-c"
                     - "shopt -s globstar;
                       hadolint --config .hadolint.yaml --no-color **/Dockerfile"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231113-9154baa8
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231128-9bb59ac6
                 inheritedConfigs:
                   local:
                     - "smaller_requests"

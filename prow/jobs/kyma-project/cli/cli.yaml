@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-9154baa8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
             securityContext:
               privileged: false
               seccompProfile:
@@ -50,7 +50,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-9154baa8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
             securityContext:
               privileged: false
               seccompProfile:
@@ -65,6 +65,8 @@ presubmits: # runs on PRs
               requests:
                 memory: 1Gi
                 cpu: 100m
+              limits:
+                memory: 5Gi
   
 postsubmits: # runs on main
   kyma-project/cli:
@@ -86,7 +88,7 @@ postsubmits: # runs on main
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-9154baa8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
             securityContext:
               privileged: false
               seccompProfile:
@@ -121,7 +123,7 @@ postsubmits: # runs on main
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-9154baa8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
             securityContext:
               privileged: false
               seccompProfile:

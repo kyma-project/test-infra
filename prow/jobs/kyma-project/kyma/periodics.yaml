@@ -16,7 +16,7 @@ periodics: # runs on schedule
     spec:
       serviceAccountName: sa-prow-job-resource-cleaners
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231113-9154baa8
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231128-9bb59ac6
           securityContext:
             privileged: false
             seccompProfile:
@@ -52,7 +52,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20231113-32628507"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gcscleaner:v20231128-d86798d5"
           securityContext:
             privileged: false
             seccompProfile:
@@ -87,7 +87,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20231113-32628507"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20231128-d86798d5"
           securityContext:
             privileged: false
             seccompProfile:
@@ -120,7 +120,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20231113-32628507"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/ipcleaner:v20231128-d86798d5"
           securityContext:
             privileged: false
             seccompProfile:
@@ -153,7 +153,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20231113-32628507"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20231128-d86798d5"
           securityContext:
             privileged: false
             seccompProfile:
@@ -186,7 +186,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20231113-32628507"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/vmscollector:v20231128-d86798d5"
           securityContext:
             privileged: false
             seccompProfile:
@@ -220,7 +220,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20231113-32628507"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/orphanremover:v20231128-d86798d5"
           securityContext:
             privileged: false
             seccompProfile:
@@ -253,7 +253,7 @@ periodics: # runs on schedule
     cluster: trusted-workload
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20231113-32628507"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20231128-d86798d5"
           securityContext:
             privileged: false
             seccompProfile:
@@ -269,98 +269,5 @@ periodics: # runs on schedule
             - "-dryRun=false"
           resources:
             requests:
-              memory: 100Mi
-              cpu: 50m
-  - name: github-issues
-    annotations:
-      description: "Exports data from github to the big query (Grafana metrics)"
-      owner: "neighbors"
-      testgrid-create-test-group: "false"
-    labels:
-      prow.k8s.io/pubsub.project: "sap-kyma-prow"
-      prow.k8s.io/pubsub.runID: "github-issues"
-      prow.k8s.io/pubsub.topic: "prowjobs"
-      preset-bot-github-token: "true"
-      preset-sa-prow-job-github-issues: "true"
-    cron: "0 6 * * *"
-    skip_report: false
-    decorate: true
-    cluster: trusted-workload
-    extra_refs:
-      - org: kyma-project
-        repo: test-infra
-        base_ref: main
-    spec:
-      securityContext:
-        runAsUser: 1001
-        runAsGroup: 1001
-      containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:v20231113-32628507"
-          securityContext:
-            privileged: false
-            seccompProfile:
-              type: RuntimeDefault
-            allowPrivilegeEscalation: false
-          command:
-            - /ko-app/githubissues
-          args:
-          - --githubOrgName=kyma-project
-          - --bqProjectID=sap-kyma-prow
-          - --bqDataset=github_issues
-          - --bqTable=github_com_kyma_project
-          - --bqCredentials=$(GOOGLE_APPLICATION_CREDENTIALS)
-          - --githubToken=$(BOT_GITHUB_TOKEN)
-          resources:
-            requests:
-              memory: 100Mi
-              cpu: 50m
-            limits:
-              memory: 100Mi
-              cpu: 50m
-  - name: github-issues-internal
-    annotations:
-      description: "Exports data from github to the big query (Grafana metrics)"
-      owner: "neighbors"
-      testgrid-create-test-group: "false"
-    labels:
-      prow.k8s.io/pubsub.project: "sap-kyma-prow"
-      prow.k8s.io/pubsub.runID: "github-issues"
-      prow.k8s.io/pubsub.topic: "prowjobs"
-      preset-bot-github-sap-token: "true"
-      preset-sa-prow-job-github-issues: "true"
-    cron: "0 6 * * *"
-    skip_report: false
-    decorate: true
-    cluster: trusted-workload
-    extra_refs:
-      - org: kyma-project
-        repo: test-infra
-        base_ref: main
-    spec:
-      securityContext:
-        runAsUser: 1001
-        runAsGroup: 1001
-      containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/githubissues:v20231113-32628507"
-          securityContext:
-            privileged: false
-            seccompProfile:
-              type: RuntimeDefault
-            allowPrivilegeEscalation: false
-          command:
-            - /ko-app/githubissues
-          args:
-            - --githubOrgName=kyma
-            - --githubBaseURL=https://github.tools.sap/api/v3/
-            - --bqProjectID=sap-kyma-prow
-            - --bqDataset=github_issues
-            - --bqTable=github_tools_sap_kyma
-            - --bqCredentials=$(GOOGLE_APPLICATION_CREDENTIALS)
-            - --githubToken=$(BOT_GITHUB_SAP_TOKEN)
-          resources:
-            requests:
-              memory: 100Mi
-              cpu: 50m
-            limits:
               memory: 100Mi
               cpu: 50m

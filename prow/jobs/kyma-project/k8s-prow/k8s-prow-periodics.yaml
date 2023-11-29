@@ -21,7 +21,7 @@ periodics:
     cluster: trusted-workload
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231113-9154baa8
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231128-9bb59ac6
           env:
             - name: UPSTREAM_REPO
               value: github.com/kubernetes/test-infra
@@ -78,7 +78,7 @@ periodics:
     cluster: trusted-workload
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231113-9154baa8
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231128-9bb59ac6
           securityContext:
             privileged: false
             seccompProfile:
@@ -128,7 +128,7 @@ periodics:
         channel: kyma-neighbors-alerts
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231113-4c4f7ee0"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231127-7842342f"
           securityContext:
             privileged: false
             seccompProfile:
