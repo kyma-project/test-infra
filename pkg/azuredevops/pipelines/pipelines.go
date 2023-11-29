@@ -1,3 +1,5 @@
+// Package pipelines provides a clients for calling Azure DevOps pipelines API
+// TODO: Add more structured logging with debug severity to track execution in case of troubleshooting
 package pipelines
 
 import (
@@ -22,6 +24,10 @@ type BuildClient interface {
 	GetBuildLogs(ctx context.Context, args build.GetBuildLogsArgs) (*[]build.BuildLog, error)
 }
 
+type HTTPClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 type Config struct {
 	// ADO organization URL to call for triggering ADO pipeline
 	ADOOrganizationURL string `yaml:"ado-organization-url" json:"ado-organization-url"`
@@ -37,21 +43,24 @@ func (c Config) GetADOConfig() Config {
 	return c
 }
 
+// TODO: write tests which use BeAssignableToTypeOf matcher https://onsi.github.io/gomega/#beassignabletotypeofexpected-interface
 func NewClient(adoOrganizationURL, adoPAT string) Client {
 	adoConnection := adov7.NewPatConnection(adoOrganizationURL, adoPAT)
 	ctx := context.Background()
 	return pipelines.NewClient(ctx, adoConnection)
 }
 
+// TODO: write tests which use BeAssignableToTypeOf matcher https://onsi.github.io/gomega/#beassignabletotypeofexpected-interface
 func NewBuildClient(adoOrganizationURL, adoPAT string) (BuildClient, error) {
 	buildConnection := adov7.NewPatConnection(adoOrganizationURL, adoPAT)
 	ctx := context.Background()
 	return build.NewClient(ctx, buildConnection)
 }
 
-func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipelineRunID *int) (*pipelines.RunResult, error) {
+// TODO: implement sleep parameter to be passed as a functional option
+func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipelineRunID *int, sleep time.Duration) (*pipelines.RunResult, error) {
 	for {
-		time.Sleep(30 * time.Second)
+		time.Sleep(sleep)
 		pipelineRun, err := adoClient.GetRun(ctx, pipelines.GetRunArgs{
 			Project:    &adoConfig.ADOProjectName,
 			PipelineId: &adoConfig.ADOPipelineID,
@@ -63,12 +72,12 @@ func GetRunResult(ctx context.Context, adoClient Client, adoConfig Config, pipel
 		if *pipelineRun.State == pipelines.RunStateValues.Completed {
 			return pipelineRun.Result, nil
 		}
-		// TODO: use logging with default severity
-		fmt.Println("Pipeline run still in progress. Waiting for 30 seconds")
+		// TODO: use structured logging with info severity
+		fmt.Printf("Pipeline run still in progress. Waiting for %s\n", sleep)
 	}
 }
 
-func GetRunLogs(ctx context.Context, buildClient BuildClient, adoConfig Config, pipelineRunID *int, adoPAT string) (string, error) {
+func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPClient, adoConfig Config, pipelineRunID *int, adoPAT string) (string, error) {
 	buildLogs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
 		Project: &adoConfig.ADOProjectName,
 		BuildId: pipelineRunID,
@@ -79,12 +88,12 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, adoConfig Config, 
 
 	// Last item in a list represent logs from all pipeline steps visible in ADO GUI
 	lastLog := (*buildLogs)[len(*buildLogs)-1]
-	httpClient := http.Client{}
 	req, err := http.NewRequest("GET", *lastLog.Url, nil)
 	if err != nil {
 		return "", fmt.Errorf("failed creating http request getting build log, err: %w", err)
 	}
 	req.SetBasicAuth("", adoPAT)
+	// TODO: implement checking http response status code, if it's not 2xx, return error
 	resp, err := httpClient.Do(req)
 	if err != nil {
 		return "", fmt.Errorf("failed http request getting build log, err: %w", err)
@@ -112,7 +121,7 @@ func Run(ctx context.Context, adoClient Client, templateParameters map[string]st
 	if adoConfig.ADOPipelineVersion != 0 {
 		adoRunPipelineArgs.PipelineVersion = &adoConfig.ADOPipelineVersion
 	}
-	// TODO: use logging with default severity
+	// TODO: use structured logging with debug severity
 	fmt.Printf("Using TemplateParameters: %+v\n", adoRunPipelineArgs.RunParameters.TemplateParameters)
 	return adoClient.RunPipeline(ctx, adoRunPipelineArgs)
 }

@@ -103,6 +103,7 @@ func Test_validateOptions(t *testing.T) {
 				Context:    "directory/",
 				Name:       "test-image",
 				Dockerfile: "Dockerfile",
+				ConfigPath: "config.yaml",
 			},
 		},
 		{
@@ -127,6 +128,63 @@ func Test_validateOptions(t *testing.T) {
 			opts: options{
 				Context: "directory/",
 				Name:    "test-image",
+			},
+		},
+		{
+			name:      "Empty ConfigPath",
+			expectErr: true,
+			opts: options{
+				Context:    "directory/",
+				Name:       "test-image",
+				Dockerfile: "Dockerfile",
+			},
+		},
+		{
+			name:      "SignOnly without ImagesToSign",
+			expectErr: true,
+			opts: options{
+				Context:      "directory/",
+				Name:         "test-image",
+				Dockerfile:   "Dockerfile",
+				ConfigPath:   "config.yaml",
+				SignOnly:     true,
+				ImagesToSign: []string{},
+			},
+		},
+		{
+			name:      "ImagesToSign without SignOnly",
+			expectErr: true,
+			opts: options{
+				Context:      "directory/",
+				Name:         "test-image",
+				Dockerfile:   "Dockerfile",
+				ConfigPath:   "config.yaml",
+				SignOnly:     false,
+				ImagesToSign: []string{"image1"},
+			},
+		},
+		{
+			name:      "EnvFile with BuildInADO",
+			expectErr: true,
+			opts: options{
+				Context:    "directory/",
+				Name:       "test-image",
+				Dockerfile: "Dockerfile",
+				ConfigPath: "config.yaml",
+				EnvFile:    "envfile",
+				BuildInADO: true,
+			},
+		},
+		{
+			name:      "Variant with BuildInADO",
+			expectErr: true,
+			opts: options{
+				Context:    "directory/",
+				Name:       "test-image",
+				Dockerfile: "Dockerfile",
+				ConfigPath: "config.yaml",
+				Variant:    "variant",
+				BuildInADO: true,
 			},
 		},
 	}

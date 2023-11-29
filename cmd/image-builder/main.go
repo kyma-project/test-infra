@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"net/http"
 	"os"
 	"os/exec"
 	"path"
@@ -14,6 +15,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	adopipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/sets"
@@ -202,7 +204,13 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	if !present {
 		return nil, fmt.Errorf("JOB_TYPE environment variable is not set, please set it to valid job type")
 	}
-	templateParameters.SetJobType(jobType)
+	if jobType == "presubmit" {
+		templateParameters.SetPresubmitJobType()
+	} else if jobType == "postsubmit" {
+		templateParameters.SetPostsubmitJobType()
+	} else {
+		return nil, fmt.Errorf("JOB_TYPE environment variable is not set to valid value, please set it to either 'presubmit' or 'postsubmit'")
+	}
 
 	number, present := os.LookupEnv("PULL_NUMBER")
 	if !present {
@@ -214,7 +222,12 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	if !present {
 		return nil, fmt.Errorf("PULL_BASE_SHA environment variable is not set, please set it to valid pull base SHA")
 	}
-	templateParameters.SetPullBaseSHA(baseSHA)
+	templateParameters.SetBaseSHA(baseSHA)
+
+	pullSHA, present := os.LookupEnv("PULL_PULL_SHA")
+	if present {
+		templateParameters.SetPullSHA(pullSHA)
+	}
 
 	templateParameters.SetImageName(options.Name)
 
@@ -232,9 +245,15 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		templateParameters.SetImageTags(options.Tags.String())
 	}
 
+	err := templateParameters.Validate()
+	if err != nil {
+		return nil, fmt.Errorf("failed validating ADO template parameters, err: %w", err)
+	}
+
 	return templateParameters, nil
 }
 
+// TODO(dekiel): refactor this function to accept clients as parameters to make it testable with mocks.
 func buildInADO(o options) error {
 	fmt.Println("Building image in ADO pipeline.")
 	adoPAT, present := os.LookupEnv("ADO_PAT")
@@ -258,18 +277,18 @@ func buildInADO(o options) error {
 		return fmt.Errorf("build in ADO failed, failed running ADO pipeline, err: %s", err)
 	}
 
-	pipelineRunResult, err := adopipelines.GetRunResult(ctx, adoClient, o.GetADOConfig(), pipelineRun.Id)
+	pipelineRunResult, err := adopipelines.GetRunResult(ctx, adoClient, o.GetADOConfig(), pipelineRun.Id, 30*time.Second)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed getting ADO pipeline run result, err: %s", err)
 	}
 	fmt.Printf("ADO pipeline run finished with status: %s", *pipelineRunResult)
 
 	fmt.Println("Getting ADO pipeline run logs.")
-	adoBuildClient, error := adopipelines.NewBuildClient(o.ADOOrganizationURL, adoPAT)
-	if error != nil {
-		fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", error)
+	adoBuildClient, err := adopipelines.NewBuildClient(o.ADOOrganizationURL, adoPAT)
+	if err != nil {
+		fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", err)
 	}
-	logs, err := adopipelines.GetRunLogs(ctx, adoBuildClient, o.GetADOConfig(), pipelineRun.Id, adoPAT)
+	logs, err := adopipelines.GetRunLogs(ctx, adoBuildClient, &http.Client{}, o.GetADOConfig(), pipelineRun.Id, adoPAT)
 	if err != nil {
 		fmt.Printf("Failed read ADO pipeline run logs, err: %s", err)
 	} else {
@@ -282,7 +301,7 @@ func buildInADO(o options) error {
 	return nil
 }
 
-func buildLocal(o options) error {
+func buildLocally(o options) error {
 	runFunc := runInKaniko
 	if os.Getenv("USE_BUILDKIT") == "true" {
 		runFunc = runInBuildKit
@@ -297,6 +316,9 @@ func buildLocal(o options) error {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
+	// TODO(dekiel): validating if envFile or variants.yaml file exists should be done in validateOptions or in a separate function.
+	// 		We should call this function before calling image building functions.
 	dockerfilePath := filepath.Join(context, filepath.Dir(o.Dockerfile))
 
 	if len(o.EnvFile) > 0 {
@@ -386,6 +408,7 @@ func appendMissing(target *map[string]string, source []tags.Tag) {
 	}
 }
 
+// TODO: write tests for this function
 func signImages(o *options, images []string) error {
 	// use o.OrgRepo as default value since someone might have loaded is as a flag
 	orgRepo := o.OrgRepo
@@ -672,8 +695,8 @@ func main() {
 		os.Exit(0)
 	}
 
+	// TODO(dekiel): refactor this function to move all logic to separate function and make it testable.
 	if o.ParseTagsOnly {
-		// TODO: extract getting env vars values and parsing tags to separate function to remove duplication
 		var sha, pr string
 		if o.IsCI {
 			presubmit := os.Getenv("JOB_TYPE") == "presubmit"
@@ -714,8 +737,7 @@ func main() {
 			os.Exit(1)
 		}
 	}
-	// TODO: refactor, based on provided options, run build locally or in ADO
-	err = buildLocal(o)
+	err = buildLocally(o)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
