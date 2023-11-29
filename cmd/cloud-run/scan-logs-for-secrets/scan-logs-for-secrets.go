@@ -129,7 +129,7 @@ func scanLogsForSecrets(w http.ResponseWriter, r *http.Request) {
 	logger.LogDebug("request:\n%v", string(requestDump))
 
 	detector := detect.NewDetector(cfg)
-	detector.Redact = true
+	detector.Redact = 100
 
 	event, err := cloudevents.NewEventFromHTTPRequest(r)
 	if err != nil {

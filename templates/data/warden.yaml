@@ -7,7 +7,7 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231122-2a5515a2"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -16,7 +16,7 @@ templates:
             labels:
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231122-2a5515a2
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231128-9bb59ac6
             command: "/init.sh"
           skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|\.md$'
@@ -191,4 +191,43 @@ templates:
                     - "unprivileged"
                   local:
                     - testing
+                    - skip_if_only_changed_documentation
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/warden/integration-test.yaml
+        localSets:
+          e2e_dind:
+            labels:
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231128-9bb59ac6
+            command: "/init.sh"
+          skip_if_only_changed_documentation:
+            skip_if_only_changed: '^docs/|\.md$'
+        jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
+              - jobConfig:
+                  name: pre-warden-integration-test
+                  annotations:
+                    owner: otters
+                    description: Warden integration test
+                  labels:
+                    preset-k3d-enabled: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |-
+                      kubectl cluster-info;
+                      make install run-integration-tests;
+                      failed=$?;
+                      kubectl logs -l app=warden --prefix=true;
+                      exit $failed
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_presubmit
+                  local:
+                    - e2e_dind
                     - skip_if_only_changed_documentation

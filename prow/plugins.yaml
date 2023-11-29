@@ -63,6 +63,9 @@ external_plugins:
     - name: cla-assistant
       events:
         - issue_comment
+        - pull_request_review
+        - pull_request_review_comment
+        - status
   kyma-project/test-infra:
     - name: automated-approver
       events:
@@ -72,6 +75,9 @@ external_plugins:
     - name: cla-assistant
       events:
         - issue_comment
+        - pull_request_review
+        - pull_request_review_comment
+        - status
   kyma-incubator/compass:
     - name: needs-tws
       events:
