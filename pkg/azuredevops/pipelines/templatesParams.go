@@ -109,13 +109,13 @@ func (p OCIImageBuilderTemplateParams) Validate() error {
 	if _, ok = p["PullBaseSHA"]; !ok {
 		return ErrRequiredParamNotSet("BaseSHA")
 	}
-	if _, ok = p["ImageName"]; !ok {
+	if _, ok = p["Name"]; !ok {
 		return ErrRequiredParamNotSet("ImageName")
 	}
-	if _, ok = p["DockerfilePath"]; !ok {
+	if _, ok = p["Dockerfile"]; !ok {
 		return ErrRequiredParamNotSet("DockerfilePath")
 	}
-	if _, ok = p["BuildContext"]; !ok {
+	if _, ok = p["Context"]; !ok {
 		return ErrRequiredParamNotSet("BuildContext")
 	}
 	return nil
