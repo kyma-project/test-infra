@@ -28,8 +28,6 @@
 
 [GCR cleaner](/cmd/tools/gcrcleaner/README.md) - This command finds and removes old GCR images created by Jobs in the Google Cloud Platform (GCP) project.
 
-[Github issues](/cmd/tools/githubissues/README.md) - This command queries all open Github issues in an organization or repository, and loads that data to a BigQuery table.
-
 [GitHub release](/cmd/tools/githubrelease/README.md) - This command creates GitHub releases.
 
 [IP cleaner](/cmd/tools/ipcleaner/README.md) - This command finds and removes orphaned IP addresses created by jobs in the Google Cloud Platform (GCP) project.
@@ -80,9 +78,7 @@
 
 [Prow Jobs QuickStart](/docs/prow/prow-jobs-quick-start.md) - This document provides an overview of how to quickly start working with Prow jobs.
 
-[Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring that is available at `https://monitoring.build.kyma-project.io`. 
-
-[Quality metrics](/docs/prow/quality-metrics.md) - This document describes reports that provide an overview of the basic quality measures for the Kyma project.
+[Prow Cluster Monitoring Setup](/docs/prow/prow-monitoring.md) - This document describes how to install and manage Prow cluster monitoring. 
 
 [Security Leaks Scanner](/docs/prow/security_commit_scanner.md) - Security Leaks Scanner is a tool that scans a repository for potential security leaks, thus providing protection against any potential security threats and vulnerabilities. It operates using [Gitleaks](https://github.com/zricethezav/gitleaks), which ensures a thorough and efficient examination of your repository. 
 
@@ -105,8 +101,6 @@
 [Resources](/prow/cluster/resources/README.md) - This directory contains Helm charts used by a Prow cluster.
 
 [External Secrets](/prow/cluster/resources/external-secrets/README.md) - Kubernetes Secrets are synchronized with GCP Secret Manager using [External Secrets Operator](https://github.com/external-secrets/external-secrets).
-
-[Monitoring](/prow/cluster/resources/monitoring/README.md) - This chart contains the monitoring stack for a Prow cluster. It also includes custom-defined Grafana dashboards.
 
 [Probot Stale](/prow/cluster/resources/probot-stale/README.md) - This chart contains the `probot-stale` configuration.
 
