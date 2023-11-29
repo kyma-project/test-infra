@@ -12,7 +12,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-controller-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/serverless/|^config/serverless/'
+      skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -60,7 +60,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-webhook-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/serverless/|^config/serverless/'
+      skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -108,7 +108,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-jobinit-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/serverless/|^config/serverless/'
+      skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -156,7 +156,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-registry-gc-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/serverless/|^config/serverless/'
+      skip_if_only_changed: '^docs/|^examples/'
       optional: true
       skip_report: false
       decorate: true
@@ -210,7 +210,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/serverless/|^config/serverless/'
+      skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -261,7 +261,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/serverless/|^config/serverless/'
+      skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -312,7 +312,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/serverless/|^config/serverless/'
+      skip_if_only_changed: '^docs/|^examples/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -363,7 +363,7 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/serverless/|^config/serverless/'
+      skip_if_only_changed: '^docs/|^examples/'
       optional: true
       skip_report: false
       decorate: true
