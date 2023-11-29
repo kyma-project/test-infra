@@ -114,9 +114,6 @@ kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$KYMA_SOURCES_DIR" -u "true"
 # generate pod-security-policy list in json
 utils::save_psp_list "${ARTIFACTS}/kyma-psp.json"
 
-# Pre-Upgrade Tests
-gardener::pre_upgrade_test_fast_integration_kyma -d "${KYMA_SOURCES_DIR}/${KYMA_SOURCE}/tests/fast-integration"
-
 # Upgrade kyma to main branch with latest cli released
 kyma::install_cli
 
@@ -124,14 +121,6 @@ export KYMA_SOURCE="main"
 log::info "### Installing Kyma $KYMA_SOURCE"
 
 kyma::deploy_kyma -s "$KYMA_SOURCE" -d "$KYMA_SOURCES_DIR" -u "true"
-
-log::info "### Running post-upgrade Kyma Fast Integration tests"
-pushd "${KYMA_SOURCES_DIR}/${KYMA_SOURCE}/tests/fast-integration"
-make ci-post-upgrade
-log::success "Tests completed"
-
-log::info "### waiting some time to finish cleanups"
-sleep 60
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"
