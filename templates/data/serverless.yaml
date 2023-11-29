@@ -414,7 +414,7 @@ templates:
                       --context=.
                       --dockerfile=components/operator/Dockerfile
                       --tag=$PULL_BASE_SHA
-                      --tag=latest
+                      --tag=$PULL_BASE_REF
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit

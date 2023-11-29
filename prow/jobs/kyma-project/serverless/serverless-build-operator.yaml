@@ -176,7 +176,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "/image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=components/operator/Dockerfile --tag=$PULL_BASE_SHA --tag=latest"
+              - "/image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=components/operator/Dockerfile --tag=$PULL_BASE_SHA --tag=$PULL_BASE_REF"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
