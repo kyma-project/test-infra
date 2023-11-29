@@ -634,8 +634,7 @@ templates:
                   args:
                     - bash
                     - -c
-                    - |
-                      make -C components/operator/hack/ci k3d-integration-test
+                    - make -C components/operator/hack/ci k3d-integration-test
                   optional: "false"
                 inheritedConfigs:
                   global:
@@ -655,8 +654,7 @@ templates:
                   args:
                     - bash
                     - -c
-                    - |
-                      make -C components/operator/hack/ci k3d-integration-test
+                    - make -C components/operator/hack/ci k3d-integration-test
                   optional: "true"
                 inheritedConfigs:
                   global:
@@ -677,8 +675,7 @@ templates:
                   args:
                     - bash
                     - -c
-                    - |
-                      make -C components/operator/hack/ci k3d-upgrade-test
+                    - make -C components/operator/hack/ci k3d-upgrade-test
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -701,8 +698,7 @@ templates:
                   args:
                     - bash
                     - -c
-                    - |
-                      make -C components/operator/hack/ci run-with-lifecycle-manager
+                    - make -C components/operator/hack/ci run-with-lifecycle-manager
                   extra_refs:
                     serverless:
                       - org: kyma-project
