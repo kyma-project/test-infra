@@ -825,23 +825,3 @@ function utils::install_helm {
     popd || exit
     eval "${settings}"
 }
-
-function utils::get_kyma_fast_integration_dir {
-  local kymaDirectory="/home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration"
-  for arg in "$@"
-  do
-    case "$arg" in
-        -d)
-          if [ -n "$2" ]; then
-            kymaDirectory="$2"
-          fi
-          shift 2
-          ;;
-        *)
-          shift
-          ;;
-    esac
-  done
-
-  echo -n "$kymaDirectory"
-}
