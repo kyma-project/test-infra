@@ -174,7 +174,7 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=Dockerfile"
               - "--tag={{ .Env \"PULL_BASE_SHA\" }}"
-              - "--tag=latest"
+              - "--tag={{ .Env \"PULL_BASE_REF\" }}"
             resources:
               requests:
                 memory: 1.5Gi

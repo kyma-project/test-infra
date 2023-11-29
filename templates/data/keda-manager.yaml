@@ -119,7 +119,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
-                    - "--tag=latest"
+                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - jobConfig_default
