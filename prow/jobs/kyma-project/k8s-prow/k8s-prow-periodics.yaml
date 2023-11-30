@@ -20,7 +20,7 @@ periodics:
     cluster: trusted-workload
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231128-9bb59ac6
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231130-5e582eeb
           env:
             - name: UPSTREAM_REPO
               value: github.com/kubernetes/test-infra
@@ -76,7 +76,7 @@ periodics:
     cluster: trusted-workload
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231128-9bb59ac6
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231130-5e582eeb
           securityContext:
             privileged: false
             seccompProfile:
