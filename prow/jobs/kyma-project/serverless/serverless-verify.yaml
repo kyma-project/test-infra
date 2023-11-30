@@ -113,7 +113,7 @@ presubmits: # runs on PRs
               - name: IMG_DIRECTORY
                 value: "dev"
               - name: IMG_VERSION
-                value: "PR-$PULL_NUMBER"
+                value: "PR-${PULL_NUMBER}"
             resources:
               requests:
                 memory: 4Gi

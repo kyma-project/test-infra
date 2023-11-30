@@ -707,7 +707,7 @@ templates:
                     description: serverless manager verify on k3d vm
                   env:
                     IMG_DIRECTORY: "dev"
-                    IMG_VERSION: "PR-$PULL_NUMBER"
+                    IMG_VERSION: "PR-${PULL_NUMBER}"
                   args:
                     - bash
                     - -c
