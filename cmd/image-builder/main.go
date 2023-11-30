@@ -651,7 +651,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.Var(&o.Tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the Name in the format Name=value which will be used by export-Tags")
 	flagSet.Var(&o.BuildArgs, "build-arg", "Flag to pass additional arguments to build Dockerfile. It can be used in the Name=value format.")
 	flagSet.Var(&o.Platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
-	flagSet.BoolVar(&o.ExportTags, "export-Tags", false, "Export parsed Tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag Name passed along with the tag")
+	flagSet.BoolVar(&o.ExportTags, "export-tags", false, "Export parsed Tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag Name passed along with the tag")
 	flagSet.BoolVar(&o.SignOnly, "sign-only", false, "Only sign the image, do not build it")
 	flagSet.Var(&o.ImagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
 	flagSet.BoolVar(&o.BuildInADO, "build-in-ado", false, "Build in Azure DevOps pipeline environment")

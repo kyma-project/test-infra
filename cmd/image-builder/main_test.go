@@ -259,7 +259,7 @@ func TestFlags(t *testing.T) {
 				ExportTags: true,
 			},
 			args: []string{
-				"--export-Tags",
+				"--export-tags",
 			},
 		},
 		{
