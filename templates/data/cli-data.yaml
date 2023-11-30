@@ -41,7 +41,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - disable_testgrid
                     - image_buildpack-golang
                     - "unprivileged"
                   local:
@@ -61,7 +60,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - disable_testgrid
                     - image_buildpack-golang
                     - jobConfig_slack_jellyfish
                     - "unprivileged"
@@ -78,6 +76,7 @@ templates:
                     - "-c"
                     - "go test `go list ./... | grep -v /tests/e2e` -coverprofile=$ARTIFACTS/filtered.cov"
                   always_run: true
+                  limits_memory: 5Gi
                 inheritedConfigs:
                   global:
                     - "jobConfig_presubmit"

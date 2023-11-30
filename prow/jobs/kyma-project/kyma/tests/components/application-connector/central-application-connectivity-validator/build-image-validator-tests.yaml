@@ -54,7 +54,6 @@ postsubmits:
       annotations:
         description: "Building the images used in acceptance test"
         owner: "framefrog"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-application-connector-connectivity-validator-test-build"

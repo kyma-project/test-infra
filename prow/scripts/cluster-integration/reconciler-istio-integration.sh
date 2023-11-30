@@ -59,19 +59,6 @@ function provision_k3d() {
   log::success "K3d cluster provisioned"
 }
 
-function ory::prepare_components_file() {
-  log::info "Preparing Kyma installation with Ory and prerequisites"
-
-cat << EOF > "$PWD/ory.yaml"
-defaultNamespace: kyma-system
-prerequisites:
-  - name: "istio"
-    namespace: "istio-system"
-components:
-  - name: "ory"
-EOF
-}
-
 function istio::prepare_components_file() {
   log::info "Preparing Kyma installation with Istio prerequisites"
 
@@ -97,11 +84,6 @@ function deploy_kyma() {
 
   local k3d_cni_overrides="istio.helmValues.cni.cniConfDir=/var/lib/rancher/k3s/agent/etc/cni/net.d,istio.helmValues.cni.cniBinDir=/bin"
   kyma_deploy_cmd="./bin/mothership-linux local --kubeconfig ${KUBECONFIG} --value global.ingress.domainName=${CLUSTER_DOMAIN},global.domainName=${CLUSTER_DOMAIN},${k3d_cni_overrides} --version ${KYMA_VERSION} --profile ${EXECUTION_PROFILE}"
-
-  if [[ $TEST_NAME == ory ]]; then
-    ory::prepare_components_file
-    kyma_deploy_cmd+=" --components-file ${PWD}/ory.yaml"
-  fi
 
   if [[ $TEST_NAME == istio ]]; then
     istio::prepare_components_file
@@ -130,11 +112,6 @@ function run_tests() {
 
   pushd "${RECONCILER_DIR}"
 
-  if [[ $TEST_NAME == ory ]]; then
-    export ORY_RECONCILER_INTEGRATION_TESTS=1
-    go test -v -timeout 5m ./pkg/reconciler/instances/"${TEST_NAME}"/test
-  fi
-
   if [[ $TEST_NAME == istio ]]; then
     export ISTIO_RECONCILER_INTEGRATION_TESTS=1
     export INGRESS_PORT=80
@@ -142,7 +119,6 @@ function run_tests() {
   fi
   #currently disabling
   #make: go: Permission denied on Gardener
-  #make test-ory
   popd
 }
 

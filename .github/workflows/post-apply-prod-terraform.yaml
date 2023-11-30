@@ -1,0 +1,74 @@
+name: Post Apply Prod Terraform
+run-name: post-apply-prod-terraform
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref_name}}
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**.tf"
+      - "**.tfvars"
+      - "**.yaml"
+      - "**.yml"
+
+jobs:
+  post-apply-prod-terraform:
+    permissions:
+      contents: "read" # needed for gcp_auth
+      id-token: "write" # needed for gcp_auth to create id token
+      issues: "write" # needed for tfcmt to post comments
+      pull-requests: "write" # needed for tfcmt to post comments
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@v4
+      - name: Wait for other terraform executions
+        id: wait_for_terraform
+        uses: ahmadnassri/action-workflow-queue@f547ac848c16a9bb1b2ed4a850e0cc5098af2cf8
+      - name: Authenticate to GCP
+        id: gcp-auth
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }} #workload_identity_provider: "projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/providers/github-com-kyma-project"
+          service_account: ${{ vars.GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL }} #service_account: "terraform-executor@sap-kyma-prow.iam.gserviceaccount.com"
+      
+          
+      # Build tofu CLI from source until setup-opentofu action will become stable
+      - name: Download the tofu source
+        uses: actions/checkout@v4
+        with:
+          repository: opentofu/opentofu
+          path: opentofu
+          ref: b8e2fad8e24cdd98c5a81d5c08bc8fe417cfdfc5 # v1.6.0-alpha5
+      - name: Install tofu tooling
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: opentofu/go.mod
+          cache-dependency-path: opentofu/go.sum
+      - name: Prepare the tofu command
+        working-directory: opentofu
+        run: |
+          go build -ldflags "-w -s -X 'github.com/opentofu/opentofu/version.dev=no'" -o bin/ ./cmd/tofu
+          echo $(pwd)/bin >> $GITHUB_PATH
+      # - name: Setup Terraform
+      #   id: setup_terraform
+      #   uses: opentofu/setup-opentofu@b06654f7ba51088e987c0a454d042360df3ebe86
+
+      - name: setup tfcmt
+        id: setup-tfcmt
+        uses: shmokmt/actions-setup-tfcmt@0d2b0c4cc4b5edc9c2dfdf7eb0c33ee7b23a7c85
+        with:
+          version: v4.7.1
+      - name: Terraform Init
+        id: terraform_init
+        run: tofu -chdir=./configs/terraform/environments/prod init -input=false
+      - name: Terraform Apply
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: terraform_apply
+        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -sha ${{ github.sha }} apply -- tofu -chdir=./configs/terraform/environments/prod apply -input=false -no-color -auto-approve
+        
+      

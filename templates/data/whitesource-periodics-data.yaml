@@ -17,11 +17,8 @@ templates:
             annotations:
               owner: "neighbors"
               description: "Periodic whitesource scan of Kyma repositories"
-              testgrid-create-test-group: "false"
             labels:
               preset-wssagent-keys: "true"
-              preset-kyma-keyring: "true"
-              preset-kyma-encryption-key: "true"
               preset-kms-gc-project-env: "true"
               preset-gc-project-env: "true"
             env:
@@ -47,19 +44,6 @@ templates:
         jobConfigs:
           - repoName: "github.com/kyma-project/kyma"
             jobs:
-              - jobConfig:
-                  repository: "api-gateway"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma"
               - jobConfig:
                   repository: "control-plane"
                   language: "golang-mod"
@@ -104,34 +88,6 @@ templates:
                     - "jobConfig_default"
               # Kyma components
               - jobConfig:
-                  repository: "lifecycle-manager"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  subprojects: "false"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma_test"
-              - jobConfig:
-                  repository: "runtime-watcher"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  subprojects: "true"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma_test"
-              - jobConfig:
                   repository: "busola"
                   language: "javascript"
                   project: "kyma-project"
@@ -144,31 +100,6 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_kyma_dashboard"
-              - jobConfig:
-                  repository: "cli"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma"
-              - jobConfig:
-                  repository: "cli"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  whitesource_release: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
               - jobConfig:
                   repository: "hydroform"
                   exclude: "**/examples/**"
@@ -198,73 +129,6 @@ templates:
                     - "jobConfig_default"
                     - "product_control_plane"
               - jobConfig:
-                  repository: "warden"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_control_plane"
-              - jobConfig:
-                  repository: "keda-manager"
-                  exclude: "**/test/**"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma"
-              - jobConfig:
-                  repository: "application-connector-manager"
-                  exclude: "**/test/**"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma"
-              - jobConfig:
-                  repository: "btp-manager"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma"
-              - jobConfig:
-                  repository: "telemetry-manager"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma"
-              - jobConfig:
                   repository: "directory-size-exporter"
                   language: "golang-mod"
                   project: "kyma-project"
@@ -277,33 +141,3 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_kyma"
-              - jobConfig:
-                  repository: "compass-manager"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  base_ref: "main"
-                  securityContext:
-                    privileged: "false"
-                  cron: "0 4 * * *" # At 04:00 am every day
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "/start-wssagent.sh"
-                  request_cpu: 400m
-                  request_memory: 1Gi
-                  cluster: "trusted-workload"
-                  annotations:
-                    owner: "neighbors"
-                    description: "Periodic whitesource scan of Kyma repositories"
-                    testgrid-create-test-group: "false"
-                  labels:
-                    preset-wssagent-keys: "true"
-                  env:
-                    DRYRUN: "false"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "product_control_plane"

@@ -6,15 +6,6 @@ templates:
           job_default:
             securityContext:
               privileged: false
-          vm_job_make:
-            command: "bash"
-            env:
-              JOB_REPO_NAME: "telemetry-manager"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            request_memory: 200Mi
-            request_cpu: 80m
           vm_job_labels:
             labels:
               preset-kyma-guard-bot-github-token: "true"
@@ -61,7 +52,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - "disable_testgrid"
               - jobConfig:
                   name: post-telemetry-manager-release-module
                   annotations:
@@ -79,7 +69,7 @@ templates:
                     - "release"
                   branches:
                     - "^\\d+\\.\\d+\\.\\d+$" # Regex for release tag
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231113-9154baa8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231128-9bb59ac6"
                 inheritedConfigs:
                   global:
                     - jobConfig_default

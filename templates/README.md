@@ -63,7 +63,6 @@ templates:
                   postConfigs:
                     global:
                       - "jobConfig_postsubmit"
-                      - "disable_testgrid"
         - to: ../prow/jobs/kyma/tests/application-gateway-tests/application-gateway-tests-generic.yaml
           localSets:
             jobConfig_pre:
@@ -96,7 +95,6 @@ templates:
                     postConfigs:
                       global:
                         - "jobConfig_postsubmit"
-                        - "disable_testgrid"
                       local:
                         - "jobConfig_post"
 ```

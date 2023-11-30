@@ -6,7 +6,6 @@ periodics: # runs on schedule
       annotations:
         description: "Unstale Gardener project. This prowjob creates and removes a cluster to unstale the project"
         owner: "neighbors"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "unstale-gardener-project"
@@ -22,7 +21,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231113-9154baa8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231128-9bb59ac6"
             securityContext:
               privileged: false
               seccompProfile:

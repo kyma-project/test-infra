@@ -134,7 +134,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-9154baa8"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -152,21 +152,21 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_buildpack-node:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231113-9154baa8"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6"
   image_buildpack-golang:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-9154baa8"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
   image_wssagent_go:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231113-9154baa8"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231128-9bb59ac6"
   image_wssagent_nodejs:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231113-9154baa8"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231128-9bb59ac6"
   image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20231113-32628507
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20231129-6d721838
   image_markdown_index:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231113-32628507
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231129-6d721838
   image_image_detector:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231113-32628507
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231129-6d721838
   image_e2e-dind-k3d:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231113-9154baa8"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231128-9bb59ac6"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"
@@ -235,9 +235,6 @@ globalSets:
       privileged: "true"
       seccompProfile:
         type: "Unconfined"
-  disable_testgrid:
-    annotations:
-      testgrid-create-test-group: "false"
   jobConfig_slack_dev_null:
     slack_channel: "kyma-prow-dev-null"
   jobConfig_slack_jellyfish:
@@ -256,7 +253,6 @@ globalSets:
     labels:
       preset-dind-enabled: "true"
       preset-sa-kyma-push-images: "true"
-      preset-kyma-kms-sign-key: "true"
     command: "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/build-generic.sh"
   jobConfig_generic_component_kyma:
     labels:

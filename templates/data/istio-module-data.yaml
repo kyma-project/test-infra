@@ -35,16 +35,6 @@ templates:
                 readOnly: true
           job_skip_config:
             skip_if_only_changed: 'sec-scanners-config\.yaml$|^docs/|^tests/performance/|\.md$|^(OWNERS|CODEOWNERS)$|^\.'
-          vm_job_make:
-            command: "bash"
-            env:
-              CLOUDSDK_COMPUTE_ZONE: "europe-west4-b"
-              JOB_REPO_NAME: "istio"
-            args:
-              - "-c"
-              - "/home/prow/go/src/github.com/kyma-project/test-infra/prow/scripts/provision-vm-and-run-manager.sh"
-            request_memory: 200Mi
-            request_cpu: 80m
           vm_job_labels:
             labels:
               preset-kyma-guard-bot-github-token: "true"
@@ -53,13 +43,13 @@ templates:
           vm_job_k3d:
             annotations:
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231113-9154baa8"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231128-9bb59ac6"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
           job_module_build:
             labels:
               preset-sa-kyma-push-images: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231113-9154baa8"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
@@ -258,7 +248,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231113-9154baa8"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231128-9bb59ac6"
                   securityContext: #temporary we need permissions to create folders for tooling, see `make install`
                     runAsRoot: true
                   command: "make"
@@ -289,7 +279,7 @@ templates:
                   local:
                     - job_default
               - jobConfig:
-                  name: post-istio-operator-aws-specific
+                  name: post-istio-integration-aws-specific
                   annotations:
                     owner: goat
                     description: runs istio operator integration tests specific to AWS
@@ -307,22 +297,21 @@ templates:
                   labels:
                     preset-gardener-aws-kyma-integration: "true"
                     preset-cluster-version: "true"
-                    preset-sa-kyma-dns-serviceuser: "true"
                     preset-kyma-guard-bot-github-token: "true"
                   env:
                     IMG: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_SHA}"
                     WAIT_FOR_JOB_NAME: "post-istio-operator-build"
-                    TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
                     - jobConfig_default
+                    - jobConfig_slack_goat
                   local:
                     - job_default
                     - e2e
                     - job_skip_config
               - jobConfig:
-                  name: pull-istio-operator-aws-specific
+                  name: pull-istio-integration-aws-specific
                   annotations:
                     owner: goat
                     description: runs istio operator integration tests specific to AWS
@@ -340,12 +329,10 @@ templates:
                   labels:
                     preset-gardener-aws-kyma-integration: "true"
                     preset-cluster-version: "true"
-                    preset-sa-kyma-dns-serviceuser: "true"
                     preset-kyma-guard-bot-github-token: "true"
                   env:
                     IMG: "europe-docker.pkg.dev/kyma-project/dev/istio-manager:PR-${PULL_NUMBER}"
                     WAIT_FOR_JOB_NAME: "pull-istio-operator-build"
-                    TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit

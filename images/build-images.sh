@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-
+ARTIFACTS="${ARTIFACTS:-/tmp}"
 # WORKAROUND
 #TODO (@Ressetkk): Use bundled image with docker-credential-gcr and docker
 if [[ $CI == "true" ]]; then
@@ -20,12 +20,21 @@ toPush=()
 for v in $(find . -type d -exec test -e '{}'/Dockerfile \; -print | cut -c3-) ; do
   name=$(echo "$v" | sed "s/\//-/g")
   echo "building $name..."
+  IMG="local/$v"
   docker buildx build \
     --load \
-    -t "local/$v" \
+    -t "$IMG" \
     -t "$REGISTRY/$name:latest" \
     -t "$REGISTRY/$name:$TAG" \
     "./$v"
+  if [ "$1" != "push" ]; then
+    if [ -x "./$v/test.sh" ]; then
+      pushd "./$v"
+      echo "running $v/test.sh"
+      if IMG=$IMG ./test.sh &> "$ARTIFACTS/$name-test.log"; then echo "OK!"; else (echo "$ARTIFACTS/$name-test.log"; exit 1); fi
+      popd
+    fi
+  fi
   toPush+=("$REGISTRY/$name")
 done
 

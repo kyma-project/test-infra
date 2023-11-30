@@ -42,14 +42,36 @@ jobs:
 
       - name: Authenticate to GCP
         id: gcp_auth
-        uses: google-github-actions/auth@v1
+        uses: google-github-actions/auth@v2
         with:
           workload_identity_provider: ${{ vars.GH_COM_KYMA_PROJECT_GCP_WORKLOAD_IDENTITY_FEDERATION_PROVIDER }} #workload_identity_provider: "projects/351981214969/locations/global/workloadIdentityPools/github-com-kyma-project/providers/github-com-kyma-project"
           service_account: ${{ vars.GCP_TERRAFORM_EXECUTOR_SERVICE_ACCOUNT_EMAIL }} #service_account: "terraform-executor@sap-kyma-prow.iam.gserviceaccount.com"
+      
+      # Build tofu CLI from source until setup-opentofu action will become stable
 
-      - name: Setup Terraform
-        id: setup_terraform
-        uses: hashicorp/setup-terraform@v3.0.0
+      - name: Download the tofu source
+        uses: actions/checkout@v4
+        with:
+          repository: opentofu/opentofu
+          path: opentofu
+          ref: b8e2fad8e24cdd98c5a81d5c08bc8fe417cfdfc5 # v1.6.0-alpha5
+        
+      - name: Install tofu tooling
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: opentofu/go.mod
+          cache-dependency-path: opentofu/go.sum
+
+
+      - name: Prepare the tofu command
+        working-directory: opentofu
+        run: |
+          go build -ldflags "-w -s -X 'github.com/opentofu/opentofu/version.dev=no'" -o bin/ ./cmd/tofu
+          echo $(pwd)/bin >> $GITHUB_PATH
+
+      # - name: Setup Terraform
+      #   id: setup_terraform
+      #   uses: opentofu/setup-opentofu@b06654f7ba51088e987c0a454d042360df3ebe86
 
       - name: Setup GitHub comments
         id: setup-github-comment
@@ -66,13 +88,13 @@ jobs:
 
       - name: Terraform Init
         id: terraform_init
-        run: terraform -chdir=./configs/terraform/environments/prod init -input=false
+        run: tofu -chdir=./configs/terraform/environments/prod init -input=false
 
       - name: Terraform Plan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: terraform_plan
-        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number }} -sha ${{ github.event.pull_request.head.sha }} plan -- terraform -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
+        run: tfcmt -owner $GITHUB_REPOSITORY_OWNER -repo ${{ github.event.repository.name }} -pr ${{ github.event.pull_request.number }} -sha ${{ github.event.pull_request.head.sha }} plan -- tofu -chdir=./configs/terraform/environments/prod plan -input=false -no-color -lock-timeout=300s
 
       - name: Hide GitHub comment
         env:

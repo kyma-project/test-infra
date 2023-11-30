@@ -10,10 +10,9 @@ periodics:
     annotations:
       owner: neighbors
       description: "Periodic close stale issues and PRs"
-      testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20231113-4c4f7ee0
+        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20231127-7842342f
           command:
             - commenter
           args:
@@ -68,10 +67,9 @@ periodics:
     annotations:
       owner: neighbors
       description: "Periodic triage stale issues and PRs"
-      testgrid-create-test-group: "false"
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20231113-4c4f7ee0
+        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20231127-7842342f
           command:
             - commenter
           args:

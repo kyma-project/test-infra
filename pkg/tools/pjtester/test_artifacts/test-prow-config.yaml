@@ -36,8 +36,6 @@ deck:
   spyglass:
     size_limit: 500000000 # 500MB
     gcs_browser_prefix: https://gcsweb.build.kyma-project.io/gcs/
-    testgrid_config: gs://k8s-testgrid/config
-    testgrid_root: https://testgrid.k8s.io/
     lenses:
       - lens:
           name: metadata
@@ -313,11 +311,6 @@ tide:
     from-branch-protection: true
 
 presets:
-  - labels:
-      preset-execute-fast-integration-tests: "true"
-    env:
-      - name: EXECUTE_FAST_INTEGRATION_TESTS
-        value: "true"
   - labels:
       preset-recreate-cluster: "true"
     env:

@@ -7,7 +7,6 @@ periodics:
       slack:
         channel: kyma-neighbors-alerts
         job_states_to_report:
-          - success
           - failure
           - error
         report_template: 'Update task for k8s-prow ended with *{{.Status.State}}*. *<{{.Status.URL}}|View logs>*.'
@@ -21,7 +20,7 @@ periodics:
     cluster: trusted-workload
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231113-9154baa8
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231128-9bb59ac6
           env:
             - name: UPSTREAM_REPO
               value: github.com/kubernetes/test-infra
@@ -64,7 +63,6 @@ periodics:
       slack:
         channel: kyma-neighbors-alerts
         job_states_to_report:
-          - success
           - failure
           - error
         report_template: 'Release task for k8s-prow:{{.Spec.Refs.BaseRef}} ended with *{{.Status.State}}*. *<{{.Status.URL}}|View logs>*.'
@@ -78,7 +76,7 @@ periodics:
     cluster: trusted-workload
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231113-9154baa8
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231128-9bb59ac6
           securityContext:
             privileged: false
             seccompProfile:
@@ -128,7 +126,7 @@ periodics:
         channel: kyma-neighbors-alerts
     spec:
       containers:
-        - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231113-4c4f7ee0"
+        - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231127-7842342f"
           securityContext:
             privileged: false
             seccompProfile:

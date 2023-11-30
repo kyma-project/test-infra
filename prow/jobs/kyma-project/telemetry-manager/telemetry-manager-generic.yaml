@@ -57,7 +57,6 @@ postsubmits: # runs on main
       annotations:
         description: "Post-submit job to build telemetry-manager image."
         owner: "huskies"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-telemetry-manager-build"
@@ -130,7 +129,7 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231113-9154baa8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231128-9bb59ac6"
             securityContext:
               privileged: false
               seccompProfile:

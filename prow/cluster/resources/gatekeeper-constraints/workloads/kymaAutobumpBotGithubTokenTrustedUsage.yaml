@@ -48,7 +48,7 @@ spec:
         command:
           - /tools/entrypoint
         args: []
-        entrypoint_options: '^{.*"args":\["label_sync","--config=\/etc\/config\/labels\.yaml","--confirm=true","--orgs=kyma-project,kyma-incubator","--token=\/etc\/github\/token","--endpoint=http:\/\/ghproxy","--endpoint=https:\/\/api\.github\.com","--debug"\],"container_name":"test",.*}$'
+        entrypoint_options: '^{.*"args":\["label_sync","--config=prow\/labels\.yaml","--confirm=true","--orgs=kyma-project,kyma-incubator","--token=\/etc\/github\/token","--endpoint=http:\/\/ghproxy","--endpoint=https:\/\/api\.github\.com"\],"container_name":"test",.*}$'
       # ci-k8s-prow-autobump-testimages
       - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
         command:

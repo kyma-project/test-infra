@@ -75,7 +75,7 @@ templates:
                     owner: gopher
                     description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231113-9154baa8
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
                   command: make
                   args:
                     - -C
@@ -86,7 +86,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_azure"
@@ -98,7 +97,7 @@ templates:
                     owner: gopher
                     description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231113-9154baa8
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
                   command: make
                   args:
                     - -C
@@ -109,7 +108,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_azure_lite"
@@ -123,7 +121,7 @@ templates:
                   cron: "5 1 * * *" # "At 01:05"
                   labels:
                     preset-skr-al-service-key: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231113-9154baa8
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
                   command: make
                   args:
                     - -C
@@ -134,7 +132,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_aws"
@@ -146,7 +143,7 @@ templates:
                     owner: gopher
                     description: skr integration test trial
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231113-9154baa8
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
                   command: make
                   args:
                     - -C
@@ -157,7 +154,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_trial"
@@ -169,7 +165,7 @@ templates:
                     owner: gopher
                     description: skr integration test free
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231113-9154baa8
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
                   command: make
                   args:
                     - -C
@@ -180,7 +176,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_free_aws"
@@ -192,7 +187,7 @@ templates:
                     owner: gopher
                     description: skr integration test preview
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231113-9154baa8
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
                   command: make
                   args:
                     - -C
@@ -203,7 +198,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_preview"

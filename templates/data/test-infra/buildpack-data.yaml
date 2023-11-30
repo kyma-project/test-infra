@@ -40,8 +40,6 @@ templates:
           postsubmit:
             type_postsubmit: "true"
             cluster: "trusted-workload"
-            annotations:
-              testgrid-create-test-group: "false"
         jobConfigs:
               - jobConfig:
                   name: "pre-test-infra-golangci-lint"

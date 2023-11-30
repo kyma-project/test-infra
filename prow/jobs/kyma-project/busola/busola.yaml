@@ -62,7 +62,6 @@ postsubmits: # runs on main
       annotations:
         description: "Building Busola local image and push to GCR"
         owner: "hasselhoff"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-busola-local-build"

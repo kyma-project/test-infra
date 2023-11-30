@@ -24,14 +24,6 @@ output "terraform_executor_gcp_workload_identity" {
   value = google_service_account_iam_binding.terraform_workload_identity
 }
 
-output "trusted_workload_terraform_executor_k8s_service_account" {
-  value = kubernetes_service_account.trusted_workload_terraform_executor
-}
-
-output "untrusted_workload_terraform_executor_k8s_service_account" {
-  value = kubernetes_service_account.untrusted_workload_terraform_executor
-}
-
 output "artifact_registry" {
   value     = module.artifact_registry
   sensitive = false

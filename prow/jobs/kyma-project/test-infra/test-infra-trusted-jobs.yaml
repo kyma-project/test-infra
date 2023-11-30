@@ -27,7 +27,6 @@ postsubmits:
       annotations:
         owner: neighbors
         description: "Refresh kubeconfigs for workload clusters after config change"
-        testgrid-create-test-group: "false"
 periodics:
   - cron: "17 */6 * * *" # Every 6 hours at 17 minutes past the hour
     name: ci-gencred-refresh-kubeconfigs

@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231113-4c4f7ee0
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231113-4c4f7ee0
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231113-4c4f7ee0
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231113-4c4f7ee0
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231127-7842342f
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231127-7842342f
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231127-7842342f
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231127-7842342f
         resources:
           clonerefs:
             requests:
@@ -72,8 +72,6 @@ deck:
   spyglass:
     size_limit: 500000000 # 500MB
     gcs_browser_prefix: https://gcsweb.build.kyma-project.io/gcs/
-    testgrid_config: gs://k8s-testgrid/config
-    testgrid_root: https://testgrid.k8s.io/
     lenses:
       - lens:
           name: metadata
@@ -380,6 +378,7 @@ tide:
     kyma-project/examples: squash
     kyma-project/lifecycle-manager: squash
     kyma-project/runtime-watcher: squash
+    kyma-project/template-operator: squash
     kyma-project/api-gateway: squash
     kyma-project/btp-manager: squash
     kyma-project/kyma-environment-broker: squash
@@ -886,20 +885,10 @@ presets:
             name: nightly-github-integration-app-client-secret
             key: client-secret
   - labels:
-      preset-kyma-keyring: "true"
-    env:
-      - name: KYMA_KEYRING
-        value: "prow-workloads-keyring"
-  - labels:
       preset-kyma-development-artifacts-bucket: "true"
     env:
       - name: KYMA_DEVELOPMENT_ARTIFACTS_BUCKET
         value: "gs://kyma-development-artifacts"
-  - labels:
-      preset-kyma-encryption-key: "true"
-    env:
-      - name: KYMA_ENCRYPTION_KEY
-        value: prow-workloads-encrypt
   - labels:
       preset-whitesource-product-kyma: "true"
     env:

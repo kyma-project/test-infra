@@ -10,7 +10,8 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
-      run_if_changed: '^((config/serverless|tests/serverless)\S+(\.[^.][^.][^.]+|\.[^.][^dD]|\.[^mM][^.]|\.[^.]$|/[^.]+))$'
+      # verification jobs that are based on build jobs need to have at least the same restricted
+      run_if_changed: '^config/serverless/|^components/serverless/|^components/runtimes/|^tests/serverless/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -24,7 +25,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231113-9154baa8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231128-9bb59ac6"
             securityContext:
               privileged: true
               seccompProfile:
@@ -43,14 +44,14 @@ presubmits: # runs on PRs
       annotations:
         description: "Serverless git-function authentication integration tests"
         owner: "otters"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-serverless-git-auth-integration-k3s"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-dind-enabled: "true"
         preset-kind-volume-mounts: "true"
-      run_if_changed: '^((config/serverless|tests/serverless)\S+(\.[^.][^.][^.]+|\.[^.][^dD]|\.[^mM][^.]|\.[^.]$|/[^.]+))$'
+      # verification jobs that are based on build jobs need to have at least the same restricted
+      run_if_changed: '^config/serverless/|^components/serverless/|^components/runtimes/|^tests/serverless/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -64,7 +65,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231113-9154baa8"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231128-9bb59ac6"
             securityContext:
               privileged: true
               seccompProfile:
