@@ -32,7 +32,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/manager/Dockerfile"
-              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -80,7 +79,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/webhook/Dockerfile"
-              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -128,7 +126,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/jobinit/Dockerfile"
-              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -177,7 +174,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/registry-gc/Dockerfile"
-              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
