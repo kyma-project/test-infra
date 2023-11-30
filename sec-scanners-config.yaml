@@ -50,17 +50,17 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/rotate-service-account:v20230307-cf164cd1
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/service-account-keys-cleaner:v20230301-6267d66d
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/slackmessagesender:v20231129-6d721838
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231128-9bb59ac6
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231128-9bb59ac6
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20231128-9bb59ac6
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20231128-9bb59ac6
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231128-9bb59ac6
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231128-9bb59ac6
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231128-9bb59ac6
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231128-9bb59ac6
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231128-9bb59ac6
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-git:v20231130-5e582eeb
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231130-5e582eeb
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-shellcheck:v20231130-5e582eeb
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20231130-5e582eeb
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231130-5e582eeb
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231130-5e582eeb
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231130-5e582eeb
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231130-5e582eeb
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231130-5e582eeb
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231130-5e582eeb
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231130-5e582eeb
     - gcr.io/k8s-prow/analyze:v20230824-74e8146673
     - gcr.io/k8s-prow/gencred:v20230824-74e8146673
     - maven:3.9.4-eclipse-temurin-17
