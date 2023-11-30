@@ -383,7 +383,7 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"REGISTRY_VERSION\" }}-{{ .ShortSHA }}"
-              - "--tag=latest"
+              - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -535,7 +535,7 @@ postsubmits: # runs on main
               - "--dockerfile=Dockerfile"
               - "--env-file=envs"
               - "--tag={{ .Env \"KANIKO_VERSION\" }}-{{ .ShortSHA }}"
-              - "--tag=latest"
+              - "--tag=$(PULL_BASE_REF)"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
