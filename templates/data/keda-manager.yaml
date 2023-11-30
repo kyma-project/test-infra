@@ -118,8 +118,8 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
+                    - '--tag=$(PULL_BASE_SHA)'
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -140,7 +140,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
                   branches:
                     - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:

@@ -37,8 +37,8 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/manager/Dockerfile"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -75,7 +75,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/webhook/Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -113,7 +113,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/jobinit/Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -153,7 +153,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/registry-gc/Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -197,7 +197,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs16/Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -233,7 +233,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs18/Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -269,7 +269,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python39"
                     - "--dockerfile=components/runtimes/python39/Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -305,7 +305,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/java17"
                     - "--dockerfile=Dockerfile-jvm-runtime"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:

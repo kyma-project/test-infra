@@ -173,8 +173,8 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
-              - "--tag={{ .Env \"PULL_BASE_SHA\" }}"
-              - "--tag={{ .Env \"PULL_BASE_REF\" }}"
+              - "--tag=$(PULL_BASE_REF)"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -225,7 +225,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
-              - "--tag={{ .Env \"PULL_BASE_REF\" }}"
+              - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
                 memory: 1.5Gi
