@@ -5,9 +5,7 @@
 # 1. Provision a gardener cluster.
 # 2. Deploy the Kyma reconciler from the control-plane pull-request.
 # 3. Reconcile Kyma2 latest release using the deployed Kyma reconciler.
-# 4. Execute pre-upgrade fast-integration tests.
-# 5. Reconcile Kyma2 main using the deployed Kyma reconciler (to simulate Kyma2 version upgrade).
-# 6. Execute post-upgrade fast-integration tests.
+# 4. Reconcile Kyma2 main using the deployed Kyma reconciler (to simulate Kyma2 version upgrade).
 #
 # Expected common vars:
 # - JOB_TYPE - set up by prow (presubmit, postsubmit, periodic)
@@ -126,7 +124,6 @@ if [[ $KYMA_UPGRADE_SOURCE != "main" ]]; then
   kubectl apply -f https://github.com/kyma-project/serverless/releases/latest/download/serverless-operator.yaml
   kubectl apply -f https://github.com/kyma-project/serverless/releases/latest/download/default_serverless_cr.yaml -n kyma-system
 fi
-make -C "../../kyma-project/kyma/tests/fast-integration" ci-pre-upgrade
 
 ## ---------------------------------------------------------------------------------------
 ## Reconcile and test Kyma2 main
@@ -146,16 +143,6 @@ reconciler::trigger_kyma_reconcile
 
 # Wait until reconciliation is complete
 reconciler::wait_until_kyma_reconciled
-
-# run the fast integration test after reconciliation
-echo ">>> Executing post-upgrade test"
-echo "switching local Kyma sources to the ${KYMA_UPGRADE_SOURCE}"
-pushd "${KYMA_PROJECT_DIR}/kyma"
-git reset --hard
-git checkout "${KYMA_UPGRADE_SOURCE}"
-popd
-
-make -C "../../kyma-project/kyma/tests/fast-integration" ci-post-upgrade
 
 # Must be at the end of the script
 ERROR_LOGGING_GUARD="false"

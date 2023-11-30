@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#Description: Kyma Integration plan on SKR AWS. This scripts implements a pipeline that consists of many steps. The purpose is to trigger the ci-skr-aws-upgrade-integration fast-integration test in Kyma repository
+#Description: Kyma Integration plan on SKR AWS. This scripts implements a pipeline that consists of many steps. The purpose is to trigger the ci-skr-aws-upgrade-integration test in Kyma repository
 #Expected common vars:
 #
 #
@@ -29,7 +29,7 @@ log::info "### Starting pipeline"
 
 # Fetch latest Kyma2 release
 kyma::get_last_release_version -t "${BOT_GITHUB_TOKEN}"
-# KYMA_UPGRADE_VERSION will be used as a source in the fast-integration test
+# KYMA_UPGRADE_VERSION will be used as a source in the test
 export KYMA_UPGRADE_VERSION="${kyma_get_last_release_version_return_version:?}"
 log::info "### Reading the latest release version from GitHub release API, got: ${KYMA_UPGRADE_VERSION}"
 

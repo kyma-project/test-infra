@@ -312,11 +312,6 @@ tide:
 
 presets:
   - labels:
-      preset-execute-fast-integration-tests: "true"
-    env:
-      - name: EXECUTE_FAST_INTEGRATION_TESTS
-        value: "true"
-  - labels:
       preset-recreate-cluster: "true"
     env:
       - name: RECREATE_CLUSTER

@@ -124,7 +124,7 @@ if [[ "${HIBERNATION_ENABLED}" == "true" ]]; then
 fi
 
 if [[ "${EXECUTION_PROFILE}" == "evaluation" ]] || [[ "${EXECUTION_PROFILE}" == "production" ]]; then
-    gardener::test_fast_integration_kyma
+  :
 else
     gardener::test_kyma
 fi

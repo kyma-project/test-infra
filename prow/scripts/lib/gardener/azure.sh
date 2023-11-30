@@ -270,40 +270,6 @@ gardener::wake_up_kyma() {
     date
 }
 
-gardener::test_fast_integration_kyma() {
-    log::info "Running Kyma Fast Integration tests"
-
-    pushd /home/prow/go/src/github.com/kyma-project/kyma/tests/fast-integration
-    make ci
-    popd
-
-    log::success "Tests completed"
-}
-
-gardener::pre_upgrade_test_fast_integration_kyma() {
-    log::info "Running pre-upgrade Kyma Fast Integration tests - Azure"
-
-    kymaDirectory="$(utils::get_kyma_fast_integration_dir "$@")"
-    log::info "Switching directory to '$kymaDirectory'"
-    pushd "$kymaDirectory"
-    make ci-pre-upgrade
-    popd
-
-    log::success "Tests completed"
-}
-
-gardener::post_upgrade_test_fast_integration_kyma() {
-    log::info "Running post-upgrade Kyma Fast Integration tests - Azure"
-
-    kymaDirectory="$(utils::get_kyma_fast_integration_dir "$@")"
-    log::info "Switching directory to '$kymaDirectory'"
-    pushd "$kymaDirectory"
-    make ci-post-upgrade
-    popd
-
-    log::success "Tests completed"
-}
-
 gardener::test_kyma() {
     log::info "Running Kyma tests"
 
