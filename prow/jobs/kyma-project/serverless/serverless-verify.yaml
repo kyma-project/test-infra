@@ -215,8 +215,6 @@ periodics: # runs on schedule
       annotations:
         description: "serverless operator nightly verify"
         owner: "otters"
-        testgrid-dashboards: "serverless-operator-nightly"
-        testgrid-days-of-results: "60"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "serverless-operator-nightly-periodic"

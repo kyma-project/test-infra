@@ -306,8 +306,6 @@ templates:
                   annotations:
                     owner: otters
                     description: Keda nightly verify
-                    testgrid-dashboards: keda-nightly
-                    testgrid-days-of-results: "60"
                   cluster: "trusted-workload"
                   args:
                     - bash

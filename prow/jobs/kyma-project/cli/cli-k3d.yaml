@@ -4,7 +4,6 @@ postsubmits:
       annotations:
         description: "Bump reconciler version used by CLI and publish the unstable CLI binaries"
         owner: "jellyfish"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-unstable-cli"

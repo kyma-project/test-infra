@@ -40,4 +40,3 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - "disable_testgrid"

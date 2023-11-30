@@ -235,9 +235,6 @@ globalSets:
       privileged: "true"
       seccompProfile:
         type: "Unconfined"
-  disable_testgrid:
-    annotations:
-      testgrid-create-test-group: "false"
   jobConfig_slack_dev_null:
     slack_channel: "kyma-prow-dev-null"
   jobConfig_slack_jellyfish:

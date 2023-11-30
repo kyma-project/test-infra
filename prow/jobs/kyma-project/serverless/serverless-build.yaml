@@ -203,7 +203,6 @@ postsubmits: # runs on main
       annotations:
         description: "function controller build job"
         owner: "otters"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-controller-build"
@@ -254,7 +253,6 @@ postsubmits: # runs on main
       annotations:
         description: "function webhook build job"
         owner: "otters"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-webhook-build"
@@ -305,7 +303,6 @@ postsubmits: # runs on main
       annotations:
         description: "function jobinit build job"
         owner: "otters"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-jobinit-build"
@@ -356,7 +353,6 @@ postsubmits: # runs on main
       annotations:
         description: "function registry build job"
         owner: "otters"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-serverless-registry-gc-build"

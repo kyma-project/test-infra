@@ -356,7 +356,6 @@ periodics: # runs on schedule
       annotations:
         description: "Reconciler image bump in control-plane"
         owner: "jellyfish"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "reconciler-control-plane-image-bump"
@@ -403,7 +402,6 @@ periodics: # runs on schedule
       annotations:
         description: "Creates and installs reconciler from main every night."
         owner: "jellyfish"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "nightly-main-reconciler"
@@ -452,7 +450,6 @@ periodics: # runs on schedule
       annotations:
         description: "Executes e2e test periodically on nightly cluster for reconciler."
         owner: "jellyfish"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "nightly-main-reconciler-e2e"

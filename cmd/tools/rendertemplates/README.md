@@ -114,7 +114,6 @@ The Render Templates passes data in the **$.Values** and **$.Global** variables 
               postConfigs:
                 global:
                   - "jobConfig_postsubmit"
-                  - "disable_testgrid"
                 local:
                   - "jobConfig_post"
     ```
@@ -146,7 +145,6 @@ The Render Templates passes data in the **$.Values** and **$.Global** variables 
               postConfigs:
                 global:
                   - "jobConfig_postsubmit"
-                  - "disable_testgrid"
     ```
   
 The Render Templates tool builds the **Values** variable in the following order:

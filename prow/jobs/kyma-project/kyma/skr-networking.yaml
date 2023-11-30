@@ -6,7 +6,6 @@ periodics: # runs on schedule
       annotations:
         description: "skr networking integration test AWS"
         owner: "gopher"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "skr-aws-networking"

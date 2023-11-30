@@ -86,7 +86,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_azure"
@@ -109,7 +108,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_azure_lite"
@@ -134,7 +132,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_aws"
@@ -157,7 +154,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_trial"
@@ -180,7 +176,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_free_aws"
@@ -203,7 +198,6 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_kyma-environment-broker"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"
                     - "keb_plan_preview"

@@ -17,7 +17,6 @@ templates:
             annotations:
               owner: "neighbors"
               description: "Periodic whitesource scan of Kyma repositories"
-              testgrid-create-test-group: "false"
             labels:
               preset-wssagent-keys: "true"
               preset-kms-gc-project-env: "true"

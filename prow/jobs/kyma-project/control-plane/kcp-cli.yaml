@@ -46,7 +46,6 @@ postsubmits: # runs on main
       annotations:
         description: "Builds and validates KCP CLI before merge"
         owner: "sre"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-main-kcp-cli"

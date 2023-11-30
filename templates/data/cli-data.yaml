@@ -41,7 +41,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - disable_testgrid
                     - image_buildpack-golang
                     - "unprivileged"
                   local:
@@ -61,7 +60,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - disable_testgrid
                     - image_buildpack-golang
                     - jobConfig_slack_jellyfish
                     - "unprivileged"

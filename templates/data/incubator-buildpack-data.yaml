@@ -34,7 +34,6 @@ templates:
                     - jobConfig_default
                     - jobConfig_postsubmit
                     - image_buildpack-golang
-                    - disable_testgrid
       - to: ../../prow/jobs/kyma-incubator/reconciler/reconciler.yaml
         localSets:
           extra_refs_kyma-1-24:
@@ -250,7 +249,6 @@ templates:
                     - extra_refs_reconciler
                     - extra_refs_test-infra
                     - extra_refs_control-plane
-                    - disable_testgrid
                     - jobConfig_slack_jellyfish
               - jobConfig:
                   name: nightly-main-reconciler
@@ -266,7 +264,6 @@ templates:
                     - gardener_gcp_job
                     - extra_refs_test-infra
                     - extra_refs_control-plane
-                    - disable_testgrid
                     - jobConfig_slack_jellyfish
                   local:
                     - reconciler_nightly_cluster_jobConfig
@@ -294,7 +291,6 @@ templates:
                     - extra_refs_test-infra
                     - extra_refs_kyma
                     - extra_refs_control-plane
-                    - disable_testgrid
                     - jobConfig_slack_jellyfish
                     - unprivileged
                   local:

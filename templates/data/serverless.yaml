@@ -43,7 +43,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - disable_testgrid
                   local:
                     - skip_if_only_changed_documentation
               - jobConfig:
@@ -81,7 +80,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - disable_testgrid
                   local:
                     - skip_if_only_changed_documentation
               - jobConfig:
@@ -119,7 +117,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - disable_testgrid
                   local:
                     - skip_if_only_changed_documentation
               - jobConfig:
@@ -159,7 +156,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - "disable_testgrid"
                   local:
                     - skip_if_only_changed_documentation
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-runtimes.yaml
@@ -204,7 +200,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - disable_testgrid
                   local:
                     - skip_if_only_changed_documentation
               - jobConfig:
@@ -242,7 +237,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - disable_testgrid
                   local:
                     - skip_if_only_changed_documentation
               - jobConfig:
@@ -280,7 +274,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - disable_testgrid
                   local:
                     - skip_if_only_changed_documentation
               - jobConfig:
@@ -318,7 +311,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - disable_testgrid
                   local:
                     - skip_if_only_changed_documentation
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-operator.yaml
@@ -554,7 +546,6 @@ templates:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-                    - disable_testgrid
       - to: ../../prow/jobs/kyma-project/serverless/serverless-verify.yaml
         localSets:
           job_branches:
@@ -682,8 +673,6 @@ templates:
                   annotations:
                     owner: otters
                     description: serverless operator nightly verify
-                    testgrid-dashboards: serverless-operator-nightly
-                    testgrid-days-of-results: "60"
                   cluster: "trusted-workload"
                   args:
                     - bash

@@ -40,7 +40,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_postsubmit
-                    - disable_testgrid
                     - image_buildpack-golang
                   local:
                     - job_spec

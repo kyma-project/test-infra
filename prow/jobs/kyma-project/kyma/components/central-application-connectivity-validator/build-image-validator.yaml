@@ -54,7 +54,6 @@ postsubmits: # runs on main
       annotations:
         description: "Building the images used in acceptance test. The same thing, as the `pull-` job but on the main branch."
         owner: "framefrog"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-central-application-connectivity-validator-build"

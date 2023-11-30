@@ -32,6 +32,5 @@ templates:
                     - "jobConfig_default"
                     - "jobConfig_periodic"
                     - "extra_refs_test-infra"
-                    - "disable_testgrid"
                   local:
                     - "jobConfig_default"

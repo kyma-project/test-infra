@@ -44,7 +44,6 @@ presubmits: # runs on PRs
       annotations:
         description: "Serverless git-function authentication integration tests"
         owner: "otters"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-main-serverless-git-auth-integration-k3s"

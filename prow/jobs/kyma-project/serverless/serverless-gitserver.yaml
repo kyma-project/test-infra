@@ -58,7 +58,6 @@ postsubmits: # runs on main
       annotations:
         description: "gitserver build job"
         owner: "otters"
-        testgrid-create-test-group: "false"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-gitserver-build"
