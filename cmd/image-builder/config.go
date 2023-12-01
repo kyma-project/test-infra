@@ -60,7 +60,7 @@ func (c *Config) ParseConfig(f []byte) error {
 type Variants map[string]map[string]string
 
 // GetVariants fetches variants from provided file.
-// If Variant flag is used, it fetches the requested Variant.
+// If variant flag is used, it fetches the requested variant.
 func GetVariants(variant string, f string, fileGetter func(string) ([]byte, error)) (Variants, error) {
 	var v Variants
 	b, err := fileGetter(f)
@@ -68,7 +68,7 @@ func GetVariants(variant string, f string, fileGetter func(string) ([]byte, erro
 		if !os.IsNotExist(err) {
 			return nil, err
 		}
-		// Variant file not found, skipping
+		// variant file not found, skipping
 		return nil, nil
 	}
 	if err := yaml.Unmarshal(b, &v); err != nil {
@@ -77,7 +77,7 @@ func GetVariants(variant string, f string, fileGetter func(string) ([]byte, erro
 	if variant != "" {
 		va, ok := v[variant]
 		if !ok {
-			return nil, fmt.Errorf("requested Variant '%s', but it's not present in variants.yaml file", variant)
+			return nil, fmt.Errorf("requested variant '%s', but it's not present in variants.yaml file", variant)
 		}
 		return Variants{variant: va}, nil
 	}
