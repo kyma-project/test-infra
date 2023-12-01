@@ -11,7 +11,7 @@ import (
 )
 
 type Config struct {
-	adoPipelines.Config `yaml:",inline" json:",inline"`
+	AdoConfig adoPipelines.Config `yaml:"ado-config,omitempty" json:"ado-config,omitempty"`
 	// Registry is URL where clean build should land.
 	Registry Registry `yaml:"registry" json:"registry"`
 	// DevRegistry is Registry URL where development/dirty images should land.
