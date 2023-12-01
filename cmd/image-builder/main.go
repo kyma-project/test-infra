@@ -27,27 +27,27 @@ import (
 )
 
 type options struct {
-	Config     `json:"config"`
-	ConfigPath string       `json:"config_path"`
-	Context    string       `json:"context"`
-	Dockerfile string       `json:"dockerfile"`
-	EnvFile    string       `json:"env_file"`
-	Name       string       `json:"name"`
-	Variant    string       `json:"variant"`
-	LogDir     string       `json:"log_dir"`
-	OrgRepo    string       `json:"org_repo"`
-	Silent     bool         `json:"Silent"`
-	IsCI       bool         `json:"is_ci"`
-	Tags       sets.Tags    `json:"tags"`
-	BuildArgs  sets.Tags    `json:"build_args"`
-	Platforms  sets.Strings `json:"platforms"`
-	ExportTags bool         `json:"export_tags"`
-	// SignOnly enables only signing of images. No build will be performed.
-	SignOnly      bool         `json:"sign_only"`
-	ImagesToSign  imagesToSign `json:"images_to_sign"`
-	BuildInADO    bool         `json:"build_in_ado"`
-	ParseTagsOnly bool         `json:"parse_tags_only"`
-	Debug         bool         `json:"debug"`
+	Config
+	configPath string
+	context    string
+	dockerfile string
+	envFile    string
+	name       string
+	variant    string
+	logDir     string
+	orgRepo    string
+	silent     bool
+	isCI       bool
+	tags       sets.Tags
+	buildArgs  sets.Tags
+	platforms  sets.Strings
+	exportTags bool
+	// signOnly only sign images. No build will be performed.
+	signOnly      bool
+	imagesToSign  imagesToSign
+	buildInADO    bool
+	parseTagsOnly bool
+	debug         bool
 }
 
 const (
@@ -76,12 +76,12 @@ func parseVariable(key, value string) string {
 // runInBuildKit prepares command execution and handles gathering logs from BuildKit-enabled run
 // This function is used only in customized environment
 func runInBuildKit(o options, name string, destinations, platforms []string, buildArgs map[string]string) error {
-	dockerfile := filepath.Base(o.Dockerfile)
-	dockerfileDir := filepath.Dir(o.Dockerfile)
+	dockerfile := filepath.Base(o.dockerfile)
+	dockerfileDir := filepath.Dir(o.dockerfile)
 	args := []string{
 		"build", "--frontend=dockerfile.v0",
-		"--local", "context=" + o.Context,
-		"--local", "dockerfile=" + filepath.Join(o.Context, dockerfileDir),
+		"--local", "context=" + o.context,
+		"--local", "dockerfile=" + filepath.Join(o.context, dockerfileDir),
 		"--opt", "filename=" + dockerfile,
 	}
 
@@ -109,12 +109,12 @@ func runInBuildKit(o options, name string, destinations, platforms []string, bui
 	var outw []io.Writer
 	var errw []io.Writer
 
-	if !o.Silent {
+	if !o.silent {
 		outw = append(outw, os.Stdout)
 		errw = append(errw, os.Stderr)
 	}
 
-	f, err := os.Create(filepath.Join(o.LogDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
+	f, err := os.Create(filepath.Join(o.logDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
 	if err != nil {
 		return fmt.Errorf("could not create log file: %w", err)
 	}
@@ -131,8 +131,8 @@ func runInBuildKit(o options, name string, destinations, platforms []string, bui
 // runInKaniko prepares command execution and handles gathering logs to file
 func runInKaniko(o options, name string, destinations, platforms []string, buildArgs map[string]string) error {
 	args := []string{
-		"--context=" + o.Context,
-		"--dockerfile=" + o.Dockerfile,
+		"--context=" + o.context,
+		"--dockerfile=" + o.dockerfile,
 	}
 	for _, dst := range destinations {
 		args = append(args, "--destination="+dst)
@@ -166,12 +166,12 @@ func runInKaniko(o options, name string, destinations, platforms []string, build
 	var outw []io.Writer
 	var errw []io.Writer
 
-	if !o.Silent {
+	if !o.silent {
 		outw = append(outw, os.Stdout)
 		errw = append(errw, os.Stderr)
 	}
 
-	f, err := os.Create(filepath.Join(o.LogDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
+	f, err := os.Create(filepath.Join(o.logDir, strings.TrimSpace("build_"+strings.TrimSpace(name)+".log")))
 	if err != nil {
 		return fmt.Errorf("could not create log file: %w", err)
 	}
@@ -229,20 +229,20 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		templateParameters.SetPullSHA(pullSHA)
 	}
 
-	templateParameters.SetImageName(options.Name)
+	templateParameters.SetImageName(options.name)
 
-	templateParameters.SetDockerfilePath(options.Dockerfile)
+	templateParameters.SetDockerfilePath(options.dockerfile)
 
-	templateParameters.SetBuildContext(options.Context)
+	templateParameters.SetBuildContext(options.context)
 
-	templateParameters.SetExportTags(options.ExportTags)
+	templateParameters.SetExportTags(options.exportTags)
 
-	if len(options.BuildArgs) > 0 {
-		templateParameters.SetBuildArgs(options.BuildArgs.String())
+	if len(options.buildArgs) > 0 {
+		templateParameters.SetBuildArgs(options.buildArgs.String())
 	}
 
-	if len(options.Tags) > 0 {
-		templateParameters.SetImageTags(options.Tags.String())
+	if len(options.tags) > 0 {
+		templateParameters.SetImageTags(options.tags.String())
 	}
 
 	err := templateParameters.Validate()
@@ -311,7 +311,7 @@ func buildLocally(o options) error {
 	var variant Variants
 	var envs map[string]string
 
-	context, err := filepath.Abs(o.Context)
+	context, err := filepath.Abs(o.context)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -319,17 +319,17 @@ func buildLocally(o options) error {
 
 	// TODO(dekiel): validating if envFile or variants.yaml file exists should be done in validateOptions or in a separate function.
 	// 		We should call this function before calling image building functions.
-	dockerfilePath := filepath.Join(context, filepath.Dir(o.Dockerfile))
+	dockerfilePath := filepath.Join(context, filepath.Dir(o.dockerfile))
 
-	if len(o.EnvFile) > 0 {
-		envs, err = loadEnv(os.DirFS(dockerfilePath), o.EnvFile)
+	if len(o.envFile) > 0 {
+		envs, err = loadEnv(os.DirFS(dockerfilePath), o.envFile)
 		if err != nil {
 			return fmt.Errorf("load env failed, error: %w", err)
 		}
 
 	} else {
 		variantsFile := filepath.Join(dockerfilePath, "variants.yaml")
-		variant, err = GetVariants(o.Variant, variantsFile, os.ReadFile)
+		variant, err = GetVariants(o.variant, variantsFile, os.ReadFile)
 		if err != nil {
 			if !os.IsNotExist(err) {
 				return fmt.Errorf("get variants failed, error: %w", err)
@@ -341,7 +341,7 @@ func buildLocally(o options) error {
 	}
 
 	repo := o.Config.Registry
-	if o.IsCI {
+	if o.isCI {
 		presubmit := os.Getenv("JOB_TYPE") == "presubmit"
 		if presubmit {
 			if len(o.DevRegistry) > 0 {
@@ -362,14 +362,14 @@ func buildLocally(o options) error {
 		return fmt.Errorf("'sha' could not be determined")
 	}
 
-	parsedTags, err := getTags(pr, sha, append(o.Tags, o.TagTemplate))
+	parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
 	if err != nil {
 		return err
 	}
 
 	// Provide parsedTags as buildArgs for developers
 	var buildArgs map[string]string
-	if o.ExportTags {
+	if o.exportTags {
 		buildArgs = addTagsToEnv(parsedTags, envs)
 	} else {
 		buildArgs = envs
@@ -379,12 +379,12 @@ func buildLocally(o options) error {
 		buildArgs = make(map[string]string)
 	}
 
-	appendMissing(&buildArgs, o.BuildArgs)
+	appendMissing(&buildArgs, o.buildArgs)
 
 	// variants.yaml file not present or either empty. Run single build.
-	destinations := gatherDestinations(repo, o.Name, parsedTags)
+	destinations := gatherDestinations(repo, o.name, parsedTags)
 	fmt.Println("Starting build for image: ", strings.Join(destinations, ", "))
-	err = runFunc(o, "build", destinations, o.Platforms, buildArgs)
+	err = runFunc(o, "build", destinations, o.platforms, buildArgs)
 	if err != nil {
 		return fmt.Errorf("build encountered error: %w", err)
 	}
@@ -410,10 +410,10 @@ func appendMissing(target *map[string]string, source []tags.Tag) {
 
 // TODO: write tests for this function
 func signImages(o *options, images []string) error {
-	// use o.OrgRepo as default value since someone might have loaded is as a flag
-	orgRepo := o.OrgRepo
-	if o.IsCI {
-		// try to extract OrgRepo from Prow-based env variables
+	// use o.orgRepo as default value since someone might have loaded is as a flag
+	orgRepo := o.orgRepo
+	if o.isCI {
+		// try to extract orgRepo from Prow-based env variables
 		org := os.Getenv("REPO_OWNER")
 		repo := os.Getenv("REPO_NAME")
 		if len(org) > 0 && len(repo) > 0 {
@@ -422,7 +422,7 @@ func signImages(o *options, images []string) error {
 		}
 	}
 	if len(orgRepo) == 0 {
-		return fmt.Errorf("'OrgRepo' cannot be empty")
+		return fmt.Errorf("'orgRepo' cannot be empty")
 	}
 	sig, err := getSignersForOrgRepo(o, orgRepo)
 	if err != nil {
@@ -459,11 +459,11 @@ func getSignersForOrgRepo(o *options, orgRepo string) ([]sign.Signer, error) {
 	for _, sc := range c.Signers {
 		if enabled.Has(sc.Name) {
 			// if signerConfig doesn't contain any jobTypes, it should be considered enabled by default
-			if len(sc.JobType) > 0 && !o.IsCI {
+			if len(sc.JobType) > 0 && !o.isCI {
 				fmt.Println("signer", sc.Name, "ignored, because image-builder is not running in CI mode and contains 'job-type' field defined")
 				continue
 			}
-			if len(jobType) > 0 && len(sc.JobType) > 0 && o.IsCI {
+			if len(jobType) > 0 && len(sc.JobType) > 0 && o.isCI {
 				var has bool
 				for _, t := range sc.JobType {
 					if t == jobType {
@@ -553,34 +553,34 @@ func gatherDestinations(repo []string, name string, tags []tags.Tag) []string {
 func validateOptions(o options) error {
 	var errs []error
 
-	if o.Context == "" {
+	if o.context == "" {
 		errs = append(errs, fmt.Errorf("flag '--context' is missing"))
 	}
 
-	if o.Name == "" {
+	if o.name == "" {
 		errs = append(errs, fmt.Errorf("flag '--name' is missing"))
 	}
 
-	if o.Dockerfile == "" {
+	if o.dockerfile == "" {
 		errs = append(errs, fmt.Errorf("flag '--dockerfile' is missing"))
 	}
 
-	if o.ConfigPath == "" {
+	if o.configPath == "" {
 		errs = append(errs, fmt.Errorf("'--config' flag is missing or has empty value, please provide the path to valid 'config.yaml' file"))
 	}
 
-	if o.SignOnly && len(o.ImagesToSign) == 0 {
+	if o.signOnly && len(o.imagesToSign) == 0 {
 		errs = append(errs, fmt.Errorf("flag '--images-to-sign' is missing, please provide at least one image to sign"))
 	}
-	if !o.SignOnly && len(o.ImagesToSign) > 0 {
+	if !o.signOnly && len(o.imagesToSign) > 0 {
 		errs = append(errs, fmt.Errorf("flag '--sign-only' is missing or has false value, please set it to true when using '--images-to-sign' flag"))
 	}
 
-	if o.EnvFile != "" && o.BuildInADO {
+	if o.envFile != "" && o.buildInADO {
 		errs = append(errs, fmt.Errorf("envFile flag is not supported when running in ADO"))
 	}
 
-	if o.Variant != "" && o.BuildInADO {
+	if o.variant != "" && o.buildInADO {
 		errs = append(errs, fmt.Errorf("variant flag is not supported when running in ADO"))
 	}
 
@@ -621,7 +621,7 @@ func loadEnv(vfs fs.FS, envFile string) (map[string]string, error) {
 	return vars, nil
 }
 
-// Add parsed Tags to environments which will be passed to Dockerfile
+// Add parsed tags to environments which will be passed to dockerfile
 func addTagsToEnv(tags []tags.Tag, envs map[string]string) map[string]string {
 	m := make(map[string]string)
 
@@ -638,31 +638,31 @@ func addTagsToEnv(tags []tags.Tag, envs map[string]string) map[string]string {
 }
 
 func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
-	flagSet.BoolVar(&o.Silent, "silent", false, "Do not push build logs to stdout")
-	flagSet.StringVar(&o.ConfigPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
-	flagSet.StringVar(&o.Context, "context", ".", "Path to build directory Context")
-	flagSet.StringVar(&o.EnvFile, "env-file", "", "Path to file with environment variables to be loaded in build")
-	flagSet.StringVar(&o.Name, "name", "", "Name of the image to be built")
-	flagSet.StringVar(&o.Dockerfile, "dockerfile", "Dockerfile", "Path to Dockerfile file relative to Context")
-	flagSet.StringVar(&o.Variant, "variant", "", "If variants.yaml file is present, define which Variant should be built. If variants.yaml is not present, this flag will be ignored")
-	flagSet.StringVar(&o.LogDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
+	flagSet.BoolVar(&o.silent, "silent", false, "Do not push build logs to stdout")
+	flagSet.StringVar(&o.configPath, "config", "/config/image-builder-config.yaml", "Path to application config file")
+	flagSet.StringVar(&o.context, "context", ".", "Path to build directory context")
+	flagSet.StringVar(&o.envFile, "env-file", "", "Path to file with environment variables to be loaded in build")
+	flagSet.StringVar(&o.name, "name", "", "name of the image to be built")
+	flagSet.StringVar(&o.dockerfile, "dockerfile", "dockerfile", "Path to dockerfile file relative to context")
+	flagSet.StringVar(&o.variant, "variant", "", "If variants.yaml file is present, define which variant should be built. If variants.yaml is not present, this flag will be ignored")
+	flagSet.StringVar(&o.logDir, "log-dir", "/logs/artifacts", "Path to logs directory where GCB logs will be stored")
 	// TODO: What is expected value repo only or org/repo? How this flag influence an image builder behaviour?
-	flagSet.StringVar(&o.OrgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
-	flagSet.Var(&o.Tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the Name in the format Name=value which will be used by export-Tags")
-	flagSet.Var(&o.BuildArgs, "build-arg", "Flag to pass additional arguments to build Dockerfile. It can be used in the Name=value format.")
-	flagSet.Var(&o.Platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
-	flagSet.BoolVar(&o.ExportTags, "export-tags", false, "Export parsed Tags as build-args into Dockerfile. Each tag will have format TAG_x, where x is the tag Name passed along with the tag")
-	flagSet.BoolVar(&o.SignOnly, "sign-only", false, "Only sign the image, do not build it")
-	flagSet.Var(&o.ImagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
-	flagSet.BoolVar(&o.BuildInADO, "build-in-ado", false, "Build in Azure DevOps pipeline environment")
-	flagSet.BoolVar(&o.ParseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
+	flagSet.StringVar(&o.orgRepo, "repo", "", "Load repository-specific configuration, for example, signing configuration")
+	flagSet.Var(&o.tags, "tag", "Additional tag that the image will be tagged with. Optionally you can pass the name in the format name=value which will be used by export-tags")
+	flagSet.Var(&o.buildArgs, "build-arg", "Flag to pass additional arguments to build dockerfile. It can be used in the name=value format.")
+	flagSet.Var(&o.platforms, "platform", "Only supported with BuildKit. Platform of the image that is built")
+	flagSet.BoolVar(&o.exportTags, "export-tags", false, "Export parsed tags as build-args into dockerfile. Each tag will have format TAG_x, where x is the tag name passed along with the tag")
+	flagSet.BoolVar(&o.signOnly, "sign-only", false, "Only sign the image, do not build it")
+	flagSet.Var(&o.imagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
+	flagSet.BoolVar(&o.buildInADO, "build-in-ado", false, "Build in Azure DevOps pipeline environment")
+	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
 
 	return flagSet
 }
 
 func main() {
 	flagSet := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
-	o := options{IsCI: os.Getenv("CI") == "true"}
+	o := options{isCI: os.Getenv("CI") == "true"}
 	o.gatherOptions(flagSet)
 	if err := flagSet.Parse(os.Args[1:]); err != nil {
 		fmt.Println(err)
@@ -675,7 +675,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	c, err := os.ReadFile(o.ConfigPath)
+	c, err := os.ReadFile(o.configPath)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -686,8 +686,8 @@ func main() {
 		os.Exit(1)
 	}
 
-	if o.SignOnly {
-		err = signImages(&o, o.ImagesToSign)
+	if o.signOnly {
+		err = signImages(&o, o.imagesToSign)
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -696,9 +696,9 @@ func main() {
 	}
 
 	// TODO(dekiel): refactor this function to move all logic to separate function and make it testable.
-	if o.ParseTagsOnly {
+	if o.parseTagsOnly {
 		var sha, pr string
-		if o.IsCI {
+		if o.isCI {
 			presubmit := os.Getenv("JOB_TYPE") == "presubmit"
 			if presubmit {
 				if n := os.Getenv("PULL_NUMBER"); n != "" {
@@ -716,7 +716,7 @@ func main() {
 			fmt.Println("'sha' could not be determined")
 			os.Exit(1)
 		}
-		parsedTags, err := getTags(pr, sha, append(o.Tags, o.TagTemplate))
+		parsedTags, err := getTags(pr, sha, append(o.tags, o.TagTemplate))
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -730,7 +730,7 @@ func main() {
 		fmt.Printf("%s", jsonTags)
 		os.Exit(0)
 	}
-	if o.BuildInADO {
+	if o.buildInADO {
 		err = buildInADO(o)
 		if err != nil {
 			fmt.Printf("Image build failed with error: %s", err)

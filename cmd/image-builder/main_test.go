@@ -100,91 +100,91 @@ func Test_validateOptions(t *testing.T) {
 			name:      "parsed config",
 			expectErr: false,
 			opts: options{
-				Context:    "directory/",
-				Name:       "test-image",
-				Dockerfile: "Dockerfile",
-				ConfigPath: "config.yaml",
+				context:    "directory/",
+				name:       "test-image",
+				dockerfile: "dockerfile",
+				configPath: "config.yaml",
 			},
 		},
 		{
-			name:      "Context missing",
+			name:      "context missing",
 			expectErr: true,
 			opts: options{
-				Name:       "test-image",
-				Dockerfile: "Dockerfile",
+				name:       "test-image",
+				dockerfile: "dockerfile",
 			},
 		},
 		{
-			name:      "Name missing",
+			name:      "name missing",
 			expectErr: true,
 			opts: options{
-				Context:    "directory/",
-				Dockerfile: "Dockerfile",
+				context:    "directory/",
+				dockerfile: "dockerfile",
 			},
 		},
 		{
-			name:      "Dockerfile missing",
+			name:      "dockerfile missing",
 			expectErr: true,
 			opts: options{
-				Context: "directory/",
-				Name:    "test-image",
+				context: "directory/",
+				name:    "test-image",
 			},
 		},
 		{
-			name:      "Empty ConfigPath",
+			name:      "Empty configPath",
 			expectErr: true,
 			opts: options{
-				Context:    "directory/",
-				Name:       "test-image",
-				Dockerfile: "Dockerfile",
+				context:    "directory/",
+				name:       "test-image",
+				dockerfile: "dockerfile",
 			},
 		},
 		{
-			name:      "SignOnly without ImagesToSign",
+			name:      "signOnly without imagesToSign",
 			expectErr: true,
 			opts: options{
-				Context:      "directory/",
-				Name:         "test-image",
-				Dockerfile:   "Dockerfile",
-				ConfigPath:   "config.yaml",
-				SignOnly:     true,
-				ImagesToSign: []string{},
+				context:      "directory/",
+				name:         "test-image",
+				dockerfile:   "dockerfile",
+				configPath:   "config.yaml",
+				signOnly:     true,
+				imagesToSign: []string{},
 			},
 		},
 		{
-			name:      "ImagesToSign without SignOnly",
+			name:      "imagesToSign without signOnly",
 			expectErr: true,
 			opts: options{
-				Context:      "directory/",
-				Name:         "test-image",
-				Dockerfile:   "Dockerfile",
-				ConfigPath:   "config.yaml",
-				SignOnly:     false,
-				ImagesToSign: []string{"image1"},
+				context:      "directory/",
+				name:         "test-image",
+				dockerfile:   "dockerfile",
+				configPath:   "config.yaml",
+				signOnly:     false,
+				imagesToSign: []string{"image1"},
 			},
 		},
 		{
-			name:      "EnvFile with BuildInADO",
+			name:      "envFile with buildInADO",
 			expectErr: true,
 			opts: options{
-				Context:    "directory/",
-				Name:       "test-image",
-				Dockerfile: "Dockerfile",
-				ConfigPath: "config.yaml",
-				EnvFile:    "envfile",
-				BuildInADO: true,
+				context:    "directory/",
+				name:       "test-image",
+				dockerfile: "dockerfile",
+				configPath: "config.yaml",
+				envFile:    "envfile",
+				buildInADO: true,
 			},
 		},
 		{
-			name:      "Variant with BuildInADO",
+			name:      "variant with buildInADO",
 			expectErr: true,
 			opts: options{
-				Context:    "directory/",
-				Name:       "test-image",
-				Dockerfile: "Dockerfile",
-				ConfigPath: "config.yaml",
-				Variant:    "variant",
-				BuildInADO: true,
+				context:    "directory/",
+				name:       "test-image",
+				dockerfile: "dockerfile",
+				configPath: "config.yaml",
+				variant:    "variant",
+				buildInADO: true,
 			},
 		},
 	}
@@ -211,10 +211,10 @@ func TestFlags(t *testing.T) {
 		{
 			name: "unknown flag, fail",
 			expectedOpts: options{
-				Context:    ".",
-				ConfigPath: "/config/image-builder-config.yaml",
-				Dockerfile: "Dockerfile",
-				LogDir:     "/logs/artifacts",
+				context:    ".",
+				configPath: "/config/image-builder-config.yaml",
+				dockerfile: "dockerfile",
+				logDir:     "/logs/artifacts",
 			},
 			expectedErr: true,
 			args: []string{
@@ -225,21 +225,21 @@ func TestFlags(t *testing.T) {
 			name:        "parsed config, pass",
 			expectedErr: false,
 			expectedOpts: options{
-				Name: "test-image",
-				Tags: []tags.Tag{
+				name: "test-image",
+				tags: []tags.Tag{
 					{Name: "latest", Value: "latest"},
 					{Name: "cookie", Value: "cookie"},
 				},
-				Context:    "prow/build",
-				ConfigPath: "config.yaml",
-				Dockerfile: "Dockerfile",
-				LogDir:     "prow/logs",
-				OrgRepo:    "kyma-project/test-infra",
-				Silent:     true,
+				context:    "prow/build",
+				configPath: "config.yaml",
+				dockerfile: "dockerfile",
+				logDir:     "prow/logs",
+				orgRepo:    "kyma-project/test-infra",
+				silent:     true,
 			},
 			args: []string{
 				"--config=config.yaml",
-				"--dockerfile=Dockerfile",
+				"--dockerfile=dockerfile",
 				"--repo=kyma-project/test-infra",
 				"--name=test-image",
 				"--tag=latest",
@@ -252,11 +252,11 @@ func TestFlags(t *testing.T) {
 		{
 			name: "export tag, pass",
 			expectedOpts: options{
-				Context:    ".",
-				ConfigPath: "/config/image-builder-config.yaml",
-				Dockerfile: "Dockerfile",
-				LogDir:     "/logs/artifacts",
-				ExportTags: true,
+				context:    ".",
+				configPath: "/config/image-builder-config.yaml",
+				dockerfile: "dockerfile",
+				logDir:     "/logs/artifacts",
+				exportTags: true,
 			},
 			args: []string{
 				"--export-tags",
@@ -265,11 +265,11 @@ func TestFlags(t *testing.T) {
 		{
 			name: "build args, pass",
 			expectedOpts: options{
-				Context:    ".",
-				ConfigPath: "/config/image-builder-config.yaml",
-				Dockerfile: "Dockerfile",
-				LogDir:     "/logs/artifacts",
-				BuildArgs: sets.Tags{
+				context:    ".",
+				configPath: "/config/image-builder-config.yaml",
+				dockerfile: "dockerfile",
+				logDir:     "/logs/artifacts",
+				buildArgs: sets.Tags{
 					tags.Tag{Name: "BIN", Value: "test"},
 					tags.Tag{Name: "BIN2", Value: "test2"},
 				},
@@ -440,7 +440,7 @@ func Test_getSignersForOrgRepo(t *testing.T) {
 	for _, c := range tc {
 		t.Run(c.name, func(t *testing.T) {
 			t.Setenv("JOB_TYPE", c.jobType)
-			o := &options{IsCI: c.ci, Config: Config{SignConfig: SignConfig{
+			o := &options{isCI: c.ci, Config: Config{SignConfig: SignConfig{
 				EnabledSigners: map[string][]string{
 					"*":              {"test-notary"},
 					"org/repo":       {"test-notary"},
@@ -485,7 +485,7 @@ func Test_addTagsToEnv(t *testing.T) {
 		expectedEnvs map[string]string
 	}{
 		{
-			name: "multiple envs and Tags",
+			name: "multiple envs and tags",
 			envs: map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2"},
 			tags: []tags.Tag{
 				{Name: "latest", Value: "latest"},
@@ -495,7 +495,7 @@ func Test_addTagsToEnv(t *testing.T) {
 			expectedEnvs: map[string]string{"KEY_1": "VAL1", "KEY_2": "VAL2", "TAG_latest": "latest", "TAG_ShortSHA": "dca515151", "TAG_test": "test-tag"},
 		},
 		{
-			name:         "no Tags",
+			name:         "no tags",
 			envs:         map[string]string{"KEY": "VAL"},
 			tags:         []tags.Tag{},
 			expectedEnvs: map[string]string{"KEY": "VAL"},
@@ -557,4 +557,65 @@ func Test_appendMissing(t *testing.T) {
 			}
 		}
 	}
+}
+
+type mockSigner struct {
+	signFunc func([]string) error
+}
+
+func (m *mockSigner) Sign(images []string) error {
+	return m.signFunc(images)
+}
+
+func TestSignImages(t *testing.T) {
+	t.Run("orgRepo cannot be empty", func(t *testing.T) {
+		o := &options{}
+
+		err := signImages(o, []string{})
+
+		assert.Equal(t, "'orgRepo' cannot be empty", err.Error())
+	})
+
+	t.Run("Error when getting signers", func(t *testing.T) {
+		o := &options{
+			orgRepo: "org/repo",
+		}
+		orgRepoError := errors.New("org/repo error")
+		getSignersForOrgRepo = func(o *options, orgRepo string) ([]signer, error) {
+			return nil, orgRepoError
+		}
+		err := signImages(o, []string{"image1", "image2"})
+		assert.Equal(t, orgRepoError, err)
+	})
+
+	t.Run("Error when signing images", func(t *testing.T) {
+		o := &options{
+			orgRepo: "org/repo",
+		}
+		signError := errors.New("Signing error")
+		getSignersForOrgRepo = func(o *options, orgRepo string) ([]signer, error) {
+			return []signer{&mockSigner{
+				signFunc: func([]string) error {
+					return signError
+				},
+			}}, nil
+		}
+		err := signImages(o, []string{"image1", "image2"})
+		assert.Equal(t, "sign error: "+signError.Error(), err.Error())
+	})
+
+	t.Run("Successful signing", func(t *testing.T) {
+		o := &options{
+			orgRepo: "org/repo",
+		}
+		getSignersForOrgRepo = func(o *options, orgRepo string) ([]signer, error) {
+			return []signer{&mockSigner{
+				signFunc: func([]string) error {
+					return nil
+				},
+			}}, nil
+		}
+		err := signImages(o, []string{"image1", "image2"})
+		assert.Nil(t, err)
+	})
 }
