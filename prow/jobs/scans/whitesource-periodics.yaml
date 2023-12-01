@@ -95,6 +95,7 @@ periodics: # runs on schedule
             resources:
               requests:
                 memory: 1Gi
+                cpu: 400m
     - name: hydroform-whitesource-scan
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
