@@ -44,7 +44,7 @@ type options struct {
 	exportTags bool
 	// signOnly only sign images. No build will be performed.
 	signOnly      bool
-	imagesToSign  imagesToSign
+	imagesToSign  sets.Strings
 	buildInADO    bool
 	parseTagsOnly bool
 	debug         bool
@@ -54,17 +54,6 @@ const (
 	PlatformLinuxAmd64 = "linux/amd64"
 	PlatformLinuxArm64 = "linux/arm64"
 )
-
-type imagesToSign []string
-
-func (i *imagesToSign) String() string {
-	return fmt.Sprintf("%v", *i)
-}
-
-func (i *imagesToSign) Set(value string) error {
-	*i = append(*i, value)
-	return nil
-}
 
 // parseVariable returns a build-arg.
 // Keys are set to upper-case.
@@ -268,27 +257,27 @@ func buildInADO(o options) error {
 	}
 
 	fmt.Println("Running ADO pipeline.")
-	adoClient := adopipelines.NewClient(o.ADOOrganizationURL, adoPAT)
+	adoClient := adopipelines.NewClient(o.AdoConfig.ADOOrganizationURL, adoPAT)
 
 	fmt.Println("Triggering ADO build pipeline")
 	ctx := context.Background()
-	pipelineRun, err := adopipelines.Run(ctx, adoClient, templateParameters, o.GetADOConfig())
+	pipelineRun, err := adopipelines.Run(ctx, adoClient, templateParameters, o.AdoConfig.GetADOConfig())
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed running ADO pipeline, err: %s", err)
 	}
 
-	pipelineRunResult, err := adopipelines.GetRunResult(ctx, adoClient, o.GetADOConfig(), pipelineRun.Id, 30*time.Second)
+	pipelineRunResult, err := adopipelines.GetRunResult(ctx, adoClient, o.AdoConfig.GetADOConfig(), pipelineRun.Id, 30*time.Second)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed getting ADO pipeline run result, err: %s", err)
 	}
 	fmt.Printf("ADO pipeline run finished with status: %s", *pipelineRunResult)
 
 	fmt.Println("Getting ADO pipeline run logs.")
-	adoBuildClient, err := adopipelines.NewBuildClient(o.ADOOrganizationURL, adoPAT)
+	adoBuildClient, err := adopipelines.NewBuildClient(o.AdoConfig.ADOOrganizationURL, adoPAT)
 	if err != nil {
 		fmt.Printf("Can't read ADO pipeline run logs, failed creating ADO build client, err: %s", err)
 	}
-	logs, err := adopipelines.GetRunLogs(ctx, adoBuildClient, &http.Client{}, o.GetADOConfig(), pipelineRun.Id, adoPAT)
+	logs, err := adopipelines.GetRunLogs(ctx, adoBuildClient, &http.Client{}, o.AdoConfig.GetADOConfig(), pipelineRun.Id, adoPAT)
 	if err != nil {
 		fmt.Printf("Failed read ADO pipeline run logs, err: %s", err)
 	} else {
