@@ -167,6 +167,28 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - release_image_build
+      - to: ../../prow/jobs/kyma-project/warden/warden-lint.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
+              - jobConfig:
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  name: pre-warden-lint
+                  optional: true
+                  always_run: true
+                  annotations:
+                    owner: otters
+                    description: executes the 'golangci-lint lint' command before any pull request.
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "golangci-lint run -v && echo 'OK!'"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
       - to: ../../prow/jobs/kyma-project/warden/warden-verify.yaml
         localSets:
           testing:
@@ -207,24 +229,6 @@ templates:
                   local:
                     - e2e_dind
                     - skip_if_only_changed_documentation
-              - jobConfig:
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
-                  name: pre-warden-lint
-                  optional: true
-                  always_run: true
-                  annotations:
-                    owner: otters
-                    description: executes the 'golangci-lint lint' command before any pull request.
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "golangci-lint run -v && echo 'OK!'"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
               - jobConfig:
                   name: pre-warden-unit-test
                   annotations:
