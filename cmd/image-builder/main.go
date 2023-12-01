@@ -47,7 +47,6 @@ type options struct {
 	imagesToSign  sets.Strings
 	buildInADO    bool
 	parseTagsOnly bool
-	debug         bool
 }
 
 const (
