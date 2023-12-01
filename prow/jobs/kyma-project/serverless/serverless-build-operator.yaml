@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231130-5e582eeb"
             securityContext:
               privileged: false
               seccompProfile:
@@ -123,7 +123,7 @@ postsubmits: # runs on main
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231130-5e582eeb"
             securityContext:
               privileged: false
               seccompProfile:
@@ -176,7 +176,7 @@ postsubmits: # runs on main
               - "sh"
             args:
               - "-c"
-              - "/image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=components/operator/Dockerfile --tag=$PULL_BASE_SHA --tag=latest"
+              - "/image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=components/operator/Dockerfile --tag=$PULL_BASE_SHA --tag=$PULL_BASE_REF"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
@@ -220,7 +220,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231130-5e582eeb"
             securityContext:
               privileged: false
               seccompProfile:

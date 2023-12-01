@@ -21,7 +21,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231130-5e582eeb"
             securityContext:
               privileged: false
               seccompProfile:
@@ -117,7 +117,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231130-5e582eeb"
             securityContext:
               privileged: false
               seccompProfile:
@@ -173,8 +173,8 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
-              - "--tag={{ .Env \"PULL_BASE_SHA\" }}"
-              - "--tag=latest"
+              - "--tag=$(PULL_BASE_REF)"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -225,7 +225,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
-              - "--tag={{ .Env \"PULL_BASE_REF\" }}"
+              - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -266,7 +266,7 @@ postsubmits: # runs on main
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231130-5e582eeb"
             securityContext:
               privileged: false
               seccompProfile:

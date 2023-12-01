@@ -36,8 +36,8 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/manager/Dockerfile"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
-                    - "--tag=latest"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -72,7 +72,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/webhook/Dockerfile"
-                    - "--tag=latest"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -108,7 +108,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/jobinit/Dockerfile"
-                    - "--tag=latest"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -146,7 +146,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/registry-gc/Dockerfile"
-                    - "--tag=latest"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -189,7 +189,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs16/Dockerfile"
-                    - "--tag=latest"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -225,7 +225,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/nodejs"
                     - "--dockerfile=nodejs18/Dockerfile"
-                    - "--tag=latest"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -261,7 +261,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/python39"
                     - "--dockerfile=components/runtimes/python39/Dockerfile"
-                    - "--tag=latest"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -297,7 +297,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/runtimes/java17"
                     - "--dockerfile=Dockerfile-jvm-runtime"
-                    - "--tag=latest"
+                    - '--tag=$(PULL_BASE_REF)'
                     - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
@@ -403,7 +403,7 @@ templates:
                       --context=.
                       --dockerfile=components/operator/Dockerfile
                       --tag=$PULL_BASE_SHA
-                      --tag=latest
+                      --tag=$PULL_BASE_REF
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
@@ -552,7 +552,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231128-9bb59ac6
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231130-5e582eeb
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"

@@ -118,8 +118,8 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
-                    - "--tag=latest"
+                    - '--tag=$(PULL_BASE_REF)'
+                    - '--tag=$(PULL_BASE_SHA)'
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -140,7 +140,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
                   branches:
                     - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
@@ -209,7 +209,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231128-9bb59ac6
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231130-5e582eeb
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"

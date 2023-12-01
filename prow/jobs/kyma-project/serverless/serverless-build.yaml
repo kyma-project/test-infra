@@ -225,8 +225,8 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/manager/Dockerfile"
+              - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
-              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi
@@ -275,7 +275,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/webhook/Dockerfile"
-              - "--tag=latest"
+              - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
@@ -325,7 +325,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/jobinit/Dockerfile"
-              - "--tag=latest"
+              - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
@@ -376,7 +376,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=components/serverless"
               - "--dockerfile=deploy/registry-gc/Dockerfile"
-              - "--tag=latest"
+              - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:

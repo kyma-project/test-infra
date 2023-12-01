@@ -315,6 +315,7 @@ branch-protection:
               - "E2E (purge-metrics)"
               - "E2E (watcher-enqueue)"
               - "E2E (module-upgrade)"
+              - "E2E (ca-certificate-rotation)"
               - "Run 'make test'"
               - "kyma (unstable) alpha deploy -k config/control-plane"
               - "kyma (unstable) alpha deploy -k config/default"
