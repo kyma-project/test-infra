@@ -75,7 +75,7 @@ templates:
                     owner: gopher
                     description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231130-5e582eeb
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
                   command: make
                   args:
                     - -C
@@ -97,7 +97,7 @@ templates:
                     owner: gopher
                     description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231130-5e582eeb
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
                   command: make
                   args:
                     - -C
@@ -121,7 +121,7 @@ templates:
                   cron: "5 1 * * *" # "At 01:05"
                   labels:
                     preset-skr-al-service-key: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231130-5e582eeb
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
                   command: make
                   args:
                     - -C
@@ -143,7 +143,7 @@ templates:
                     owner: gopher
                     description: skr integration test trial
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231130-5e582eeb
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
                   command: make
                   args:
                     - -C
@@ -165,7 +165,7 @@ templates:
                     owner: gopher
                     description: skr integration test free
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231130-5e582eeb
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
                   command: make
                   args:
                     - -C
@@ -187,7 +187,7 @@ templates:
                     owner: gopher
                     description: skr integration test preview
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231130-5e582eeb
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
                   command: make
                   args:
                     - -C
