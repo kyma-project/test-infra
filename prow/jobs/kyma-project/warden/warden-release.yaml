@@ -3,13 +3,13 @@
 
 postsubmits: # runs on main
   kyma-project/warden:
-    - name: post-warden-admission-build
+    - name: release-warden-admission-build
       annotations:
         description: "Warden admission build for a release."
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-warden-admission-build"
+        prow.k8s.io/pubsub.runID: "release-warden-admission-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -54,13 +54,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-warden-operator-build
+    - name: release-warden-operator-build
       annotations:
         description: "Warden operator build for a release."
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-warden-operator-build"
+        prow.k8s.io/pubsub.runID: "release-warden-operator-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"

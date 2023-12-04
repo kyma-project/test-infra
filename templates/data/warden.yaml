@@ -136,7 +136,7 @@ templates:
           - repoName: "github.com/kyma-project/warden"
             jobs:
               - jobConfig:
-                  name: post-warden-admission-build
+                  name: release-warden-admission-build
                   annotations:
                     owner: otters
                     description: Warden admission build for a release.
@@ -153,7 +153,7 @@ templates:
                   local:
                     - release_image_build
               - jobConfig:
-                  name: post-warden-operator-build
+                  name: release-warden-operator-build
                   annotations:
                     owner: otters
                     description: Warden operator build for a release.
