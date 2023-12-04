@@ -60,7 +60,6 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231130-5e582eeb
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231130-5e582eeb
     - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231130-5e582eeb
-    - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231130-5e582eeb
     - gcr.io/k8s-prow/analyze:v20230824-74e8146673
     - gcr.io/k8s-prow/gencred:v20230824-74e8146673
     - maven:3.9.4-eclipse-temurin-17
