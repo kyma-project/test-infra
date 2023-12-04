@@ -133,6 +133,8 @@ templates:
             branches:
               - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
         jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
               - jobConfig:
                   name: post-warden-admission-build
                   annotations:
