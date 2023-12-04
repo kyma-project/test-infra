@@ -10,6 +10,7 @@ templates:
             branches:
               - "^master$"
               - "^main$"
+              - "^release-*"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
@@ -203,6 +204,7 @@ templates:
                     - "make test"
                   branches:
                     - ^main$ # any pr against main triggers this
+                    - ^release-*
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
@@ -223,6 +225,9 @@ templates:
                     - -c
                     - |
                       make -C hack/ci k3d-integration-test
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                    - ^release-*
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -243,6 +248,9 @@ templates:
                     - -c
                     - |
                       make -C hack/ci k3d-lm-integration-test
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                    - ^release-*
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -263,6 +271,9 @@ templates:
                     - -c
                     - |
                       make -C hack/ci k3d-upgrade-test
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                    - ^release-*
                 inheritedConfigs:
                   global:
                     - jobConfig_default
