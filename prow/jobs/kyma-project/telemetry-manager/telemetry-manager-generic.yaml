@@ -71,6 +71,7 @@ postsubmits: # runs on main
       branches:
         - ^main$
         - ^release-\d+\.\d+$
+        - ^\d+\.\d+\.\d+$
       reporter_config:
         slack:
           channel: huskies-notifications
@@ -89,6 +90,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
+              - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -107,43 +109,4 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-telemetry-manager-release-module
-      annotations:
-        description: "Post-submit job to release telemetry module."
-        owner: "huskies"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-telemetry-manager-release-module"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-bot-github-token: "true"
-        preset-sa-kyma-push-images: "true"
-      always_run: true
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^\d+\.\d+\.\d+$
-      reporter_config:
-        slack:
-          channel: huskies-notifications
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231130-5e582eeb"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "make"
-            args:
-              - "release"
-            env:
-              - name: RELEASE_TAG
-                value: "${PULL_BASE_REF}"
-            resources:
-              requests:
-                memory: 3Gi
-                cpu: 2
   

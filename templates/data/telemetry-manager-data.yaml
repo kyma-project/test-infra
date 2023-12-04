@@ -40,6 +40,7 @@ templates:
                   branches:
                     - "^main$"
                     - "^release-\\d+\\.\\d+$"
+                    - "^\\d+\\.\\d+\\.\\d+$" # Regex for release tag
                   always_run: true
                   labels:
                     preset-signify-prod-secret: "true"
@@ -48,31 +49,8 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
-              - jobConfig:
-                  name: post-telemetry-manager-release-module
-                  annotations:
-                    owner: huskies
-                    description: Post-submit job to release telemetry module.
-                  slack_channel: huskies-notifications
-                  always_run: "true"
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                    preset-bot-github-token: "true"
-                  env:
-                    RELEASE_TAG: "${PULL_BASE_REF}"
-                  command: "make"
-                  args:
-                    - "release"
-                  branches:
-                    - "^\\d+\\.\\d+\\.\\d+$" # Regex for release tag
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231130-5e582eeb"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                  local:
-                    - job_default
