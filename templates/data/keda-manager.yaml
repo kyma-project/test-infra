@@ -175,8 +175,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - limits
-  - from: generic.tmpl
-    render:
+
       - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager-lint.yaml
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
@@ -199,8 +198,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-  - from: generic.tmpl
-    render:
       - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager-verify.yaml
         localSets:
           dind_job_k3d:
