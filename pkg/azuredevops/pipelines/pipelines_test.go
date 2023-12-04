@@ -13,7 +13,7 @@ import (
 	"strings"
 
 	"github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
-	"github.com/kyma-project/test-infra/pkg/azuredevops/pipelines/mocks"
+	pipelinesmocks "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines/mocks"
 
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/build"
 	adoPipelines "github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
@@ -201,6 +201,8 @@ var _ = Describe("Pipelines", func() {
 			run, err := pipelines.Run(ctx, mockADOClient, templateParams, adoConfig)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(run.Id).To(Equal(ptr.To(123)))
+			mockADOClient.AssertCalled(t, "RunPipeline", ctx, runPipelineArgs)
+			mockADOClient.AssertNumberOfCalls(t, "RunPipeline", 1)
 			mockADOClient.AssertExpectations(GinkgoT())
 		})
 
@@ -209,7 +211,38 @@ var _ = Describe("Pipelines", func() {
 
 			_, err := pipelines.Run(ctx, mockADOClient, templateParams, adoConfig)
 			Expect(err).To(HaveOccurred())
+			mockADOClient.AssertCalled(t, "RunPipeline", ctx, runPipelineArgs)
+			mockADOClient.AssertNumberOfCalls(t, "RunPipeline", 1)
 			mockADOClient.AssertExpectations(GinkgoT())
+		})
+
+		It("should run the pipeline in preview mode", func() {
+			finalYaml := "pipeline:\n  stages:\n  - stage: Build\n    jobs:\n    - job: Build\n      steps:\n      - script: echo Hello, world!\n        displayName: 'Run a one-line script'"
+			runPipelineArgs.RunParameters.PreviewRun = ptr.To(true)
+			mockRun := &adoPipelines.Run{Id: ptr.To(123), FinalYaml: &finalYaml}
+			mockADOClient.On("RunPipeline", ctx, runPipelineArgs).Return(mockRun, nil)
+
+			run, err := pipelines.Run(ctx, mockADOClient, templateParams, adoConfig, pipelines.PipelinePreviewRun)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(run.Id).To(Equal(ptr.To(123)))
+			Expect(run.FinalYaml).To(Equal(&finalYaml))
+			mockADOClient.AssertCalled(t, "RunPipeline", ctx, runPipelineArgs)
+			mockADOClient.AssertNumberOfCalls(t, "RunPipeline", 1)
+			mockADOClient.AssertExpectations(GinkgoT())
+		})
+	})
+
+	Describe("PipelinePreviewRun", func() {
+		It("should set PreviewRun to true", func() {
+			args := &adoPipelines.RunPipelineArgs{
+				RunParameters: &adoPipelines.RunPipelineParameters{
+					PreviewRun: ptr.To(false),
+				},
+			}
+
+			pipelines.PipelinePreviewRun(args)
+
+			Expect(args.RunParameters.PreviewRun).To(Equal(ptr.To(true)))
 		})
 	})
 })

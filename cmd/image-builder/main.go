@@ -267,6 +267,11 @@ func buildInADO(o options) error {
 		return fmt.Errorf("build in ADO failed, failed running ADO pipeline, err: %s", err)
 	}
 
+	if o.adoPreviewRun {
+		fmt.Printf("ADO pipeline preview run result\n: %s", *pipelineRun.FinalYaml)
+		return nil
+	}
+
 	pipelineRunResult, err := adopipelines.GetRunResult(ctx, adoClient, o.AdoConfig.GetADOConfig(), pipelineRun.Id, 30*time.Second)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed getting ADO pipeline run result, err: %s", err)
@@ -572,6 +577,10 @@ func validateOptions(o options) error {
 
 	if o.variant != "" && o.buildInADO {
 		errs = append(errs, fmt.Errorf("variant flag is not supported when running in ADO"))
+	}
+
+	if o.adoPreviewRun && !o.buildInADO {
+		errs = append(errs, fmt.Errorf("adoPreviewRun flag is not supported when running locally"))
 	}
 
 	return errutil.NewAggregate(errs)
