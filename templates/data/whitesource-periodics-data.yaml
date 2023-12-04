@@ -88,19 +88,6 @@ templates:
                     - "jobConfig_default"
               # Kyma components
               - jobConfig:
-                  repository: "busola"
-                  language: "javascript"
-                  project: "kyma-project"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_nodejs"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma_dashboard"
-              - jobConfig:
                   repository: "hydroform"
                   exclude: "**/examples/**"
                   language: "golang-mod"
@@ -128,16 +115,3 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_control_plane"
-              - jobConfig:
-                  repository: "directory-size-exporter"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma"
