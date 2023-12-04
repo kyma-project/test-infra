@@ -128,6 +128,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
+              - "--tag={{.Env \"PULL_BASE_REF\" }}"
               - "--tag={{ .Env \"PULL_BASE_SHA\" }}"
             resources:
               requests:
