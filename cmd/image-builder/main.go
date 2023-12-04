@@ -47,6 +47,7 @@ type options struct {
 	signOnly      bool
 	imagesToSign  sets.Strings
 	buildInADO    bool
+	adoPreviewRun bool
 	parseTagsOnly bool
 }
 
@@ -644,6 +645,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.signOnly, "sign-only", false, "Only sign the image, do not build it")
 	flagSet.Var(&o.imagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
 	flagSet.BoolVar(&o.buildInADO, "build-in-ado", false, "Build in Azure DevOps pipeline environment")
+	flagSet.BoolVar(&o.adoPreviewRun, "ado-preview-run", false, "Trigger ADO pipeline in preview mode")
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
 
 	return flagSet

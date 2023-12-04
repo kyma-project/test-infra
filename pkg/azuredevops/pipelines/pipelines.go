@@ -109,7 +109,7 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 	return string(body), nil
 }
 
-func Run(ctx context.Context, adoClient Client, templateParameters map[string]string, adoConfig Config) (*pipelines.Run, error) {
+func Run(ctx context.Context, adoClient Client, templateParameters map[string]string, adoConfig Config, pipelineRunArgs ...RunPipelineArgs) (*pipelines.Run, error) {
 	adoRunPipelineArgs := pipelines.RunPipelineArgs{
 		Project:    &adoConfig.ADOProjectName,
 		PipelineId: &adoConfig.ADOPipelineID,
@@ -121,7 +121,16 @@ func Run(ctx context.Context, adoClient Client, templateParameters map[string]st
 	if adoConfig.ADOPipelineVersion != 0 {
 		adoRunPipelineArgs.PipelineVersion = &adoConfig.ADOPipelineVersion
 	}
+	for _, arg := range pipelineRunArgs {
+		arg(&adoRunPipelineArgs)
+	}
 	// TODO: use structured logging with debug severity
 	fmt.Printf("Using TemplateParameters: %+v\n", adoRunPipelineArgs.RunParameters.TemplateParameters)
 	return adoClient.RunPipeline(ctx, adoRunPipelineArgs)
+}
+
+type RunPipelineArgs func(*pipelines.RunPipelineArgs)
+
+func PipelinePreviewRun(args *pipelines.RunPipelineArgs) {
+	args.RunParameters.PreviewRun = ptr.To(true)
 }
