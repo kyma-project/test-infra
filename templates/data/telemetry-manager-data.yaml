@@ -53,7 +53,7 @@ templates:
                     - kaniko_buildpack
                     - jobConfig_postsubmit
               - jobConfig:
-                  name: release-telemetry-manager-build
+                  name: post-telemetry-manager-build-release
                   annotations:
                     owner: huskies
                     description: Post-submit job to build telemetry-manager image for a release.
