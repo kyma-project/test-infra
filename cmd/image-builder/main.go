@@ -728,13 +728,13 @@ func main() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		fmt.Printf("%s", jsonTags)
+		fmt.Printf("%s\n", jsonTags)
 		os.Exit(0)
 	}
 	if o.buildInADO {
 		err = buildInADO(o)
 		if err != nil {
-			fmt.Printf("Image build failed with error: %s", err)
+			fmt.Printf("Image build failed with error: %s\n", err)
 			os.Exit(1)
 		}
 	}
