@@ -40,6 +40,25 @@ templates:
                   branches:
                     - "^main$"
                     - "^release-\\d+\\.\\d+$"
+                  always_run: true
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=telemetry-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+              - jobConfig:
+                  name: release-telemetry-manager-build
+                  annotations:
+                    owner: huskies
+                    description: Post-submit job to build telemetry-manager image for a release.
+                  slack_channel: huskies-notifications
+                  branches:
                     - "^\\d+\\.\\d+\\.\\d+$" # Regex for release tag
                   always_run: true
                   labels:
