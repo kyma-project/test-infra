@@ -1,5 +1,12 @@
-FROM gcr.io/kaniko-project/executor:v1.9.0
+FROM europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6 AS builder
 
-COPY ./image-builder /image-builder
+WORKDIR /
+COPY . /app/
+RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -o /app/image-builder -a -ldflags '-extldflags "-static"' .
+
+
+FROM gcr.io/kaniko-project/executor:v1.14.0
+
+COPY --from=builder /app/image-builder /image-builder
 
 ENTRYPOINT ["/image-builder"]

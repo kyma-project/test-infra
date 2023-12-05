@@ -102,7 +102,8 @@ func Test_validateOptions(t *testing.T) {
 			opts: options{
 				context:    "directory/",
 				name:       "test-image",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
+				configPath: "config.yaml",
 			},
 		},
 		{
@@ -110,7 +111,7 @@ func Test_validateOptions(t *testing.T) {
 			expectErr: true,
 			opts: options{
 				name:       "test-image",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 			},
 		},
 		{
@@ -118,7 +119,7 @@ func Test_validateOptions(t *testing.T) {
 			expectErr: true,
 			opts: options{
 				context:    "directory/",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 			},
 		},
 		{
@@ -127,6 +128,63 @@ func Test_validateOptions(t *testing.T) {
 			opts: options{
 				context: "directory/",
 				name:    "test-image",
+			},
+		},
+		{
+			name:      "Empty configPath",
+			expectErr: true,
+			opts: options{
+				context:    "directory/",
+				name:       "test-image",
+				dockerfile: "dockerfile",
+			},
+		},
+		{
+			name:      "signOnly without imagesToSign",
+			expectErr: true,
+			opts: options{
+				context:      "directory/",
+				name:         "test-image",
+				dockerfile:   "dockerfile",
+				configPath:   "config.yaml",
+				signOnly:     true,
+				imagesToSign: []string{},
+			},
+		},
+		{
+			name:      "imagesToSign without signOnly",
+			expectErr: true,
+			opts: options{
+				context:      "directory/",
+				name:         "test-image",
+				dockerfile:   "dockerfile",
+				configPath:   "config.yaml",
+				signOnly:     false,
+				imagesToSign: []string{"image1"},
+			},
+		},
+		{
+			name:      "envFile with buildInADO",
+			expectErr: true,
+			opts: options{
+				context:    "directory/",
+				name:       "test-image",
+				dockerfile: "dockerfile",
+				configPath: "config.yaml",
+				envFile:    "envfile",
+				buildInADO: true,
+			},
+		},
+		{
+			name:      "variant with buildInADO",
+			expectErr: true,
+			opts: options{
+				context:    "directory/",
+				name:       "test-image",
+				dockerfile: "dockerfile",
+				configPath: "config.yaml",
+				variant:    "variant",
+				buildInADO: true,
 			},
 		},
 	}
@@ -155,7 +213,7 @@ func TestFlags(t *testing.T) {
 			expectedOpts: options{
 				context:    ".",
 				configPath: "/config/image-builder-config.yaml",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 				logDir:     "/logs/artifacts",
 			},
 			expectedErr: true,
@@ -174,14 +232,14 @@ func TestFlags(t *testing.T) {
 				},
 				context:    "prow/build",
 				configPath: "config.yaml",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 				logDir:     "prow/logs",
 				orgRepo:    "kyma-project/test-infra",
 				silent:     true,
 			},
 			args: []string{
 				"--config=config.yaml",
-				"--dockerfile=Dockerfile",
+				"--dockerfile=dockerfile",
 				"--repo=kyma-project/test-infra",
 				"--name=test-image",
 				"--tag=latest",
@@ -196,7 +254,7 @@ func TestFlags(t *testing.T) {
 			expectedOpts: options{
 				context:    ".",
 				configPath: "/config/image-builder-config.yaml",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 				logDir:     "/logs/artifacts",
 				exportTags: true,
 			},
@@ -209,7 +267,7 @@ func TestFlags(t *testing.T) {
 			expectedOpts: options{
 				context:    ".",
 				configPath: "/config/image-builder-config.yaml",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 				logDir:     "/logs/artifacts",
 				buildArgs: sets.Tags{
 					tags.Tag{Name: "BIN", Value: "test"},
@@ -499,4 +557,12 @@ func Test_appendMissing(t *testing.T) {
 			}
 		}
 	}
+}
+
+type mockSigner struct {
+	signFunc func([]string) error
+}
+
+func (m *mockSigner) Sign(images []string) error {
+	return m.signFunc(images)
 }

@@ -1,5 +1,51 @@
 presubmits: # runs on PRs
   kyma-project/test-infra:
+    - name: pull-build-image-builder
+      annotations:
+        description: "build image-builder image"
+        owner: "neighbors"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-build-image-builder"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=image-builder"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=cmd/image-builder/images/kaniko/Dockerfile"
+            resources:
+              requests:
+                memory: 500Mi
+                cpu: 500m
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: pull-main-build-testimages
       decorate: true
       labels:
@@ -18,7 +64,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       spec:
         containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231130-5e582eeb
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231204-57f98c4e
           command: ["/init.sh"]
           args: ["make", "-C", "images", "build"]
           resources:
@@ -35,6 +81,54 @@ presubmits: # runs on PRs
             allowPrivilegeEscalation: true
 postsubmits:
   kyma-project/test-infra:
+    - name: post-build-image-builder
+      annotations:
+        description: "build image-builder image"
+        owner: "neighbors"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-build-image-builder"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod
+      branches:
+        - main
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "/image-builder"
+            args:
+              - "--name=image-builder"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=cmd/image-builder/images/kaniko/Dockerfile"
+            resources:
+              requests:
+                memory: 500Mi
+                cpu: 500m
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
     - name: post-main-build-testimages
       decorate: true
       labels:
@@ -53,7 +147,7 @@ postsubmits:
       cluster: trusted-workload
       spec:
         containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231130-5e582eeb
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231204-57f98c4e
           command: ["/init.sh"]
           args: ["make", "-C", "images", "push"]
           resources:
