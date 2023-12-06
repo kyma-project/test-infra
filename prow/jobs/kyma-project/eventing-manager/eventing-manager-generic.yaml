@@ -99,60 +99,49 @@ presubmits: # runs on PRs
 
 postsubmits: # runs on main
   kyma-project/eventing-manager:
-    - name: release-eventing-manager-build
+    - name: post-eventing-module-build
       annotations:
-        description: "Job to build eventing module for a release."
+        description: "Eventing module build post-main job"
         owner: "skydivingtunas"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "release-eventing-manager-build"
+        prow.k8s.io/pubsub.runID: "post-eventing-module-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       always_run: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\d+\.\d+\.\d+(?:-.*)?$
+        - ^main$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231204-57f98c4e"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "/image-builder"
+              - "make"
             args:
-              - "--name=eventing-manager"
-              - "--config=/config/kaniko-build-config.yaml"
-              - "--context=."
-              - "--dockerfile=Dockerfile"
-              - "--tag=$(PULL_BASE_SHA)"
+              - "-C"
+              - "hack/ci"
+              - "module-build"
+            env:
+              - name: IMG
+                value: "europe-docker.pkg.dev/kyma-project/prod/eventing-manager:$(shell date +v%Y%m%d)-$(shell echo ${PULL_BASE_SHA} | head -c 8)"
+              - name: KUSTOMIZE_VERSION
+                value: "v4.5.7"
+              - name: MODULE_REGISTRY
+                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+              - name: MODULE_SHA
+                value: "$(shell echo ${PULL_BASE_SHA} | head -c 8)"
             resources:
               requests:
-                memory: 1.5Gi
-                cpu: 1
-              limits:
                 memory: 3Gi
                 cpu: 2
-            volumeMounts:
-              - name: config
-                mountPath: /config
-                readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
-        volumes:
-          - name: config
-            configMap:
-              name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
 
     - name: post-eventing-manager-build
       annotations:
@@ -208,46 +197,57 @@ postsubmits: # runs on main
             secret:
               secretName: signify-dev-secret
 
-    - name: post-eventing-module-build
+    - name: release-eventing-manager-build
       annotations:
-        description: "Eventing module build post-main job"
+        description: "Job to build eventing module for a release."
         owner: "skydivingtunas"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-eventing-module-build"
+        prow.k8s.io/pubsub.runID: "release-eventing-manager-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       always_run: true
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^main$
+        - ^\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231204-57f98c4e"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "make"
+              - "/image-builder"
             args:
-              - "-C"
-              - "hack/ci"
-              - "module-build"
-            env:
-              - name: IMG
-                value: "europe-docker.pkg.dev/kyma-project/prod/eventing-manager:$(shell date +v%Y%m%d)-$(shell echo ${PULL_BASE_SHA} | head -c 8)"
-              - name: KUSTOMIZE_VERSION
-                value: "v4.5.7"
-              - name: MODULE_REGISTRY
-                value: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-              - name: MODULE_SHA
-                value: "$(shell echo ${PULL_BASE_SHA} | head -c 8)"
+              - "--name=eventing-manager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=Dockerfile"
+              - "--tag=$(PULL_BASE_SHA)"
             resources:
               requests:
+                memory: 1.5Gi
+                cpu: 1
+              limits:
                 memory: 3Gi
                 cpu: 2
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
