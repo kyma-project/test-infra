@@ -423,29 +423,6 @@ templates:
           - repoName: kyma-project/serverless
             jobs:
               - jobConfig:
-                  name: release-serverless-module-build
-                  annotations:
-                    owner: otters
-                    description: Job to build serverless module for a release.
-                  always_run: true
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                    preset-bot-github-token: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_REF}"
-                  command: "./.github/scripts/release.sh"
-                  args:
-                    - "ci"
-                  branches:
-                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-              - jobConfig:
                   name: release-serverless-operator-build
                   annotations:
                     owner: otters
