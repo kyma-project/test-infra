@@ -13,7 +13,7 @@ import (
 	"strings"
 
 	"github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
-	pipelinesmocks "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines/mocks"
+	pipelinesMocks "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines/mocks"
 
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/build"
 	adoPipelines "github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
@@ -32,7 +32,7 @@ func (t ginkgoT) Cleanup(f func()) {
 var _ = Describe("Pipelines", func() {
 	var (
 		ctx           context.Context
-		mockADOClient *pipelinesmocks.MockClient
+		mockADOClient *pipelinesMocks.MockClient
 		adoConfig     pipelines.Config
 		t             ginkgoT
 	)
@@ -41,7 +41,7 @@ var _ = Describe("Pipelines", func() {
 		ctx = context.Background()
 		t = ginkgoT{}
 		t.GinkgoTInterface = GinkgoT()
-		mockADOClient = pipelinesmocks.NewMockClient(t)
+		mockADOClient = pipelinesMocks.NewMockClient(t)
 		adoConfig = pipelines.Config{
 			ADOOrganizationURL: "https://dev.azure.com",
 			ADOProjectName:     "example-project",
@@ -106,15 +106,15 @@ var _ = Describe("Pipelines", func() {
 
 	Describe("GetRunLogs", func() {
 		var (
-			mockBuildClient  *pipelinesmocks.MockBuildClient
-			mockHTTPClient   *pipelinesmocks.MockHTTPClient
+			mockBuildClient  *pipelinesMocks.MockBuildClient
+			mockHTTPClient   *pipelinesMocks.MockHTTPClient
 			getBuildLogsArgs build.GetBuildLogsArgs
 			mockBuildLogs    *[]build.BuildLog
 		)
 
 		BeforeEach(func() {
-			mockBuildClient = pipelinesmocks.NewMockBuildClient(t)
-			mockHTTPClient = pipelinesmocks.NewMockHTTPClient(t)
+			mockBuildClient = pipelinesMocks.NewMockBuildClient(t)
+			mockHTTPClient = pipelinesMocks.NewMockHTTPClient(t)
 			getBuildLogsArgs = build.GetBuildLogsArgs{
 				Project: &adoConfig.ADOProjectName,
 				BuildId: ptr.To(42),
