@@ -268,9 +268,12 @@ func buildInADO(o options) error {
 		return fmt.Errorf("build in ADO failed, failed running ADO pipeline, err: %s", err)
 	}
 
-	if o.adoPreviewRun {
+	if o.adoPreviewRun && pipelineRun.FinalYaml != nil {
 		fmt.Printf("ADO pipeline preview run result\n: %s", *pipelineRun.FinalYaml)
 		return nil
+	}
+	if o.adoPreviewRun && pipelineRun.FinalYaml == nil {
+		return fmt.Errorf("ADO pipeline preview run failed, final yaml is nil")
 	}
 
 	pipelineRunResult, err := adopipelines.GetRunResult(ctx, adoClient, o.AdoConfig.GetADOConfig(), pipelineRun.Id, 30*time.Second)
