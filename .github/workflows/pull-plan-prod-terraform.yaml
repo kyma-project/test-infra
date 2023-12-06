@@ -57,7 +57,7 @@ jobs:
           ref: b8e2fad8e24cdd98c5a81d5c08bc8fe417cfdfc5 # v1.6.0-alpha5
         
       - name: Install tofu tooling
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version-file: opentofu/go.mod
           cache-dependency-path: opentofu/go.sum
