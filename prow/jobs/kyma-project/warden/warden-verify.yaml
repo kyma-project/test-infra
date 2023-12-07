@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231204-57f98c4e"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231206-59f0cdfa"
             securityContext:
               privileged: false
               seccompProfile:
@@ -56,7 +56,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231204-57f98c4e"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231206-59f0cdfa"
             securityContext:
               privileged: true
               seccompProfile:
@@ -100,7 +100,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231204-57f98c4e"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231206-59f0cdfa"
             securityContext:
               privileged: true
               seccompProfile:
