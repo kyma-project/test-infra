@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"time"
 
 	adov7 "github.com/microsoft/azure-devops-go-api/azuredevops/v7"
@@ -109,7 +110,7 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 	return string(body), nil
 }
 
-func Run(ctx context.Context, adoClient Client, templateParameters map[string]string, adoConfig Config, pipelineRunArgs ...RunPipelineArgs) (*pipelines.Run, error) {
+func NewRunPipelineArgs(templateParameters map[string]string, adoConfig Config, pipelineRunArgs ...RunPipelineArgsOptions) (pipelines.RunPipelineArgs, error) {
 	adoRunPipelineArgs := pipelines.RunPipelineArgs{
 		Project:    &adoConfig.ADOProjectName,
 		PipelineId: &adoConfig.ADOPipelineID,
@@ -122,15 +123,27 @@ func Run(ctx context.Context, adoClient Client, templateParameters map[string]st
 		adoRunPipelineArgs.PipelineVersion = &adoConfig.ADOPipelineVersion
 	}
 	for _, arg := range pipelineRunArgs {
-		arg(&adoRunPipelineArgs)
+		err := arg(&adoRunPipelineArgs)
+		if err != nil {
+			return pipelines.RunPipelineArgs{}, fmt.Errorf("failed setting pipeline run args, err: %w", err)
+		}
 	}
 	// TODO: use structured logging with debug severity
-	fmt.Printf("Using TemplateParameters: %+v\n", adoRunPipelineArgs.RunParameters.TemplateParameters)
-	return adoClient.RunPipeline(ctx, adoRunPipelineArgs)
+	// fmt.Printf("Using TemplateParameters: %+v\n", adoRunPipelineArgs.RunParameters.TemplateParameters)
+	return adoRunPipelineArgs, nil
 }
 
-type RunPipelineArgs func(*pipelines.RunPipelineArgs)
+type RunPipelineArgsOptions func(*pipelines.RunPipelineArgs) error
 
-func PipelinePreviewRun(args *pipelines.RunPipelineArgs) {
-	args.RunParameters.PreviewRun = ptr.To(true)
+func PipelinePreviewRun(overrideYamlPath string) func(args *pipelines.RunPipelineArgs) error {
+	return func(args *pipelines.RunPipelineArgs) error {
+		args.RunParameters.PreviewRun = ptr.To(true)
+		data, err := os.ReadFile(overrideYamlPath)
+		if err != nil {
+			return fmt.Errorf("failed reading override yaml file, err: %w", err)
+		}
+		overrideYaml := string(data)
+		args.RunParameters.YamlOverride = &overrideYaml
+		return nil
+	}
 }

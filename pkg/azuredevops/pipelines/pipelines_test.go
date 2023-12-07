@@ -1,6 +1,7 @@
 package pipelines_test
 
 import (
+	"os"
 	"time"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -175,74 +176,116 @@ var _ = Describe("Pipelines", func() {
 		})
 	})
 
-	Describe("Run", func() {
+	Describe("NewRunPipelineArgs", func() {
 		var (
-			templateParams  map[string]string
-			runPipelineArgs adoPipelines.RunPipelineArgs
+			templateParameters map[string]string
+			pipelineRunArgs    []pipelines.RunPipelineArgsOptions
 		)
 
 		BeforeEach(func() {
-			templateParams = map[string]string{"param1": "value1", "param2": "value2"}
-			runPipelineArgs = adoPipelines.RunPipelineArgs{
-				Project:    &adoConfig.ADOProjectName,
-				PipelineId: &adoConfig.ADOPipelineID,
-				RunParameters: &adoPipelines.RunPipelineParameters{
-					PreviewRun:         ptr.To(false),
-					TemplateParameters: &templateParams,
-				},
-				PipelineVersion: &adoConfig.ADOPipelineVersion,
+			templateParameters = map[string]string{
+				"key1": "value1",
+				"key2": "value2",
 			}
 		})
 
-		It("should run the pipeline", func() {
-			mockRun := &adoPipelines.Run{Id: ptr.To(123)}
-			mockADOClient.On("RunPipeline", ctx, runPipelineArgs).Return(mockRun, nil)
+		Context("when NewRunPipelineArgs is successful", func() {
+			It("should return the correct PipelineArgs and no error", func() {
+				pipelineArgs, err := pipelines.NewRunPipelineArgs(templateParameters, adoConfig)
+				Expect(err).NotTo(HaveOccurred())
+				Expect(pipelineArgs.Project).To(Equal(&adoConfig.ADOProjectName))
+				Expect(pipelineArgs.PipelineId).To(Equal(&adoConfig.ADOPipelineID))
+				Expect(pipelineArgs.PipelineVersion).To(Equal(&adoConfig.ADOPipelineVersion))
+				Expect(pipelineArgs.RunParameters.TemplateParameters).To(Equal(&templateParameters))
+				Expect(pipelineArgs.RunParameters.PreviewRun).To(Equal(ptr.To(false)))
+				Expect(pipelineArgs).To(BeAssignableToTypeOf(adoPipelines.RunPipelineArgs{}))
+			})
+			Context("when PipelinePreviewRun option is passed", func() {
+				var dummyOverrideYamlPath = "./dummyOverride.yaml"
+				BeforeEach(func() {
+					pipelineRunArgs = []pipelines.RunPipelineArgsOptions{
+						pipelines.PipelinePreviewRun(dummyOverrideYamlPath),
+					}
+					err := os.WriteFile(dummyOverrideYamlPath, []byte("dummyYamlContent"), 0644)
+					Expect(err).NotTo(HaveOccurred())
+				})
 
-			run, err := pipelines.Run(ctx, mockADOClient, templateParams, adoConfig)
-			Expect(err).ToNot(HaveOccurred())
-			Expect(run.Id).To(Equal(ptr.To(123)))
-			mockADOClient.AssertCalled(t, "RunPipeline", ctx, runPipelineArgs)
-			mockADOClient.AssertNumberOfCalls(t, "RunPipeline", 1)
-			mockADOClient.AssertExpectations(GinkgoT())
+				AfterEach(func() {
+					err := os.Remove(dummyOverrideYamlPath)
+					Expect(err).NotTo(HaveOccurred())
+				})
+
+				It("should enable preview run and set YamlOverride according to file content", func() {
+					pipelineArgs, err := pipelines.NewRunPipelineArgs(templateParameters, adoConfig, pipelineRunArgs...)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(pipelineArgs.Project).To(Equal(&adoConfig.ADOProjectName))
+					Expect(pipelineArgs.PipelineId).To(Equal(&adoConfig.ADOPipelineID))
+					Expect(pipelineArgs.PipelineVersion).To(Equal(&adoConfig.ADOPipelineVersion))
+					Expect(pipelineArgs.RunParameters.TemplateParameters).To(Equal(&templateParameters))
+					Expect(pipelineArgs).To(BeAssignableToTypeOf(adoPipelines.RunPipelineArgs{}))
+					Expect(pipelineArgs.RunParameters.PreviewRun).To(Equal(ptr.To(true)))
+					Expect(pipelineArgs.RunParameters.YamlOverride).To(Equal(ptr.To("dummyYamlContent")))
+				})
+			})
 		})
 
-		It("should handle ADO client error", func() {
-			mockADOClient.On("RunPipeline", ctx, runPipelineArgs).Return(nil, fmt.Errorf("ADO client error"))
+		Context("when NewRunPipelineArgs fails", func() {
+			BeforeEach(func() {
+				pipelineRunArgs = []pipelines.RunPipelineArgsOptions{
+					func(args *adoPipelines.RunPipelineArgs) error {
+						return fmt.Errorf("dummy error")
+					},
+				}
+			})
 
-			_, err := pipelines.Run(ctx, mockADOClient, templateParams, adoConfig)
-			Expect(err).To(HaveOccurred())
-			mockADOClient.AssertCalled(t, "RunPipeline", ctx, runPipelineArgs)
-			mockADOClient.AssertNumberOfCalls(t, "RunPipeline", 1)
-			mockADOClient.AssertExpectations(GinkgoT())
-		})
-
-		It("should run the pipeline in preview mode", func() {
-			finalYaml := "pipeline:\n  stages:\n  - stage: Build\n    jobs:\n    - job: Build\n      steps:\n      - script: echo Hello, world!\n        displayName: 'Run a one-line script'"
-			runPipelineArgs.RunParameters.PreviewRun = ptr.To(true)
-			mockRun := &adoPipelines.Run{Id: ptr.To(123), FinalYaml: &finalYaml}
-			mockADOClient.On("RunPipeline", ctx, runPipelineArgs).Return(mockRun, nil)
-
-			run, err := pipelines.Run(ctx, mockADOClient, templateParams, adoConfig, pipelines.PipelinePreviewRun)
-			Expect(err).ToNot(HaveOccurred())
-			Expect(run.Id).To(Equal(ptr.To(123)))
-			Expect(run.FinalYaml).To(Equal(&finalYaml))
-			mockADOClient.AssertCalled(t, "RunPipeline", ctx, runPipelineArgs)
-			mockADOClient.AssertNumberOfCalls(t, "RunPipeline", 1)
-			mockADOClient.AssertExpectations(GinkgoT())
+			It("should return an error", func() {
+				pipelineArgs, err := pipelines.NewRunPipelineArgs(templateParameters, adoConfig, pipelineRunArgs...)
+				Expect(err).To(HaveOccurred())
+				Expect(err).To(MatchError("failed setting pipeline run args, err: dummy error"))
+				Expect(pipelineArgs).To(BeEquivalentTo(adoPipelines.RunPipelineArgs{}))
+			})
 		})
 	})
 
 	Describe("PipelinePreviewRun", func() {
-		It("should set PreviewRun to true", func() {
-			args := &adoPipelines.RunPipelineArgs{
+		var (
+			dummyOverrideYamlPath = "./dummyOverride.yaml"
+			err                   error
+			pipelineArgs          *adoPipelines.RunPipelineArgs
+		)
+
+		BeforeEach(func() {
+			err = os.WriteFile(dummyOverrideYamlPath, []byte("dummyYamlContent"), 0644)
+			Expect(err).NotTo(HaveOccurred())
+			pipelineArgs = &adoPipelines.RunPipelineArgs{
 				RunParameters: &adoPipelines.RunPipelineParameters{
 					PreviewRun: ptr.To(false),
 				},
 			}
+		})
 
-			pipelines.PipelinePreviewRun(args)
+		AfterEach(func() {
+			err = os.Remove(dummyOverrideYamlPath)
+			Expect(err).NotTo(HaveOccurred())
+		})
 
-			Expect(args.RunParameters.PreviewRun).To(Equal(ptr.To(true)))
+		It("should prepare function that sets PreviewRun to true and reads override yaml", func() {
+
+			pipelinePreviewRun := pipelines.PipelinePreviewRun(dummyOverrideYamlPath)
+
+			err := pipelinePreviewRun(pipelineArgs)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(pipelineArgs.RunParameters.PreviewRun).To(Equal(ptr.To(true)))
+			Expect(pipelineArgs.RunParameters.YamlOverride).To(Equal(ptr.To("dummyYamlContent")))
+		})
+		Context("when the override yaml file does not exist", func() {
+			It("should return an error", func() {
+				nonExistentFilePath := "/path/to/non-existent/file.yaml"
+				pipelinePreviewRun := pipelines.PipelinePreviewRun(nonExistentFilePath)
+
+				err := pipelinePreviewRun(pipelineArgs)
+				Expect(err).To(HaveOccurred())
+			})
 		})
 	})
 })
