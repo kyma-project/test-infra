@@ -202,12 +202,12 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		return nil, fmt.Errorf("JOB_TYPE environment variable is not set to valid value, please set it to either 'presubmit' or 'postsubmit'")
 	}
 
-	number, present := os.LookupEnv("PULL_NUMBER")
-	if jobType == "presubmit" && !present {
+	pullNumber, isPullNumberSet := os.LookupEnv("PULL_NUMBER")
+	if jobType == "presubmit" && isPullNumberSet {
 		return nil, fmt.Errorf("PULL_NUMBER environment variable is not set, please set it to valid pull request number")
 	}
 	if present {
-		templateParameters.SetPullNumber(number)
+		templateParameters.SetPullNumber(pullNumber)
 	}
 
 	baseSHA, present := os.LookupEnv("PULL_BASE_SHA")
