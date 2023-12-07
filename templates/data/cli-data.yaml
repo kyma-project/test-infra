@@ -9,6 +9,25 @@ templates:
           - repoName: kyma-project/cli
             jobs:
               - jobConfig:
+                  name: pre-kyma-cli
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint + Go test pre-PR + Build CLI pre-PR
+                  always_run: true
+                  args:
+                    - "ci-pr"
+                  branches:
+                    - "^main$"
+                    - "^release-\\d+\\.\\d+$"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_buildpack-golang
+                    - "unprivileged"
+                  local:
+                    - job_spec
+              - jobConfig:
                   name: post-kyma-cli
                   annotations:
                     owner: jellyfish
