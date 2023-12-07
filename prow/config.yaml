@@ -452,6 +452,11 @@ tide:
         - kyma-project/k8s-prow
   context_options:
     from-branch-protection: true
+    orgs:
+      kyma-project:
+        repos:
+          lifecycle-manager:
+            skip-unknown-contexts: true
 
 presets:
   - labels:
