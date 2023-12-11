@@ -38,7 +38,7 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
       - name: deck
-        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/deck:v20231204-274dc2b4
+        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/deck:v20231211-0438486e
         imagePullPolicy: Always
         ports:
           - name: http
