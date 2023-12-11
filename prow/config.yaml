@@ -297,7 +297,11 @@ branch-protection:
         kyma-environment-broker:
           required_status_checks:
             contexts:
-              - run-eslint
+              - "run-eslint"
+              - "run-unit-tests / build"
+              - "run-keb-chart-tests / finish-keb-chart-tests"
+              - "markdown-link-check"
+              - "validate-labels"
         btp-manager:
           required_status_checks:
             contexts:
