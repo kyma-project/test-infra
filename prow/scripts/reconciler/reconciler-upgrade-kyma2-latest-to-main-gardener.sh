@@ -122,7 +122,13 @@ reconciler::wait_until_kyma_reconciled
 
 if [[ $KYMA_UPGRADE_SOURCE != "main" ]]; then
   kubectl apply -f https://github.com/kyma-project/serverless/releases/latest/download/serverless-operator.yaml
-  kubectl apply -f https://github.com/kyma-project/serverless/releases/latest/download/default_serverless_cr.yaml -n kyma-system
+  respCode=$(curl -o /dev/null --silent --head --write-out '%{http_code}' https://github.com/kyma-project/serverless/releases/latest/download/default_serverless_cr.yaml)
+  if [ "$respCode" = "200" ]; then
+    crdUrl="https://github.com/kyma-project/serverless/releases/latest/download/default_serverless_cr.yaml"
+  else
+    crdUrl="https://github.com/kyma-project/serverless/releases/latest/download/default-serverless-cr.yaml"
+  fi
+  kubectl apply -f "$crdUrl" -n kyma-system
 fi
 
 ## ---------------------------------------------------------------------------------------
