@@ -4,18 +4,12 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"strconv"
 	"strings"
 
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
-	"github.com/microsoft/azure-devops-go-api/azuredevops/pipelines"
-)
-
-const (
-	organizationUrl     = "https://dev.azure.com/hyperspace-pipelines"
-	personalAccessToken = "eintmxeevtckokpmpxxpxjbpeisd53qukafsymotkqkrjpb4akqq"
-	projectName         = "kyma"
-	pipelineName        = "module-manifests"
 )
 
 type buildTest struct {
@@ -24,19 +18,28 @@ type buildTest struct {
 	expectAbsent bool
 }
 
+type timelineTest struct {
+	name   string
+	state  string
+	result string
+}
+
 func main() {
+	organizationUrl := os.Getenv("ORGANIZATION_URL")
+	personalAccessToken := os.Getenv("PERSONAL_ACCESS_TOKEN")
+	projectName := os.Getenv("PROJECT_NAME")
+	pipelineName := os.Getenv("PIPELINE_NAME")
+	pipelineId, err := strconv.Atoi(os.Getenv("TRIGGERED_PIPELINE_ID"))
+	buildId, err := strconv.Atoi(os.Getenv("TRIGGERED_BUILD_ID"))
+
+	if err != nil {
+		log.Fatalf("Could not convert TRIGGERED_PIPELINE_ID to int: %s", err)
+	}
 	ctx := context.Background()
 
 	connection := createPatConnection(organizationUrl, personalAccessToken)
 
-	pipelineId, err := getPipelineID(ctx, connection, projectName, pipelineName)
-	if err != nil {
-		log.Fatalf("Error getting pipeline ID: %v", err)
-	}
-
-	fmt.Println(pipelineId)
-
-	tests := []buildTest{
+	buildTests := []buildTest{
 		{
 			description:  "Checkout self repository",
 			logMessage:   "Repository 'self' has been successfully checked out.",
@@ -79,49 +82,42 @@ func main() {
 		},
 	}
 
-	for _, test := range tests {
-		runBuildTest(ctx, connection, projectName, pipelineName, test)
+	for _, test := range buildTests {
+		runBuildTest(ctx, connection, projectName, pipelineName, pipelineId, test)
 	}
+	timelineTests := []timelineTest{
+		{
+			name:   "Initialize job",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Install gcloud",
+			state:  "completed",
+			result: "succeeded",
+		},
+	}
+
+	for _, test := range timelineTests {
+		runTimelineTests(ctx, connection, projectName, buildId, test)
+	}
+
 }
 
 func createPatConnection(organizationUrl, personalAccessToken string) *azuredevops.Connection {
 	return azuredevops.NewPatConnection(organizationUrl, personalAccessToken)
 }
 
-func getPipelineID(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName string) (int, error) {
-	pipelineClient := pipelines.NewClient(ctx, connection)
-
-	pipelinesResponse, err := pipelineClient.ListPipelines(ctx, pipelines.ListPipelinesArgs{Project: &projectName})
-	if err != nil {
-		return 0, fmt.Errorf("error listing pipelines: %w", err)
-	}
-
-	for _, pipeline := range pipelinesResponse.Value {
-		if *pipeline.Name == pipelineName {
-			return *pipeline.Id, nil
-		}
-	}
-
-	return 0, fmt.Errorf("pipeline not found: %s", pipelineName)
-}
-
-func getLastBuilds(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName string, top int) ([]build.Build, error) {
+func getSpecificBuilds(ctx context.Context, connection *azuredevops.Connection, projectName string, pipelineID int) ([]build.Build, error) {
 	buildClient, err := build.NewClient(ctx, connection)
 	if err != nil {
 		return nil, fmt.Errorf("error creating build client: %w", err)
-	}
-
-	// Get Pipeline ID from pipeline name
-	pipelineID, err := getPipelineID(ctx, connection, projectName, pipelineName)
-	if err != nil {
-		return nil, fmt.Errorf("error getting pipeline ID: %w", err)
 	}
 
 	// Args to download Build
 	buildArgs := build.GetBuildsArgs{
 		Project:     &projectName,
 		Definitions: &[]int{pipelineID},
-		Top:         &top,
 	}
 
 	// Download Builds
@@ -133,8 +129,44 @@ func getLastBuilds(ctx context.Context, connection *azuredevops.Connection, proj
 	return buildsResponse.Value, nil
 }
 
-func checkLastBuildForCommand(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName, logFinding string) (bool, error) {
-	builds, err := getLastBuilds(ctx, connection, projectName, pipelineName, 1)
+func getBuildStageStatus(ctx context.Context, connection *azuredevops.Connection, projectName string, buildId int, test timelineTest) (bool, error) {
+	buildClient, err := build.NewClient(ctx, connection)
+	if err != nil {
+		return false, fmt.Errorf("error creating build client: %w", err)
+	}
+
+	// Args to download Build
+	buildArgs := build.GetBuildTimelineArgs{
+		Project: &projectName,
+		BuildId: &buildId,
+	}
+	// Download Builds
+	buildTimeline, err := buildClient.GetBuildTimeline(ctx, buildArgs)
+	if err != nil {
+		return false, fmt.Errorf("error getting builds: %w", err)
+	}
+
+	// Check each record
+	for _, record := range *buildTimeline.Records {
+		if record.Name != nil && *record.Name == test.name {
+			if record.Result != nil && string(*record.Result) == test.result {
+				if record.State != nil && string(*record.State) == test.state {
+					return true, nil // Found a record matching all criteria
+				} else {
+					continue // The state doesn't match, continue checking other records
+				}
+			} else {
+				continue // The result doesn't match, continue checking other records
+			}
+		}
+		// Name doesn't match, continue checking other records
+	}
+
+	return false, fmt.Errorf("no record found matching the criteria")
+}
+
+func checkSpecificBuildForCommand(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName, logFinding string, pipelineId int) (bool, error) {
+	builds, err := getSpecificBuilds(ctx, connection, projectName, pipelineId)
 	if err != nil {
 		return false, fmt.Errorf("error getting last build: %w", err)
 	}
@@ -177,8 +209,8 @@ func checkLastBuildForCommand(ctx context.Context, connection *azuredevops.Conne
 	return false, nil
 }
 
-func checkLastBuildForMissingCommand(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName, expectedMissingMessage string) (bool, error) {
-	builds, err := getLastBuilds(ctx, connection, projectName, pipelineName, 1)
+func checkSpecificBuildForMissingCommand(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName, expectedMissingMessage string, pipelineId int) (bool, error) {
+	builds, err := getSpecificBuilds(ctx, connection, projectName, pipelineId)
 	if err != nil {
 		return false, fmt.Errorf("error getting last build: %w", err)
 	}
@@ -221,14 +253,14 @@ func checkLastBuildForMissingCommand(ctx context.Context, connection *azuredevop
 	return true, nil
 }
 
-func runBuildTest(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName string, test buildTest) bool {
+func runBuildTest(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName string, pipelineId int, test buildTest) bool {
 	var pass bool
 	var err error
 
 	if test.expectAbsent {
-		pass, err = checkLastBuildForMissingCommand(ctx, connection, projectName, pipelineName, test.logMessage)
+		pass, err = checkSpecificBuildForMissingCommand(ctx, connection, projectName, pipelineName, test.logMessage, pipelineId)
 	} else {
-		pass, err = checkLastBuildForCommand(ctx, connection, projectName, pipelineName, test.logMessage)
+		pass, err = checkSpecificBuildForCommand(ctx, connection, projectName, pipelineName, test.logMessage, pipelineId)
 	}
 
 	if err != nil {
@@ -242,5 +274,24 @@ func runBuildTest(ctx context.Context, connection *azuredevops.Connection, proje
 	}
 
 	fmt.Printf("Test passed for %s\n", test.description)
+	return true
+}
+
+func runTimelineTests(ctx context.Context, connection *azuredevops.Connection, projectName string, buildId int, test timelineTest) bool {
+	var pass bool
+	var err error
+
+	pass, err = getBuildStageStatus(ctx, connection, projectName, buildId, test)
+	if err != nil {
+		fmt.Printf("Test failed for %s: %v\n", test.name, err)
+		return false
+	}
+
+	if !pass {
+		fmt.Printf("Test failed for %s: condition not met\n", test.name)
+		return false
+	}
+
+	fmt.Printf("Test passed for %s\n", test.name)
 	return true
 }
