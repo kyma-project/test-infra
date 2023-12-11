@@ -97,38 +97,3 @@ templates:
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
             request_cpu: 100m
-        jobConfigs:
-          - repoName: "kyma-project/directory-size-exporter"
-            jobs:
-              - jobConfig:
-                  annotations:
-                    owner: huskies
-                    description: runs linting on the repo
-                  name: "pull-directory-size-exporter-lint"
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "make lint"
-                  run_if_changed: '^(go.mod|go.sum)$|^(.*\.go$|.golangcilint.yaml)'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - linting
-                    - "unprivileged"
-              - jobConfig:
-                  name: "pull-directory-size-exporter-unit-test"
-                  annotations:
-                    owner: huskies
-                    description: runs unit tests on the repo
-                  optional: false
-                  command: "/bin/sh"
-                  args:
-                    - "-c"
-                    - "make test"
-                  run_if_changed: '^(go.mod|go.sum)$|^.*\.go$'
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_presubmit"
-                    - testing
-                    - "unprivileged"
