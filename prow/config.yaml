@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231204-274dc2b4
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231204-274dc2b4
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231204-274dc2b4
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231204-274dc2b4
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231211-0438486e
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231211-0438486e
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231211-0438486e
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231211-0438486e
         resources:
           clonerefs:
             requests:
@@ -312,6 +312,8 @@ branch-protection:
               - "E2E (kyma-metrics)"
               - "E2E (module-status-propagation)"
               - "E2E (module-without-default-cr)"
+              - "E2E (upgrade-under-deletion)"
+              - "E2E (self-signed-certificate-rotation)"
               - "E2E (non-blocking-deletion)"
               - "E2E (purge-controller)"
               - "E2E (purge-metrics)"
@@ -452,6 +454,11 @@ tide:
         - kyma-project/k8s-prow
   context_options:
     from-branch-protection: true
+    orgs:
+      kyma-project:
+        repos:
+          lifecycle-manager:
+            skip-unknown-contexts: true
 
 presets:
   - labels:
