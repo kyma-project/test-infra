@@ -568,7 +568,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-serverless-controller-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
                   annotations:
                     owner: otters
                     description: function controller linting job
@@ -586,7 +586,7 @@ templates:
                     - jobConfig_default
               - jobConfig:
                   name: pre-serverless-operator-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
                   annotations:
                     owner: otters
                     description: serverless operator linting job
