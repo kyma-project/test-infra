@@ -3,9 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
@@ -29,12 +27,8 @@ func main() {
 	personalAccessToken := os.Getenv("PERSONAL_ACCESS_TOKEN")
 	projectName := os.Getenv("PROJECT_NAME")
 	pipelineName := os.Getenv("PIPELINE_NAME")
-	pipelineId, err := strconv.Atoi(os.Getenv("TRIGGERED_PIPELINE_ID"))
-	buildId, err := strconv.Atoi(os.Getenv("TRIGGERED_BUILD_ID"))
-
-	if err != nil {
-		log.Fatalf("Could not convert TRIGGERED_PIPELINE_ID to int: %s", err)
-	}
+	pipelineId := os.Getenv("TRIGGERED_PIPELINE_ID")
+	buildId := os.Getenv("TRIGGERED_BUILD_ID")
 	ctx := context.Background()
 
 	connection := createPatConnection(organizationUrl, personalAccessToken)
@@ -420,7 +414,7 @@ func runTimelineTests(ctx context.Context, connection *azuredevops.Connection, p
 	return true
 }
 
-var unitTests = []struct {
+var unittests = []struct {
 	name           string
 	timeline       *build.Timeline
 	testName       string
