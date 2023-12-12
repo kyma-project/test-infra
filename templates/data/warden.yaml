@@ -174,7 +174,7 @@ templates:
           - repoName: "github.com/kyma-project/warden"
             jobs:
               - jobConfig:
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
                   name: pre-warden-lint
                   optional: true
                   always_run: true
