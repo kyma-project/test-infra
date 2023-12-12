@@ -25,7 +25,7 @@ type timelineTest struct {
 
 func main() {
 	organizationUrl := os.Getenv("ORGANIZATION_URL")
-	personalAccessToken := os.Getenv("PERSONAL_ACCESS_TOKEN")
+	personalAccessToken := os.Getenv("System.AccessToken")
 	projectName := os.Getenv("PROJECT_NAME")
 	pipelineName := os.Getenv("PIPELINE_NAME")
 	pipelineId := os.Getenv("TRIGGERED_PIPELINE_ID")
