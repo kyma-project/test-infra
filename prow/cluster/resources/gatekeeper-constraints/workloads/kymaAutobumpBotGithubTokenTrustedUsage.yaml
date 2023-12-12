@@ -25,12 +25,6 @@ spec:
           - /tools/entrypoint
         args: []
         entrypoint_options: '^{.*"args":\["\/ko-app\/image-detector","--prow-config=prow\/config\.yaml","--prow-jobs-dir=prow\/jobs","--terraform-dir=configs\/terraform","--sec-scanner-config=sec-scanners-config\.yaml","--kubernetes-dir=prow\/cluster\/components","--autobump-config=configs\/autobump-config\/test-infra-sec-config-autobump-config\.yaml","--inrepo-config=prow\/image-detector\/inrepo-config\.yaml"\],"container_name":"test",.*}$'
-      # Prowjob name: eventing-tools-autobump
-      - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
-        command:
-          - /tools/entrypoint
-        args: []
-        entrypoint_options: '^{.*"args":\["generic-autobumper","--config=ci\/eventing-tools-autobump-config\.yaml"\],"container_name":"test",.*}$'
       # Prowjob name: ci-prow-autobump
       - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:*"
         command:
