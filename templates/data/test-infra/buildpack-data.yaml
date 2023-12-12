@@ -41,6 +41,8 @@ templates:
             type_postsubmit: "true"
             cluster: "trusted-workload"
         jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
               - jobConfig:
                   name: "pre-test-infra-golangci-lint"
                   annotations:
