@@ -96,6 +96,131 @@ func main() {
 			state:  "completed",
 			result: "succeeded",
 		},
+		{
+			name:   "Checkout kyma/module-manifests@main to s/module-manifests",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Checkout kyma/kyma-modules@main to s/kyma-modules",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Checkout kyma/security-scans-modular@main to s/security-scans-modular",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Download conduit-cli",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Install Python",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Install gcloud",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Install Go",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Collect module info",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Get SA token from Vault",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Save SA token to file",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Clone module repo",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Get Docker Password from GCP",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Download Kyma cli",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Create Module",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Dump module template as artifact",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Clean Up Pre-Submit Related Version",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Dump modulemanifest as artifact",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Push Moduletemplate to Main (kyma-modules)",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Clean Up Untagged Versions",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Post-job: Checkout kyma/kyma-modules@main to s/kyma-modules",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Post-job: Checkout kyma/module-manifests@main to s/module-manifests",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Finalize Job",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Post-job: Checkout kyma/security-scans-modular@main to s/security-scans-modular",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Post-Submit process - Publishing",
+			state:  "completed",
+			result: "succeeded",
+		},
+		{
+			name:   "Post-Submit process - Publishing",
+			state:  "completed",
+			result: "succeeded",
+		},
 	}
 
 	for _, test := range timelineTests {
@@ -146,15 +271,14 @@ func getBuildStageStatus(ctx context.Context, connection *azuredevops.Connection
 		return false, fmt.Errorf("error getting builds: %w", err)
 	}
 
-	// Check each record
-	for _, record := range *buildTimeline.Records {
-		if record.Name != nil && *record.Name == test.name {
-			if record.Result != nil && string(*record.Result) == test.result {
-				if record.State != nil && string(*record.State) == test.state {
-					return true, nil // Found a record matching all criteria
-				} else {
-					continue // The state doesn't match, continue checking other records
-				}
+	return checkBuildRecords(buildTimeline, test.name, test.result, test.state)
+}
+
+func checkBuildRecords(timeline *build.Timeline, testName, testResult, testState string) (bool, error) {
+	for _, record := range *timeline.Records {
+		if record.Name != nil && *record.Name == testName {
+			if record.Result != nil && string(*record.Result) == testResult && record.State != nil && string(*record.State) == testState {
+				return true, nil // Found a record matching all criteria
 			} else {
 				continue // The result doesn't match, continue checking other records
 			}
@@ -294,4 +418,61 @@ func runTimelineTests(ctx context.Context, connection *azuredevops.Connection, p
 
 	fmt.Printf("Test passed for %s\n", test.name)
 	return true
+}
+
+var unitTests = []struct {
+	name           string
+	timeline       *build.Timeline
+	testName       string
+	testResult     build.TaskResult
+	testState      string
+	expectedResult bool
+	expectedError  bool
+}{
+	{
+		name: "Record matches criteria",
+		timeline: &build.Timeline{
+			Records: &[]build.TimelineRecord{
+				{
+					Name:   strPtr("testName"),
+					Result: taskResultPtr(build.TaskResultValues.Succeeded),
+					State:  timelineRecordStatePtr(build.TimelineRecordStateValues.Completed),
+				},
+			},
+		},
+		testName:       "testName",
+		testResult:     build.TaskResultValues.Succeeded,
+		testState:      "completed",
+		expectedResult: true,
+	},
+	{
+		name: "No matching record",
+		timeline: &build.Timeline{
+			Records: &[]build.TimelineRecord{
+				{
+					Name:   strPtr("otherName"),
+					Result: taskResultPtr(build.TaskResultValues.Failed),
+					State:  timelineRecordStatePtr(build.TimelineRecordStateValues.InProgress),
+				},
+			},
+		},
+		testName:       "testName",
+		testResult:     build.TaskResultValues.Succeeded,
+		testState:      "completed",
+		expectedResult: false,
+		expectedError:  true,
+	},
+}
+
+// Helper function to create a pointer to a string (to simplify test case setup)
+func strPtr(s string) *string {
+	return &s
+}
+
+func taskResultPtr(tr build.TaskResult) *build.TaskResult {
+	return &tr
+}
+
+func timelineRecordStatePtr(trs build.TimelineRecordState) *build.TimelineRecordState {
+	return &trs
 }
