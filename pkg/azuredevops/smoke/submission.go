@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
@@ -28,20 +27,9 @@ func main() {
 	personalAccessToken := os.Getenv("System.AccessToken")
 	projectName := os.Getenv("PROJECT_NAME")
 	pipelineName := os.Getenv("PIPELINE_NAME")
-	pipelineId := os.Getenv("TRIGGERED_PIPELINE_ID")
-	triggeredPipelineID, err := strconv.Atoi(pipelineId)
-	if err != nil {
-		fmt.Printf("TRIGGERED_BUILD_ID (string): %s\n", pipelineId)
-	} else {
-		fmt.Printf("TRIGGERED_BUILD_ID (int): %d\n", triggeredPipelineID)
-	}
-	buildId := os.Getenv("TRIGGERED_BUILD_ID")
-	triggeredBuildID, err := strconv.Atoi(buildId)
-	if err != nil {
-		fmt.Printf("TRIGGERED_BUILD_ID (string): %s\n", buildId)
-	} else {
-		fmt.Printf("TRIGGERED_BUILD_ID (int): %d\n", triggeredBuildID)
-	}
+	pipelineId := 13895
+	buildId := 3690241
+
 	ctx := context.Background()
 
 	connection := createPatConnection(organizationUrl, personalAccessToken)
@@ -90,7 +78,7 @@ func main() {
 	}
 
 	for _, test := range buildTests {
-		runBuildTest(ctx, connection, projectName, pipelineName, triggeredPipelineID, test)
+		runBuildTest(ctx, connection, projectName, pipelineName, pipelineId, test)
 	}
 	timelineTests := []timelineTest{
 		{
@@ -231,7 +219,7 @@ func main() {
 	}
 
 	for _, test := range timelineTests {
-		runTimelineTests(ctx, connection, projectName, triggeredBuildID, test)
+		runTimelineTests(ctx, connection, projectName, buildId, test)
 	}
 
 }
