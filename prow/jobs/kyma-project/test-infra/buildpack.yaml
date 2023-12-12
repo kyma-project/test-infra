@@ -18,7 +18,6 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       spec:
         containers:
@@ -62,13 +61,12 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-build-githubrelease"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^changelog-generator/|^development/tools/cmd/githubrelease/'
+      run_if_changed: '^changelog-generator/|^cmd/tools/githubrelease/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       spec:
         containers:
@@ -84,7 +82,7 @@ presubmits: # runs on PRs
               - "--name=test-infra/githubrelease"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+              - "--dockerfile=cmd/tools/githubrelease/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -118,7 +116,6 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       spec:
         containers:
@@ -172,7 +169,6 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       spec:
         containers:
@@ -217,13 +213,12 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^changelog-generator/|^development/tools/cmd/githubrelease/'
+      run_if_changed: '^changelog-generator/|^cmd/tools/githubrelease/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       spec:
         containers:
@@ -239,7 +234,7 @@ postsubmits: # runs on main
               - "--name=test-infra/githubrelease"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
-              - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+              - "--dockerfile=cmd/tools/githubrelease/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -274,7 +269,6 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^master$
         - ^main$
       spec:
         containers:
