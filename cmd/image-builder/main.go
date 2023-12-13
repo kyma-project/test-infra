@@ -43,10 +43,12 @@ type options struct {
 	platforms  sets.Strings
 	exportTags bool
 	// signOnly only sign images. No build will be performed.
-	signOnly      bool
-	imagesToSign  sets.Strings
-	buildInADO    bool
-	parseTagsOnly bool
+	signOnly              bool
+	imagesToSign          sets.Strings
+	buildInADO            bool
+	adoPreviewRun         bool
+	adoPreviewRunYamlPath string
+	parseTagsOnly         bool
 }
 
 const (
@@ -200,11 +202,13 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 		return nil, fmt.Errorf("JOB_TYPE environment variable is not set to valid value, please set it to either 'presubmit' or 'postsubmit'")
 	}
 
-	number, present := os.LookupEnv("PULL_NUMBER")
-	if !present {
+	pullNumber, isPullNumberSet := os.LookupEnv("PULL_NUMBER")
+	if jobType == "presubmit" && !isPullNumberSet {
 		return nil, fmt.Errorf("PULL_NUMBER environment variable is not set, please set it to valid pull request number")
 	}
-	templateParameters.SetPullNumber(number)
+	if isPullNumberSet {
+		templateParameters.SetPullNumber(pullNumber)
+	}
 
 	baseSHA, present := os.LookupEnv("PULL_BASE_SHA")
 	if !present {
@@ -254,22 +258,43 @@ func buildInADO(o options) error {
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed preparing ADO template parameters, err: %s", err)
 	}
+	fmt.Printf("Using TemplateParameters: %+v\n", templateParameters)
 
-	fmt.Println("Running ADO pipeline.")
 	adoClient := adopipelines.NewClient(o.AdoConfig.ADOOrganizationURL, adoPAT)
+
+	var opts []adopipelines.RunPipelineArgsOptions
+	if o.adoPreviewRun {
+		fmt.Println("Running in preview mode.")
+		opts = append(opts, adopipelines.PipelinePreviewRun(o.adoPreviewRunYamlPath))
+	}
+
+	fmt.Println("Preparing ADO pipeline run arguments.")
+	runPipelineArgs, err := adopipelines.NewRunPipelineArgs(templateParameters, o.AdoConfig.GetADOConfig(), opts...)
+	if err != nil {
+		return fmt.Errorf("build in ADO failed, failed creating ADO pipeline run args, err: %s", err)
+	}
 
 	fmt.Println("Triggering ADO build pipeline")
 	ctx := context.Background()
-	pipelineRun, err := adopipelines.Run(ctx, adoClient, templateParameters, o.AdoConfig.GetADOConfig())
+	pipelineRun, err := adoClient.RunPipeline(ctx, runPipelineArgs)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed running ADO pipeline, err: %s", err)
+	}
+
+	if o.adoPreviewRun {
+		if pipelineRun.FinalYaml != nil {
+			fmt.Printf("ADO pipeline preview run final yaml\n: %s", *pipelineRun.FinalYaml)
+		} else {
+			fmt.Println("ADO pipeline preview run final yaml is empty")
+		}
+		return nil
 	}
 
 	pipelineRunResult, err := adopipelines.GetRunResult(ctx, adoClient, o.AdoConfig.GetADOConfig(), pipelineRun.Id, 30*time.Second)
 	if err != nil {
 		return fmt.Errorf("build in ADO failed, failed getting ADO pipeline run result, err: %s", err)
 	}
-	fmt.Printf("ADO pipeline run finished with status: %s", *pipelineRunResult)
+	fmt.Printf("ADO pipeline run finished with status: %s\n", *pipelineRunResult)
 
 	fmt.Println("Getting ADO pipeline run logs.")
 	adoBuildClient, err := adopipelines.NewBuildClient(o.AdoConfig.ADOOrganizationURL, adoPAT)
@@ -565,11 +590,23 @@ func validateOptions(o options) error {
 	}
 
 	if o.envFile != "" && o.buildInADO {
-		errs = append(errs, fmt.Errorf("envFile flag is not supported when running in ADO"))
+		errs = append(errs, fmt.Errorf("env-file flag is not supported when running in ADO"))
 	}
 
 	if o.variant != "" && o.buildInADO {
 		errs = append(errs, fmt.Errorf("variant flag is not supported when running in ADO"))
+	}
+
+	if o.adoPreviewRun && !o.buildInADO {
+		errs = append(errs, fmt.Errorf("ado-preview-run flag is not supported when running locally"))
+	}
+
+	if o.adoPreviewRun && o.adoPreviewRunYamlPath == "" {
+		errs = append(errs, fmt.Errorf("ado-preview-run-yaml-path flag is missing, please provide path to yaml file with ADO pipeline definition"))
+	}
+
+	if o.adoPreviewRunYamlPath != "" && !o.adoPreviewRun {
+		errs = append(errs, fmt.Errorf("ado-preview-run-yaml-path flag is provided, but adoPreviewRun flag is not set to true"))
 	}
 
 	return errutil.NewAggregate(errs)
@@ -643,6 +680,8 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.signOnly, "sign-only", false, "Only sign the image, do not build it")
 	flagSet.Var(&o.imagesToSign, "images-to-sign", "Comma-separated list of images to sign. Only used when sign-only flag is set")
 	flagSet.BoolVar(&o.buildInADO, "build-in-ado", false, "Build in Azure DevOps pipeline environment")
+	flagSet.BoolVar(&o.adoPreviewRun, "ado-preview-run", false, "Trigger ADO pipeline in preview mode")
+	flagSet.StringVar(&o.adoPreviewRunYamlPath, "ado-preview-run-yaml-path", "", "Path to yaml file with ADO pipeline definition to be used in preview mode")
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
 
 	return flagSet
@@ -715,15 +754,16 @@ func main() {
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		fmt.Printf("%s", jsonTags)
+		fmt.Printf("%s\n", jsonTags)
 		os.Exit(0)
 	}
 	if o.buildInADO {
 		err = buildInADO(o)
 		if err != nil {
-			fmt.Printf("Image build failed with error: %s", err)
+			fmt.Printf("Image build failed with error: %s\n", err)
 			os.Exit(1)
 		}
+		os.Exit(0)
 	}
 	err = buildLocally(o)
 	if err != nil {
