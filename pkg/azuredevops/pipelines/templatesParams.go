@@ -14,6 +14,7 @@ func (e ErrRequiredParamNotSet) Error() string {
 	return "required parameter not set: " + string(e)
 }
 
+// TODO: Rename, remove Template, as this is are parameters for pipeline execution.
 // OCIImageBuilderTemplateParams is a map of parameters for OCIImageBuilderTemplate
 type OCIImageBuilderTemplateParams map[string]string
 
