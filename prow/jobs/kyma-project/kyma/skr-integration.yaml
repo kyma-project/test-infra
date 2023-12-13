@@ -309,4 +309,55 @@ periodics: # runs on schedule
               requests:
                 memory: 100Mi
                 cpu: 50m
+    - name: skr-trial-suspension-dev
+      annotations:
+        description: "skr trial suspension test"
+        owner: "gopher"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "skr-trial-suspension-dev"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-build-main: "true"
+        preset-kcp-client-dev-envs: "true"
+        preset-keb-dev-credentials: "true"
+        preset-kyma-integration-compass-dev: "true"
+        preset-kyma-integration-kcp-client-credentials: "true"
+      cron: "5 1 * * *"
+      skip_report: false
+      decorate: true
+      cluster: trusted-workload
+      extra_refs:
+        - org: kyma-project
+          repo: kyma-environment-broker
+          base_ref: main
+      reporter_config:
+        slack:
+          channel: kyma-gopher-private-alerts
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231206-59f0cdfa"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command:
+              - "make"
+            args:
+              - "-C"
+              - "testing/e2e/skr"
+              - "skr-trial-suspension"
+            env:
+              - name: KEB_PLAN_ID
+                value: "7d55d31d-35ae-4438-bf13-6ffdfa107d9f"
+              - name: KEB_PLATFORM_REGION
+                value: "cf-eu10"
+              - name: KEB_REGION
+                value: "empty-for-trial"
+              - name: KEB_SUBACCOUNT_ID
+                value: "prow-keb-trial-suspension"
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
   
