@@ -25,8 +25,6 @@
   owner: kyma-project
 - name: private-fn-for-e2e-serverless-tests
   owner: kyma-project
-- name: charts
-  owner: kyma-project
 - name: examples
   owner: kyma-project
 - name: api-gateway

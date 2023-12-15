@@ -19,7 +19,6 @@ global:
         - name: "hydroform"
         - name: "istio-operator"
         - name: "private-fn-for-e2e-serverless-tests"
-        - name: "charts"
         - name: "examples"
         - name: "api-gateway"
         - name: "istio"
