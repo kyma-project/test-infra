@@ -21,7 +21,7 @@ presubmits:
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231206-59f0cdfa"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231215-751c5f92"
             securityContext:
               privileged: true
               seccompProfile:
