@@ -135,4 +135,7 @@ postsubmits: # runs on main
               requests:
                 memory: 8Gi
                 cpu: 2
+              limits:
+                memory: 16Gi
+                cpu: 4
   
