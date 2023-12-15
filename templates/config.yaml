@@ -16,7 +16,6 @@ global:
         - name: "third-party-images"
         - name: "community"
         - name: "hydroform"
-        - name: "istio-operator"
         - name: "private-fn-for-e2e-serverless-tests"
         - name: "examples"
         - name: "api-gateway"

@@ -19,8 +19,6 @@
   owner: kyma-project
 - name: hydroform
   owner: kyma-project
-- name: istio-operator
-  owner: kyma-project
 - name: private-fn-for-e2e-serverless-tests
   owner: kyma-project
 - name: examples
