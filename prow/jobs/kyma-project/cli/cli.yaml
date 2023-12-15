@@ -133,6 +133,6 @@ postsubmits: # runs on main
               - "ci-release"
             resources:
               requests:
-                memory: 3Gi
+                memory: 8Gi
                 cpu: 2
   
