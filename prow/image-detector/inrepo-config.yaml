@@ -11,8 +11,6 @@
   owner: kyma-project
 - name: cli
   owner: kyma-project
-- name: website
-  owner: kyma-project
 - name: lifecycle-manager
   owner: kyma-project
 - name: third-party-images
