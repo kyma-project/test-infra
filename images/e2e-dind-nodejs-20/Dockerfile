@@ -63,7 +63,7 @@ RUN curl -Lo helm.tar.gz "https://get.helm.sh/helm-${HELM_VERSION}-linux-$(go en
 
 FROM base
 
-COPY ../e2e-dind-nodejs/init.sh /
+COPY init.sh /
 COPY --from=go-deps /usr/local/bin/k3d /usr/local/bin/
 COPY --from=go-deps /usr/local/bin/kubectl /usr/local/bin/
 COPY --from=go-deps /usr/local/bin/helm /usr/local/bin/
