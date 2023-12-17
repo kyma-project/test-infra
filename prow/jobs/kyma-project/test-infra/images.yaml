@@ -15,7 +15,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
             securityContext:
               privileged: false
               seccompProfile:
@@ -28,6 +28,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=cmd/image-builder/images/kaniko/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 500Mi
@@ -98,7 +99,7 @@ postsubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
             securityContext:
               privileged: false
               seccompProfile:
@@ -111,6 +112,7 @@ postsubmits:
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=cmd/image-builder/images/kaniko/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 500Mi
