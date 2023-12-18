@@ -33,6 +33,7 @@
 /prow/jobs/kyma-project/control-plane/kcp-cli.yaml @kyma-project/operations @neighbors-dev-bot
 /prow/jobs/kyma-project/directory-size-exporter/ @kyma-project/observability @neighbors-dev-bot
 /prow/jobs/kyma-project/eventing-auth-manager @kyma-project/eventing @neighbors-dev-bot
+/prow/jobs/kyma-project/eventing-publisher-proxy @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma-project/eventing-manager/ @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma-project/examples @kyma-project/observability @neighbors-dev-bot
 /prow/jobs/kyma-incubator/compass @kirilkabakchiev @petartodorovv @gvachkov @dimitarpetrov @nickymateev @dzahariev @dragobt @kaloyanspiridonov @nyordanoff @stanislavstefanov @ivantenevvasilev @ognyvrac @la4ezar @emmakarova @alextargov @neighbors-dev-bot
@@ -74,6 +75,7 @@
 /prow/jobs/kyma-project/application-connector-manager.yaml @kyma-project/framefrog @neighbors-dev-bot
 /prow/jobs/kyma-project/serverless.yaml @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/kyma-project/nats-manager @kyma-project/eventing @neighbors-dev-bot
+
 /prow/jobs/kyma-project/runtime-watcher @kyma-project/jellyfish @neighbors-dev-bot
 /prow/jobs/scans @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma-incubator/slack-bot @kyma-project/gopher @neighbors-dev-bot
