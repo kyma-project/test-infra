@@ -1,0 +1,12 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      nats-manager:
+        - pjName: "pull-eventing-publisher-proxy-build"
+          report: false
+        - pjName: "post-eventing-publisher-proxy-build"
+          report: false
+prConfigs: #
+  kyma-project:
+    eventing-publisher-proxy:
+      prNumber: 29
