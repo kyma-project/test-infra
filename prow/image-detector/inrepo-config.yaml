@@ -11,8 +11,6 @@
   owner: kyma-project
 - name: cli
   owner: kyma-project
-- name: website
-  owner: kyma-project
 - name: lifecycle-manager
   owner: kyma-project
 - name: third-party-images
@@ -21,11 +19,7 @@
   owner: kyma-project
 - name: hydroform
   owner: kyma-project
-- name: istio-operator
-  owner: kyma-project
 - name: private-fn-for-e2e-serverless-tests
-  owner: kyma-project
-- name: charts
   owner: kyma-project
 - name: examples
   owner: kyma-project
@@ -48,8 +42,6 @@
 - name: kyma-environment-broker
   owner: kyma-project
 - name: telemetry-manager
-  owner: kyma-project
-- name: director-size-exporter
   owner: kyma-project
 - name: compass-manager
   owner: kyma-project
