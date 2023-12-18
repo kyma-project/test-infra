@@ -107,16 +107,16 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-telemetry-manager-release-module
+    - name: post-telemetry-manager-build-release
       annotations:
-        description: "Post-submit job to release telemetry module."
+        description: "Post-submit job to build telemetry-manager image for a release."
         owner: "huskies"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-telemetry-manager-release-module"
+        prow.k8s.io/pubsub.runID: "post-telemetry-manager-build-release"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-bot-github-token: "true"
         preset-sa-kyma-push-images: "true"
+        preset-signify-prod-secret: "true"
       always_run: true
       skip_report: false
       decorate: true
@@ -129,21 +129,36 @@ postsubmits: # runs on main
           channel: huskies-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231128-9bb59ac6"
+          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
             command:
-              - "make"
+              - "/image-builder"
             args:
-              - "release"
-            env:
-              - name: RELEASE_TAG
-                value: "${PULL_BASE_REF}"
+              - "--name=telemetry-manager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=Dockerfile"
+              - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
-                memory: 3Gi
-                cpu: 2
+                memory: 1.5Gi
+                cpu: 1
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+          - name: signify-secret
+            secret:
+              secretName: signify-dev-secret
   

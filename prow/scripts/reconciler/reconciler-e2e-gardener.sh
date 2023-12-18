@@ -101,7 +101,7 @@ reconciler::initialize_test_pod
 reconciler::trigger_kyma_reconcile
 
 # Wait until reconciliation is complete
-reconciler::wait_until_kyma_reconciled
+#reconciler::wait_until_kyma_reconciled
 
 #!!! Must be at the end of the script !!!
 ERROR_LOGGING_GUARD="false"

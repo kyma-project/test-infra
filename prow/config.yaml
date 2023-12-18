@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231127-7842342f
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231127-7842342f
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231127-7842342f
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231127-7842342f
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20231218-61f197af
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20231218-61f197af
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20231218-61f197af
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20231218-61f197af
         resources:
           clonerefs:
             requests:
@@ -252,21 +252,13 @@ branch-protection:
             kyma-2.0-docu:
               required_pull_request_reviews:
                 require_code_owner_reviews: false
-        website:
-          branches:
-            main:
-              required_status_checks:
-                contexts:
-                  - "netlify/kyma-project/deploy-preview"
-            archive-snapshots:
-              required_status_checks:
-                contexts:
-                  - "netlify/kyma-project-old/deploy-preview"
         community:
           protect: false
           branches:
             main:
               protect: true
+        community-modules:
+          enforce_admins: false
         private-fn-for-e2e-serverless-tests:
           protect: false
         busola:
@@ -295,7 +287,11 @@ branch-protection:
         kyma-environment-broker:
           required_status_checks:
             contexts:
-              - run-eslint
+              - "run-eslint"
+              - "run-unit-tests / build"
+              - "run-keb-chart-tests / finish-keb-chart-tests"
+              - "markdown-link-check"
+              - "validate-labels"
         btp-manager:
           required_status_checks:
             contexts:
@@ -310,11 +306,14 @@ branch-protection:
               - "E2E (kyma-metrics)"
               - "E2E (module-status-propagation)"
               - "E2E (module-without-default-cr)"
+              - "E2E (upgrade-under-deletion)"
+              - "E2E (self-signed-certificate-rotation)"
               - "E2E (non-blocking-deletion)"
               - "E2E (purge-controller)"
               - "E2E (purge-metrics)"
               - "E2E (watcher-enqueue)"
               - "E2E (module-upgrade)"
+              - "E2E (ca-certificate-rotation)"
               - "Run 'make test'"
               - "kyma (unstable) alpha deploy -k config/control-plane"
               - "kyma (unstable) alpha deploy -k config/default"
@@ -366,7 +365,6 @@ tide:
     "*": -1 # disable batch merging for all repos
   merge_method:
     kyma-project/kyma: squash
-    kyma-project/website: squash
     kyma-project/test-infra: squash
     kyma-project/kyma-dashboard: squash
     kyma-project/busola: squash
@@ -388,6 +386,7 @@ tide:
     kyma-project/keda-manager: squash
     kyma-project/telemetry-manager: squash
     kyma-project/directory-size-exporter: squash
+    kyma-project/eventing-publisher-proxy: squash
     kyma-project/eventing-manager: squash
     kyma-project/eventing-auth-manager: squash
     kyma-project/eventing-tools: squash
@@ -449,6 +448,11 @@ tide:
         - kyma-project/k8s-prow
   context_options:
     from-branch-protection: true
+    orgs:
+      kyma-project:
+        repos:
+          lifecycle-manager:
+            skip-unknown-contexts: true
 
 presets:
   - labels:

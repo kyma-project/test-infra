@@ -1,23 +1,8 @@
 templates:
   - from: generic.tmpl
     render:
-      - to: ../../prow/jobs/kyma-project/warden/warden.yaml
+      - to: ../../prow/jobs/kyma-project/warden/warden-build.yaml
         localSets:
-          testing:
-            skip_report: "false"
-            max_concurrency: "10"
-            decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9bb59ac6"
-            pubsub_project: "sap-kyma-prow"
-            pubsub_topic: "prowjobs"
-            request_memory: 1Gi
-            request_cpu: 100m
-          e2e_dind:
-            labels:
-              preset-kind-volume-mounts: "true"
-              preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231128-9bb59ac6
-            command: "/init.sh"
           skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|\.md$'
         jobConfigs:
@@ -51,7 +36,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/admission/Dockerfile"
-                    - "--tag=latest"
+                    - '--tag=$(PULL_BASE_REF)'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -86,7 +71,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=docker/operator/Dockerfile"
-                    - "--tag=latest"
+                    - '--tag=$(PULL_BASE_REF)'
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -139,6 +124,95 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - skip_if_only_changed_documentation
+      - to: ../../prow/jobs/kyma-project/warden/warden-release.yaml
+        localSets:
+          release_image_build:
+            labels:
+              preset-signify-prod-secret: "true"
+            always_run: true
+            branches:
+              - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+        jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
+              - jobConfig:
+                  name: release-warden-admission-build
+                  annotations:
+                    owner: otters
+                    description: Warden admission build for a release.
+                  args:
+                    - "--name=warden/admission"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/admission/Dockerfile"
+                    - '--tag=$(PULL_BASE_REF)'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - release_image_build
+              - jobConfig:
+                  name: release-warden-operator-build
+                  annotations:
+                    owner: otters
+                    description: Warden operator build for a release.
+                  args:
+                    - "--name=warden/operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/operator/Dockerfile"
+                    - '--tag=$(PULL_BASE_REF)'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - release_image_build
+      - to: ../../prow/jobs/kyma-project/warden/warden-lint.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
+              - jobConfig:
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
+                  name: pre-warden-lint
+                  optional: true
+                  always_run: true
+                  annotations:
+                    owner: otters
+                    description: executes the 'golangci-lint lint' command before any pull request.
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "golangci-lint run -v && echo 'OK!'"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+      - to: ../../prow/jobs/kyma-project/warden/warden-verify.yaml
+        localSets:
+          testing:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231215-751c5f92"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 1Gi
+            request_cpu: 100m
+          e2e_dind:
+            labels:
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231215-751c5f92
+            command: "/init.sh"
+          skip_if_only_changed_documentation:
+            skip_if_only_changed: '^docs/|\.md$'
+        jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
               - jobConfig:
                   name: post-warden-verify
                   annotations:
@@ -158,24 +232,6 @@ templates:
                     - e2e_dind
                     - skip_if_only_changed_documentation
               - jobConfig:
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
-                  name: pre-warden-lint
-                  optional: true
-                  always_run: true
-                  annotations:
-                    owner: otters
-                    description: executes the 'golangci-lint lint' command before any pull request.
-                  command: "bash"
-                  args:
-                    - "-c"
-                    - "golangci-lint run -v && echo 'OK!'"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-              - jobConfig:
                   name: pre-warden-unit-test
                   annotations:
                     owner: otters
@@ -192,21 +248,6 @@ templates:
                   local:
                     - testing
                     - skip_if_only_changed_documentation
-  - from: generic.tmpl
-    render:
-      - to: ../../prow/jobs/kyma-project/warden/integration-test.yaml
-        localSets:
-          e2e_dind:
-            labels:
-              preset-kind-volume-mounts: "true"
-              preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231128-9bb59ac6
-            command: "/init.sh"
-          skip_if_only_changed_documentation:
-            skip_if_only_changed: '^docs/|\.md$'
-        jobConfigs:
-          - repoName: "github.com/kyma-project/warden"
-            jobs:
               - jobConfig:
                   name: pre-warden-integration-test
                   annotations:

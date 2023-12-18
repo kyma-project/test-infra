@@ -20,6 +20,9 @@ templates:
           kyma_nightly_subaccount:
             env:
               KEB_SUBACCOUNT_ID: "kyma-skr-nightly"
+          kyma_trial_suspension_subaccount:
+            env:
+              KEB_SUBACCOUNT_ID: "prow-keb-trial-suspension"
           keb_plan_azure:
             env:
               KEB_PLAN_ID: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
@@ -75,7 +78,7 @@ templates:
                     owner: gopher
                     description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231215-751c5f92
                   command: make
                   args:
                     - -C
@@ -97,7 +100,7 @@ templates:
                     owner: gopher
                     description: skr integration test azure
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231215-751c5f92
                   command: make
                   args:
                     - -C
@@ -121,7 +124,7 @@ templates:
                   cron: "5 1 * * *" # "At 01:05"
                   labels:
                     preset-skr-al-service-key: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231215-751c5f92
                   command: make
                   args:
                     - -C
@@ -143,7 +146,7 @@ templates:
                     owner: gopher
                     description: skr integration test trial
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231215-751c5f92
                   command: make
                   args:
                     - -C
@@ -165,7 +168,7 @@ templates:
                     owner: gopher
                     description: skr integration test free
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231215-751c5f92
                   command: make
                   args:
                     - -C
@@ -187,7 +190,7 @@ templates:
                     owner: gopher
                     description: skr integration test preview
                   cron: "5 1 * * *" # "At 01:05"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231128-9bb59ac6
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231215-751c5f92
                   command: make
                   args:
                     - -C
@@ -202,4 +205,25 @@ templates:
                     - "jobConfig_default"
                     - "keb_plan_preview"
                     - "kyma_integration_subaccount"
-
+              - jobConfig:
+                  name: "skr-trial-suspension-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr trial suspension test
+                  cron: "5 1 * * *" # "At 01:05"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231215-751c5f92
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr-trial-suspension
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_kyma-environment-broker"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_trial"
+                    - "kyma_trial_suspension_subaccount"

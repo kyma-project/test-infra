@@ -1,4 +1,4 @@
-FROM python:3.12.0-alpine3.18
+FROM python:3.12.1-alpine3.18
 
 # Allow statements and log messages to immediately appear in the Knative logs
 ENV PYTHONUNBUFFERED True

@@ -10,6 +10,7 @@ templates:
             branches:
               - "^master$"
               - "^main$"
+              - "^release-*"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
@@ -118,8 +119,8 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_SHA\" }}`}}'
-                    - "--tag=latest"
+                    - '--tag=$(PULL_BASE_REF)'
+                    - '--tag=$(PULL_BASE_SHA)'
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -140,7 +141,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
-                    - '--tag={{`{{ .Env \"PULL_BASE_REF\" }}`}}'
+                    - '--tag=$(PULL_BASE_REF)'
                   branches:
                     - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
                 inheritedConfigs:
@@ -150,40 +151,14 @@ templates:
                   local:
                     - job_build
                     - limits
-              - jobConfig:
-                  name: release-keda-manager-module-build
-                  annotations:
-                    owner: otters
-                    description: Job to build keda module for a release.
-                  always_run: true
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                    preset-bot-github-token: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/keda-manager:${PULL_BASE_REF}"
-                  command: "./scripts/release.sh"
-                  args:
-                    - "ci"
-                  branches:
-                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                  local:
-                    - limits
-  - from: generic.tmpl
-    render:
+
       - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager-lint.yaml
         jobConfigs:
           - repoName: github.com/kyma-project/keda-manager
             jobs:
               - jobConfig:
                   name: pre-keda-manager-operator-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
                   always_run: true
                   annotations:
                     owner: otters
@@ -199,8 +174,6 @@ templates:
                   global:
                     - jobConfig_default
                     - jobConfig_presubmit
-  - from: generic.tmpl
-    render:
       - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager-verify.yaml
         localSets:
           dind_job_k3d:
@@ -209,7 +182,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231128-9bb59ac6
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231215-751c5f92
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -231,6 +204,7 @@ templates:
                     - "make test"
                   branches:
                     - ^main$ # any pr against main triggers this
+                    - ^release-*
                 inheritedConfigs:
                   global:
                     - image_buildpack-golang # takes latest golang image
@@ -251,6 +225,9 @@ templates:
                     - -c
                     - |
                       make -C hack/ci k3d-integration-test
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                    - ^release-*
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -271,6 +248,9 @@ templates:
                     - -c
                     - |
                       make -C hack/ci k3d-lm-integration-test
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                    - ^release-*
                 inheritedConfigs:
                   global:
                     - jobConfig_default
@@ -291,6 +271,9 @@ templates:
                     - -c
                     - |
                       make -C hack/ci k3d-upgrade-test
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                    - ^release-*
                 inheritedConfigs:
                   global:
                     - jobConfig_default

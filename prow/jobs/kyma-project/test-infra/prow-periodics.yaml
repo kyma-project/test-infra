@@ -20,7 +20,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231129-6d721838"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231215-80c2f227"
             securityContext:
               privileged: false
               seccompProfile:
@@ -51,7 +51,7 @@ postsubmits: # runs on main
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231129-6d721838"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231215-80c2f227"
             securityContext:
               privileged: false
               seccompProfile:
@@ -88,7 +88,7 @@ postsubmits: # runs on main
       spec:
         serviceAccountName: sa-prow-deploy
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231128-9bb59ac6"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231215-751c5f92"
             securityContext:
               privileged: false
               seccompProfile:
@@ -98,37 +98,6 @@ postsubmits: # runs on main
               - "prow/cluster/deploy.sh"
   
 periodics: # runs on schedule
-    - name: eventing-tools-autobump
-      annotations:
-        description: "autobump eventing images"
-        owner: "skydivingtunas"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "eventing-tools-autobump"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-autobump-bot-github-token: "true"
-        preset-tunas-github-bot-token: "true"
-      cron: "30 * * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: eventing-tools
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231127-7842342f"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "generic-autobumper"
-            args:
-              - "--config=ci/eventing-tools-autobump-config.yaml"
-  
     - name: ci-prow-label-sync
       annotations:
         description: "Periodic sync of labels in GitHub"
@@ -148,7 +117,7 @@ periodics: # runs on schedule
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:v20231127-7842342f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:v20231218-61f197af"
             securityContext:
               privileged: false
               seccompProfile:
@@ -185,7 +154,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231127-7842342f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231218-61f197af"
             securityContext:
               privileged: false
               seccompProfile:
@@ -218,7 +187,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231129-6d721838"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231215-80c2f227"
             securityContext:
               privileged: false
               seccompProfile:
@@ -256,7 +225,7 @@ periodics: # runs on schedule
           channel: kyma-neighbors-alerts
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231127-7842342f"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231218-61f197af"
             securityContext:
               privileged: false
               seccompProfile:

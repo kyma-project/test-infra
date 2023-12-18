@@ -8,7 +8,6 @@ templates:
             max_concurrency: "10"
             decorate: "true"
             branches:
-              - "^master$"
               - "^main$"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
@@ -41,6 +40,8 @@ templates:
             type_postsubmit: "true"
             cluster: "trusted-workload"
         jobConfigs:
+          - repoName: "github.com/kyma-project/test-infra"
+            jobs:
               - jobConfig:
                   name: "pre-test-infra-golangci-lint"
                   annotations:
@@ -78,12 +79,12 @@ templates:
                   annotations:
                     description: "Build test-infra/githubrelease image"
                     owner: neighbors
-                  run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                  run_if_changed: "^experimental/changelog-generator/|^cmd/tools/githubrelease/"
                   args:
                     - "--name=test-infra/githubrelease"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
-                    - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                    - "--dockerfile=cmd/tools/githubrelease/Dockerfile"
                 inheritedConfigs:
                   local:
                     - "default"
@@ -95,12 +96,12 @@ templates:
                     owner: neighbors
                   labels:
                     preset-signify-prod-secret: "true"
-                  run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                  run_if_changed: "^experimental/changelog-generator/|^cmd/tools/githubrelease/"
                   args:
                     - "--name=test-infra/githubrelease"
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
-                    - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                    - "--dockerfile=cmd/tools/githubrelease/Dockerfile"
                 inheritedConfigs:
                   local:
                     - "default"

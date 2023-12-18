@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"os"
 
+	adoPipelines "github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 	"github.com/kyma-project/test-infra/pkg/sign"
 	"github.com/kyma-project/test-infra/pkg/tags"
 	"gopkg.in/yaml.v3"
 )
 
 type Config struct {
+	AdoConfig adoPipelines.Config `yaml:"ado-config,omitempty" json:"ado-config,omitempty"`
 	// Registry is URL where clean build should land.
 	Registry Registry `yaml:"registry" json:"registry"`
 	// DevRegistry is Registry URL where development/dirty images should land.

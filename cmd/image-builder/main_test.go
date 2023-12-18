@@ -102,7 +102,8 @@ func Test_validateOptions(t *testing.T) {
 			opts: options{
 				context:    "directory/",
 				name:       "test-image",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
+				configPath: "config.yaml",
 			},
 		},
 		{
@@ -110,7 +111,7 @@ func Test_validateOptions(t *testing.T) {
 			expectErr: true,
 			opts: options{
 				name:       "test-image",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 			},
 		},
 		{
@@ -118,7 +119,7 @@ func Test_validateOptions(t *testing.T) {
 			expectErr: true,
 			opts: options{
 				context:    "directory/",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 			},
 		},
 		{
@@ -127,6 +128,63 @@ func Test_validateOptions(t *testing.T) {
 			opts: options{
 				context: "directory/",
 				name:    "test-image",
+			},
+		},
+		{
+			name:      "Empty configPath",
+			expectErr: true,
+			opts: options{
+				context:    "directory/",
+				name:       "test-image",
+				dockerfile: "dockerfile",
+			},
+		},
+		{
+			name:      "signOnly without imagesToSign",
+			expectErr: true,
+			opts: options{
+				context:      "directory/",
+				name:         "test-image",
+				dockerfile:   "dockerfile",
+				configPath:   "config.yaml",
+				signOnly:     true,
+				imagesToSign: []string{},
+			},
+		},
+		{
+			name:      "imagesToSign without signOnly",
+			expectErr: true,
+			opts: options{
+				context:      "directory/",
+				name:         "test-image",
+				dockerfile:   "dockerfile",
+				configPath:   "config.yaml",
+				signOnly:     false,
+				imagesToSign: []string{"image1"},
+			},
+		},
+		{
+			name:      "envFile with buildInADO",
+			expectErr: true,
+			opts: options{
+				context:    "directory/",
+				name:       "test-image",
+				dockerfile: "dockerfile",
+				configPath: "config.yaml",
+				envFile:    "envfile",
+				buildInADO: true,
+			},
+		},
+		{
+			name:      "variant with buildInADO",
+			expectErr: true,
+			opts: options{
+				context:    "directory/",
+				name:       "test-image",
+				dockerfile: "dockerfile",
+				configPath: "config.yaml",
+				variant:    "variant",
+				buildInADO: true,
 			},
 		},
 	}
@@ -155,7 +213,7 @@ func TestFlags(t *testing.T) {
 			expectedOpts: options{
 				context:    ".",
 				configPath: "/config/image-builder-config.yaml",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 				logDir:     "/logs/artifacts",
 			},
 			expectedErr: true,
@@ -174,14 +232,14 @@ func TestFlags(t *testing.T) {
 				},
 				context:    "prow/build",
 				configPath: "config.yaml",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 				logDir:     "prow/logs",
 				orgRepo:    "kyma-project/test-infra",
 				silent:     true,
 			},
 			args: []string{
 				"--config=config.yaml",
-				"--dockerfile=Dockerfile",
+				"--dockerfile=dockerfile",
 				"--repo=kyma-project/test-infra",
 				"--name=test-image",
 				"--tag=latest",
@@ -196,7 +254,7 @@ func TestFlags(t *testing.T) {
 			expectedOpts: options{
 				context:    ".",
 				configPath: "/config/image-builder-config.yaml",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 				logDir:     "/logs/artifacts",
 				exportTags: true,
 			},
@@ -209,7 +267,7 @@ func TestFlags(t *testing.T) {
 			expectedOpts: options{
 				context:    ".",
 				configPath: "/config/image-builder-config.yaml",
-				dockerfile: "Dockerfile",
+				dockerfile: "dockerfile",
 				logDir:     "/logs/artifacts",
 				buildArgs: sets.Tags{
 					tags.Tag{Name: "BIN", Value: "test"},
@@ -500,3 +558,70 @@ func Test_appendMissing(t *testing.T) {
 		}
 	}
 }
+
+type mockSigner struct {
+	signFunc func([]string) error
+}
+
+func (m *mockSigner) Sign(images []string) error {
+	return m.signFunc(images)
+}
+
+// TODO: add tests for functions related to execution in ado.
+// 		Test copied from pkg/azuredevops/pipelines/pipelines_test.go, rewrite to run it here.
+// Describe("Run", func() {
+// 	var (
+// 		templateParams  map[string]string
+// 		runPipelineArgs adoPipelines.RunPipelineArgs
+// 	)
+//
+// 	BeforeEach(func() {
+// 		templateParams = map[string]string{"param1": "value1", "param2": "value2"}
+// 		runPipelineArgs = adoPipelines.RunPipelineArgs{
+// 			Project:    &adoConfig.ADOProjectName,
+// 			PipelineId: &adoConfig.ADOPipelineID,
+// 			RunParameters: &adoPipelines.RunPipelineParameters{
+// 				PreviewRun:         ptr.To(false),
+// 				TemplateParameters: &templateParams,
+// 			},
+// 			PipelineVersion: &adoConfig.ADOPipelineVersion,
+// 		}
+// 	})
+//
+// 	It("should run the pipeline", func() {
+// 		mockRun := &adoPipelines.Run{Id: ptr.To(123)}
+// 		mockADOClient.On("RunPipeline", ctx, runPipelineArgs).Return(mockRun, nil)
+//
+// 		run, err := pipelines.Run(ctx, mockADOClient, templateParams, adoConfig)
+// 		Expect(err).ToNot(HaveOccurred())
+// 		Expect(run.Id).To(Equal(ptr.To(123)))
+// 		mockADOClient.AssertCalled(t, "RunPipeline", ctx, runPipelineArgs)
+// 		mockADOClient.AssertNumberOfCalls(t, "RunPipeline", 1)
+// 		mockADOClient.AssertExpectations(GinkgoT())
+// 	})
+//
+// 	It("should handle ADO client error", func() {
+// 		mockADOClient.On("RunPipeline", ctx, runPipelineArgs).Return(nil, fmt.Errorf("ADO client error"))
+//
+// 		_, err := pipelines.Run(ctx, mockADOClient, templateParams, adoConfig)
+// 		Expect(err).To(HaveOccurred())
+// 		mockADOClient.AssertCalled(t, "RunPipeline", ctx, runPipelineArgs)
+// 		mockADOClient.AssertNumberOfCalls(t, "RunPipeline", 1)
+// 		mockADOClient.AssertExpectations(GinkgoT())
+// 	})
+//
+// 	It("should run the pipeline in preview mode", func() {
+// 		finalYaml := "pipeline:\n  stages:\n  - stage: Build\n    jobs:\n    - job: Build\n      steps:\n      - script: echo Hello, world!\n        displayName: 'Run a one-line script'"
+// 		runPipelineArgs.RunParameters.PreviewRun = ptr.To(true)
+// 		mockRun := &adoPipelines.Run{Id: ptr.To(123), FinalYaml: &finalYaml}
+// 		mockADOClient.On("RunPipeline", ctx, runPipelineArgs).Return(mockRun, nil)
+//
+// 		run, err := pipelines.Run(ctx, mockADOClient, templateParams, adoConfig, pipelines.PipelinePreviewRun)
+// 		Expect(err).ToNot(HaveOccurred())
+// 		Expect(run.Id).To(Equal(ptr.To(123)))
+// 		Expect(run.FinalYaml).To(Equal(&finalYaml))
+// 		mockADOClient.AssertCalled(t, "RunPipeline", ctx, runPipelineArgs)
+// 		mockADOClient.AssertNumberOfCalls(t, "RunPipeline", 1)
+// 		mockADOClient.AssertExpectations(GinkgoT())
+// 	})
+// })
