@@ -10,7 +10,7 @@ a 1:1 representation of a Pod that would be applied on the workload cluster:
 
 The applications serve as a CLI extension of Prow's internal functions to let you generate, run, and debug any ProwJob.
 
-## Requirements
+## Prerequisites
 
 * Prow + ProwJobs config files
 * Access to secrets to perform tests, if needed
@@ -19,7 +19,7 @@ The applications serve as a CLI extension of Prow's internal functions to let yo
 
 > Podman users: This guide can also work for Podman, but keep in mind that if the job uses Docker in Docker configuration, it's not possible to start the daemon.
 
-## Instruction
+## Procedure
 
 1. Compile mkpj and mkpod.
    ```shell
