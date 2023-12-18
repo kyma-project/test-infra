@@ -302,7 +302,6 @@ branch-protection:
         lifecycle-manager:
           required_status_checks:
             contexts:
-              - "E2E (kyma-deletion)"
               - "E2E (kyma-metrics)"
               - "E2E (module-status-propagation)"
               - "E2E (module-without-default-cr)"
@@ -314,6 +313,8 @@ branch-protection:
               - "E2E (watcher-enqueue)"
               - "E2E (module-upgrade)"
               - "E2E (ca-certificate-rotation)"
+              - "E2E (kyma-deletion-with-foreground-propagation)"
+              - "E2E (kyma-deletion-with-background-propagation)"
               - "Run 'make test'"
               - "kyma (unstable) alpha deploy -k config/control-plane"
               - "kyma (unstable) alpha deploy -k config/default"
