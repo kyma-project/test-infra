@@ -252,16 +252,6 @@ branch-protection:
             kyma-2.0-docu:
               required_pull_request_reviews:
                 require_code_owner_reviews: false
-        website:
-          branches:
-            main:
-              required_status_checks:
-                contexts:
-                  - "netlify/kyma-project/deploy-preview"
-            archive-snapshots:
-              required_status_checks:
-                contexts:
-                  - "netlify/kyma-project-old/deploy-preview"
         community:
           protect: false
           branches:
@@ -375,7 +365,6 @@ tide:
     "*": -1 # disable batch merging for all repos
   merge_method:
     kyma-project/kyma: squash
-    kyma-project/website: squash
     kyma-project/test-infra: squash
     kyma-project/kyma-dashboard: squash
     kyma-project/busola: squash
