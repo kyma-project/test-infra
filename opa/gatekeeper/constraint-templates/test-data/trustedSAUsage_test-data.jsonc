@@ -15,7 +15,7 @@
             "-wait_file",
             "--name=*"
           ],
-          "image": "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:*"
+          "image": "europe-docker.pkg.dev/kyma-project/prod/image-builder:*"
         },
         {
           "command": [

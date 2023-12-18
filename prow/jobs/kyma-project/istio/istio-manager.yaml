@@ -68,7 +68,7 @@ presubmits: # runs on PRs
         - ^release-\d+\.\d+$
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
             securityContext:
               privileged: false
               seccompProfile:
@@ -273,7 +273,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
             securityContext:
               privileged: false
               seccompProfile:
@@ -375,7 +375,7 @@ postsubmits: # runs on main
           channel: goat-int
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
             securityContext:
               privileged: false
               seccompProfile:
@@ -518,4 +518,3 @@ periodics: # runs on schedule
               requests:
                 memory: 3Gi
                 cpu: 2
-  
