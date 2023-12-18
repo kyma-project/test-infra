@@ -43,8 +43,6 @@
   owner: kyma-project
 - name: telemetry-manager
   owner: kyma-project
-- name: director-size-exporter
-  owner: kyma-project
 - name: compass-manager
   owner: kyma-project
 - name: compass
