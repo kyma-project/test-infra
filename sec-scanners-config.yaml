@@ -56,6 +56,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20231215-751c5f92
     - europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231215-751c5f92
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231215-751c5f92
+    - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs-20:v20231219-55c54959
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231215-751c5f92
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231215-751c5f92
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231215-751c5f92
