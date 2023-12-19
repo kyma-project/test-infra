@@ -98,40 +98,6 @@ postsubmits: # runs on main
               - "prow/cluster/deploy.sh"
   
 periodics: # runs on schedule
-    - name: ci-prow-label-sync
-      annotations:
-        description: "Periodic sync of labels in GitHub"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "ci-prow-label-sync"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-autobump-bot-github-token: "true"
-      cron: "17 * * * *"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/label_sync:v20231218-61f197af"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "label_sync"
-            args:
-              - "--config=prow/labels.yaml"
-              - "--confirm=true"
-              - "--orgs=kyma-project,kyma-incubator"
-              - "--token=/etc/github/token"
-              - "--endpoint=http://ghproxy"
-              - "--endpoint=https://api.github.com"
     - name: ci-prow-autobump
       annotations:
         description: "Autobump prow components image versions"
