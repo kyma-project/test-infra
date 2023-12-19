@@ -64,6 +64,8 @@
 
 [Obligatory security measures](/docs/prow/obligatory-security-measures.md) - Read about the obligatory security measures to take on a regular basis and when a Kyma organization member leaves the project.
 
+[Run ProwJobs in KinD or k3d](/docs/prow/pj-in-kind.md) - This document provides brief instructions on how to run ProwJobs in local kind (Kubernetes-in-Docker) or k3d locally.
+
 [Presets](/docs/prow/presets.md) - This document contains the list of all Presets available in the [`config.yaml`](/prow/config.yaml) file. Use them to define Prow Jobs for your components.
 
 [Prow Architecture](/docs/prow/prow-architecture.md) - The document outlines Prow architecture and interconnections between different systems and components that are involved in it.

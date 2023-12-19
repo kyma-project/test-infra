@@ -147,35 +147,6 @@ presubmits: # runs on PRs
               - "-c"
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
-  kyma-project/website:
-    - name: pre-website-presubmit-scanner
-      annotations:
-        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for website"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-website-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
   kyma-project/lifecycle-manager:
     - name: pre-lifecycle-manager-presubmit-scanner
       annotations:
@@ -292,35 +263,6 @@ presubmits: # runs on PRs
               - "-c"
               - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
   
-  kyma-project/istio-operator:
-    - name: pre-istio-operator-presubmit-scanner
-      annotations:
-        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for istio-operator"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-istio-operator-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
   kyma-project/private-fn-for-e2e-serverless-tests:
     - name: pre-private-fn-for-e2e-serverless-tests-presubmit-scanner
       annotations:
@@ -329,35 +271,6 @@ presubmits: # runs on PRs
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-private-fn-for-e2e-serverless-tests-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-project/charts:
-    - name: pre-charts-presubmit-scanner
-      annotations:
-        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for charts"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-charts-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       always_run: true
       optional: true
@@ -677,35 +590,6 @@ presubmits: # runs on PRs
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-telemetry-manager-presubmit-scanner"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-      always_run: true
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: untrusted-workload
-      max_concurrency: 10
-      spec:
-        containers:
-          - image: "docker.io/zricethezav/gitleaks:v8.18.1"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "/bin/sh"
-            args:
-              - "-c"
-              - "gitleaks detect --log-opts=$PULL_BASE_SHA...$PULL_PULL_SHA --verbose --redact"
-  
-  kyma-project/director-size-exporter:
-    - name: pre-director-size-exporter-presubmit-scanner
-      annotations:
-        description: "Run Gitleaks presubmit scanner to detect commited sensitive data for director-size-exporter"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-director-size-exporter-presubmit-scanner"
         prow.k8s.io/pubsub.topic: "prowjobs"
       always_run: true
       optional: true
