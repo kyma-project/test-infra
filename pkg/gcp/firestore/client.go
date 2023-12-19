@@ -49,9 +49,8 @@ func (c *Client) GetFailingProwjobInstanceDetails(ctx context.Context, message p
 		// Get matched document.
 		failureInstance := failureInstances[0]
 		return failureInstance, nil
-	} else {
-		return nil, fmt.Errorf("more than one failure instance exists")
-	}
+	} 
+	return nil, fmt.Errorf("more than one failure instance exists")
 }
 
 func (c *Client) StoreSlackUsernames(ctx context.Context, slackUserNames []string, ref *firestore.DocumentRef) error {
