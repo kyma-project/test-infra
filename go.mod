@@ -18,7 +18,7 @@ require (
 	github.com/google/go-containerregistry v0.17.0
 	github.com/google/go-github/v48 v48.2.0
 	github.com/google/go-querystring v1.1.0
-	github.com/google/uuid v1.4.0
+	github.com/google/uuid v1.5.0
 	github.com/imdario/mergo v0.3.16
 	github.com/jamiealquiza/envy v1.1.0
 	github.com/jinzhu/copier v0.4.0
