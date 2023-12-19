@@ -33,8 +33,7 @@ func main() {
 	pipelineName := os.Getenv("PIPELINE_NAME")
 	pipelineIdStr := os.Getenv("PIPELINE_ID")
 	buildIdStr := os.Getenv("BUILD_ID")
-	fmt.Println(pipelineIdStr)
-	fmt.Println(buildIdStr)
+
 	// Converting variables from string to integer
 	pipelineId, err := strconv.Atoi(pipelineIdStr)
 	if err != nil {
@@ -53,6 +52,7 @@ func main() {
 
 	// Determining which tests to run based on the TESTS_TO_RUN environment variable
 	testsToRun := os.Getenv("TESTS_TO_RUN")
+	fmt.Println(testsToRun)
 	var testsToRunList []string
 	if testsToRun != "" && testsToRun != "all" {
 		testsToRunList = strings.Split(testsToRun, ",")
