@@ -46,7 +46,6 @@
 /prow/jobs/kyma-project/istio/ @kyma-project/goat @neighbors-dev-bot
 /prow/jobs/kyma-project/kyma/common @kyma-project/framefrog @neighbors-dev-bot
 
-/prow/jobs/kyma-project/kyma/components/event-publisher-proxy @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma-project/kyma/components/eventing-controller @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma-project/kyma/components/function-controller @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/kyma-project/kyma/components/function-runtimes @kyma-project/otters @neighbors-dev-bot
