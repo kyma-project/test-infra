@@ -3,11 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/microsoft/azure-devops-go-api/azuredevops"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/build"
+	"golang.org/x/exp/slices"
 )
 
 type buildTest struct {
@@ -23,17 +26,38 @@ type timelineTest struct {
 }
 
 func main() {
+	// Fetching environment variables for Azure DevOps settings
 	organizationUrl := os.Getenv("ORGANIZATION_URL")
 	personalAccessToken := os.Getenv("PERSONAL_ACCESS_TOKEN")
 	projectName := os.Getenv("PROJECT_NAME")
 	pipelineName := os.Getenv("PIPELINE_NAME")
-	pipelineId := 13895
-	buildId := 3690241
+	pipelineIdStr := os.Getenv("PIPELINE_ID")
+	buildIdStr := os.Getenv("BUILD_ID")
 
+	// Converting variables from string to integer
+	pipelineId, err := strconv.Atoi(pipelineIdStr)
+	if err != nil {
+		log.Fatalf("Error parsing PIPELINE_ID: %v", err)
+	}
+	buildId, err := strconv.Atoi(buildIdStr)
+	if err != nil {
+		log.Fatalf("Error parsing BUILD_ID: %v", err)
+	}
+
+	// Setting up context for API calls
 	ctx := context.Background()
 
+	// Creating a connection to Azure DevOps using the Personal Access Token
 	connection := createPatConnection(organizationUrl, personalAccessToken)
 
+	// Determining which tests to run based on the TESTS_TO_RUN environment variable
+	testsToRun := os.Getenv("TESTS_TO_RUN")
+	var testsToRunList []string
+	if testsToRun != "" && testsToRun != "all" {
+		testsToRunList = strings.Split(testsToRun, ",")
+	}
+
+	// Defining build tests with their descriptions and expected log messages
 	buildTests := []buildTest{
 		{
 			description:  "Checkout self repository",
@@ -77,9 +101,14 @@ func main() {
 		},
 	}
 
+	// Running each build test if it meets the criteria specified in TESTS_TO_RUN
 	for _, test := range buildTests {
-		runBuildTest(ctx, connection, projectName, pipelineName, pipelineId, test)
+		if shouldRunTest(testsToRun, testsToRunList, test.description) {
+			runBuildTest(ctx, connection, projectName, pipelineName, pipelineId, test)
+		}
 	}
+
+	// Defining timeline tests with their names and expected states and results
 	timelineTests := []timelineTest{
 		{
 			name:   "Initialize job",
@@ -218,8 +247,11 @@ func main() {
 		},
 	}
 
+	// Running each timeline test if it meets the criteria specified in TESTS_TO_RUN
 	for _, test := range timelineTests {
-		runTimelineTests(ctx, connection, projectName, buildId, test)
+		if shouldRunTest(testsToRun, testsToRunList, test.name) {
+			runTimelineTests(ctx, connection, projectName, buildId, test)
+		}
 	}
 
 }
@@ -470,4 +502,11 @@ func taskResultPtr(tr build.TaskResult) *build.TaskResult {
 
 func timelineRecordStatePtr(trs build.TimelineRecordState) *build.TimelineRecordState {
 	return &trs
+}
+
+func shouldRunTest(testsToRun string, testsToRunList []string, testName string) bool {
+	if testsToRun == "all" || testsToRun == "" {
+		return true
+	}
+	return slices.Contains(testsToRunList, testName)
 }
