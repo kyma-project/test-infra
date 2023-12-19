@@ -33,7 +33,8 @@ func main() {
 	pipelineName := os.Getenv("PIPELINE_NAME")
 	pipelineIdStr := os.Getenv("PIPELINE_ID")
 	buildIdStr := os.Getenv("BUILD_ID")
-
+	fmt.Println(pipelineIdStr)
+	fmt.Println(buildIdStr)
 	// Converting variables from string to integer
 	pipelineId, err := strconv.Atoi(pipelineIdStr)
 	if err != nil {
