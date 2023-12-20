@@ -1,7 +1,0 @@
-with-expecter: true
-packages:
-  github.com/kyma-project/test-infra/pkg/azuredevops/pipelines:
-    config:
-      include-regex: ".*Client"
-      dir: "{{.InterfaceDir}}/mocks"
-      outpkg: "{{.PackageName}}mocks"

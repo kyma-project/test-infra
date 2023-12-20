@@ -1,5 +1,0 @@
-templates:
-  - from: image-detector-inrepo.tmpl
-    render:
-      - to: "../../prow/image-detector/inrepo-config.yaml"
-      

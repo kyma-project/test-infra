@@ -1,6 +1,0 @@
-serviceAccounts:
-  - k8sServiceAccount: "prow-provisioner"
-    k8sNamespace: "garden-kyma-dev"
-    k8sDuration: 5184000 # 60 days in seconds
-    gcpSecretManagerSecretName: "workloads_default_gardener-skr-kyma-dev-kubeconfig"
-    gcpProjectName: "sap-kyma-prow"
