@@ -1,0 +1,12 @@
+# Some test create new dns record on every execution.
+# It takes ~10min to propagate new value to DNS servers.
+# Using stubDomains configuration we can decrease this delay by querying
+# directly DNS servers that are responsible for a given domain.
+# We override following domains:
+# build.kyma-project.io - ns-cloud-d1-d4.googledomains.com.
+#  "216.239.32.109", "216.239.34.109", "216.239.36.109", "216.239.38.109"
+# a.build.kyma-project.io - ns-cloud-b1-b4.googledomains.com.
+#  "216.239.32.107","216.239.34.107","216.239.36.107","216.239.38.107"
+data:
+  stubDomains: |
+    {"build.kyma-project.io": ["216.239.32.109", "216.239.34.109", "216.239.36.109", "216.239.38.109"], "a.build.kyma-project.io":["216.239.32.107","216.239.34.107","216.239.36.107","216.239.38.107"]}

@@ -1,0 +1,43 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/lifecycle-manager/lifecycle-manager.yaml
+        localSets:
+          jobConfig_default:
+            imagePullPolicy: "Always"
+        jobConfigs:
+          - repoName: kyma-project/lifecycle-manager
+            jobs:
+              - jobConfig:
+                  name: pull-lifecycle-mgr-build
+                  annotations:
+                    owner: jellyfish
+                    description: run lm build
+                  always_run: true
+                  args:
+                    - "--name=lifecycle-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: main-lifecycle-mgr-build
+                  annotations:
+                    owner: jellyfish
+                    description: build lifecycle manager
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  branches:
+                    - ^main$ # any pr against main triggers this
+                  always_run: true
+                  args:
+                    - "--name=lifecycle-manager"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--dockerfile=Dockerfile"
+                    - "--tag=latest"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit

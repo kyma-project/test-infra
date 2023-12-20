@@ -1,0 +1,5 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      test-infra:
+      - pjName: test-infra-presubmit-test-job

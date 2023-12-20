@@ -1,0 +1,44 @@
+presubmits: # runs on PRs
+  kyma-project/busola:
+    - name: pre-busola-web-deployment-check
+      annotations:
+        description: "Checking frontend deployment update"
+        owner: "hasselhoff"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pre-busola-web-deployment-check"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+      run_if_changed: '^public/|^src/|^scripts/|^shared/|^package.json'
+      skip_report: false
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      branches:
+        - ^master$
+        - ^main$
+        - ^ui5$
+      spec:
+        containers:
+          - image: europe-docker.pkg.dev/kyma-project/prod/testimages/alpine:v20231204-57f98c4e
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            command: ["/bin/ash", "-c"]
+            args:
+              - |-
+                if grep -w "${PULL_NUMBER}" "resources/web/deployment.yaml"; then
+                    echo "Pull request number found."
+                else
+                    echo "Pull request number not found. Please update deployment image in your PR."
+                    exit 1
+                fi
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 50m
+              limits:
+                memory: 100Mi
+                cpu: 50m
+  

@@ -1,0 +1,84 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/cli/cli.yaml
+        localSets:
+          job_spec:
+            command: "make"
+        jobConfigs:
+          - repoName: kyma-project/cli
+            jobs:
+              - jobConfig:
+                  name: pre-kyma-cli
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint + Go test pre-PR + Build CLI pre-PR
+                  always_run: true
+                  args:
+                    - "ci-pr"
+                  branches:
+                    - "^main$"
+                    - "^release-\\d+\\.\\d+$"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                    - image_buildpack-golang
+                    - "unprivileged"
+                  local:
+                    - job_spec
+              - jobConfig:
+                  name: post-kyma-cli
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint + Go test post-PR + Build CLI post-PR
+                  args:
+                    - "ci-main"
+                  branches:
+                    - "^main$"
+                    - "^release-\\d+\\.\\d+$"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - image_buildpack-golang
+                    - "unprivileged"
+                  local:
+                    - job_spec
+              - jobConfig:
+                  name: rel-kyma-cli
+                  annotations:
+                    owner: jellyfish
+                    description: Go lint + Go test pre-rel + Build CLI pre-rel
+                  args:
+                    - "ci-release"
+                  branches:
+                    - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$"
+                  labels:
+                    preset-bot-github-token: "true"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                    - image_buildpack-golang
+                    - jobConfig_slack_jellyfish
+                    - "unprivileged"
+                  local:
+                    - job_spec
+              - jobConfig:
+                  name: "pull-cli-unit-test"
+                  annotations:
+                    owner: jellyfish
+                    description: Go test
+                  optional: false
+                  command: "/bin/sh"
+                  args:
+                    - "-c"
+                    - "go test `go list ./... | grep -v /tests/e2e` -coverprofile=$ARTIFACTS/filtered.cov"
+                  always_run: true
+                  limits_memory: 5Gi
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - testing
+                    - "unprivileged"

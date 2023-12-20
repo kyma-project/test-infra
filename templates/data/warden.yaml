@@ -1,0 +1,274 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/warden/warden-build.yaml
+        localSets:
+          skip_if_only_changed_documentation:
+            skip_if_only_changed: '^docs/|\.md$'
+        jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
+              - jobConfig:
+                  name: pre-warden-admission-build
+                  annotations:
+                    owner: otters
+                    description: Warden admission build job
+                  args:
+                    - "--name=warden/admission"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/admission/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+                  local:
+                    - skip_if_only_changed_documentation
+              - jobConfig:
+                  name: post-warden-admission-build
+                  annotations:
+                    owner: otters
+                    description: Warden admission build job
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=warden/admission"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/admission/Dockerfile"
+                    - '--tag=$(PULL_BASE_REF)'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - skip_if_only_changed_documentation
+              - jobConfig:
+                  name: pre-warden-operator-build
+                  annotations:
+                    owner: otters
+                    description: Warden operator build job
+                  args:
+                    - "--name=warden/operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/operator/Dockerfile"
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+                  local:
+                    - skip_if_only_changed_documentation
+              - jobConfig:
+                  name: post-warden-operator-build
+                  annotations:
+                    owner: otters
+                    description: Warden operator build job
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  args:
+                    - "--name=warden/operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/operator/Dockerfile"
+                    - '--tag=$(PULL_BASE_REF)'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - skip_if_only_changed_documentation
+              - jobConfig:
+                  name: pre-warden-module-build
+                  annotations:
+                    owner: otters
+                    description: warden module build job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
+                    MODULE_SHA: "PR-${PULL_NUMBER}"
+                  command: "make"
+                  args:
+                    - "ci-module-build"
+                  branches:
+                    - ^main$
+                    - ^release-.*$
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_presubmit
+                  local:
+                    - skip_if_only_changed_documentation
+              - jobConfig:
+                  name: post-warden-module-build
+                  annotations:
+                    owner: otters
+                    description: warden module build job
+                  labels:
+                    preset-sa-kyma-push-images: "true"
+                  env:
+                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
+                    MODULE_SHA: "${PULL_BASE_SHA}"
+                  command: "make"
+                  args:
+                    - "ci-module-build"
+                  branches:
+                    - ^main$
+                    - ^release-.*$
+                inheritedConfigs:
+                  global:
+                    - image_buildpack-golang # takes latest golang image
+                    - jobConfig_default
+                    - jobConfig_postsubmit
+                  local:
+                    - skip_if_only_changed_documentation
+      - to: ../../prow/jobs/kyma-project/warden/warden-release.yaml
+        localSets:
+          release_image_build:
+            labels:
+              preset-signify-prod-secret: "true"
+            always_run: true
+            branches:
+              - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
+        jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
+              - jobConfig:
+                  name: release-warden-admission-build
+                  annotations:
+                    owner: otters
+                    description: Warden admission build for a release.
+                  args:
+                    - "--name=warden/admission"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/admission/Dockerfile"
+                    - '--tag=$(PULL_BASE_REF)'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - release_image_build
+              - jobConfig:
+                  name: release-warden-operator-build
+                  annotations:
+                    owner: otters
+                    description: Warden operator build for a release.
+                  args:
+                    - "--name=warden/operator"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=docker/operator/Dockerfile"
+                    - '--tag=$(PULL_BASE_REF)'
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+                  local:
+                    - release_image_build
+      - to: ../../prow/jobs/kyma-project/warden/warden-lint.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
+              - jobConfig:
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  name: pre-warden-lint
+                  optional: true
+                  always_run: true
+                  annotations:
+                    owner: otters
+                    description: executes the 'golangci-lint lint' command before any pull request.
+                  command: "bash"
+                  args:
+                    - "-c"
+                    - "golangci-lint run -v && echo 'OK!'"
+                  branches:
+                    - ^main$
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - jobConfig_presubmit
+      - to: ../../prow/jobs/kyma-project/warden/warden-verify.yaml
+        localSets:
+          testing:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231204-57f98c4e"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            request_memory: 1Gi
+            request_cpu: 100m
+          e2e_dind:
+            labels:
+              preset-kind-volume-mounts: "true"
+              preset-dind-enabled: "true"
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231204-57f98c4e
+            command: "/init.sh"
+          skip_if_only_changed_documentation:
+            skip_if_only_changed: '^docs/|\.md$'
+        jobConfigs:
+          - repoName: "github.com/kyma-project/warden"
+            jobs:
+              - jobConfig:
+                  name: post-warden-verify
+                  annotations:
+                    owner: otters
+                    description: LM intergration test
+                  optional: true
+                  args:
+                    - "bash"
+                    - "-c"
+                    - "make k3d-lm-integration-test"
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_postsubmit
+                  local:
+                    - e2e_dind
+                    - skip_if_only_changed_documentation
+              - jobConfig:
+                  name: pre-warden-unit-test
+                  annotations:
+                    owner: otters
+                    description: Warden unit test job
+                  command: "make"
+                  args:
+                    - "test"
+                  env:
+                    TEST_COVER_OUT: ${ARTIFACTS}/filtered.cov
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_presubmit"
+                    - "unprivileged"
+                  local:
+                    - testing
+                    - skip_if_only_changed_documentation
+              - jobConfig:
+                  name: pre-warden-integration-test
+                  annotations:
+                    owner: otters
+                    description: Warden integration test
+                  labels:
+                    preset-k3d-enabled: "true"
+                  args:
+                    - bash
+                    - -c
+                    - |-
+                      kubectl cluster-info;
+                      make install run-integration-tests;
+                      failed=$?;
+                      kubectl logs -l app=warden --prefix=true;
+                      exit $failed
+                inheritedConfigs:
+                  global:
+                    - jobConfig_default
+                    - privileged
+                    - jobConfig_presubmit
+                  local:
+                    - e2e_dind
+                    - skip_if_only_changed_documentation

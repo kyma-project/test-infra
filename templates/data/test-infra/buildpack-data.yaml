@@ -1,0 +1,139 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/test-infra/buildpack.yaml
+        localSets:
+          default:
+            skip_report: "false"
+            max_concurrency: "10"
+            decorate: "true"
+            branches:
+              - "^master$"
+              - "^main$"
+            pubsub_project: "sap-kyma-prow"
+            pubsub_topic: "prowjobs"
+            image: eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b
+            command: /image-builder
+            request_memory: "1.5Gi"
+            request_cpu: "1"
+            labels:
+              preset-sa-kyma-push-images: "true"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+            volumes:
+              - name: config
+                configMapName: kaniko-build-config
+              - name: signify-secret
+                secretName: signify-dev-secret
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+              - name: signify-secret
+                mountPath: /secret
+                readOnly: true
+          presubmit:
+            type_presubmit: "true"
+            cluster: "untrusted-workload"
+          postsubmit:
+            type_postsubmit: "true"
+            cluster: "trusted-workload"
+        jobConfigs:
+              - jobConfig:
+                  name: "pre-test-infra-golangci-lint"
+                  annotations:
+                    description: "Build test-infra/golangci-lint image"
+                    owner: neighbors
+                  run_if_changed: "^prow/images/golangci-lint/"
+                  args:
+                    - "--name=test-infra/golangci-lint"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/golangci-lint"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-test-infra-golangci-lint"
+                  annotations:
+                    description: "Build test-infra/golangci-lint image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/golangci-lint/"
+                  args:
+                    - "--name=test-infra/golangci-lint"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=prow/images/golangci-lint"
+                    - "--dockerfile=Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pull-build-githubrelease"
+                  annotations:
+                    description: "Build test-infra/githubrelease image"
+                    owner: neighbors
+                  run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                  args:
+                    - "--name=test-infra/githubrelease"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-build-githubrelease"
+                  annotations:
+                    description: "Build test-infra/githubrelease image"
+                    owner: neighbors
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^changelog-generator/|^development/tools/cmd/githubrelease/"
+                  args:
+                    - "--name=test-infra/githubrelease"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=development/tools/cmd/githubrelease/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"
+              - jobConfig:
+                  name: "pull-build-ginkgo"
+                  annotations:
+                    owner: neighbors
+                    description: "Building ginkgo image"
+                  run_if_changed: "^prow/images/ginkgo/"
+                  args:
+                    - "--name=test-infra/ginkgo"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=prow/images/ginkgo/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "presubmit"
+              - jobConfig:
+                  name: "post-build-ginkgo"
+                  annotations:
+                    owner: neighbors
+                    description: "Building ginkgo image"
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^prow/images/ginkgo/"
+                  args:
+                    - "--name=test-infra/ginkgo"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=."
+                    - "--dockerfile=prow/images/ginkgo/Dockerfile"
+                inheritedConfigs:
+                  local:
+                    - "default"
+                    - "postsubmit"

@@ -1,0 +1,20 @@
+gitHubLogin: "kyma-bot"
+gitHubToken: "/etc/github/token"
+gitName: "Kyma Bot"
+gitEmail: "kyma.bot@sap.com"
+skipPullRequest: false
+gitHubOrg: "kyma-project"
+gitHubRepo: "test-infra"
+remoteName: "test-infra-1"
+upstreamURLBase: "https://raw.githubusercontent.com/kyma-project/test-infra/main"
+includedConfigPaths:
+  - "."
+excludedConfigPaths:
+  - "prow/staging"
+targetVersion: "latest"
+prefixes:
+  - name: "Prow"
+    prefix: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/"
+    repo: "https://github.com/kyma-project/k8s-prow"
+    summarise: true
+    consistentImages: true

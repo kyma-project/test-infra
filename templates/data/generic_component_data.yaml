@@ -1,0 +1,75 @@
+templates:
+  - from: generic.tmpl
+    render:
+      - to: ../../prow/jobs/kyma-project/kyma/components/event-publisher-proxy/event-publisher-proxy-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: pull-event-publisher-proxy-build
+                  run_if_changed: "^components/event-publisher-proxy/"
+                  args:
+                    - "--name=event-publisher-proxy"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/event-publisher-proxy"
+                    - "--dockerfile=Dockerfile"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the EPP image
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-event-publisher-proxy-build
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^components/event-publisher-proxy/"
+                  args:
+                    - "--name=event-publisher-proxy"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/event-publisher-proxy"
+                    - "--dockerfile=Dockerfile"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the EPP image
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit
+      - to: ../../prow/jobs/kyma-project/kyma/components/eventing-controller/eventing-controller-generic.yaml
+        jobConfigs:
+          - repoName: "github.com/kyma-project/kyma"
+            jobs:
+              - jobConfig:
+                  name: pull-eventing-controller-build
+                  run_if_changed: "^components/eventing-controller/"
+                  args:
+                    - "--name=eventing-controller"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/eventing-controller"
+                    - "--dockerfile=Dockerfile"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the EC image
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_presubmit
+              - jobConfig:
+                  name: post-eventing-controller-build
+                  labels:
+                    preset-signify-prod-secret: "true"
+                  run_if_changed: "^components/eventing-controller/"
+                  args:
+                    - "--name=eventing-controller"
+                    - "--config=/config/kaniko-build-config.yaml"
+                    - "--context=components/eventing-controller"
+                    - "--dockerfile=Dockerfile"
+                  annotations:
+                    owner: skydivingtunas
+                    description: build the EC image
+                inheritedConfigs:
+                  global:
+                    - kaniko_buildpack
+                    - jobConfig_postsubmit

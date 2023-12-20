@@ -1,0 +1,205 @@
+templates:
+  - fromTo:
+      - from: generic.tmpl
+        to: ../../prow/jobs/kyma-project/kyma/skr-integration.yaml
+    render:
+      - localSets:
+          jobConfig_default:
+            cluster: "trusted-workload"
+            request_memory: 100Mi
+            request_cpu: 50m
+            labels:
+              preset-build-main: "true"
+              preset-keb-dev-credentials: "true"
+              preset-kyma-integration-compass-dev: "true"
+              preset-kyma-integration-kcp-client-credentials: "true"
+              preset-kcp-client-dev-envs: "true"
+          kyma_integration_subaccount:
+            env:
+              KEB_SUBACCOUNT_ID: "prow-keb-integration"
+          kyma_nightly_subaccount:
+            env:
+              KEB_SUBACCOUNT_ID: "kyma-skr-nightly"
+          keb_plan_azure:
+            env:
+              KEB_PLAN_ID: "4deee563-e5ec-4731-b9b1-53b42d855f0c"
+              KEB_REGION: "eastus"
+              KEB_PLATFORM_REGION: "cf-eu10"
+          keb_plan_gcp:
+            env:
+              KEB_PLAN_ID: "ca6e5357-707f-4565-bbbd-b3ab732597c6"
+              KEB_REGION: "europe-west3"
+              KEB_PLATFORM_REGION: "cf-eu10"
+          keb_plan_aws:
+            env:
+              KEB_PLAN_ID: "361c511f-f939-4621-b228-d0fb79a1fe15"
+              KEB_REGION: "eu-central-1"
+              KEB_PLATFORM_REGION: "cf-eu10"
+          keb_plan_azure_lite:
+            env:
+              KEB_PLAN_ID: "8cb22518-aa26-44c5-91a0-e669ec9bf443"
+              KEB_REGION: "eastus"
+              KEB_PLATFORM_REGION: "cf-eu10"
+          keb_plan_trial:
+            env:
+              KEB_PLAN_ID: "7d55d31d-35ae-4438-bf13-6ffdfa107d9f"
+              KEB_REGION: "empty-for-trial"
+              KEB_PLATFORM_REGION: "cf-eu10"
+          keb_plan_openstack:
+            env:
+              KEB_PLAN_ID: "03b812ac-c991-4528-b5bd-08b303523a63"
+              KEB_REGION: "eu-de-2"
+              KEB_PLATFORM_REGION: "cf-eu10"
+          keb_plan_free_aws:
+            env:
+              KEB_PLAN_ID: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
+              KEB_REGION: "eu-central-1"
+              KEB_PLATFORM_REGION: "cf-eu10"
+          keb_plan_free_azure:
+            env:
+              KEB_PLAN_ID: "b1a5764e-2ea1-4f95-94c0-2b4538b37b55"
+              KEB_REGION: "eu-central-1"
+              KEB_PLATFORM_REGION: "cf-eu20"
+          keb_plan_preview:
+            env:
+              KEB_PLAN_ID: "5cb3d976-b85c-42ea-a636-79cadda109a9"
+              KEB_REGION: "eu-central-1"
+              KEB_PLATFORM_REGION: "cf-eu10"
+        jobConfigs:
+          - repoName: "kyma-project/kyma-environment-broker"
+            jobs:
+              - jobConfig:
+                  name: "skr-azure-integration-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test azure
+                  cron: "5 1 * * *" # "At 01:05"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_kyma-environment-broker"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_azure"
+                    - "kyma_integration_subaccount"
+              - jobConfig:
+                  name: "skr-azure-lite-integration-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test azure
+                  cron: "5 1 * * *" # "At 01:05"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_kyma-environment-broker"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_azure_lite"
+                    - "kyma_integration_subaccount"
+              - jobConfig:
+                  name: "skr-aws-integration-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test aws
+                  cron: "5 1 * * *" # "At 01:05"
+                  labels:
+                    preset-skr-al-service-key: "true"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_kyma-environment-broker"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_aws"
+                    - "kyma_integration_subaccount"
+              - jobConfig:
+                  name: "skr-trial-integration-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test trial
+                  cron: "5 1 * * *" # "At 01:05"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_kyma-environment-broker"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_trial"
+                    - "kyma_integration_subaccount"
+              - jobConfig:
+                  name: "skr-free-aws-integration-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test free
+                  cron: "5 1 * * *" # "At 01:05"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_kyma-environment-broker"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_free_aws"
+                    - "kyma_integration_subaccount"
+              - jobConfig:
+                  name: "skr-preview-dev"
+                  slack_channel: "kyma-gopher-private-alerts"
+                  annotations:
+                    owner: gopher
+                    description: skr integration test preview
+                  cron: "5 1 * * *" # "At 01:05"
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231204-57f98c4e
+                  command: make
+                  args:
+                    - -C
+                    - testing/e2e/skr
+                    - skr
+                inheritedConfigs:
+                  global:
+                    - "jobConfig_default"
+                    - "jobConfig_periodic"
+                    - "extra_refs_kyma-environment-broker"
+                  local:
+                    - "jobConfig_default"
+                    - "keb_plan_preview"
+                    - "kyma_integration_subaccount"
+
