@@ -416,12 +416,12 @@ func runBuildTest(ctx context.Context, connection *azuredevops.Connection, proje
 	}
 
 	if err != nil {
-		fmt.Printf("Test failed for %s: %v\n", test.description, err)
+		log.Fatalf("Test failed for %s: %v\n", test.description, err)
 		return false
 	}
 
 	if !pass {
-		fmt.Printf("Test failed for %s: condition not met\n", test.description)
+		log.Fatalf("Test failed for %s: condition not met\n", test.description)
 		return false
 	}
 
