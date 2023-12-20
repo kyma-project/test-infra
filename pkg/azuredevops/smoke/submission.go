@@ -58,6 +58,10 @@ func main() {
 		testsToRunList = strings.Split(testsToRun, ",")
 	}
 
+	for i, test := range testsToRunList {
+		fmt.Printf("Element %d: %s\n", i+1, test)
+	}
+
 	// Defining build tests with their descriptions and expected log messages
 	buildTests := []buildTest{
 		{
