@@ -423,12 +423,10 @@ func runBuildTest(ctx context.Context, connection *azuredevops.Connection, proje
 
 	if err != nil {
 		log.Fatalf("Test failed for %s: %v\n", test.description, err)
-		return false
 	}
 
 	if !pass {
 		log.Fatalf("Test failed for %s: condition not met\n", test.description)
-		return false
 	}
 
 	fmt.Printf("Test passed for %s\n", test.description)
@@ -441,13 +439,11 @@ func runTimelineTests(ctx context.Context, connection *azuredevops.Connection, p
 
 	pass, err = getBuildStageStatus(ctx, connection, projectName, buildId, test)
 	if err != nil {
-		fmt.Printf("Test failed for %s: %v\n", test.name, err)
-		return false
+		log.Fatalf("Test failed for %s: %v\n", test.name, err)
 	}
 
 	if !pass {
-		fmt.Printf("Test failed for %s: condition not met\n", test.name)
-		return false
+		log.Fatalf("Test failed for %s: condition not met\n", test.name)
 	}
 
 	fmt.Printf("Test passed for %s\n", test.name)
