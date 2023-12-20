@@ -52,16 +52,12 @@ func main() {
 
 	// Determining which tests to run based on the TESTS_TO_RUN environment variable
 	testsToRun := os.Getenv("TESTS_TO_RUN")
-	fmt.Println(testsToRun)
+
 	var testsToRunList []string
 	if testsToRun != "" && testsToRun != "all" {
 		for _, test := range strings.Split(testsToRun, ",") {
 			testsToRunList = append(testsToRunList, strings.TrimSpace(test))
 		}
-	}
-
-	for i, test := range testsToRunList {
-		fmt.Printf("Element %d: %s\n", i+1, test)
 	}
 
 	// Defining build tests with their descriptions and expected log messages
