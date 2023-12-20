@@ -161,7 +161,7 @@ func main() {
 		{
 			name:   "Collect module info",
 			state:  "completed",
-			result: "succeeded",
+			result: "skipped",
 		},
 		{
 			name:   "Get SA token from Vault",
