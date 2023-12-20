@@ -65,7 +65,7 @@ postsubmits:
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\d+\.\d+\.\d+(?:-.*)?$
+        - ^main$
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -81,8 +81,7 @@ postsubmits:
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=runtime-watcher"
               - "--dockerfile=Dockerfile"
-              - "--tag=$(PULL_BASE_REF)"
-              - "--export-tags"
+              - "--tag=latest"
             volumeMounts:
               - name: config
                 mountPath: /config
