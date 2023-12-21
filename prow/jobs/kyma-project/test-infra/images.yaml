@@ -21,6 +21,12 @@ presubmits: # runs on PRs
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -37,16 +43,10 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: pull-main-build-testimages
       decorate: true
       labels:
@@ -105,6 +105,12 @@ postsubmits:
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -121,16 +127,10 @@ postsubmits:
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: post-main-build-testimages
       decorate: true
       labels:
