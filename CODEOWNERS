@@ -47,10 +47,7 @@
 /prow/jobs/kyma-project/kyma/common @kyma-project/framefrog @neighbors-dev-bot
 
 /prow/jobs/kyma-project/kyma/components/eventing-controller @kyma-project/eventing @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/components/function-controller @kyma-project/otters @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/components/function-runtimes @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/kyma-project/kyma/releases @kyma-project/prow @neighbors-dev-bot
-/prow/jobs/kyma-project/kyma/tests/serverless @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/kyma-project/kyma/keb-endpoints-test.yaml @kyma-project/gopher @neighbors-dev-bot
 /prow/jobs/kyma-project/kyma/kyma-gardener-cleanup.yaml @kyma-project/prow @neighbors-dev-bot
 /prow/jobs/kyma-project/kyma/kyma-integration-gardener-eventing.yaml @kyma-project/eventing @neighbors-dev-bot
@@ -70,9 +67,9 @@
 /prow/jobs/kyma-project/telemetry-manager @kyma-project/observability @neighbors-dev-bot
 /prow/jobs/kyma-project/warden @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/kyma-project/lifecycle-manager @kyma-project/jellyfish @neighbors-dev-bot
-/prow/jobs/kyma-project/keda-manager.yaml @kyma-project/otters @neighbors-dev-bot
+/prow/jobs/kyma-project/keda-manager @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/kyma-project/application-connector-manager.yaml @kyma-project/framefrog @neighbors-dev-bot
-/prow/jobs/kyma-project/serverless.yaml @kyma-project/otters @neighbors-dev-bot
+/prow/jobs/kyma-project/serverless @kyma-project/otters @neighbors-dev-bot
 /prow/jobs/kyma-project/nats-manager @kyma-project/eventing @neighbors-dev-bot
 /prow/jobs/kyma-project/runtime-watcher @kyma-project/jellyfish @neighbors-dev-bot
 /prow/jobs/scans @kyma-project/prow @neighbors-dev-bot
