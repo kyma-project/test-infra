@@ -730,7 +730,7 @@ templates:
                     description: serverless manager verify on k3d vm
                   env:
                     IMG_DIRECTORY: "prod"
-                    IMG_VERSION: "$PULL_BASE_SHA"
+                    IMG_VERSION: "${PULL_BASE_SHA}"
                   args:
                     - bash
                     - -c
@@ -754,7 +754,7 @@ templates:
                   optional: "true"
                   env:
                     IMG_DIRECTORY: "prod"
-                    IMG_VERSION: "$PULL_BASE_SHA"
+                    IMG_VERSION: "${PULL_BASE_SHA}"
                   args:
                     - bash
                     - -c
