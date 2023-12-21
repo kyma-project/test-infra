@@ -41,7 +41,7 @@ presubmits: # runs on PRs
               - name: IMG_DIRECTORY
                 value: "dev"
               - name: IMG_VERSION
-                value: "PR-$PULL_NUMBER"
+                value: "PR-${PULL_NUMBER}"
               - name: SERVERLESS_SOURCES
                 value: "/home/prow/go/src/github.com/kyma-project/serverless/"
     - name: pre-serverless-git-auth-integration-k3s
@@ -85,7 +85,7 @@ presubmits: # runs on PRs
               - name: IMG_DIRECTORY
                 value: "dev"
               - name: IMG_VERSION
-                value: "PR-$PULL_NUMBER"
+                value: "PR-${PULL_NUMBER}"
               - name: SERVERLESS_SOURCES
                 value: "/home/prow/go/src/github.com/kyma-project/serverless/"
               - name: APP_TEST_GITHUB_SSH_AUTH_KEY
