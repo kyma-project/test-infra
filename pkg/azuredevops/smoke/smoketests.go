@@ -23,8 +23,8 @@ type TimelineTest struct {
 	Result string
 }
 
-func CreatePatConnection(organizationUrl, personalAccessToken string) *azuredevops.Connection {
-	return azuredevops.NewPatConnection(organizationUrl, personalAccessToken)
+func CreatePatConnection(organizationURL, personalAccessToken string) *azuredevops.Connection {
+	return azuredevops.NewPatConnection(organizationURL, personalAccessToken)
 }
 
 func getSpecificBuilds(ctx context.Context, connection *azuredevops.Connection, projectName string, pipelineID int) ([]build.Build, error) {
