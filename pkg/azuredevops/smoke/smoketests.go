@@ -48,7 +48,7 @@ func getSpecificBuilds(ctx context.Context, connection *azuredevops.Connection, 
 	return buildsResponse.Value, nil
 }
 
-func getBuildStageStatus(ctx context.Context, connection *azuredevops.Connection, projectName string, buildId int, test TimelineTest) (bool, error) {
+func getBuildStageStatus(ctx context.Context, connection *azuredevops.Connection, projectName string, buildID int, test TimelineTest) (bool, error) {
 	buildClient, err := build.NewClient(ctx, connection)
 	if err != nil {
 		return false, fmt.Errorf("error creating build client: %w", err)
@@ -57,7 +57,7 @@ func getBuildStageStatus(ctx context.Context, connection *azuredevops.Connection
 	// Args to download Build
 	buildArgs := build.GetBuildTimelineArgs{
 		Project: &projectName,
-		BuildId: &buildId,
+		BuildId: &buildID,
 	}
 	// Download Builds
 	buildTimeline, err := buildClient.GetBuildTimeline(ctx, buildArgs)
@@ -73,18 +73,15 @@ func checkBuildRecords(timeline *build.Timeline, testName, testResult, testState
 		if record.Name != nil && *record.Name == testName {
 			if record.Result != nil && string(*record.Result) == testResult && record.State != nil && string(*record.State) == testState {
 				return true, nil // Found a record matching all criteria
-			} else {
-				continue // The result doesn't match, continue checking other records
 			}
 		}
-		// Name doesn't match, continue checking other records
 	}
 
 	return false, fmt.Errorf("no record found matching the criteria")
 }
 
-func checkSpecificBuildForCommand(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName, logFinding string, pipelineId int) (bool, error) {
-	builds, err := getSpecificBuilds(ctx, connection, projectName, pipelineId)
+func checkSpecificBuildForCommand(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName, logFinding string, pipelineID int) (bool, error) {
+	builds, err := getSpecificBuilds(ctx, connection, projectName, pipelineID)
 	if err != nil {
 		return false, fmt.Errorf("error getting last build: %w", err)
 	}
@@ -127,8 +124,8 @@ func checkSpecificBuildForCommand(ctx context.Context, connection *azuredevops.C
 	return false, nil
 }
 
-func checkSpecificBuildForMissingCommand(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName, expectedMissingMessage string, pipelineId int) (bool, error) {
-	builds, err := getSpecificBuilds(ctx, connection, projectName, pipelineId)
+func checkSpecificBuildForMissingCommand(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName, expectedMissingMessage string, pipelineID int) (bool, error) {
+	builds, err := getSpecificBuilds(ctx, connection, projectName, pipelineID)
 	if err != nil {
 		return false, fmt.Errorf("error getting last build: %w", err)
 	}
@@ -171,14 +168,14 @@ func checkSpecificBuildForMissingCommand(ctx context.Context, connection *azured
 	return true, nil
 }
 
-func RunBuildTest(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName string, pipelineId int, test BuildTest) bool {
+func RunBuildTest(ctx context.Context, connection *azuredevops.Connection, projectName, pipelineName string, pipelineID int, test BuildTest) bool {
 	var pass bool
 	var err error
 
 	if test.ExpectAbsent {
-		pass, err = checkSpecificBuildForMissingCommand(ctx, connection, projectName, pipelineName, test.LogMessage, pipelineId)
+		pass, err = checkSpecificBuildForMissingCommand(ctx, connection, projectName, pipelineName, test.LogMessage, pipelineID)
 	} else {
-		pass, err = checkSpecificBuildForCommand(ctx, connection, projectName, pipelineName, test.LogMessage, pipelineId)
+		pass, err = checkSpecificBuildForCommand(ctx, connection, projectName, pipelineName, test.LogMessage, pipelineID)
 	}
 
 	if err != nil {
@@ -193,11 +190,11 @@ func RunBuildTest(ctx context.Context, connection *azuredevops.Connection, proje
 	return true
 }
 
-func RunTimelineTests(ctx context.Context, connection *azuredevops.Connection, projectName string, buildId int, test TimelineTest) bool {
+func RunTimelineTests(ctx context.Context, connection *azuredevops.Connection, projectName string, buildID int, test TimelineTest) bool {
 	var pass bool
 	var err error
 
-	pass, err = getBuildStageStatus(ctx, connection, projectName, buildId, test)
+	pass, err = getBuildStageStatus(ctx, connection, projectName, buildID, test)
 	if err != nil {
 		log.Fatalf("Test failed for %s: %v\n", test.Name, err)
 	}
