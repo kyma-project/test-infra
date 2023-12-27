@@ -15,12 +15,18 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -28,6 +34,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=cmd/image-builder/images/kaniko/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 500Mi
@@ -36,16 +43,10 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: pull-build-buildkit-image-builder
       annotations:
         description: "build buildkit image-builder image"
@@ -146,12 +147,18 @@ postsubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -159,6 +166,7 @@ postsubmits:
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=cmd/image-builder/images/kaniko/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 500Mi
@@ -167,16 +175,10 @@ postsubmits:
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: post-build-buildkit-image-builder
       annotations:
         description: "build buildkit image-builder image"
