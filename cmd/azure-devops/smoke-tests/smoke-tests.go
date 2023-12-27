@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 )
@@ -38,30 +37,19 @@ func main() {
 		log.Fatalf("Error creating build client: %v", err)
 	}
 
-	// Determining which tests to run based on the TESTS_TO_RUN environment variable
-	testsToRun := os.Getenv("TESTS_TO_RUN")
+	// Determining which tests to run based on the test-suite.yaml file
+	//TODO testsToRun := os.Getenv("FILE_PATH")
+	testsToRun := "test-suite.yaml"
 
-	var testsToRunList []string
-	if testsToRun != "" && testsToRun != "all" {
-		for _, test := range strings.Split(testsToRun, ",") {
-			testsToRunList = append(testsToRunList, strings.TrimSpace(test))
-		}
-	}
-
-	buildTests := pipelines.GetBuildTests()
-	// Running each build test if it meets the criteria specified in TESTS_TO_RUN
+	buildTests, timelineTests := pipelines.GetTestsDefinition(testsToRun)
+	// Running each build test if it exists in YAML file
 	for _, test := range buildTests {
-		if pipelines.ShouldRunTest(testsToRun, testsToRunList, test.Description) {
-			pipelines.RunBuildTest(ctx, buildClient, projectName, pipelineName, pipelineID, test)
-		}
+		pipelines.RunBuildTest(ctx, buildClient, projectName, pipelineName, pipelineID, test)
 	}
 
-	timelineTests := pipelines.GetTimelineTests()
-	// Running each timeline test if it meets the criteria specified in TESTS_TO_RUN
+	// Running each timeline test if it exists in YAML file
 	for _, test := range timelineTests {
-		if pipelines.ShouldRunTest(testsToRun, testsToRunList, test.Name) {
-			pipelines.RunTimelineTests(ctx, buildClient, projectName, buildID, test)
-		}
+		pipelines.RunTimelineTests(ctx, buildClient, projectName, buildID, test)
 	}
 
 }

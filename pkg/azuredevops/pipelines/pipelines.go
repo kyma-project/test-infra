@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -15,6 +16,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/exp/slices"
 	"golang.org/x/net/context"
+	"gopkg.in/yaml.v3"
 	"k8s.io/utils/ptr"
 )
 
@@ -28,6 +30,11 @@ type BuildClient interface {
 	GetBuilds(ctx context.Context, args build.GetBuildsArgs) (*build.GetBuildsResponseValue, error)
 	GetBuildLogLines(ctx context.Context, args build.GetBuildLogLinesArgs) (*[]string, error)
 	GetBuildTimeline(ctx context.Context, args build.GetBuildTimelineArgs) (*build.Timeline, error)
+}
+
+type Tests struct {
+	BuildTests    []BuildTest    `yaml:"buildTests"`
+	TimelineTests []TimelineTest `yaml:"timelineTests"`
 }
 
 type HTTPClient interface {
@@ -280,190 +287,19 @@ func RunTimelineTests(ctx context.Context, buildClient BuildClient, projectName 
 	return true
 }
 
-func GetBuildTests() []BuildTest {
-	return []BuildTest{
-		{
-			Description:  "Checkout self repository",
-			LogMessage:   "Repository 'self' has been successfully checked out.",
-			ExpectAbsent: false,
-		},
-		{
-			Description:  "Checkout kyma-modules repository",
-			LogMessage:   "Repository 'kyma-modules' has been successfully checked out.",
-			ExpectAbsent: false,
-		},
-		{
-			Description:  "Checkout security-scans-modular repository",
-			LogMessage:   "Repository 'security-scans-modular' has been successfully checked out.",
-			ExpectAbsent: false,
-		},
-		{
-			Description:  "Verify the download of conduit-cli",
-			LogMessage:   "conduit-cli has been successfully downloaded and is executable.",
-			ExpectAbsent: false,
-		},
-		{
-			Description:  "Verify Python Installation",
-			LogMessage:   "command not found: python3",
-			ExpectAbsent: true,
-		},
-		{
-			Description:  "Verify gcloud Installation",
-			LogMessage:   "command not found: gcloud",
-			ExpectAbsent: true,
-		},
-		{
-			Description:  "Verify Go Installation",
-			LogMessage:   "command not found: go",
-			ExpectAbsent: true,
-		},
-		{
-			Description:  "Download Kyma cli",
-			LogMessage:   "The 'kyma' binary has been successfully downloaded and is executable.",
-			ExpectAbsent: false,
-		},
-	}
-}
-
-func GetTimelineTests() []TimelineTest {
-	return []TimelineTest{
-		{
-			Name:   "Initialize job",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Install gcloud",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Checkout kyma/module-manifests@main to s/module-manifests",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Checkout kyma/kyma-modules@main to s/kyma-modules",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Checkout kyma/security-scans-modular@main to s/security-scans-modular",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Download conduit-cli",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Install Python",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Install gcloud",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Install Go",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Collect module info",
-			State:  "completed",
-			Result: "skipped",
-		},
-		{
-			Name:   "Get SA token from Vault",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Save SA token to file",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Clone module repo",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Get Docker Password from GCP",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Download Kyma cli",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Create Module",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Dump module template as artifact",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Clean Up Pre-Submit Related Version",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Dump modulemanifest as artifact",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Push Moduletemplate to Main (kyma-modules)",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Clean Up Untagged Versions",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Post-job: Checkout kyma/kyma-modules@main to s/kyma-modules",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Post-job: Checkout kyma/module-manifests@main to s/module-manifests",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Finalize Job",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Post-job: Checkout kyma/security-scans-modular@main to s/security-scans-modular",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Post-Submit process - Publishing",
-			State:  "completed",
-			Result: "succeeded",
-		},
-		{
-			Name:   "Post-Submit process - Publishing",
-			State:  "completed",
-			Result: "succeeded",
-		},
+func GetTestsDefinition(filePath string) (buildTests []BuildTest, timelineTests []TimelineTest) {
+	fileContent, err := os.ReadFile(filePath)
+	if err != nil {
+		log.Fatalf("error reading tests file: %v", err)
 	}
 
+	var tests Tests
+	err = yaml.Unmarshal(fileContent, &tests)
+	if err != nil {
+		log.Fatalf("error unmarshalling tests: %v", err)
+	}
+
+	return tests.BuildTests, tests.TimelineTests
 }
 
 func ShouldRunTest(testsToRun string, testsToRunList []string, testName string) bool {
