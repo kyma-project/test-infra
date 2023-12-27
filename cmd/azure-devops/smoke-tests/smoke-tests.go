@@ -43,12 +43,12 @@ func main() {
 	buildTests, timelineTests := pipelines.GetTestsDefinition(testsToRun)
 	// Running each build test if it exists in YAML file
 	for _, test := range buildTests {
-		pipelines.RunBuildTest(ctx, buildClient, projectName, pipelineName, pipelineID, test)
+		pipelines.RunBuildTest(ctx, buildClient, projectName, pipelineName, pipelineID, &buildID, test)
 	}
 
 	// Running each timeline test if it exists in YAML file
 	for _, test := range timelineTests {
-		pipelines.RunTimelineTests(ctx, buildClient, projectName, buildID, test)
+		pipelines.RunTimelineTests(ctx, buildClient, projectName, &buildID, test)
 	}
 
 }

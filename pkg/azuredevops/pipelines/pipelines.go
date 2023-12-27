@@ -134,10 +134,10 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 	return string(body), nil
 }
 
-func GetBuildStageStatus(ctx context.Context, buildClient BuildClient, projectName string, buildID int, test TimelineTest) (bool, error) {
+func GetBuildStageStatus(ctx context.Context, buildClient BuildClient, projectName string, buildID *int, test TimelineTest) (bool, error) {
 	buildArgs := build.GetBuildTimelineArgs{
 		Project: &projectName,
-		BuildId: &buildID,
+		BuildId: buildID,
 	}
 
 	buildTimeline, err := buildClient.GetBuildTimeline(ctx, buildArgs)
@@ -192,7 +192,7 @@ func CheckSpecificBuildForCommand(ctx context.Context, buildClient BuildClient, 
 	return false, nil
 }
 
-func CheckSpecificBuildForMissingCommand(ctx context.Context, buildClient BuildClient, projectName, pipelineName, expectedMissingMessage string, pipelineID int) (bool, error) {
+func CheckSpecificBuildForMissingCommand(ctx context.Context, buildClient BuildClient, lastBuildID *int, projectName, pipelineName, expectedMissingMessage string, pipelineID int) (bool, error) {
 	buildArgs := build.GetBuildsArgs{
 		Project:     &projectName,
 		Definitions: &[]int{pipelineID},
@@ -206,7 +206,6 @@ func CheckSpecificBuildForMissingCommand(ctx context.Context, buildClient BuildC
 		return false, fmt.Errorf("no builds found for pipeline %s", pipelineName)
 	}
 
-	lastBuildID := buildsResponse.Value[0].Id
 	logs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
 		Project: &projectName,
 		BuildId: lastBuildID,
@@ -248,12 +247,12 @@ func CheckBuildRecords(timeline *build.Timeline, testName, testResult, testState
 	return false, fmt.Errorf("no record found matching the criteria")
 }
 
-func RunBuildTest(ctx context.Context, buildClient BuildClient, projectName, pipelineName string, pipelineID int, test BuildTest) bool {
+func RunBuildTest(ctx context.Context, buildClient BuildClient, projectName, pipelineName string, pipelineID int, lastBuildID *int, test BuildTest) bool {
 	var pass bool
 	var err error
 
 	if test.ExpectAbsent {
-		pass, err = CheckSpecificBuildForMissingCommand(ctx, buildClient, projectName, pipelineName, test.LogMessage, pipelineID)
+		pass, err = CheckSpecificBuildForMissingCommand(ctx, buildClient, lastBuildID, projectName, pipelineName, test.LogMessage, pipelineID)
 	} else {
 		pass, err = CheckSpecificBuildForCommand(ctx, buildClient, projectName, pipelineName, test.LogMessage, pipelineID)
 	}
@@ -270,7 +269,7 @@ func RunBuildTest(ctx context.Context, buildClient BuildClient, projectName, pip
 	return true
 }
 
-func RunTimelineTests(ctx context.Context, buildClient BuildClient, projectName string, buildID int, test TimelineTest) bool {
+func RunTimelineTests(ctx context.Context, buildClient BuildClient, projectName string, buildID *int, test TimelineTest) bool {
 	var pass bool
 	var err error
 
