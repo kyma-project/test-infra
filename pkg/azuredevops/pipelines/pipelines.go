@@ -14,7 +14,6 @@ import (
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/build"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
 	log "github.com/sirupsen/logrus"
-	"golang.org/x/exp/slices"
 	"golang.org/x/net/context"
 	"gopkg.in/yaml.v3"
 	"k8s.io/utils/ptr"
@@ -298,13 +297,6 @@ func GetTestsDefinition(filePath string) (buildTests []BuildTest, timelineTests 
 	}
 
 	return tests.BuildTests, tests.TimelineTests
-}
-
-func ShouldRunTest(testsToRun string, testsToRunList []string, testName string) bool {
-	if testsToRun == "all" || testsToRun == "" {
-		return true
-	}
-	return slices.Contains(testsToRunList, testName)
 }
 
 func NewRunPipelineArgs(templateParameters map[string]string, adoConfig Config, pipelineRunArgs ...RunPipelineArgsOptions) (pipelines.RunPipelineArgs, error) {
