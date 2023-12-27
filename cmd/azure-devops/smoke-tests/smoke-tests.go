@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"strings"
 
-	smoketests "github.com/kyma-project/test-infra/pkg/azuredevops/smoke"
+	"github.com/kyma-project/test-infra/pkg/azuredevops/pipelines"
 )
 
 func main() {
@@ -32,8 +32,11 @@ func main() {
 	// Setting up context for API calls
 	ctx := context.Background()
 
-	// Creating a connection to Azure DevOps using the Personal Access Token
-	connection := smoketests.CreatePatConnection(organizationURL, personalAccessToken)
+	// Creating a build client using the Personal Access Token
+	buildClient, err := pipelines.NewBuildClient(organizationURL, personalAccessToken)
+	if err != nil {
+		log.Fatalf("Error creating build client: %v", err)
+	}
 
 	// Determining which tests to run based on the TESTS_TO_RUN environment variable
 	testsToRun := os.Getenv("TESTS_TO_RUN")
@@ -45,19 +48,19 @@ func main() {
 		}
 	}
 
-	buildTests := smoketests.GetBuildTests()
+	buildTests := pipelines.GetBuildTests()
 	// Running each build test if it meets the criteria specified in TESTS_TO_RUN
 	for _, test := range buildTests {
-		if smoketests.ShouldRunTest(testsToRun, testsToRunList, test.Description) {
-			smoketests.RunBuildTest(ctx, connection, projectName, pipelineName, pipelineID, test)
+		if pipelines.ShouldRunTest(testsToRun, testsToRunList, test.Description) {
+			pipelines.RunBuildTest(ctx, buildClient, projectName, pipelineName, pipelineID, test)
 		}
 	}
 
-	timelineTests := smoketests.GetTimelineTests()
+	timelineTests := pipelines.GetTimelineTests()
 	// Running each timeline test if it meets the criteria specified in TESTS_TO_RUN
 	for _, test := range timelineTests {
-		if smoketests.ShouldRunTest(testsToRun, testsToRunList, test.Name) {
-			smoketests.RunTimelineTests(ctx, connection, projectName, buildID, test)
+		if pipelines.ShouldRunTest(testsToRun, testsToRunList, test.Name) {
+			pipelines.RunTimelineTests(ctx, buildClient, projectName, buildID, test)
 		}
 	}
 
