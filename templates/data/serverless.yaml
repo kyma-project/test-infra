@@ -378,7 +378,9 @@ templates:
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=components/operator/Dockerfile
+                      --dockerfile=components/operator/Dockerfile.dev
+                      --build-arg=IMG_DIRECTORY=dev
+                      --build-arg=IMG_VERSION=PR-$PULL_NUMBER
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
@@ -401,7 +403,9 @@ templates:
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=components/operator/Dockerfile
+                      --dockerfile=components/operator/Dockerfile.dev
+                      --build-arg=IMG_DIRECTORY=prod
+                      --build-arg=IMG_VERSION=$PULL_BASE_SHA
                       --tag=$PULL_BASE_SHA
                       --tag=$PULL_BASE_REF
                 inheritedConfigs:
@@ -435,7 +439,7 @@ templates:
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=components/operator/Dockerfile
+                      --dockerfile=components/operator/Dockerfile.release
                       --tag=$PULL_BASE_REF
                 inheritedConfigs:
                   global:
