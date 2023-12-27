@@ -38,8 +38,7 @@ func main() {
 	}
 
 	// Determining which tests to run based on the test-suite.yaml file
-	//TODO testsToRun := os.Getenv("FILE_PATH")
-	testsToRun := "test-suite.yaml"
+	testsToRun := os.Getenv("FILE_PATH")
 
 	buildTests, timelineTests := pipelines.GetTestsDefinition(testsToRun)
 	// Running each build test if it exists in YAML file
