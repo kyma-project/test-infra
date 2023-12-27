@@ -174,7 +174,7 @@ templates:
           - repoName: "github.com/kyma-project/warden"
             jobs:
               - jobConfig:
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
                   name: pre-warden-lint
                   optional: true
                   always_run: true
@@ -197,7 +197,7 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231204-57f98c4e"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231219-8fd42fb0"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -206,7 +206,7 @@ templates:
             labels:
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231204-57f98c4e
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231219-8fd42fb0
             command: "/init.sh"
           skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|\.md$'

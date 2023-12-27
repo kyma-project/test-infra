@@ -56,6 +56,10 @@ templates:
                     - "^\\d+\\.\\d+\\.\\d+(?:-.*)?$"
                   labels:
                     preset-bot-github-token: "true"
+                  request_memory: 8Gi
+                  request_cpu: 2
+                  limits_memory: 16Gi
+                  limits_cpu: 4
                 inheritedConfigs:
                   global:
                     - jobConfig_default

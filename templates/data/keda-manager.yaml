@@ -158,7 +158,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-keda-manager-operator-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
                   always_run: true
                   annotations:
                     owner: otters
@@ -182,7 +182,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231204-57f98c4e
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231219-8fd42fb0
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"

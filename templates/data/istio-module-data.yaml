@@ -43,69 +43,16 @@ templates:
           vm_job_k3d:
             annotations:
           e2e:
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231204-57f98c4e"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231219-8fd42fb0"
             securityContext: #temporary we need permissions to create folders for tooling, see `make install`
               runAsRoot: true
           job_module_build:
             labels:
               preset-sa-kyma-push-images: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231204-57f98c4e"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231219-8fd42fb0"
         jobConfigs:
           - repoName: github.com/kyma-project/istio
             jobs:
-              - jobConfig:
-                  name: pull-istio-module-build
-                  annotations:
-                    owner: goat
-                    description: build istio module image
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/dev/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/dev/istio-manager:PR-${PULL_NUMBER}"
-                    MODULE_SHA: "PR-${PULL_NUMBER}"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "hack/ci"
-                    - "all" # run test make target of operator
-                  branches:
-                    - ^main$
-                    - ^release-\d+\.\d+$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
-                  local:
-                    - job_default
-                    - job_skip_config
-                    - job_module_build
-              - jobConfig:
-                  name: post-istio-module-build
-                  annotations:
-                    owner: goat
-                    description: build istio module image
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_SHA}"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "hack/ci"
-                    - "all"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - jobConfig_slack_goat
-                  local:
-                    - job_default
-                    - job_skip_config
-                    - job_module_build
               - jobConfig:
                   name: rel-istio-build
                   always_run: true
@@ -129,34 +76,6 @@ templates:
                   local:
                     - job_default
                     - job_build
-              - jobConfig:
-                  name: rel-istio-module-build
-                  always_run: true
-                  annotations:
-                    owner: goat
-                    description: builds istio module template on release
-                  branches:
-                    - '^\d+\.\d+\.\d+(?:-.*)?$'
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/istio-manager:${PULL_BASE_REF}"
-                    MODULE_VERSION: "${PULL_BASE_REF}"
-                  command: "make"
-                  args:
-                    - "-C"
-                    - "hack/ci"
-                    - "all"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-                    - jobConfig_slack_goat
-                  local:
-                    - job_default
-                    - job_module_build
               - jobConfig:
                   name: pull-istio-operator-build
                   annotations:
@@ -248,7 +167,7 @@ templates:
                   annotations:
                     owner: goat
                     description: runs istio performance tests on Gardener GCP cluster
-                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231204-57f98c4e"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231219-8fd42fb0"
                   securityContext: #temporary we need permissions to create folders for tooling, see `make install`
                     runAsRoot: true
                   command: "make"

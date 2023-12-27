@@ -14,8 +14,8 @@ images:
 - source: "gcr.io/google-containers/pause:3.2"
 - source: "goreleaser/goreleaser:v1.11.5"
 # Golang image is pinned because it is force updated in the upstream
-- source: "golang@sha256:110b07af87238fbdc5f1df52b00927cf58ce3de358eeeb1854f10a8b5e5e1411"
-  tag: "1.21.4-alpine3.18"
+- source: "golang@sha256:55f716237933c85cee01748700755b4ac8736fb1ca974c9aed051691b68d6dc2"
+  tag: "1.21.5-alpine3.19"
   amd64Only: true
 - source: "grafana/grafana-image-renderer:3.2.1"
   amd64Only: true
@@ -45,10 +45,10 @@ images:
 - source: "quay.io/prometheus/alertmanager:v0.24.0"
 - source: "nats@sha256:7b65462a6f9a3e9e6577413e4249a2cf989020325ec46960e6adcb3b2afca9a5"
   tag: "v20230808-2.9.21-alpine3.18"
-- source: "natsio/nats-server-config-reloader:0.12.0"
+- source: "natsio/nats-server-config-reloader:0.14.0"
 - source: "quay.io/prometheus/prometheus:v2.45.0"
-- source: "natsio/nats-box:0.13.9"
-- source: "natsio/prometheus-nats-exporter:0.12.0"
+- source: "natsio/nats-box:0.14.1"
+- source: "natsio/prometheus-nats-exporter:0.13.0"
 - source: "mockserver/mockserver:mockserver-5.11.2"
   amd64Only: true
 - source: "i331641/kyma-perf:v1"

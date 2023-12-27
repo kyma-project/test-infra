@@ -2,17 +2,17 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/kyma:
-    - name: pull-event-publisher-proxy-build
+  kyma-project/eventing-publisher-proxy:
+    - name: pull-eventing-publisher-proxy-build
       annotations:
-        description: "build the EPP image"
+        description: "build the eventing-publisher-proxy image"
         owner: "skydivingtunas"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-event-publisher-proxy-build"
+        prow.k8s.io/pubsub.runID: "pull-eventing-publisher-proxy-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: '^components/event-publisher-proxy/'
+      run_if_changed: '^Dockerfile|\.go$|^go.(sum|mod)'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -28,9 +28,9 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=event-publisher-proxy"
+              - "--name=eventing-publisher-proxy"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/event-publisher-proxy"
+              - "--context=."
               - "--dockerfile=Dockerfile"
             resources:
               requests:
@@ -52,18 +52,18 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
   
 postsubmits: # runs on main
-  kyma-project/kyma:
-    - name: post-event-publisher-proxy-build
+  kyma-project/eventing-publisher-proxy:
+    - name: post-eventing-publisher-proxy-build
       annotations:
-        description: "build the EPP image"
+        description: "build the eventing-publisher-proxy image"
         owner: "skydivingtunas"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-event-publisher-proxy-build"
+        prow.k8s.io/pubsub.runID: "post-eventing-publisher-proxy-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      run_if_changed: '^components/event-publisher-proxy/'
+      run_if_changed: '^Dockerfile|\.go$|^go.(sum|mod)'
       skip_report: false
       decorate: true
       cluster: trusted-workload
@@ -79,10 +79,11 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=event-publisher-proxy"
+              - "--name=eventing-publisher-proxy"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/event-publisher-proxy"
+              - "--context=."
               - "--dockerfile=Dockerfile"
+              - "--tag=latest"
             resources:
               requests:
                 memory: 1.5Gi

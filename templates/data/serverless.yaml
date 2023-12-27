@@ -378,7 +378,9 @@ templates:
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=components/operator/Dockerfile
+                      --dockerfile=components/operator/Dockerfile.dev
+                      --build-arg=IMG_DIRECTORY=dev
+                      --build-arg=IMG_VERSION=PR-$PULL_NUMBER
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
@@ -401,7 +403,9 @@ templates:
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=components/operator/Dockerfile
+                      --dockerfile=components/operator/Dockerfile.dev
+                      --build-arg=IMG_DIRECTORY=prod
+                      --build-arg=IMG_VERSION=$PULL_BASE_SHA
                       --tag=$PULL_BASE_SHA
                       --tag=$PULL_BASE_REF
                 inheritedConfigs:
@@ -423,29 +427,6 @@ templates:
           - repoName: kyma-project/serverless
             jobs:
               - jobConfig:
-                  name: release-serverless-module-build
-                  annotations:
-                    owner: otters
-                    description: Job to build serverless module for a release.
-                  always_run: true
-                  labels:
-                    preset-sa-kyma-push-images: "true"
-                    preset-bot-github-token: "true"
-                  env:
-                    KUSTOMIZE_VERSION: "v4.5.6"
-                    MODULE_REGISTRY: "europe-docker.pkg.dev/kyma-project/prod/unsigned"
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/serverless-operator:${PULL_BASE_REF}"
-                  command: "./.github/scripts/release.sh"
-                  args:
-                    - "ci"
-                  branches:
-                    - ^v?\d+\.\d+\.\d+(?:-.*)?$ #Watches for new Tag
-                inheritedConfigs:
-                  global:
-                    - image_buildpack-golang # takes latest golang image
-                    - jobConfig_default
-                    - jobConfig_postsubmit
-              - jobConfig:
                   name: release-serverless-operator-build
                   annotations:
                     owner: otters
@@ -458,7 +439,7 @@ templates:
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=components/operator/Dockerfile
+                      --dockerfile=components/operator/Dockerfile.release
                       --tag=$PULL_BASE_REF
                 inheritedConfigs:
                   global:
@@ -591,7 +572,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-serverless-controller-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
                   annotations:
                     owner: otters
                     description: function controller linting job
@@ -609,7 +590,7 @@ templates:
                     - jobConfig_default
               - jobConfig:
                   name: pre-serverless-operator-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20230821-fdb47ca7"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
                   annotations:
                     owner: otters
                     description: serverless operator linting job
@@ -677,7 +658,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231204-57f98c4e
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231219-8fd42fb0
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -728,6 +709,9 @@ templates:
                   annotations:
                     owner: otters
                     description: serverless manager verify on k3d vm
+                  env:
+                    IMG_DIRECTORY: "dev"
+                    IMG_VERSION: "PR-${PULL_NUMBER}"
                   args:
                     - bash
                     - -c
@@ -748,6 +732,9 @@ templates:
                   annotations:
                     owner: otters
                     description: serverless manager verify on k3d vm
+                  env:
+                    IMG_DIRECTORY: "prod"
+                    IMG_VERSION: "${PULL_BASE_SHA}"
                   args:
                     - bash
                     - -c
@@ -769,6 +756,9 @@ templates:
                     owner: otters
                     description: upgrade serverless operator test
                   optional: "true"
+                  env:
+                    IMG_DIRECTORY: "prod"
+                    IMG_VERSION: "${PULL_BASE_SHA}"
                   args:
                     - bash
                     - -c
