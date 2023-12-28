@@ -147,6 +147,22 @@ func GetBuildStageStatus(ctx context.Context, buildClient BuildClient, projectNa
 	return CheckBuildRecords(buildTimeline, test.Name, test.Result, test.State)
 }
 
+// CheckSpecificBuildForCommand searches for the occurrence of a specified command or message within the build logs of a specific build.
+// This function is used to verify if a particular command or log entry was executed or generated during the build process.
+//
+// Parameters:
+// ctx          - The context to control the execution and cancellation of the test.
+// buildClient  - The client interface to interact with the build system.
+// buildID      - A pointer to an integer storing the build identifier.
+// projectName  - The name of the project in which the test is being run.
+// pipelineName - The name of the pipeline within the project.
+// logFinding   - The specific command or message to search for in the build logs.
+// pipelineID   - The identifier of the pipeline.
+//
+// Returns a boolean and an error. The boolean is true if the specified command or message is found in the build logs,
+// indicating that the command was executed. It returns false if the message is not found or if there are no logs for the build.
+// In case of an error in fetching builds or logs, or any other operational issue, the function returns the error with a detailed
+// message for troubleshooting.
 func CheckSpecificBuildForCommand(ctx context.Context, buildClient BuildClient, projectName, pipelineName, logFinding string, pipelineID int, buildID *int) (bool, error) {
 	buildArgs := build.GetBuildsArgs{
 		Project:     &projectName,
@@ -190,6 +206,22 @@ func CheckSpecificBuildForCommand(ctx context.Context, buildClient BuildClient, 
 	return false, nil
 }
 
+// CheckSpecificBuildForMissingCommand verifies if a specified message is absent in the build logs of a given build.
+// It is primarily used to ensure that a certain command or log message was not executed or generated during the build process.
+//
+// Parameters:
+// ctx                    - The context to control the execution and cancellation of the test.
+// buildClient            - The client interface to interact with the build system.
+// buildID                - A pointer to an integer storing the build identifier.
+// projectName            - The name of the project in which the test is being run.
+// pipelineName           - The name of the pipeline within the project.
+// expectedMissingMessage - The message or command that is expected to be absent in the build logs.
+// pipelineID    		  - The identifier of the pipeline.
+//
+// Returns a boolean and an error. The boolean is true if the specified message is indeed missing from the build logs,
+// indicating that the command was not executed. It returns false if the message is found or if there are no logs for the build.
+// In case of an error in fetching builds or logs, or any other operational issue, the function returns the error with a detailed
+// message for troubleshooting.
 func CheckSpecificBuildForMissingCommand(ctx context.Context, buildClient BuildClient, buildID *int, projectName, pipelineName, expectedMissingMessage string, pipelineID int) (bool, error) {
 	buildArgs := build.GetBuildsArgs{
 		Project:     &projectName,
@@ -233,6 +265,21 @@ func CheckSpecificBuildForMissingCommand(ctx context.Context, buildClient BuildC
 	return true, nil
 }
 
+// CheckBuildRecords examines a build timeline to find a specific test record that matches the given criteria.
+// It searches for a record within the timeline that has the specified test name, result, and state.
+//
+// Parameters:
+// timeline  - A pointer to a build.Timeline struct containing a slice of build records.
+// testName  - The name of the test to look for within the build records.
+// testResult - The expected result of the test (e.g., "Succeeded", "Skipped").
+// testState  - The expected state of the test (e.g., "Completed", "Pending").
+//
+// Returns a boolean and an error. The boolean is true if a record matching all the specified criteria (test name, result, and state)
+// is found in the timeline. If no matching record is found, the function returns false and an error indicating the absence of a
+// record that meets the specified conditions.
+//
+// This function is useful for verifying specific outcomes in a series of build tests, particularly for continuous integration and
+// deployment scenarios where test results need to be programmatically verified.
 func CheckBuildRecords(timeline *build.Timeline, testName, testResult, testState string) (bool, error) {
 	for _, record := range *timeline.Records {
 		if record.Name != nil && *record.Name == testName {
@@ -245,6 +292,25 @@ func CheckBuildRecords(timeline *build.Timeline, testName, testResult, testState
 	return false, fmt.Errorf("no record found matching the criteria")
 }
 
+// RunBuildTest executes a build test within a given context. It uses the specified build client
+// to run tests on a project and pipeline, based on the provided pipeline and build IDs.
+// It evaluates the test condition (presence or absence of a specific command) in the build logs.
+//
+// Parameters:
+// ctx           - The context to control the execution and cancellation of the test.
+// buildClient   - The client interface to interact with the build system.
+// projectName   - The name of the project in which the test is being run.
+// pipelineName  - The name of the pipeline within the project.
+// pipelineID    - The identifier of the pipeline.
+// buildID       - A pointer to an integer storing the build identifier.
+//
+//	This may be modified during the test execution.
+//
+// test          - The build test to be executed, which includes test conditions and expectations.
+//
+// Returns true if the test passes, which includes successful execution and meeting of the test conditions.
+// If the test fails due to an error in execution or if the test conditions are not met, the function
+// logs a fatal error with the test description and the reason for the failure.
 func RunBuildTest(ctx context.Context, buildClient BuildClient, projectName, pipelineName string, pipelineID int, buildID *int, test BuildTest) bool {
 	var pass bool
 	var err error
@@ -267,6 +333,23 @@ func RunBuildTest(ctx context.Context, buildClient BuildClient, projectName, pip
 	return true
 }
 
+// RunTimelineTests conducts a series of tests based on the timeline of a build process.
+// It checks the status of different stages in the build process against the expectations
+// defined in the TimelineTest structure.
+//
+// Parameters:
+// ctx           - The context to control the execution and cancellation of the test.
+// buildClient   - The client interface to interact with the build system.
+// projectName   - The name of the project in which the test is being run.
+// buildID       - A pointer to an integer storing the build identifier.
+//
+//	This may be modified during the test execution.
+//
+// test          - The build test to be executed, which includes test conditions and expectations.
+//
+// Returns true if the test passes, which includes successful execution and meeting of the test conditions.
+// If the test fails due to an error in execution or if the test conditions are not met, the function
+// logs a fatal error with the test description and the reason for the failure.
 func RunTimelineTests(ctx context.Context, buildClient BuildClient, projectName string, buildID *int, test TimelineTest) bool {
 	var pass bool
 	var err error
@@ -284,6 +367,19 @@ func RunTimelineTests(ctx context.Context, buildClient BuildClient, projectName 
 	return true
 }
 
+// GetTestsDefinition reads a YAML file from a specified path and unmarshalls it into slices of BuildTest and TimelineTest.
+// This function is used for parsing test definitions from a YAML configuration file, allowing for dynamic test specifications.
+//
+// Parameters:
+// filePath - The path to the YAML file that contains the test definitions.
+//
+// Returns two slices: one of BuildTest and another of TimelineTest. Each slice contains the respective test definitions
+// extracted from the YAML file. The BuildTest slice contains tests related to build processes, whereas the TimelineTest
+// slice contains tests that pertain to timeline events in a build.
+//
+// In case of errors in reading the file or unmarshalling the content, the function logs a fatal error with the specific issue
+// and terminates the execution. This design assumes that the successful parsing of test definitions is critical for the
+// continuation of the program.
 func GetTestsDefinition(filePath string) (buildTests []BuildTest, timelineTests []TimelineTest) {
 	fileContent, err := os.ReadFile(filePath)
 	if err != nil {
