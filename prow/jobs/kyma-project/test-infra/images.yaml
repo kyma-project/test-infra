@@ -9,7 +9,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pull-build-image-builder"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod
+      run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod|cmd/image-builder/images/
       decorate: true
       cluster: untrusted-workload
       max_concurrency: 10
@@ -35,6 +35,54 @@ presubmits: # runs on PRs
               - "--context=."
               - "--dockerfile=cmd/image-builder/images/kaniko/Dockerfile"
               - "--build-in-ado=true"
+            resources:
+              requests:
+                memory: 500Mi
+                cpu: 500m
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: pull-build-buildkit-image-builder
+      annotations:
+        description: "build buildkit image-builder image"
+        owner: "neighbors"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-build-image-builder"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod|cmd/image-builder/images/
+      decorate: true
+      cluster: untrusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=image-builder"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=cmd/image-builder/images/buildkit/Dockerfile"
+              - "--build-in-ado=true"
+              - "--tag=v{{ .Date }}-{{ .ShortSHA }}-buildkit"
             resources:
               requests:
                 memory: 500Mi
@@ -91,7 +139,7 @@ postsubmits:
         prow.k8s.io/pubsub.runID: "pull-build-image-builder"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod
+      run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod|cmd/image-builder/images/
       branches:
         - main
       decorate: true
@@ -119,6 +167,54 @@ postsubmits:
               - "--context=."
               - "--dockerfile=cmd/image-builder/images/kaniko/Dockerfile"
               - "--build-in-ado=true"
+            resources:
+              requests:
+                memory: 500Mi
+                cpu: 500m
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
+    - name: post-build-buildkit-image-builder
+      annotations:
+        description: "build buildkit image-builder image"
+        owner: "neighbors"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-build-image-builder"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: ^pkg/.*.go|cmd/image-builder/.*.go|^go.mod|cmd/image-builder/images/
+      decorate: true
+      cluster: trusted-workload
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=image-builder"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=cmd/image-builder/images/buildkit/Dockerfile"
+              - "--build-in-ado=true"
+              - "--tag=v{{ .Date }}-{{ .ShortSHA }}-buildkit"
             resources:
               requests:
                 memory: 500Mi
