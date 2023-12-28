@@ -1,6 +1,5 @@
 FROM alpine:3.17.1 AS creds
 
-#SHELL ["/bin/ash", "option",  "-o", "pipefail"]
 RUN apk add --no-cache curl && \
   curl -fsSL "https://github.com/GoogleCloudPlatform/docker-credential-gcr/releases/download/v2.1.5/docker-credential-gcr_linux_amd64-2.1.5.tar.gz" \
   | tar xz docker-credential-gcr \
@@ -20,6 +19,5 @@ RUN docker-credential-gcr configure-docker --registries=eu.gcr.io,europe-docker.
 ENV USE_BUILDKIT=true
 
 COPY --from=builder /app/image-builder /image-builder
-#COPY ./image-builder /image-builder
 
 ENTRYPOINT ["/image-builder"]
