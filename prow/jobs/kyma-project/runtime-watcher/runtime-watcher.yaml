@@ -51,7 +51,7 @@ postsubmits:
   kyma-project/runtime-watcher:
     - name: main-runtime-watcher-build
       annotations:
-        description: "build runtime watcher with latest tag"
+        description: "build runtime watcher image with the latest tag"
         owner: "jellyfish"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -98,7 +98,7 @@ postsubmits:
               secretName: signify-dev-secret
     - name: release-runtime-watcher-build
       annotations:
-        description: "build runtime watcher by semantic version tag"
+        description: "build runtime watcher release image by semantic version tag"
         owner: "jellyfish"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
