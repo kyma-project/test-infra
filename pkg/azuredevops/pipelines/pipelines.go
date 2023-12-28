@@ -319,9 +319,6 @@ func CheckBuildRecords(timeline *build.Timeline, testName, testResult, testState
 // pipelineName  - The name of the pipeline within the project.
 // pipelineID    - The identifier of the pipeline.
 // buildID       - A pointer to an integer storing the build identifier.
-//
-//	This may be modified during the test execution.
-//
 // test          - The build test to be executed, which includes test conditions and expectations.
 //
 // Returns true if the test passes, which includes successful execution and meeting of the test conditions.
@@ -358,9 +355,6 @@ func RunBuildTest(ctx context.Context, buildClient BuildClient, projectName, pip
 // buildClient   - The client interface to interact with the build system.
 // projectName   - The name of the project in which the test is being run.
 // buildID       - A pointer to an integer storing the build identifier.
-//
-//	This may be modified during the test execution.
-//
 // test          - The build test to be executed, which includes test conditions and expectations.
 //
 // Returns true if the test passes, which includes successful execution and meeting of the test conditions.
