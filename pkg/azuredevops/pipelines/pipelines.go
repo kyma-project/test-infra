@@ -133,6 +133,22 @@ func GetRunLogs(ctx context.Context, buildClient BuildClient, httpClient HTTPCli
 	return string(body), nil
 }
 
+// GetBuildStageStatus retrieves the status of a specific stage in a build process, based on the criteria defined in a TimelineTest.
+// It first fetches the build timeline for a given build ID and then checks for a record in the timeline that matches the test criteria.
+//
+// Parameters:
+// ctx          - The context to control the execution and cancellation of the test.
+// buildClient  - The client interface to interact with the build system.
+// pipelineName - The name of the pipeline within the project.
+// buildID      - A pointer to an integer storing the build identifier.
+// test         - The TimelineTest struct containing the name, expected result, and state of the test stage to be checked.
+//
+// Returns a boolean and an error. The boolean is true if a record matching the test's criteria (name, result, and state)
+// is found in the build timeline. If no matching record is found or if there is an error in retrieving the build timeline,
+// the function returns false and an error with a detailed message for troubleshooting.
+//
+// This function is particularly useful for verifying specific stages or conditions in a build process, especially in continuous
+// integration and deployment scenarios where automated verification of build stages is required.
 func GetBuildStageStatus(ctx context.Context, buildClient BuildClient, projectName string, buildID *int, test TimelineTest) (bool, error) {
 	buildArgs := build.GetBuildTimelineArgs{
 		Project: &projectName,
