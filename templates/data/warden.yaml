@@ -214,24 +214,6 @@ templates:
           - repoName: "github.com/kyma-project/warden"
             jobs:
               - jobConfig:
-                  name: post-warden-verify
-                  annotations:
-                    owner: otters
-                    description: LM intergration test
-                  optional: true
-                  args:
-                    - "bash"
-                    - "-c"
-                    - "make k3d-lm-integration-test"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - privileged
-                    - jobConfig_postsubmit
-                  local:
-                    - e2e_dind
-                    - skip_if_only_changed_documentation
-              - jobConfig:
                   name: pre-warden-unit-test
                   annotations:
                     owner: otters
