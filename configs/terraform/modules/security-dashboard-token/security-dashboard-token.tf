@@ -31,7 +31,7 @@ resource "google_cloud_run_service" "security_dashboard_token" {
         image = "europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev/kyma-neighbors-dev-test/security-dashboard-token:0.0.2"
         env {
           name = "CLIENT_SECRET"
-          value_source {
+          value_from {
             secret_key_ref {
               key = "latest"
               name = "security-dashboard-oauth-client-secret"
@@ -40,7 +40,7 @@ resource "google_cloud_run_service" "security_dashboard_token" {
         }
         env {
           name = "CLIENT_ID"
-          value_source {
+          value_from {
             secret_key_ref {
               key = "latest"
               name = "security-dashboard-oauth-client-id"
