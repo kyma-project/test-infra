@@ -60,6 +60,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231228-b1e22a33
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231228-b1e22a33
     - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231228-b1e22a33
+    - europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev/kyma-neighbors-dev-test/security-dashboard-token:0.0.2
     - gcr.io/k8s-prow/analyze:v20230824-74e8146673
     - gcr.io/k8s-prow/gencred:v20230824-74e8146673
     - maven:3.9.4-eclipse-temurin-17
