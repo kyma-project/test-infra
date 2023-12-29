@@ -1,4 +1,4 @@
-module "cors_proxy" {
+module "security_dashboard_token" {
 
   providers = {
     google = google
