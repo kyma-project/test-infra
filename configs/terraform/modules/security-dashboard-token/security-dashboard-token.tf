@@ -16,7 +16,7 @@ resource "google_cloud_run_service_iam_policy" "noauth" {
 }
 
 resource "google_cloud_run_service" "security_dashboard_token" {
-  name     = "security_dashboard_token"
+  name     = "security-dashboard-token"
   location = "europe-west1"
 
   metadata {
