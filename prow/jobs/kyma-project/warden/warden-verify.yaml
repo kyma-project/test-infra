@@ -81,7 +81,7 @@ postsubmits: # runs on main
   kyma-project/warden:
     - name: post-warden-verify
       annotations:
-        description: "LM intergration test"
+        description: "Warden intergration test"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -111,7 +111,7 @@ postsubmits: # runs on main
             args:
               - "bash"
               - "-c"
-              - "make k3d-lm-integration-test"
+              - "make k3d-integration-test"
             resources:
               requests:
                 memory: 3Gi
