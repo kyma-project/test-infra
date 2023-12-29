@@ -89,6 +89,11 @@ func (p OCIImageBuilderTemplateParams) SetImageTags(tags string) {
 	p["Tags"] = tags
 }
 
+// SetImageTags sets optional parameter UseKanikoConfigFromPR.
+func (p OCIImageBuilderTemplateParams) SetUseKanikoConfigFromPR(useKanikoFromPR bool) {
+	p["UseKanikoConfigFromPR"] = strconv.FormatBool(useKanikoFromPR)
+}
+
 // Validate validates if required OCIImageBuilderTemplateParams are set
 func (p OCIImageBuilderTemplateParams) Validate() error {
 	var (
