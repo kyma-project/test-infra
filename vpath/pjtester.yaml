@@ -2,4 +2,4 @@ pjConfigs:
   prowJobs:
     kyma-project:
       runtime-watcher:
-      - pjName: "watcher-build-release"
+      - pjName: "release-runtime-watcher-build"
