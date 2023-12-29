@@ -217,12 +217,12 @@ templates:
                   name: post-warden-verify
                   annotations:
                     owner: otters
-                    description: LM intergration test
+                    description: Warden intergration test
                   optional: true
                   args:
                     - "bash"
                     - "-c"
-                    - "make k3d-lm-integration-test"
+                    - "make k3d-integration-test"
                 inheritedConfigs:
                   global:
                     - jobConfig_default
