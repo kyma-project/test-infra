@@ -12,7 +12,7 @@ periodics:
       description: "Periodic close stale issues and PRs"
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20231225-1c27b34a
+        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20240101-52192b7a
           command:
             - commenter
           args:
@@ -69,7 +69,7 @@ periodics:
       description: "Periodic triage stale issues and PRs"
     spec:
       containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20231225-1c27b34a
+        - image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/commenter:v20240101-52192b7a
           command:
             - commenter
           args:
