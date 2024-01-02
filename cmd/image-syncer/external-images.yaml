@@ -45,7 +45,7 @@ images:
 - source: "quay.io/prometheus/alertmanager:v0.24.0"
 - source: "nats@sha256:1bcddab51b8099aad943e1e558d9aa7e91000ebc6e08e308e8e95fa3b50a000b"
   tag: "v20240102-2.10.7-alpine3.18"
-- source: "natsio/nats-server-config-reloader:0.14.0"
+- source: "natsio/nats-server-config-reloader:0.14.1"
 - source: "quay.io/prometheus/prometheus:v2.45.0"
 - source: "natsio/nats-box:0.14.1"
 - source: "natsio/prometheus-nats-exporter:0.13.0"
