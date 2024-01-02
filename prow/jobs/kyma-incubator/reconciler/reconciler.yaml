@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231215-751c5f92"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231228-b1e22a33"
             securityContext:
               privileged: false
               seccompProfile:
@@ -95,7 +95,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231215-751c5f92"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231228-b1e22a33"
             securityContext:
               privileged: false
               seccompProfile:
@@ -227,7 +227,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231215-751c5f92"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231228-b1e22a33"
             securityContext:
               privileged: false
               seccompProfile:
@@ -384,7 +384,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20231211-0438486e"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/k8s-prow/generic-autobumper:v20240101-52192b7a"
             securityContext:
               privileged: false
               seccompProfile:
@@ -425,7 +425,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231215-751c5f92"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231228-b1e22a33"
             securityContext:
               privileged: false
               seccompProfile:
@@ -481,7 +481,7 @@ periodics: # runs on schedule
           channel: jellyfish-notifications
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231215-751c5f92"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231228-b1e22a33"
             securityContext:
               privileged: false
               seccompProfile:

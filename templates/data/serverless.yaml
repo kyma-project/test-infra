@@ -378,7 +378,9 @@ templates:
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=components/operator/Dockerfile
+                      --dockerfile=components/operator/Dockerfile.dev
+                      --build-arg=IMG_DIRECTORY=dev
+                      --build-arg=IMG_VERSION=PR-$PULL_NUMBER
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
@@ -401,7 +403,9 @@ templates:
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=components/operator/Dockerfile
+                      --dockerfile=components/operator/Dockerfile.dev
+                      --build-arg=IMG_DIRECTORY=prod
+                      --build-arg=IMG_VERSION=$PULL_BASE_SHA
                       --tag=$PULL_BASE_SHA
                       --tag=$PULL_BASE_REF
                 inheritedConfigs:
@@ -435,7 +439,7 @@ templates:
                       --name=serverless-operator
                       --config=/config/kaniko-build-config.yaml
                       --context=.
-                      --dockerfile=components/operator/Dockerfile
+                      --dockerfile=components/operator/Dockerfile.release
                       --tag=$PULL_BASE_REF
                 inheritedConfigs:
                   global:
@@ -654,7 +658,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231215-751c5f92
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -705,6 +709,9 @@ templates:
                   annotations:
                     owner: otters
                     description: serverless manager verify on k3d vm
+                  env:
+                    IMG_DIRECTORY: "dev"
+                    IMG_VERSION: "PR-${PULL_NUMBER}"
                   args:
                     - bash
                     - -c
@@ -725,6 +732,9 @@ templates:
                   annotations:
                     owner: otters
                     description: serverless manager verify on k3d vm
+                  env:
+                    IMG_DIRECTORY: "prod"
+                    IMG_VERSION: "${PULL_BASE_SHA}"
                   args:
                     - bash
                     - -c
@@ -746,6 +756,9 @@ templates:
                     owner: otters
                     description: upgrade serverless operator test
                   optional: "true"
+                  env:
+                    IMG_DIRECTORY: "prod"
+                    IMG_VERSION: "${PULL_BASE_SHA}"
                   args:
                     - bash
                     - -c
