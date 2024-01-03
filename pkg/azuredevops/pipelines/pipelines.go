@@ -163,23 +163,22 @@ func GetBuildStageStatus(ctx context.Context, buildClient BuildClient, projectNa
 	return CheckBuildRecords(buildTimeline, test.Name, test.Result, test.State)
 }
 
-// CheckSpecificBuildForCommand searches for the occurrence of a specified command or message within the build logs of a specific build.
-// This function is used to verify if a particular command or log entry was executed or generated during the build process.
+// CheckBuildLogForMessage verifies the presence or absence of a specified message in the build logs.
+// It can be used to ensure whether a certain command or log message was executed/generated or not during the build process.
 //
 // Parameters:
-// ctx          - The context to control the execution and cancellation of the test.
-// buildClient  - The client interface to interact with the build system.
-// buildID      - A pointer to an integer storing the build identifier.
-// projectName  - The name of the project in which the test is being run.
-// pipelineName - The name of the pipeline within the project.
-// logFinding   - The specific command or message to search for in the build logs.
-// pipelineID   - The identifier of the pipeline.
+// ctx           - The context to control the execution and cancellation of the test.
+// buildClient   - The client interface to interact with the build system.
+// projectName   - The name of the project in which the test is being run.
+// pipelineName  - The name of the pipeline within the project.
+// logMessage    - The specific command or message to search for in the build logs.
+// expectAbsent  - Boolean indicating whether the message is expected to be absent (true) or present (false) in the logs.
+// pipelineID    - The identifier of the pipeline.
+// buildID       - A pointer to an integer storing the build identifier.
 //
-// Returns a boolean and an error. The boolean is true if the specified command or message is found in the build logs,
-// indicating that the command was executed. It returns false if the message is not found or if there are no logs for the build.
-// In case of an error in fetching builds or logs, or any other operational issue, the function returns the error with a detailed
-// message for troubleshooting.
-func CheckSpecificBuildForCommand(ctx context.Context, buildClient BuildClient, projectName, pipelineName, logFinding string, pipelineID int, buildID *int) (bool, error) {
+// Returns a boolean and an error. The boolean is true if the condition (presence or absence) of the specified message is met in the build logs.
+// In case of an error in fetching builds or logs, or any other operational issue, the function returns the error with a detailed message for troubleshooting.
+func CheckBuildLogForMessage(ctx context.Context, buildClient BuildClient, projectName, pipelineName, logMessage string, expectAbsent bool, pipelineID int, buildID *int) (bool, error) {
 	buildArgs := build.GetBuildsArgs{
 		Project:     &projectName,
 		Definitions: &[]int{pipelineID},
@@ -201,7 +200,6 @@ func CheckSpecificBuildForCommand(ctx context.Context, buildClient BuildClient, 
 		return false, fmt.Errorf("error getting build logs: %w", err)
 	}
 
-	// Search logs for usage of command `logFinding`
 	for _, buildLog := range *logs {
 		logContent, err := buildClient.GetBuildLogLines(ctx, build.GetBuildLogLinesArgs{
 			Project: &projectName,
@@ -213,72 +211,19 @@ func CheckSpecificBuildForCommand(ctx context.Context, buildClient BuildClient, 
 		}
 
 		for _, line := range *logContent {
-			if strings.Contains(line, logFinding) {
+			found := strings.Contains(line, logMessage)
+			if expectAbsent && found {
+				return false, fmt.Errorf("unexpected message found in logs: %s", logMessage)
+			} else if !expectAbsent && found {
 				return true, nil
 			}
 		}
 	}
 
-	return false, nil
-}
-
-// CheckSpecificBuildForMissingCommand verifies if a specified message is absent in the build logs of a given build.
-// It is primarily used to ensure that a certain command or log message was not executed or generated during the build process.
-//
-// Parameters:
-// ctx                    - The context to control the execution and cancellation of the test.
-// buildClient            - The client interface to interact with the build system.
-// buildID                - A pointer to an integer storing the build identifier.
-// projectName            - The name of the project in which the test is being run.
-// pipelineName           - The name of the pipeline within the project.
-// expectedMissingMessage - The message or command that is expected to be absent in the build logs.
-// pipelineID    		  - The identifier of the pipeline.
-//
-// Returns a boolean and an error. The boolean is true if the specified message is indeed missing from the build logs,
-// indicating that the command was not executed. It returns false if the message is found or if there are no logs for the build.
-// In case of an error in fetching builds or logs, or any other operational issue, the function returns the error with a detailed
-// message for troubleshooting.
-func CheckSpecificBuildForMissingCommand(ctx context.Context, buildClient BuildClient, buildID *int, projectName, pipelineName, expectedMissingMessage string, pipelineID int) (bool, error) {
-	buildArgs := build.GetBuildsArgs{
-		Project:     &projectName,
-		Definitions: &[]int{pipelineID},
+	if expectAbsent {
+		return true, nil // Message was correctly absent
 	}
-	buildsResponse, err := buildClient.GetBuilds(ctx, buildArgs)
-	if err != nil {
-		return false, fmt.Errorf("error getting last build: %w", err)
-	}
-
-	if len(buildsResponse.Value) == 0 {
-		return false, fmt.Errorf("no builds found for pipeline %s", pipelineName)
-	}
-
-	logs, err := buildClient.GetBuildLogs(ctx, build.GetBuildLogsArgs{
-		Project: &projectName,
-		BuildId: buildID,
-	})
-	if err != nil {
-		return false, fmt.Errorf("error getting build logs: %w", err)
-	}
-
-	// Search logs for the expected missing message
-	for _, buildLog := range *logs {
-		logContent, err := buildClient.GetBuildLogLines(ctx, build.GetBuildLogLinesArgs{
-			Project: &projectName,
-			BuildId: buildID,
-			LogId:   buildLog.Id,
-		})
-		if err != nil {
-			return false, fmt.Errorf("error getting build log lines: %w", err)
-		}
-
-		for _, line := range *logContent {
-			if strings.Contains(line, expectedMissingMessage) {
-				return false, fmt.Errorf("unexpected message found in logs: %s", expectedMissingMessage)
-			}
-		}
-	}
-
-	return true, nil
+	return false, fmt.Errorf("message not found in logs: %s", logMessage)
 }
 
 // CheckBuildRecords examines a build timeline to find a specific test record that matches the given criteria.
@@ -308,9 +253,10 @@ func CheckBuildRecords(timeline *build.Timeline, testName, testResult, testState
 	return false, fmt.Errorf("no record found matching the criteria")
 }
 
-// RunBuildTest executes a build test within a given context. It uses the specified build client
+// RunBuildTests executes a build test within a given context. It uses the specified build client
 // to run tests on a project and pipeline, based on the provided pipeline and build IDs.
-// It evaluates the test condition (presence or absence of a specific command) in the build logs.
+// This function checks the build logs to evaluate the test condition, which involves verifying
+// the presence or absence of a specific command or message as defined in the test.
 //
 // Parameters:
 // ctx           - The context to control the execution and cancellation of the test.
@@ -319,31 +265,22 @@ func CheckBuildRecords(timeline *build.Timeline, testName, testResult, testState
 // pipelineName  - The name of the pipeline within the project.
 // pipelineID    - The identifier of the pipeline.
 // buildID       - A pointer to an integer storing the build identifier.
-// test          - The build test to be executed, which includes test conditions and expectations.
+// test          - The build test to be executed, which includes test conditions (expecting the presence or absence of a log message) and expectations.
 //
-// Returns true if the test passes, which includes successful execution and meeting of the test conditions.
-// If the test fails due to an error in execution or if the test conditions are not met, the function
-// logs a fatal error with the test description and the reason for the failure.
-func RunBuildTest(ctx context.Context, buildClient BuildClient, projectName, pipelineName string, pipelineID int, buildID *int, test BuildTest) bool {
-	var pass bool
-	var err error
-
-	if test.ExpectAbsent {
-		pass, err = CheckSpecificBuildForMissingCommand(ctx, buildClient, buildID, projectName, pipelineName, test.LogMessage, pipelineID)
-	} else {
-		pass, err = CheckSpecificBuildForCommand(ctx, buildClient, projectName, pipelineName, test.LogMessage, pipelineID, buildID)
-	}
-
+// Returns an error if the test fails due to an error in execution or if the test conditions (presence or absence of the specified log message) are not met.
+// If the test passes, which includes successful execution and meeting of the test conditions, the function returns nil.
+func RunBuildTests(ctx context.Context, buildClient BuildClient, projectName, pipelineName string, pipelineID int, buildID *int, test BuildTest) error {
+	pass, err := CheckBuildLogForMessage(ctx, buildClient, projectName, pipelineName, test.LogMessage, test.ExpectAbsent, pipelineID, buildID)
 	if err != nil {
-		log.Fatalf("Test failed for %s: %v\n", test.Description, err)
+		return fmt.Errorf("test failed for %s: %v", test.Description, err)
 	}
 
 	if !pass {
-		log.Fatalf("Test failed for %s: condition not met\n", test.Description)
+		return fmt.Errorf("test failed for %s: condition not met", test.Description)
 	}
 
 	fmt.Printf("Test passed for %s\n", test.Description)
-	return true
+	return nil
 }
 
 // RunTimelineTests conducts a series of tests based on the timeline of a build process.
@@ -355,26 +292,26 @@ func RunBuildTest(ctx context.Context, buildClient BuildClient, projectName, pip
 // buildClient   - The client interface to interact with the build system.
 // projectName   - The name of the project in which the test is being run.
 // buildID       - A pointer to an integer storing the build identifier.
-// test          - The build test to be executed, which includes test conditions and expectations.
+// test          - The timeline test to be executed, which includes test conditions and expectations.
 //
-// Returns true if the test passes, which includes successful execution and meeting of the test conditions.
-// If the test fails due to an error in execution or if the test conditions are not met, the function
-// logs a fatal error with the test description and the reason for the failure.
-func RunTimelineTests(ctx context.Context, buildClient BuildClient, projectName string, buildID *int, test TimelineTest) bool {
+// Returns an error if the test fails due to an error in execution or if the test conditions are not met.
+// If the test passes, including successful execution and meeting of the test conditions, the function
+// returns nil. The function no longer logs fatal errors but returns them to the caller for handling.
+func RunTimelineTests(ctx context.Context, buildClient BuildClient, projectName string, buildID *int, test TimelineTest) error {
 	var pass bool
 	var err error
 
 	pass, err = GetBuildStageStatus(ctx, buildClient, projectName, buildID, test)
 	if err != nil {
-		log.Fatalf("Test failed for %s: %v\n", test.Name, err)
+		return fmt.Errorf("test failed for %s: %v", test.Name, err)
 	}
 
 	if !pass {
-		log.Fatalf("Test failed for %s: condition not met\n", test.Name)
+		return fmt.Errorf("test failed for %s: condition not met", test.Name)
 	}
 
 	fmt.Printf("Test passed for %s\n", test.Name)
-	return true
+	return nil
 }
 
 // GetTestsDefinition reads a YAML file from a specified path and unmarshalls it into slices of BuildTest and TimelineTest.

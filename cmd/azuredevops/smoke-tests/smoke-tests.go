@@ -12,7 +12,7 @@ import (
 func main() {
 	// Fetching environment variables for Azure DevOps settings
 	organizationURL := os.Getenv("ORGANIZATION_URL")
-	personalAccessToken := os.Getenv("PERSONAL_ACCESS_TOKEN")
+	personalAccessToken := os.Getenv("ADO_PAT")
 	projectName := os.Getenv("PROJECT_NAME")
 	pipelineName := os.Getenv("PIPELINE_NAME")
 	pipelineIDStr := os.Getenv("PIPELINE_ID")
@@ -38,17 +38,23 @@ func main() {
 	}
 
 	// Determining which tests to run based on the test-suite.yaml file
-	testsToRun := os.Getenv("FILE_PATH")
+	testsToRun := os.Getenv("TESTS_TO_RUN_FILE_PATH")
 
 	buildTests, timelineTests := pipelines.GetTestsDefinition(testsToRun)
 	// Running each build test if it exists in YAML file
 	for _, test := range buildTests {
-		pipelines.RunBuildTest(ctx, buildClient, projectName, pipelineName, pipelineID, &buildID, test)
+		err := pipelines.RunBuildTests(ctx, buildClient, projectName, pipelineName, pipelineID, &buildID, test)
+		if err != nil {
+			log.Printf("Error running build test: %v\n", err)
+		}
 	}
 
 	// Running each timeline test if it exists in YAML file
 	for _, test := range timelineTests {
-		pipelines.RunTimelineTests(ctx, buildClient, projectName, &buildID, test)
+		err := pipelines.RunTimelineTests(ctx, buildClient, projectName, &buildID, test)
+		if err != nil {
+			log.Printf("Error running timeline test: %v\n", err)
+		}
 	}
 
 }
