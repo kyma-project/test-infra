@@ -12,14 +12,11 @@ global:
         - name: "busola"
         - name: "control-plane"
         - name: "cli"
-        - name: "website"
         - name: "lifecycle-manager"
         - name: "third-party-images"
         - name: "community"
         - name: "hydroform"
-        - name: "istio-operator"
         - name: "private-fn-for-e2e-serverless-tests"
-        - name: "charts"
         - name: "examples"
         - name: "api-gateway"
         - name: "istio"
@@ -31,7 +28,6 @@ global:
         - name: "btp-manager"
         - name: "kyma-environment-broker"
         - name: "telemetry-manager"
-        - name: "director-size-exporter"
         - name: "compass-manager"
     - name: "kyma-incubator"
       repos:
@@ -134,7 +130,7 @@ globalSets:
     max_concurrency: "10"
     optional: "true"
     decorate: "true"
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231215-751c5f92"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231228-b1e22a33"
     pubsub_project: "sap-kyma-prow"
     pubsub_topic: "prowjobs"
     request_memory: 1Gi
@@ -152,21 +148,21 @@ globalSets:
       KYMA_PROJECT_DIR: "/home/prow/go/src/github.com/kyma-project"
   # Image sets
   image_buildpack-node:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231215-751c5f92"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-nodejs:v20231228-b1e22a33"
   image_buildpack-golang:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231215-751c5f92"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231228-b1e22a33"
   image_wssagent_go:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231215-751c5f92"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20231228-b1e22a33"
   image_wssagent_nodejs:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231215-751c5f92"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-nodejs:v20231228-b1e22a33"
   image_gardener-rotate:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20231215-80c2f227
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240103-11ef4be5
   image_markdown_index:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20231215-80c2f227
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/markdown-index:v20240103-11ef4be5
   image_image_detector:
-    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20231215-80c2f227
+    image: europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-detector:v20240103-11ef4be5
   image_e2e-dind-k3d:
-    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231215-751c5f92"
+    image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33"
   # JobConfig sets
   jobConfig_default:
     skip_report: "false"

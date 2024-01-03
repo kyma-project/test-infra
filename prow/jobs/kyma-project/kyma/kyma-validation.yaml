@@ -26,7 +26,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231215-80c2f227"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20240103-11ef4be5"
             securityContext:
               privileged: false
               seccompProfile:
@@ -65,7 +65,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20231215-80c2f227"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-url-helper:v20240103-11ef4be5"
             securityContext:
               privileged: false
               seccompProfile:
@@ -99,7 +99,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231215-751c5f92"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/alpine-hadolint:v20231228-b1e22a33"
             securityContext:
               privileged: false
               seccompProfile:

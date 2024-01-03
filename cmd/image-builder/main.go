@@ -48,6 +48,7 @@ type options struct {
 	buildInADO            bool
 	adoPreviewRun         bool
 	adoPreviewRunYamlPath string
+	testKanikoBuildConfig bool
 	parseTagsOnly         bool
 }
 
@@ -228,6 +229,8 @@ func prepareADOTemplateParameters(options options) (adopipelines.OCIImageBuilder
 	templateParameters.SetBuildContext(options.context)
 
 	templateParameters.SetExportTags(options.exportTags)
+
+	templateParameters.SetUseKanikoConfigFromPR(options.testKanikoBuildConfig)
 
 	if len(options.buildArgs) > 0 {
 		templateParameters.SetBuildArgs(options.buildArgs.String())
@@ -683,6 +686,7 @@ func (o *options) gatherOptions(flagSet *flag.FlagSet) *flag.FlagSet {
 	flagSet.BoolVar(&o.adoPreviewRun, "ado-preview-run", false, "Trigger ADO pipeline in preview mode")
 	flagSet.StringVar(&o.adoPreviewRunYamlPath, "ado-preview-run-yaml-path", "", "Path to yaml file with ADO pipeline definition to be used in preview mode")
 	flagSet.BoolVar(&o.parseTagsOnly, "parse-tags-only", false, "Only parse tags and print them to stdout")
+	flagSet.BoolVar(&o.testKanikoBuildConfig, "test-kaniko-build-config", false, "Verify kaniko build config for build in ADO")
 
 	return flagSet
 }

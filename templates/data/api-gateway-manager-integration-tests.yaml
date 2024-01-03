@@ -32,46 +32,13 @@ templates:
           - repoName: "kyma-project/api-gateway"
             jobs:
               - jobConfig:
-                  name: post-api-gateway-manager-custom-domain-integration-gcp
-                  annotations:
-                    owner: goat
-                    description: runs api-gateway manager integration tests with custom domain handling on Gardener GCP cluster
-                  skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
-                  always_run: true
-                  securityContext:
-                    privileged: false
-                  cluster: untrusted-workload
-                  branches:
-                    - ^main$
-                  labels:
-                    preset-sa-kyma-dns-serviceuser: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231215-751c5f92
-                  command: bash
-                  args:
-                    - -c
-                    - >-
-                      mkdir -p /prow-tools && ln -s /usr/local/bin/jobguard /prow-tools/jobguard && ./tests/integration/scripts/custom-domain-gardener-gcp.sh
-                  env:
-                    IMG: "europe-docker.pkg.dev/kyma-project/prod/api-gateway-manager:${PULL_BASE_SHA}"
-                    JOB_NAME_PATTERN: "post-api-gateway-manager-build"
-                    TEST_SA_ACCESS_KEY_PATH: "/sa-kyma-dns-serviceuser/service-account.json"
-                inheritedConfigs:
-                  global:
-                    - jobConfig_postsubmit
-                    - jobConfig_default
-                  local:
-                    - job_default
-                    - job_post
-                    - gardener_gcp_job
-                    - with_ias_credentials
-              - jobConfig:
                   name: post-api-gateway-manager-custom-domain-integration-aws
                   annotations:
                     owner: goat
                     description: runs api-gateway manager integration tests with custom domain handling on Gardener AWS cluster
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   always_run: true
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231215-751c5f92
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231228-b1e22a33
                   securityContext:
                     privileged: false
                   cluster: untrusted-workload
@@ -104,7 +71,7 @@ templates:
                     description: runs api-gateway manager integration tests with custom domain handling on Gardener AWS cluster
                   skip_if_only_changed: '^docs/|^performance_tests/|\.md$|^(OWNERS|CODEOWNERS)$|^\.|^LICENSES/'
                   always_run: true
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231215-751c5f92
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231228-b1e22a33
                   securityContext:
                     privileged: false
                   cluster: untrusted-workload
@@ -143,7 +110,7 @@ templates:
                     - ^release-\d+\.\d+(-.*)?$
                   labels:
                     preset-sa-kyma-dns-serviceuser: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231215-751c5f92
+                  image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20231228-b1e22a33
                   command: bash
                   args:
                     - -c
