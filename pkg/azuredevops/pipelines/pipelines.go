@@ -13,7 +13,6 @@ import (
 	adov7 "github.com/microsoft/azure-devops-go-api/azuredevops/v7"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/build"
 	"github.com/microsoft/azure-devops-go-api/azuredevops/v7/pipelines"
-	log "github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 	"gopkg.in/yaml.v3"
 	"k8s.io/utils/ptr"
@@ -320,26 +319,26 @@ func RunTimelineTests(ctx context.Context, buildClient BuildClient, projectName 
 // Parameters:
 // filePath - The path to the YAML file that contains the test definitions.
 //
-// Returns two slices: one of BuildTest and another of TimelineTest. Each slice contains the respective test definitions
-// extracted from the YAML file. The BuildTest slice contains tests related to build processes, whereas the TimelineTest
-// slice contains tests that pertain to timeline events in a build.
+// Returns two slices: one of BuildTest and another of TimelineTest, and an error. Each slice contains the respective test
+// definitions extracted from the YAML file. The BuildTest slice contains tests related to build processes, whereas the
+// TimelineTest slice contains tests that pertain to timeline events in a build.
 //
-// In case of errors in reading the file or unmarshalling the content, the function logs a fatal error with the specific issue
-// and terminates the execution. This design assumes that the successful parsing of test definitions is critical for the
-// continuation of the program.
-func GetTestsDefinition(filePath string) (buildTests []BuildTest, timelineTests []TimelineTest) {
+// In case of errors in reading the file or unmarshalling the content, the function returns an error with a detailed
+// description of the issue. This allows the caller to decide how to handle such scenarios, instead of terminating
+// the execution immediately. This change in design provides more flexibility in error handling.
+func GetTestsDefinition(filePath string) (buildTests []BuildTest, timelineTests []TimelineTest, err error) {
 	fileContent, err := os.ReadFile(filePath)
 	if err != nil {
-		log.Fatalf("error reading tests file: %v", err)
+		return nil, nil, fmt.Errorf("error reading tests file: %v", err)
 	}
 
 	var tests Tests
 	err = yaml.Unmarshal(fileContent, &tests)
 	if err != nil {
-		log.Fatalf("error unmarshalling tests: %v", err)
+		return nil, nil, fmt.Errorf("error unmarshalling tests: %v", err)
 	}
 
-	return tests.BuildTests, tests.TimelineTests
+	return tests.BuildTests, tests.TimelineTests, nil
 }
 
 func NewRunPipelineArgs(templateParameters map[string]string, adoConfig Config, pipelineRunArgs ...RunPipelineArgsOptions) (pipelines.RunPipelineArgs, error) {

@@ -40,7 +40,11 @@ func main() {
 	// Determining which tests to run based on the test-suite.yaml file
 	testsToRun := os.Getenv("TESTS_TO_RUN_FILE_PATH")
 
-	buildTests, timelineTests := pipelines.GetTestsDefinition(testsToRun)
+	buildTests, timelineTests, err := pipelines.GetTestsDefinition(testsToRun)
+	if err != nil {
+		log.Printf("Failed to get test definitions: %v", err)
+	}
+
 	// Running each build test if it exists in YAML file
 	for _, test := range buildTests {
 		err := pipelines.RunBuildTests(ctx, buildClient, projectName, pipelineName, pipelineID, &buildID, test)
