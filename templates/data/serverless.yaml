@@ -45,42 +45,6 @@ templates:
                   local:
                     - skip_if_only_changed_documentation
               - jobConfig:
-                  name: pre-serverless-webhook-build
-                  annotations:
-                    owner: otters
-                    description: function webhook build job
-                  args:
-                    - "--name=function-webhook"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/serverless"
-                    - "--dockerfile=deploy/webhook/Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-                  local:
-                    - skip_if_only_changed_documentation
-              - jobConfig:
-                  name: post-serverless-webhook-build
-                  annotations:
-                    owner: otters
-                    description: function webhook build job
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  args:
-                    - "--name=function-webhook"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/serverless"
-                    - "--dockerfile=deploy/webhook/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
-                    - "--tag=$(PULL_BASE_SHA)"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                  local:
-                    - skip_if_only_changed_documentation
-              - jobConfig:
                   name: pre-serverless-jobinit-build
                   annotations:
                     owner: otters
@@ -457,23 +421,6 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/manager/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                  local:
-                    - release_image_build
-              - jobConfig:
-                  name: release-serverless-webhook-build
-                  annotations:
-                    owner: otters
-                    description: function webhook build for a release.
-                  args:
-                    - "--name=function-webhook"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/serverless"
-                    - "--dockerfile=deploy/webhook/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                 inheritedConfigs:
                   global:
