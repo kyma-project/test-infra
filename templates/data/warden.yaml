@@ -197,7 +197,7 @@ templates:
             skip_report: "false"
             max_concurrency: "10"
             decorate: "true"
-            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231219-8fd42fb0"
+            image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231228-b1e22a33"
             pubsub_project: "sap-kyma-prow"
             pubsub_topic: "prowjobs"
             request_memory: 1Gi
@@ -206,7 +206,7 @@ templates:
             labels:
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231219-8fd42fb0
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33
             command: "/init.sh"
           skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|\.md$'
@@ -217,12 +217,12 @@ templates:
                   name: post-warden-verify
                   annotations:
                     owner: otters
-                    description: LM intergration test
+                    description: Warden intergration test
                   optional: true
                   args:
                     - "bash"
                     - "-c"
-                    - "make k3d-lm-integration-test"
+                    - "make k3d-integration-test"
                 inheritedConfigs:
                   global:
                     - jobConfig_default

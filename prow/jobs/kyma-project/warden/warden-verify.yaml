@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231219-8fd42fb0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231228-b1e22a33"
             securityContext:
               privileged: false
               seccompProfile:
@@ -56,7 +56,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231219-8fd42fb0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33"
             securityContext:
               privileged: true
               seccompProfile:
@@ -81,7 +81,7 @@ postsubmits: # runs on main
   kyma-project/warden:
     - name: post-warden-verify
       annotations:
-        description: "LM intergration test"
+        description: "Warden intergration test"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
@@ -100,7 +100,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231219-8fd42fb0"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33"
             securityContext:
               privileged: true
               seccompProfile:
@@ -111,7 +111,7 @@ postsubmits: # runs on main
             args:
               - "bash"
               - "-c"
-              - "make k3d-lm-integration-test"
+              - "make k3d-integration-test"
             resources:
               requests:
                 memory: 3Gi
