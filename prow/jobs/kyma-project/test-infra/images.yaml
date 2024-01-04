@@ -15,7 +15,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc"
             securityContext:
               privileged: false
               seccompProfile:
@@ -62,7 +62,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc"
             securityContext:
               privileged: false
               seccompProfile:
@@ -147,7 +147,7 @@ postsubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc"
             securityContext:
               privileged: false
               seccompProfile:
@@ -194,7 +194,7 @@ postsubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc"
             securityContext:
               privileged: false
               seccompProfile:
@@ -214,7 +214,7 @@ postsubmits:
               - "--context=."
               - "--dockerfile=cmd/image-builder/images/buildkit/Dockerfile"
               - "--build-in-ado=true"
-              - "--tag=v{{ .Date }}-{{ .ShortSHA }}-buildkit"
+              - '--tag="v{{ .Date }}-{{ .ShortSHA }}-buildkit"'
             resources:
               requests:
                 memory: 500Mi

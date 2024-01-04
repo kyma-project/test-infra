@@ -45,7 +45,7 @@ templates:
                     owner: "gopher"
                     description: "Clean up DEV from Kyma runtimes older than day job build on PR"
                   run_if_changed: ".+"
-                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc
                   args:
                     - --name=kyma-environments-cleanup-job
                     - --context=./
@@ -63,7 +63,7 @@ templates:
                     description: "Clean up DEV from Kyma runtimes older than day job build on tag creation"
                   labels:
                     preset-signify-prod-secret: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc
                   branches:
                     - ^\d+\.\d+\.\d+(?:-.*)?$
                   args:
@@ -83,7 +83,7 @@ templates:
                     owner: "gopher"
                     description: "Removes SKRs when BTP subaccount is deleted job build on PR"
                   run_if_changed: ".+"
-                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc
                   args:
                     - --name=kyma-environment-subaccount-cleanup-job
                     - --context=./
@@ -101,7 +101,7 @@ templates:
                     description: "Removes SKRs when BTP subaccount is deleted job build on tag creation"
                   labels:
                     preset-signify-prod-secret: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc
                   branches:
                     - ^\d+\.\d+\.\d+(?:-.*)?$
                   args:
@@ -121,7 +121,7 @@ templates:
                     owner: "gopher"
                     description: "Removes trials after 14 days job build on PR"
                   run_if_changed: "./"
-                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc
                   args:
                     - --name=kyma-environment-trial-cleanup-job
                     - --context=./
@@ -139,7 +139,7 @@ templates:
                     description: "Removes trials after 14 days job build on tag creation"
                   labels:
                     preset-signify-prod-secret: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc
                   branches:
                     - ^\d+\.\d+\.\d+(?:-.*)?$
                   args:
@@ -159,7 +159,7 @@ templates:
                     owner: "gopher"
                     description: "Retries deprovisioned SKRs where some steps have failed job build on PR"
                   run_if_changed: ".+"
-                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc
                   args:
                     - --name=kyma-environment-deprovision-retrigger-job
                     - --context=./
@@ -177,7 +177,7 @@ templates:
                     description: "Retries deprovisioned SKRs where some steps have failed job build on tag creation"
                   labels:
                     preset-signify-prod-secret: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc
                   branches:
                     - ^\d+\.\d+\.\d+(?:-.*)?$
                   args:
@@ -197,7 +197,7 @@ templates:
                     owner: "gopher"
                     description: "Job to build runtime-reconciler image on PR submit"
                   run_if_changed: ".+"
-                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc
                   branches:
                     - ^main$
                   args:
@@ -217,7 +217,7 @@ templates:
                     description: "Job to build runtime-reconciler image after PR merge"
                   labels:
                     preset-signify-prod-secret: "true"
-                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4
+                  image: europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc
                   branches:
                     - ^\d+\.\d+\.\d+(?:-.*)?$
                   args:
