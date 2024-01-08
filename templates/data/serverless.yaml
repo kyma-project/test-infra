@@ -116,44 +116,6 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - skip_if_only_changed_documentation
-              - jobConfig:
-                  name: pre-serverless-registry-gc-build
-                  annotations:
-                    owner: otters
-                    description: function registry build job
-                  optional: "true"
-                  args:
-                    - "--name=function-registry-gc"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/serverless"
-                    - "--dockerfile=deploy/registry-gc/Dockerfile"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_presubmit
-                  local:
-                    - skip_if_only_changed_documentation
-              - jobConfig:
-                  name: post-serverless-registry-gc-build
-                  annotations:
-                    owner: otters
-                    description: function registry build job
-                  labels:
-                    preset-signify-prod-secret: "true"
-                  optional: "true"
-                  args:
-                    - "--name=function-registry-gc"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/serverless"
-                    - "--dockerfile=deploy/registry-gc/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
-                    - "--tag=$(PULL_BASE_SHA)"
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                  local:
-                    - skip_if_only_changed_documentation
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-runtimes.yaml
         localSets:
           skip_if_only_changed_documentation:
@@ -491,23 +453,6 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=components/serverless"
                     - "--dockerfile=deploy/jobinit/Dockerfile"
-                    - '--tag=$(PULL_BASE_REF)'
-                inheritedConfigs:
-                  global:
-                    - kaniko_buildpack
-                    - jobConfig_postsubmit
-                  local:
-                    - release_image_build
-              - jobConfig:
-                  name: release-serverless-registry-gc-build
-                  annotations:
-                    owner: otters
-                    description: function registry build for a release.
-                  args:
-                    - "--name=function-registry-gc"
-                    - "--config=/config/kaniko-build-config.yaml"
-                    - "--context=components/serverless"
-                    - "--dockerfile=deploy/registry-gc/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
                 inheritedConfigs:
                   global:
