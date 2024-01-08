@@ -111,7 +111,7 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^\w+\d+\.\d+\.\d+(?:-.*)?$
+        - ^\d+\.\d+\.\d+(?:-.*)?$ # Watches for new Tag with the format x.y.z where x, y and z are multi-digit integers.
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -286,4 +286,3 @@ postsubmits: # runs on main
               requests:
                 memory: 3Gi
                 cpu: 2
-
