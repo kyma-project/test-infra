@@ -1,0 +1,14 @@
+pjConfigs:
+  prowJobs:
+    kyma-project:
+      nats-manager:
+        - pjName: "pull-nats-manager-build"
+          report: false
+        - pjName: "release-nats-manager-build"
+          report: false
+        - pjName: "post-nats-manager-build"
+          report: false
+prConfigs: #
+  kyma-project:
+    nats-manager:
+      prNumber: 276
