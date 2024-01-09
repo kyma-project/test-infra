@@ -410,8 +410,6 @@ tide:
     - labels:
         - lgtm
       missingLabels:
-        - needs-kind
-        - needs-area
         - do-not-merge/hold
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
@@ -424,8 +422,6 @@ tide:
         - lgtm
         - approved
       missingLabels:
-        - needs-kind
-        - needs-area
         - do-not-merge/hold
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
@@ -439,8 +435,6 @@ tide:
         - skip-review
       author: kyma-bot
       missingLabels:
-        - needs-kind
-        - needs-area
         - do-not-merge/hold
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
