@@ -35,6 +35,8 @@ presubmits: # runs on PRs
               requests:
                 memory: 3Gi
                 cpu: 2
+              limits:
+                memory: 5Gi
     - name: pull-cli-unit-test
       annotations:
         description: "Go test"
