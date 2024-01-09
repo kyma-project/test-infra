@@ -49,6 +49,7 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+
     - name: pull-nats-module-build
       annotations:
         description: "NATS module build pre-main job"
@@ -147,6 +148,7 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+
     - name: release-nats-manager-module-build
       annotations:
         description: "Job to build nats module for a release."
@@ -190,6 +192,7 @@ postsubmits: # runs on main
               limits:
                 memory: 3Gi
                 cpu: 2
+
     - name: post-nats-manager-build
       annotations:
         description: "build nats manager image"
@@ -241,6 +244,7 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
+
     - name: post-nats-module-build
       annotations:
         description: "NATS module build post-main job"
