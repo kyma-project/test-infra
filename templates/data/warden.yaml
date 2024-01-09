@@ -37,6 +37,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=docker/admission/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
@@ -72,6 +73,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=docker/operator/Dockerfile"
                     - '--tag=$(PULL_BASE_REF)'
+                    - "--tag=$(PULL_BASE_SHA)"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
