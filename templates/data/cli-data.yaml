@@ -19,6 +19,7 @@ templates:
                   branches:
                     - "^main$"
                     - "^release-\\d+\\.\\d+$"
+                  limits_memory: 5Gi
                 inheritedConfigs:
                   global:
                     - jobConfig_default
