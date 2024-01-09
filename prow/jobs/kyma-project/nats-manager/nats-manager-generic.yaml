@@ -66,6 +66,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - ^main$
+        - ^release-\d+\.\d+$
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20231228-b1e22a33"
