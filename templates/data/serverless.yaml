@@ -1,7 +1,7 @@
 templates:
   - from: generic.tmpl
     render:
-      # deprecated, will be removed after EOL of old release
+      # deprecated, will be removed after EOL of the 1.2 release
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-legacy.yaml
         localSets:
           skip_if_only_changed_documentation:
