@@ -77,12 +77,11 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=image-builder"
+              - "--name=buildkit-image-builder"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=cmd/image-builder/images/buildkit/Dockerfile"
               - "--build-in-ado=true"
-              - "--tag=v{{ .Date }}-{{ .ShortSHA }}-buildkit"
             resources:
               requests:
                 memory: 500Mi
@@ -209,12 +208,11 @@ postsubmits:
             command:
               - "/image-builder"
             args:
-              - "--name=image-builder"
+              - "--name=buildkit-image-builder"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=cmd/image-builder/images/buildkit/Dockerfile"
               - "--build-in-ado=true"
-              - "--tag=v{{ .Date }}-{{ .ShortSHA }}-buildkit"
             resources:
               requests:
                 memory: 500Mi
