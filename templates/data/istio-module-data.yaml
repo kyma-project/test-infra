@@ -158,6 +158,7 @@ templates:
                     - job_skip_config
               - jobConfig:
                   name: nightly-istio-performance-test-gcp
+                  always_run: true
                   cron: "0 0 * * *"
                   extra_refs:
                     istio:
@@ -192,6 +193,7 @@ templates:
                     SCALER_MIN: 3
                 inheritedConfigs:
                   global:
+                    - jobConfig_presubmit
                     - jobConfig_default
                     - jobConfig_periodic
                     - jobConfig_slack_goat
