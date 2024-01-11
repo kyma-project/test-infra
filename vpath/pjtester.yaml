@@ -5,7 +5,7 @@ pjConfigs:
   #       prNumber: 560
   prowJobs:
     kyma-project:
-      kyma:
+      serverless:
       - pjName: "pre-serverless-controller-build"
 prConfigs: #
   kyma-project:
