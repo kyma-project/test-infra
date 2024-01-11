@@ -48,6 +48,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                    - "--tag=$(PULL_BASE_REF)"
                 inheritedConfigs:
                   global:
                     - kaniko_buildpack
