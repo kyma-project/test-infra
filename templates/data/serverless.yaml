@@ -133,9 +133,13 @@ templates:
             skip_if_only_changed: '^docs/|^examples/'
           default:
             branches:
+              # replace with release-* after EOL of the 1.2 release
               - main
+              - release-0.*
               - release-1.3
               - release-1.4
+              - release-1.5
+              - release-1.6
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:

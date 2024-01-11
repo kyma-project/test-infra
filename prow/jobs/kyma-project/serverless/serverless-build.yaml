@@ -19,8 +19,11 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - main
+        - release-0.*
         - release-1.3
         - release-1.4
+        - release-1.5
+        - release-1.6
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -70,8 +73,11 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - main
+        - release-0.*
         - release-1.3
         - release-1.4
+        - release-1.5
+        - release-1.6
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -121,8 +127,11 @@ presubmits: # runs on PRs
       max_concurrency: 10
       branches:
         - main
+        - release-0.*
         - release-1.3
         - release-1.4
+        - release-1.5
+        - release-1.6
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -176,8 +185,11 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - main
+        - release-0.*
         - release-1.3
         - release-1.4
+        - release-1.5
+        - release-1.6
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -230,8 +242,11 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - main
+        - release-0.*
         - release-1.3
         - release-1.4
+        - release-1.5
+        - release-1.6
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -284,8 +299,11 @@ postsubmits: # runs on main
       max_concurrency: 10
       branches:
         - main
+        - release-0.*
         - release-1.3
         - release-1.4
+        - release-1.5
+        - release-1.6
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
