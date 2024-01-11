@@ -344,14 +344,14 @@ func GetTestsDefinition(filePath string) (buildTests []BuildTest, timelineTests 
 }
 
 func NewRunPipelineArgs(templateParameters map[string]string, adoConfig Config, pipelineRunArgs ...RunPipelineArgsOptions) (pipelines.RunPipelineArgs, error) {
-	pipelineId := &adoConfig.ADOPipelineID
+	pipelineID := &adoConfig.ADOPipelineID
 	if templateParameters["UseKanikoConfigFromPR"] == "true" {
-		pipelineId = &adoConfig.ADOTestPipelineID
+		pipelineID = &adoConfig.ADOTestPipelineID
 	}
 
 	adoRunPipelineArgs := pipelines.RunPipelineArgs{
 		Project:    &adoConfig.ADOProjectName,
-		PipelineId: pipelineId,
+		PipelineId: pipelineID,
 		RunParameters: &pipelines.RunPipelineParameters{
 			PreviewRun:         ptr.To(false),
 			TemplateParameters: &templateParameters,
