@@ -322,6 +322,10 @@ branch-protection:
               - "lint"
               - "Kustomize (dry-run)"
               - "Kustomize (dry-run-control-plane)"
+        runtime-watcher:
+          required_status_checks:
+            contexts:
+            - "E2E (watcher-enqueue)"
         cli:
           required_status_checks:
             contexts:
