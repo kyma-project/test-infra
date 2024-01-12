@@ -3,13 +3,13 @@
 
 presubmits: # runs on PRs
   kyma-project/serverless:
-    - name: pre-serverless-controller-build
+    - name: pre-serverless-controller-build-legacy
       annotations:
         description: "function controller build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-serverless-controller-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-controller-build-legacy"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|^examples/'
@@ -18,12 +18,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-1.0
+        - release-1.2
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -37,8 +33,8 @@ presubmits: # runs on PRs
             args:
               - "--name=function-controller"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=."
-              - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
+              - "--context=components/serverless"
+              - "--dockerfile=deploy/manager/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -57,13 +53,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pre-serverless-webhook-build
+    - name: pre-serverless-webhook-build-legacy
       annotations:
         description: "function webhook build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-serverless-webhook-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-webhook-build-legacy"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|^examples/'
@@ -72,12 +68,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-1.0
+        - release-1.2
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -91,8 +83,8 @@ presubmits: # runs on PRs
             args:
               - "--name=function-webhook"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=."
-              - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
+              - "--context=components/serverless"
+              - "--dockerfile=deploy/webhook/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -111,13 +103,13 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: pre-serverless-jobinit-build
+    - name: pre-serverless-jobinit-build-legacy
       annotations:
         description: "function jobinit build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pre-serverless-jobinit-build"
+        prow.k8s.io/pubsub.runID: "pre-serverless-jobinit-build-legacy"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       skip_if_only_changed: '^docs/|^examples/'
@@ -126,12 +118,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-1.0
+        - release-1.2
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -145,8 +133,8 @@ presubmits: # runs on PRs
             args:
               - "--name=function-build-init"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=."
-              - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
+              - "--context=components/serverless"
+              - "--dockerfile=deploy/jobinit/Dockerfile"
             resources:
               requests:
                 memory: 1.5Gi
@@ -168,13 +156,13 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/serverless:
-    - name: post-serverless-controller-build
+    - name: post-serverless-controller-build-legacy
       annotations:
         description: "function controller build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-serverless-controller-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-controller-build-legacy"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -184,12 +172,8 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-1.0
+        - release-1.2
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -203,8 +187,8 @@ postsubmits: # runs on main
             args:
               - "--name=function-controller"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=."
-              - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
+              - "--context=components/serverless"
+              - "--dockerfile=deploy/manager/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
             resources:
@@ -225,13 +209,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-serverless-webhook-build
+    - name: post-serverless-webhook-build-legacy
       annotations:
         description: "function webhook build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-serverless-webhook-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-webhook-build-legacy"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -241,12 +225,8 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-1.0
+        - release-1.2
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -260,8 +240,8 @@ postsubmits: # runs on main
             args:
               - "--name=function-webhook"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=."
-              - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
+              - "--context=components/serverless"
+              - "--dockerfile=deploy/webhook/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
             resources:
@@ -282,13 +262,13 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-    - name: post-serverless-jobinit-build
+    - name: post-serverless-jobinit-build-legacy
       annotations:
         description: "function jobinit build job"
         owner: "otters"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-serverless-jobinit-build"
+        prow.k8s.io/pubsub.runID: "post-serverless-jobinit-build-legacy"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -298,12 +278,8 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - main
-        - release-0.*
-        - release-1.3
-        - release-1.4
-        - release-1.5
-        - release-1.6
+        - release-1.0
+        - release-1.2
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -317,8 +293,8 @@ postsubmits: # runs on main
             args:
               - "--name=function-build-init"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=."
-              - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
+              - "--context=components/serverless"
+              - "--dockerfile=deploy/jobinit/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
               - "--tag=$(PULL_BASE_SHA)"
             resources:
