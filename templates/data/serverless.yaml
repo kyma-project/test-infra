@@ -263,8 +263,8 @@ templates:
             skip_if_only_changed: '^docs/|^examples/'
           post_branches:
             branches:
-              - main
-              - release-*
+              - "^main$"
+              - "^release-*"
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
