@@ -133,15 +133,6 @@
         "color": "99DDFF",
         "default": false,
         "description": "Issues or PRs related to tests"
-      },
-      {
-        "id": 5434318215,
-        "node_id": "LA_kwDOCMqacc8AAAABQ-kdhw",
-        "url": "https://api.github.com/repos/kyma-project/test-infra/labels/needs-area",
-        "name": "needs-area",
-        "color": "ededed",
-        "default": false,
-        "description": null
       }
     ],
     "milestone": null,

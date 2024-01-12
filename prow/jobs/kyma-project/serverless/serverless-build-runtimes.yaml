@@ -12,7 +12,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-nodejs-v16-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^examples/'
+      run_if_changed: '^components/runtimes/nodejs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -59,7 +59,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-nodejs-v18-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^examples/'
+      run_if_changed: '^components/runtimes/nodejs/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -106,7 +106,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-python39-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^examples/'
+      run_if_changed: '^components/runtimes/python39/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -153,7 +153,7 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.runID: "pre-serverless-runtimes-java17-jvm-alpha-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
-      skip_if_only_changed: '^docs/|^examples/'
+      run_if_changed: '^components/runtimes/java17/'
       skip_report: false
       decorate: true
       cluster: untrusted-workload
@@ -204,11 +204,14 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      skip_if_only_changed: '^docs/|^examples/'
+      run_if_changed: '^components/runtimes/nodejs/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-*
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -254,11 +257,14 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      skip_if_only_changed: '^docs/|^examples/'
+      run_if_changed: '^components/runtimes/nodejs/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-*
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -304,11 +310,14 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      skip_if_only_changed: '^docs/|^examples/'
+      run_if_changed: '^components/runtimes/python39/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-*
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
@@ -354,11 +363,14 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
-      skip_if_only_changed: '^docs/|^examples/'
+      run_if_changed: '^components/runtimes/java17/'
       skip_report: false
       decorate: true
       cluster: trusted-workload
       max_concurrency: 10
+      branches:
+        - ^main$
+        - ^release-*
       spec:
         containers:
           - image: "eu.gcr.io/sap-kyma-neighbors-dev/image-builder:v20230313-8dfce5f0b"
