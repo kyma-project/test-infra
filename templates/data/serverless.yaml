@@ -261,6 +261,10 @@ templates:
         localSets:
           skip_if_only_changed_documentation:
             skip_if_only_changed: '^docs/|^examples/'
+          post_branches:
+            branches:
+              - main
+              - release-*
         jobConfigs:
           - repoName: kyma-project/serverless
             jobs:
@@ -300,6 +304,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - skip_if_only_changed_documentation
+                    - post_branches
               - jobConfig:
                   name: pre-serverless-runtimes-nodejs-v18-build
                   annotations:
@@ -336,6 +341,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - skip_if_only_changed_documentation
+                    - post_branches
               - jobConfig:
                   name: pre-serverless-runtimes-python39-build
                   annotations:
@@ -372,6 +378,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - skip_if_only_changed_documentation
+                    - post_branches
               - jobConfig:
                   name: pre-serverless-runtimes-java17-jvm-alpha-build
                   annotations:
@@ -408,6 +415,7 @@ templates:
                     - jobConfig_postsubmit
                   local:
                     - skip_if_only_changed_documentation
+                    - post_branches
       - to: ../../prow/jobs/kyma-project/serverless/serverless-build-operator.yaml
         localSets:
           job_branches:
