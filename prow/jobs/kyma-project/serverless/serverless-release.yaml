@@ -29,10 +29,13 @@ postsubmits: # runs on main
                 type: Unconfined
               allowPrivilegeEscalation: true
             command:
-              - "sh"
+              - "/image-builder"
             args:
-              - "-c"
-              - "/image-builder --name=serverless-operator --config=/config/kaniko-build-config.yaml --context=. --dockerfile=components/operator/Dockerfile.release --tag=$PULL_BASE_REF"
+              - "--name=serverless-operator"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=components/operator/Dockerfile.release"
+              - "--tag=$PULL_BASE_REF"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
