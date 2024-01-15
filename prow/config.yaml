@@ -333,6 +333,8 @@ branch-protection:
               - "Run E2E tests (test-moduleconfig-module-creation)"
               - "Run E2E tests (test-same-version-module-creation)"
               - "lint"
+              - "docs validation"
+              - "run unit tests"
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
