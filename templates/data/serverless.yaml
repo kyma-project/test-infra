@@ -488,7 +488,7 @@ templates:
                     - --context=.
                     - --dockerfile=components/operator/Dockerfile.dev
                     - --build-arg=IMG_DIRECTORY=dev
-                    - --build-arg=IMG_VERSION=PR-$PULL_NUMBER
+                    - --build-arg=IMG_VERSION=PR-$(PULL_NUMBER)
                 inheritedConfigs:
                   global:
                     - jobConfig_presubmit
@@ -510,9 +510,9 @@ templates:
                     - --context=.
                     - --dockerfile=components/operator/Dockerfile.dev
                     - --build-arg=IMG_DIRECTORY=prod
-                    - --build-arg=IMG_VERSION=$PULL_BASE_SHA
-                    - --tag=$PULL_BASE_SHA
-                    - --tag=$PULL_BASE_REF
+                    - --build-arg=IMG_VERSION=$(PULL_BASE_SHA)
+                    - --tag=$(PULL_BASE_SHA)
+                    - --tag=$(PULL_BASE_REF)
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
@@ -542,7 +542,7 @@ templates:
                     - --config=/config/kaniko-build-config.yaml
                     - --context=.
                     - --dockerfile=components/operator/Dockerfile.release
-                    - --tag=$PULL_BASE_REF
+                    - --tag=$(PULL_BASE_REF)
                 inheritedConfigs:
                   global:
                     - jobConfig_postsubmit
