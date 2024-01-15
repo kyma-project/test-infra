@@ -35,7 +35,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=components/operator/Dockerfile.release"
-              - "--tag=$PULL_BASE_REF"
+              - "--tag=$(PULL_BASE_REF)"
             env:
               - name: BUILDKITD_FLAGS
                 value: "--oci-worker-no-process-sandbox"
