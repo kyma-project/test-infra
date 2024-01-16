@@ -51,7 +51,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.2
+        - ^main$
+        - ^release-*
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231228-b1e22a33"
@@ -88,7 +89,8 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.2
+        - ^main$
+        - ^release-*
       extra_refs:
         - org: kyma-project
           repo: test-infra
@@ -140,7 +142,8 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.2
+        - ^main$
+        - ^release-*
       extra_refs:
         - org: kyma-project
           repo: test-infra
@@ -189,7 +192,8 @@ postsubmits: # runs on main
       cluster: trusted-workload
       max_concurrency: 10
       branches:
-        - ^release-1.2
+        - ^main$
+        - ^release-*
       extra_refs:
         - org: kyma-project
           repo: test-infra
