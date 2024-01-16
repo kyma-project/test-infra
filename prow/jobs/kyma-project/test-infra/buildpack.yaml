@@ -11,7 +11,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pre-test-infra-golangci-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
       run_if_changed: '^prow/images/golangci-lint/'
       skip_report: false
       decorate: true
@@ -21,12 +20,18 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -34,6 +39,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/golangci-lint"
               - "--dockerfile=Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -42,16 +48,10 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: pull-build-githubrelease
       annotations:
         description: "Build test-infra/githubrelease image"
@@ -60,7 +60,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-build-githubrelease"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
       run_if_changed: '^experimental/changelog-generator/|^cmd/tools/githubrelease/'
       skip_report: false
       decorate: true
@@ -70,12 +69,18 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -83,6 +88,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=cmd/tools/githubrelease/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -91,16 +97,10 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: pull-build-ginkgo
       annotations:
         description: "Building ginkgo image"
@@ -109,7 +109,6 @@ presubmits: # runs on PRs
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "pull-build-ginkgo"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
       run_if_changed: '^prow/images/ginkgo/'
       skip_report: false
       decorate: true
@@ -119,12 +118,18 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -132,6 +137,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=prow/images/ginkgo/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -140,16 +146,10 @@ presubmits: # runs on PRs
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
   
 postsubmits: # runs on main
   kyma-project/test-infra:
@@ -161,8 +161,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-test-infra-golangci-lint"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/golangci-lint/'
       skip_report: false
       decorate: true
@@ -172,12 +170,18 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -185,6 +189,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=prow/images/golangci-lint"
               - "--dockerfile=Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -193,16 +198,10 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: post-build-githubrelease
       annotations:
         description: "Build test-infra/githubrelease image"
@@ -211,8 +210,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-build-githubrelease"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       run_if_changed: '^experimental/changelog-generator/|^cmd/tools/githubrelease/'
       skip_report: false
       decorate: true
@@ -222,12 +219,18 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -235,6 +238,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=cmd/tools/githubrelease/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -243,16 +247,10 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
     - name: post-build-ginkgo
       annotations:
         description: "Building ginkgo image"
@@ -261,8 +259,6 @@ postsubmits: # runs on main
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
         prow.k8s.io/pubsub.runID: "post-build-ginkgo"
         prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-sa-kyma-push-images: "true"
-        preset-signify-prod-secret: "true"
       run_if_changed: '^prow/images/ginkgo/'
       skip_report: false
       decorate: true
@@ -272,12 +268,18 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
                 type: RuntimeDefault
               allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
             command:
               - "/image-builder"
             args:
@@ -285,6 +287,7 @@ postsubmits: # runs on main
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=prow/images/ginkgo/Dockerfile"
+              - "--build-in-ado=true"
             resources:
               requests:
                 memory: 1.5Gi
@@ -293,14 +296,7 @@ postsubmits: # runs on main
               - name: config
                 mountPath: /config
                 readOnly: true
-              - name: signify-secret
-                mountPath: /secret
-                readOnly: true
         volumes:
           - name: config
             configMap:
               name: kaniko-build-config
-          - name: signify-secret
-            secret:
-              secretName: signify-dev-secret
-  
