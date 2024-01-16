@@ -2,7 +2,7 @@ FROM europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231128-9
 
 WORKDIR /
 COPY . /app/
-RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -o /app/image-builder -a -ldflags '-extldflags "-static"' .
+RUN cd /app/cmd/image-builder && CGO_ENABLED=0 go build -buildvcs=false -o /app/image-builder -a -ldflags '-extldflags "-static"' .
 
 
 FROM gcr.io/kaniko-project/executor:v1.14.0
