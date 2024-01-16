@@ -23,7 +23,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/status-reconciler:v20240108-3e260bd9
     - europe-docker.pkg.dev/kyma-project/prod/k8s-prow/tide:v20240108-3e260bd9
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ginkgo:v20231011-ae6be62f
-    - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240116-d85d1b30
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automated-approver@sha256:cf9515e4477eff4ddd162a8ec4c18d8b192bd0bd58fb7fff7624452068bd56ae
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/automerge-notification:v20231009-ffd7e492
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20240103-11ef4be5
