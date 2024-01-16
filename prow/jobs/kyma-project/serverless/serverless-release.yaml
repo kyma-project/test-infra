@@ -90,8 +90,8 @@ postsubmits: # runs on main
             args:
               - "--name=function-controller"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/serverless"
-              - "--dockerfile=deploy/manager/Dockerfile"
+              - "--context=."
+              - "--dockerfile=components/serverless/deploy/manager/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
@@ -141,8 +141,8 @@ postsubmits: # runs on main
             args:
               - "--name=function-webhook"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/serverless"
-              - "--dockerfile=deploy/webhook/Dockerfile"
+              - "--context=."
+              - "--dockerfile=components/serverless/deploy/webhook/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
@@ -192,8 +192,8 @@ postsubmits: # runs on main
             args:
               - "--name=function-build-init"
               - "--config=/config/kaniko-build-config.yaml"
-              - "--context=components/serverless"
-              - "--dockerfile=deploy/jobinit/Dockerfile"
+              - "--context=."
+              - "--dockerfile=components/serverless/deploy/jobinit/Dockerfile"
               - "--tag=$(PULL_BASE_REF)"
             resources:
               requests:
