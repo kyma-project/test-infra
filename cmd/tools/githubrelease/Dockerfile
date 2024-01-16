@@ -4,7 +4,7 @@ WORKDIR /build
 
 COPY . .
 
-RUN CGO_ENABLED=0 go build -o ./githubrelease ./development/tools/cmd/githubrelease && \
+RUN CGO_ENABLED=0 go build -o ./githubrelease ./cmd/tools/githubrelease && \
     chmod +x ./githubrelease
 
 FROM node:21.0.0-alpine

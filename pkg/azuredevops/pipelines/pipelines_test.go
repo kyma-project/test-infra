@@ -47,6 +47,7 @@ var _ = Describe("Pipelines", func() {
 			ADOOrganizationURL: "https://dev.azure.com",
 			ADOProjectName:     "example-project",
 			ADOPipelineID:      123,
+			ADOTestPipelineID:  321,
 			ADOPipelineVersion: 1,
 		}
 	})
@@ -211,6 +212,7 @@ var _ = Describe("Pipelines", func() {
 				})
 
 				AfterEach(func() {
+					pipelineRunArgs = []pipelines.RunPipelineArgsOptions{}
 					err := os.Remove(dummyOverrideYamlPath)
 					Expect(err).NotTo(HaveOccurred())
 				})
@@ -225,6 +227,18 @@ var _ = Describe("Pipelines", func() {
 					Expect(pipelineArgs).To(BeAssignableToTypeOf(adoPipelines.RunPipelineArgs{}))
 					Expect(pipelineArgs.RunParameters.PreviewRun).To(Equal(ptr.To(true)))
 					Expect(pipelineArgs.RunParameters.YamlOverride).To(Equal(ptr.To("dummyYamlContent")))
+				})
+			})
+
+			Context("when VerifyKanikoConfig option is passed", func() {
+				BeforeEach(func() {
+					templateParameters["UseKanikoConfigFromPR"] = "true"
+				})
+
+				It("should use test pipeline", func() {
+					pipelineArgs, err := pipelines.NewRunPipelineArgs(templateParameters, adoConfig, pipelineRunArgs...)
+					Expect(err).NotTo(HaveOccurred())
+					Expect(pipelineArgs.PipelineId).To(Equal(&adoConfig.ADOTestPipelineID))
 				})
 			})
 		})

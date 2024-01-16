@@ -1,12 +1,12 @@
 presubmits: # runs on PRs
-  kyma-project/kyma-environment-broker:
-    - name: pull-keb-subscription-cleanup-job-build
+  kyma-project/subscription-cleanup-job:
+    - name: pull-subscription-cleanup-job-build
       annotations:
         description: "Cleaning dirty secrets and Azure resources job build on PR https://github.com/kyma-project/control-plane/issues/42"
         owner: "framefrog"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "pull-keb-subscription-cleanup-job-build"
+        prow.k8s.io/pubsub.runID: "pull-subscription-cleanup-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: '.+'
@@ -25,7 +25,7 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=kyma-environment-subscription-cleanup-job"
+              - "--name=subscription-cleanup-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=subscriptioncleanup"
@@ -50,14 +50,14 @@ presubmits: # runs on PRs
               secretName: signify-dev-secret
   
 postsubmits: # runs on main
-  kyma-project/kyma-environment-broker:
-    - name: post-keb-subscription-cleanup-job-build
+  kyma-project/subscription-cleanup-job:
+    - name: post-subscription-cleanup-job-build
       annotations:
         description: "Cleaning dirty secrets and Azure resources job build on main https://github.com/kyma-project/control-plane/issues/42"
         owner: "framefrog"
       labels:
         prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-keb-subscription-cleanup-job-build"
+        prow.k8s.io/pubsub.runID: "post-subscription-cleanup-job-build"
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
         preset-signify-prod-secret: "true"
@@ -79,7 +79,7 @@ postsubmits: # runs on main
             command:
               - "/image-builder"
             args:
-              - "--name=kyma-environment-subscription-cleanup-job"
+              - "--name=subscription-cleanup-job"
               - "--context=./"
               - "--dockerfile=Dockerfile.job"
               - "--build-arg=BIN=subscriptioncleanup"

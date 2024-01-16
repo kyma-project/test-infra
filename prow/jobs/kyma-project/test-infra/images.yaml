@@ -15,7 +15,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -62,7 +62,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -77,12 +77,11 @@ presubmits: # runs on PRs
             command:
               - "/image-builder"
             args:
-              - "--name=image-builder"
+              - "--name=buildkit-image-builder"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=cmd/image-builder/images/buildkit/Dockerfile"
               - "--build-in-ado=true"
-              - "--tag=v{{ .Date }}-{{ .ShortSHA }}-buildkit"
             resources:
               requests:
                 memory: 500Mi
@@ -147,7 +146,7 @@ postsubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -194,7 +193,7 @@ postsubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240103-f4e871cc"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -209,12 +208,11 @@ postsubmits:
             command:
               - "/image-builder"
             args:
-              - "--name=image-builder"
+              - "--name=buildkit-image-builder"
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=cmd/image-builder/images/buildkit/Dockerfile"
               - "--build-in-ado=true"
-              - '--tag="v{{ .Date }}-{{ .ShortSHA }}-buildkit"'
             resources:
               requests:
                 memory: 500Mi

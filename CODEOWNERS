@@ -10,6 +10,10 @@
 # IMPORTANT: Each path must have @neighbors-dev-bot added to let automation work. Having bot added as owner explicitly while it's not a kyma-project/prow group member does not interfere with the request review automation.
 
 * @kyma-project/prow @neighbors-dev-bot
+
+# The following pattern has no owners assigned, effectively excluding it from requiring reviews by codeowners.
+/vpath/pjtester.yaml
+
 /docs @kyma-project/prow @mmitoraj @grego952 @NHingerl @IwonaLanger @nataliasitko @neighbors-dev-bot
 /prow @kyma-project/prow @neighbors-dev-bot
 /prow/cluster @kyma-project/prow @neighbors-dev-bot

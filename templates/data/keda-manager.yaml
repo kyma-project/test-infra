@@ -158,7 +158,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-keda-manager-operator-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240116-d85d1b30"
                   always_run: true
                   annotations:
                     owner: otters
@@ -283,28 +283,3 @@ templates:
                   local:
                     - dind_job_k3d
                     - skip_if_only_changed_documentation
-              - jobConfig:
-                  name: keda-operator-nightly-periodic
-                  cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
-                  annotations:
-                    owner: otters
-                    description: Keda nightly verify
-                  cluster: "trusted-workload"
-                  args:
-                    - bash
-                    - -c
-                    - |
-                      make -C hack/ci run-with-lifecycle-manager
-                  extra_refs:
-                    keda-manager:
-                      - org: kyma-project
-                        repo: keda-manager
-                        base_ref: main
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - privileged
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                  local:
-                    - dind_job_k3d

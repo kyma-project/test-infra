@@ -21,10 +21,10 @@ plank:
           censoring_concurrency: 2 # 2 concurrent censoring
           censoring_buffer_size: 3092 # 3kB
         utility_images:
-          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240101-52192b7a
-          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240101-52192b7a
-          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240101-52192b7a
-          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240101-52192b7a
+          clonerefs: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/clonerefs:v20240108-3e260bd9
+          initupload: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/initupload:v20240108-3e260bd9
+          entrypoint: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/entrypoint:v20240108-3e260bd9
+          sidecar: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/sidecar:v20240108-3e260bd9
         resources:
           clonerefs:
             requests:
@@ -311,7 +311,8 @@ branch-protection:
               - "E2E (purge-controller)"
               - "E2E (purge-metrics)"
               - "E2E (watcher-enqueue)"
-              - "E2E (module-upgrade)"
+              - "E2E (module-upgrade-channel-switch)"
+              - "E2E (module-upgrade-new-version)"
               - "E2E (ca-certificate-rotation)"
               - "E2E (kyma-deletion-with-foreground-propagation)"
               - "E2E (kyma-deletion-with-background-propagation)"
@@ -321,6 +322,10 @@ branch-protection:
               - "lint"
               - "Kustomize (dry-run)"
               - "Kustomize (dry-run-control-plane)"
+        runtime-watcher:
+          required_status_checks:
+            contexts:
+            - "E2E (watcher-enqueue)"
         cli:
           required_status_checks:
             contexts:
@@ -328,6 +333,9 @@ branch-protection:
               - "Run E2E tests (test-moduleconfig-module-creation)"
               - "Run E2E tests (test-same-version-module-creation)"
               - "lint"
+              - "docs validation"
+              - "unit tests"
+              - "build"
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
@@ -410,8 +418,6 @@ tide:
     - labels:
         - lgtm
       missingLabels:
-        - needs-kind
-        - needs-area
         - do-not-merge/hold
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
@@ -424,8 +430,6 @@ tide:
         - lgtm
         - approved
       missingLabels:
-        - needs-kind
-        - needs-area
         - do-not-merge/hold
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
@@ -439,8 +443,6 @@ tide:
         - skip-review
       author: kyma-bot
       missingLabels:
-        - needs-kind
-        - needs-area
         - do-not-merge/hold
         - do-not-merge/work-in-progress
         - do-not-merge/invalid-owners-file
