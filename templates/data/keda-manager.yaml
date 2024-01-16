@@ -158,7 +158,7 @@ templates:
             jobs:
               - jobConfig:
                   name: pre-keda-manager-operator-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
+                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240116-d85d1b30"
                   always_run: true
                   annotations:
                     owner: otters
