@@ -732,7 +732,8 @@ templates:
         localSets:
           job_branches:
             branches:
-              - "^release-1.2" # prow based verification jobs need to happen only on previous release-1.2. Post submit verification on main ( and newer release branches is happening via GH actions)
+              - "^main$"
+              - "^release-*"
           skip_if_only_changed_documentation:
             # verification jobs that are based on build jobs need to have at least the same restricted
             skip_if_only_changed: '^docs/|^examples/'
