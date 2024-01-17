@@ -15,3 +15,4 @@ spec:
       - runtime/default
     exemptImages:
       - europe-docker.pkg.dev/kyma-project/prod/image-builder:*
+      - europe-docker.pkg.dev/kyma-project/prod/buildkit-image-builder:*
