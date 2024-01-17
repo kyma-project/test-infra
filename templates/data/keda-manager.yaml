@@ -152,28 +152,6 @@ templates:
                     - job_build
                     - limits
 
-      - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager-lint.yaml
-        jobConfigs:
-          - repoName: github.com/kyma-project/keda-manager
-            jobs:
-              - jobConfig:
-                  name: pre-keda-manager-operator-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
-                  always_run: true
-                  annotations:
-                    owner: otters
-                    description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
-                  command: "bash"
-                  optional: "true"
-                  args:
-                    - "-c"
-                    - "golangci-lint run -v && echo 'OK!'"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
       - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager-verify.yaml
         localSets:
           dind_job_k3d:
@@ -283,28 +261,3 @@ templates:
                   local:
                     - dind_job_k3d
                     - skip_if_only_changed_documentation
-              - jobConfig:
-                  name: keda-operator-nightly-periodic
-                  cron: "0 6 * * 1-5" # "Runs on 7 am every day-of-week from Monday through Friday."
-                  annotations:
-                    owner: otters
-                    description: Keda nightly verify
-                  cluster: "trusted-workload"
-                  args:
-                    - bash
-                    - -c
-                    - |
-                      make -C hack/ci run-with-lifecycle-manager
-                  extra_refs:
-                    keda-manager:
-                      - org: kyma-project
-                        repo: keda-manager
-                        base_ref: main
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - privileged
-                    - jobConfig_periodic
-                    - extra_refs_test-infra
-                  local:
-                    - dind_job_k3d
