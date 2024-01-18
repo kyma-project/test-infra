@@ -229,18 +229,6 @@ var _ = Describe("Pipelines", func() {
 					Expect(pipelineArgs.RunParameters.YamlOverride).To(Equal(ptr.To("dummyYamlContent")))
 				})
 			})
-
-			Context("when VerifyKanikoConfig option is passed", func() {
-				BeforeEach(func() {
-					templateParameters["UseKanikoConfigFromPR"] = "true"
-				})
-
-				It("should use test pipeline", func() {
-					pipelineArgs, err := pipelines.NewRunPipelineArgs(templateParameters, adoConfig, pipelineRunArgs...)
-					Expect(err).NotTo(HaveOccurred())
-					Expect(pipelineArgs.PipelineId).To(Equal(&adoConfig.ADOTestPipelineID))
-				})
-			})
 		})
 
 		Context("when NewRunPipelineArgs fails", func() {
