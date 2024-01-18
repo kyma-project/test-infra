@@ -9,7 +9,6 @@ ado-config:
   ado-organization-url: https://dev.azure.com/hyperspace-pipelines
   ado-project-name: kyma
   ado-pipeline-id: 14902
-  ado-test-pipeline-id: 15148
 cache:
   enabled: true
   cache-repo: europe-docker.pkg.dev/kyma-project/cache/cache
