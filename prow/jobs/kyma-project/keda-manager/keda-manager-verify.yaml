@@ -88,52 +88,6 @@ presubmits: # runs on PRs
   
 postsubmits: # runs on main
   kyma-project/keda-manager:
-    - name: post-keda-manager-verify
-      annotations:
-        description: "runs keda manager verity job on k3d VM"
-        owner: "otters"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "post-keda-manager-verify"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-kind-volume-mounts: "true"
-        preset-kyma-guard-bot-github-token: "true"
-      skip_if_only_changed: '^docs/|^examples/|\.md$'
-      optional: true
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      max_concurrency: 10
-      branches:
-        - ^main$
-        - ^release-*
-      extra_refs:
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33"
-            securityContext:
-              privileged: true
-              seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
-            command:
-              - "/init.sh"
-            args:
-              - "bash"
-              - "-c"
-              - "make -C hack/ci k3d-lm-integration-test
-"
-            resources:
-              requests:
-                memory: 4Gi
-                cpu: 3
-              limits:
-                memory: 4Gi
-                cpu: 3
     - name: post-keda-manager-upgrade-latest-to-main
       annotations:
         description: "upgrade keda manager test"
