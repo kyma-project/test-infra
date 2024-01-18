@@ -152,28 +152,6 @@ templates:
                     - job_build
                     - limits
 
-      - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager-lint.yaml
-        jobConfigs:
-          - repoName: github.com/kyma-project/keda-manager
-            jobs:
-              - jobConfig:
-                  name: pre-keda-manager-operator-lint
-                  image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
-                  always_run: true
-                  annotations:
-                    owner: otters
-                    description: executes the 'golangci-lint lint' command on keda-manager before any pull request.
-                  command: "bash"
-                  optional: "true"
-                  args:
-                    - "-c"
-                    - "golangci-lint run -v && echo 'OK!'"
-                  branches:
-                    - ^main$
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - jobConfig_presubmit
       - to: ../../prow/jobs/kyma-project/keda-manager/keda-manager-verify.yaml
         localSets:
           dind_job_k3d:
@@ -182,7 +160,7 @@ templates:
               preset-kyma-guard-bot-github-token: "true"
               preset-kind-volume-mounts: "true"
               preset-dind-enabled: "true"
-            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33
+            image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240118-fa2bab1d
             command: "/init.sh"
             request_memory: "4Gi"
             request_cpu: "3"
@@ -233,29 +211,6 @@ templates:
                     - jobConfig_default
                     - privileged
                     - jobConfig_presubmit # TODO: Prepare a Keda-Manager Image
-                    - extra_refs_test-infra
-                  local:
-                    - dind_job_k3d
-                    - skip_if_only_changed_documentation
-              - jobConfig:
-                  name: post-keda-manager-verify
-                  annotations:
-                    owner: otters
-                    description: runs keda manager verity job on k3d VM
-                  optional: "true"
-                  args:
-                    - bash
-                    - -c
-                    - |
-                      make -C hack/ci k3d-lm-integration-test
-                  branches:
-                    - ^main$ # any pr against main triggers this
-                    - ^release-*
-                inheritedConfigs:
-                  global:
-                    - jobConfig_default
-                    - privileged
-                    - jobConfig_postsubmit # TODO: Prepare a Keda-Manager Image
                     - extra_refs_test-infra
                   local:
                     - dind_job_k3d

@@ -18,7 +18,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231228-b1e22a33"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240118-fa2bab1d"
             securityContext:
               privileged: false
               seccompProfile:
@@ -55,7 +55,7 @@ presubmits: # runs on PRs
         - ^release-*
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231228-b1e22a33"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240118-fa2bab1d"
             securityContext:
               privileged: false
               seccompProfile:
@@ -97,7 +97,7 @@ presubmits: # runs on PRs
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240118-fa2bab1d"
             securityContext:
               privileged: true
               seccompProfile:
@@ -150,7 +150,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240118-fa2bab1d"
             securityContext:
               privileged: true
               seccompProfile:
@@ -200,7 +200,7 @@ postsubmits: # runs on main
           base_ref: main
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240118-fa2bab1d"
             securityContext:
               privileged: true
               seccompProfile:
@@ -217,51 +217,6 @@ postsubmits: # runs on main
                 value: "prod"
               - name: IMG_VERSION
                 value: "${PULL_BASE_SHA}"
-            resources:
-              requests:
-                memory: 4Gi
-                cpu: 3
-              limits:
-                memory: 4Gi
-                cpu: 3
-  
-periodics: # runs on schedule
-    - name: serverless-operator-nightly-periodic
-      annotations:
-        description: "serverless operator nightly verify"
-        owner: "otters"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "serverless-operator-nightly-periodic"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-dind-enabled: "true"
-        preset-kind-volume-mounts: "true"
-        preset-kyma-guard-bot-github-token: "true"
-      cron: "0 6 * * 1-5"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: serverless
-          base_ref: main
-        - org: kyma-project
-          repo: test-infra
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33"
-            securityContext:
-              privileged: true
-              seccompProfile:
-                type: Unconfined
-              allowPrivilegeEscalation: true
-            command:
-              - "/init.sh"
-            args:
-              - "bash"
-              - "-c"
-              - "make -C components/operator/hack/ci run-with-lifecycle-manager"
             resources:
               requests:
                 memory: 4Gi
