@@ -98,13 +98,9 @@
 
 [External Secrets](/prow/cluster/resources/external-secrets/README.md) - Kubernetes Secrets are synchronized with GCP Secret Manager using [External Secrets Operator](https://github.com/external-secrets/external-secrets).
 
-[Probot Stale](/prow/cluster/resources/probot-stale/README.md) - This chart contains the `probot-stale` configuration.
-
 [Images](/prow/images/README.md) - > DEPRECATED: Use the [`images`](/images) directory instead.
 
 [Golangci-lint image](/prow/images/golangci-lint/README.md) - This folder contains the Golangci-lint image that is based on the upstream Golangci-lint image. Use it to lint Go source files.
-
-[Probot Stale](/prow/images/probot-stale/README.md) - This folder contains the image for `probot-stale`.
 
 [Vulnerability Scanner](/prow/images/whitesource-scanner/README.md) - This folder contains the WhiteSource Unified Agent image that is based on the Java Buildpack image. Use it to perform WhiteSource vulnerability scans.
 
