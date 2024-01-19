@@ -33,7 +33,7 @@ resource "google_cloud_run_service" "security_dashboard_token" {
           name = "CLIENT_SECRET"
           value_from {
             secret_key_ref {
-              key = "latest"
+              key  = "latest"
               name = "security-dashboard-oauth-client-secret"
             }
           }
@@ -42,8 +42,18 @@ resource "google_cloud_run_service" "security_dashboard_token" {
           name = "CLIENT_ID"
           value_from {
             secret_key_ref {
-              key = "latest"
+              key  = "latest"
               name = "security-dashboard-oauth-client-id"
+            }
+          }
+        }
+
+        env {
+          name = "GH_BASE_URL"
+          value_from {
+            secret_key_ref {
+              key  = "latest"
+              name = "gh-internal-url"
             }
           }
         }
