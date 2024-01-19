@@ -105,18 +105,6 @@ updates:
       prefix: "kyma-integrate"
       include: "scope"
   - package-ecosystem: "docker"
-    directory: "/prow/images/probot-stale"
-    labels:
-      - "docker"
-      - "skip-review"
-      - "area/dependency"
-      - "kind/chore"
-    schedule:
-      interval: "daily"
-    commit-message:
-      prefix: "probot-stale"
-      include: "scope"
-  - package-ecosystem: "docker"
     directory: "/prow/images/whitesource-scanner"
     labels:
       - "docker"
