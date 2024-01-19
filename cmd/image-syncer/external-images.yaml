@@ -46,7 +46,7 @@ images:
 - source: "natsio/nats-server-config-reloader:0.14.1"
 - source: "quay.io/prometheus/prometheus:v2.45.0"
 - source: "natsio/nats-box:0.14.1"
-- source: "natsio/prometheus-nats-exporter:0.13.0"
+- source: "natsio/prometheus-nats-exporter:0.14.0"
 - source: "mockserver/mockserver:mockserver-5.11.2"
   amd64Only: true
 - source: "i331641/kyma-perf:v1"
