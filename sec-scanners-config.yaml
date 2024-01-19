@@ -29,6 +29,7 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/clusterscollector:v20240118-242312c0
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/cors-proxy:v20240118-242312c0
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/create-github-issue:v20230914-c7902318
+    - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dashboard-token-proxy:v20240119-eb6d3cc9
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/diskscollector:v20240118-242312c0
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/dnscollector:v20240118-242312c0
     - europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/gardener-rotate:v20240118-242312c0
@@ -60,7 +61,6 @@ protecode:
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-garden:v20240118-fa2bab1d
     - europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-gcloud:v20240118-fa2bab1d
     - europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240118-fa2bab1d
-    - europe-west3-docker.pkg.dev/sap-kyma-neighbors-dev/kyma-neighbors-dev-test/security-dashboard-token:0.0.2
     - gcr.io/k8s-prow/analyze:v20230824-74e8146673
     - gcr.io/k8s-prow/gencred:v20230824-74e8146673
     - maven:3.9.4-eclipse-temurin-17
