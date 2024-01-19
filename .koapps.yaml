@@ -24,3 +24,4 @@ apps:
   - ko://github.com/kyma-project/test-infra/cmd/cloud-run/cors-proxy
   - ko://github.com/kyma-project/test-infra/cmd/external-plugins/needs-tws
   - ko://github.com/kyma-project/test-infra/cmd/external-plugins/automated-approver
+  - ko://github.com/kyma-project/test-infra/cmd/dashboard-token-proxy
