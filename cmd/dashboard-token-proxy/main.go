@@ -70,8 +70,8 @@ func HandleTokenRequest(clientID, clientSecret, ghURL, authorizationURL string) 
 
 		req, err := http.NewRequest("POST", authorizationURL, strings.NewReader(data.Encode()))
 		if err != nil {
-			log.Printf("coudn't create Github request: %v", err)
-			http.Error(w, "Couldn't create login request", http.StatusBadRequest)
+			log.Printf("could not create Github request: %v", err)
+			http.Error(w, "Could not create login request", http.StatusBadRequest)
 			return
 		}
 		req.Header.Add("Accept", "application/json")
@@ -80,7 +80,7 @@ func HandleTokenRequest(clientID, clientSecret, ghURL, authorizationURL string) 
 		resp, err := client.Do(req)
 		if err != nil {
 			log.Printf("failed to login to Github: %v", err)
-			http.Error(w, "Couldn't login to Github", http.StatusBadRequest)
+			http.Error(w, "Could not login to Github", http.StatusBadRequest)
 			return
 		}
 		defer resp.Body.Close()
