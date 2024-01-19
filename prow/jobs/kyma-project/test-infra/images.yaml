@@ -15,7 +15,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -62,7 +62,7 @@ presubmits: # runs on PRs
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -112,7 +112,7 @@ presubmits: # runs on PRs
       cluster: untrusted-workload
       spec:
         containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240118-fa2bab1d
           command: ["/init.sh"]
           args: ["make", "-C", "images", "build"]
           resources:
@@ -146,7 +146,7 @@ postsubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -193,7 +193,7 @@ postsubmits:
       max_concurrency: 10
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20231213-b563bbe4"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240102-18a8a4b8"
             securityContext:
               privileged: false
               seccompProfile:
@@ -243,7 +243,7 @@ postsubmits:
       cluster: trusted-workload
       spec:
         containers:
-        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20231228-b1e22a33
+        - image: europe-docker.pkg.dev/kyma-project/prod/testimages/e2e-dind-k3d:v20240118-fa2bab1d
           command: ["/init.sh"]
           args: ["make", "-C", "images", "push"]
           resources:

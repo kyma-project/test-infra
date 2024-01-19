@@ -345,9 +345,6 @@ func GetTestsDefinition(filePath string) (buildTests []BuildTest, timelineTests 
 
 func NewRunPipelineArgs(templateParameters map[string]string, adoConfig Config, pipelineRunArgs ...RunPipelineArgsOptions) (pipelines.RunPipelineArgs, error) {
 	pipelineID := &adoConfig.ADOPipelineID
-	if templateParameters["UseKanikoConfigFromPR"] == "true" {
-		pipelineID = &adoConfig.ADOTestPipelineID
-	}
 
 	adoRunPipelineArgs := pipelines.RunPipelineArgs{
 		Project:    &adoConfig.ADOProjectName,

@@ -17,7 +17,7 @@ presubmits:
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20231212-9bb59ac6"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/golangci-lint:v20240116-d85d1b30"
             securityContext:
               privileged: false
               seccompProfile:
@@ -52,7 +52,7 @@ presubmits:
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231228-b1e22a33"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240118-fa2bab1d"
             securityContext:
               privileged: false
               seccompProfile:
@@ -239,7 +239,7 @@ postsubmits:
         - ^v?\d+\.\d+\.\d+(?:-.*)?$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20231228-b1e22a33"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/buildpack-go:v20240118-fa2bab1d"
             securityContext:
               privileged: false
               seccompProfile:
