@@ -34,7 +34,7 @@ func main() {
 	clientSecret = os.Getenv("CLIENT_SECRET")
 	ghURL = os.Getenv("GH_BASE_URL")
 
-	authorizationURL = fmt.Sprintf("%s/login/oauth/access_token", ghURL)
+	authorizationURL = fmt.Sprintf("https://%s/login/oauth/access_token", ghURL)
 
 	http.HandleFunc("/", HandleTokenRequest)
 	// Determine port for HTTP service.
@@ -117,6 +117,6 @@ func HandleTokenRequest(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Add("content-type", "application/json")
-	w.Header().Add("Access-Control-Allow-Origin", "https://pages.github.tools.sap")
+	w.Header().Add("Access-Control-Allow-Origin", fmt.Sprintf("https://pages.%s", ghURL))
 	w.Write(b)
 }
