@@ -22,21 +22,15 @@ type DashboardResponse struct {
 	Success     bool   `json:"success"`
 }
 
-var (
-	clientID         string
-	clientSecret     string
-	ghURL            string
-	authorizationURL string
-)
-
 func main() {
-	clientID = os.Getenv("CLIENT_ID")
-	clientSecret = os.Getenv("CLIENT_SECRET")
-	ghURL = os.Getenv("GH_BASE_URL")
+	clientID, clientSecret, ghURL, err := getEnvSecrets()
+	if err != nil {
+		log.Fatalf("Failed to get secrets value: %s", err)
+	}
 
-	authorizationURL = fmt.Sprintf("https://%s/login/oauth/access_token", ghURL)
+	authorizationURL := fmt.Sprintf("https://%s/login/oauth/access_token", ghURL)
 
-	http.HandleFunc("/", HandleTokenRequest)
+	http.HandleFunc("/", HandleTokenRequest(clientID, clientSecret, ghURL, authorizationURL))
 	// Determine port for HTTP service.
 	port := os.Getenv("PORT")
 	if port == "" {
@@ -50,73 +44,95 @@ func main() {
 	}
 }
 
-func HandleTokenRequest(w http.ResponseWriter, r *http.Request) {
-	if clientID == "" || clientSecret == "" {
-		log.Printf("Client data is missing")
-		http.Error(w, "Client data is missing", http.StatusBadRequest)
-		return
+func HandleTokenRequest(clientID, clientSecret, ghURL, authorizationURL string) func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if clientID == "" || clientSecret == "" {
+			log.Printf("Client data is missing")
+			http.Error(w, "Client data is missing", http.StatusBadRequest)
+			return
+		}
+
+		client := &http.Client{}
+
+		err := r.ParseForm()
+		if err != nil {
+			log.Printf("failed to parse form: %v", err)
+			http.Error(w, "failed to parse form", http.StatusBadRequest)
+			return
+		}
+
+		code := r.Form["oauthz_code"][0]
+
+		data := url.Values{}
+		data.Add("code", code)
+		data.Add("client_id", clientID)
+		data.Add("client_secret", clientSecret)
+
+		req, err := http.NewRequest("POST", authorizationURL, strings.NewReader(data.Encode()))
+		if err != nil {
+			log.Printf("coudn't create Github request: %v", err)
+			http.Error(w, "Couldn't create login request", http.StatusBadRequest)
+			return
+		}
+		req.Header.Add("Accept", "application/json")
+		req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+		resp, err := client.Do(req)
+		if err != nil {
+			log.Printf("failed to login to Github: %v", err)
+			http.Error(w, "Couldn't login to Github", http.StatusBadRequest)
+			return
+		}
+		defer resp.Body.Close()
+
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			log.Printf("failed to read response body: %v", err)
+			http.Error(w, "failed to read response body", http.StatusBadRequest)
+			return
+		}
+		var responseData GithubResponse
+		err = json.Unmarshal(body, &responseData)
+		if err != nil {
+			log.Printf("failed to unmarshal response body: %v", err)
+			http.Error(w, "failed to unmarshal response body", http.StatusBadRequest)
+			return
+		}
+
+		dashboardResponse := DashboardResponse{
+			AccessToken: responseData.AccessToken,
+			Success:     responseData.AccessToken != "",
+		}
+
+		b, err := json.Marshal(dashboardResponse)
+		if err != nil {
+			log.Printf("failed to marshal response body: %v", err)
+			http.Error(w, "failed to marshal response body", http.StatusBadRequest)
+			return
+		}
+
+		w.Header().Add("content-type", "application/json")
+		w.Header().Add("Access-Control-Allow-Origin", fmt.Sprintf("https://pages.%s", ghURL))
+		w.Write(b)
+	}
+}
+
+func getEnvSecrets() (string, string, string, error) {
+	clientID := os.Getenv("CLIENT_ID")
+	clientSecret := os.Getenv("CLIENT_SECRET")
+	ghURL := os.Getenv("GH_BASE_URL")
+
+	if clientID == "" {
+		return "", "", "", fmt.Errorf("client id is required")
 	}
 
-	client := &http.Client{}
-
-	err := r.ParseForm()
-	if err != nil {
-		log.Printf("failed to parse form: %v", err)
-		http.Error(w, "failed to parse form", http.StatusBadRequest)
-		return
+	if clientSecret == "" {
+		return "", "", "", fmt.Errorf("client secret is required")
 	}
 
-	code := r.Form["oauthz_code"][0]
-
-	data := url.Values{}
-	data.Add("code", code)
-	data.Add("client_id", clientID)
-	data.Add("client_secret", clientSecret)
-
-	req, err := http.NewRequest("POST", authorizationURL, strings.NewReader(data.Encode()))
-	if err != nil {
-		log.Printf("coudn't create Github request: %v", err)
-		http.Error(w, "Couldn't create login request", http.StatusBadRequest)
-		return
-	}
-	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-
-	resp, err := client.Do(req)
-	if err != nil {
-		log.Printf("failed to login to Github: %v", err)
-		http.Error(w, "Couldn't login to Github", http.StatusBadRequest)
-		return
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Printf("failed to read response body: %v", err)
-		http.Error(w, "failed to read response body", http.StatusBadRequest)
-		return
-	}
-	var responseData GithubResponse
-	err = json.Unmarshal(body, &responseData)
-	if err != nil {
-		log.Printf("failed to unmarshal response body: %v", err)
-		http.Error(w, "failed to unmarshal response body", http.StatusBadRequest)
-		return
+	if ghURL == "" {
+		return "", "", "", fmt.Errorf("github url is required")
 	}
 
-	dashboardResponse := DashboardResponse{
-		AccessToken: responseData.AccessToken,
-		Success:     responseData.AccessToken != "",
-	}
-
-	b, err := json.Marshal(dashboardResponse)
-	if err != nil {
-		log.Printf("failed to marshal response body: %v", err)
-		http.Error(w, "failed to marshal response body", http.StatusBadRequest)
-		return
-	}
-
-	w.Header().Add("content-type", "application/json")
-	w.Header().Add("Access-Control-Allow-Origin", fmt.Sprintf("https://pages.%s", ghURL))
-	w.Write(b)
+	return clientID, clientSecret, ghURL, nil
 }
