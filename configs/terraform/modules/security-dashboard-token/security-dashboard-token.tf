@@ -19,6 +19,9 @@ resource "google_cloud_run_service" "security_dashboard_token" {
   name     = "security-dashboard-token"
   location = "europe-west1"
 
+  // FIX(long-apply): See https://github.com/hashicorp/terraform-provider-google/issues/5898#issuecomment-605062566
+  autogenerate_revision_name = true
+
   metadata {
     annotations = {
       "run.googleapis.com/client-name" = "terraform"
