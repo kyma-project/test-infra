@@ -290,7 +290,7 @@ branch-protection:
               - "run-eslint"
               - "run-go-linter"
               - "run-go-checks"
-              - "run-go-tests"
+              - "run-go-tests / build"
               - "run-keb-chart-tests / finish-keb-chart-tests"
               - "markdown-link-check"
               - "validate-labels"
