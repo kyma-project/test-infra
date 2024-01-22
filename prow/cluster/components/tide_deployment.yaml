@@ -34,7 +34,7 @@ spec:
       serviceAccountName: tide
       containers:
       - name: tide
-        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/tide:v20240108-3e260bd9
+        image: europe-docker.pkg.dev/kyma-project/prod/k8s-prow/tide:v20240122-24a9dfbb
         args:
         - --dry-run=false
         - --github-endpoint=http://ghproxy
