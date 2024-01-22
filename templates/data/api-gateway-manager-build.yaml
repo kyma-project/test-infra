@@ -25,6 +25,7 @@ templates:
                     - "--config=/config/kaniko-build-config.yaml"
                     - "--context=."
                     - "--dockerfile=Dockerfile"
+                    - "--build-arg=NAME=$(PULL_BASE_REF)"
                   branches:
                     - ^main$
                     - ^release-\d+\.\d+(-.*)?$

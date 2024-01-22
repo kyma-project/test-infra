@@ -35,6 +35,7 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
+              - "--build-arg=NAME=$(PULL_BASE_REF)"
             resources:
               requests:
                 memory: 1.5Gi
