@@ -288,7 +288,7 @@ branch-protection:
           required_status_checks:
             contexts:
               - "run-eslint"
-              - "run-unit-tests / build"
+              - "run-verify"
               - "run-keb-chart-tests / finish-keb-chart-tests"
               - "markdown-link-check"
               - "validate-labels"
