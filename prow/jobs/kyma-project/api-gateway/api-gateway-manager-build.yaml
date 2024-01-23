@@ -35,7 +35,6 @@ presubmits: # runs on PRs
               - "--config=/config/kaniko-build-config.yaml"
               - "--context=."
               - "--dockerfile=Dockerfile"
-              - "--build-arg=VERSION=$(PULL_BASE_REF)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -145,6 +144,7 @@ postsubmits: # runs on main
               - "--context=."
               - "--dockerfile=Dockerfile"
               - "--tag={{.Env \"PULL_BASE_REF\" }}"
+              - "--build-arg=VERSION=$(PULL_BASE_REF)"
             resources:
               requests:
                 memory: 1.5Gi
@@ -163,4 +163,3 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-  
