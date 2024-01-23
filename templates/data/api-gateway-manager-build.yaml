@@ -67,6 +67,7 @@ templates:
                     - "--context=."
                     - "--dockerfile=Dockerfile"
                     - '--tag={{`{{.Env \"PULL_BASE_REF\" }}`}}'
+                    - "--build-arg=VERSION=$(PULL_BASE_REF)"
                   branches:
                     - '^\d+\.\d+\.\d+(?:-.*)?$'
                   optional: false
