@@ -72,20 +72,6 @@ templates:
                   local:
                     - "jobConfig_default"
                     - "product_kyma"
-              # scans for previous releases
-              - jobConfig:
-                  repository: "kyma"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  subprojects: "true"
-                  whitesource_release: "true"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
               # Kyma components
               - jobConfig:
                   repository: "reconciler"
