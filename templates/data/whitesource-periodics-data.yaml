@@ -88,21 +88,6 @@ templates:
                     - "jobConfig_default"
               # Kyma components
               - jobConfig:
-                  repository: "hydroform"
-                  exclude: "**/examples/**"
-                  language: "golang-mod"
-                  project: "kyma-project"
-                  subprojects: "true"
-                  base_ref: "main"
-                inheritedConfigs:
-                  global:
-                    - "jobConfig_default"
-                    - "image_wssagent_go"
-                    - "jobConfig_periodic"
-                  local:
-                    - "jobConfig_default"
-                    - "product_kyma"
-              - jobConfig:
                   repository: "reconciler"
                   language: "golang-mod"
                   project: "kyma-incubator"
