@@ -96,55 +96,6 @@ periodics: # runs on schedule
               requests:
                 memory: 1Gi
                 cpu: 400m
-    - name: hydroform-whitesource-scan
-      annotations:
-        description: "Periodic whitesource scan of Kyma repositories"
-        owner: "neighbors"
-      labels:
-        prow.k8s.io/pubsub.project: "sap-kyma-prow"
-        prow.k8s.io/pubsub.runID: "hydroform-whitesource-scan"
-        prow.k8s.io/pubsub.topic: "prowjobs"
-        preset-gc-project-env: "true"
-        preset-kms-gc-project-env: "true"
-        preset-whitesource-product-kyma: "true"
-        preset-wssagent-keys: "true"
-        preset-sa-gke-kyma-integration-kyma-project-whitesource: "true"
-      cron: "0 4 * * *"
-      skip_report: false
-      decorate: true
-      cluster: trusted-workload
-      extra_refs:
-        - org: kyma-project
-          repo: hydroform
-          base_ref: main
-      spec:
-        containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/testimages/unified-agent-go:v20240119-3f73fa41"
-            securityContext:
-              privileged: false
-              seccompProfile:
-                type: RuntimeDefault
-              allowPrivilegeEscalation: false
-            command:
-              - "bash"
-            args:
-              - "-c"
-              - "/start-wssagent.sh"
-            env:
-              - name: DRYRUN
-                value: "false"
-              - name : REPO_NAME
-                value: hydroform
-              - name: CREATE_SUBPROJECTS
-                value: "true"
-              - name: CUSTOM_EXCLUDE
-                value: "**/examples/**"
-              - name: SCAN_LANGUAGE
-                value: golang-mod
-            resources:
-              requests:
-                memory: 1Gi
-                cpu: 400m
     - name: reconciler-whitesource-scan
       annotations:
         description: "Periodic whitesource scan of Kyma repositories"
