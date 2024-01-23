@@ -9,7 +9,6 @@ plugins:
       - label
       - help
       - size
-      - invalidcommitmsg
       - verify-owners
       - owners-label
       - override
@@ -44,7 +43,6 @@ plugins:
       - label
       - help
       - size
-      - invalidcommitmsg
       - verify-owners
       - owners-label
       - override
