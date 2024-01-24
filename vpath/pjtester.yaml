@@ -1,6 +1,6 @@
 pjConfigs:
   prowJobs:
     kyma-project:
-      test-infra:
+      cloud-resources-manager:
       - pjName: "pull-cloud-resource-manager-kcp-image"
         report: true
