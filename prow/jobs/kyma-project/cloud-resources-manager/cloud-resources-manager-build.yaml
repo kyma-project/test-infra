@@ -2,7 +2,7 @@
 
 
 presubmits: # runs on PRs
-  kyma-project/cloud-resources-manager:
+  kyma-project/test-infra:
     - name: pull-cloud-resource-manager-kcp-image
       annotations:
         description: "build cloud-resources-manager kcp image"

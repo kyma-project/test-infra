@@ -3,7 +3,7 @@ templates:
     render:
       - to: ../../prow/jobs/kyma-project/cloud-resources-manager/cloud-resources-manager-build.yaml
         jobConfigs:
-          - repoName: "github.com/kyma-project/cloud-resources-manager"
+          - repoName: kyma-project/test-infra
             jobs:
               - jobConfig: # builds a docker image of the btp-manager tagged with the PR name
                   name: pull-cloud-resource-manager-kcp-image
