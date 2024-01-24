@@ -1,0 +1,49 @@
+presubmits:
+  kyma-project/test-infra:
+    - name: pull-cloud-resource-manager-kcp-image
+      annotations:
+        description: "build cloud-resources-manager kcp image"
+        owner: "phoenix"
+      labels:
+        prow.k8s.io/pubsub.project: "sap-kyma-prow"
+        prow.k8s.io/pubsub.runID: "pull-cloud-resource-manager-kcp-image"
+        prow.k8s.io/pubsub.topic: "prowjobs"
+        preset-sa-kyma-push-images: "true"
+      run_if_changed: ^components/.*.go|go.mod
+      decorate: true
+      cluster: untrusted-workload # use trusted-workload for postsubmit prowjobs
+      max_concurrency: 10
+      spec:
+        containers:
+          - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240117-44b831e4"
+            securityContext:
+              privileged: false
+              seccompProfile:
+                type: RuntimeDefault
+              allowPrivilegeEscalation: false
+            env:
+              - name: "ADO_PAT"
+                valueFrom:
+                  secretKeyRef:
+                    name: "image-builder-ado-token"
+                    key: "token"
+            command:
+              - "/image-builder"
+            args:
+              - "--name=cloud-resources-manager"
+              - "--config=/config/kaniko-build-config.yaml"
+              - "--context=."
+              - "--dockerfile=components/kcp/Dockerfile"
+              - "--build-in-ado=true"
+            resources:
+              requests:
+                memory: 500Mi
+                cpu: 500m
+            volumeMounts:
+              - name: config
+                mountPath: /config
+                readOnly: true
+        volumes:
+          - name: config
+            configMap:
+              name: kaniko-build-config
