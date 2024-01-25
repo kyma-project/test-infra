@@ -1,5 +1,5 @@
 presubmits:
-  kyma-project/test-infra:
+  kyma-project/cloud-resources-manager:
     - name: pull-cloud-resource-manager-kcp-image
       annotations:
         description: "build cloud-resources-manager kcp image"
