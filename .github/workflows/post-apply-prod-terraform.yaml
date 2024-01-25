@@ -42,7 +42,7 @@ jobs:
         with:
           repository: opentofu/opentofu
           path: opentofu
-          ref: b8e2fad8e24cdd98c5a81d5c08bc8fe417cfdfc5 # v1.6.0-alpha5
+          ref: 89ca50f3fe8c5327ec9943e9590bdb7b023fd4eb # v1.6.1
       - name: Install tofu tooling
         uses: actions/setup-go@v5
         with:
