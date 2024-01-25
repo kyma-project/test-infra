@@ -338,6 +338,13 @@ branch-protection:
               - "docs validation"
               - "unit tests"
               - "build"
+        serverless:
+          unmanaged: true
+        keda-manager:
+          unmanaged: true
+        warden:
+          unmanaged: true
+
     kyma-incubator:
       protect: true # protect all repos & branches in kyma-incubator org
       exclude:
