@@ -54,7 +54,7 @@ presubmits: # runs on PRs
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-  
+
 postsubmits: # runs on main
   kyma-project/istio:
     - name: rel-istio-build
@@ -167,4 +167,3 @@ postsubmits: # runs on main
           - name: signify-secret
             secret:
               secretName: signify-dev-secret
-  
