@@ -121,6 +121,7 @@ reconciler::trigger_kyma_reconcile
 reconciler::wait_until_kyma_reconciled
 
 if [[ $KYMA_UPGRADE_SOURCE != "main" ]]; then
+  kubectl create namespace kyma-system
   kubectl apply -f https://github.com/kyma-project/serverless/releases/latest/download/serverless-operator.yaml
   respCode=$(curl -o /dev/null --silent --head --write-out '%{http_code}' https://github.com/kyma-project/serverless/releases/latest/download/default_serverless_cr.yaml)
   if [ "$respCode" = "200" ]; then
