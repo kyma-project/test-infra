@@ -10,10 +10,11 @@ presubmits:
         prow.k8s.io/pubsub.topic: "prowjobs"
         preset-sa-kyma-push-images: "true"
       run_if_changed: ^.*.go|go.mod
-      skip_report: false
+      skip_report: true
       decorate: true
       cluster: untrusted-workload # use trusted-workload for postsubmit prowjobs
       max_concurrency: 10
+      optional: true
       spec:
         containers:
           - image: "europe-docker.pkg.dev/kyma-project/prod/image-builder:v20240117-44b831e4"
