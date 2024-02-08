@@ -22,7 +22,7 @@ presubmits: # runs on PRs
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240206-8672a30a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240208-803a1000"
             securityContext:
               privileged: false
               seccompProfile:
@@ -61,7 +61,7 @@ postsubmits: # runs on main
         - ^main$
       spec:
         containers:
-          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240206-8672a30a"
+          - image: "europe-docker.pkg.dev/kyma-project/prod/test-infra/ko/image-syncer:v20240208-803a1000"
             securityContext:
               privileged: false
               seccompProfile:
