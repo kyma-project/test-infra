@@ -81,7 +81,7 @@ spec:
   purpose: development
   cloudProfileName: gcp
   kubernetes:
-    version: 1.27.5
+    version: 1.28.6
   provider:
     controlPlaneConfig:
       apiVersion: gcp.provider.extensions.gardener.cloud/v1alpha1
